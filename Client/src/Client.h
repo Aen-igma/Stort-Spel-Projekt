@@ -8,7 +8,8 @@ class Client : public Aen::App {
 	Client() = delete;
 	Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className);
 
-	void Run() override;
+	void Start() override;
+	void Update(const float& deltaTime) override;
 
 	private:
 };

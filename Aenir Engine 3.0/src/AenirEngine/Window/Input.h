@@ -1,4 +1,5 @@
 #pragma once
+#include"..\AenDefines.h"
 #include"Window.h"
 #include<Xinput.h>
 
@@ -10,7 +11,7 @@ namespace Aen {
 	enum class DZType;
 	enum class ADZType;
 
-	class Input {
+	class AEN_DECLSPEC Input {
 		public:
 
 		static const bool KeyDown(const Key& key);

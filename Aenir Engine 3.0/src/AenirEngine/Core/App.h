@@ -8,7 +8,8 @@ namespace Aen {
 		App() = delete;
 		App(const WindowDesc& desc, const std::wstring& windowName, const std::wstring& className);
 
-		virtual void Run();
+		virtual void Start();
+		virtual void Update(const float& deltaTime);
 
 		protected:
 		Window window;

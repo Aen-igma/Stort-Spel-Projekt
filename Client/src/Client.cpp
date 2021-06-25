@@ -6,6 +6,11 @@
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
 	:Aen::App(desc, windowName, className) {}
 
-void Client::Run() {
-	std::cout << "HOI!!!" << std::endl;
+void Client::Start() {
+}
+
+void Client::Update(const float& deltaTime) {
+
+	if(Aen::Input::KeyDown(Aen::Key::SPACE))
+		std::cout << "HOI!!!" << std::endl;
 }
