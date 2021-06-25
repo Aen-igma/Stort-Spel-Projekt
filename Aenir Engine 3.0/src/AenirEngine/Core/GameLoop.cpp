@@ -3,33 +3,34 @@
 namespace Aen {
 
 	GameLoop::GameLoop()
-		:app(nullptr) {}
+		:m_app(nullptr) {}
 
 	void GameLoop::Initialize() {
+		//m_app = CreateApp();                       fix this
 		int ft = (int)(((double)1 / (double)60) * (double)pow(10, 9));
-		frameTime = std::chrono::nanoseconds{ft};
+		m_frameTime = std::chrono::nanoseconds{ft};
 
 
-		app->Start();
+		m_app->Start();
 	}
 
 	void GameLoop::Run() {
 		
-		start = end = ResClock::now();
+		m_start = m_end = ResClock::now();
 		while(Aen::WindowHandle::HandleMsg()) {
 		
-			end = ResClock::now();
-			while(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start) > frameTime) {
-				deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-				start = ResClock::now();
+			m_end = ResClock::now();
+			while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
+				m_deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start);
+				m_start = ResClock::now();
 				Aen::Input::Update();
-				app->Update(static_cast<float>(deltaTime.count()));
+				m_app->Update(static_cast<float>(m_deltaTime.count()));
 			}
 		
 		
 		}
 
-		delete app;
+		delete m_app;
 	}
 
 

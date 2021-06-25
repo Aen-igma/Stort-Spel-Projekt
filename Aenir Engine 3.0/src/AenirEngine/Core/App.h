@@ -14,6 +14,4 @@ namespace Aen {
 		protected:
 		Window window;
 	};
-
-	App* CreateApp();
 }

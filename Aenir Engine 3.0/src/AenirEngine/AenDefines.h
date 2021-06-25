@@ -2,8 +2,10 @@
 
 #ifdef _DEBUG
 	#define AEN_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__)
+	#define AEN_PRINT(msg)	std::cout << msg << std::endl
 #else
 	#define AEN_NEW new
+	#define AEN_PRINT(msg)
 #endif
 
 
@@ -16,4 +18,3 @@
 #else
 	#error Aenir Engine only Supports windows.
 #endif
-

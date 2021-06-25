@@ -12,5 +12,6 @@ void Client::Start() {
 void Client::Update(const float& deltaTime) {
 
 	if(Aen::Input::KeyDown(Aen::Key::SPACE))
-		std::cout << "HOI!!!" << std::endl;
+		AEN_PRINT("HOI!!!");
+
 }

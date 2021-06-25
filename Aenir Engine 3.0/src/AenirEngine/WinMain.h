@@ -8,9 +8,6 @@
 
 
 #ifdef AEN_PLATFORM_WINDOWS
-
-extern Aen::App* Aen::CreateApp();
-
 #ifdef _DEBUG
 
 void RedirectIOToConsole() {
@@ -28,7 +25,7 @@ void RedirectIOToConsole() {
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPInstance, LPWSTR lpCmdLine, int cmdShow) {
 	RedirectIOToConsole();
 	Aen::GameLoop gameLoop;
-	gameLoop.app = Aen::CreateApp();
+	gameLoop.m_app = Aen::CreateApp(); //    remove this
 	gameLoop.Initialize();
 	gameLoop.Run();
 	return 0;
