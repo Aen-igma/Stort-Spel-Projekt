@@ -35,6 +35,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPInstance, LPWSTR lpCmdLin
 
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPInstance, LPWSTR lpCmdLine, int cmdShow) {
 	Aen::GameLoop gameLoop;
+	gameLoop.m_app = Aen::CreateApp(); //    remove this
 	gameLoop.Initialize();
 	gameLoop.Run();
 	return 0;
