@@ -153,16 +153,16 @@ namespace Aen {
 			SWP_SHOWWINDOW);
 	}
 
-	const Vec2i Window::GetSize() {
+	const Vec2i Window::GetSize() const {
 		Vec2i out(m_width, m_height);
 		return out;
 	}
 
-	const Vec2i Window::GetWindowPos() {
+	const Vec2i Window::GetWindowPos() const {
 		return wPos;
 	}
 
-	const float Window::GetAspectRatio() {
+	const float Window::GetAspectRatio() const {
 		return static_cast<float>(m_width) / static_cast<float>(m_height);
 	}
 
@@ -232,7 +232,7 @@ namespace Aen {
 	}
 
 	bool Window::HandleMsg() {
-		static MSG msg;
+		MSG msg;
 
 		ZeroMemory(&msg, sizeof(msg));
 		while(PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE)) {

@@ -161,6 +161,16 @@
   <ItemGroup>
     <ClCompile Include="src\AenirEngine\Core\App.cpp" />
     <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BackBufferTarget.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DX11Core.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\IBuffer.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ILayout.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Rasterizer.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Sampler.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.cpp" />
     <ClCompile Include="src\AenirEngine\Window\Input.cpp" />
     <ClCompile Include="src\AenirEngine\Window\Window.cpp" />
     <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp" />
@@ -172,6 +182,22 @@
     <ClInclude Include="src\AenirEngine\AenDefines.h" />
     <ClInclude Include="src\AenirEngine\Core\App.h" />
     <ClInclude Include="src\AenirEngine\Core\GameLoop.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BackBufferTarget.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\CBuffer.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DepthMap.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DX11Core.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DX11Type.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\IBuffer.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ILayout.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Rasterizer.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Sampler.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\SBuffer.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Shader.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\stb_image.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />
     <ClInclude Include="src\AenirEngine\Math\Circle.h" />
     <ClInclude Include="src\AenirEngine\Math\Color.h" />
     <ClInclude Include="src\AenirEngine\Math\MathFunctions.h" />
@@ -182,6 +208,7 @@
     <ClInclude Include="src\AenirEngine\Math\Tracer.h" />
     <ClInclude Include="src\AenirEngine\Math\Vector.h" />
     <ClInclude Include="src\AenirEngine\AenWindow.h" />
+    <ClInclude Include="src\AenirEngine\AenGraphics.h" />
     <ClInclude Include="src\AenirEngine\WinMain.h" />
     <ClInclude Include="src\AenirEngine\Window\Input.h" />
     <ClInclude Include="src\AenirEngine\Window\Window.h" />

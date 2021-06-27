@@ -10,6 +10,8 @@ namespace Aen {
 		int ft = (int)(((double)1 / (double)60) * (double)pow(10, 9));
 		m_frameTime = std::chrono::nanoseconds{ft};
 
+		if(!GCore::Concealed::Initialize(m_app->window))
+			exit(-1);
 
 		m_app->Start();
 	}
@@ -27,7 +29,7 @@ namespace Aen {
 				m_app->Update(static_cast<float>(m_deltaTime.count()));
 			}
 		
-		
+			
 		}
 
 		delete m_app;

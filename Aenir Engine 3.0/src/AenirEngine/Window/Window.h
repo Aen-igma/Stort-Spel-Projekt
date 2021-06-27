@@ -15,9 +15,9 @@ namespace Aen {
 		void LoadSettings(const WindowDesc& desc);
 		void SetWindowSize(const UINT& width, const UINT& height);
 
-		const Vec2i GetSize();
-		const Vec2i GetWindowPos();
-		const float GetAspectRatio();
+		const Vec2i GetSize() const;
+		const Vec2i GetWindowPos() const;
+		const float GetAspectRatio() const;
 
 		LRESULT CALLBACK WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -44,5 +44,6 @@ namespace Aen {
 		Vec2i wPos;
 
 		friend struct WindowHandle;
+		friend class GCore;
 	};
 }

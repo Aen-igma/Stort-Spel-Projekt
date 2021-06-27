@@ -24,9 +24,9 @@ Aen::App* Aen::CreateApp() {
 	wDesc.style = AEN_WS_OVERLAPPEDWINDOW | AEN_WS_VISIBLE;
 	wDesc.hMenu = 0;
 	wDesc.WCStyle = 0;
-	//wDesc.SetIcon(L"");
-	//wDesc.SetSmallIcon(L"");
-	//wDesc.SetCursor(L"");
+	//wDesc.LoadIcon(L"");
+	//wDesc.LoadSmallIcon(L"");
+	//wDesc.LoadMouseCursor(L"Heart.cur");
 
 	return new Client(wDesc, L"[ENTER CREATIVE NAME HERE]", L"Main_Window");
 }

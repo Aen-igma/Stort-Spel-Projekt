@@ -1,5 +1,7 @@
+#define AEN_GRAPHICS_DIRECTX11
 #pragma once
-#include"..\AenWindow.h"
+#include"..\AenGraphics.h"
+
 
 namespace Aen {
 
@@ -10,6 +12,8 @@ namespace Aen {
 
 		virtual void Start();
 		virtual void Update(const float& deltaTime);
+
+		friend class GameLoop;
 
 		protected:
 		Window window;
