@@ -1,3 +1,4 @@
+#define STB_IMAGE_IMPLEMENTATION
 #pragma once
 #include"AenCore.h"
 #include<Windows.h>

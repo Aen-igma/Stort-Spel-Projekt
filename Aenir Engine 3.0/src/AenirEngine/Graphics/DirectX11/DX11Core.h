@@ -1,4 +1,5 @@
 #pragma once
+#include"..\..\AenDefines.h"
 #include"..\..\AenWindow.h"
 #include"..\..\AenMath.h"
 #include"DX11Type.h"
@@ -16,7 +17,6 @@ namespace Aen {
 
 		private:
 		static std::vector<ComAdapter1> m_adapters;
-		static std::vector<DXGI_ADAPTER_DESC1> m_adapterDesc;
 
 		protected:
 		static ComDevice m_device;

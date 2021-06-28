@@ -1,0 +1,15 @@
+#pragma once
+#include"DepthStencil.h"
+
+namespace Aen {
+
+	class BBuffer : public GCore {
+		public:
+		BBuffer();
+
+		void SetRTV(DepthStencil& ds);
+
+		private:
+		ComRenderTargetView m_rtv;
+	};
+}

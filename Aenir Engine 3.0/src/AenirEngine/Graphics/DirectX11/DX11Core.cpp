@@ -7,7 +7,6 @@ namespace Aen {
     ComSwapChain GCore::m_sChain {NULL};
 
     std::vector<ComAdapter1> GCore::m_adapters;
-    std::vector<DXGI_ADAPTER_DESC1> GCore::m_adapterDesc;
 
 	bool GCore::Concealed::Initialize(const Window& window) {
     
@@ -38,17 +37,10 @@ namespace Aen {
             return false;
 
         ComAdapter1 pAdapter = NULL;
-        DXGI_ADAPTER_DESC1 adDesc;
         for(int i = 0; 
             pFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(pAdapter.GetAddressOf())) 
-            != DXGI_ERROR_NOT_FOUND; i++) {
-
-            if(FAILED(pAdapter->GetDesc1(&adDesc)))
-                return false;
-
-            m_adapterDesc.emplace_back(adDesc);
+            != DXGI_ERROR_NOT_FOUND; i++)
             m_adapters.emplace_back(pAdapter);
-        }
         
         if(m_adapters.size() == 0u)
             return false;

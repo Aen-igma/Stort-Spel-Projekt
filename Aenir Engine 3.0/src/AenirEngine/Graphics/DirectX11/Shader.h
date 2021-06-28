@@ -2,51 +2,64 @@
 #include"DX11Core.h"
 
 namespace Aen {
+
 	namespace Concealed {
+
 		template<typename T>
-		struct TShader : public GCore {
-			Microsoft::WRL::ComPtr<T> shader;
-			ID3D10Blob* byteCode;
+		class TShader : public GCore {
+			public:
+			TShader()
+				:m_shader(NULL), m_byteCode(nullptr) {}
 
-			~TShader() = default;
+			const bool Create(const std::wstring& dir);
 
-			const bool Initialize(const std::wstring& dir);
+			//private:
+			Microsoft::WRL::ComPtr<T> m_shader;
+			ID3D10Blob* m_byteCode;
+
+			//friend class ILayout; // this not working
 		};
 
-		inline const bool TShader<ID3D11VertexShader>::Initialize(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &byteCode)))
+		template<>
+		inline const bool TShader<ID3D11VertexShader>::Create(const std::wstring& dir) {
+			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
 				return false;
-			return SUCCEEDED(device->CreateVertexShader(byteCode->GetBufferPointer(), byteCode->GetBufferSize(), nullptr, &shader));
+			return SUCCEEDED(m_device->CreateVertexShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
 		}
 
-		inline const bool TShader<ID3D11HullShader>::Initialize(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &byteCode)))
+		template<>
+		inline const bool TShader<ID3D11HullShader>::Create(const std::wstring& dir) {
+			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
 				return false;
-			return SUCCEEDED(device->CreateHullShader(byteCode->GetBufferPointer(), byteCode->GetBufferSize(), nullptr, &shader));
+			return SUCCEEDED(m_device->CreateHullShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
 		}
 
-		inline const bool TShader<ID3D11ComputeShader>::Initialize(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &byteCode)))
+		template<>
+		inline const bool TShader<ID3D11ComputeShader>::Create(const std::wstring& dir) {
+			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
 				return false;
-			return SUCCEEDED(device->CreateComputeShader(byteCode->GetBufferPointer(), byteCode->GetBufferSize(), nullptr, &shader));
+			return SUCCEEDED(m_device->CreateComputeShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
 		}
 
-		inline const bool TShader<ID3D11DomainShader>::Initialize(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &byteCode)))
+		template<>
+		inline const bool TShader<ID3D11DomainShader>::Create(const std::wstring& dir) {
+			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
 				return false;
-			return SUCCEEDED(device->CreateDomainShader(byteCode->GetBufferPointer(), byteCode->GetBufferSize(), nullptr, &shader));
+			return SUCCEEDED(m_device->CreateDomainShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
 		}
 
-		inline const bool TShader<ID3D11GeometryShader>::Initialize(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &byteCode)))
+		template<>
+		inline const bool TShader<ID3D11GeometryShader>::Create(const std::wstring& dir) {
+			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
 				return false;
-			return SUCCEEDED(device->CreateGeometryShader(byteCode->GetBufferPointer(), byteCode->GetBufferSize(), nullptr, &shader));
+			return SUCCEEDED(m_device->CreateGeometryShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
 		}
 
-		inline const bool TShader<ID3D11PixelShader>::Initialize(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &byteCode)))
+		template<>
+		inline const bool TShader<ID3D11PixelShader>::Create(const std::wstring& dir) {
+			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
 				return false;
-			return SUCCEEDED(device->CreatePixelShader(byteCode->GetBufferPointer(), byteCode->GetBufferSize(), nullptr, &shader));
+			return SUCCEEDED(m_device->CreatePixelShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
 		}
 	}
 	

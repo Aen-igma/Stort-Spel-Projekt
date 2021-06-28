@@ -2,14 +2,14 @@
 
 namespace Aen {
 
-    const bool DepthStencil::Initialize(const Window& window) {
-
+    DepthStencil::DepthStencil(const Window& window)
+        :m_dsView(NULL), m_dsState(NULL) {
         ComTexture2D dsBuffer;
         D3D11_TEXTURE2D_DESC texDesc;
         ZeroMemory(&texDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
-        texDesc.Width = window.width;
-        texDesc.Height = window.height;
+        texDesc.Width = window.GetSize().x;
+        texDesc.Height = window.GetSize().y;
         texDesc.MipLevels = 1;
         texDesc.ArraySize = 1;
         texDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -20,11 +20,11 @@ namespace Aen {
         texDesc.CPUAccessFlags = 0;
         texDesc.MiscFlags = 0;
 
-        if(FAILED(device->CreateTexture2D(&texDesc, nullptr, &dsBuffer)))
-            return false;
+        if(FAILED(m_device->CreateTexture2D(&texDesc, nullptr, &dsBuffer)))
+            throw;
 
-        if(FAILED(device->CreateDepthStencilView(dsBuffer.Get(), nullptr, &dsView)))
-            return false;
+        if(FAILED(m_device->CreateDepthStencilView(dsBuffer.Get(), nullptr, &m_dsView)))
+            throw;
 
         D3D11_DEPTH_STENCIL_DESC dsDesc;
         ZeroMemory(&dsDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
@@ -33,9 +33,8 @@ namespace Aen {
         dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
         dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-        if(FAILED(device->CreateDepthStencilState(&dsDesc, &dsState)))
-            return false;
-
-        return true;
+        if(FAILED(m_device->CreateDepthStencilState(&dsDesc, &m_dsState)))
+            throw;
     }
+
 }

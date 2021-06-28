@@ -2,7 +2,8 @@
 
 namespace Aen {
 
-	const bool DepthMap::Initialize(const UINT& dimensions) {
+	DepthMap::DepthMap(const UINT& dimensions)
+		:m_dsView(NULL), m_srv(NULL), m_viewPort() {
 
 		ComTexture2D dBuffer;
 		D3D11_TEXTURE2D_DESC dtDesc;
@@ -36,24 +37,31 @@ namespace Aen {
 		srDesc.Texture2D.MipLevels = dtDesc.MipLevels;
 		srDesc.Texture2D.MostDetailedMip = 0;
 
-		if(FAILED(device->CreateTexture2D(&dtDesc, nullptr, &dBuffer)))
-			return false;
+		if(FAILED(m_device->CreateTexture2D(&dtDesc, nullptr, &dBuffer)))
+			throw;
 
-		if(FAILED(device->CreateDepthStencilView(dBuffer.Get(), &dsDesc, &dsView)))
-			return false;
+		if(FAILED(m_device->CreateDepthStencilView(dBuffer.Get(), &dsDesc, &m_dsView)))
+			throw;
 
-		if(FAILED(device->CreateShaderResourceView(dBuffer.Get(), &srDesc, &srv)))
-			return false;
+		if(FAILED(m_device->CreateShaderResourceView(dBuffer.Get(), &srDesc, &m_srv)))
+			throw;
 
-		ZeroMemory(&viewPort, sizeof(D3D11_VIEWPORT));
+		ZeroMemory(&m_viewPort, sizeof(D3D11_VIEWPORT));
 
-		viewPort.TopLeftX = 0;
-		viewPort.TopLeftY = 0;
-		viewPort.Width = static_cast<FLOAT>(dimensions);
-		viewPort.Height = static_cast<FLOAT>(dimensions);
-		viewPort.MinDepth = 0;
-		viewPort.MaxDepth = 1;
+		m_viewPort.TopLeftX = 0;
+		m_viewPort.TopLeftY = 0;
+		m_viewPort.Width = static_cast<FLOAT>(dimensions);
+		m_viewPort.Height = static_cast<FLOAT>(dimensions);
+		m_viewPort.MinDepth = 0;
+		m_viewPort.MaxDepth = 1;
+	}
 
-		return true;
+	void DepthMap::SetViewPort() {
+		m_dContext->RSSetViewports(1, &m_viewPort);
+	}
+
+	void DepthMap::SetDSView() {
+		ComRenderTargetView rtv = NULL;
+		m_dContext->OMSetRenderTargets(1, rtv.GetAddressOf(), m_dsView.Get());
 	}
 }

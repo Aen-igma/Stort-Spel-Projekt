@@ -2,28 +2,41 @@
 
 namespace Aen {
 
-    bool IBuffer::Initialize(DWORD* vId, UINT iCount) {
+    IBuffer::IBuffer()
+        :m_buffer(NULL), m_bufferSize(0) {}
 
-        iSize = iCount;
+    void IBuffer::Create(DWORD* vId, const UINT& bufferSize) {
 
-        D3D11_BUFFER_DESC iDesc;
-        ZeroMemory(&iDesc, sizeof(D3D11_BUFFER_DESC));
+        m_bufferSize = bufferSize;
 
-        DWORD p[36];
-        memcpy(p, vId, sizeof(DWORD) * 36);
+        D3D11_BUFFER_DESC bDesc;
+        ZeroMemory(&bDesc, sizeof(D3D11_BUFFER_DESC));
 
-        iDesc.Usage = D3D11_USAGE_IMMUTABLE;
-        iDesc.ByteWidth = sizeof(DWORD) * iCount;
-        iDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-        iDesc.CPUAccessFlags = 0;
-        iDesc.MiscFlags = 0;
-        iDesc.StructureByteStride = 0;
+        bDesc.Usage = D3D11_USAGE_IMMUTABLE;
+        bDesc.ByteWidth = sizeof(DWORD) * m_bufferSize;
+        bDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        bDesc.CPUAccessFlags = 0;
+        bDesc.MiscFlags = 0;
+        bDesc.StructureByteStride = 0;
 
-        D3D11_SUBRESOURCE_DATA iData;
-        ZeroMemory(&iData, sizeof(D3D11_SUBRESOURCE_DATA));
+        D3D11_SUBRESOURCE_DATA srData;
+        ZeroMemory(&srData, sizeof(D3D11_SUBRESOURCE_DATA));
 
-        iData.pSysMem = vId;
+        srData.pSysMem = vId;
 
-        return SUCCEEDED(device->CreateBuffer(&iDesc, &iData, &buffer));
+        if(FAILED(m_device->CreateBuffer(&bDesc, &srData, &m_buffer)))
+            throw;
+    }
+
+    void IBuffer::SetBuffer() {
+        m_dContext->IASetIndexBuffer(m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+    }
+
+    void IBuffer::DrawIndexed() {
+        m_dContext->DrawIndexed(m_bufferSize, 0, 0);
+    }
+
+    const UINT IBuffer::GetBufferSize() {
+        return m_bufferSize;
     }
 }

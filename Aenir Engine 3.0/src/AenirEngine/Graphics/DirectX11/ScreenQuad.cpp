@@ -1,23 +1,29 @@
 #include "ScreenQuad.h"
 
 namespace Aen {
-	const bool ScreenQuad::Initialize(const Window& window) {
 
-		QuadVB quad[6] = {
-			Vec3f(-1.f, -1.f, 0.f), Vec2f(0.f, 1.f),
-			Vec3f(-1.f, 1.f, 0.f), Vec2f(0.f, 0.f),
-			Vec3f(1.f, 1.f, 0.f), Vec2f(1.f, 0.f),
-			Vec3f(-1.f, -1.f, 0.f), Vec2f(0.f, 1.f),
-			Vec3f(1.f, 1.f, 0.f), Vec2f(1.f, 0.f),
-			Vec3f(1.f, -1.f, 0.f), Vec2f(1.f, 1.f),
+	ScreenQuad::ScreenQuad() {
+
+		QuadVB quad[4] = {
+				Vec3f(-1.f, -1.f, 0.f), Vec2f(0.f, 1.f),
+				Vec3f(-1.f, 1.f, 0.f), Vec2f(0.f, 0.f),
+				Vec3f(1.f, 1.f, 0.f), Vec2f(1.f, 0.f),
+				Vec3f(1.f, -1.f, 0.f), Vec2f(1.f, 1.f)
 		};
 
-		return vBuffer.Initialize(quad, 6);
+		m_vBuffer.Create(quad, 4);
+
+		DWORD ind[6]{
+			0, 1, 2,
+			0, 2, 3
+		};
+
+		m_iBuffer.Create(ind, 6);
 	}
 
 	void ScreenQuad::Draw() {
-		UINT offset = 0;
-		dContext->IASetVertexBuffers(0, 1, vBuffer.buffer.GetAddressOf(), vBuffer.stride.get(), &offset);
-		dContext->Draw(6, 0);
+		m_vBuffer.SetVBuffer();
+		m_iBuffer.SetBuffer();
+		m_iBuffer.DrawIndexed();
 	}
 }

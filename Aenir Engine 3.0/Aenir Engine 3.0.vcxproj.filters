@@ -33,31 +33,16 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DX11Core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BackBufferTarget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\IBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ILayout.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Rasterizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Sampler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,46 +122,31 @@
     <ClInclude Include="src\AenirEngine\AenGraphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BackBufferTarget.h">
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\CBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DepthMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\IBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ILayout.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Rasterizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Sampler.h">
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\SBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

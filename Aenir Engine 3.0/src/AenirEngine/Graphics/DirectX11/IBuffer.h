@@ -1,14 +1,19 @@
 #pragma once
 #include"DX11Core.h"
 
-
 namespace Aen {
-	struct IBuffer : public GCore {
-		ComBuffer buffer;
-		UINT iSize;
 
-		~IBuffer() = default;
+	class IBuffer : public GCore {
+		public:
+		IBuffer();
 
-		bool Initialize(DWORD* vId, UINT iCount);
+		void Create(DWORD* vId, const UINT& bufferSize);
+		void SetBuffer();
+		void DrawIndexed();
+		const UINT GetBufferSize();
+
+		private:
+		ComBuffer m_buffer;
+		UINT m_bufferSize;
 	};
 }

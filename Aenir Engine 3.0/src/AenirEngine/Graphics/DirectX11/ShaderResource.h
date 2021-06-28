@@ -4,11 +4,12 @@
 #include<vector>
 
 namespace Aen {
+
 	struct ShaderResource : public GCore {
-		ComShaderResourceView srv;
+		public:
+		ShaderResource(const std::string& dir);
 
-		~ShaderResource() = default;
-
-		bool Initialize(const std::string& dir);
+		private:
+		ComShaderResourceView m_srv;
 	};
 }

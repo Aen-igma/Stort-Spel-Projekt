@@ -1,7 +1,9 @@
 #include "ShaderResource.h"
+
 namespace Aen {
 
-    bool ShaderResource::Initialize(const std::string& dir) {
+    ShaderResource::ShaderResource(const std::string& dir)
+        :m_srv(NULL) {
 
         stbi_set_flip_vertically_on_load(true);
         int width = 2048, height = 2048, channels = 4;
@@ -43,14 +45,12 @@ namespace Aen {
         texDesc.CPUAccessFlags = 0;
         texDesc.MiscFlags = 0;
 
-        if(FAILED(device->CreateTexture2D(&texDesc, &sData, &uvTexture)))
-            return false;
+        if(FAILED(m_device->CreateTexture2D(&texDesc, &sData, &uvTexture)))
+            throw;
 
-        if(FAILED(device->CreateShaderResourceView(uvTexture.Get(), nullptr, &srv)))
-            return false;
+        if(FAILED(m_device->CreateShaderResourceView(uvTexture.Get(), nullptr, &m_srv)))
+            throw;
 
         stbi_image_free(image);
-
-        return true;
     }
 }
