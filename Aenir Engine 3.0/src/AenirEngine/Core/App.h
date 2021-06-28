@@ -1,5 +1,5 @@
-#define AEN_GRAPHICS_DIRECTX11
 #pragma once
+#define AEN_GRAPHICS_DIRECTX11
 #include"..\AenGraphics.h"
 
 

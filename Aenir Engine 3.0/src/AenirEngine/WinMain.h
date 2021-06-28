@@ -1,4 +1,3 @@
-#define STB_IMAGE_IMPLEMENTATION
 #pragma once
 #include"AenCore.h"
 #include<Windows.h>
@@ -25,6 +24,7 @@ void RedirectIOToConsole() {
 
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPInstance, LPWSTR lpCmdLine, int cmdShow) {
 	RedirectIOToConsole();
+
 	Aen::GameLoop gameLoop;
 	gameLoop.m_app = Aen::CreateApp(); //    remove this
 	gameLoop.Initialize();
