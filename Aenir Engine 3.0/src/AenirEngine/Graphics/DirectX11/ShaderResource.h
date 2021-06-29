@@ -1,6 +1,5 @@
 #pragma once
 #include"DX11Core.h"
-#include<vector>
 
 namespace Aen {
 

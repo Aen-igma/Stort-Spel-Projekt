@@ -1,12 +1,11 @@
+#include"PCH.h"
 #include"DX11Core.h"
 
 namespace Aen {
 
-    ComDevice GCore::m_device {NULL};
-    ComDeviceContext GCore::m_dContext {NULL};
-    ComSwapChain GCore::m_sChain {NULL};
-
-    std::vector<ComAdapter1> GCore::m_adapters;
+    ComDevice GCore::m_device = NULL;
+    ComDeviceContext GCore::m_dContext = NULL;
+    ComSwapChain GCore::m_sChain = NULL;
 
 	bool GCore::Concealed::Initialize(const Window& window) {
     
@@ -30,27 +29,19 @@ namespace Aen {
         sChainDesc.Windowed = TRUE;
         sChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
         sChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
-
+        
         ComFactory6 pFactory = NULL;
-        if(FAILED(CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(IDXGIFactory1), reinterpret_cast<void**>(pFactory.GetAddressOf()))))
+        if(FAILED(CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(IDXGIFactory6), reinterpret_cast<void**>(pFactory.GetAddressOf()))))
             return false;
 
         ComAdapter1 pAdapter = NULL;
-        for(int i = 0; 
-            pFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(pAdapter.GetAddressOf())) 
-            != DXGI_ERROR_NOT_FOUND; i++)
-            m_adapters.emplace_back(pAdapter);
-        
-        if(m_adapters.size() == 0u)
+        if(FAILED(pFactory->EnumAdapterByGpuPreference(0, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(pAdapter.GetAddressOf()))))
             return false;
 
-        const UINT featureLvls = 4;
+        const UINT featureLvls = 2;
         D3D_FEATURE_LEVEL featureLvl[featureLvls] = {
             D3D_FEATURE_LEVEL_11_1,
-            D3D_FEATURE_LEVEL_11_0,
-            D3D_FEATURE_LEVEL_10_1,
-            D3D_FEATURE_LEVEL_10_0
+            D3D_FEATURE_LEVEL_11_0
         };
 
         UINT flags = 0;
@@ -59,8 +50,8 @@ namespace Aen {
         #endif
 
         return SUCCEEDED(D3D11CreateDeviceAndSwapChain(
-            m_adapters[0].Get(), 
-            D3D_DRIVER_TYPE_UNKNOWN, 
+            pAdapter.Get(),  
+            D3D_DRIVER_TYPE_UNKNOWN,
             NULL, 
             flags, 
             featureLvl, 

@@ -97,7 +97,9 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$($(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,7 +116,9 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$($(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,7 +135,9 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$($(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,7 +154,9 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$($(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,6 +179,16 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Sampler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.cpp" />
+    <ClCompile Include="src\PCH\PCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="src\AenirEngine\Window\Input.cpp" />
     <ClCompile Include="src\AenirEngine\Window\Window.cpp" />
     <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp" />
@@ -178,6 +196,7 @@
   <ItemGroup>
     <ClInclude Include="src\AenirEngine.h" />
     <ClInclude Include="src\AenirEngine\AenCore.h" />
+    <ClInclude Include="src\AenirEngine\AenGraphics.h" />
     <ClInclude Include="src\AenirEngine\AenMath.h" />
     <ClInclude Include="src\AenirEngine\AenDefines.h" />
     <ClInclude Include="src\AenirEngine\Core\App.h" />
@@ -196,6 +215,10 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Shader.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Material.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\MaterialHandler.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Renderer.h" />
+    <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\stb_image.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />
     <ClInclude Include="src\AenirEngine\Math\Circle.h" />
@@ -208,7 +231,7 @@
     <ClInclude Include="src\AenirEngine\Math\Tracer.h" />
     <ClInclude Include="src\AenirEngine\Math\Vector.h" />
     <ClInclude Include="src\AenirEngine\AenWindow.h" />
-    <ClInclude Include="src\AenirEngine\AenGraphics.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Graphics.h" />
     <ClInclude Include="src\AenirEngine\WinMain.h" />
     <ClInclude Include="src\AenirEngine\Window\Input.h" />
     <ClInclude Include="src\AenirEngine\Window\Window.h" />

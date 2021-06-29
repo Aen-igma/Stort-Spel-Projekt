@@ -60,6 +60,9 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Sampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\PCH\PCH.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -134,7 +137,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DX11Type.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\AenGraphics.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BBuffer.h">
@@ -177,6 +180,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Sampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\MaterialHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\AenGraphics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PCH\PCH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

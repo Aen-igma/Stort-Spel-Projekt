@@ -1,9 +1,10 @@
+#include"PCH.h"
 #include"GameLoop.h"
 
 namespace Aen {
 
 	GameLoop::GameLoop()
-		:m_app(nullptr) {}
+		:m_app(nullptr), m_start(), m_end(), m_frameTime(), m_deltaTime() {}
 
 	void GameLoop::Initialize() {
 		//m_app = CreateApp();                       fix this
@@ -34,6 +35,4 @@ namespace Aen {
 
 		delete m_app;
 	}
-
-
 }

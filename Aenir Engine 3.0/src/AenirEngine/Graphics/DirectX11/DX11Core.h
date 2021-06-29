@@ -15,9 +15,6 @@ namespace Aen {
 			static bool Initialize(const Window& window);
 		};
 
-		private:
-		static std::vector<ComAdapter1> m_adapters;
-
 		protected:
 		static ComDevice m_device;
 		static ComDeviceContext m_dContext;
