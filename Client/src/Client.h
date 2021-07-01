@@ -28,5 +28,5 @@ Aen::App* Aen::CreateApp() {
 	//wDesc.LoadSmallIcon(L"");
 	//wDesc.LoadMouseCursor(L"Heart.cur");
 
-	return new Client(wDesc, L"[ENTER CREATIVE NAME HERE]", L"Main_Window");
+	return new Client(wDesc, L"Aenir Engine", L"Main_Window");
 }

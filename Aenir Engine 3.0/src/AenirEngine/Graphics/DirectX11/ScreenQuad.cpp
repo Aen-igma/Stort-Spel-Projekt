@@ -23,8 +23,8 @@ namespace Aen {
 	}
 
 	void ScreenQuad::Draw() {
-		m_vBuffer.SetVBuffer();
-		m_iBuffer.SetBuffer();
+		m_vBuffer.BindVBuffer();
+		m_iBuffer.BindBuffer();
 		m_iBuffer.DrawIndexed();
 	}
 }

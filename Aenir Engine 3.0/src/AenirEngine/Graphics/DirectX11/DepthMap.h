@@ -9,7 +9,7 @@ namespace Aen {
 		DepthMap(const UINT& dimensions);
 		
 		template<class T>
-		void SetSRV(const UINT& slot);
+		void BindSRV(const UINT& slot);
 
 		void SetViewPort();
 		void SetDSView();
@@ -21,32 +21,32 @@ namespace Aen {
 	};
 
 	template<>
-	inline void DepthMap::SetSRV<VShader>(const UINT& slot) {
+	inline void DepthMap::BindSRV<VShader>(const UINT& slot) {
 		m_dContext->VSSetShaderResources(slot, 1, m_srv.GetAddressOf());
 	}
 
 	template<>
-	inline void DepthMap::SetSRV<HShader>(const UINT& slot) {
+	inline void DepthMap::BindSRV<HShader>(const UINT& slot) {
 		m_dContext->HSSetShaderResources(slot, 1, m_srv.GetAddressOf());
 	}
 
 	template<>
-	inline void DepthMap::SetSRV<CShader>(const UINT& slot) {
+	inline void DepthMap::BindSRV<CShader>(const UINT& slot) {
 		m_dContext->CSSetShaderResources(slot, 1, m_srv.GetAddressOf());
 	}
 
 	template<>
-	inline void DepthMap::SetSRV<DShader>(const UINT& slot) {
+	inline void DepthMap::BindSRV<DShader>(const UINT& slot) {
 		m_dContext->DSSetShaderResources(slot, 1, m_srv.GetAddressOf());
 	}
 
 	template<>
-	inline void DepthMap::SetSRV<GShader>(const UINT& slot) {
+	inline void DepthMap::BindSRV<GShader>(const UINT& slot) {
 		m_dContext->GSSetShaderResources(slot, 1, m_srv.GetAddressOf());
 	}
 
 	template<>
-	inline void DepthMap::SetSRV<PShader>(const UINT& slot) {
+	inline void DepthMap::BindSRV<PShader>(const UINT& slot) {
 		m_dContext->PSSetShaderResources(slot, 1, m_srv.GetAddressOf());
 	}
 }

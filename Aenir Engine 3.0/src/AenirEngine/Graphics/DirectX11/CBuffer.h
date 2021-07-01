@@ -13,8 +13,8 @@ namespace Aen {
 			D3D11_BUFFER_DESC bDesc;
 			ZeroMemory(&bDesc, sizeof(D3D11_BUFFER_DESC));
 
-			int mod = sizeof(T) % 16;
-			UINT size = (mod == 0) ? static_cast<UINT>(sizeof(T)) : static_cast<UINT>(sizeof(T) + (16 - mod));
+			int mod = sizeof(m_data) % 16;
+			UINT size = (mod == 0) ? static_cast<UINT>(sizeof(m_data)) : static_cast<UINT>(sizeof(m_data) + (16 - mod));
 
 			bDesc.Usage = D3D11_USAGE_DYNAMIC;
 			bDesc.ByteWidth = size;
@@ -31,12 +31,12 @@ namespace Aen {
 			D3D11_MAPPED_SUBRESOURCE mResource;
 			m_dContext->Map(m_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mResource);
 
-			CopyMemory(mResource.pData, &m_data, sizeof(T));
+			CopyMemory(mResource.pData, &m_data, sizeof(m_data));
 			m_dContext->Unmap(m_buffer.Get(), 0);
 		}
 
 		template<class T1>
-		void SetBuffer(const UINT& slot);
+		void BindBuffer(const UINT& slot);
 
 		private:
 		ComBuffer m_buffer;
@@ -45,43 +45,43 @@ namespace Aen {
 	
 	namespace Concealed1 {
 		template<class T>
-		inline void SB(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s);
+		inline void BB(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s);
 
 		template<>
-		inline void SB<VShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<VShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
 			dc->VSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 
 		template<>
-		inline void SB<HShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<HShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
 			dc->HSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 
 		template<>
-		inline void SB<CShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<CShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
 			dc->CSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 
 		template<>
-		inline void SB<DShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<DShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
 			dc->DSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 
 		template<>
-		inline void SB<GShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<GShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
 			dc->GSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 
 		template<>
-		inline void SB<PShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<PShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
 			dc->PSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 	}
 
 	template<class T>
 	template<class T1>
-	inline void CBuffer<T>::SetBuffer(const UINT& slot) {
-		Concealed1::SB<T1>(m_dContext, m_buffer, slot);
+	inline void CBuffer<T>::BindBuffer(const UINT& slot) {
+		Concealed1::BB<T1>(m_dContext, m_buffer, slot);
 	}
 
 }

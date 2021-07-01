@@ -8,7 +8,7 @@ namespace Aen {
 		IBuffer();
 
 		void Create(DWORD* vId, const UINT& bufferSize);
-		void SetBuffer();
+		void BindBuffer();
 		void DrawIndexed();
 		const UINT GetBufferSize();
 

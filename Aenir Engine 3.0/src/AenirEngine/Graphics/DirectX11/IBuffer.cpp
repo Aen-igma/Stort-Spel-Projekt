@@ -29,7 +29,7 @@ namespace Aen {
             throw;
     }
 
-    void IBuffer::SetBuffer() {
+    void IBuffer::BindBuffer() {
         m_dContext->IASetIndexBuffer(m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
     }
 

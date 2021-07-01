@@ -3,7 +3,7 @@
 
 namespace Aen {
 
-	Sampler::Sampler(const SType& adress)
+	Sampler::Sampler(const SamplerType& adress)
 		:m_sState(NULL) {
 		D3D11_SAMPLER_DESC sDesc;
 		ZeroMemory(&sDesc, sizeof(D3D11_SAMPLER_DESC));

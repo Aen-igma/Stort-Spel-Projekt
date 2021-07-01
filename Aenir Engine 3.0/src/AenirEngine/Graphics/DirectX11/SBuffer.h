@@ -48,7 +48,7 @@ namespace Aen {
 		}
 
 		template<class T1>
-		void SetSRV(const UINT& slot);
+		void BindSRV(const UINT& slot);
 
 		private:
 		ComShaderResourceView m_srv;
@@ -60,43 +60,43 @@ namespace Aen {
 	namespace Concealed1 {
 	
 		template<class T>
-		inline void SSRV(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s);
+		inline void BSRV(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s);
 
 		template<>
-		inline void SSRV<VShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
+		inline void BSRV<VShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
 			dc->VSSetShaderResources(s, 1, srv.GetAddressOf());
 		}
 
 		template<>
-		inline void SSRV<HShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
+		inline void BSRV<HShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
 			dc->HSSetShaderResources(s, 1, srv.GetAddressOf());
 		}
 
 		template<>
-		inline void SSRV<CShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
+		inline void BSRV<CShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
 			dc->CSSetShaderResources(s, 1, srv.GetAddressOf());
 		}
 
 		template<>
-		inline void SSRV<DShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
+		inline void BSRV<DShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
 			dc->DSSetShaderResources(s, 1, srv.GetAddressOf());
 		}
 
 		template<>
-		inline void SSRV<GShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
+		inline void BSRV<GShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
 			dc->GSSetShaderResources(s, 1, srv.GetAddressOf());
 		}
 
 		template<>
-		inline void SSRV<PShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
+		inline void BSRV<PShader>(ID3D11DeviceContext*& dc, ComShaderResourceView& srv, const UINT& s) {
 			dc->PSSetShaderResources(s, 1, srv.GetAddressOf());
 		}
 	}
 	
 	template<class T>
 	template<class T1>
-	inline void SBuffer<T>::SetSRV(const UINT& slot) {
-		Concealed1::SSRV<T1>(m_dContext, m_srv, slot);
+	inline void SBuffer<T>::BindSRV(const UINT& slot) {
+		Concealed1::BSRV<T1>(m_dContext, m_srv, slot);
 	}
 
 }
