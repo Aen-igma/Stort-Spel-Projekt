@@ -63,10 +63,10 @@
     <ClCompile Include="src\PCH\PCH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Material.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Texture.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DBuffer.cpp">
@@ -191,10 +191,10 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Sampler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Material.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Material\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\MaterialHandler.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Material\MaterialHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Renderer.h">
@@ -206,16 +206,22 @@
     <ClInclude Include="src\PCH\PCH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Texture.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Material\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\TextureHandler.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Material\TextureHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\ShaderModel.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Material\MaterialIHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\MeshHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,15 +5,17 @@ namespace Aen {
 
 	class Texture {
 		public:
-		~Texture();
-		Texture();
-		Texture(const std::string& dir);
+		Texture(const std::string& name);
+		Texture(const std::string& name, const std::string& dir);
 
 		void LoadTexture(const std::string& dir);
 
 		private:
+		~Texture();
+
 		ShaderResource m_shaderResource;
-		int m_id;
-		static int m_iDs;
+		std::string m_name;
+
+		friend class TextureHandler;
 	};
 }

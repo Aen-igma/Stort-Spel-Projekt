@@ -116,51 +116,20 @@ namespace Aen {
 		static constexpr DBType type = Bool;
 	};
 
-	struct AEN_DECLSPEC Data {
-		Data() = default;
-		Data(const DBType& type);
-
-		DBType m_type;
-		uint32_t m_offset;
-		uint32_t m_size;
-	};
-
-	class AEN_DECLSPEC DBLayout {
-		public:
-		DBLayout();
-
-		template<DBType type>
-		void Add(const std::string& name);
-
-		private:
-		std::vector<std::pair<std::string, Data>> m_dataMap;
-
-		friend class DBuffer;
-	};
-
-	template<DBType type>
-	inline void DBLayout::Add(const std::string& name) {
-		dataMap.emplace_back(std::pair<std::string, Data>(name, Data(type)));
-	}
-
-
 	class ElRef {
 		public:
 
 		template<class T>
 		operator T& () {
-			if(DBRMap<T>::type == type)
-				return *reinterpret_cast< T*>(m_byte + m_offset);
+			if(DBRMap<T>::type == m_type)
+				return *reinterpret_cast<T*>(m_byte + m_offset);
 
 			throw;
 		}
 
 		template<class T>
 		T& operator= (const T& rhs) {
-			if(DBRMap<T>::type == m_type)
-				return static_cast<T&>(*this) = rhs;
-
-			throw;
+			return static_cast<T&>(*this) = rhs;
 		}
 
 		private:
@@ -174,9 +143,42 @@ namespace Aen {
 		const DBType m_type;
 
 		friend class DBuffer;
+		friend class DBLayout;
 	};
 
-	class AEN_DECLSPEC DBuffer : public GCore {
+	struct Data {
+		using Byte = unsigned char;
+		Data();
+		Data(const DBType& type, const uint32_t& byteSize); // causing memory leak
+
+		DBType m_type;
+		uint32_t m_offset;
+		uint32_t m_size;
+		Byte* m_data;
+	};
+
+	class DBLayout {
+		public:
+		DBLayout();
+
+		template<DBType type>
+		void Add(const std::string& name);
+
+		ElRef operator[] (const std::string& name);
+
+		private:
+		std::vector<std::pair<std::string, Data>> m_dataMap;
+
+		friend class DBuffer;
+	};
+
+	template<DBType type>
+	inline void DBLayout::Add(const std::string& name) {
+		using Byte = unsigned char;
+		m_dataMap.emplace_back(std::pair<std::string, Data>(name, Data(type, DBMap<type>::size)));
+	}
+
+	class DBuffer : public GCore {
 		public:
 		DBuffer();
 		DBuffer(DBLayout& layout);
@@ -190,6 +192,7 @@ namespace Aen {
 		using Byte = unsigned char;
 
 		const uint32_t GetDataSize(const DBType& type);
+		const uint32_t GetDefaultValue(const DBType& type);
 
 		std::vector<Byte> m_data;
 		std::unique_ptr<DBLayout> m_layout;

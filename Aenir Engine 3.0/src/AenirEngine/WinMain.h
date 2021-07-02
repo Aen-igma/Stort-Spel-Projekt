@@ -20,9 +20,11 @@ void RedirectIOToConsole() {
 	freopen_s(&fp, "CONOUT$", "w", stdout);
 }
 
-
+#define _CRTDBG_MAP_ALLOC
+#include<crtdbg.h>
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPInstance, _In_ LPWSTR lpCmdLine, _In_ int cmdShow) {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	RedirectIOToConsole();
 
 	Aen::GameLoop gameLoop;
