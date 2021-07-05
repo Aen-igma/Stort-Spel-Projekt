@@ -170,6 +170,7 @@
     <ClCompile Include="src\AenirEngine\Core\App.cpp" />
     <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.cpp" />
@@ -207,6 +208,8 @@
     <ClInclude Include="src\AenirEngine\Core\GameLoop.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\MeshHandler.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\TranformHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\CBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DepthMap.h" />
