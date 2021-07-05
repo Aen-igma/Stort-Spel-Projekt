@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClCompile Include="src\AenirEngine\Core\App.cpp" />
     <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.cpp" />
@@ -227,6 +228,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Renderer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Material\Texture.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Material\TextureHandler.h" />
+    <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
     <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\stb_image.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />

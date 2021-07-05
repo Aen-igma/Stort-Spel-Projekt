@@ -7,14 +7,12 @@ namespace Aen {
 	class MaterialInstance;
 
 	class MaterialIHandler {
-		public:
-		
+		private:
+
 		static MaterialInstance& GetMaterialInstance(const uint32_t& id) {
 			if(GetMaterialInstances().count(id) > 0)
 				return *GetMaterialInstances().at(id);
 		}
-
-		private:
 
 		static std::unordered_map<uint32_t, MaterialInstance*> GetMaterialInstances() {
 			static std::unordered_map<uint32_t, MaterialInstance*> materialInstance;
