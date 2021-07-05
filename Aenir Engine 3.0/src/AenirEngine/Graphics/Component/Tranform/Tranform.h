@@ -5,6 +5,7 @@ namespace Aen {
 
 	class Translation {
 		public:
+		~Translation();
 		Translation() = delete;
 		Translation(const uint32_t& id);
 
@@ -23,6 +24,7 @@ namespace Aen {
 
 	class Rotation {
 		public:
+		~Rotation();
 		Rotation() = delete;
 		Rotation(const uint32_t& id);
 
@@ -41,6 +43,7 @@ namespace Aen {
 
 	class Scale {
 		public:
+		~Scale();
 		Scale() = delete;
 		Scale(const uint32_t& id);
 

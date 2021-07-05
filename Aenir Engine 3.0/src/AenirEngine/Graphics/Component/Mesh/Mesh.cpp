@@ -18,8 +18,14 @@ namespace Aen {
 		ImportObj(m_vertices, dir);
 	}
 
+	MeshInstance::~MeshInstance() {
+		MeshIHandler::GetMesheInstances().erase(m_id);
+	}
+
 	MeshInstance::MeshInstance(const uint32_t& id, Mesh& mesh)
-		:m_mesh(&mesh), m_id(id) {}
+		:m_mesh(&mesh), m_id(id) {
+		MeshIHandler::GetMesheInstances().emplace(m_id, this);
+	}
 
 	void MeshInstance::SetMesh(Mesh& mesh) {
 		m_mesh = &mesh;

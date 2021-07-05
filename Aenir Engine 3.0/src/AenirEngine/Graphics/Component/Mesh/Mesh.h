@@ -1,5 +1,6 @@
 #pragma once
 #include"MeshHandler.h"
+#include"MeshIHandler.h"
 #include"AenMath.h"
 
 namespace Aen {
@@ -19,11 +20,14 @@ namespace Aen {
 		void Load(const std::string& dir);
 
 		private:
+		~Mesh();
+
 		VBuffer<Vertex> m_vertices;
 	};
 
 	class MeshInstance {
 		public:
+		~MeshInstance();
 		MeshInstance() = delete;
 		MeshInstance(const uint32_t& id, Mesh& mesh);
 

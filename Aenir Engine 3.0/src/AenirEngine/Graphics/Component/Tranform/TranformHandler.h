@@ -2,7 +2,7 @@
 #include"../../Graphics.h"
 #include<unordered_map>
 
-namespace {
+namespace Aen {
 
 	class Translation;
 	class Rotation;
@@ -49,5 +49,8 @@ namespace {
 			return scales;
 		}
 
+		friend class Translation;
+		friend class Rotation;
+		friend class Scale;
 	};
 }
