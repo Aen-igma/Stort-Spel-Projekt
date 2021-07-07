@@ -5,9 +5,7 @@ namespace Aen {
 
 	class Translation {
 		public:
-		~Translation();
-		Translation() = delete;
-		Translation(const uint32_t& id);
+		Translation() = default;
 
 		void SetPos(const Vec3f& pos);
 		void SetPos(const float& x, const float& y, const float& z);
@@ -18,15 +16,16 @@ namespace Aen {
 		const Mat4f GetTranform();
 
 		private:
+		~Translation() = default;
+
 		Vec3f m_pos;
-		uint32_t m_id;
+
+		friend class TranformHandler;
 	};
 
 	class Rotation {
 		public:
-		~Rotation();
-		Rotation() = delete;
-		Rotation(const uint32_t& id);
+		Rotation() = default;
 
 		void SetRot(const Vec3f& rot);
 		void SetRot(const float& p, const float& y, const float& r);
@@ -37,15 +36,16 @@ namespace Aen {
 		const Mat4f GetTranform();
 
 		private:
+		~Rotation() = default;
+
 		Vec3f m_rot;
-		uint32_t m_id;
+
+		friend class TranformHandler;
 	};
 
 	class Scale {
 		public:
-		~Scale();
-		Scale() = delete;
-		Scale(const uint32_t& id);
+		Scale() = default;
 
 		void SetScale(const Vec3f& scale);
 		void SetScale(const float& x, const float& y, const float& z);
@@ -54,7 +54,10 @@ namespace Aen {
 		const Mat4f GetTranform();
 
 		private:
+		~Scale() = default;
+
 		Vec3f m_scale;
-		uint32_t m_id;
+
+		friend class TranformHandler;
 	};
 }

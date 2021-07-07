@@ -33,6 +33,7 @@ namespace Aen {
 			
 		}
 
+		MeshHandler::Destroy();
 		TextureHandler::Destroy();
 		MaterialHandler::Destroy();
 		delete m_app;

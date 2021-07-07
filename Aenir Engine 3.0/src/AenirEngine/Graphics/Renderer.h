@@ -1,2 +1,2 @@
 #pragma once
-#include"Component/Material/Material.h"
+#include"Component/Entity.h"

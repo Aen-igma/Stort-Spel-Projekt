@@ -3,14 +3,8 @@
 
 namespace Aen {
 
-    Camera::~Camera() {
-        CameraHandler::GetCameras().erase(m_id);
-    }
-
-    Camera::Camera(const uint32_t& id)
-        :m_view(Mat4f::identity), m_projection(Mat4f::identity), m_id(id) {
-        CameraHandler::GetCameras().emplace(m_id, this);
-    }
+    Camera::Camera()
+        :m_view(Mat4f::identity), m_projection(Mat4f::identity) {}
 
     void Camera::SetCameraPerspective(const float& fov, const float& aRatio, const float& minZ, const float& maxZ) {
         m_projection = MatPerspective<float>(fov, aRatio, minZ, maxZ);

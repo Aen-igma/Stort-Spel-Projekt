@@ -13,28 +13,31 @@ namespace Aen {
 
 	class Mesh {
 		public:
-		Mesh() = delete;
-		Mesh(const std::string& name);
-		Mesh(const std::string& dir, const std::string& name);
+		Mesh() = default;
+		Mesh(const std::string& dir);
 
 		void Load(const std::string& dir);
 
 		private:
-		~Mesh();
+		~Mesh() = default;
 
 		VBuffer<Vertex> m_vertices;
+
+		friend class MeshHandler;
 	};
 
 	class MeshInstance {
 		public:
-		~MeshInstance();
-		MeshInstance() = delete;
-		MeshInstance(const uint32_t& id, Mesh& mesh);
+		MeshInstance();
+		MeshInstance(Mesh& mesh);
 
 		void SetMesh(Mesh& mesh);
 
 		private:
+		~MeshInstance() = default;
+
 		Mesh* m_mesh;
-		uint32_t m_id;
+
+		friend class MeshIHandler;
 	};
 }

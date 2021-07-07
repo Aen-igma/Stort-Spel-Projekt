@@ -3,29 +3,17 @@
 #include"Importer/ObjImporter.h"
 
 namespace Aen {
-	
-	Mesh::Mesh(const std::string& name)
-		:m_vertices() {
-		MeshHandler::GetMeshes().emplace(name, this);
-	}
 
-	Mesh::Mesh(const std::string& dir, const std::string& name) {
+	Mesh::Mesh(const std::string& dir) {
 		ImportObj(m_vertices, dir);
-		MeshHandler::GetMeshes().emplace(name, this);
 	}
 	
 	void Mesh::Load(const std::string& dir) {
 		ImportObj(m_vertices, dir);
 	}
 
-	MeshInstance::~MeshInstance() {
-		MeshIHandler::GetMesheInstances().erase(m_id);
-	}
-
-	MeshInstance::MeshInstance(const uint32_t& id, Mesh& mesh)
-		:m_mesh(&mesh), m_id(id) {
-		MeshIHandler::GetMesheInstances().emplace(m_id, this);
-	}
+	MeshInstance::MeshInstance(Mesh& mesh)
+		:m_mesh(&mesh) {}
 
 	void MeshInstance::SetMesh(Mesh& mesh) {
 		m_mesh = &mesh;

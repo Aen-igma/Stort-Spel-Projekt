@@ -3,15 +3,6 @@
 
 namespace Aen {
 
-    Translation::~Translation() {
-        TranformHandler::GetTranslations().erase(m_id);
-    }
-    
-    Translation::Translation(const uint32_t& id)
-        :m_pos(Vec3f::zero), m_id(id) {
-        TranformHandler::GetTranslations().emplace(id, this);
-    }
-
     void Translation::SetPos(const Vec3f& pos) {
         m_pos = pos;
     }
@@ -35,17 +26,8 @@ namespace Aen {
     const Mat4f Translation::GetTranform() {
         return MatTranslate(m_pos);
     }
+    
 
-
-
-    Rotation::~Rotation() {
-        TranformHandler::GetRotations().erase(m_id);
-    }
-
-    Rotation::Rotation(const uint32_t& id)
-        :m_rot(Vec3f::zero), m_id(id) {
-        TranformHandler::GetRotations().emplace(id, this);
-    }
 
     void Rotation::SetRot(const Vec3f& rot) {
         m_rot = rot;
@@ -70,17 +52,8 @@ namespace Aen {
     const Mat4f Rotation::GetTranform() {
         return MatRotate(m_rot);
     }
+    
 
-
-
-    Scale::~Scale() {
-        TranformHandler::GetScales().erase(m_id);
-    }
-
-    Scale::Scale(const uint32_t& id)
-        :m_scale(Vec3f::zero), m_id(id) {
-        TranformHandler::GetScales().emplace(id, this);
-    }
 
     void Scale::SetScale(const Vec3f& scale) {
         m_scale = scale;

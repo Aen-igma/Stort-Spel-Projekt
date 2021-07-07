@@ -5,9 +5,7 @@ namespace Aen {
 
 	class Camera {
 		public:
-		~Camera();
-		Camera() = delete;
-		Camera(const uint32_t& id);
+		Camera();
 
 		void SetCameraPerspective(const float& fov, const float& aRatio, const float& minZ, const float& maxZ);
 		void SetCameraOrthographic(const float& width, const float& height, const float& minZ, const float& maxZ);
@@ -17,8 +15,11 @@ namespace Aen {
 		const Mat4f& GetProjecton() const;
 
 		private:
+		~Camera() = default;
+
 		Mat4f m_view;
 		Mat4f m_projection;
-		uint32_t m_id;
+
+		friend class CameraHandler;
 	};
 }

@@ -21,7 +21,6 @@ namespace Aen {
 
 	class MaterialInstance {
 		public:
-		~MaterialInstance();
 		MaterialInstance() = delete;
 		MaterialInstance(const uint32_t& id, Material& material);
 
@@ -30,6 +29,7 @@ namespace Aen {
 		void SetEmissionMap(Texture& texture);
 
 		private:
+		~MaterialInstance();
 		std::vector<DBuffer> m_dBuffers;
 		Material* m_material;
 		Texture* m_textures[3];

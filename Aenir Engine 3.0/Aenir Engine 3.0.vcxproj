@@ -170,6 +170,7 @@
     <ClCompile Include="src\AenirEngine\Core\App.cpp" />
     <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Camera\Camera.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Entity.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="src\AenirEngine\Core\GameLoop.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\Camera.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\CameraHandler.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Entity.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\MeshHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\MeshIHandler.h" />
