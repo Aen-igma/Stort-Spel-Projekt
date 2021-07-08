@@ -5,34 +5,47 @@
 
 namespace Aen {
 
+	struct BLayout {
+		DBLayout m_dbLayout;
+		UINT m_slot;
+	};
+
+	struct SamplerData {
+		Sampler m_sampler;
+		UINT m_slot;
+	};
+
 	struct Material {
-		Material() = delete;
-		Material(const std::string& name);
+		Material() = default;
 
 		PShader m_pShader;
-		std::vector<DBLayout> m_dbLayouts;
-		std::vector<Sampler> m_samplers;
+		VShader m_vShader;
+		std::vector<BLayout> m_bLayouts;
+		std::vector<SamplerData> m_samplerDatas;
+
 		private:
-		~Material();
-		std::string m_name;
+		~Material() = default;
 
 		friend class MaterialHandler;
 	};
 
 	class MaterialInstance {
 		public:
-		MaterialInstance() = delete;
-		MaterialInstance(const uint32_t& id, Material& material);
+		MaterialInstance();
+		MaterialInstance(Material& material);
 
+		void Create(Material& material);
 		void SetDiffuseMap(Texture& texture);
 		void SetNormalMap(Texture& texture);
 		void SetEmissionMap(Texture& texture);
 
 		private:
 		~MaterialInstance();
+
 		std::vector<DBuffer> m_dBuffers;
 		Material* m_material;
 		Texture* m_textures[3];
-		uint32_t m_id;
+
+		friend class MaterialIHandler;
 	};
 }

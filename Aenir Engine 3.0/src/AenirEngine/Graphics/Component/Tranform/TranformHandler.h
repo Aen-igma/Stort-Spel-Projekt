@@ -8,7 +8,7 @@ namespace Aen {
 	class Rotation;
 	class Scale;
 
-	class TranformHandler {
+	class TransformHandler {
 		private:
 
 		static const bool TranslationExist(const uint32_t& id) {

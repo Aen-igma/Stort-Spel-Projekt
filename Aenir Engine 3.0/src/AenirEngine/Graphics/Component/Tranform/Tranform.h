@@ -20,7 +20,7 @@ namespace Aen {
 
 		Vec3f m_pos;
 
-		friend class TranformHandler;
+		friend class TransformHandler;
 	};
 
 	class Rotation {
@@ -40,7 +40,7 @@ namespace Aen {
 
 		Vec3f m_rot;
 
-		friend class TranformHandler;
+		friend class TransformHandler;
 	};
 
 	class Scale {
@@ -58,6 +58,6 @@ namespace Aen {
 
 		Vec3f m_scale;
 
-		friend class TranformHandler;
+		friend class TransformHandler;
 	};
 }

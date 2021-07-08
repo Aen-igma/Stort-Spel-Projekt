@@ -17,35 +17,52 @@ namespace Aen {
 		template<class T>
 		T& GetComponent();
 
+		void SetParent(Entity& parent);
+		void RemoveParent();
+
+		void SetPos(const Vec3f& pos);
+		void SetPos(const float& x, const float& y, const float& z);
+		void Move(const Vec3f& pos);
+		void Move(const float& x, const float& y, const float& z);
+
+		void SetRot(const Vec3f& rot);
+		void SetRot(const float& p, const float& y, const float& r);
+		void Rotate(const Vec3f& rot);
+		void Rotate(const float& p, const float& y, const float& r);
+
+		void SetScale(const Vec3f& scale);
+		void SetScale(const float& x, const float& y, const float& z);
+
+		const Vec3f& GetPos();
+		const Vec3f& GetRot();
+		const Vec3f& GetScale();
+
 		private:
 		static uint32_t m_iDs;
+
 		uint32_t m_id;
+		uint32_t m_parentId;
+		bool m_hasParent;
 	};
 
 	// --------------------- AddComponent ---------------------------
 
 	template<>
 	inline void Entity::AddComponent<Translation>() {
-		if(!TranformHandler::TranslationExist(m_id))
-			TranformHandler::CreateTranslation(m_id);
-
-		throw;
+		if(!TransformHandler::TranslationExist(m_id))
+			TransformHandler::CreateTranslation(m_id);
 	}
 
 	template<>
 	inline void Entity::AddComponent<Rotation>() {
-		if(!TranformHandler::RotationExist(m_id))
-			TranformHandler::CreateRotation(m_id);
-
-		throw;
+		if(!TransformHandler::RotationExist(m_id))
+			TransformHandler::CreateRotation(m_id);
 	}
 
 	template<>
 	inline void Entity::AddComponent<Scale>() {
-		if(!TranformHandler::ScaleExist(m_id))
-			TranformHandler::CreateScale(m_id);
-
-		throw;
+		if(!TransformHandler::ScaleExist(m_id))
+			TransformHandler::CreateScale(m_id);
 	}
 
 	template<>
@@ -55,8 +72,6 @@ namespace Aen {
 
 		AddComponent<Translation>();
 		AddComponent<Rotation>();
-
-		throw;
 	}
 
 	template<>
@@ -67,7 +82,44 @@ namespace Aen {
 		AddComponent<Translation>();
 		AddComponent<Rotation>();
 		AddComponent<Scale>();
+	}
 
-		throw;
+	template<>
+	inline void Entity::AddComponent<MaterialInstance>() {
+		if(!MaterialIHandler::MaterialInstanceExist(m_id))
+			MaterialIHandler::CreateMaterialInstance(m_id);
+	}
+
+
+	// --------------- GetComponent -----------------
+
+	template<>
+	inline Translation& Entity::GetComponent() {
+		return TransformHandler::GetTranslation(m_id);
+	}
+
+	template<>
+	inline Rotation& Entity::GetComponent() {
+		return TransformHandler::GetRotation(m_id);
+	}
+
+	template<>
+	inline Scale& Entity::GetComponent() {
+		return TransformHandler::GetScale(m_id);
+	}
+
+	template<>
+	inline Camera& Entity::GetComponent() {
+		return CameraHandler::GetCamera(m_id);
+	}
+
+	template<>
+	inline MeshInstance& Entity::GetComponent() {
+		return MeshIHandler::GetMeshInstance(m_id);
+	}
+
+	template<>
+	inline MaterialInstance& Entity::GetComponent() {
+		return MaterialIHandler::GetMaterialInstance(m_id);
 	}
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include"AenMath.h"
-#include"DX11Core.h"
+#include"Shader.h"
 
 namespace Aen {
 	
@@ -188,15 +188,47 @@ namespace Aen {
 		void Create(DBLayout& layout);
 		void UpdateBuffer();
 
+		template<class T>
+		void BindBuffer(const UINT& slot);
+
 		private:
 		using Byte = unsigned char;
 
 		const uint32_t GetDataSize(const DBType& type);
-		const uint32_t GetDefaultValue(const DBType& type);
 
 		std::vector<Byte> m_data;
 		std::unique_ptr<DBLayout> m_layout;
 		uint32_t m_byteSize;
 		ComBuffer m_buffer;
 	};
+
+	template<>
+	inline void DBuffer::BindBuffer<VShader>(const UINT& slot) {
+		m_dContext->VSSetConstantBuffers(slot, 1, m_buffer.GetAddressOf());
+	}
+
+	template<>
+	inline void DBuffer::BindBuffer<HShader>(const UINT& slot) {
+		m_dContext->HSSetConstantBuffers(slot, 1, m_buffer.GetAddressOf());
+	}
+
+	template<>
+	inline void DBuffer::BindBuffer<CShader>(const UINT& slot) {
+		m_dContext->CSSetConstantBuffers(slot, 1, m_buffer.GetAddressOf());
+	}
+
+	template<>
+	inline void DBuffer::BindBuffer<DShader>(const UINT& slot) {
+		m_dContext->DSSetConstantBuffers(slot, 1, m_buffer.GetAddressOf());
+	}
+
+	template<>
+	inline void DBuffer::BindBuffer<GShader>(const UINT& slot) {
+		m_dContext->GSSetConstantBuffers(slot, 1, m_buffer.GetAddressOf());
+	}
+
+	template<>
+	inline void DBuffer::BindBuffer<PShader>(const UINT& slot) {
+		m_dContext->PSSetConstantBuffers(slot, 1, m_buffer.GetAddressOf());
+	}
 }
