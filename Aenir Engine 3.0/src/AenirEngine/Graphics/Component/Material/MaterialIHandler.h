@@ -1,10 +1,8 @@
 #pragma once
-#include"..\..\Graphics.h"
+#include"Material.h"
 #include<unordered_map>
 
 namespace Aen {
-
-	class MaterialInstance;
 
 	class MaterialIHandler {
 		private:

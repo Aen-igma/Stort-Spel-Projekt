@@ -10,10 +10,13 @@ namespace Aen {
 		CameraHandler::RemoveCamera(m_id);
 		MeshIHandler::RemoveMeshInstance(m_id);
 		MaterialIHandler::RemoveMaterial(m_id);
+
+		EntityHandler::RemoveEntity(m_id);
 	}
 
 	Entity::Entity()
 		:m_id(m_iDs), m_parentId(-1), m_hasParent(false) {
+		EntityHandler::GetEntities().emplace(m_id, this);
 		m_iDs++;
 	}
 

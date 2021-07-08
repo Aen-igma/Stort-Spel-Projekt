@@ -1,12 +1,8 @@
 #pragma once
-#include"../../Graphics.h"
+#include"Tranform.h"
 #include<unordered_map>
 
 namespace Aen {
-
-	class Translation;
-	class Rotation;
-	class Scale;
 
 	class TransformHandler {
 		private:

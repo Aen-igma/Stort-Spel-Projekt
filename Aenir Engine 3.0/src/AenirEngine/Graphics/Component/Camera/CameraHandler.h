@@ -1,10 +1,8 @@
 #pragma once
-#include"../../Graphics.h"
+#include"Camera.h"
 #include<unordered_map>
 
 namespace Aen {
-
-	class Camera;
 
 	class CameraHandler {
 		private:

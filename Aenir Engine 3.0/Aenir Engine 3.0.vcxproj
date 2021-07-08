@@ -211,6 +211,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\Camera.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\CameraHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Entity.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\EntityHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\MeshHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\MeshIHandler.h" />

@@ -257,5 +257,8 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\EntityHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

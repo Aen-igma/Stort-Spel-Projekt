@@ -1,10 +1,8 @@
 #pragma once
-#include"..\..\Graphics.h"
+#include"Mesh.h"
 #include<unordered_map>
 
 namespace Aen {
-
-	class Mesh;
 
 	class MeshHandler {
 		public:

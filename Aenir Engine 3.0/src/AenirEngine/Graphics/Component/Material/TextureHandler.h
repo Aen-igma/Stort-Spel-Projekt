@@ -1,13 +1,23 @@
 #pragma once
-#include"..\..\Graphics.h"
+#include"Texture.h"
 #include<unordered_map>
 
 namespace Aen {
 
-	class Texture;
-
 	class TextureHandler {
 		public:
+
+		static void CreateTexture(const std::string& name) {
+			GetTextures().emplace(name, AEN_NEW Texture());
+		}
+
+		static void RemoveTexture(const std::string& name) {
+			if(GetTextures().count(name) > 0) {
+				delete GetTextures().at(name);
+				GetTextures().at(name) = nullptr;
+				GetTextures().erase(name);
+			}
+		}
 
 		static Texture& GetMaterial(const std::string& name) {
 			if(GetTextures().count(name) > 0)

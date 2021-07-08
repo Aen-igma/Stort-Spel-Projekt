@@ -1,6 +1,5 @@
 #pragma once
-#include"MaterialIHandler.h"
-#include"MaterialHandler.h"
+#include"..\..\Graphics.h"
 #include"Texture.h"
 
 namespace Aen {

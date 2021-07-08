@@ -1,8 +1,13 @@
 #pragma once
-#include"Tranform/Tranform.h"
-#include"Material/Material.h"
-#include"Camera/Camera.h"
-#include"Mesh/Mesh.h"
+#include"Material/MaterialIHandler.h"
+#include"Material/MaterialHandler.h"
+#include"Material/TextureHandler.h"
+#include"Tranform/TranformHandler.h"
+#include"Camera/CameraHandler.h"
+#include"Mesh/MeshIHandler.h"
+#include"Mesh/MeshHandler.h"
+
+#include"EntityHandler.h"
 
 namespace Aen {
 
