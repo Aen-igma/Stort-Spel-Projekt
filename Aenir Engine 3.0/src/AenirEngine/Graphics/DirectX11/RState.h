@@ -11,6 +11,8 @@ namespace Aen {
 
 		void SetRState();
 
+		friend class RenderSystem;
+
 		private:
 		ComRasterizerState m_rState;
 	};

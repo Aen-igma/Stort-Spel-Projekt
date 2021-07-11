@@ -8,6 +8,7 @@ namespace Aen {
 		DepthStencil(const Window& window);
 
 		friend class BBuffer;
+		friend class RenderSystem;
 
 		private:
 		ComDepthStencilView m_dsView;

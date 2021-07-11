@@ -14,6 +14,8 @@ namespace Aen {
 		void SetViewPort();
 		void SetDSView();
 
+		friend class RenderSystem;
+
 		private:
 		ComDepthStencilView m_dsView;
 		ComShaderResourceView m_srv;

@@ -177,6 +177,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DX11Core.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\GBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\IBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ILayout.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RState.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DX11Core.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DX11Type.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\GBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\IBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ILayout.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RState.h" />
@@ -235,7 +237,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Material\MaterialHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Material\MaterialIHandler.h" />
-    <ClInclude Include="src\AenirEngine\Graphics\Renderer.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Material\Texture.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Material\TextureHandler.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />

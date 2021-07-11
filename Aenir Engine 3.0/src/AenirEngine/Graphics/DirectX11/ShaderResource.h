@@ -11,6 +11,8 @@ namespace Aen {
 
 		template<class T>
 		void BindSRV(const UINT& slot);
+		
+		friend class RenderSystem;
 
 		private:
 		ComShaderResourceView m_srv;

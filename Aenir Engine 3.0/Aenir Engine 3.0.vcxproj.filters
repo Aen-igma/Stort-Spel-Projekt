@@ -84,6 +84,9 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\GBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -209,7 +212,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Material\MaterialHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Renderer.h">
+    <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\AenGraphics.h">
@@ -258,6 +261,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\EntityHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\GBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,6 +8,7 @@
 #include"DirectX11/VBuffer.h"
 #include"DirectX11/IBuffer.h"
 #include"DirectX11/SBuffer.h"
+#include"DirectX11/GBuffer.h"
 #include"DirectX11/DepthMap.h"
 #include"DirectX11/DepthStencil.h"
 #include"DirectX11/ILayout.h"
