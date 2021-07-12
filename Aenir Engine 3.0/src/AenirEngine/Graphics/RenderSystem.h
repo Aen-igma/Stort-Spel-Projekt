@@ -84,6 +84,9 @@ namespace Aen {
         template<class T>
         static void UnBindShaderResource(const UINT& startSlot, const UINT& count);
 
+        template<class T>
+        static void UnBundShader();
+
         static void BindRenderTargetView(BBuffer& backBuffer, DepthStencil& stencil) {
             m_dContext->OMSetRenderTargets(1, backBuffer.m_rtv.GetAddressOf(), stencil.m_dsView.Get());
         }
@@ -101,6 +104,12 @@ namespace Aen {
 
         template<class T>
         static void BindShaderResourceView(const UINT& slot, DepthMap& gBuffer);
+
+        template<class T>
+        static void BindSamplers(const UINT& slot, Sampler& sampler);
+
+        template<class T>
+        static void BindShader(T& shader);
 
         static void ClearRenderTargetView(BBuffer& backBuffer, const Color& color) {
             FLOAT fColor[4];
@@ -134,8 +143,9 @@ namespace Aen {
             m_dContext->RSSetState(rState.m_rState.Get());
         }
 
-		private:
-
+        static void Present() {
+            m_sChain->Present(0, NULL);
+        }
 	};
 
     // ---------------------------- UnBindShaderResource ---------------------------------
@@ -153,6 +163,7 @@ namespace Aen {
     }
 
     DEF_SHADER
+    #undef X
 
     #undef VS
     #undef HS
@@ -160,7 +171,6 @@ namespace Aen {
     #undef DS
     #undef GS
     #undef PS
-    #undef X
 
     // --------------------------- BindShaderResourceView for GBuffer ------------------------------
 
@@ -204,4 +214,58 @@ namespace Aen {
     #undef DS
     #undef GS
     #undef PS
+    
+    // ------------------------------------- BindSamplers ------------------------------
+
+    #define VS(slot, count, sampler) VSSetSamplers(slot, count, sampler)
+    #define HS(slot, count, sampler) HSSetSamplers(slot, count, sampler)
+    #define CS(slot, count, sampler) CSSetSamplers(slot, count, sampler)
+    #define DS(slot, count, sampler) DSSetSamplers(slot, count, sampler)
+    #define GS(slot, count, sampler) GSSetSamplers(slot, count, sampler)
+    #define PS(slot, count, sampler) PSSetSamplers(slot, count, sampler)
+
+    #define X(sName, lName) template<> inline void RenderSystem::BindSamplers<lName>(const UINT& slot, Sampler& sampler) {\
+        m_dContext->sName(slot, 1, sampler.m_sState.GetAddressOf());\
+    }
+
+    DEF_SHADER
+    #undef X
+
+    #undef VS
+    #undef HS
+    #undef CS
+    #undef DS
+    #undef GS
+    #undef PS
+
+    // ------------------------------------- BindShader ------------------------------
+
+    #define VS(shader) VSSetShader(shader, NULL, 0)
+    #define HS(shader) HSSetShader(shader, NULL, 0)
+    #define CS(shader) CSSetShader(shader, NULL, 0)
+    #define DS(shader) DSSetShader(shader, NULL, 0)
+    #define GS(shader) GSSetShader(shader, NULL, 0)
+    #define PS(shader) PSSetShader(shader, NULL, 0)
+
+    #define X(sName, lName) template<> inline void RenderSystem::BindShader<lName>(lName& shader) {\
+        m_dContext->sName(shader.m_shader.Get());\
+    }
+
+    DEF_SHADER
+    #undef X
+
+    #define X(sName, lName) template<> inline void RenderSystem::UnBundShader<lName>() {\
+        m_dContext->sName(NULL);\
+    }
+
+    DEF_SHADER
+     #undef X
+
+    #undef VS
+    #undef HS
+    #undef CS
+    #undef DS
+    #undef GS
+    #undef PS
+        
 }

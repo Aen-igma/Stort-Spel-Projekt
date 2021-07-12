@@ -19,6 +19,8 @@ namespace Aen {
 		template<class T>
 		void BindSampler(const UINT& slot);
 
+		friend class RenderSystem;
+
 		private:
 		ComSamplerState m_sState;
 	};
