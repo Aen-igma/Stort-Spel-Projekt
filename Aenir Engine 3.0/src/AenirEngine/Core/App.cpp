@@ -3,6 +3,10 @@
 
 namespace Aen {
 
+	App::~App() {
+
+	}
+
 	App::App(const WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
 		:window(desc, windowName, className) {}
 

@@ -5,6 +5,10 @@
 
 namespace Aen {
 
+    ShaderResource::~ShaderResource() {
+        m_srv.Reset();
+    }
+
     ShaderResource::ShaderResource()
         :m_srv(NULL) {}
 

@@ -10,7 +10,7 @@ namespace Aen {
 		Vec2f uv;
 	};
 
-	class Mesh {
+	class AEN_DECLSPEC Mesh {
 		public:
 		Mesh() = default;
 		Mesh(const std::string& dir);
@@ -23,20 +23,22 @@ namespace Aen {
 		VBuffer<Vertex> m_vertices;
 
 		friend class MeshHandler;
+		friend class Renderer;
 	};
 
-	class MeshInstance {
+	class AEN_DECLSPEC MeshInstance {
 		public:
-		MeshInstance();
-		MeshInstance(Mesh& mesh);
+		MeshInstance() = default;
+		MeshInstance(Mesh*& mesh);
 
-		void SetMesh(Mesh& mesh);
+		void SetMesh(Mesh*& mesh);
 
 		private:
-		~MeshInstance() = default;
+		~MeshInstance();
 
 		Mesh* m_mesh;
 
 		friend class MeshIHandler;
+		friend class Renderer;
 	};
 }

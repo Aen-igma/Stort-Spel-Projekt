@@ -45,7 +45,7 @@ namespace Aen {
 
 	class Scale {
 		public:
-		Scale() = default;
+		Scale();
 
 		void SetScale(const Vec3f& scale);
 		void SetScale(const float& x, const float& y, const float& z);

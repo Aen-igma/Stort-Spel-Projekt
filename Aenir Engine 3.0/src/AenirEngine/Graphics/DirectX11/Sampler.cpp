@@ -2,6 +2,10 @@
 #include "Sampler.h"
 
 namespace Aen {
+	
+	Sampler::~Sampler() {
+		m_sState.Reset();
+	}
 
 	Sampler::Sampler(const SamplerType& adress)
 		:m_sState(NULL) {

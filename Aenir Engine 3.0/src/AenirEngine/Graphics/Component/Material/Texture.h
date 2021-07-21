@@ -3,7 +3,7 @@
 
 namespace Aen {
 
-	class Texture {
+	class AEN_DECLSPEC Texture {
 		public:
 		Texture() = default;
 		Texture(const std::string& dir);
@@ -16,5 +16,6 @@ namespace Aen {
 		ShaderResource m_shaderResource;
 
 		friend class TextureHandler;
+		friend class Renderer;
 	};
 }

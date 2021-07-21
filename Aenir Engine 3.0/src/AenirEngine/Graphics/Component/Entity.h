@@ -1,6 +1,7 @@
 #pragma once
 #include"Material/MaterialIHandler.h"
 #include"Material/MaterialHandler.h"
+#include"Material/ShaderMHandler.h"
 #include"Material/TextureHandler.h"
 #include"Tranform/TranformHandler.h"
 #include"Camera/CameraHandler.h"
@@ -11,7 +12,7 @@
 
 namespace Aen {
 
-	class Entity {
+	class AEN_DECLSPEC Entity {
 		public:
 		~Entity();
 		Entity();

@@ -12,6 +12,7 @@ namespace Aen {
 	class ScreenQuad {
 		public:
 
+		~ScreenQuad() = default;
 		ScreenQuad();
 
 		void Draw();

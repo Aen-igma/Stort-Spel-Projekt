@@ -3,6 +3,10 @@
 
 namespace Aen {
 
+    IBuffer::~IBuffer() {
+        m_buffer.Reset();
+    }
+
     IBuffer::IBuffer()
         :m_buffer(NULL), m_bufferSize(0) {}
 

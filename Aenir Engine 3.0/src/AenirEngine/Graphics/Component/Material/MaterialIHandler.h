@@ -4,38 +4,38 @@
 
 namespace Aen {
 
-	class MaterialIHandler {
+	class AEN_DECLSPEC MaterialIHandler {
 		private:
 
+		MaterialIHandler();
+
 		static const bool MaterialInstanceExist(const uint32_t& id) {
-			return GetMaterialInstances().count(id) > 0;
+			return m_materialInstance.count(id) > 0;
 		}
 
 		static void CreateMaterialInstance(const uint32_t& id) {
-			GetMaterialInstances().emplace(id, AEN_NEW MaterialInstance());
+			m_materialInstance.emplace(id, AEN_NEW MaterialInstance());
 		}
 
 		static void RemoveMaterial(const uint32_t& id) {
-			if(GetMaterialInstances().count(id) > 0) {
-				delete GetMaterialInstances().at(id);
-				GetMaterialInstances().at(id) = nullptr;
-				GetMaterialInstances().erase(id);
+			if(m_materialInstance.count(id) > 0) {
+				delete m_materialInstance.at(id);
+				m_materialInstance.at(id) = nullptr;
+				m_materialInstance.erase(id);
 			}
 		}
 
 		static MaterialInstance& GetMaterialInstance(const uint32_t& id) {
-			if(GetMaterialInstances().count(id) > 0)
-				return *GetMaterialInstances().at(id);
+			if(m_materialInstance.count(id) > 0)
+				return *m_materialInstance.at(id);
 
 			throw;
 		}
 
-		static std::unordered_map<uint32_t, MaterialInstance*> GetMaterialInstances() {
-			static std::unordered_map<uint32_t, MaterialInstance*> materialInstance;
-			return materialInstance;
-		}
+		static std::unordered_map<uint32_t, MaterialInstance*> m_materialInstance;
 
 		friend class MaterialInstance;
 		friend class Entity;
+		friend class Renderer;
 	};
 }

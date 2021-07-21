@@ -87,6 +87,39 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\GBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\Core\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Core\GlobalSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Camera\CameraHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\MaterialIHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\MaterialHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\ShaderMHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\TextureHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\MeshHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\MeshIHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\TransformHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\EntityHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -266,5 +299,18 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\GBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\Core\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Material\ShaderMHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Core\GlobalSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShaderVS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShaderPS.hlsl" />
   </ItemGroup>
 </Project>

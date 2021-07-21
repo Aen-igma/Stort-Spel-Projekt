@@ -1,41 +1,74 @@
-#include "PCH.h"
-#include "Material.h"
+#include"PCH.h"
+#include"Material.h"
+#include"Core/GlobalSettings.h"
 
 namespace Aen {
+
+    Material::Material(const bool& useDefaultShader) :m_pShader(nullptr), m_dBuffers(0),
+        m_textures{nullptr, nullptr, nullptr, nullptr} {
+        
+        if(useDefaultShader)
+            CreateDefault();
+    }
     
-    MaterialInstance::~MaterialInstance() {
-        for(int i = 0; i < 3; i++)
-            m_textures[i] = nullptr;
+    Material::Material(ShaderModel& shaderModel)
+        :m_pShader(&shaderModel), m_dBuffers(shaderModel.m_dbLayouts.size()), 
+        m_textures{nullptr, nullptr, nullptr, nullptr} {
+        
+        for(uint32_t i = 0; i < m_dBuffers.size(); i++)
+            m_dBuffers[i] = AEN_NEW DBuffer(shaderModel.m_dbLayouts[i].second);
     }
 
-    MaterialInstance::MaterialInstance()
-        :m_dBuffers(), m_material(nullptr), m_textures{nullptr, nullptr, nullptr} {}
-
-    MaterialInstance::MaterialInstance(Material& material)
-        :m_dBuffers(material.m_bLayouts.size()), m_material(&material), m_textures{nullptr, nullptr, nullptr} {
+    void Material::Create(ShaderModel& shaderModel) {
+        m_pShader = &shaderModel;
+        m_dBuffers.resize(shaderModel.m_dbLayouts.size());
 
         for(uint32_t i = 0; i < m_dBuffers.size(); i++)
-            m_dBuffers[i].Create(material.m_bLayouts[i].m_dbLayout);
+            m_dBuffers[i] = AEN_NEW DBuffer(shaderModel.m_dbLayouts[i].second);
     }
 
-    void MaterialInstance::Create(Material& material) {
-
-        m_dBuffers.resize(material.m_bLayouts.size());
-        m_material = &material;
+    void Material::CreateDefault() {
+        m_pShader = GlobalSettings::GetDefaultShader();
+        m_dBuffers.resize(m_pShader->m_dbLayouts.size());
 
         for(uint32_t i = 0; i < m_dBuffers.size(); i++)
-            m_dBuffers[i].Create(material.m_bLayouts[i].m_dbLayout);
+            m_dBuffers[i] = AEN_NEW DBuffer(m_pShader->m_dbLayouts[i].second);
     }
 
-    void MaterialInstance::SetDiffuseMap(Texture& texture) {
+    void Material::SetDiffuseMap(Texture& texture) {
         m_textures[0] = &texture;
     }
 
-    void MaterialInstance::SetNormalMap(Texture& texture) {
+    void Material::SetNormalMap(Texture& texture) {
         m_textures[1] = &texture;
     }
 
-    void MaterialInstance::SetEmissionMap(Texture& texture) {
+    void Material::SetEmissionMap(Texture& texture) {
         m_textures[2] = &texture;
     }
+
+    void Material::SetOpacityMap(Texture& texture) {
+        m_textures[3] = &texture;
+    }
+
+    Material::~Material() {
+        for(auto& i : m_dBuffers)
+            if(i) {
+                delete i;
+                i = nullptr;
+            }
+    }
+
+
+    MaterialInstance::~MaterialInstance() {
+        m_pMaterial = nullptr;
+    }
+
+    MaterialInstance::MaterialInstance(Material*& material)
+        :m_pMaterial(material) {}
+
+    void MaterialInstance::SetMaterial(Material*& material) {
+        m_pMaterial = material;
+    }
+
 }

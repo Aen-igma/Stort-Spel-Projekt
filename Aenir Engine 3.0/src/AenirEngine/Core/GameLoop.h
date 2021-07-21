@@ -23,5 +23,7 @@ namespace Aen {
 		TimePoint m_end;
 		DurationLD m_frameTime;
 		DurationLD m_deltaTime;
+
+		Renderer* m_renderer;
 	};
 }

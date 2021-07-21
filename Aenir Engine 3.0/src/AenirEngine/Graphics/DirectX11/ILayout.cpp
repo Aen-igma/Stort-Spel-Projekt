@@ -2,7 +2,11 @@
 #include "ILayout.h"
 
 namespace Aen {
-    
+
+    ILayout::~ILayout() {
+        m_layout.Reset();
+    }
+
     ILayout::ILayout()
         :m_layout(NULL), m_inputDesc() {}
     
@@ -15,9 +19,5 @@ namespace Aen {
             shader.m_byteCode->GetBufferSize(), 
             &m_layout)))
             throw;
-    }
-
-    void ILayout::SetILayout() {
-        m_dContext->IASetInputLayout(m_layout.Get());
     }
 }

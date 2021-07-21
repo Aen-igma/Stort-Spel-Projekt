@@ -4,45 +4,46 @@
 
 namespace Aen {
 
-	class MaterialHandler {
+	class AEN_DECLSPEC MaterialHandler {
 		public:
 
 		static const bool MaterialExist(const std::string& name) {
-			return GetMaterials().count(name) > 0;
+			return m_materials.count(name) > 0;
 		}
 
-		static void CreateMaterial(const std::string& name) {
-			GetMaterials().emplace(name, AEN_NEW Material());
+		static Material* CreateMaterial(const std::string& name) {
+			m_materials.emplace(name, AEN_NEW Material());
+			return m_materials.at(name);
 		}
 
 		static void RemoveMaterial(const std::string& name) {
-			if(GetMaterials().count(name) > 0) {
-				delete GetMaterials().at(name);
-				GetMaterials().at(name) = nullptr;
-				GetMaterials().erase(name);
+			if(m_materials.count(name) > 0) {
+				delete m_materials.at(name);
+				m_materials.at(name) = nullptr;
+				m_materials.erase(name);
 			}
 		}
 
 		static Material& GetMaterial(const std::string& name) {
-			if(GetMaterials().count(name) > 0)
-				return *GetMaterials().at(name);
+			if(m_materials.count(name) > 0)
+				return *m_materials.at(name);
 
 			throw;
 		}
 
 		private:
-		static std::unordered_map<std::string, Material*> GetMaterials() {
-			static std::unordered_map<std::string, Material*> materials;
-			return materials;
-		}
+
+		MaterialHandler();
 
 		static void Destroy() {
-			for(auto& i : GetMaterials())
+			for(auto& i : m_materials)
 				if(i.second) {
 					delete i.second;
 					i.second = nullptr;
 				}
 		}
+		
+		static std::unordered_map<std::string, Material*> m_materials;
 
 		friend class Material;
 		friend class GameLoop;

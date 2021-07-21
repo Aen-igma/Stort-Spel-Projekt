@@ -55,6 +55,9 @@ namespace Aen {
     
 
 
+    Scale::Scale()
+        :m_scale(Vec3f::one) {}
+
     void Scale::SetScale(const Vec3f& scale) {
         m_scale = scale;
     }

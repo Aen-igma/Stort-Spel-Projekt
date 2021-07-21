@@ -13,9 +13,9 @@ namespace Aen {
 		std::vector<Vec3f> normal;
 		std::vector<Vec2f> uv;
 
-		std::vector<DWORD> vIndex;
-		std::vector<DWORD> nIndex;
-		std::vector<DWORD> uIndex;
+		std::vector<uint32_t> vIndex;
+		std::vector<uint32_t> nIndex;
+		std::vector<uint32_t> uIndex;
 
 		std::stringstream ss;
 		std::ifstream file(dir);
@@ -27,7 +27,7 @@ namespace Aen {
 		std::string pf;
 		Vec3f v3Temp;
 		Vec2f v2Temp;
-		DWORD iTemp = 0;
+		uint32_t iTemp = 0;
 		while(std::getline(file, line)) {
 			ss.clear();
 			ss.str(line);
@@ -35,25 +35,25 @@ namespace Aen {
 
 			if(pf == "v") {
 				ss >> v3Temp.x >> v3Temp.y >> v3Temp.z;
-				vertex.push_back(v3Temp);
+				vertex.emplace_back(v3Temp);
 			} else if(pf == "vt") {
 				ss >> v2Temp.x >> v2Temp.y;
-				uv.push_back(v2Temp);
+				uv.emplace_back(v2Temp);
 			} else if(pf == "vn") {
 				ss >> v3Temp.x >> v3Temp.y >> v3Temp.z;
-				normal.push_back(v3Temp);
+				normal.emplace_back(v3Temp);
 			} else if(pf == "f") {
 				uint32_t count = 0;
 				while(ss >> iTemp) {
 					switch(count) {
 						case 0:
-						vIndex.push_back(iTemp - 1);
+						vIndex.emplace_back(iTemp - 1);
 						break;
 						case 1:
-						uIndex.push_back(iTemp - 1);
+						uIndex.emplace_back(iTemp - 1);
 						break;
 						case 2:
-						nIndex.push_back(iTemp - 1);
+						nIndex.emplace_back(iTemp - 1);
 						break;
 					}
 
@@ -71,7 +71,7 @@ namespace Aen {
 			}
 		}
 
-		mesh.resize(vIndex.size(), Vertex());
+		mesh.resize(vIndex.size());
 
 		for(uint32_t i = 0; i < vIndex.size(); i++) {
 			mesh[i].pos = vertex[vIndex[i]];

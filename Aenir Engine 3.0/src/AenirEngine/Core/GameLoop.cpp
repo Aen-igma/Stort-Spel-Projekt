@@ -4,7 +4,7 @@
 namespace Aen {
 
 	GameLoop::GameLoop()
-		:m_app(nullptr), m_start(), m_end(), m_frameTime(), m_deltaTime() {}
+		:m_app(nullptr), m_start(), m_end(), m_frameTime(), m_deltaTime(), m_renderer(nullptr) {}
 
 	void GameLoop::Initialize() {
 		//m_app = CreateApp();                       fix this
@@ -13,6 +13,11 @@ namespace Aen {
 
 		if(!GCore::Concealed::Initialize(m_app->window))
 			exit(-1);
+
+		GlobalSettings::Initialize();
+
+		m_renderer = AEN_NEW Renderer(m_app->window);
+		m_renderer->Initialize();
 
 		m_app->Start();
 	}
@@ -28,14 +33,16 @@ namespace Aen {
 				m_start = ResClock::now();
 				Aen::Input::Update();
 				m_app->Update(static_cast<float>(m_deltaTime.count()));
+				m_renderer->Draw();
 			}
-		
-			
 		}
 
 		MeshHandler::Destroy();
 		TextureHandler::Destroy();
+		ShaderMHandler::Destroy();
 		MaterialHandler::Destroy();
+		GCore::Concealed::Release();
 		delete m_app;
+		delete m_renderer;
 	}
 }

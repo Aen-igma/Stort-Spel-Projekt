@@ -67,13 +67,12 @@ namespace Aen {
             m_dContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)pt);
 		}
 
-
         static void SetDepthStencilState(DepthStencil& stencil) {
             m_dContext->OMSetDepthStencilState(stencil.m_dsState.Get(), 0);
         }
 
         static void ClearDepthStencilView(DepthStencil& stencil) {
-            m_dContext->ClearDepthStencilView(stencil.m_dsView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+            m_dContext->ClearDepthStencilView(stencil.m_dsView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
         }
 
         static void UnBindRenderTargets(const UINT& count) {
@@ -82,7 +81,7 @@ namespace Aen {
         }
 
         template<class T>
-        static void UnBindShaderResource(const UINT& startSlot, const UINT& count);
+        static void UnBindShaderResources(const UINT& startSlot, const UINT& count);
 
         template<class T>
         static void UnBundShader();
@@ -100,10 +99,10 @@ namespace Aen {
         static void BindShaderResourceView(const UINT& startSlot, GBuffer& gBuffer);
         
         template<class T>
-        static void BindShaderResourceView(const UINT& slot, ShaderResource& gBuffer);
+        static void BindShaderResourceView(const UINT& slot, ShaderResource& shaderResource);
 
         template<class T>
-        static void BindShaderResourceView(const UINT& slot, DepthMap& gBuffer);
+        static void BindShaderResourceView(const UINT& slot, DepthMap& depthMap);
 
         template<class T>
         static void BindSamplers(const UINT& slot, Sampler& sampler);
@@ -157,7 +156,7 @@ namespace Aen {
     #define GS(startSlot, count, srv) GSGetShaderResources(startSlot, count, srv)
     #define PS(startSlot, count, srv) PSGetShaderResources(startSlot, count, srv)
 
-    #define X(sName, lName) template<> inline void RenderSystem::UnBindShaderResource<lName> (const UINT& startSlot, const UINT& count) {\
+    #define X(sName, lName) template<> inline void RenderSystem::UnBindShaderResources<lName> (const UINT& startSlot, const UINT& count) {\
         std::vector<ID3D11ShaderResourceView*> pSrv(count, nullptr);\
         m_dContext->sName(startSlot, count, pSrv.data());\
     }
@@ -193,7 +192,7 @@ namespace Aen {
     // --------------------------- BindShaderResourceView for ShaderResource ------------------------------
 
     #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& slot, ShaderResource& shaderResource) {\
-    m_dContext->sName(slot, 1, shaderResource.m_srv.GetAddressOf());\
+        m_dContext->sName(slot, 1, shaderResource.m_srv.GetAddressOf());\
     }
 
     DEF_SHADER
@@ -202,7 +201,7 @@ namespace Aen {
     // --------------------------- BindShaderResourceView for DepthMap ------------------------------
 
     #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& slot, DepthMap& depthMap) {\
-    m_dContext->sName(slot, 1, depthMap.m_srv.GetAddressOf());\
+        m_dContext->sName(slot, 1, depthMap.m_srv.GetAddressOf());\
     }
 
     DEF_SHADER
@@ -259,7 +258,7 @@ namespace Aen {
     }
 
     DEF_SHADER
-     #undef X
+    #undef X
 
     #undef VS
     #undef HS

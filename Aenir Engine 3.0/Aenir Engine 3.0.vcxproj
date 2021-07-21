@@ -169,10 +169,21 @@
   <ItemGroup>
     <ClCompile Include="src\AenirEngine\Core\App.cpp" />
     <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp" />
+    <ClCompile Include="src\AenirEngine\Core\GlobalSettings.cpp" />
+    <ClCompile Include="src\AenirEngine\Core\Renderer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Camera\Camera.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Camera\CameraHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Entity.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\EntityHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\MaterialHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\MaterialIHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\ShaderMHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\TextureHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\MeshHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\MeshIHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\TransformHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.cpp" />
@@ -209,10 +220,13 @@
     <ClInclude Include="src\AenirEngine\AenDefines.h" />
     <ClInclude Include="src\AenirEngine\Core\App.h" />
     <ClInclude Include="src\AenirEngine\Core\GameLoop.h" />
+    <ClInclude Include="src\AenirEngine\Core\GlobalSettings.h" />
+    <ClInclude Include="src\AenirEngine\Core\Renderer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\Camera.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\CameraHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Entity.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\EntityHandler.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Material\ShaderMHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\MeshHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\MeshIHandler.h" />
@@ -261,6 +275,28 @@
     <ClInclude Include="src\AenirEngine\Window\WindowDef.h" />
     <ClInclude Include="src\AenirEngine\Window\WindowDesc.h" />
     <ClInclude Include="src\AenirEngine\Window\WindowHandle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShaderPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShaderVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

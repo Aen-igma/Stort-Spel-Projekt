@@ -5,7 +5,6 @@
 #include"DX11Type.h"
 
 
-
 namespace Aen {
 
 	class GCore {
@@ -13,7 +12,10 @@ namespace Aen {
 
 		struct Concealed {
 			static bool Initialize(const Window& window);
+			static void Release();
 		};
+
+		friend class GameLoop;
 
 		protected:
 		static ComDevice m_device;

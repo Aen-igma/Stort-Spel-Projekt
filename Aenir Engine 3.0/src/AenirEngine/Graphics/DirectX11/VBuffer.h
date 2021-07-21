@@ -7,6 +7,10 @@ namespace Aen {
 	class VBuffer : public GCore {
 		public:
 
+		~VBuffer() {
+			m_buffer.Reset();
+		}
+
 		VBuffer()
 			:m_buffer(NULL), m_stride(nullptr), m_bufferSize(0) {}
 

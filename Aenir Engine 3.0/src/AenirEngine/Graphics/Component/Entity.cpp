@@ -16,7 +16,7 @@ namespace Aen {
 
 	Entity::Entity()
 		:m_id(m_iDs), m_parentId(-1), m_hasParent(false) {
-		EntityHandler::GetEntities().emplace(m_id, this);
+		EntityHandler::m_entities.emplace(m_id, this);
 		m_iDs++;
 	}
 

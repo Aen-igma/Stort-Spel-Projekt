@@ -4,47 +4,61 @@
 
 namespace Aen {
 
-	struct BLayout {
-		DBLayout m_dbLayout;
-		UINT m_slot;
-	};
+	struct ShaderModel {
+		ShaderModel() = default;
 
-	struct SamplerData {
-		Sampler m_sampler;
-		UINT m_slot;
-	};
+		using PLayout = std::pair<UINT, DBLayout>;
+		using PSampler = std::pair<UINT, Sampler>;
 
-	struct Material {
-		Material() = default;
-
-		PShader m_pShader;
-		VShader m_vShader;
-		std::vector<BLayout> m_bLayouts;
-		std::vector<SamplerData> m_samplerDatas;
+		PShader m_PShader;
+		VShader m_VShader;
+		ILayout m_iLayout;
+		std::vector<PLayout> m_dbLayouts;
+		std::vector<PSampler> m_samplerDatas;
 
 		private:
-		~Material() = default;
+		~ShaderModel() = default;
 
-		friend class MaterialHandler;
+		friend class ShaderMHandler;
+		friend class Renderer;
 	};
 
-	class MaterialInstance {
-		public:
-		MaterialInstance();
-		MaterialInstance(Material& material);
+	struct AEN_DECLSPEC Material {
+		Material(const bool& useDefaultShader = false);
+		Material(ShaderModel& shaderModel);
 
-		void Create(Material& material);
+		void Create(ShaderModel& shaderModel);
+		void CreateDefault();
+
 		void SetDiffuseMap(Texture& texture);
 		void SetNormalMap(Texture& texture);
 		void SetEmissionMap(Texture& texture);
+		void SetOpacityMap(Texture& texture);
+
+		private:
+		~Material();
+
+		ShaderModel* m_pShader;
+		std::vector<DBuffer*> m_dBuffers;
+		Texture* m_textures[4];
+
+		friend class MaterialHandler;
+		friend class Renderer;
+	};
+
+	class AEN_DECLSPEC MaterialInstance {
+		public:
+		MaterialInstance() = default;
+		MaterialInstance(Material*& material);
+
+		void SetMaterial(Material*& material);
 
 		private:
 		~MaterialInstance();
 
-		std::vector<DBuffer> m_dBuffers;
-		Material* m_material;
-		Texture* m_textures[3];
+		Material* m_pMaterial;
 
 		friend class MaterialIHandler;
+		friend class Renderer;
 	};
 }

@@ -4,36 +4,35 @@
 
 namespace Aen {
 
-	class CameraHandler {
+	class AEN_DECLSPEC CameraHandler {
 		private:
 
+		CameraHandler();
+
 		static const bool CameraExist(const uint32_t& id) {
-			return GetCameras().count(id) > 0;
+			return m_cameras.count(id) > 0;
 		}
 
 		static void CreateCamera(const uint32_t& id) {
-			GetCameras().emplace(id, AEN_NEW Camera());
+			m_cameras.emplace(id, AEN_NEW Camera());
 		}
 
 		static void RemoveCamera(const uint32_t& id) {
-			if(GetCameras().count(id) > 0) {
-				delete GetCameras().at(id);
-				GetCameras().at(id) = nullptr;
-				GetCameras().erase(id);
+			if(m_cameras.count(id) > 0) {
+				delete m_cameras.at(id);
+				m_cameras.at(id) = nullptr;
+				m_cameras.erase(id);
 			}
 		}
 
 		static Camera& GetCamera(const uint32_t& id) {
-			if(GetCameras().count(id) > 0)
-				return *GetCameras().at(id);
+			if(m_cameras.count(id) > 0)
+				return *m_cameras.at(id);
 
 			throw;
 		}
 
-		static std::unordered_map<uint32_t, Camera*> GetCameras() {
-			static std::unordered_map<uint32_t, Camera*> cameras;
-			return cameras;
-		}
+		static std::unordered_map<uint32_t, Camera*> m_cameras;
 
 		friend class Camera;
 		friend class Entity;

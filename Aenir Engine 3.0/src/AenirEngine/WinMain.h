@@ -31,6 +31,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPInstance, _
 	gameLoop.m_app = Aen::CreateApp(); //    remove this
 	gameLoop.Initialize();
 	gameLoop.Run();
+	return 0;
 }
 
 #else

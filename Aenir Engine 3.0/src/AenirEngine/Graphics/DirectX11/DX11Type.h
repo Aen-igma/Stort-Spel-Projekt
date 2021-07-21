@@ -8,6 +8,8 @@
 using ComDevice = Microsoft::WRL::ComPtr<ID3D11Device>;
 using ComDeviceContext = Microsoft::WRL::ComPtr<ID3D11DeviceContext>;
 using ComSwapChain = Microsoft::WRL::ComPtr<IDXGISwapChain>;
+using ComFactory1 = Microsoft::WRL::ComPtr<IDXGIFactory1>;
+using ComFactory2 = Microsoft::WRL::ComPtr<IDXGIFactory2>;
 using ComFactory6 = Microsoft::WRL::ComPtr<IDXGIFactory6>;
 using ComAdapter1 = Microsoft::WRL::ComPtr<IDXGIAdapter1>;
 

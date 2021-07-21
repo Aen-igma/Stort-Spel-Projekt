@@ -5,6 +5,7 @@
 
 class Client : public Aen::App {
 	public:
+	~Client() override;
 	Client() = delete;
 	Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className);
 
@@ -12,6 +13,9 @@ class Client : public Aen::App {
 	void Update(const float& deltaTime) override;
 
 	private:
+
+	Aen::Entity m_camera;
+	Aen::Entity m_cube;
 };
 
 

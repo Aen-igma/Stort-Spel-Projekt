@@ -4,41 +4,42 @@
 
 namespace Aen {
 
-	class TextureHandler {
+	class AEN_DECLSPEC TextureHandler {
 		public:
 
-		static void CreateTexture(const std::string& name) {
-			GetTextures().emplace(name, AEN_NEW Texture());
+		static Texture* CreateTexture(const std::string& name) {
+			m_textures.emplace(name, AEN_NEW Texture());
+			return m_textures.at(name);
 		}
 
 		static void RemoveTexture(const std::string& name) {
-			if(GetTextures().count(name) > 0) {
-				delete GetTextures().at(name);
-				GetTextures().at(name) = nullptr;
-				GetTextures().erase(name);
+			if(m_textures.count(name) > 0) {
+				delete m_textures.at(name);
+				m_textures.at(name) = nullptr;
+				m_textures.erase(name);
 			}
 		}
 
 		static Texture& GetMaterial(const std::string& name) {
-			if(GetTextures().count(name) > 0)
-				return *GetTextures().at(name);
+			if(m_textures.count(name) > 0)
+				return *m_textures.at(name);
 
 			throw;
 		}
 
 		private:
-		static std::unordered_map<std::string, Texture*> GetTextures() {
-			static std::unordered_map<std::string, Texture*> textures;
-			return textures;
-		}
+
+		TextureHandler();
 
 		static void Destroy() {
-			for(auto& i : GetTextures())
+			for(auto& i : m_textures)
 				if(i.second) {
 					delete i.second;
 					i.second = nullptr;
 				}
 		}
+
+		static std::unordered_map<std::string, Texture*> m_textures;
 
 		friend class Texture;
 		friend class GameLoop;

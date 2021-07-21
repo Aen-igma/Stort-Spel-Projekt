@@ -3,13 +3,22 @@
 
 namespace Aen {
 
+	enum class FillMode {
+		Wireframe = 2,
+		Solid = 3,
+	};
+
+	enum class CullMode {
+		None = 1,
+		Front = 2,
+		Back = 3
+	};
+
 	class RState : public GCore {
 		public:
-
+		~RState();
 		RState() = delete;
-		RState(const D3D11_FILL_MODE& fill, const D3D11_CULL_MODE& cull);
-
-		void SetRState();
+		RState(const FillMode& fill, const CullMode& cull);
 
 		friend class RenderSystem;
 

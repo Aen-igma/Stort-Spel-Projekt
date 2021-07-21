@@ -4,7 +4,7 @@
 
 namespace Aen {
 
-	class Window : protected WNDCLASSEXW {
+	class AEN_DECLSPEC Window : protected WNDCLASSEXW {
 		public:
 		Window() = delete;
 		~Window();

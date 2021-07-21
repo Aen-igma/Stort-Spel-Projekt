@@ -7,6 +7,10 @@ namespace Aen {
 	class CBuffer : public GCore {
 		public:
 
+		~CBuffer() {
+			m_buffer.Reset();
+		}
+
 		CBuffer()
 			:m_buffer(NULL), m_data() {
 
@@ -27,6 +31,10 @@ namespace Aen {
 				throw;
 		}
 
+		T& GetData() {
+			return m_data;
+		}
+
 		void UpdateBuffer() {
 			D3D11_MAPPED_SUBRESOURCE mResource;
 			m_dContext->Map(m_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mResource);
@@ -45,35 +53,35 @@ namespace Aen {
 	
 	namespace Concealed1 {
 		template<class T>
-		inline void BB(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s);
+		inline void BB(const ComDeviceContext& dc, ComBuffer& b, const UINT& s);
 
 		template<>
-		inline void BB<VShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<VShader>(const ComDeviceContext& dc, ComBuffer& b, const UINT& s) {
 			dc->VSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 
 		template<>
-		inline void BB<HShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<HShader>(const ComDeviceContext& dc, ComBuffer& b, const UINT& s) {
 			dc->HSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 
 		template<>
-		inline void BB<CShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<CShader>(const ComDeviceContext& dc, ComBuffer& b, const UINT& s) {
 			dc->CSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 
 		template<>
-		inline void BB<DShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<DShader>(const ComDeviceContext& dc, ComBuffer& b, const UINT& s) {
 			dc->DSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 
 		template<>
-		inline void BB<GShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<GShader>(const ComDeviceContext& dc, ComBuffer& b, const UINT& s) {
 			dc->GSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 
 		template<>
-		inline void BB<PShader>(ID3D11DeviceContext*& dc, ComBuffer& b, const UINT& s) {
+		inline void BB<PShader>(const ComDeviceContext& dc, ComBuffer& b, const UINT& s) {
 			dc->PSSetConstantBuffers(s, 1, b.GetAddressOf());
 		}
 	}
@@ -83,5 +91,4 @@ namespace Aen {
 	inline void CBuffer<T>::BindBuffer(const UINT& slot) {
 		Concealed1::BB<T1>(m_dContext, m_buffer, slot);
 	}
-
 }

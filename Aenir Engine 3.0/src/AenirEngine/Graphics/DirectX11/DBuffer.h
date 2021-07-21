@@ -91,6 +91,9 @@ namespace Aen {
 	template<> struct DBRMap<Vec4f> {
 		static constexpr DBType type = Float4;
 	};
+	template<> struct DBRMap<Color> {
+		static constexpr DBType type = Float4;
+	};
 	template<> struct DBRMap<Mat2f> {
 		static constexpr DBType type = Float2x2;
 	};
@@ -148,13 +151,19 @@ namespace Aen {
 
 	struct Data {
 		using Byte = unsigned char;
+		~Data();
 		Data();
 		Data(const DBType& type, const uint32_t& byteSize); // causing memory leak
+		Data(const Data& rhs);
 
 		DBType m_type;
 		uint32_t m_offset;
 		uint32_t m_size;
 		Byte* m_data;
+
+		private:
+
+		const uint32_t GetDataSize(const DBType& type);
 	};
 
 	class DBLayout {
@@ -175,11 +184,12 @@ namespace Aen {
 	template<DBType type>
 	inline void DBLayout::Add(const std::string& name) {
 		using Byte = unsigned char;
-		m_dataMap.emplace_back(std::pair<std::string, Data>(name, Data(type, DBMap<type>::size)));
+		m_dataMap.emplace_back(name, Data(type, DBMap<type>::size));
 	}
 
 	class DBuffer : public GCore {
 		public:
+		~DBuffer();
 		DBuffer();
 		DBuffer(DBLayout& layout);
 		
@@ -194,10 +204,8 @@ namespace Aen {
 		private:
 		using Byte = unsigned char;
 
-		const uint32_t GetDataSize(const DBType& type);
-
 		std::vector<Byte> m_data;
-		std::unique_ptr<DBLayout> m_layout;
+		DBLayout* m_layout;
 		uint32_t m_byteSize;
 		ComBuffer m_buffer;
 	};

@@ -12,10 +12,14 @@ namespace Aen {
 		ImportObj(m_vertices, dir);
 	}
 
-	MeshInstance::MeshInstance(Mesh& mesh)
-		:m_mesh(&mesh) {}
+	MeshInstance::~MeshInstance() {
+		m_mesh = nullptr;
+	}
 
-	void MeshInstance::SetMesh(Mesh& mesh) {
-		m_mesh = &mesh;
+	MeshInstance::MeshInstance(Mesh*& mesh)
+		:m_mesh(mesh) {}
+
+	void MeshInstance::SetMesh(Mesh*& mesh) {
+		m_mesh = mesh;
 	}
 }

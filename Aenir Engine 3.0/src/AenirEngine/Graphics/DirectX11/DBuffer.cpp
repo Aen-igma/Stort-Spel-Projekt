@@ -4,7 +4,7 @@
 namespace Aen {
 
 	ElRef DBuffer::operator[](const std::string& name) {
-		for(auto& i : m_layout.get()->m_dataMap)
+		for(auto& i : m_layout->m_dataMap)
 			if(i.first == name)
 				return {m_data.data(), i.second.m_offset, i.second.m_type};
 
@@ -12,11 +12,29 @@ namespace Aen {
 	}
 	
 	
-	Data::Data() 
+	Data::~Data() {
+		delete[] m_data;
+	}
+
+	Data::Data()
 		:m_type(None), m_offset(0), m_size(0), m_data(nullptr) {}
 
 	Data::Data(const DBType& type, const uint32_t& byteSize)
-		:m_type(type), m_offset(0), m_size(0), m_data(AEN_NEW Byte[byteSize]) {}
+		:m_type(type), m_offset(0), m_size(GetDataSize(type)), m_data(AEN_NEW Byte[byteSize]) {}
+
+	Data::Data(const Data& rhs)
+		:m_type(rhs.m_type), m_offset(rhs.m_offset), m_size(rhs.m_size) {
+		m_data = AEN_NEW Byte[m_size];
+		memcpy(m_data, rhs.m_data, m_size);
+	}
+
+	const uint32_t Data::GetDataSize(const DBType& type) {
+		switch(type) {
+			#define X(el) case el: return DBMap<el>::size; break;
+			Def_DBType
+				#undef X
+		}
+	}
 	
 
 	DBLayout::DBLayout() {}
@@ -30,28 +48,34 @@ namespace Aen {
 	}
 	
 
+	DBuffer::~DBuffer() {
+		m_buffer.Reset();
+	}
+
 	DBuffer::DBuffer()
 		: m_data(16), m_layout(nullptr), m_byteSize(0), m_buffer(NULL) {}
 
 	DBuffer::DBuffer(DBLayout& layout)
-		: m_data(16), m_layout(std::make_unique<DBLayout>(layout)), m_byteSize(0), m_buffer(NULL) {
+		: m_data(16), m_layout(&layout), m_byteSize(0), m_buffer(NULL) {
 
-		for(auto& i : m_layout.get()->m_dataMap) {
-			i.second.m_size = GetDataSize(i.second.m_type);
+		for(auto& i : m_layout->m_dataMap) {
 			i.second.m_offset = m_byteSize;
 			m_byteSize += i.second.m_size;
 		}
 
 		m_data.resize(m_byteSize);
 
-		for(auto& i : m_layout.get()->m_dataMap)
+		for(auto& i : m_layout->m_dataMap)
 			memcpy(m_data.data() + i.second.m_offset, i.second.m_data, i.second.m_size);
 
 		D3D11_BUFFER_DESC bDesc;
 		ZeroMemory(&bDesc, sizeof(D3D11_BUFFER_DESC));
 
+		int mod = m_byteSize % 16;
+		UINT size = (mod == 0) ? static_cast<UINT>(m_byteSize) : static_cast<UINT>(m_byteSize + (16 - mod));
+
 		bDesc.Usage = D3D11_USAGE_DYNAMIC;
-		bDesc.ByteWidth = (m_byteSize < 16) ? 16 : static_cast<UINT>(m_byteSize);
+		bDesc.ByteWidth = size;
 		bDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		bDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		bDesc.MiscFlags = 0;
@@ -61,18 +85,20 @@ namespace Aen {
 			throw;
 	}
 
+	//DBuffer::DBuffer(const DBuffer& rhs) {
+	//}
+
 	void DBuffer::Create(DBLayout& layout) {
-		m_layout = std::make_unique<DBLayout>(layout);
+		m_layout = &layout;
 		
-		for(auto& i : m_layout.get()->m_dataMap) {
-			i.second.m_size = GetDataSize(i.second.m_type);
+		for(auto& i : m_layout->m_dataMap) {
 			i.second.m_offset = m_byteSize;
 			m_byteSize += i.second.m_size;
 		}
 
 		m_data.resize(m_byteSize);
 
-		for(auto& i : m_layout.get()->m_dataMap)
+		for(auto& i : m_layout->m_dataMap)
 			memcpy(m_data.data() + i.second.m_offset, i.second.m_data, i.second.m_size);
 
 		D3D11_BUFFER_DESC bDesc;
@@ -95,13 +121,5 @@ namespace Aen {
 
 		CopyMemory(mResource.pData, m_data.data(), m_byteSize);
 		m_dContext->Unmap(m_buffer.Get(), 0);
-	}
-
-	const uint32_t DBuffer::GetDataSize(const DBType& type) {
-		switch(type) {
-			#define X(el) case el: return DBMap<el>::size; break;
-			Def_DBType
-				#undef X
-		}
 	}
 }

@@ -3,6 +3,11 @@
 
 namespace Aen {
 
+	DepthMap::~DepthMap() {
+		m_dsView.Reset();
+		m_srv.Reset();
+	}
+
 	DepthMap::DepthMap(const UINT& dimensions)
 		:m_dsView(NULL), m_srv(NULL), m_viewPort() {
 

@@ -7,6 +7,11 @@ namespace Aen {
 	class SBuffer : public GCore {
 		public:
 
+		~SBuffer() {
+			m_srv.Reset();
+			m_buffer.Reset();
+		}
+
 		SBuffer() = delete;
 		SBuffer(const uint32_t& size)
 			:m_srv(NULL), m_buffer(NULL), m_data(size), m_size(size) {

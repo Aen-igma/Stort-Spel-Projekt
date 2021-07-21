@@ -3,7 +3,7 @@
 
 namespace Aen {
 
-	class Camera {
+	class AEN_DECLSPEC Camera {
 		public:
 		Camera();
 
@@ -17,9 +17,12 @@ namespace Aen {
 		private:
 		~Camera() = default;
 
+		void UpdateView(const Vec3f& pos, const Vec3f& ang);
+
 		Mat4f m_view;
 		Mat4f m_projection;
 
 		friend class CameraHandler;
+		friend class Renderer;
 	};
 }

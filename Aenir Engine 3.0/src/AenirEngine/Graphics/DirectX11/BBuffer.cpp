@@ -3,6 +3,10 @@
 
 namespace Aen {
 
+    BBuffer::~BBuffer() {
+        m_rtv.Reset();
+    }
+
     BBuffer::BBuffer()
         :m_rtv(NULL) {
         ComTexture2D backBuffer;

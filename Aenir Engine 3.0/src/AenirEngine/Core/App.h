@@ -1,12 +1,12 @@
 #pragma once
 #define AEN_GRAPHICS_DIRECTX11
-#include"..\AenGraphics.h"
-
+#include"GlobalSettings.h"
 
 namespace Aen {
 
 	class AEN_DECLSPEC App {
 		public:
+		virtual ~App();
 		App() = delete;
 		App(const WindowDesc& desc, const std::wstring& windowName, const std::wstring& className);
 
