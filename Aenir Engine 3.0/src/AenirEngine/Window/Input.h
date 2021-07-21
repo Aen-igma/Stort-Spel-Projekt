@@ -30,11 +30,19 @@ namespace Aen {
 		static void GPSetAxisDeadZone(const uint32_t& index, const Analog& key, const Vec2f& dz);
 		static void GPSetAxisDeadZoneType(const uint32_t& index, const Analog& key, const ADZType& type);
 
-		static void Update();
+		static void SetMousePos(const Vec2i& pos);
+		static void SetMousePos(const int& x, const int& y);
+		static void SetMouseVisible(const bool& isVisible);
+		static const Vec2i& GetRawMouse();
+
 		private:
+
+		static bool Initialize();
+		static void Update();
 
 		static unsigned char keys[256];
 		static unsigned char prevKeys[256];
+		static Vec2i rawMouse;
 
 		static bool activeGP[XUSER_MAX_COUNT];
 		static bool GPKeys[XUSER_MAX_COUNT][14];
@@ -45,6 +53,9 @@ namespace Aen {
 		static DZType dzType[XUSER_MAX_COUNT][2];
 		static ADZType adzType[XUSER_MAX_COUNT][2];
 		static float scuircleR[XUSER_MAX_COUNT][2];
+		
+		friend class GameLoop;
+		friend class Window;
 	};
 
 	enum class ADZType : int {

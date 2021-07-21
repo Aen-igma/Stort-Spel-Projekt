@@ -20,6 +20,8 @@ namespace Aen {
 		m_viewPort.MaxDepth = 1;
 
 		m_depthStencil.Create(m_window);
+		RenderSystem::SetViewPort(m_viewPort);
+		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 	}
 
 	void Renderer::Draw() {
@@ -27,10 +29,8 @@ namespace Aen {
 		RenderSystem::ClearDepthStencilView(m_depthStencil);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.03f, 0.03f, 0.05f, 1.f));
 
-		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 		RenderSystem::SetDepthStencilState(m_depthStencil);
 		RenderSystem::SetRasteriserState(m_rasterizerState);
-		RenderSystem::SetViewPort(m_viewPort);
 
 		RenderSystem::BindRenderTargetView(m_backBuffer, m_depthStencil);
 		m_cbTransform.BindBuffer<VShader>(0);
@@ -65,10 +65,10 @@ namespace Aen {
 
 				RenderSystem::SetInputLayout(pMaterial->m_pShader->m_iLayout);
 
-				for(UINT i = 0; i < 4; i++)
-					if(pMaterial->m_textures[i]) {
-						RenderSystem::BindShaderResourceView<PShader>(i, pMaterial->m_textures[i]->m_shaderResource); // causing memory leak
-					}
+				//for(UINT i = 0; i < 4; i++)
+				//	if(pMaterial->m_textures[i]) {
+				//		RenderSystem::BindShaderResourceView<PShader>(i, pMaterial->m_textures[i]->m_shaderResource); // causing memory leak
+				//	}
 
 				RenderSystem::BindShader<VShader>(pMaterial->m_pShader->m_VShader);
 				RenderSystem::BindShader<PShader>(pMaterial->m_pShader->m_PShader);

@@ -6,6 +6,8 @@ namespace Aen {
 	unsigned char Input::keys[256];
 	unsigned char Input::prevKeys[256];
 
+	Vec2i Input::rawMouse(Vec2i::zero);
+
 	bool Input::activeGP[XUSER_MAX_COUNT];
 	bool Input::GPKeys[XUSER_MAX_COUNT][14];
 	bool Input::prevGPKeys[XUSER_MAX_COUNT][14];
@@ -125,6 +127,37 @@ namespace Aen {
 
 	void Input::GPSetAxisDeadZoneType(const uint32_t& index, const Analog& key, const ADZType& type) {
 		adzType[index][(int)key] = type;
+	}
+
+	void Input::SetMousePos(const Vec2i& pos) {
+		SetCursorPos(pos.x, pos.y);
+	}
+
+	void Input::SetMousePos(const int& x, const int& y) {
+		SetCursorPos(x, y);
+	}
+
+	void Input::SetMouseVisible(const bool& isVisible) {
+		ShowCursor(isVisible);
+	}
+
+	const Vec2i& Input::GetRawMouse() {
+		return rawMouse;
+	}
+
+	bool Input::Initialize() {
+		RAWINPUTDEVICE rid;
+		ZeroMemory(&rid, sizeof(RAWINPUTDEVICE));
+
+		rid.usUsagePage = 0x01;
+		rid.usUsage = 0x02;
+		rid.dwFlags = 0;
+		rid.hwndTarget = NULL;
+
+		if(RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
+			return false;
+
+		return true;
 	}
 
 	void Input::Update() {

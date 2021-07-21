@@ -14,6 +14,8 @@ class Client : public Aen::App {
 
 	private:
 
+	float m_speed;
+	float m_mouseSense;
 	Aen::Entity m_camera;
 	Aen::Entity m_cube;
 };

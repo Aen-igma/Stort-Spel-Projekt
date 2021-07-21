@@ -1,6 +1,7 @@
 #include"PCH.h"
 #include"WindowHandle.h"
 #include"Window.h"
+#include"Input.h"
 
 namespace Aen {
 
@@ -191,6 +192,26 @@ namespace Aen {
 			SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
 		} else
 			pWnd = reinterpret_cast<Window*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+
+		switch(uMsg) {
+			case WM_INPUT: {
+				UINT dataSize = 0;
+				GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, NULL, &dataSize, sizeof(RAWINPUTHEADER));
+
+				if(dataSize > 0) {
+					std::unique_ptr<BYTE[]> rawData = std::make_unique<BYTE[]>(dataSize);
+					if(GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawData.get(), &dataSize, sizeof(RAWINPUTHEADER)) == dataSize) {
+						RAWINPUT* raw = reinterpret_cast<RAWINPUT*>(rawData.get());
+						if(raw->header.dwType == RIM_TYPEMOUSE && (raw->data.mouse.lLastX != 0 || raw->data.mouse.lLastY != 0)) {
+							Input::rawMouse.x = raw->data.mouse.lLastX;
+							Input::rawMouse.y = raw->data.mouse.lLastY;
+						}
+					}
+				}
+
+				return DefWindowProcW(hwnd, uMsg, wParam, lParam);
+			}
+		}
 
 		if(pWnd)
 			return pWnd->WinProc(hwnd, uMsg, wParam, lParam);

@@ -25,9 +25,9 @@ texture2D opacityMap : OPACITYMAP : register(t3);
 
 SamplerState wrapSampler : WSAMPLER : register(s0);
 
-float4 main(PS_Input input) : SV_Target0{
+float4 main(PS_Input input) : SV_TARGET {
 
 	//float3 diffuse = diffuseMap.Sample(wrapSampler, input.uv).rgb;
 
-	return float4(1.f, 1.f, 1.f, 1.0f);
+	return float4(1.f, 1.f, 1.f, 1.f);
 }

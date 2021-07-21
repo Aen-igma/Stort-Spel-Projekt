@@ -114,6 +114,7 @@ namespace Aen {
             FLOAT fColor[4];
             for(uint32_t i = 0; i < 4; i++)
                 fColor[i] = color[i];
+
             m_dContext->ClearRenderTargetView(backBuffer.m_rtv.Get(), fColor);
         }
 

@@ -46,6 +46,14 @@ namespace Aen {
 		TransformHandler::GetTranslation(m_id).Move(x, y, z);
 	}
 
+	void Entity::MoveRelative(const Vec3f& pos) {
+		TransformHandler::GetTranslation(m_id).Move(Transform(TransformHandler::GetRotation(m_id).GetTranform(), pos));
+	}
+
+	void Entity::MoveRelative(const float& x, const float& y, const float& z) {
+		TransformHandler::GetTranslation(m_id).Move(Transform(TransformHandler::GetRotation(m_id).GetTranform(), Vec3f(x, y, z)));
+	}
+
 	void Entity::SetRot(const Vec3f& rot) {
 		TransformHandler::GetRotation(m_id).SetRot(rot);
 	}

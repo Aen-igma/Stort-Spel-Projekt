@@ -11,6 +11,9 @@ namespace Aen {
 		int ft = (int)(((double)1 / (double)60) * (double)pow(10, 9));
 		m_frameTime = std::chrono::nanoseconds{ft};
 
+		if(!Input::Initialize())
+			exit(-1);
+
 		if(!GCore::Concealed::Initialize(m_app->window))
 			exit(-1);
 

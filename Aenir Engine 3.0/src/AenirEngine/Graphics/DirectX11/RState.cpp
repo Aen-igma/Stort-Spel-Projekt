@@ -13,10 +13,16 @@ namespace Aen {
 		D3D11_RASTERIZER_DESC rDesc;
 		ZeroMemory(&rDesc, sizeof(D3D11_RASTERIZER_DESC));
 
-		rDesc.FillMode = (D3D11_FILL_MODE)fill;
+		rDesc.AntialiasedLineEnable = false;
 		rDesc.CullMode = (D3D11_CULL_MODE)cull;
-		rDesc.AntialiasedLineEnable = FALSE;
-		rDesc.MultisampleEnable = FALSE;
+		rDesc.DepthBias = 0;
+		rDesc.DepthBiasClamp = 0.0f;
+		rDesc.DepthClipEnable = false;
+		rDesc.FillMode = (D3D11_FILL_MODE)fill;
+		rDesc.FrontCounterClockwise = true;
+		rDesc.MultisampleEnable = false;
+		rDesc.ScissorEnable = false;
+		rDesc.SlopeScaledDepthBias = 0.0f;
 
 		if(FAILED(m_device->CreateRasterizerState(&rDesc, &m_rState)))
 			throw;
