@@ -26,9 +26,9 @@ namespace Aen {
         return m_projection;
     }
 
-    void Camera::UpdateView(const Vec3f& pos, const Vec3f& ang) {
-        Vec3f camTarget = Transform(MatRotate(ang), Vec3f(0.f, 0.f, 1.f)).Normalized() + pos;
-        Vec3f upDir = Transform(MatRotate(ang), Vec3f(0.f, 1.f, 0.f)).Normalized();
+    void Camera::UpdateView(const Vec3f& pos, const Vec3f& rot) {
+        Vec3f camTarget = Transform(MatRotate(rot), Vec3f(0.f, 0.f, 1.f)).Normalized() + pos;
+        Vec3f upDir = Transform(MatRotate(rot), Vec3f(0.f, 1.f, 0.f)).Normalized();
         m_view = MatViewLH(pos, camTarget, upDir);
     }
 }

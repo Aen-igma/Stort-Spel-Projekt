@@ -8,8 +8,6 @@ namespace Aen {
 		~BBuffer();
 		BBuffer();
 
-		void SetRTV(DepthStencil& ds);
-
 		friend class RenderSystem;
 
 		private:

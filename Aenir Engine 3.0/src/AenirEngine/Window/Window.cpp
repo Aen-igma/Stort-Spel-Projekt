@@ -203,8 +203,7 @@ namespace Aen {
 					if(GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawData.get(), &dataSize, sizeof(RAWINPUTHEADER)) == dataSize) {
 						RAWINPUT* raw = reinterpret_cast<RAWINPUT*>(rawData.get());
 						if(raw->header.dwType == RIM_TYPEMOUSE && (raw->data.mouse.lLastX != 0 || raw->data.mouse.lLastY != 0)) {
-							Input::rawMouse.x = raw->data.mouse.lLastX;
-							Input::rawMouse.y = raw->data.mouse.lLastY;
+							Input::OnRawMouse((int)raw->data.mouse.lLastX, (int)raw->data.mouse.lLastY);
 						}
 					}
 				}

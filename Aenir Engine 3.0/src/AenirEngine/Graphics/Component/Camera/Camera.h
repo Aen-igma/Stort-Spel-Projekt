@@ -17,7 +17,7 @@ namespace Aen {
 		private:
 		~Camera() = default;
 
-		void UpdateView(const Vec3f& pos, const Vec3f& ang);
+		void UpdateView(const Vec3f& pos, const Vec3f& rot);
 
 		Mat4f m_view;
 		Mat4f m_projection;

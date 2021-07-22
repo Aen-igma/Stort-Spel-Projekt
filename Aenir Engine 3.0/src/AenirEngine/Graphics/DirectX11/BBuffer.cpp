@@ -10,14 +10,12 @@ namespace Aen {
     BBuffer::BBuffer()
         :m_rtv(NULL) {
         ComTexture2D backBuffer;
-        if(FAILED(m_sChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer)))
+        if(FAILED(m_sChain->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(backBuffer.GetAddressOf()))))
             throw;
 
-        if(FAILED(m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_rtv)))
+        if(FAILED(m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, m_rtv.GetAddressOf())))
             throw;
-    }
 
-    void BBuffer::SetRTV(DepthStencil& ds) {
-        m_dContext->OMSetRenderTargets(1, &m_rtv, ds.m_dsView.Get());
+        backBuffer.Reset();
     }
 }

@@ -51,6 +51,8 @@ namespace Aen {
 		uint32_t m_id;
 		uint32_t m_parentId;
 		bool m_hasParent;
+
+		friend class Renderer;
 	};
 
 	// --------------------- AddComponent ---------------------------

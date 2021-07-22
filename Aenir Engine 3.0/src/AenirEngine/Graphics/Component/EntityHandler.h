@@ -24,5 +24,6 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Entity*> m_entities;
 		
 		friend class Entity;
+		friend class Renderer;
 	};
 }

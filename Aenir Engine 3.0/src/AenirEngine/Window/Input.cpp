@@ -6,7 +6,7 @@ namespace Aen {
 	unsigned char Input::keys[256];
 	unsigned char Input::prevKeys[256];
 
-	Vec2i Input::rawMouse(Vec2i::zero);
+	std::queue<Vec2i> Input::rawMouse;
 
 	bool Input::activeGP[XUSER_MAX_COUNT];
 	bool Input::GPKeys[XUSER_MAX_COUNT][14];
@@ -141,8 +141,18 @@ namespace Aen {
 		ShowCursor(isVisible);
 	}
 
-	const Vec2i& Input::GetRawMouse() {
-		return rawMouse;
+	const Vec2i Input::GetRawMouse() {
+
+		if(rawMouse.empty())
+			return Vec2i::zero;
+
+		Vec2i raw = rawMouse.front();
+		rawMouse.pop();
+		return raw;
+	}
+
+	void Input::OnRawMouse(const int& x, const int& y) {
+		rawMouse.push({x, y});
 	}
 
 	bool Input::Initialize() {
@@ -164,6 +174,9 @@ namespace Aen {
 		GetKeyState(0);
 		std::memcpy(prevKeys, keys, sizeof(unsigned char) * 256);
 		GetKeyboardState(keys);
+
+		while(rawMouse.size() > 2u)
+			rawMouse.pop();
 
 		static const WORD xButtons[] = {
 			XINPUT_GAMEPAD_A,

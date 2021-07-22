@@ -35,7 +35,7 @@ namespace Aen {
             D3D11_SUBRESOURCE_DATA sData;
             ZeroMemory(&sData, sizeof(D3D11_SUBRESOURCE_DATA));
 
-            sData.pSysMem = &tData[0];
+            sData.pSysMem = tData.data();
             sData.SysMemPitch = width * 4;
             sData.SysMemSlicePitch = 0;
 
@@ -54,12 +54,13 @@ namespace Aen {
             texDesc.CPUAccessFlags = 0;
             texDesc.MiscFlags = 0;
 
-            if(FAILED(m_device->CreateTexture2D(&texDesc, &sData, &uvTexture)))
+            if(FAILED(m_device->CreateTexture2D(&texDesc, &sData, uvTexture.GetAddressOf())))
                 throw;
 
-            if(FAILED(m_device->CreateShaderResourceView(uvTexture.Get(), nullptr, &m_srv)))
+            if(FAILED(m_device->CreateShaderResourceView(uvTexture.Get(), nullptr, m_srv.GetAddressOf())))
                 throw;
 
             stbi_image_free(image);
+            uvTexture.Reset();
     }
 }

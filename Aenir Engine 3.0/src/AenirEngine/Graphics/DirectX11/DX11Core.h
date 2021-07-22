@@ -8,7 +8,7 @@
 namespace Aen {
 
 	class GCore {
-		public:
+		private:
 
 		struct Concealed {
 			static bool Initialize(const Window& window);

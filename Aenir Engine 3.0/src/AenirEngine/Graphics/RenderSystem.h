@@ -72,7 +72,7 @@ namespace Aen {
         }
 
         static void ClearDepthStencilView(DepthStencil& stencil) {
-            m_dContext->ClearDepthStencilView(stencil.m_dsView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+            m_dContext->ClearDepthStencilView(stencil.m_dsView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0u);
         }
 
         static void UnBindRenderTargets(const UINT& count) {
@@ -175,12 +175,12 @@ namespace Aen {
     // --------------------------- BindShaderResourceView for GBuffer ------------------------------
 
 
-    #define VS(startSlot, size, gBuffer) VSGetShaderResources(startSlot, size, gBuffer)
-    #define HS(startSlot, size, gBuffer) HSGetShaderResources(startSlot, size, gBuffer)
-    #define CS(startSlot, size, gBuffer) CSGetShaderResources(startSlot, size, gBuffer)
-    #define DS(startSlot, size, gBuffer) DSGetShaderResources(startSlot, size, gBuffer)
-    #define GS(startSlot, size, gBuffer) GSGetShaderResources(startSlot, size, gBuffer)
-    #define PS(startSlot, size, gBuffer) PSGetShaderResources(startSlot, size, gBuffer)
+    #define VS(startSlot, size, srv) VSSetShaderResources(startSlot, size, srv)
+    #define HS(startSlot, size, srv) HSSetShaderResources(startSlot, size, srv)
+    #define CS(startSlot, size, srv) CSSetShaderResources(startSlot, size, srv)
+    #define DS(startSlot, size, srv) DSSetShaderResources(startSlot, size, srv)
+    #define GS(startSlot, size, srv) GSSetShaderResources(startSlot, size, srv)
+    #define PS(startSlot, size, srv) PSSetShaderResources(startSlot, size, srv)
 
     #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& startSlot, GBuffer& gBuffer) {\
         UINT size = (UINT)gBuffer.m_srvs.size();\
