@@ -21,8 +21,8 @@ namespace Aen {
 
 		RenderSystem::SetViewPort(m_viewPort);
 		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
-		RenderSystem::BindRenderTargetView(m_backBuffer, m_depthStencil);
 		RenderSystem::SetRasteriserState(m_rasterizerState);
+		RenderSystem::BindRenderTargetView(m_backBuffer, m_depthStencil);
 		RenderSystem::SetDepthStencilState(m_depthStencil);
 	}
 

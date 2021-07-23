@@ -6,12 +6,10 @@ namespace Aen {
 	class DepthStencil : public GCore {
 		public:
 		~DepthStencil();
-		DepthStencil() = default;
+		DepthStencil();
 		DepthStencil(const Window& window);
 
 		void Create(const Window& window);
-
-		friend class BBuffer;
 		friend class RenderSystem;
 
 		private:
