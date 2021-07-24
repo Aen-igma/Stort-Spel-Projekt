@@ -11,6 +11,10 @@ cbuffer CellShaderModel : register(b0) {
 	float RimLightSize;
 };
 
+struct PointLight {
+	float3 pos;
+};
+
 struct PS_Input {
 	float4 pos : SV_Position;
 	float3 normal : NORMAL;
@@ -23,11 +27,17 @@ texture2D normalMap : NORMALMAP : register(t1);
 texture2D emissionMap : EMISSIONMAP : register(t2);
 texture2D opacityMap : OPACITYMAP : register(t3);
 
+StructuredBuffer<PointLight> pLights : register(t0);
+
 SamplerState wrapSampler : WSAMPLER : register(s0);
 
 float4 main(PS_Input input) : SV_Target0 {
 
 	float3 diffuse = diffuseMap.Sample(wrapSampler, input.uv).rgb;
+
+	uint pLightCount;
+	uint pLightStride;
+	pLights.GetDimensions(pLightCount, pLightStride);
 
 	return float4(diffuse, 1.f);
 }

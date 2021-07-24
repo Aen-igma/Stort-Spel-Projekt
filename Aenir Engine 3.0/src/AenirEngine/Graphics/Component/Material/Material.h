@@ -19,11 +19,12 @@ namespace Aen {
 		private:
 		~ShaderModel() = default;
 
-		friend class ShaderMHandler;
+		friend class ResourceHandler;
 		friend class Renderer;
 	};
 
-	struct AEN_DECLSPEC Material {
+	class AEN_DECLSPEC Material {
+		public:
 		Material(const bool& useDefaultShader = false);
 		Material(ShaderModel& shaderModel);
 
@@ -42,7 +43,7 @@ namespace Aen {
 		std::vector<DBuffer*> m_dBuffers;
 		Texture* m_textures[4];
 
-		friend class MaterialHandler;
+		friend class ResourceHandler;
 		friend class Renderer;
 	};
 
@@ -58,7 +59,7 @@ namespace Aen {
 
 		Material* m_pMaterial;
 
-		friend class MaterialIHandler;
+		friend class ComponentHandler;
 		friend class Renderer;
 	};
 }

@@ -1,13 +1,6 @@
 #pragma once
-#include"Material/MaterialIHandler.h"
-#include"Material/MaterialHandler.h"
-#include"Material/ShaderMHandler.h"
-#include"Material/TextureHandler.h"
-#include"Tranform/TranformHandler.h"
-#include"Camera/CameraHandler.h"
-#include"Mesh/MeshIHandler.h"
-#include"Mesh/MeshHandler.h"
-
+#include"ComponentHandler.h"
+#include"ResourceHandler.h"
 #include"EntityHandler.h"
 
 namespace Aen {
@@ -59,26 +52,26 @@ namespace Aen {
 
 	template<>
 	inline void Entity::AddComponent<Translation>() {
-		if(!TransformHandler::TranslationExist(m_id))
-			TransformHandler::CreateTranslation(m_id);
+		if(!ComponentHandler::TranslationExist(m_id))
+			ComponentHandler::CreateTranslation(m_id);
 	}
 
 	template<>
 	inline void Entity::AddComponent<Rotation>() {
-		if(!TransformHandler::RotationExist(m_id))
-			TransformHandler::CreateRotation(m_id);
+		if(!ComponentHandler::RotationExist(m_id))
+			ComponentHandler::CreateRotation(m_id);
 	}
 
 	template<>
 	inline void Entity::AddComponent<Scale>() {
-		if(!TransformHandler::ScaleExist(m_id))
-			TransformHandler::CreateScale(m_id);
+		if(!ComponentHandler::ScaleExist(m_id))
+			ComponentHandler::CreateScale(m_id);
 	}
 
 	template<>
 	inline void Entity::AddComponent<Camera>() {
-		if(!CameraHandler::CameraExist(m_id))
-			CameraHandler::CreateCamera(m_id);
+		if(!ComponentHandler::CameraExist(m_id))
+			ComponentHandler::CreateCamera(m_id);
 
 		AddComponent<Translation>();
 		AddComponent<Rotation>();
@@ -86,8 +79,8 @@ namespace Aen {
 
 	template<>
 	inline void Entity::AddComponent<MeshInstance>() {
-		if(!MeshIHandler::MeshInstanceExist(m_id))
-			MeshIHandler::CreateMeshInstance(m_id);
+		if(!ComponentHandler::MeshInstanceExist(m_id))
+			ComponentHandler::CreateMeshInstance(m_id);
 
 		AddComponent<Translation>();
 		AddComponent<Rotation>();
@@ -96,8 +89,8 @@ namespace Aen {
 
 	template<>
 	inline void Entity::AddComponent<MaterialInstance>() {
-		if(!MaterialIHandler::MaterialInstanceExist(m_id))
-			MaterialIHandler::CreateMaterialInstance(m_id);
+		if(!ComponentHandler::MaterialInstanceExist(m_id))
+			ComponentHandler::CreateMaterialInstance(m_id);
 	}
 
 
@@ -105,31 +98,31 @@ namespace Aen {
 
 	template<>
 	inline Translation& Entity::GetComponent() {
-		return TransformHandler::GetTranslation(m_id);
+		return ComponentHandler::GetTranslation(m_id);
 	}
 
 	template<>
 	inline Rotation& Entity::GetComponent() {
-		return TransformHandler::GetRotation(m_id);
+		return ComponentHandler::GetRotation(m_id);
 	}
 
 	template<>
 	inline Scale& Entity::GetComponent() {
-		return TransformHandler::GetScale(m_id);
+		return ComponentHandler::GetScale(m_id);
 	}
 
 	template<>
 	inline Camera& Entity::GetComponent() {
-		return CameraHandler::GetCamera(m_id);
+		return ComponentHandler::GetCamera(m_id);
 	}
 
 	template<>
 	inline MeshInstance& Entity::GetComponent() {
-		return MeshIHandler::GetMeshInstance(m_id);
+		return ComponentHandler::GetMeshInstance(m_id);
 	}
 
 	template<>
 	inline MaterialInstance& Entity::GetComponent() {
-		return MaterialIHandler::GetMaterialInstance(m_id);
+		return ComponentHandler::GetMaterialInstance(m_id);
 	}
 }

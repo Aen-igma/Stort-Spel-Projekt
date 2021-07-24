@@ -16,9 +16,9 @@ void Client::Start() {
 	m_camera.GetComponent<Aen::Camera>().SetCameraPerspective(90.f, window.GetAspectRatio(), 0.01f, 100.f);
 	Aen::GlobalSettings::SetMainCamera(m_camera);
 
-	Aen::Mesh* pCube = Aen::MeshHandler::CreateMesh("cube");
-	Aen::Material* pMaterial = Aen::MaterialHandler::CreateMaterial("cubeMaterial");
-	Aen::Texture* pTexture = Aen::TextureHandler::CreateTexture("Reimu");
+	Aen::Mesh* pCube = Aen::ResourceHandler::CreateMesh("cube");
+	Aen::Material* pMaterial = Aen::ResourceHandler::CreateMaterial("cubeMaterial");
+	Aen::Texture* pTexture = Aen::ResourceHandler::CreateTexture("Reimu");
 
 	pCube->Load("../Resource/Test/Cube.obj");
 	pTexture->LoadTexture("../Resource/Test/Reimu.png");

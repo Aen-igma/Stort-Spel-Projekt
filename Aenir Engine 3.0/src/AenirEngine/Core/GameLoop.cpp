@@ -40,10 +40,7 @@ namespace Aen {
 			}
 		}
 
-		MeshHandler::Destroy();
-		TextureHandler::Destroy();
-		ShaderMHandler::Destroy();
-		MaterialHandler::Destroy();
+		ResourceHandler::Destroy();
 		GCore::Concealed::Release();
 		delete m_app;
 		delete m_renderer;

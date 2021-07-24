@@ -308,6 +308,7 @@ namespace Aen {
 		out.a41 = -(dir.x * pos);
 		out.a42 = -(dir.y * pos);
 		out.a43 = -(dir.z * pos);
+		out.a44 = 1.f;
 		return out;
 	}
 

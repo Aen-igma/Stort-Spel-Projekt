@@ -28,6 +28,9 @@ namespace Aen {
 
 	void Renderer::Draw() {
 
+		RenderSystem::ClearDepthStencilView(m_depthStencil);
+		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.03f, 0.03f, 0.05f, 1.f));
+
 		m_cbTransform.BindBuffer<VShader>(0);
 		if(GlobalSettings::m_pMainCamera) {
 
@@ -42,23 +45,23 @@ namespace Aen {
 		} else
 			m_cbTransform.GetData().m_vpMat = Mat4f::identity;
 
-		for(auto& i : MeshIHandler::m_mesheInstances) {
+		for(auto& i : ComponentHandler::m_mesheInstances) { 
 			uint32_t id = i.first;
 			Mesh* pMesh = i.second->m_mesh;
-			Material* pMaterial = (pMesh && MaterialIHandler::MaterialInstanceExist(id)) ? MaterialIHandler::GetMaterialInstance(id).m_pMaterial : nullptr;
+			Material* pMaterial = (pMesh && ComponentHandler::MaterialInstanceExist(id)) ? ComponentHandler::GetMaterialInstance(id).m_pMaterial : nullptr;
 
 			Mat4f parentTranform;
 			if(EntityHandler::GetEntity(id).m_hasParent) {
 				uint32_t parentId = EntityHandler::GetEntity(id).m_parentId;
-				Mat4f parentPos = (TransformHandler::TranslationExist(parentId)) ? TransformHandler::GetTranslation(parentId).GetTranform() : Mat4f::identity;
-				Mat4f parentRot = (TransformHandler::RotationExist(parentId)) ? TransformHandler::GetRotation(parentId).GetTranform() : Mat4f::identity;
-				Mat4f parentScale = (TransformHandler::ScaleExist(parentId)) ? TransformHandler::GetScale(parentId).GetTranform() : Mat4f::identity;
+				Mat4f parentPos = (ComponentHandler::TranslationExist(parentId)) ? ComponentHandler::GetTranslation(parentId).GetTranform() : Mat4f::identity;
+				Mat4f parentRot = (ComponentHandler::RotationExist(parentId)) ? ComponentHandler::GetRotation(parentId).GetTranform() : Mat4f::identity;
+				Mat4f parentScale = (ComponentHandler::ScaleExist(parentId)) ? ComponentHandler::GetScale(parentId).GetTranform() : Mat4f::identity;
 				parentTranform = parentScale * parentRot * parentPos;
 			}
 
-			Mat4f pos = (TransformHandler::TranslationExist(id)) ? TransformHandler::GetTranslation(id).GetTranform() : Mat4f::identity;
-			Mat4f rot = (TransformHandler::RotationExist(id)) ? TransformHandler::GetRotation(id).GetTranform() : Mat4f::identity;
-			Mat4f scale = (TransformHandler::ScaleExist(id)) ? TransformHandler::GetScale(id).GetTranform() : Mat4f::identity;
+			Mat4f pos = (ComponentHandler::TranslationExist(id)) ? ComponentHandler::GetTranslation(id).GetTranform() : Mat4f::identity;
+			Mat4f rot = (ComponentHandler::RotationExist(id)) ? ComponentHandler::GetRotation(id).GetTranform() : Mat4f::identity;
+			Mat4f scale = (ComponentHandler::ScaleExist(id)) ? ComponentHandler::GetScale(id).GetTranform() : Mat4f::identity;
 			m_cbTransform.GetData().m_mdlMat = (scale * rot * pos * parentTranform).Transposed();
 			m_cbTransform.UpdateBuffer();
 
@@ -93,8 +96,5 @@ namespace Aen {
 		}
 
 		RenderSystem::Present();
-
-		RenderSystem::ClearDepthStencilView(m_depthStencil);
-		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.03f, 0.03f, 0.05f, 1.f));
 	}
 }

@@ -22,7 +22,7 @@ namespace Aen {
 
 		VBuffer<Vertex> m_vertices;
 
-		friend class MeshHandler;
+		friend class ResourceHandler;
 		friend class Renderer;
 	};
 
@@ -38,7 +38,7 @@ namespace Aen {
 
 		Mesh* m_mesh;
 
-		friend class MeshIHandler;
+		friend class ComponentHandler;
 		friend class Renderer;
 	};
 }

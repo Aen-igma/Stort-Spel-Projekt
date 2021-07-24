@@ -72,7 +72,7 @@ namespace Aen {
         }
 
         static void ClearDepthStencilView(DepthStencil& stencil) {
-            m_dContext->ClearDepthStencilView(stencil.m_dsView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+            m_dContext->ClearDepthStencilView(stencil.m_dsView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
         }
 
         static void UnBindRenderTargets(const UINT& count) {

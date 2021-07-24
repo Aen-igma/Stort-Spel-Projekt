@@ -17,12 +17,12 @@ namespace Aen {
 		rDesc.CullMode = (D3D11_CULL_MODE)cull;
 		rDesc.DepthBias = 0;
 		rDesc.DepthBiasClamp = 0.f;
-		rDesc.DepthClipEnable = false;
+		rDesc.DepthClipEnable = true;
 		rDesc.FillMode = (D3D11_FILL_MODE)fill;
 		rDesc.FrontCounterClockwise = true;
 		rDesc.MultisampleEnable = false;
 		rDesc.ScissorEnable = false;
-		rDesc.SlopeScaledDepthBias = 0.0f;
+		rDesc.SlopeScaledDepthBias = 0.f;
 
 		if(FAILED(m_device->CreateRasterizerState(&rDesc, m_rState.GetAddressOf())))
 			throw;

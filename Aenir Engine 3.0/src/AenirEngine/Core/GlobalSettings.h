@@ -8,7 +8,7 @@ namespace Aen {
 		public:
 		
 		static void SetDefaultShader(const std::string& name) {
-			m_pDefaultShader = &ShaderMHandler::GetShader(name);
+			m_pDefaultShader = &ResourceHandler::GetShader(name);
 		}
 
 		static ShaderModel* GetDefaultShader() {
@@ -30,13 +30,13 @@ namespace Aen {
 
 			// -------------------------- Initialize Default ShaderModel -------------------------- //
 
-			m_pDefaultShader = ShaderMHandler::CreateShader("CellShader");
-			
-			if(!m_pDefaultShader->m_VShader.Create(L"../bin/Debug-x64/CellShaderVS.cso"))
+			m_pDefaultShader = ResourceHandler::CreateShader("CellShader");
+
+			if(!m_pDefaultShader->m_VShader.Create(AEN_OUTPUT_DIR_WSTR(L"CellShaderVS.cso")))
 				if(!m_pDefaultShader->m_VShader.Create(L"CellShaderVS.cso"))
 					throw;
 
-			if(!m_pDefaultShader->m_PShader.Create(L"../bin/Debug-x64/CellShaderPS.cso"))
+			if(!m_pDefaultShader->m_PShader.Create(AEN_OUTPUT_DIR_WSTR(L"CellShaderPS.cso")))
 				if(!m_pDefaultShader->m_PShader.Create(L"CellShaderPS.cso"))
 					throw;
 

@@ -17,8 +17,8 @@ namespace Aen {
 			D3D11_BUFFER_DESC bDesc;
 			ZeroMemory(&bDesc, sizeof(D3D11_BUFFER_DESC));
 
-			int mod = sizeof(m_data) % 16;
-			UINT size = (mod == 0) ? static_cast<UINT>(sizeof(m_data)) : static_cast<UINT>(sizeof(m_data) + (16 - mod));
+			UINT mod = sizeof(m_data) % 16u;
+			UINT size = (mod == 0) ? static_cast<UINT>(sizeof(m_data)) : static_cast<UINT>(sizeof(m_data) + (16u - mod));
 
 			bDesc.Usage = D3D11_USAGE_DYNAMIC;
 			bDesc.ByteWidth = size;

@@ -22,7 +22,7 @@ namespace Aen {
 		Mat4f m_view;
 		Mat4f m_projection;
 
-		friend class CameraHandler;
+		friend class ComponentHandler;
 		friend class Renderer;
 	};
 }

@@ -22,7 +22,7 @@ VS_Output main(VS_Input input) {
 	VS_Output output;
 
 	output.pos = mul(float4(input.pos, 1.f), mul(mdlMat, vpMat));
-	output.normal = normalize(mul(float4(input.normal, 0.f), mdlMat));
+	output.normal = normalize(mul(float4(input.normal, 0.f), mdlMat)).xyz;
 	output.uv = input.uv;
 	output.worldPos = mul(float4(input.pos, 1.f), mdlMat);
 
