@@ -167,16 +167,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animation.cpp" />
     <ClCompile Include="src\AenirEngine\Core\App.cpp" />
     <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp" />
     <ClCompile Include="src\AenirEngine\Core\GlobalSettings.cpp" />
     <ClCompile Include="src\AenirEngine\Core\Renderer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Camera\Camera.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\ComponentHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\DirectionalLight\DirectionalLight.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Entity.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\EntityHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\PointLight\PointLight.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\ResourceHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\SpotLight\SpotLight.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp" />
@@ -207,6 +211,7 @@
     <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animation.h" />
     <ClInclude Include="src\AenirEngine.h" />
     <ClInclude Include="src\AenirEngine\AenCore.h" />
     <ClInclude Include="src\AenirEngine\AenGraphics.h" />
@@ -218,10 +223,13 @@
     <ClInclude Include="src\AenirEngine\Core\Renderer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\Camera.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\DirectionalLight\DirectionalLight.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Entity.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\EntityHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\PointLight\PointLight.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\ResourceHandler.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\SpotLight\SpotLight.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\CBuffer.h" />

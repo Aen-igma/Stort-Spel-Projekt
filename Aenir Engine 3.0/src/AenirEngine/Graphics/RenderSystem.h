@@ -81,7 +81,7 @@ namespace Aen {
         }
 
         template<class T>
-        static void UnBindShaderResources(const UINT& startSlot, const UINT& count);
+        static void UnBindShaderResources(const UINT& startSlot, const UINT& count); // causing memory leak
 
         template<class T>
         static void UnBundShader();
@@ -158,7 +158,8 @@ namespace Aen {
     #define PS(startSlot, count, srv) PSGetShaderResources(startSlot, count, srv)
 
     #define X(sName, lName) template<> inline void RenderSystem::UnBindShaderResources<lName> (const UINT& startSlot, const UINT& count) {\
-        std::vector<ID3D11ShaderResourceView*> pSrv(count, nullptr);\
+        static std::vector<ID3D11ShaderResourceView*> pSrv;\
+        pSrv.resize(count, nullptr);\
         m_dContext->sName(startSlot, count, pSrv.data());\
     }
 

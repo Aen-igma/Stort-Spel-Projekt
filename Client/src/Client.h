@@ -20,6 +20,7 @@ class Client : public Aen::App {
 	Aen::Entity m_camera;
 	Aen::Entity m_cube;
 	Aen::Entity m_cube2;
+	Aen::Entity m_Light;
 };
 
 

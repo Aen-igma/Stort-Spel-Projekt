@@ -61,8 +61,8 @@ namespace Aen {
 			layout.second.Add<DBType::Float>(	"RimLightIntensity"	);
 			layout.second.Add<DBType::Float>(	"RimLightSize"		);
 
-			layout.second["BaseColor"]			= Color::White;
-			layout.second["ShadowColor"]		= Color(0.03f, 0.03f, 0.05f, 1.f);
+			layout.second["BaseColor"]			= Color::Gray;
+			layout.second["ShadowColor"]		= Color(0.3f, 0.3f, 0.5f, 1.f);
 			layout.second["SpecularColor"]		= Color::White;
 			layout.second["SpecularPower"]		= 5.f;
 			layout.second["ShadowOffset"]		= 0.5f;

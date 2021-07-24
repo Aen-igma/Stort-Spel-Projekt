@@ -3,6 +3,7 @@
 #include"Material/Material.h"
 #include"Camera/Camera.h"
 #include"Mesh/Mesh.h"
+#include"PointLight/PointLight.h"
 
 #include<unordered_map>
 
@@ -153,6 +154,29 @@ namespace Aen {
 			throw;
 		}
 
+		// ----------------- Point Light Component ------------------ //
+
+		static const bool PointLightExist(const uint32_t& id) {
+			return m_pointLights.count(id) > 0;
+		}
+
+		static void CreatePointLight(const uint32_t& id) {
+			m_pointLights.emplace(id, AEN_NEW PointLight());
+		}
+
+		static void RemovePointLight(const uint32_t& id) {
+			if(m_pointLights.count(id) > 0) {
+				delete m_pointLights.at(id);
+				m_pointLights.at(id) = nullptr;
+				m_pointLights.erase(id);
+			}
+		}
+
+		static PointLight& GetPointLight(const uint32_t& id) {
+			if(m_pointLights.count(id) > 0)
+				return *m_pointLights.at(id);
+		}
+
 		static std::unordered_map<uint32_t, Camera*> m_cameras;
 		static std::unordered_map<uint32_t, MaterialInstance*> m_materialInstance;
 		static std::unordered_map<uint32_t, MeshInstance*> m_mesheInstances;
@@ -160,12 +184,14 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Rotation*> m_rotations;
 		static std::unordered_map<uint32_t, Scale*> m_scales;
 
-		friend class Translation;
-		friend class Rotation;
-		friend class Scale;
-		friend class MeshInstance;
-		friend class MaterialInstance;
-		friend class Camera;
+		static std::unordered_map<uint32_t, PointLight*> m_pointLights;
+
+		//friend class Translation;
+		//friend class Rotation;
+		//friend class Scale;
+		//friend class MeshInstance;
+		//friend class MaterialInstance;
+		//friend class Camera;
 		friend class Entity;
 		friend class Renderer;
 	};

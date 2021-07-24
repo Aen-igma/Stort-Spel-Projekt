@@ -1,7 +1,5 @@
 #include"AenirEngine.h"
-#include "Client.h"
-
-
+#include"Client.h"
 
 Client::~Client() {
 
@@ -40,6 +38,11 @@ void Client::Start() {
 	m_cube2.SetPos(2.f, 0.f, 0.f);
 
 	m_cube2.SetParent(m_cube);
+
+	m_Light.AddComponent<Aen::PointLight>();
+	m_Light.GetComponent<Aen::PointLight>().SetColor(Aen::Color::White);
+	m_Light.GetComponent<Aen::PointLight>().SetLightDist(0.1f, 0.1f, 2.f, 5.f);
+	m_Light.SetPos(-1.f, 1.f, 2.f);
 
 	Aen::Input::SetMouseVisible(false);
 }

@@ -93,6 +93,14 @@ namespace Aen {
 			ComponentHandler::CreateMaterialInstance(m_id);
 	}
 
+	template<>
+	inline void Entity::AddComponent<PointLight>() {
+		if(!ComponentHandler::PointLightExist(m_id))
+			ComponentHandler::CreatePointLight(m_id);
+
+		AddComponent<Translation>();
+	}
+
 
 	// --------------- GetComponent -----------------
 
@@ -124,5 +132,10 @@ namespace Aen {
 	template<>
 	inline MaterialInstance& Entity::GetComponent() {
 		return ComponentHandler::GetMaterialInstance(m_id);
+	}
+
+	template<>
+	inline PointLight& Entity::GetComponent() {
+		return ComponentHandler::GetPointLight(m_id);
 	}
 }

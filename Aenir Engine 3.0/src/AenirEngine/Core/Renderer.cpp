@@ -5,7 +5,7 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_cbTransform(), m_backBuffer(), 
+		:m_window(window), m_cbTransform(), m_cbLightCount(), m_backBuffer(), 
 		m_viewPort(), m_depthStencil(window), m_rasterizerState(FillMode::Solid, CullMode::Front) {}
 
 	void Renderer::Initialize() {
@@ -31,6 +31,8 @@ namespace Aen {
 		RenderSystem::ClearDepthStencilView(m_depthStencil);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.03f, 0.03f, 0.05f, 1.f));
 
+		// Camera
+
 		m_cbTransform.BindBuffer<VShader>(0);
 		if(GlobalSettings::m_pMainCamera) {
 
@@ -45,10 +47,26 @@ namespace Aen {
 		} else
 			m_cbTransform.GetData().m_vpMat = Mat4f::identity;
 
+		// PointLight
+
+		for(auto& i : ComponentHandler::m_pointLights)
+			i.second->SetPos(ComponentHandler::GetTranslation(i.first).GetPos());
+		
+		PointLight::m_cbPointLight.UpdateBuffer();
+		PointLight::m_cbPointLight.BindSRV<PShader>(4);
+
+		m_cbLightCount.GetData() = PointLight::m_indexer;
+		m_cbLightCount.UpdateBuffer();
+		m_cbLightCount.BindBuffer<PShader>(1);
+
+		// Mesh
+
 		for(auto& i : ComponentHandler::m_mesheInstances) { 
 			uint32_t id = i.first;
 			Mesh* pMesh = i.second->m_mesh;
 			Material* pMaterial = (pMesh && ComponentHandler::MaterialInstanceExist(id)) ? ComponentHandler::GetMaterialInstance(id).m_pMaterial : nullptr;
+
+			// Tranform
 
 			Mat4f parentTranform;
 			if(EntityHandler::GetEntity(id).m_hasParent) {
@@ -65,28 +83,26 @@ namespace Aen {
 			m_cbTransform.GetData().m_mdlMat = (scale * rot * pos * parentTranform).Transposed();
 			m_cbTransform.UpdateBuffer();
 
+			// Material
+
 			if(pMaterial) {
 
 				RenderSystem::SetInputLayout(pMaterial->m_pShader->m_iLayout);
 
 				for(UINT i = 0; i < 4; i++)
-					if(pMaterial->m_textures[i]) {
-						RenderSystem::BindShaderResourceView<PShader>(i, pMaterial->m_textures[i]->m_shaderResource); // causing memory leak
-					}
+					if(pMaterial->m_textures[i])
+						RenderSystem::BindShaderResourceView<PShader>(i, pMaterial->m_textures[i]->m_shaderResource);
 
 				RenderSystem::BindShader<VShader>(pMaterial->m_pShader->m_VShader);
 				RenderSystem::BindShader<PShader>(pMaterial->m_pShader->m_PShader);
 
 				for(uint32_t i = 0; i < pMaterial->m_dBuffers.size(); i++) {
-					UINT slot = pMaterial->m_pShader->m_dbLayouts[i].first;
-					pMaterial->m_dBuffers[i]->BindBuffer<PShader>(slot);
+					pMaterial->m_dBuffers[i]->BindBuffer<PShader>(pMaterial->m_pShader->m_dbLayouts[i].first);
 					pMaterial->m_dBuffers[i]->UpdateBuffer();
 				}
 
-				for(auto& i : pMaterial->m_pShader->m_samplerDatas) {
-					UINT slot = i.first;
-					RenderSystem::BindSamplers<PShader>(slot, i.second);
-				}
+				for(auto& i : pMaterial->m_pShader->m_samplerDatas)
+					RenderSystem::BindSamplers<PShader>(i.first, i.second);
 			}
 
 			if(pMesh) {
