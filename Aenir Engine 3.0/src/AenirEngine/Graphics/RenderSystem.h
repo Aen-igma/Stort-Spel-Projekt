@@ -81,7 +81,7 @@ namespace Aen {
         }
 
         template<class T>
-        static void UnBindShaderResources(const UINT& startSlot, const UINT& count); // causing memory leak
+        static void UnBindShaderResources(const UINT& startSlot, const UINT& count);
 
         template<class T>
         static void UnBundShader();
@@ -150,38 +150,22 @@ namespace Aen {
 
     // ---------------------------- UnBindShaderResource ---------------------------------
     
-    #define VS(startSlot, count, srv) VSGetShaderResources(startSlot, count, srv)
-    #define HS(startSlot, count, srv) HSGetShaderResources(startSlot, count, srv)
-    #define CS(startSlot, count, srv) CSGetShaderResources(startSlot, count, srv)
-    #define DS(startSlot, count, srv) DSGetShaderResources(startSlot, count, srv)
-    #define GS(startSlot, count, srv) GSGetShaderResources(startSlot, count, srv)
-    #define PS(startSlot, count, srv) PSGetShaderResources(startSlot, count, srv)
+    #define VS(startSlot, count, srv) VSSetShaderResources(startSlot, count, srv)
+    #define HS(startSlot, count, srv) HSSetShaderResources(startSlot, count, srv)
+    #define CS(startSlot, count, srv) CSSetShaderResources(startSlot, count, srv)
+    #define DS(startSlot, count, srv) DSSetShaderResources(startSlot, count, srv)
+    #define GS(startSlot, count, srv) GSSetShaderResources(startSlot, count, srv)
+    #define PS(startSlot, count, srv) PSSetShaderResources(startSlot, count, srv)
 
     #define X(sName, lName) template<> inline void RenderSystem::UnBindShaderResources<lName> (const UINT& startSlot, const UINT& count) {\
-        static std::vector<ID3D11ShaderResourceView*> pSrv;\
-        pSrv.resize(count, nullptr);\
+        static std::vector<ID3D11ShaderResourceView*> pSrv(count, nullptr);\
         m_dContext->sName(startSlot, count, pSrv.data());\
     }
 
     DEF_SHADER
     #undef X
 
-    #undef VS
-    #undef HS
-    #undef CS
-    #undef DS
-    #undef GS
-    #undef PS
-
     // --------------------------- BindShaderResourceView for GBuffer ------------------------------
-
-
-    #define VS(startSlot, size, srv) VSSetShaderResources(startSlot, size, srv)
-    #define HS(startSlot, size, srv) HSSetShaderResources(startSlot, size, srv)
-    #define CS(startSlot, size, srv) CSSetShaderResources(startSlot, size, srv)
-    #define DS(startSlot, size, srv) DSSetShaderResources(startSlot, size, srv)
-    #define GS(startSlot, size, srv) GSSetShaderResources(startSlot, size, srv)
-    #define PS(startSlot, size, srv) PSSetShaderResources(startSlot, size, srv)
 
     #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& startSlot, GBuffer& gBuffer) {\
         UINT size = (UINT)gBuffer.m_srvs.size();\

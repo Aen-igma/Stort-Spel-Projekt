@@ -23,7 +23,11 @@ namespace Aen {
 		Window& m_window;
 
 		CBuffer<CB_Transform> m_cbTransform;
-		CBuffer<uint32_t> m_cbLightCount;
+		CBuffer<Vec3i> m_cbLightCount;
+		SBuffer<SB_SpotLight> m_sbSpotLight;
+		SBuffer<SB_PointLight> m_sbPointLight;
+		SBuffer<SB_DirectionalLight> m_sbDirectionalLight;
+
 		BBuffer m_backBuffer;
 		
 		D3D11_VIEWPORT m_viewPort;

@@ -18,7 +18,6 @@ namespace Aen {
 			exit(-1);
 
 		GlobalSettings::Initialize();
-		PointLight::Initialize(); // Causing Memory Leak
 
 		m_renderer = AEN_NEW Renderer(m_app->window);
 		m_renderer->Initialize();

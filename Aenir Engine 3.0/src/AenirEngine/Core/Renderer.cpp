@@ -5,8 +5,8 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_cbTransform(), m_cbLightCount(), m_backBuffer(), 
-		m_viewPort(), m_depthStencil(window), m_rasterizerState(FillMode::Solid, CullMode::Front) {}
+		:m_window(window), m_cbTransform(), m_cbLightCount(), m_sbPointLight(300), m_sbDirectionalLight(300), m_sbSpotLight(300),
+		m_backBuffer(), m_viewPort(), m_depthStencil(window), m_rasterizerState(FillMode::Solid, CullMode::Front) {}
 
 	void Renderer::Initialize() {
 
@@ -29,7 +29,7 @@ namespace Aen {
 	void Renderer::Draw() {
 
 		RenderSystem::ClearDepthStencilView(m_depthStencil);
-		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.03f, 0.03f, 0.05f, 1.f));
+		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.08f, 0.08f, 0.13f, 1.f));
 
 		// Camera
 
@@ -47,17 +47,50 @@ namespace Aen {
 		} else
 			m_cbTransform.GetData().m_vpMat = Mat4f::identity;
 
+		// SpotLight
+
+		uint32_t lightIndex = 0;
+		for(auto& i : ComponentHandler::m_spotLights) {
+			i.second->SetPos(ComponentHandler::GetTranslation(i.first).GetPos());
+			i.second->SetRot(ComponentHandler::GetRotation(i.first).GetTranform());
+			m_sbSpotLight.GetData(lightIndex) = i.second->m_spotLight;
+			lightIndex++;
+		}
+
+		m_sbSpotLight.BindSRV<PShader>(4);
+		m_sbSpotLight.UpdateBuffer();
+
 		// PointLight
 
-		for(auto& i : ComponentHandler::m_pointLights)
+		lightIndex = 0;
+		for(auto& i : ComponentHandler::m_pointLights) {
 			i.second->SetPos(ComponentHandler::GetTranslation(i.first).GetPos());
-		
-		PointLight::m_cbPointLight.UpdateBuffer();
-		PointLight::m_cbPointLight.BindSRV<PShader>(4);
+			m_sbPointLight.GetData(lightIndex) = i.second->m_pointLight;
+			lightIndex++;
+		}
 
-		m_cbLightCount.GetData() = PointLight::m_indexer;
-		m_cbLightCount.UpdateBuffer();
+		m_sbPointLight.BindSRV<PShader>(5); 
+		m_sbPointLight.UpdateBuffer();
+
+		// DirectionalLight
+
+		lightIndex = 0;
+		for(auto& i : ComponentHandler::m_directionalLights) {
+			i.second->SetRot(ComponentHandler::GetRotation(i.first).GetTranform());
+			m_sbDirectionalLight.GetData(lightIndex) = i.second->m_directionalLight;
+			lightIndex++;
+		}
+
+		m_sbDirectionalLight.BindSRV<PShader>(6);
+		m_sbDirectionalLight.UpdateBuffer();
+
+		// LightCount
+
+		m_cbLightCount.GetData().x = ComponentHandler::m_spotLights.size();
+		m_cbLightCount.GetData().y = ComponentHandler::m_pointLights.size();
+		m_cbLightCount.GetData().z = ComponentHandler::m_directionalLights.size();
 		m_cbLightCount.BindBuffer<PShader>(1);
+		m_cbLightCount.UpdateBuffer();
 
 		// Mesh
 
@@ -66,7 +99,7 @@ namespace Aen {
 			Mesh* pMesh = i.second->m_mesh;
 			Material* pMaterial = (pMesh && ComponentHandler::MaterialInstanceExist(id)) ? ComponentHandler::GetMaterialInstance(id).m_pMaterial : nullptr;
 
-			// Tranform
+			// Transform
 
 			Mat4f parentTranform;
 			if(EntityHandler::GetEntity(id).m_hasParent) {
@@ -85,6 +118,7 @@ namespace Aen {
 
 			// Material
 
+			RenderSystem::UnBindShaderResources<PShader>(0u, 4u);
 			if(pMaterial) {
 
 				RenderSystem::SetInputLayout(pMaterial->m_pShader->m_iLayout);

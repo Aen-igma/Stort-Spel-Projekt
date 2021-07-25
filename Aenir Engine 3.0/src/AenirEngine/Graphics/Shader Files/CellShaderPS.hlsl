@@ -12,14 +12,31 @@ cbuffer CellShaderModel : register(b0) {
 };
 
 cbuffer LightCount : register(b1) {
+	uint sLightCount;
 	uint pLightCount;
+	uint dLightCount;
 }
 
 struct PointLight {
 	float4 color;
 	float4 dist;
 	float3 pos;
-	float pad;
+	float strength;
+};
+
+struct DirectionalLight {
+	float4 color;
+	float3 dir;
+	float strength;
+};
+
+struct SpotLight {
+	float4 color;
+	float4 dist;
+	float3 pos;
+	float strength;
+	float3 dir;
+	float ang;
 };
 
 struct PS_Input {
@@ -34,7 +51,9 @@ texture2D normalMap : NORMALMAP : register(t1);
 texture2D emissionMap : EMISSIONMAP : register(t2);
 texture2D opacityMap : OPACITYMAP : register(t3);
 
-StructuredBuffer<PointLight> pLights : register(t4);
+StructuredBuffer<SpotLight> sLights : register(t4);
+StructuredBuffer<PointLight> pLights : register(t5);
+StructuredBuffer<DirectionalLight> dLights : register(t6);
 
 SamplerState wrapSampler : WSAMPLER : register(s0);
 
@@ -46,7 +65,18 @@ float4 main(PS_Input input) : SV_Target0{
 	
 	finalPixel += diffuse * shadowColor;
 
-	for(uint i = 0; i < pLightCount; i++) {
+	for(int i = 0; i < sLightCount; i++) {
+		float3 sLightDir = normalize(sLights[i].pos - input.worldPos);
+		float dotND = normalize(dot(sLights[i].dir, input.normal));
+
+		float dist = distance(sLights[i].pos, input.worldPos);
+		float attenuation = sLights[i].dist.w / (sLights[i].dist.x + sLights[i].dist.y * dist + sLights[i].dist.z + dist * dist);
+
+		if(dotND > 0.5f)
+			finalPixel += diffuse * shadowColor * sLights[i].color * sLights[i].strength * attenuation * pow(max(dot(sLightDir, sLights[i].dir), 0.f), sLights[i].ang);
+	}
+
+	for(int i = 0; i < pLightCount; i++) {
 		float3 pLightDir = normalize(pLights[i].pos - input.worldPos);
 		float dotND = normalize(dot(pLightDir, input.normal));
 		
@@ -54,7 +84,14 @@ float4 main(PS_Input input) : SV_Target0{
 		float attenuation = pLights[i].dist.w / (pLights[i].dist.x + pLights[i].dist.y * dist + pLights[i].dist.z + pow(dist, 2));
 		
 		if(dotND > 0.5f)
-			finalPixel += pLights[i].color * (diffuse * shadowColor) * attenuation;
+			finalPixel += pLights[i].color * pLights[i].strength * (diffuse * shadowColor) * attenuation;
+	}
+
+	for(int i = 0; i < dLightCount; i++) {
+		float dotND = normalize(dot(dLights[i].dir, input.normal));
+
+		if(dotND > 0.5f)
+			finalPixel += dLights[i].color * dLights[i].strength * (diffuse * shadowColor);
 	}
 	
 	return float4(saturate(finalPixel), 1.f);

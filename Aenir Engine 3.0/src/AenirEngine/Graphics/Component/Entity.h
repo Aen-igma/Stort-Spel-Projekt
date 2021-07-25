@@ -94,11 +94,28 @@ namespace Aen {
 	}
 
 	template<>
+	inline void Entity::AddComponent<SpotLight>() {
+		if(!ComponentHandler::SpotLightExist(m_id))
+			ComponentHandler::CreateSpotLight(m_id);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+	}
+
+	template<>
 	inline void Entity::AddComponent<PointLight>() {
 		if(!ComponentHandler::PointLightExist(m_id))
 			ComponentHandler::CreatePointLight(m_id);
 
 		AddComponent<Translation>();
+	}
+
+	template<>
+	inline void Entity::AddComponent<DirectionalLight>() {
+		if(!ComponentHandler::DirectionalLightExist(m_id))
+			ComponentHandler::CreateDirectionalLight(m_id);
+
+		AddComponent<Rotation>();
 	}
 
 
@@ -135,7 +152,17 @@ namespace Aen {
 	}
 
 	template<>
+	inline SpotLight& Entity::GetComponent() {
+		return ComponentHandler::GetSpotLight(m_id);
+	}
+
+	template<>
 	inline PointLight& Entity::GetComponent() {
 		return ComponentHandler::GetPointLight(m_id);
+	}
+
+	template<>
+	inline DirectionalLight& Entity::GetComponent() {
+		return ComponentHandler::GetDirectionalLight(m_id);
 	}
 }

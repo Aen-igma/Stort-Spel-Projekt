@@ -10,6 +10,8 @@ namespace Aen {
 	std::unordered_map<uint32_t, Rotation*>	ComponentHandler::m_rotations;
 	std::unordered_map<uint32_t, Scale*> ComponentHandler::m_scales;
 
+	std::unordered_map<uint32_t, SpotLight*> ComponentHandler::m_spotLights;
 	std::unordered_map<uint32_t, PointLight*> ComponentHandler::m_pointLights;
+	std::unordered_map<uint32_t, DirectionalLight*> ComponentHandler::m_directionalLights;
 
 }

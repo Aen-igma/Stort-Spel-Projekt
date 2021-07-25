@@ -15,10 +15,12 @@ void Client::Start() {
 	Aen::GlobalSettings::SetMainCamera(m_camera);
 
 	Aen::Mesh* pCube = Aen::ResourceHandler::CreateMesh("cube");
+	Aen::Mesh* pPlane = Aen::ResourceHandler::CreateMesh("plane");
 	Aen::Material* pMaterial = Aen::ResourceHandler::CreateMaterial("cubeMaterial");
 	Aen::Texture* pTexture = Aen::ResourceHandler::CreateTexture("Reimu");
 
 	pCube->Load("../Resource/Test/Cube.obj");
+	pPlane->Load("../Resource/Test/Plane.obj");
 	pTexture->LoadTexture("../Resource/Test/Reimu.png");
 	pMaterial->CreateDefault();
 	pMaterial->SetDiffuseMap(*pTexture);
@@ -39,10 +41,33 @@ void Client::Start() {
 
 	m_cube2.SetParent(m_cube);
 
-	m_Light.AddComponent<Aen::PointLight>();
-	m_Light.GetComponent<Aen::PointLight>().SetColor(Aen::Color::White);
-	m_Light.GetComponent<Aen::PointLight>().SetLightDist(0.1f, 0.1f, 2.f, 5.f);
-	m_Light.SetPos(-1.f, 1.f, 2.f);
+	m_plane.AddComponent<Aen::MeshInstance>();
+	m_plane.AddComponent<Aen::MaterialInstance>();
+
+	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(pPlane);
+	m_plane.GetComponent<Aen::MaterialInstance>().SetMaterial(pMaterial);
+	m_plane.SetPos(0.f, -1.f, 3.f);
+	m_plane.SetScale(10.f, 10.f, 10.f);
+
+	m_sLight.AddComponent<Aen::SpotLight>();
+	m_sLight.GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Green);
+	m_sLight.GetComponent<Aen::SpotLight>().SetLightDist(0.4f, 0.02f, 0.f, 100.f);
+	m_sLight.GetComponent<Aen::SpotLight>().SetStrength(1.f);
+	m_sLight.GetComponent<Aen::SpotLight>().SetConeSize(20.f);
+	m_sLight.SetPos(0.f, 2.f, 3.f);
+
+	m_pLight.AddComponent<Aen::PointLight>();
+	m_pLight.GetComponent<Aen::PointLight>().SetColor(Aen::Color::Red);
+	m_pLight.GetComponent<Aen::PointLight>().SetLightDist(0.4f, 0.02f, 0.f, 5.f);
+	m_pLight.GetComponent<Aen::PointLight>().SetStrength(1.f);
+	m_pLight.SetPos(0.f, 0.f, 2.f);
+	
+	m_dLight.AddComponent<Aen::DirectionalLight>();
+	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::Cyan);
+	m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
+	m_dLight.SetRot(45.f, 135.f, 0.f);
+
+	AEN_PRINT("");
 
 	Aen::Input::SetMouseVisible(false);
 }

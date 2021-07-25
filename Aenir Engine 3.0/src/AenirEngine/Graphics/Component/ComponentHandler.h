@@ -3,7 +3,10 @@
 #include"Material/Material.h"
 #include"Camera/Camera.h"
 #include"Mesh/Mesh.h"
+
+#include"SpotLight/SpotLight.h"
 #include"PointLight/PointLight.h"
+#include"DirectionalLight/DirectionalLight.h"
 
 #include<unordered_map>
 
@@ -154,6 +157,29 @@ namespace Aen {
 			throw;
 		}
 
+		// ----------------- Spot Light Component ------------------ //
+
+		static const bool SpotLightExist(const uint32_t& id) {
+			return m_spotLights.count(id) > 0;
+		}
+
+		static void CreateSpotLight(const uint32_t& id) {
+			m_spotLights.emplace(id, AEN_NEW SpotLight());
+		}
+
+		static void RemoveSpotLight(const uint32_t& id) {
+			if(m_spotLights.count(id) > 0) {
+				delete m_spotLights.at(id);
+				m_spotLights.at(id) = nullptr;
+				m_spotLights.erase(id);
+			}
+		}
+
+		static SpotLight& GetSpotLight(const uint32_t& id) {
+			if(m_spotLights.count(id) > 0)
+				return *m_spotLights.at(id);
+		}
+
 		// ----------------- Point Light Component ------------------ //
 
 		static const bool PointLightExist(const uint32_t& id) {
@@ -177,6 +203,29 @@ namespace Aen {
 				return *m_pointLights.at(id);
 		}
 
+		// ----------------- Directional Light Component ------------------ //
+
+		static const bool DirectionalLightExist(const uint32_t& id) {
+			return m_directionalLights.count(id) > 0;
+		}
+
+		static void CreateDirectionalLight(const uint32_t& id) {
+			m_directionalLights.emplace(id, AEN_NEW DirectionalLight());
+		}
+
+		static void RemoveDirectionalLight(const uint32_t& id) {
+			if(m_directionalLights.count(id) > 0) {
+				delete m_directionalLights.at(id);
+				m_directionalLights.at(id) = nullptr;
+				m_directionalLights.erase(id);
+			}
+		}
+
+		static DirectionalLight& GetDirectionalLight(const uint32_t& id) {
+			if(m_directionalLights.count(id) > 0)
+				return *m_directionalLights.at(id);
+		}
+
 		static std::unordered_map<uint32_t, Camera*> m_cameras;
 		static std::unordered_map<uint32_t, MaterialInstance*> m_materialInstance;
 		static std::unordered_map<uint32_t, MeshInstance*> m_mesheInstances;
@@ -184,14 +233,10 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Rotation*> m_rotations;
 		static std::unordered_map<uint32_t, Scale*> m_scales;
 
+		static std::unordered_map<uint32_t, SpotLight*> m_spotLights;
 		static std::unordered_map<uint32_t, PointLight*> m_pointLights;
+		static std::unordered_map<uint32_t, DirectionalLight*> m_directionalLights;
 
-		//friend class Translation;
-		//friend class Rotation;
-		//friend class Scale;
-		//friend class MeshInstance;
-		//friend class MaterialInstance;
-		//friend class Camera;
 		friend class Entity;
 		friend class Renderer;
 	};

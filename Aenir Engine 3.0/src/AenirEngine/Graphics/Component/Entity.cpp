@@ -10,6 +10,9 @@ namespace Aen {
 		ComponentHandler::RemoveMeshInstance(m_id);
 		ComponentHandler::RemoveMaterial(m_id);
 		ComponentHandler::RemoveTranform(m_id);
+		ComponentHandler::RemoveSpotLight(m_id);
+		ComponentHandler::RemovePointLight(m_id);
+		ComponentHandler::RemoveDirectionalLight(m_id);
 
 		EntityHandler::RemoveEntity(m_id);
 	}
