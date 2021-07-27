@@ -25,6 +25,10 @@ class Client : public Aen::App {
 	Aen::Entity m_sLight;
 	Aen::Entity m_pLight;
 	Aen::Entity m_dLight;
+
+	Aen::Entity m_mokou;
+	Aen::Entity m_ina;
+	Aen::Entity m_inaAcc;
 };
 
 

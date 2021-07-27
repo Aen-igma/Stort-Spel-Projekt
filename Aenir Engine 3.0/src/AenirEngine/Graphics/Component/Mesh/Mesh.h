@@ -7,6 +7,8 @@ namespace Aen {
 	struct Vertex {
 		Vec3f pos;
 		Vec3f norm;
+		Vec3f tan;
+		Vec3f bi;
 		Vec2f uv;
 	};
 

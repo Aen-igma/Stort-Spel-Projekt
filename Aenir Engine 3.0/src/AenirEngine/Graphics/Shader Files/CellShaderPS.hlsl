@@ -23,6 +23,13 @@ cbuffer Camera : register(b2) {
 	float3 camPos;
 }
 
+cbuffer useTexture : register(b3) {
+	int useDiffuse;
+	int useNormal;
+	int useEmission;
+	int useOpacity;
+}
+
 struct PointLight {
 	float4 color;
 	float4 dist;
@@ -47,7 +54,7 @@ struct SpotLight {
 
 struct PS_Input {
 	float4 pos : SV_Position;
-	float3 normal : NORMAL;
+	float3x3 tbn : TBN;
 	float2 uv : TEXCOORD;
 	float3 worldPos : WORLD_POSITION;
 };
@@ -79,11 +86,12 @@ PS_Output main(PS_Input input) : SV_Target0{
 	
 	finalPixel += diffuse * shadowColor;
 
-	
+	float3 normalM = normalize(normalMap.Sample(wrapSampler, input.uv).rgb * 2.f - 1.f);
+	float3 normal = (useNormal) ? float4(mul(normalM, input.tbn), 1.f) : float4(normalize(input.tbn._m20_m21_m22), 1.f);
 
 	for(int i = 0; i < sLightCount; i++) {
 		float3 sLightDir = normalize(sLights[i].pos - input.worldPos);
-		float dotND = normalize(dot(sLights[i].dir, input.normal));
+		float dotND = normalize(dot(sLights[i].dir, normal));
 
 		float dist = distance(sLights[i].pos, input.worldPos);
 		float attenuation = sLights[i].dist.w / (sLights[i].dist.x + sLights[i].dist.y * dist + sLights[i].dist.z + dist * dist);
@@ -94,7 +102,7 @@ PS_Output main(PS_Input input) : SV_Target0{
 
 	for(int i = 0; i < pLightCount; i++) {
 		float3 pLightDir = normalize(pLights[i].pos - input.worldPos);
-		float dotND = normalize(dot(pLightDir, input.normal));
+		float dotND = normalize(dot(pLightDir, normal));
 		
 		float dist = distance(pLights[i].pos, input.worldPos);
 		float attenuation = pLights[i].dist.w / (pLights[i].dist.x + pLights[i].dist.y * dist + pLights[i].dist.z + pow(dist, 2));
@@ -104,14 +112,14 @@ PS_Output main(PS_Input input) : SV_Target0{
 	}
 
 	for(int i = 0; i < dLightCount; i++) {
-		float dotND = normalize(dot(dLights[i].dir, input.normal));
+		float dotND = normalize(dot(dLights[i].dir, normal));
 
 		if(dotND > 0.5f)
 			finalPixel += dLights[i].color * dLights[i].strength * (diffuse * shadowColor);
 	}
 
 	output.diffuse = float4(saturate(finalPixel), 1.f);
-	output.normal = float4(input.normal, 1.f);
+	output.normal = float4(normal, 1.f);
 	output.depth = float4(input.pos.z / input.pos.w, 0.f, 0.f, 1.f);
 
 	return output;

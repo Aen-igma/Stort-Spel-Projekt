@@ -41,9 +41,11 @@ namespace Aen {
 					throw;
 
 			m_pDefaultShader->m_iLayout.m_inputDesc = {
-				{"POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-				{"NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-				{"UV",        0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+				{"POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,    0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+				{"NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+				{"TANGENT",		0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+				{"BITANGENT",   0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+				{"UV",			0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 			};
 
 			m_pDefaultShader->m_iLayout.Create(m_pDefaultShader->m_VShader);
@@ -67,7 +69,7 @@ namespace Aen {
 			layout.second["ShadowColor"]		= Color(0.3f, 0.3f, 0.5f, 1.f);
 			layout.second["SpecularColor"]		= Color::White;
 			layout.second["EdgeColor"]			= Color::Black;
-			layout.second["EdgeThickness"]		= 0.003f;
+			layout.second["EdgeThickness"]		= 0.001f;
 			layout.second["SpecularPower"]		= 5.f;
 			layout.second["ShadowOffset"]		= 0.5f;
 			layout.second["OuterFalloff"]		= 0.f;

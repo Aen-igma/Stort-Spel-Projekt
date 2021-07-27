@@ -151,8 +151,11 @@ namespace Aen {
 				RenderSystem::SetInputLayout(pMaterial->m_pShader->m_iLayout);
 
 				for(UINT i = 0; i < 4; i++)
-					if(pMaterial->m_textures[i])
+					if(pMaterial->m_textures[i]) {
 						RenderSystem::BindShaderResourceView<PShader>(i, pMaterial->m_textures[i]->m_shaderResource);
+						m_cbUseTexture.GetData()[i] = (int)true;
+					} else
+						m_cbUseTexture.GetData()[i] = (int)false;
 
 				RenderSystem::BindShader<VShader>(pMaterial->m_pShader->m_VShader);
 				RenderSystem::BindShader<PShader>(pMaterial->m_pShader->m_PShader);
@@ -165,6 +168,9 @@ namespace Aen {
 				for(auto& i : pMaterial->m_pShader->m_samplerDatas)
 					RenderSystem::BindSamplers<PShader>(i.first, i.second);
 			}
+
+			m_cbUseTexture.UpdateBuffer();
+			m_cbUseTexture.BindBuffer<PShader>(3);
 
 			RenderSystem::UnBindRenderTargets(1);
 			RenderSystem::ClearRenderTargetView(m_gBuffer, Color(0.f, 0.f, 0.f, 0.f));

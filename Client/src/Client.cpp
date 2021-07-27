@@ -17,24 +17,60 @@ void Client::Start() {
 	Aen::Mesh* pCube = Aen::ResourceHandler::CreateMesh("cube");
 	Aen::Mesh* pPlane = Aen::ResourceHandler::CreateMesh("plane");
 	Aen::Mesh* pScuffBall = Aen::ResourceHandler::CreateMesh("scuffBall");
+	Aen::Mesh* pMokouMesh = Aen::ResourceHandler::CreateMesh("mokouMesh");
+	Aen::Mesh* pInaMesh = Aen::ResourceHandler::CreateMesh("inaMesh");
+	Aen::Mesh* pInaAccMesh = Aen::ResourceHandler::CreateMesh("inaAccMesh");
+
 	Aen::Material* pMaterial1 = Aen::ResourceHandler::CreateMaterial("cubeMaterial");
 	Aen::Material* pMaterial2 = Aen::ResourceHandler::CreateMaterial("whiteMaterial");
+	Aen::Material* pMokouMat = Aen::ResourceHandler::CreateMaterial("mokouMat");
+	Aen::Material* pInaMat = Aen::ResourceHandler::CreateMaterial("inaMat");
+	Aen::Material* pInaAccMat = Aen::ResourceHandler::CreateMaterial("inaAccMat");
+
 	Aen::Texture* pReimu = Aen::ResourceHandler::CreateTexture("Reimu");
 	Aen::Texture* pWhite = Aen::ResourceHandler::CreateTexture("White");
+	Aen::Texture* pMokouTex = Aen::ResourceHandler::CreateTexture("mokouTex");
+	Aen::Texture* pInaTex = Aen::ResourceHandler::CreateTexture("inaTex");
+	Aen::Texture* pInaNormal = Aen::ResourceHandler::CreateTexture("inaNormal");
+	Aen::Texture* pInaAccTex = Aen::ResourceHandler::CreateTexture("inaAccTex");
+	Aen::Texture* pInaAccNormal = Aen::ResourceHandler::CreateTexture("inaAccNormal");
 
 	pCube->Load("../Resource/Test/Cube.obj");
 	pPlane->Load("../Resource/Test/Plane.obj");
 	pScuffBall->Load("../Resource/Test/ScuffBall.obj");
+	pMokouMesh->Load("../Resource/Test/Mokou.obj");
+	pInaMesh->Load("../Resource/Test/Ina_Body.obj");
+	pInaAccMesh->Load("../Resource/Test/Ina_Accessory.obj");
+
 	pReimu->LoadTexture("../Resource/Test/Reimu.png");
 	pWhite->LoadTexture("../Resource/Test/White.png");
+	pMokouTex->LoadTexture("../Resource/Test/Mokou_Texture.png");
+	pInaTex->LoadTexture("../Resource/Test/Ina_Body_Albedo.png");
+	pInaNormal->LoadTexture("../Resource/Test/Ina_Body_Normal.png");
+	pInaAccTex->LoadTexture("../Resource/Test/Ina_Accessory_Albedo.png");
+	pInaAccNormal->LoadTexture("../Resource/Test/Ina_Accessory_Normal.png");
+
 	pMaterial1->CreateDefault();
 	pMaterial2->CreateDefault();
+	pMokouMat->CreateDefault();
+	pInaMat->CreateDefault();
+	pInaAccMat->CreateDefault();
+
 	pMaterial1->SetDiffuseMap(*pReimu);
 	pMaterial2->SetDiffuseMap(*pWhite);
+	pMokouMat->SetDiffuseMap(*pMokouTex);
+	pInaMat->SetDiffuseMap(*pInaTex);
+	pInaMat->SetNormalMap(*pInaNormal);
+	pInaAccMat->SetDiffuseMap(*pInaAccTex);
+	pInaAccMat->SetNormalMap(*pInaAccNormal);
+
 	pMaterial1->GetBuffer(0)["EdgeThickness"] = 0.002f;
 	pMaterial1->GetBuffer(0)["EdgeColor"] = Aen::Color::Red;
 	pMaterial2->GetBuffer(0)["EdgeThickness"] = 0.002f;
 	pMaterial2->GetBuffer(0)["EdgeColor"] = Aen::Color::Green;
+
+	pInaMat->GetBuffer(0)["EdgeThickness"] = 0.f;
+	pInaAccMat->GetBuffer(0)["EdgeThickness"] = 0.f;
 
 	m_cube.AddComponent<Aen::MeshInstance>();
 	m_cube.AddComponent<Aen::MaterialInstance>();
@@ -77,6 +113,34 @@ void Client::Start() {
 	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
 	m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
 	m_dLight.SetRot(45.f, 135.f, 0.f);
+
+	m_mokou.AddComponent<Aen::MeshInstance>();
+	m_mokou.AddComponent<Aen::MaterialInstance>();
+
+	m_mokou.GetComponent<Aen::MeshInstance>().SetMesh(pMokouMesh);
+	m_mokou.GetComponent<Aen::MaterialInstance>().SetMaterial(pMokouMat);
+	m_mokou.SetPos(-2.f, 0.5f, 0.f);
+	m_mokou.SetScale(0.5f, 0.5f, 0.5f);
+
+
+	m_ina.AddComponent<Aen::MeshInstance>();
+	m_ina.AddComponent<Aen::MaterialInstance>();
+
+	m_ina.GetComponent<Aen::MeshInstance>().SetMesh(pInaMesh);
+	m_ina.GetComponent<Aen::MaterialInstance>().SetMaterial(pInaMat);
+	m_ina.SetPos(2.f, 0.5f, 0.f);
+	m_ina.SetScale(0.5f, 0.5f, 0.5f);
+	m_ina.SetRot(0.f, -90.f, 0.f);
+
+
+	m_inaAcc.AddComponent<Aen::MeshInstance>();
+	m_inaAcc.AddComponent<Aen::MaterialInstance>();
+
+	m_inaAcc.GetComponent<Aen::MeshInstance>().SetMesh(pInaAccMesh);
+	m_inaAcc.GetComponent<Aen::MaterialInstance>().SetMaterial(pInaAccMat);
+	m_inaAcc.SetPos(2.f, 0.5f, 0.f);
+	m_inaAcc.SetScale(0.5f, 0.5f, 0.5f);
+	m_inaAcc.SetRot(0.f, -90.f, 0.f);
 
 	Aen::Input::SetMouseVisible(false);
 }
