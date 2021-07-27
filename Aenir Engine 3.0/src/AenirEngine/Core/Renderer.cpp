@@ -5,8 +5,11 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_cbTransform(), m_cbLightCount(), m_sbPointLight(300), m_sbDirectionalLight(300), m_sbSpotLight(300),
-		m_backBuffer(), m_viewPort(), m_depthStencil(window), m_rasterizerState(FillMode::Solid, CullMode::Front) {}
+		:m_window(window), m_gBuffer(3, window), m_postVS(), m_postPS(), m_screenQuad(), m_postLayout(), m_borderSampler(SamplerType::CLAMP),
+		m_cbTransform(), m_cbLightCount(), m_cbCamera(),
+		m_sbPointLight(300), m_sbDirectionalLight(300), m_sbSpotLight(300),
+		m_backBuffer(), m_viewPort(), m_depth(window), m_writeStencil(true, StencilType::Write), m_maskStencil(false, StencilType::Mask),
+		m_rasterizerState(FillMode::Solid, CullMode::Front) {}
 
 	void Renderer::Initialize() {
 
@@ -19,16 +22,29 @@ namespace Aen {
 		m_viewPort.MinDepth = 0.f;
 		m_viewPort.MaxDepth = 1.f;
 
+		if(!m_postVS.Create(AEN_OUTPUT_DIR_WSTR(L"PostVS.cso")))
+			if(!m_postVS.Create(L"PostVS.cso"))
+				throw;
+
+		if(!m_postPS.Create(AEN_OUTPUT_DIR_WSTR(L"PostPS.cso")))
+			if(!m_postPS.Create(L"PostPS.cso"))
+				throw;
+
+		m_postLayout.m_inputDesc = {
+			{"POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"UV",        0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		};
+
+		m_postLayout.Create(m_postVS);
+
 		RenderSystem::SetViewPort(m_viewPort);
 		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 		RenderSystem::SetRasteriserState(m_rasterizerState);
-		RenderSystem::BindRenderTargetView(m_backBuffer, m_depthStencil);
-		RenderSystem::SetDepthStencilState(m_depthStencil);
 	}
 
 	void Renderer::Draw() {
-
-		RenderSystem::ClearDepthStencilView(m_depthStencil);
+		
+		RenderSystem::ClearDepthStencilView(m_depth, true, false);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.08f, 0.08f, 0.13f, 1.f));
 
 		// Camera
@@ -43,9 +59,17 @@ namespace Aen {
 
 			pCam->GetComponent<Camera>().UpdateView(pos, rot);
 			
-			m_cbTransform.GetData().m_vpMat = pCam->GetComponent<Camera>().GetVPMatrix().Transposed();
-		} else
-			m_cbTransform.GetData().m_vpMat = Mat4f::identity;
+			m_cbCamera.GetData() = pos;
+			m_cbCamera.UpdateBuffer();
+
+			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+		} else {
+			m_cbTransform.GetData().m_vMat = Mat4f::identity;
+			m_cbTransform.GetData().m_pMat = Mat4f::identity;
+		}
+
+		m_cbCamera.BindBuffer<PShader>(2);
 
 		// SpotLight
 
@@ -89,15 +113,18 @@ namespace Aen {
 		m_cbLightCount.GetData().x = ComponentHandler::m_spotLights.size();
 		m_cbLightCount.GetData().y = ComponentHandler::m_pointLights.size();
 		m_cbLightCount.GetData().z = ComponentHandler::m_directionalLights.size();
-		m_cbLightCount.BindBuffer<PShader>(1);
-		m_cbLightCount.UpdateBuffer();
 
 		// Mesh
 
 		for(auto& i : ComponentHandler::m_mesheInstances) { 
+
+			m_cbLightCount.BindBuffer<PShader>(1);
+			m_cbLightCount.UpdateBuffer();
+
 			uint32_t id = i.first;
 			Mesh* pMesh = i.second->m_mesh;
 			Material* pMaterial = (pMesh && ComponentHandler::MaterialInstanceExist(id)) ? ComponentHandler::GetMaterialInstance(id).m_pMaterial : nullptr;
+
 
 			// Transform
 
@@ -139,10 +166,35 @@ namespace Aen {
 					RenderSystem::BindSamplers<PShader>(i.first, i.second);
 			}
 
+			RenderSystem::UnBindRenderTargets(1);
+			RenderSystem::ClearRenderTargetView(m_gBuffer, Color(0.f, 0.f, 0.f, 0.f));
+			RenderSystem::ClearDepthStencilView(m_depth, false, true);
+			RenderSystem::BindRenderTargetView(m_gBuffer, m_depth);
+			RenderSystem::SetDepthStencilState(m_writeStencil, 0xFF);
+
 			if(pMesh) {
-				pMesh->m_vertices.BindVBuffer();
+				pMesh->m_vertices.BindBuffer();
 				pMesh->m_vertices.Draw();
 			}
+
+			RenderSystem::UnBindRenderTargets(m_gBuffer.GetCount());
+			RenderSystem::BindRenderTargetView(m_backBuffer, m_depth);
+			RenderSystem::SetDepthStencilState(m_maskStencil, 0xFF);
+			RenderSystem::SetInputLayout(m_postLayout);
+
+			RenderSystem::BindShaderResourceView<PShader>(0, m_gBuffer);
+			RenderSystem::BindSamplers<PShader>(0, m_borderSampler);
+			RenderSystem::BindShader<VShader>(m_postVS);
+			RenderSystem::BindShader<PShader>(m_postPS);
+			m_cbTransform.BindBuffer<PShader>(1);
+
+			if(pMaterial)
+				for(uint32_t i = 0; i < pMaterial->m_dBuffers.size(); i++) {
+					pMaterial->m_dBuffers[i]->BindBuffer<PShader>(pMaterial->m_pShader->m_dbLayouts[i].first);
+					pMaterial->m_dBuffers[i]->UpdateBuffer();
+				}
+
+			m_screenQuad.Draw();
 		}
 
 		RenderSystem::Present();

@@ -36,6 +36,8 @@ namespace Aen {
 		void SetEmissionMap(Texture& texture);
 		void SetOpacityMap(Texture& texture);
 
+		DBuffer& GetBuffer(const uint32_t& index);
+
 		private:
 		~Material();
 

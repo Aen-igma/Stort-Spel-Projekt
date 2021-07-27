@@ -1,5 +1,5 @@
 #pragma once
-#include"DepthStencil.h"
+#include"DX11Core.h"
 
 namespace Aen {
 

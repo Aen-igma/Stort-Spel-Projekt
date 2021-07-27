@@ -42,7 +42,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Depth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ILayout.cpp">
@@ -112,6 +112,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\SpotLight\SpotLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -215,7 +218,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DepthStencil.h">
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Depth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ILayout.h">
@@ -296,9 +299,14 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\SpotLight\SpotLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Stencil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShaderVS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShaderPS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostVS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostPS.hlsl" />
   </ItemGroup>
 </Project>

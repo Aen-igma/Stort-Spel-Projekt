@@ -99,4 +99,8 @@ namespace Aen {
 		}
     }
 
+	const uint32_t GBuffer::GetCount() {
+		return m_rtvs.size();
+	}
+
 }

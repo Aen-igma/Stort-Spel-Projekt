@@ -51,6 +51,10 @@ namespace Aen {
         m_textures[3] = &texture;
     }
 
+    DBuffer& Material::GetBuffer(const uint32_t& index) {
+        return *m_dBuffers[index];
+    }
+
     Material::~Material() {
         for(auto& i : m_dBuffers)
             if(i) {

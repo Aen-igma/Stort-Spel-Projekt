@@ -40,7 +40,7 @@ namespace Aen {
 				throw;
 		}
 
-		void BindVBuffer() {
+		void BindBuffer() {
 			UINT offset = 0;
 			m_dContext->IASetVertexBuffers(0, 1, m_buffer.GetAddressOf(), m_stride.get(), &offset);
 		}

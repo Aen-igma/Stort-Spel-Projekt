@@ -1,6 +1,7 @@
 
 cbuffer TranformBuffer : register(b0) {
-	float4x4 vpMat;
+	float4x4 vMat;
+	float4x4 pMat;
 	float4x4 mdlMat;
 }
 
@@ -21,7 +22,7 @@ struct VS_Output {
 VS_Output main(VS_Input input) {
 	VS_Output output;
 
-	output.pos = mul(float4(input.pos, 1.f), mul(mdlMat, vpMat));
+	output.pos = mul(float4(input.pos, 1.f), mul(mdlMat, mul(vMat, pMat)));
 	output.normal = normalize(mul(float4(input.normal, 0.f), mdlMat)).xyz;
 	output.uv = input.uv;
 	output.worldPos = mul(float4(input.pos, 1.f), mdlMat);

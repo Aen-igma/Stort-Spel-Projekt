@@ -119,7 +119,7 @@ namespace Aen {
 		static constexpr DBType type = Bool;
 	};
 
-	class ElRef {
+	class AEN_DECLSPEC ElRef {
 		public:
 
 		template<class T>
@@ -187,7 +187,7 @@ namespace Aen {
 		m_dataMap.emplace_back(name, Data(type, DBMap<type>::size));
 	}
 
-	class DBuffer : public GCore {
+	class AEN_DECLSPEC DBuffer : public GCore {
 		public:
 		~DBuffer();
 		DBuffer();

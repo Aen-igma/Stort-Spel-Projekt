@@ -67,12 +67,20 @@ namespace Aen {
             m_dContext->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)pt);
 		}
 
-        static void SetDepthStencilState(DepthStencil& stencil) {
-            m_dContext->OMSetDepthStencilState(stencil.m_dsState.Get(), 0);
+        static void SetDepthStencilState(Stencil& stencil, const UINT& ref) {
+            m_dContext->OMSetDepthStencilState(stencil.m_dsState.Get(), ref);
         }
 
-        static void ClearDepthStencilView(DepthStencil& stencil) {
-            m_dContext->ClearDepthStencilView(stencil.m_dsView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+        static void ClearDepthStencilView(Depth& depth, const bool& clearDepth, const bool& clearStencil) {
+            UINT flag = 0;
+            if(clearDepth && clearStencil)
+                flag = D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL;
+            else if(clearDepth)
+                flag = D3D11_CLEAR_DEPTH;
+            else if(clearStencil)
+                flag = D3D11_CLEAR_STENCIL;
+
+            m_dContext->ClearDepthStencilView(depth.m_dsView.Get(), flag, 1.f, 0u);
         }
 
         static void UnBindRenderTargets(const UINT& count) {
@@ -86,13 +94,22 @@ namespace Aen {
         template<class T>
         static void UnBundShader();
 
-        static void BindRenderTargetView(BBuffer& backBuffer, DepthStencil& stencil) {
-            m_dContext->OMSetRenderTargets(1, backBuffer.m_rtv.GetAddressOf(), stencil.m_dsView.Get());
+        static void BindRenderTargetView(BBuffer& backBuffer, Depth& depth) {
+            m_dContext->OMSetRenderTargets(1, backBuffer.m_rtv.GetAddressOf(), depth.m_dsView.Get());
         }
 
-        static void BindRenderTargetView(GBuffer& gBuffer, DepthStencil& stencil) {
+        static void BindRenderTargetView(BBuffer& backBuffer) {
+            m_dContext->OMSetRenderTargets(1, backBuffer.m_rtv.GetAddressOf(), NULL);
+        }
+
+        static void BindRenderTargetView(GBuffer& gBuffer, Depth& depth) {
             UINT size = (UINT)gBuffer.m_rtvs.size();
-            m_dContext->OMSetRenderTargets(size, gBuffer.m_rtvs.data(), stencil.m_dsView.Get());
+            m_dContext->OMSetRenderTargets(size, gBuffer.m_rtvs.data(), depth.m_dsView.Get());
+        }
+
+        static void BindRenderTargetView(GBuffer& gBuffer) {
+            UINT size = (UINT)gBuffer.m_rtvs.size();
+            m_dContext->OMSetRenderTargets(size, gBuffer.m_rtvs.data(), NULL);
         }
 
         template<class T>

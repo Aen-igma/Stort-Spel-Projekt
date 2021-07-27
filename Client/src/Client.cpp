@@ -16,14 +16,25 @@ void Client::Start() {
 
 	Aen::Mesh* pCube = Aen::ResourceHandler::CreateMesh("cube");
 	Aen::Mesh* pPlane = Aen::ResourceHandler::CreateMesh("plane");
-	Aen::Material* pMaterial = Aen::ResourceHandler::CreateMaterial("cubeMaterial");
-	Aen::Texture* pTexture = Aen::ResourceHandler::CreateTexture("Reimu");
+	Aen::Mesh* pScuffBall = Aen::ResourceHandler::CreateMesh("scuffBall");
+	Aen::Material* pMaterial1 = Aen::ResourceHandler::CreateMaterial("cubeMaterial");
+	Aen::Material* pMaterial2 = Aen::ResourceHandler::CreateMaterial("whiteMaterial");
+	Aen::Texture* pReimu = Aen::ResourceHandler::CreateTexture("Reimu");
+	Aen::Texture* pWhite = Aen::ResourceHandler::CreateTexture("White");
 
 	pCube->Load("../Resource/Test/Cube.obj");
 	pPlane->Load("../Resource/Test/Plane.obj");
-	pTexture->LoadTexture("../Resource/Test/Reimu.png");
-	pMaterial->CreateDefault();
-	pMaterial->SetDiffuseMap(*pTexture);
+	pScuffBall->Load("../Resource/Test/ScuffBall.obj");
+	pReimu->LoadTexture("../Resource/Test/Reimu.png");
+	pWhite->LoadTexture("../Resource/Test/White.png");
+	pMaterial1->CreateDefault();
+	pMaterial2->CreateDefault();
+	pMaterial1->SetDiffuseMap(*pReimu);
+	pMaterial2->SetDiffuseMap(*pWhite);
+	pMaterial1->GetBuffer(0)["EdgeThickness"] = 0.002f;
+	pMaterial1->GetBuffer(0)["EdgeColor"] = Aen::Color::Red;
+	pMaterial2->GetBuffer(0)["EdgeThickness"] = 0.002f;
+	pMaterial2->GetBuffer(0)["EdgeColor"] = Aen::Color::Green;
 
 	m_cube.AddComponent<Aen::MeshInstance>();
 	m_cube.AddComponent<Aen::MaterialInstance>();
@@ -31,13 +42,13 @@ void Client::Start() {
 	m_cube2.AddComponent<Aen::MaterialInstance>();
 
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(pCube);
-	m_cube.GetComponent<Aen::MaterialInstance>().SetMaterial(pMaterial);
-	m_cube2.GetComponent<Aen::MeshInstance>().SetMesh(pCube);
-	m_cube2.GetComponent<Aen::MaterialInstance>().SetMaterial(pMaterial);
+	m_cube.GetComponent<Aen::MaterialInstance>().SetMaterial(pMaterial1);
+	m_cube2.GetComponent<Aen::MeshInstance>().SetMesh(pScuffBall);
+	m_cube2.GetComponent<Aen::MaterialInstance>().SetMaterial(pMaterial2);
 
 	m_camera.SetPos(0.f, 0.f, 0.f);
 	m_cube.SetPos(0.f, 0.f, 3.f);
-	m_cube2.SetPos(2.f, 0.f, 0.f);
+	m_cube2.SetPos(3.f, 0.f, 0.f);
 
 	m_cube2.SetParent(m_cube);
 
@@ -45,7 +56,7 @@ void Client::Start() {
 	m_plane.AddComponent<Aen::MaterialInstance>();
 
 	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(pPlane);
-	m_plane.GetComponent<Aen::MaterialInstance>().SetMaterial(pMaterial);
+	m_plane.GetComponent<Aen::MaterialInstance>().SetMaterial(pMaterial1);
 	m_plane.SetPos(0.f, -1.f, 3.f);
 	m_plane.SetScale(10.f, 10.f, 10.f);
 
@@ -63,11 +74,9 @@ void Client::Start() {
 	m_pLight.SetPos(0.f, 0.f, 2.f);
 	
 	m_dLight.AddComponent<Aen::DirectionalLight>();
-	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::Cyan);
+	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
 	m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
 	m_dLight.SetRot(45.f, 135.f, 0.f);
-
-	AEN_PRINT("");
 
 	Aen::Input::SetMouseVisible(false);
 }

@@ -1,8 +1,10 @@
 
 cbuffer CellShaderModel : register(b0) {
-	float3 baseColor;
-	float3 shadowColor;
-	float3 specularColor;
+	float4 baseColor;
+	float4 shadowColor;
+	float4 specularColor;
+	float4 edgeColor;
+	float edgeThickness;
 	float specularPower;
 	float shadowOffset;
 	float outerFalloff;
@@ -15,6 +17,10 @@ cbuffer LightCount : register(b1) {
 	uint sLightCount;
 	uint pLightCount;
 	uint dLightCount;
+}
+
+cbuffer Camera : register(b2) {
+	float3 camPos;
 }
 
 struct PointLight {
@@ -46,6 +52,12 @@ struct PS_Input {
 	float3 worldPos : WORLD_POSITION;
 };
 
+struct PS_Output {
+	float4 diffuse : SV_Target0;
+	float4 normal : SV_Target1;
+	float4 depth : SV_Target2;
+};
+
 texture2D diffuseMap : DIFFUSEMAP : register(t0);
 texture2D normalMap : NORMALMAP : register(t1);
 texture2D emissionMap : EMISSIONMAP : register(t2);
@@ -57,13 +69,17 @@ StructuredBuffer<DirectionalLight> dLights : register(t6);
 
 SamplerState wrapSampler : WSAMPLER : register(s0);
 
-float4 main(PS_Input input) : SV_Target0{
+PS_Output main(PS_Input input) : SV_Target0{
+
+	PS_Output output;
 
 	float3 finalPixel = float3(0.f, 0.f, 0.f);
 
 	float3 diffuse = diffuseMap.Sample(wrapSampler, input.uv);
 	
 	finalPixel += diffuse * shadowColor;
+
+	
 
 	for(int i = 0; i < sLightCount; i++) {
 		float3 sLightDir = normalize(sLights[i].pos - input.worldPos);
@@ -93,6 +109,10 @@ float4 main(PS_Input input) : SV_Target0{
 		if(dotND > 0.5f)
 			finalPixel += dLights[i].color * dLights[i].strength * (diffuse * shadowColor);
 	}
-	
-	return float4(saturate(finalPixel), 1.f);
+
+	output.diffuse = float4(saturate(finalPixel), 1.f);
+	output.normal = float4(input.normal, 1.f);
+	output.depth = float4(input.pos.z / input.pos.w, 0.f, 0.f, 1.f);
+
+	return output;
 }

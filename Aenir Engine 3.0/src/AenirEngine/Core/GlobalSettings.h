@@ -54,6 +54,8 @@ namespace Aen {
 			layout.second.Add<DBType::Float4>(	"BaseColor"			);
 			layout.second.Add<DBType::Float4>(	"ShadowColor"		);
 			layout.second.Add<DBType::Float4>(	"SpecularColor"		);
+			layout.second.Add<DBType::Float4>(	"EdgeColor"			);
+			layout.second.Add<DBType::Float>(	"EdgeThickness"		);
 			layout.second.Add<DBType::Float>(	"SpecularPower"		);
 			layout.second.Add<DBType::Float>(	"ShadowOffset"		);
 			layout.second.Add<DBType::Float>(	"OuterFalloff"		);
@@ -64,6 +66,8 @@ namespace Aen {
 			layout.second["BaseColor"]			= Color::Gray;
 			layout.second["ShadowColor"]		= Color(0.3f, 0.3f, 0.5f, 1.f);
 			layout.second["SpecularColor"]		= Color::White;
+			layout.second["EdgeColor"]			= Color::Black;
+			layout.second["EdgeThickness"]		= 0.003f;
 			layout.second["SpecularPower"]		= 5.f;
 			layout.second["ShadowOffset"]		= 0.5f;
 			layout.second["OuterFalloff"]		= 0.f;

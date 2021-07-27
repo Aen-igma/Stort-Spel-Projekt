@@ -3,17 +3,16 @@
 
 namespace Aen {
 
-	class DepthStencil : public GCore {
+	class Depth : public GCore {
 		public:
-		~DepthStencil();
-		DepthStencil();
-		DepthStencil(const Window& window);
+		~Depth();
+		Depth();
+		Depth(const Window& window);
 
 		void Create(const Window& window);
 		friend class RenderSystem;
 
 		private:
 		ComDepthStencilView m_dsView;
-		ComDepthStencilState m_dsState;
 	};
 }
