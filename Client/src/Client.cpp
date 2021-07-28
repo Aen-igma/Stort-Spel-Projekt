@@ -69,8 +69,8 @@ void Client::Start() {
 	pMaterial2->GetBuffer(0)["EdgeThickness"] = 0.002f;
 	pMaterial2->GetBuffer(0)["EdgeColor"] = Aen::Color::Green;
 
-	pInaMat->GetBuffer(0)["EdgeThickness"] = 0.f;
-	pInaAccMat->GetBuffer(0)["EdgeThickness"] = 0.f;
+	pInaMat->GetBuffer(0)["EdgeThickness"] = 0.0005f;
+	pInaAccMat->GetBuffer(0)["EdgeThickness"] = 0.0005f;
 
 	m_cube.AddComponent<Aen::MeshInstance>();
 	m_cube.AddComponent<Aen::MaterialInstance>();

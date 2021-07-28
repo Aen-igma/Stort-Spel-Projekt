@@ -3,6 +3,16 @@
 
 namespace Aen {
 
+	GBuffer::~GBuffer() {
+		for(auto& i : m_rtvs)
+			if(i)
+				i->Release();
+
+		for(auto& i : m_srvs)
+			if(i)
+				i->Release();
+	}
+
 	GBuffer::GBuffer(const uint32_t& count, Window& window) {
 
 		m_rtvs.resize(count);
@@ -40,7 +50,7 @@ namespace Aen {
 		std::vector<ComTexture2D> texture(count, nullptr);
 
 		for(UINT i = 0; i < count; i++) {
-			if(FAILED(m_device->CreateTexture2D(&tDesc, NULL, &texture[i])))
+			if(FAILED(m_device->CreateTexture2D(&tDesc, NULL, texture[i].ReleaseAndGetAddressOf())))
 				throw;
 
 			if(FAILED(m_device->CreateShaderResourceView(texture[i].Get(), &sDesc, &m_srvs[i])))
@@ -88,7 +98,7 @@ namespace Aen {
 		std::vector<ComTexture2D> texture(count, nullptr);
 
 		for(UINT i = 0; i < count; i++) {
-			if(FAILED(m_device->CreateTexture2D(&tDesc, NULL, &texture[i])))
+			if(FAILED(m_device->CreateTexture2D(&tDesc, NULL, texture[i].ReleaseAndGetAddressOf())))
 				throw;
 
 			if(FAILED(m_device->CreateShaderResourceView(texture[i].Get(), &sDesc, &m_srvs[i])))

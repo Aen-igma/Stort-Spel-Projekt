@@ -14,9 +14,7 @@ cbuffer CellShaderModel : register(b0) {
 };
 
 cbuffer LightCount : register(b1) {
-	uint sLightCount;
-	uint pLightCount;
-	uint dLightCount;
+	uint lightCount;
 }
 
 cbuffer Camera : register(b2) {
@@ -30,26 +28,15 @@ cbuffer useTexture : register(b3) {
 	int useOpacity;
 }
 
-struct PointLight {
-	float4 color;
-	float4 dist;
-	float3 pos;
-	float strength;
-};
-
-struct DirectionalLight {
-	float4 color;
-	float3 dir;
-	float strength;
-};
-
-struct SpotLight {
+struct Light {
 	float4 color;
 	float4 dist;
 	float3 pos;
 	float strength;
 	float3 dir;
 	float ang;
+	uint type;
+	float3 pad;
 };
 
 struct PS_Input {
@@ -70,9 +57,7 @@ texture2D normalMap : NORMALMAP : register(t1);
 texture2D emissionMap : EMISSIONMAP : register(t2);
 texture2D opacityMap : OPACITYMAP : register(t3);
 
-StructuredBuffer<SpotLight> sLights : register(t4);
-StructuredBuffer<PointLight> pLights : register(t5);
-StructuredBuffer<DirectionalLight> dLights : register(t6);
+StructuredBuffer<Light> lights : register(t4);
 
 SamplerState wrapSampler : WSAMPLER : register(s0);
 
@@ -89,33 +74,22 @@ PS_Output main(PS_Input input) : SV_Target0{
 	float3 normalM = normalize(normalMap.Sample(wrapSampler, input.uv).rgb * 2.f - 1.f);
 	float3 normal = (useNormal) ? float4(mul(normalM, input.tbn), 1.f) : float4(normalize(input.tbn._m20_m21_m22), 1.f);
 
-	for(int i = 0; i < sLightCount; i++) {
-		float3 sLightDir = normalize(sLights[i].pos - input.worldPos);
-		float dotND = normalize(dot(sLights[i].dir, normal));
+	for(int i = 0; i < lightCount; i++) {
+		float3 sLightDir = normalize(lights[i].pos - input.worldPos);
+		float dotND = normalize(dot(lights[i].dir, normal));
 
-		float dist = distance(sLights[i].pos, input.worldPos);
-		float attenuation = sLights[i].dist.w / (sLights[i].dist.x + sLights[i].dist.y * dist + sLights[i].dist.z + dist * dist);
+		float dist = distance(lights[i].pos, input.worldPos);
+		float attenuation = lights[i].dist.w / (lights[i].dist.x + lights[i].dist.y * dist + lights[i].dist.z + dist * dist);
 
-		if(dotND > 0.5f)
-			finalPixel += diffuse * shadowColor * sLights[i].color * sLights[i].strength * attenuation * pow(max(dot(sLightDir, sLights[i].dir), 0.f), sLights[i].ang);
-	}
-
-	for(int i = 0; i < pLightCount; i++) {
-		float3 pLightDir = normalize(pLights[i].pos - input.worldPos);
-		float dotND = normalize(dot(pLightDir, normal));
-		
-		float dist = distance(pLights[i].pos, input.worldPos);
-		float attenuation = pLights[i].dist.w / (pLights[i].dist.x + pLights[i].dist.y * dist + pLights[i].dist.z + pow(dist, 2));
-		
-		if(dotND > 0.5f)
-			finalPixel += pLights[i].color * pLights[i].strength * (diffuse * shadowColor) * attenuation;
-	}
-
-	for(int i = 0; i < dLightCount; i++) {
-		float dotND = normalize(dot(dLights[i].dir, normal));
-
-		if(dotND > 0.5f)
-			finalPixel += dLights[i].color * dLights[i].strength * (diffuse * shadowColor);
+		if(dotND > 0.5f) {
+			if(lights[i].type == 0) {
+				finalPixel += diffuse * shadowColor * lights[i].color * lights[i].strength * attenuation * pow(max(dot(sLightDir, lights[i].dir), 0.f), lights[i].ang);
+			} else if(lights[i].type == 1) {
+				finalPixel += lights[i].color * lights[i].strength * (diffuse * shadowColor) * attenuation;
+			} else if(lights[i].type == 2) {
+				finalPixel += lights[i].color * lights[i].strength * (diffuse * shadowColor);
+			}
+		}
 	}
 
 	output.diffuse = float4(saturate(finalPixel), 1.f);

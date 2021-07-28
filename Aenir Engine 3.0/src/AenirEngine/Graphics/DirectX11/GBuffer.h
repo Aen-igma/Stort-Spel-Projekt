@@ -5,6 +5,7 @@ namespace Aen {
 
 	class GBuffer : public GCore {
 		public:
+		~GBuffer();
 		GBuffer() = default;
 		GBuffer(const uint32_t& count, Window& window);
 

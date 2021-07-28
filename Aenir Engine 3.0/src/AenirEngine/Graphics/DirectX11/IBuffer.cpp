@@ -29,7 +29,7 @@ namespace Aen {
 
         srData.pSysMem = vId;
 
-        if(FAILED(m_device->CreateBuffer(&bDesc, &srData, &m_buffer)))
+        if(FAILED(m_device->CreateBuffer(&bDesc, &srData, m_buffer.GetAddressOf())))
             throw;
     }
 

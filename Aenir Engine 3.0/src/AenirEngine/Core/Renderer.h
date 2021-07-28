@@ -31,12 +31,10 @@ namespace Aen {
 		Sampler m_borderSampler;
 
 		CBuffer<CB_Transform> m_cbTransform;
-		CBuffer<Vec3i> m_cbLightCount;
+		CBuffer<uint32_t> m_cbLightCount;
 		CBuffer<Vec3f> m_cbCamera;
 		CBuffer<Vec4i> m_cbUseTexture;
-		SBuffer<SB_SpotLight> m_sbSpotLight;
-		SBuffer<SB_PointLight> m_sbPointLight;
-		SBuffer<SB_DirectionalLight> m_sbDirectionalLight;
+		SBuffer<SB_Light> m_sbLight;
 
 		BBuffer m_backBuffer;
 		

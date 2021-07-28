@@ -7,7 +7,7 @@ namespace Aen {
 	Renderer::Renderer(Window& window)
 		:m_window(window), m_gBuffer(3, window), m_postVS(), m_postPS(), m_screenQuad(), m_postLayout(), m_borderSampler(SamplerType::CLAMP),
 		m_cbTransform(), m_cbLightCount(), m_cbCamera(),
-		m_sbPointLight(300), m_sbDirectionalLight(300), m_sbSpotLight(300),
+		m_sbLight(900),
 		m_backBuffer(), m_viewPort(), m_depth(window), m_writeStencil(true, StencilType::Write), m_maskStencil(false, StencilType::Mask),
 		m_rasterizerState(FillMode::Solid, CullMode::Front) {}
 
@@ -71,48 +71,22 @@ namespace Aen {
 
 		m_cbCamera.BindBuffer<PShader>(2);
 
-		// SpotLight
+		// Light
 
 		uint32_t lightIndex = 0;
-		for(auto& i : ComponentHandler::m_spotLights) {
-			i.second->SetPos(ComponentHandler::GetTranslation(i.first).GetPos());
-			i.second->SetRot(ComponentHandler::GetRotation(i.first).GetTranform());
-			m_sbSpotLight.GetData(lightIndex) = i.second->m_spotLight;
+		for(auto& i : ComponentHandler::m_lights) {
+			i.second->m_light.m_pos = (ComponentHandler::TranslationExist(i.first)) ? ComponentHandler::GetTranslation(i.first).GetPos() : Vec3f::zero;
+			i.second->m_light.m_dir = (ComponentHandler::RotationExist(i.first)) ? Transform(ComponentHandler::GetRotation(i.first).GetTranform(), Vec3f(0.f, 1.f, 0.f)) : Vec3f(0.f, 1.f, 0.f);
+			m_sbLight.GetData(lightIndex) = i.second->m_light;
 			lightIndex++;
 		}
 
-		m_sbSpotLight.BindSRV<PShader>(4);
-		m_sbSpotLight.UpdateBuffer();
-
-		// PointLight
-
-		lightIndex = 0;
-		for(auto& i : ComponentHandler::m_pointLights) {
-			i.second->SetPos(ComponentHandler::GetTranslation(i.first).GetPos());
-			m_sbPointLight.GetData(lightIndex) = i.second->m_pointLight;
-			lightIndex++;
-		}
-
-		m_sbPointLight.BindSRV<PShader>(5); 
-		m_sbPointLight.UpdateBuffer();
-
-		// DirectionalLight
-
-		lightIndex = 0;
-		for(auto& i : ComponentHandler::m_directionalLights) {
-			i.second->SetRot(ComponentHandler::GetRotation(i.first).GetTranform());
-			m_sbDirectionalLight.GetData(lightIndex) = i.second->m_directionalLight;
-			lightIndex++;
-		}
-
-		m_sbDirectionalLight.BindSRV<PShader>(6);
-		m_sbDirectionalLight.UpdateBuffer();
+		m_sbLight.UpdateBuffer();
+		m_sbLight.BindSRV<PShader>(4);
 
 		// LightCount
 
-		m_cbLightCount.GetData().x = ComponentHandler::m_spotLights.size();
-		m_cbLightCount.GetData().y = ComponentHandler::m_pointLights.size();
-		m_cbLightCount.GetData().z = ComponentHandler::m_directionalLights.size();
+		m_cbLightCount.GetData() = ComponentHandler::m_lights.size();
 
 		// Mesh
 
@@ -124,8 +98,7 @@ namespace Aen {
 			uint32_t id = i.first;
 			Mesh* pMesh = i.second->m_mesh;
 			Material* pMaterial = (pMesh && ComponentHandler::MaterialInstanceExist(id)) ? ComponentHandler::GetMaterialInstance(id).m_pMaterial : nullptr;
-
-
+			
 			// Transform
 
 			Mat4f parentTranform;
@@ -169,6 +142,8 @@ namespace Aen {
 					RenderSystem::BindSamplers<PShader>(i.first, i.second);
 			}
 
+			// Opaque pass
+
 			m_cbUseTexture.UpdateBuffer();
 			m_cbUseTexture.BindBuffer<PShader>(3);
 
@@ -182,6 +157,8 @@ namespace Aen {
 				pMesh->m_vertices.BindBuffer();
 				pMesh->m_vertices.Draw();
 			}
+
+			// Per Object Post Process Pass
 
 			RenderSystem::UnBindRenderTargets(m_gBuffer.GetCount());
 			RenderSystem::BindRenderTargetView(m_backBuffer, m_depth);
@@ -202,6 +179,8 @@ namespace Aen {
 
 			m_screenQuad.Draw();
 		}
+
+		// Present
 
 		RenderSystem::Present();
 	}
