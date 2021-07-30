@@ -31,9 +31,9 @@ namespace Aen {
 	class AEN_DECLSPEC MeshInstance {
 		public:
 		MeshInstance() = default;
-		MeshInstance(Mesh*& mesh);
+		MeshInstance(Mesh& mesh);
 
-		void SetMesh(Mesh*& mesh);
+		void SetMesh(Mesh& mesh);
 
 		private:
 		~MeshInstance();

@@ -14,8 +14,10 @@ namespace Aen {
 	class Sampler : public GCore {
 		public:
 		~Sampler();
-		Sampler() = delete;
-		Sampler(const SamplerType& adress);
+		Sampler();
+		Sampler(const SamplerType& type);
+
+		void Create(const SamplerType& type);
 
 		friend class RenderSystem;
 

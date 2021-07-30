@@ -10,6 +10,9 @@ namespace Aen {
 		void SetCameraPerspective(const float& fov, const float& aRatio, const float& minZ, const float& maxZ);
 		void SetCameraOrthographic(const float& width, const float& height, const float& minZ, const float& maxZ);
 
+		const Vec3f GetForward();
+		const Vec3f GetUp();
+		const Vec3f GetRight();
 		const Mat4f GetVPMatrix() const;
 		const Mat4f& GetView() const;
 		const Mat4f& GetProjecton() const;
@@ -21,6 +24,8 @@ namespace Aen {
 
 		Mat4f m_view;
 		Mat4f m_projection;
+		Vec3f m_forwardVec;
+		Vec3f m_upVec;
 
 		friend class ComponentHandler;
 		friend class Renderer;

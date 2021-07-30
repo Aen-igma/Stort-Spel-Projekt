@@ -24,8 +24,11 @@ namespace Aen {
 	}
 
 	void Entity::SetParent(Entity& parent) {
-		m_hasParent = true;
-		m_parentId = parent.m_id;
+		if(parent.m_parentId != m_id) {
+			m_hasParent = true;
+			m_parentId = parent.m_id;
+		} else
+			throw;
 	}
 
 	void Entity::RemoveParent() {

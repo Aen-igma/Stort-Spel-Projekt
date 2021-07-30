@@ -17,7 +17,7 @@ namespace Aen {
 		if(!GCore::Concealed::Initialize(m_app->window))
 			exit(-1);
 
-		GlobalSettings::Initialize();
+		GlobalSettings::Initialize(m_app->window);
 
 		m_renderer = AEN_NEW Renderer(m_app->window);
 		m_renderer->Initialize();

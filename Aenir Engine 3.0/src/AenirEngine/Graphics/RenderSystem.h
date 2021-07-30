@@ -92,7 +92,11 @@ namespace Aen {
         static void UnBindShaderResources(const UINT& startSlot, const UINT& count);
 
         template<class T>
-        static void UnBundShader();
+        static void UnBindShader();
+
+        static void BindRenderTargetView(Depth& depth) {
+            m_dContext->OMSetRenderTargets(0, NULL, depth.m_dsView.Get());
+        }
 
         static void BindRenderTargetView(BBuffer& backBuffer, Depth& depth) {
             m_dContext->OMSetRenderTargets(1, backBuffer.m_rtv.GetAddressOf(), depth.m_dsView.Get());
@@ -256,7 +260,7 @@ namespace Aen {
     DEF_SHADER
     #undef X
 
-    #define X(sName, lName) template<> inline void RenderSystem::UnBundShader<lName>() {\
+    #define X(sName, lName) template<> inline void RenderSystem::UnBindShader<lName>() {\
         m_dContext->sName(NULL);\
     }
 

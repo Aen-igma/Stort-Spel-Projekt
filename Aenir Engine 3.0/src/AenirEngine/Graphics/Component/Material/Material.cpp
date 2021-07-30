@@ -4,7 +4,8 @@
 
 namespace Aen {
 
-    Material::Material(const bool& useDefaultShader) :m_pShader(nullptr), m_dBuffers(0),
+    Material::Material(const bool& useDefaultShader) 
+        :m_pShaderModel(nullptr), m_dBuffer(),
         m_textures{nullptr, nullptr, nullptr, nullptr} {
         
         if(useDefaultShader)
@@ -12,27 +13,17 @@ namespace Aen {
     }
     
     Material::Material(ShaderModel& shaderModel)
-        :m_pShader(&shaderModel), m_dBuffers(shaderModel.m_dbLayouts.size()), 
-        m_textures{nullptr, nullptr, nullptr, nullptr} {
-        
-        for(uint32_t i = 0; i < m_dBuffers.size(); i++)
-            m_dBuffers[i] = AEN_NEW DBuffer(shaderModel.m_dbLayouts[i].second);
-    }
+        :m_pShaderModel(&shaderModel), m_dBuffer(shaderModel.m_dbLayout.second), 
+        m_textures{nullptr, nullptr, nullptr, nullptr} {}
 
     void Material::Create(ShaderModel& shaderModel) {
-        m_pShader = &shaderModel;
-        m_dBuffers.resize(shaderModel.m_dbLayouts.size());
-
-        for(uint32_t i = 0; i < m_dBuffers.size(); i++)
-            m_dBuffers[i] = AEN_NEW DBuffer(shaderModel.m_dbLayouts[i].second);
+        m_pShaderModel = &shaderModel;
+        m_dBuffer.Create(shaderModel.m_dbLayout.second);
     }
 
     void Material::CreateDefault() {
-        m_pShader = GlobalSettings::GetDefaultShader();
-        m_dBuffers.resize(m_pShader->m_dbLayouts.size());
-
-        for(uint32_t i = 0; i < m_dBuffers.size(); i++)
-            m_dBuffers[i] = AEN_NEW DBuffer(m_pShader->m_dbLayouts[i].second);
+        m_pShaderModel = GlobalSettings::GetDefaultShader();
+        m_dBuffer.Create(m_pShaderModel->m_dbLayout.second);
     }
 
     void Material::SetDiffuseMap(Texture& texture) {
@@ -51,28 +42,19 @@ namespace Aen {
         m_textures[3] = &texture;
     }
 
-    DBuffer& Material::GetBuffer(const uint32_t& index) {
-        return *m_dBuffers[index];
+    ElRef Material::operator[](const std::string& name) {
+        return m_dBuffer[name];
     }
-
-    Material::~Material() {
-        for(auto& i : m_dBuffers)
-            if(i) {
-                delete i;
-                i = nullptr;
-            }
-    }
-
 
     MaterialInstance::~MaterialInstance() {
         m_pMaterial = nullptr;
     }
 
-    MaterialInstance::MaterialInstance(Material*& material)
-        :m_pMaterial(material) {}
+    MaterialInstance::MaterialInstance(Material& material)
+        :m_pMaterial(&material) {}
 
-    void MaterialInstance::SetMaterial(Material*& material) {
-        m_pMaterial = material;
+    void MaterialInstance::SetMaterial(Material& material) {
+        m_pMaterial = &material;
     }
 
 }

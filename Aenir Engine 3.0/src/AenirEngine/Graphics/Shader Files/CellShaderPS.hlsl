@@ -1,10 +1,12 @@
 
-cbuffer CellShaderModel : register(b0) {
+cbuffer CellShaderModel : register(b1) {
 	float4 baseColor;
 	float4 shadowColor;
 	float4 specularColor;
-	float4 edgeColor;
-	float edgeThickness;
+	float4 innerEdgeColor;
+	float4 outerEdgeColor;
+	float innerEdgeThickness;
+	float outerEdgeThickness;
 	float specularPower;
 	float shadowOffset;
 	float outerFalloff;
@@ -13,15 +15,20 @@ cbuffer CellShaderModel : register(b0) {
 	float rimLightSize;
 };
 
-cbuffer LightCount : register(b1) {
+cbuffer LightCount : register(b2) {
 	uint lightCount;
 }
 
-cbuffer Camera : register(b2) {
+cbuffer Camera : register(b3) {
 	float3 camPos;
+	float pad;
+	float3 camfDir;
+	float pad1;
+	float3 camuDir;
+	float pad2;
 }
 
-cbuffer useTexture : register(b3) {
+cbuffer useTexture : register(b4) {
 	int useDiffuse;
 	int useNormal;
 	int useEmission;
@@ -48,8 +55,9 @@ struct PS_Input {
 
 struct PS_Output {
 	float4 diffuse : SV_Target0;
-	float4 normal : SV_Target1;
-	float4 depth : SV_Target2;
+	float4 pos : SV_Target1;
+	float4 normal : SV_Target2;
+	float4 depth : SV_Target3;
 };
 
 texture2D diffuseMap : DIFFUSEMAP : register(t0);
@@ -67,7 +75,7 @@ PS_Output main(PS_Input input) : SV_Target0{
 
 	float3 finalPixel = float3(0.f, 0.f, 0.f);
 
-	float3 diffuse = diffuseMap.Sample(wrapSampler, input.uv);
+	float3 diffuse = (useDiffuse) ? diffuseMap.Sample(wrapSampler, input.uv) + shadowColor * 0.1f : baseColor;
 	
 	finalPixel += diffuse * shadowColor;
 
@@ -75,26 +83,37 @@ PS_Output main(PS_Input input) : SV_Target0{
 	float3 normal = (useNormal) ? float4(mul(normalM, input.tbn), 1.f) : float4(normalize(input.tbn._m20_m21_m22), 1.f);
 
 	for(int i = 0; i < lightCount; i++) {
-		float3 sLightDir = normalize(lights[i].pos - input.worldPos);
-		float dotND = normalize(dot(lights[i].dir, normal));
+		float3 pLightDir = normalize(lights[i].pos - input.worldPos);
+		float3 cLightDir = normalize(camPos - input.worldPos);
+		float dotND = dot(lights[i].dir, normal);
+		float dotNP = dot(pLightDir, normal);
 
 		float dist = distance(lights[i].pos, input.worldPos);
-		float attenuation = lights[i].dist.w / (lights[i].dist.x + lights[i].dist.y * dist + lights[i].dist.z + dist * dist);
+		float attenuation = 1.f / (lights[i].dist.x + lights[i].dist.y * dist + lights[i].dist.z * dist * dist);
 
-		if(dotND > 0.5f) {
-			if(lights[i].type == 0) {
-				finalPixel += diffuse * shadowColor * lights[i].color * lights[i].strength * attenuation * pow(max(dot(sLightDir, lights[i].dir), 0.f), lights[i].ang);
-			} else if(lights[i].type == 1) {
-				finalPixel += lights[i].color * lights[i].strength * (diffuse * shadowColor) * attenuation;
-			} else if(lights[i].type == 2) {
-				finalPixel += lights[i].color * lights[i].strength * (diffuse * shadowColor);
-			}
+		if(lights[i].type == 0 && dotND > 0.5f && dist < lights[i].dist.w) {
+			float3 specular = specularColor.w * clamp(pow(max(dot(cLightDir, -reflect(pLightDir, normal)), 0.f), specularPower), 0.f, 1.f);
+			float spot = pow(max(dot(pLightDir, lights[i].dir), 0.f), lights[i].ang);
+			float light = (spot > 0.1f) ? spot : 0.f;
+			finalPixel += diffuse * shadowColor * lights[i].color * (lights[i].strength + 4.f) * attenuation * light;
+			finalPixel += (lights[i].color + specularColor.xyz) * specular * attenuation * spot;
+
+		} else if(lights[i].type == 1 && dotNP > 0.5f && dist < lights[i].dist.w) {
+			float3 specular = specularColor.w * clamp(pow(max(dot(cLightDir, -reflect(pLightDir, normal)), 0.f), specularPower), 0.f, 1.f);
+			finalPixel += lights[i].color * lights[i].strength * diffuse * shadowColor * attenuation;
+			finalPixel += (lights[i].color + specularColor.xyz) * specular * attenuation;
+
+		} else if(lights[i].type == 2 && dotND > 0.5f) {
+			float3 specular = specularColor.w * clamp(pow(max(dot(cLightDir, -reflect(lights[i].dir, normal)), 0.f), specularPower), 0.f, 1.f);
+			finalPixel += lights[i].color * lights[i].strength * diffuse * shadowColor;
+			finalPixel += (lights[i].color + specularColor.xyz) * specular;
 		}
 	}
 
 	output.diffuse = float4(saturate(finalPixel), 1.f);
+	output.pos = float4(input.worldPos, 1.f);
 	output.normal = float4(normal, 1.f);
-	output.depth = float4(input.pos.z / input.pos.w, 0.f, 0.f, 1.f);
+	output.depth = float4(sqrt(input.pos.z / input.pos.w), 0.f, 0.f, 1.f);
 
 	return output;
 }

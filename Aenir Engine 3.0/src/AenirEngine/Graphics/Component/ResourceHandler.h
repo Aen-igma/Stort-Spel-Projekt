@@ -16,9 +16,9 @@ namespace Aen {
 			return m_shaders.count(name) > 0;
 		}
 
-		static ShaderModel* CreateShader(const std::string& name) {
+		static ShaderModel& CreateShader(const std::string& name) {
 			m_shaders.emplace(name, AEN_NEW ShaderModel());
-			return m_shaders.at(name);
+			return *m_shaders.at(name);
 		}
 
 		static void RemoveShader(const std::string& name) {
@@ -42,9 +42,9 @@ namespace Aen {
 			return m_materials.count(name) > 0;
 		}
 
-		static Material* CreateMaterial(const std::string& name) {
-			m_materials.emplace(name, AEN_NEW Material());
-			return m_materials.at(name);
+		static Material& CreateMaterial(const std::string& name, const bool& useDefaultShader = true) {
+			m_materials.emplace(name, AEN_NEW Material(useDefaultShader));
+			return *m_materials.at(name);
 		}
 
 		static void RemoveMaterial(const std::string& name) {
@@ -68,9 +68,9 @@ namespace Aen {
 			return m_textures.count(name) > 0;
 		}
 
-		static Texture* CreateTexture(const std::string& name) {
+		static Texture& CreateTexture(const std::string& name) {
 			m_textures.emplace(name, AEN_NEW Texture());
-			return m_textures.at(name);
+			return *m_textures.at(name);
 		}
 
 		static void RemoveTexture(const std::string& name) {
@@ -94,9 +94,9 @@ namespace Aen {
 			return m_meshes.count(name) > 0;
 		}
 
-		static Mesh* CreateMesh(const std::string& name) {
+		static Mesh& CreateMesh(const std::string& name) {
 			m_meshes.emplace(name, AEN_NEW Mesh());
-			return m_meshes.at(name);
+			return *m_meshes.at(name);
 		}
 
 		static void CreateMesh(const std::string& name, const std::string& dir) {

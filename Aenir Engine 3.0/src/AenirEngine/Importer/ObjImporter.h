@@ -108,13 +108,13 @@ namespace Aen {
 			tb.y.y = f * (-duv.a21 * de.a12 + duv.a11 * de.a22);
 			tb.y.z = f * (-duv.a21 * de.a13 + duv.a11 * de.a23);
 
-			mesh[i].tan = tb.x;
-			mesh[i + 1u].tan = tb.x;
-			mesh[i + 2u].tan = tb.x;
+			mesh[i].tan = (tb.x - mesh[i].norm * (mesh[i].norm * tb.x)).Normalized();
+			mesh[i + 1u].tan = (tb.x - mesh[i + 1u].norm * (mesh[i + 1u].norm * tb.x)).Normalized();
+			mesh[i + 2u].tan = (tb.x - mesh[i + 2u].norm * (mesh[i + 2u].norm * tb.x)).Normalized();
 
-			mesh[i].bi = tb.y;
-			mesh[i + 1u].bi = tb.y;
-			mesh[i + 2u].bi = tb.y;
+			mesh[i].bi = (tb.y - mesh[i].norm * (mesh[i].norm * tb.y));
+			mesh[i + 1u].bi = (tb.y - mesh[i + 1u].norm * (mesh[i + 1u].norm * tb.y)).Normalized();
+			mesh[i + 2u].bi = (tb.y - mesh[i + 2u].norm * (mesh[i + 2u].norm * tb.y)).Normalized();
 		}
 
 		// Create vertex buffer

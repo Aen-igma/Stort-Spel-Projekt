@@ -10,6 +10,15 @@ namespace Aen {
 		Mat4f m_mdlMat;
 	};
 
+	struct VB_Camera {
+		Vec3f pos;
+		float pad;
+		Vec3f fDir;
+		float pad1;
+		Vec3f uDir;
+		float pad2;
+	};
+
 	class Renderer {
 		public:
 		Renderer() = delete;
@@ -22,17 +31,12 @@ namespace Aen {
 		void Draw();
 
 		Window& m_window;
-
-		GBuffer m_gBuffer;
-		VShader m_postVS;
-		PShader m_postPS;
+		
 		ScreenQuad m_screenQuad;
-		ILayout m_postLayout;
-		Sampler m_borderSampler;
 
 		CBuffer<CB_Transform> m_cbTransform;
 		CBuffer<uint32_t> m_cbLightCount;
-		CBuffer<Vec3f> m_cbCamera;
+		CBuffer<VB_Camera> m_cbCamera;
 		CBuffer<Vec4i> m_cbUseTexture;
 		SBuffer<SB_Light> m_sbLight;
 
@@ -42,6 +46,7 @@ namespace Aen {
 		Depth m_depth;
 		Stencil m_writeStencil;
 		Stencil m_maskStencil;
+		Stencil m_offStencil;
 		RState m_rasterizerState;
 	};
 }

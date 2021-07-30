@@ -6,6 +6,7 @@
 #include"Light/Light.h"
 
 #include<unordered_map>
+#include<map>
 
 namespace Aen {
 
@@ -157,12 +158,10 @@ namespace Aen {
 		// ----------------- Spot Light Component ------------------ //
 
 		static const bool SpotLightExist(const uint32_t& id) {
-			SpotLight* pSLight = nullptr;
 			if(m_lights.count(id) > 0)
-				for(auto i = m_lights.begin(m_lights.bucket(id)); i != m_lights.end(m_lights.bucket(id)); ++i) {
+				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<SpotLight*>(i->second))
 						return true;
-				}
 
 			return false;
 		}
@@ -172,20 +171,22 @@ namespace Aen {
 		}
 
 		static void RemoveSpotLight(const uint32_t& id) {
-			if(m_lights.count(id) > 0) {
-				delete m_lights.at(id);
-				m_lights.at(id) = nullptr;
-				m_lights.erase(id);
-			}
+			if(m_lights.count(id) > 0)
+				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
+					if(dynamic_cast<SpotLight*>(i->second)) {
+						delete i->second;
+						i->second = nullptr;
+						m_lights.erase(i);
+						break;
+					}
 		}
 
 		static SpotLight& GetSpotLight(const uint32_t& id) {
 			SpotLight* pSLight = nullptr;
 			if(m_lights.count(id) > 0)
-				for(auto i = m_lights.begin(m_lights.bucket(id)); i != m_lights.end(m_lights.bucket(id)); ++i) {
+				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<SpotLight*>(i->second))
 						pSLight = reinterpret_cast<SpotLight*>(i->second);
-				}
 
 			if(!pSLight) throw;
 			return *pSLight;
@@ -194,12 +195,10 @@ namespace Aen {
 		// ----------------- Point Light Component ------------------ //
 
 		static const bool PointLightExist(const uint32_t& id) {
-			PointLight* pPLight = nullptr;
 			if(m_lights.count(id) > 0)
-				for(auto i = m_lights.begin(m_lights.bucket(id)); i != m_lights.end(m_lights.bucket(id)); ++i) {
+				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<PointLight*>(i->second))
 						return true;
-				}
 
 			return false;
 		}
@@ -209,20 +208,22 @@ namespace Aen {
 		}
 
 		static void RemovePointLight(const uint32_t& id) {
-			if(m_lights.count(id) > 0) {
-				delete m_lights.at(id);
-				m_lights.at(id) = nullptr;
-				m_lights.erase(id);
-			}
+			if(m_lights.count(id) > 0) 
+				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
+					if(dynamic_cast<PointLight*>(i->second)) {
+						delete i->second;
+						i->second = nullptr;
+						m_lights.erase(i);
+						break;
+					}
 		}
 
 		static PointLight& GetPointLight(const uint32_t& id) {
 			PointLight* pPLight = nullptr;
 			if(m_lights.count(id) > 0)
-				for(auto i = m_lights.begin(m_lights.bucket(id)); i != m_lights.end(m_lights.bucket(id)); ++i) {
+				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<PointLight*>(i->second))
 						pPLight = reinterpret_cast<PointLight*>(i->second);
-				}
 
 			if(!pPLight) throw;
 			return *pPLight;
@@ -231,12 +232,10 @@ namespace Aen {
 		// ----------------- Directional Light Component ------------------ //
 
 		static const bool DirectionalLightExist(const uint32_t& id) {
-			DirectionalLight* pDLight = nullptr;
 			if(m_lights.count(id) > 0)
-				for(auto i = m_lights.begin(m_lights.bucket(id)); i != m_lights.end(m_lights.bucket(id)); ++i) {
+				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<DirectionalLight*>(i->second))
 						return true;
-				}
 
 			return false;
 		}
@@ -246,20 +245,22 @@ namespace Aen {
 		}
 
 		static void RemoveDirectionalLight(const uint32_t& id) {
-			if(m_lights.count(id) > 0) {
-				delete m_lights.at(id);
-				m_lights.at(id) = nullptr;
-				m_lights.erase(id);
-			}
+			if(m_lights.count(id) > 0)
+				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
+					if(dynamic_cast<DirectionalLight*>(i->second)) {
+						delete i->second;
+						i->second = nullptr;
+						m_lights.erase(i);
+						break;
+					}
 		}
 
 		static DirectionalLight& GetDirectionalLight(const uint32_t& id) {
 			DirectionalLight* pDLight = nullptr;
 			if(m_lights.count(id) > 0)
-				for(auto i = m_lights.begin(m_lights.bucket(id)); i != m_lights.end(m_lights.bucket(id)); ++i) {
+				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<DirectionalLight*>(i->second)) 
 						pDLight = reinterpret_cast<DirectionalLight*>(i->second);
-				}
 
 			if(!pDLight) throw;
 			return *pDLight;
@@ -271,7 +272,7 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Translation*> m_translations;
 		static std::unordered_map<uint32_t, Rotation*> m_rotations;
 		static std::unordered_map<uint32_t, Scale*> m_scales;
-		static std::unordered_map<uint32_t, Light*> m_lights;
+		static std::multimap<uint32_t, Light*> m_lights;
 		
 		friend class Entity;
 		friend class Renderer;

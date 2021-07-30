@@ -6,10 +6,10 @@ namespace Aen {
 	Light::~Light() {}
 
 	Light::Light(const LightType& type)
-		:m_light(Color::White, Vec4f(0.1f, 0.1f, 2.f, 1.3f), Vec3f::zero, 1.f, Vec3f(0.f, 1.f, 0.f), 20.f, type) {}
+		:m_light(Color::White, Vec4f(0.2f, 0.f, 0.02f, 2.f), Vec3f::zero, 1.f, Vec3f(0.f, 1.f, 0.f), 30.f, type) {}
 
 	Light::Light(const LightType& type, const Vec4f& dist)
-		:m_light(Color::White, dist, Vec3f::zero, 1.f, Vec3f(0.f, 1.f, 0.f), 20.f, type) {}
+		:m_light(Color::White, dist, Vec3f::zero, 1.f, Vec3f(0.f, 1.f, 0.f), 30.f, type) {}
 
 	void Light::SetColor(const Color& color) {
 		m_light.m_color = color;
@@ -25,7 +25,7 @@ namespace Aen {
 
 
 	SpotLight::SpotLight()
-		:Light(LightType::SpotLight, Vec4f(0.4f, 0.02f, 0.f, 100.f)) {}
+		:Light(LightType::SpotLight, Vec4f(0.1f, 0.f, 0.02f, 5.f)) {}
 
 	void SpotLight::SetLightDist(const Vec4f& dist) {
 		m_light.m_dist = dist;

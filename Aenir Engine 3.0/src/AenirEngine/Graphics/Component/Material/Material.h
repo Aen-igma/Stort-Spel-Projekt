@@ -10,11 +10,18 @@ namespace Aen {
 		using PLayout = std::pair<UINT, DBLayout>;
 		using PSampler = std::pair<UINT, Sampler>;
 
-		PShader m_PShader;
-		VShader m_VShader;
-		ILayout m_iLayout;
-		std::vector<PLayout> m_dbLayouts;
-		std::vector<PSampler> m_samplerDatas;
+		ILayout m_iLayoutPass1;
+		VShader m_VShaderPass1;
+		PShader m_PShaderPass1;
+		PSampler m_samplerDataPass1;
+
+		ILayout m_iLayoutPass2;
+		VShader m_VShaderPass2;
+		PShader m_PShaderPass2;
+		PSampler m_samplerDataPass2;
+
+		PLayout m_dbLayout;
+		GBuffer m_gBuffer;
 
 		private:
 		~ShaderModel() = default;
@@ -36,13 +43,13 @@ namespace Aen {
 		void SetEmissionMap(Texture& texture);
 		void SetOpacityMap(Texture& texture);
 
-		DBuffer& GetBuffer(const uint32_t& index);
+		ElRef operator[] (const std::string& name);
 
 		private:
-		~Material();
+		~Material() = default;
 
-		ShaderModel* m_pShader;
-		std::vector<DBuffer*> m_dBuffers;
+		ShaderModel* m_pShaderModel;
+		DBuffer m_dBuffer;
 		Texture* m_textures[4];
 
 		friend class ResourceHandler;
@@ -52,9 +59,9 @@ namespace Aen {
 	class AEN_DECLSPEC MaterialInstance {
 		public:
 		MaterialInstance() = default;
-		MaterialInstance(Material*& material);
+		MaterialInstance(Material& material);
 
-		void SetMaterial(Material*& material);
+		void SetMaterial(Material& material);
 
 		private:
 		~MaterialInstance();

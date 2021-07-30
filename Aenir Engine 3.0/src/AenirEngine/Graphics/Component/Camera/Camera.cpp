@@ -14,6 +14,18 @@ namespace Aen {
         m_projection = MatOrthographic<float>(-width * 0.5f, width * 0.5f, height * 0.5f, -height * 0.5f, minZ, maxZ);
     }
 
+    const Vec3f Camera::GetForward() {
+        return m_forwardVec;
+    } 
+    
+    const Vec3f Camera::GetUp() {
+        return m_upVec;
+    }
+
+    const Vec3f Camera::GetRight() {
+        return m_upVec % m_forwardVec;
+    }
+
     const Mat4f Camera::GetVPMatrix() const {
         return m_view * m_projection;
     }
@@ -27,8 +39,9 @@ namespace Aen {
     }
 
     void Camera::UpdateView(const Vec3f& pos, const Vec3f& rot) {
-        Vec3f camTarget = Transform(MatRotate(rot), Vec3f(0.f, 0.f, 1.f)).Normalized() + pos;
-        Vec3f upDir = Transform(MatRotate(rot), Vec3f(0.f, 1.f, 0.f)).Normalized();
-        m_view = MatViewLH(pos, camTarget, upDir);
+        m_forwardVec = Transform(MatRotate(rot), Vec3f(0.f, 0.f, 1.f)).Normalized();
+        Vec3f camTarget = m_forwardVec + pos;
+        m_upVec = Transform(MatRotate(rot), Vec3f(0.f, 1.f, 0.f)).Normalized();
+        m_view = MatViewLH(pos, camTarget, m_upVec);
     }
 }
