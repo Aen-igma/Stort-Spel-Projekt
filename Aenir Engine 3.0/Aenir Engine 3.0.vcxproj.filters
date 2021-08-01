@@ -63,10 +63,10 @@
     <ClCompile Include="src\PCH\PCH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\Material.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Material\Texture.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DBuffer.cpp">
@@ -230,7 +230,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Sampler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Material\Material.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h">
@@ -242,7 +242,7 @@
     <ClInclude Include="src\PCH\PCH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Material\Texture.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DBuffer.h">

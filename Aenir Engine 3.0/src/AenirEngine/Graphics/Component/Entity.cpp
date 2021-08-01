@@ -8,7 +8,6 @@ namespace Aen {
 	Entity::~Entity() {
 		ComponentHandler::RemoveCamera(m_id);
 		ComponentHandler::RemoveMeshInstance(m_id);
-		ComponentHandler::RemoveMaterial(m_id);
 		ComponentHandler::RemoveTranform(m_id);
 		ComponentHandler::RemoveSpotLight(m_id);
 		ComponentHandler::RemovePointLight(m_id);

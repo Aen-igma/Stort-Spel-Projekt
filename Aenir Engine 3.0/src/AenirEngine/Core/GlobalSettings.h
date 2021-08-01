@@ -102,6 +102,15 @@ namespace Aen {
 			m_pDefaultShader->m_samplerDataPass2.second.Create(SamplerType::CLAMP);
 
 			m_pDefaultShader->m_gBuffer.Create(4, window);
+
+			Aen::Material& defaultMaterial = ResourceHandler::CreateMaterial("DefaultMaterial");
+			Aen::Texture& defaultTexture = ResourceHandler::CreateTexture("DefaultTexture");
+			defaultMaterial["InnerEdgeThickness"] = 0.0006f;
+			defaultMaterial["OuterEdgeThickness"] = 0.0006f;
+			defaultMaterial["InnerEdgeColor"] = Aen::Color::Magenta;
+			defaultMaterial["OuterEdgeColor"] = Aen::Color::Magenta;
+			defaultTexture.LoadTexture("../Resource/Missing_Textures.png");
+			defaultMaterial.SetDiffuseMap(defaultTexture);
 		}
 
 		static ShaderModel* m_pDefaultShader;

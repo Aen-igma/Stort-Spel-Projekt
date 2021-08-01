@@ -69,139 +69,141 @@ namespace Aen {
 
 		m_sbLight.UpdateBuffer();
 		m_sbLight.BindSRV<PShader>(4);
-
-		// LightCount
-
 		m_cbLightCount.GetData() = ComponentHandler::m_lights.size();
-
+		m_cbLightCount.UpdateBuffer();
 
 		// Pre Depth Pass
 
 		for(auto& i : ComponentHandler::m_mesheInstances) {
-			uint32_t id = i.first;
 			Mesh* pMesh = i.second->m_mesh;
-			Material* pMaterial = (pMesh && ComponentHandler::MaterialInstanceExist(id)) ? ComponentHandler::GetMaterialInstance(id).m_pMaterial : nullptr;
-
-			Mat4f parentTranform;
-			if(EntityHandler::GetEntity(id).m_hasParent) {
-				uint32_t parentId = EntityHandler::GetEntity(id).m_parentId;
-				Mat4f parentPos = (ComponentHandler::TranslationExist(parentId)) ? ComponentHandler::GetTranslation(parentId).GetTranform() : Mat4f::identity;
-				Mat4f parentRot = (ComponentHandler::RotationExist(parentId)) ? ComponentHandler::GetRotation(parentId).GetTranform() : Mat4f::identity;
-				Mat4f parentScale = (ComponentHandler::ScaleExist(parentId)) ? ComponentHandler::GetScale(parentId).GetTranform() : Mat4f::identity;
-				parentTranform = parentScale * parentRot * parentPos;
-			}
-
-			Mat4f pos = (ComponentHandler::TranslationExist(id)) ? ComponentHandler::GetTranslation(id).GetTranform() : Mat4f::identity;
-			Mat4f rot = (ComponentHandler::RotationExist(id)) ? ComponentHandler::GetRotation(id).GetTranform() : Mat4f::identity;
-			Mat4f scale = (ComponentHandler::ScaleExist(id)) ? ComponentHandler::GetScale(id).GetTranform() : Mat4f::identity;
-			m_cbTransform.GetData().m_mdlMat = (scale * rot * pos * parentTranform).Transposed();
-			m_cbTransform.UpdateBuffer();
-
-			if(pMaterial) {
-				RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass1);
-				RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass1);
-				RenderSystem::UnBindShader<PShader>();
-			}
-
-			RenderSystem::UnBindRenderTargets(1);
-			RenderSystem::BindRenderTargetView(m_depth);
-			RenderSystem::SetDepthStencilState(m_offStencil, 0xFF);
 
 			if(pMesh) {
+				
+				uint32_t id = i.first;
+				
+				Mat4f parentTranform;
+				if(EntityHandler::GetEntity(id).m_hasParent) {
+					uint32_t parentId = EntityHandler::GetEntity(id).m_parentId;
+					Mat4f parentPos = (ComponentHandler::TranslationExist(parentId)) ? ComponentHandler::GetTranslation(parentId).GetTranform() : Mat4f::identity;
+					Mat4f parentRot = (ComponentHandler::RotationExist(parentId)) ? ComponentHandler::GetRotation(parentId).GetTranform() : Mat4f::identity;
+					Mat4f parentScale = (ComponentHandler::ScaleExist(parentId)) ? ComponentHandler::GetScale(parentId).GetTranform() : Mat4f::identity;
+					parentTranform = parentScale * parentRot * parentPos;
+				}
+
+				Mat4f pos = (ComponentHandler::TranslationExist(id)) ? ComponentHandler::GetTranslation(id).GetTranform() : Mat4f::identity;
+				Mat4f rot = (ComponentHandler::RotationExist(id)) ? ComponentHandler::GetRotation(id).GetTranform() : Mat4f::identity;
+				Mat4f scale = (ComponentHandler::ScaleExist(id)) ? ComponentHandler::GetScale(id).GetTranform() : Mat4f::identity;
+				m_cbTransform.GetData().m_mdlMat = (scale * rot * pos * parentTranform).Transposed();
+				m_cbTransform.UpdateBuffer();
+				
+				Material* pMaterial = (pMesh && pMesh->m_pMaterials[0]) ? pMesh->m_pMaterials[0] : nullptr;
+				if(pMaterial) {
+					RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass1);
+					RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass1);
+					RenderSystem::UnBindShader<PShader>();
+				}
+
+				RenderSystem::UnBindRenderTargets(1);
+				RenderSystem::BindRenderTargetView(m_depth);
+				RenderSystem::SetDepthStencilState(m_offStencil, 0xFF);
+
 				pMesh->m_vertices.BindBuffer();
 				pMesh->m_vertices.Draw();
 			}
 		}
 
-		// Mesh
-
 		for(auto& i : ComponentHandler::m_mesheInstances) { 
 
-			m_cbLightCount.BindBuffer<PShader>(2);
-			m_cbLightCount.UpdateBuffer();
-
-			uint32_t id = i.first;
 			Mesh* pMesh = i.second->m_mesh;
-			Material* pMaterial = (pMesh && ComponentHandler::MaterialInstanceExist(id)) ? ComponentHandler::GetMaterialInstance(id).m_pMaterial : nullptr;
 			
-			// Transform
-
-			Mat4f parentTranform;
-			if(EntityHandler::GetEntity(id).m_hasParent) {
-				uint32_t parentId = EntityHandler::GetEntity(id).m_parentId;
-				Mat4f parentPos = (ComponentHandler::TranslationExist(parentId)) ? ComponentHandler::GetTranslation(parentId).GetTranform() : Mat4f::identity;
-				Mat4f parentRot = (ComponentHandler::RotationExist(parentId)) ? ComponentHandler::GetRotation(parentId).GetTranform() : Mat4f::identity;
-				Mat4f parentScale = (ComponentHandler::ScaleExist(parentId)) ? ComponentHandler::GetScale(parentId).GetTranform() : Mat4f::identity;
-				parentTranform = parentScale * parentRot * parentPos;
-			}
-
-			Mat4f pos = (ComponentHandler::TranslationExist(id)) ? ComponentHandler::GetTranslation(id).GetTranform() : Mat4f::identity;
-			Mat4f rot = (ComponentHandler::RotationExist(id)) ? ComponentHandler::GetRotation(id).GetTranform() : Mat4f::identity;
-			Mat4f scale = (ComponentHandler::ScaleExist(id)) ? ComponentHandler::GetScale(id).GetTranform() : Mat4f::identity;
-			m_cbTransform.GetData().m_mdlMat = (scale * rot * pos * parentTranform).Transposed();
-			m_cbTransform.UpdateBuffer();
-
-			// Material
-
-			RenderSystem::UnBindShaderResources<PShader>(0u, 4u);
-			if(pMaterial) {
-
-				RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass1);
-
-				for(UINT i = 0; i < 4; i++)
-					if(pMaterial->m_textures[i]) {
-						RenderSystem::BindShaderResourceView<PShader>(i, pMaterial->m_textures[i]->m_shaderResource);
-						m_cbUseTexture.GetData()[i] = (int)true;
-					} else
-						m_cbUseTexture.GetData()[i] = (int)false;
-
-				m_cbUseTexture.UpdateBuffer();
-				m_cbUseTexture.BindBuffer<PShader>(4);
-
-				RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass1);
-				RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShaderPass1);
-
-				pMaterial->m_dBuffer.BindBuffer<PShader>(pMaterial->m_pShaderModel->m_dbLayout.first);
-				pMaterial->m_dBuffer.UpdateBuffer();
-
-				RenderSystem::BindSamplers<PShader>(pMaterial->m_pShaderModel->m_samplerDataPass1.first, pMaterial->m_pShaderModel->m_samplerDataPass1.second);
-
-				// Opaque pass
-
-				RenderSystem::UnBindRenderTargets(1);
-				RenderSystem::ClearRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, Color(0.f, 0.f, 0.f, 0.f));
-				RenderSystem::ClearDepthStencilView(m_depth, false, true);
-				RenderSystem::BindRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, m_depth);
-				RenderSystem::SetDepthStencilState(m_writeStencil, 0xFF);
-			}
-
 			if(pMesh) {
-				pMesh->m_vertices.BindBuffer();
-				pMesh->m_vertices.Draw();
+
+				// Transform
+
+				uint32_t id = i.first;
+				Mat4f parentTranform;
+				if(EntityHandler::GetEntity(id).m_hasParent) {
+					uint32_t parentId = EntityHandler::GetEntity(id).m_parentId;
+					Mat4f parentPos = (ComponentHandler::TranslationExist(parentId)) ? ComponentHandler::GetTranslation(parentId).GetTranform() : Mat4f::identity;
+					Mat4f parentRot = (ComponentHandler::RotationExist(parentId)) ? ComponentHandler::GetRotation(parentId).GetTranform() : Mat4f::identity;
+					Mat4f parentScale = (ComponentHandler::ScaleExist(parentId)) ? ComponentHandler::GetScale(parentId).GetTranform() : Mat4f::identity;
+					parentTranform = parentScale * parentRot * parentPos;
+				}
+
+				Mat4f pos = (ComponentHandler::TranslationExist(id)) ? ComponentHandler::GetTranslation(id).GetTranform() : Mat4f::identity;
+				Mat4f rot = (ComponentHandler::RotationExist(id)) ? ComponentHandler::GetRotation(id).GetTranform() : Mat4f::identity;
+				Mat4f scale = (ComponentHandler::ScaleExist(id)) ? ComponentHandler::GetScale(id).GetTranform() : Mat4f::identity;
+				m_cbTransform.GetData().m_mdlMat = (scale * rot * pos * parentTranform).Transposed();
+				m_cbTransform.UpdateBuffer();
+
+				// Mesh and Material
+
+				for(uint32_t j = 0; j < pMesh->m_partitions.size(); j++) {
+
+					pMesh->m_vertices.BindBuffer();
+					m_cbLightCount.BindBuffer<PShader>(2);
+
+					// Opaque pass
+
+					RenderSystem::UnBindShaderResources<PShader>(0u, 4u);
+					uint32_t materialIndex = pMesh->m_partitions[j].materialIndex;
+					Material* pMaterial = (pMesh->m_pMaterials[materialIndex]) ? pMesh->m_pMaterials[materialIndex] : nullptr;
+					if(pMaterial) {
+
+						RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass1);
+
+						for(UINT k = 0; k < 4; k++)
+							if(pMaterial->m_textures[k]) {
+								RenderSystem::BindShaderResourceView<PShader>(k, pMaterial->m_textures[k]->m_shaderResource);
+								m_cbUseTexture.GetData()[k] = (int)true;
+							} else
+								m_cbUseTexture.GetData()[k] = (int)false;
+
+						m_cbUseTexture.UpdateBuffer();
+						m_cbUseTexture.BindBuffer<PShader>(4);
+
+						RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass1);
+						RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShaderPass1);
+
+						pMaterial->m_dBuffer.BindBuffer<PShader>(pMaterial->m_pShaderModel->m_dbLayout.first);
+						pMaterial->m_dBuffer.UpdateBuffer();
+
+						RenderSystem::BindSamplers<PShader>(pMaterial->m_pShaderModel->m_samplerDataPass1.first, pMaterial->m_pShaderModel->m_samplerDataPass1.second);
+
+						RenderSystem::UnBindRenderTargets(1);
+						RenderSystem::ClearRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, Color(0.f, 0.f, 0.f, 0.f));
+						RenderSystem::BindRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, m_depth);
+					}
+
+					RenderSystem::ClearDepthStencilView(m_depth, false, true);
+					RenderSystem::SetDepthStencilState(m_writeStencil, 0xFF);
+					pMesh->m_vertices.Draw(pMesh->m_partitions[j].size, pMesh->m_partitions[j].offset);
+
+					// Per Object Post Process Pass
+
+					if(pMaterial) {
+
+						RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass2);
+						RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShaderPass2);
+
+						pMaterial->m_dBuffer.BindBuffer<PShader>(pMaterial->m_pShaderModel->m_dbLayout.first);
+						pMaterial->m_dBuffer.UpdateBuffer();
+
+						RenderSystem::BindSamplers<PShader>(pMaterial->m_pShaderModel->m_samplerDataPass2.first, pMaterial->m_pShaderModel->m_samplerDataPass2.second);
+
+						RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
+						RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass2);
+
+						RenderSystem::BindShaderResourceView<PShader>(0, pMaterial->m_pShaderModel->m_gBuffer);
+					}
+
+					RenderSystem::BindRenderTargetView(m_backBuffer, m_depth);
+					RenderSystem::SetDepthStencilState(m_maskStencil, 0xFF);
+
+					m_cbTransform.BindBuffer<PShader>(0);
+					m_screenQuad.Draw();
+				}
 			}
-
-			if(pMaterial) {
-				RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass2);
-				RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShaderPass2);
-
-				pMaterial->m_dBuffer.BindBuffer<PShader>(pMaterial->m_pShaderModel->m_dbLayout.first);
-				pMaterial->m_dBuffer.UpdateBuffer();
-
-				// Per Object Post Process Pass
-
-				RenderSystem::BindSamplers<PShader>(pMaterial->m_pShaderModel->m_samplerDataPass2.first, pMaterial->m_pShaderModel->m_samplerDataPass2.second);
-
-				RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
-				RenderSystem::BindRenderTargetView(m_backBuffer, m_depth);
-				RenderSystem::SetDepthStencilState(m_maskStencil, 0xFF);
-				RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass2);
-
-				RenderSystem::BindShaderResourceView<PShader>(0, pMaterial->m_pShaderModel->m_gBuffer);
-			}
-
-			m_cbTransform.BindBuffer<PShader>(0);
-
-			m_screenQuad.Draw();
 		}
 
 		// Present

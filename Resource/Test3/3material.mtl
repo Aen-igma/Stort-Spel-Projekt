@@ -1,0 +1,21 @@
+newmtl notspehereiscube
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd ayyy_cropped.png
+Ni 1.00
+newmtl sphere
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd cont_texture.png
+Ni 1.00
+newmtl torhammer
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd Star_of_Chaos.jpg
+Ni 1.00

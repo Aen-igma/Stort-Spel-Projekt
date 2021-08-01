@@ -19,17 +19,12 @@ class Client : public Aen::App {
 	float m_mouseSense;
 	bool m_toggleCamera;
 	Aen::Entity m_camera;
-	Aen::Entity m_cube;
-	Aen::Entity m_cube2;
 	Aen::Entity m_plane;
+	Aen::Entity m_obamaDuck;
+	Aen::Entity m_3Material;
 
-	Aen::Entity m_sLight;
-	Aen::Entity m_pLight;
 	Aen::Entity m_dLight;
 
-	Aen::Entity m_mokou;
-	Aen::Entity m_ina;
-	Aen::Entity m_inaAcc;
 	Aen::Entity m_Miku;
 };
 

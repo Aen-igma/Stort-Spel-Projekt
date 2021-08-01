@@ -43,6 +43,16 @@ namespace Aen {
 		void SetEmissionMap(Texture& texture);
 		void SetOpacityMap(Texture& texture);
 
+		void SetDiffuseMap(const std::string& textureName);
+		void SetNormalMap(const std::string& textureName);
+		void SetEmissionMap(const std::string& textureName);
+		void SetOpacityMap(const std::string& textureName);
+		
+		void LoadeAndSetDiffuseMap(const std::string& dir);
+		void LoadeAndSetNormalMap(const std::string& dir);
+		void LoadeAndSetEmissionMap(const std::string& dir);
+		void LoadeAndSetOpacityMap(const std::string& dir);
+
 		ElRef operator[] (const std::string& name);
 
 		private:
@@ -53,22 +63,6 @@ namespace Aen {
 		Texture* m_textures[4];
 
 		friend class ResourceHandler;
-		friend class Renderer;
-	};
-
-	class AEN_DECLSPEC MaterialInstance {
-		public:
-		MaterialInstance() = default;
-		MaterialInstance(Material& material);
-
-		void SetMaterial(Material& material);
-
-		private:
-		~MaterialInstance();
-
-		Material* m_pMaterial;
-
-		friend class ComponentHandler;
 		friend class Renderer;
 	};
 }

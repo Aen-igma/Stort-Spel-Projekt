@@ -5,7 +5,7 @@
 
 namespace Aen {
 
-	inline void ImportObj(VBuffer<Vertex>& vBuffer, const std::string& dir) {
+	inline void ImportObj(VBuffer<Vertex>& vBuffer, const std::string& dir, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial) {
 
 		std::vector<Vertex> mesh;
 
@@ -28,10 +28,17 @@ namespace Aen {
 		Vec3f v3Temp;
 		Vec2f v2Temp;
 		uint32_t iTemp = 0;
+		uint32_t offset = 0;
+		uint32_t materialIndex = 0;
+		bool redFace = false;
+		bool doPartition = false;
 		while(std::getline(file, line)) {
 			ss.clear();
 			ss.str(line);
 			ss >> pf;
+
+			if(pf != "f")
+				redFace = false;
 
 			if(pf == "v") {
 				ss >> v3Temp.x >> v3Temp.y >> v3Temp.z;
@@ -44,6 +51,7 @@ namespace Aen {
 				normal.emplace_back(v3Temp);
 			} else if(pf == "f") {
 				uint32_t count = 0;
+				redFace = true;
 				while(ss >> iTemp) {
 					switch(count) {
 						case 0:
@@ -68,9 +76,35 @@ namespace Aen {
 					if(count > 2)
 						count = 0;
 				}
+			} 
+			
+			if(!doPartition && redFace) {
+				doPartition = true;
+			}
+
+			if(doPartition && !redFace) {
+				doPartition = false;
+				PartitionData data;
+				data.size = vIndex.size() - offset;
+				data.offset = offset;
+				data.materialIndex = (meshMaterial.size() > 0) ? meshMaterial.size() - 1u : 0u;
+				partitions.emplace_back(data);
+				offset += data.size;
+			}
+
+			if(pf == "usemtl") {
+				std::string matName;
+				ss >> matName;
+				meshMaterial.emplace(matName, materialIndex);
+				materialIndex++;
 			}
 		}
 
+		PartitionData data;
+		data.size = vIndex.size() - offset;
+		data.offset = offset;
+		data.materialIndex = (meshMaterial.size() > 0) ? meshMaterial.size() - 1u : 0u;
+		partitions.emplace_back(data);
 		mesh.resize(vIndex.size());
 
 		for(uint32_t i = 0; i < vIndex.size(); i++) {
@@ -121,4 +155,20 @@ namespace Aen {
 		if(!vBuffer.Create(mesh.data(), (UINT)mesh.size()))
 			throw;
 	};
+
+	inline const std::string GetNameFromPath(const std::string& dir) {
+		int size = 0;
+		std::string name = "";
+		for(int i = static_cast<int>(dir.size()) - 1; i >= 0; i--) {
+			if(dir.at(i) == '/' || dir.at(i) == '\\') break;
+			size = static_cast<int>(dir.size()) - i;
+		}
+
+		for(uint32_t i = dir.size() - size; i < dir.size(); i++) {
+			if(dir.at(i) == '.') break;
+			name += dir.at(i);
+		}
+
+		return name;
+	}
 }

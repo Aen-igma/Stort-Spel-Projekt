@@ -48,6 +48,10 @@ namespace Aen {
 		void Draw() {
 			m_dContext->Draw(m_bufferSize, 0);
 		}
+		
+		void Draw(const UINT& count, const UINT& offset) {
+			m_dContext->Draw(count, offset);
+		}
 
 		private:
 		ComBuffer m_buffer;

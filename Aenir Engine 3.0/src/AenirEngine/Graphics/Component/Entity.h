@@ -88,12 +88,6 @@ namespace Aen {
 	}
 
 	template<>
-	inline void Entity::AddComponent<MaterialInstance>() {
-		if(!ComponentHandler::MaterialInstanceExist(m_id))
-			ComponentHandler::CreateMaterialInstance(m_id);
-	}
-
-	template<>
 	inline void Entity::AddComponent<SpotLight>() {
 		if(!ComponentHandler::SpotLightExist(m_id))
 			ComponentHandler::CreateSpotLight(m_id);
@@ -144,11 +138,6 @@ namespace Aen {
 	template<>
 	inline MeshInstance& Entity::GetComponent() {
 		return ComponentHandler::GetMeshInstance(m_id);
-	}
-
-	template<>
-	inline MaterialInstance& Entity::GetComponent() {
-		return ComponentHandler::GetMaterialInstance(m_id);
 	}
 
 	template<>
