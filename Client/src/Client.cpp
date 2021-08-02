@@ -65,7 +65,6 @@ void Client::Start() {
 
 	m_obamaDuck.AddComponent<Aen::MeshInstance>();
 	m_obamaDuck.GetComponent<Aen::MeshInstance>().SetMesh(pObamaDuck);
-
 	m_obamaDuck.SetPos(0.f, 0.f, 10.f);
 	
 	m_dLight.AddComponent<Aen::DirectionalLight>();
@@ -73,6 +72,8 @@ void Client::Start() {
 	m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
 	m_dLight.SetRot(45.f, 135.f, 0.f);
 
+	AEN_ENDL;
+	p3Material.PrintMaterialSlots();
 	p3Material.SetMaterial("sphere", pSphere);
 	p3Material.SetMaterial("torhammer", pTorHammer);
 	p3Material.SetMaterial("notspehereiscube", pNotspehereIsCube);

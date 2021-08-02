@@ -7,9 +7,9 @@ namespace Aen {
 		public:
 		~GBuffer();
 		GBuffer() = default;
-		GBuffer(const uint32_t& count, Window& window);
+		GBuffer(Window& window, const uint32_t& count = 1u);
 
-		void Create(const uint32_t& count, Window& window);
+		void Create(Window& window, const uint32_t& count = 1u);
 		const uint32_t GetCount();
 
 		friend class RenderSystem;

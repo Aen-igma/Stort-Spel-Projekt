@@ -48,6 +48,11 @@ static int vRow[9] = {
 	-1, -2, -1
 };
 
+struct VS_Output {
+	float4 diffuse : SV_Target0;
+	float4 depth : SV_Target1;
+};
+
 texture2D diffuseMap : DIFFUSEMAP: register(t0);
 texture2D posMap : POSMAP: register(t1);
 texture2D normalMap : NORMALMAP: register(t2);
@@ -55,7 +60,9 @@ texture2D depthMap : DEPTHMAP: register(t3);
 
 SamplerState borderSampler : BSAMPLER: register(s0);
 
-float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_TARGET {
+VS_Output main(float4 pos : SV_Position, float2 uv : UV) {
+
+	VS_Output output;
 
 	float4 diffuse = diffuseMap.Sample(borderSampler, uv);
 	float3 normal = normalMap.Sample(borderSampler, uv).rgb;
@@ -93,5 +100,8 @@ float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_TARGET {
 	diffuse *= 1.f - strInner;
 	diffuse += strInner * innerEdgeColor + strInner * diffuse;
 
-	return diffuse;
+	output.diffuse = diffuse;
+	output.depth = depth;
+
+	return output;
 }

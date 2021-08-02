@@ -18,13 +18,13 @@ class Client : public Aen::App {
 	float m_fSpeed;
 	float m_mouseSense;
 	bool m_toggleCamera;
+
 	Aen::Entity m_camera;
+	Aen::Entity m_dLight;
+
 	Aen::Entity m_plane;
 	Aen::Entity m_obamaDuck;
 	Aen::Entity m_3Material;
-
-	Aen::Entity m_dLight;
-
 	Aen::Entity m_Miku;
 };
 

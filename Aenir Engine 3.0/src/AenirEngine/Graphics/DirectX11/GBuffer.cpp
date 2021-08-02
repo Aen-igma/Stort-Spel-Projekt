@@ -13,7 +13,7 @@ namespace Aen {
 				i->Release();
 	}
 
-	GBuffer::GBuffer(const uint32_t& count, Window& window) {
+	GBuffer::GBuffer(Window& window, const uint32_t& count) {
 
 		m_rtvs.resize(count);
 		m_srvs.resize(count);
@@ -61,7 +61,7 @@ namespace Aen {
 		}
 	}
 
-    void GBuffer::Create(const uint32_t& count, Window& window) {
+    void GBuffer::Create(Window& window, const uint32_t& count) {
 		
         m_rtvs.resize(count);
         m_srvs.resize(count);

@@ -5,8 +5,8 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_screenQuad(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(900), m_backBuffer(), m_viewPort(), 
-		m_depth(window), m_writeStencil(true, StencilType::Write), m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
+		:m_window(window), m_screenQuad(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(900), m_postProcessBuffer(window, 2u), m_backBuffer(), m_viewPort(),
+		m_clampSampler(SamplerType::CLAMP), m_depth(window), m_writeStencil(true, StencilType::Write), m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front) {}
 
 	void Renderer::Initialize() {
@@ -20,6 +20,21 @@ namespace Aen {
 		m_viewPort.MinDepth = 0.f;
 		m_viewPort.MaxDepth = 1.f;
 
+		if(!m_postProcessVS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessVS.cso")))
+			if(m_postProcessVS.Create(L"PostProcessVS.cso"))
+				throw;
+
+		if(!m_postProcessPS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessPS.cso")))
+			if(!m_postProcessPS.Create(L"PostProcessPS.cso"))
+				throw;
+
+		m_postLayout.m_inputDesc = {
+				{"POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+				{"UV",        0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		};
+
+		m_postLayout.Create(m_postProcessVS);
+
 		RenderSystem::SetViewPort(m_viewPort);
 		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 		RenderSystem::SetRasteriserState(m_rasterizerState);
@@ -29,6 +44,7 @@ namespace Aen {
 		
 		RenderSystem::ClearDepthStencilView(m_depth, true, false);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.08f, 0.08f, 0.13f, 1.f));
+		RenderSystem::ClearRenderTargetView(m_postProcessBuffer, Color(0.08f, 0.08f, 0.13f, 1.f));
 
 		// Camera
 
@@ -197,7 +213,8 @@ namespace Aen {
 						RenderSystem::BindShaderResourceView<PShader>(0, pMaterial->m_pShaderModel->m_gBuffer);
 					}
 
-					RenderSystem::BindRenderTargetView(m_backBuffer, m_depth);
+					
+					RenderSystem::BindRenderTargetView(m_postProcessBuffer, m_depth);
 					RenderSystem::SetDepthStencilState(m_maskStencil, 0xFF);
 
 					m_cbTransform.BindBuffer<PShader>(0);
@@ -205,6 +222,19 @@ namespace Aen {
 				}
 			}
 		}
+
+		// Post Process pass
+		
+		RenderSystem::SetInputLayout(m_postLayout);
+		RenderSystem::UnBindRenderTargets(m_postProcessBuffer.GetCount());
+
+		RenderSystem::BindRenderTargetView(m_backBuffer);
+		RenderSystem::BindShader<VShader>(m_postProcessVS);
+		RenderSystem::BindShader<PShader>(m_postProcessPS);
+		RenderSystem::BindSamplers<PShader>(0u, m_clampSampler);
+		RenderSystem::BindShaderResourceView<PShader>(0u, m_postProcessBuffer);
+
+		m_screenQuad.Draw();
 
 		// Present
 

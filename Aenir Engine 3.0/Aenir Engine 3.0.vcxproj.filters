@@ -296,5 +296,7 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShaderPS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellPostVS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellPostPS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessPS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessVS.hlsl" />
   </ItemGroup>
 </Project>

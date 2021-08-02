@@ -33,15 +33,21 @@ namespace Aen {
 		Window& m_window;
 		
 		ScreenQuad m_screenQuad;
-
+		
 		CBuffer<CB_Transform> m_cbTransform;
 		CBuffer<uint32_t> m_cbLightCount;
 		CBuffer<VB_Camera> m_cbCamera;
 		CBuffer<Vec4i> m_cbUseTexture;
 		SBuffer<SB_Light> m_sbLight;
 
+		GBuffer m_postProcessBuffer;
 		BBuffer m_backBuffer;
 		
+		VShader m_postProcessVS;
+		PShader m_postProcessPS;
+		Sampler m_clampSampler;
+		ILayout m_postLayout;
+
 		D3D11_VIEWPORT m_viewPort;
 		Depth m_depth;
 		Stencil m_writeStencil;

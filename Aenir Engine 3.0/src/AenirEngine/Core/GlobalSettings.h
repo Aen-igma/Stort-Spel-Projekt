@@ -101,7 +101,7 @@ namespace Aen {
 			m_pDefaultShader->m_samplerDataPass2.first = 0;
 			m_pDefaultShader->m_samplerDataPass2.second.Create(SamplerType::CLAMP);
 
-			m_pDefaultShader->m_gBuffer.Create(4, window);
+			m_pDefaultShader->m_gBuffer.Create(window, 4);
 
 			Aen::Material& defaultMaterial = ResourceHandler::CreateMaterial("DefaultMaterial");
 			Aen::Texture& defaultTexture = ResourceHandler::CreateTexture("DefaultTexture");
