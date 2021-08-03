@@ -29,6 +29,7 @@ namespace Aen {
 		Vec2f v2Temp;
 		uint32_t iTemp = 0;
 		uint32_t offset = 0;
+		std::string matName;
 		uint32_t materialIndex = 0;
 		bool redFace = false;
 		bool doPartition = false;
@@ -87,16 +88,19 @@ namespace Aen {
 				PartitionData data;
 				data.size = vIndex.size() - offset;
 				data.offset = offset;
-				data.materialIndex = (meshMaterial.size() > 0) ? meshMaterial.size() - 1u : 0u;
+				//data.materialIndex = (meshMaterial.size() > 0) ? meshMaterial.size() - 1u : 0u;
+				data.materialIndex = meshMaterial.at(matName);
 				partitions.emplace_back(data);
 				offset += data.size;
 			}
 
 			if(pf == "usemtl") {
-				std::string matName;
 				ss >> matName;
-				meshMaterial.emplace(matName, materialIndex);
-				materialIndex++;
+
+				if(meshMaterial.count(matName) == 0) {
+					meshMaterial.emplace(matName, materialIndex);
+					materialIndex++;
+				}
 			}
 		}
 

@@ -43,8 +43,8 @@ namespace Aen {
 	void Renderer::Draw() {
 		
 		RenderSystem::ClearDepthStencilView(m_depth, true, false);
-		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.08f, 0.08f, 0.13f, 1.f));
-		RenderSystem::ClearRenderTargetView(m_postProcessBuffer, Color(0.08f, 0.08f, 0.13f, 1.f));
+		RenderSystem::ClearRenderTargetView(m_backBuffer, Color::Black);
+		RenderSystem::ClearRenderTargetView(m_postProcessBuffer, GlobalSettings::GetBGColor());
 
 		// Camera
 
@@ -227,6 +227,17 @@ namespace Aen {
 		
 		RenderSystem::SetInputLayout(m_postLayout);
 		RenderSystem::UnBindRenderTargets(m_postProcessBuffer.GetCount());
+
+
+		// --------
+		static bool doFXAA = true;
+		if(Input::KeyDown(Key::NUM1))
+			doFXAA = !doFXAA;
+
+		m_FXAA.BindBuffer<PShader>(8u);
+		m_FXAA.GetData() = (uint32_t)doFXAA;
+		m_FXAA.UpdateBuffer();
+		// --------
 
 		RenderSystem::BindRenderTargetView(m_backBuffer);
 		RenderSystem::BindShader<VShader>(m_postProcessVS);

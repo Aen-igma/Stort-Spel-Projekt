@@ -101,11 +101,14 @@ namespace Aen {
 		for(auto& i : m_layout->m_dataMap)
 			memcpy(m_data.data() + i.second.m_offset, i.second.m_data, i.second.m_size);
 
+		UINT mod = m_byteSize % 16u;
+		UINT bytes = (mod == 0) ? static_cast<UINT>(m_byteSize) : static_cast<UINT>(m_byteSize + (16u - mod));
+
 		D3D11_BUFFER_DESC bDesc;
 		ZeroMemory(&bDesc, sizeof(D3D11_BUFFER_DESC));
 
 		bDesc.Usage = D3D11_USAGE_DYNAMIC;
-		bDesc.ByteWidth = (m_byteSize < 16) ? 16 : static_cast<UINT>(m_byteSize);
+		bDesc.ByteWidth = (bytes < 16) ? 16 : bytes;
 		bDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		bDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		bDesc.MiscFlags = 0;

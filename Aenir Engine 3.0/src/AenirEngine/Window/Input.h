@@ -35,6 +35,8 @@ namespace Aen {
 		static void SetMousePos(const int& x, const int& y);
 		static void SetMouseVisible(const bool& isVisible);
 		static const Vec2i GetRawMouse();
+		static const Vec2i GetMousePos(Window window);
+		static const Vec2i GetMousePos();
 
 		private:
 

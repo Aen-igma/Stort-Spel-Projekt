@@ -14,6 +14,8 @@ cbuffer CellShaderModel : register(b1) {
 	float innerEdgeThickness;
 	float outerEdgeThickness;
 	float specularPower;
+	float specularStrength;
+	float roughness;
 	float shadowOffset;
 	float outerFalloff;
 	float innerFalloff;
@@ -85,22 +87,13 @@ VS_Output main(float4 pos : SV_Position, float2 uv : UV) {
 		sobelDepth += sd * kernel;
 	}
 
-	float strN = (length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f * clamp(pow(depth.x, 0.3f), 0.f, 1.f);
-	float strD = length(sobelDepth) / 2.f;
-	float nP = pow(sqrt(strN), 10.f);
-	float nD = pow(sqrt(strD), 1.5f);
-	float stepN = (nP > 0.1f) ? nP : 0.f;
-	float stepD = (nD > 0.1f) ? nD : 0.f;
-	float strInner = clamp(pow(stepN, 0.01f) * pow(depth.x, 1.3f), 0.f, 1.f);
-	float strOuter = clamp(pow(stepD, 0.01f), 0.f, 1.f);
-	float3 pToC = normalize(camPos - worldPos);
-	float slope = dot(pToC, normal);
-	diffuse *= (slope > 0.5f) ? 1.f - strOuter : 1.f;
-	diffuse += (slope > 0.5f) ? strOuter * outerEdgeColor : 0.f;
-	diffuse *= 1.f - strInner;
-	diffuse += strInner * innerEdgeColor + strInner * diffuse;
+	float3 cToP = normalize(worldPos - camPos);
+	float il = (dot(normal, cToP) > -0.35f) * clamp((length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f, 0.f, 1.f);
+	float ol = (dot(normal, cToP) > -0.35f) * clamp(length(sobelDepth), 0.f, 1.f);
+	float3 innerEdge = il * innerEdgeColor;
+	float3 outerEdge = ol * outerEdgeColor;
 
-	output.diffuse = diffuse;
+	output.diffuse = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - il) * (1.f - ol) * diffuse;
 	output.depth = depth;
 
 	return output;

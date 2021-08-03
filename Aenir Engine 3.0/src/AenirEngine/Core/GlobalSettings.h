@@ -19,6 +19,18 @@ namespace Aen {
 			m_pMainCamera = &camera;
 		}
 
+		static void SetBGColor(const Color& color) {
+			m_BGColor = color;
+		}
+		
+		static void SetBGColor(const float& r, const float& g, const float& b, const float& a) {
+			m_BGColor = Color(r, g, b, a);
+		}
+
+		static const Color& GetBGColor() {
+			return m_BGColor;
+		}
+
 		friend class GameLoop;
 		friend class Renderer;
 
@@ -75,6 +87,8 @@ namespace Aen {
 			m_pDefaultShader->m_dbLayout.second.Add<DBType::Float>(			"InnerEdgeThickness"		);
 			m_pDefaultShader->m_dbLayout.second.Add<DBType::Float>(			"OuterEdgeThickness"		);
 			m_pDefaultShader->m_dbLayout.second.Add<DBType::Float>(			"SpecularPower"				);
+			m_pDefaultShader->m_dbLayout.second.Add<DBType::Float>(			"SpecularStrength"			);
+			m_pDefaultShader->m_dbLayout.second.Add<DBType::Float>(			"Roughness"					);
 			m_pDefaultShader->m_dbLayout.second.Add<DBType::Float>(			"ShadowOffset"				);
 			m_pDefaultShader->m_dbLayout.second.Add<DBType::Float>(			"OuterFalloff"				);
 			m_pDefaultShader->m_dbLayout.second.Add<DBType::Float>(			"InnerFalloff"				);
@@ -83,13 +97,15 @@ namespace Aen {
 
 			m_pDefaultShader->m_dbLayout.second["BaseColor"]				= Color::White;
 			m_pDefaultShader->m_dbLayout.second["ShadowColor"]				= Color(0.3f, 0.3f, 0.5f, 1.f);
-			m_pDefaultShader->m_dbLayout.second["SpecularColor"]			= Color(1.f, 1.f, 1.f, 1.f);
+			m_pDefaultShader->m_dbLayout.second["SpecularColor"]			= Color(1.f, 1.f, 1.f, 0.3f);
 			m_pDefaultShader->m_dbLayout.second["InnerEdgeColor"]			= Color::Black;
 			m_pDefaultShader->m_dbLayout.second["OuterEdgeColor"]			= Color::Black;
-			m_pDefaultShader->m_dbLayout.second["InnerEdgeThickness"]		= 0.0004f;
+			m_pDefaultShader->m_dbLayout.second["InnerEdgeThickness"]		= 0.001f;
 			m_pDefaultShader->m_dbLayout.second["OuterEdgeThickness"]		= 0.001f;
-			m_pDefaultShader->m_dbLayout.second["SpecularPower"]			= 200.f;
-			m_pDefaultShader->m_dbLayout.second["ShadowOffset"]				= 0.5f;
+			m_pDefaultShader->m_dbLayout.second["SpecularPower"]			= 0.6f;
+			m_pDefaultShader->m_dbLayout.second["SpecularStrength"]			= 1.f;
+			m_pDefaultShader->m_dbLayout.second["Roughness"]				= 0.5f;
+			m_pDefaultShader->m_dbLayout.second["ShadowOffset"]				= 0.f;
 			m_pDefaultShader->m_dbLayout.second["OuterFalloff"]				= 0.f;
 			m_pDefaultShader->m_dbLayout.second["InnerFalloff"]				= 0.f;
 			m_pDefaultShader->m_dbLayout.second["RimLightIntensity"]		= 1.f;
@@ -116,5 +132,6 @@ namespace Aen {
 		static ShaderModel* m_pDefaultShader;
 		static Window* m_pWindow;
 		static Entity* m_pMainCamera;
+		static Color m_BGColor;
 	};
 }
