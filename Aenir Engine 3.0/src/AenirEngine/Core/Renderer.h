@@ -33,10 +33,6 @@ namespace Aen {
 		Window& m_window;
 		
 		ScreenQuad m_screenQuad;
-		
-		// temp
-		CBuffer<uint32_t> m_FXAA;
-		//----
 
 		CBuffer<CB_Transform> m_cbTransform;
 		CBuffer<uint32_t> m_cbLightCount;

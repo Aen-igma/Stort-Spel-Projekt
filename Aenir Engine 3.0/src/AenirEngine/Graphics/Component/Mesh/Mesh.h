@@ -27,6 +27,7 @@ namespace Aen {
 		void Load(const std::string& dir);
 		void SetMaterial(Material& material);
 		void SetMaterial(const std::string& materialSlotName, Material& material);
+		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
 
 		private:
 		~Mesh();

@@ -36,7 +36,14 @@ namespace Aen {
 	}
 	
 	void Mesh::SetMaterial(const std::string& materialSlotName, Material& material) {
+		if(m_meshMaterialName.count(materialSlotName) == 0) throw;
 		m_pMaterials[m_meshMaterialName.at(materialSlotName)] = &material;
+	}
+
+	void Mesh::SetMaterial(const std::string& materialSlotName, const std::string& materialName) {
+		if(m_meshMaterialName.count(materialSlotName) == 0) throw;
+		if(!ResourceHandler::MaterialExist(materialName)) throw;
+		m_pMaterials[m_meshMaterialName.at(materialSlotName)] = &ResourceHandler::GetMaterial(materialName);
 	}
 
 	Mesh::~Mesh() {

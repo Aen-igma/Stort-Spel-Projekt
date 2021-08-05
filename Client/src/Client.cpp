@@ -160,8 +160,8 @@ void Client::Start() {
 
 	seeU04["OuterEdgeThickness"] = 0.003f;
 	seeU04["InnerEdgeThickness"] = 0.003f;
-	seeU04["OuterEdgeColor"] = Aen::Color(0.5f ,0.25f, 0.f, 1.f);
-	seeU04["InnerEdgeColor"] = Aen::Color(0.5f, 0.25f, 0.f, 1.f);
+	seeU04["OuterEdgeColor"] = Aen::Color(0.3f ,0.1f, 0.f, 1.f);
+	seeU04["InnerEdgeColor"] = Aen::Color(0.3f, 0.1f, 0.f, 1.f);
 	seeU04["SpecularColor"] = Aen::Color::Orange;
 	seeU04["SpecularPower"] = 0.2f;
 	seeU04["SpecularStrength"] = 0.1f;

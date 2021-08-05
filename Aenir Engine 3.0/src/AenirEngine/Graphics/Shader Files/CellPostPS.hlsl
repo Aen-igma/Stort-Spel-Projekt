@@ -50,11 +50,6 @@ static int vRow[9] = {
 	-1, -2, -1
 };
 
-struct VS_Output {
-	float4 diffuse : SV_Target0;
-	float4 depth : SV_Target1;
-};
-
 texture2D diffuseMap : DIFFUSEMAP: register(t0);
 texture2D posMap : POSMAP: register(t1);
 texture2D normalMap : NORMALMAP: register(t2);
@@ -62,9 +57,7 @@ texture2D depthMap : DEPTHMAP: register(t3);
 
 SamplerState borderSampler : BSAMPLER: register(s0);
 
-VS_Output main(float4 pos : SV_Position, float2 uv : UV) {
-
-	VS_Output output;
+float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_Target {
 
 	float4 diffuse = diffuseMap.Sample(borderSampler, uv);
 	float3 normal = normalMap.Sample(borderSampler, uv).rgb;
@@ -76,10 +69,14 @@ VS_Output main(float4 pos : SV_Position, float2 uv : UV) {
 	float2 sobelZ = 0.f;
 	float2 sobelDepth = 0.f;
 
+	float3 cToP = normalize(worldPos - camPos);
+	float3 dotNP = dot(normal, cToP);
+
 	for(uint i = 0; i < 9; i++) {
-		float3 sn = normalMap.Sample(borderSampler, uv + sPoint[i] * innerEdgeThickness).xyz * 2.f - 1.f;
+		float2 points = sPoint[i] * depth.x * (1.f - abs(dotNP));
+		float3 sn = normalMap.Sample(borderSampler, uv + points * innerEdgeThickness).xyz * 2.f - 1.f;
 		sn = normalize(mul(sn, (float3x3)vMat)).xyz;
-		float sd = depthMap.Sample(borderSampler, uv + sPoint[i] * outerEdgeThickness).x;
+		float sd = depthMap.Sample(borderSampler, uv + points * outerEdgeThickness).x;
 		float2 kernel = float2(hRow[i], vRow[i]);
 		sobelX += sn.x * kernel;
 		sobelY += sn.y * kernel;
@@ -87,14 +84,12 @@ VS_Output main(float4 pos : SV_Position, float2 uv : UV) {
 		sobelDepth += sd * kernel;
 	}
 
-	float3 cToP = normalize(worldPos - camPos);
-	float il = (dot(normal, cToP) > -0.35f) * clamp((length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f, 0.f, 1.f);
-	float ol = (dot(normal, cToP) > -0.35f) * clamp(length(sobelDepth), 0.f, 1.f);
-	float3 innerEdge = il * innerEdgeColor;
-	float3 outerEdge = ol * outerEdgeColor;
+	float finalNSobel = clamp(pow((length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f, 6.f), 0.f, 1.f);
+	float finalDSobel = clamp(length(sobelDepth), 0.f, 1.f);
+	float3 innerEdge = finalNSobel * innerEdgeColor;
+	float3 outerEdge = finalDSobel * outerEdgeColor;
 
-	output.diffuse = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - il) * (1.f - ol) * diffuse;
-	output.depth = depth;
+	float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
 
 	return output;
 }

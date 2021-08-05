@@ -5,7 +5,7 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_screenQuad(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(900), m_postProcessBuffer(window, 2u), m_backBuffer(), m_viewPort(),
+		:m_window(window), m_screenQuad(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(900), m_postProcessBuffer(window), m_backBuffer(), m_viewPort(),
 		m_clampSampler(SamplerType::CLAMP), m_depth(window), m_writeStencil(true, StencilType::Write), m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front) {}
 
@@ -227,17 +227,6 @@ namespace Aen {
 		
 		RenderSystem::SetInputLayout(m_postLayout);
 		RenderSystem::UnBindRenderTargets(m_postProcessBuffer.GetCount());
-
-
-		// --------
-		static bool doFXAA = true;
-		if(Input::KeyDown(Key::NUM1))
-			doFXAA = !doFXAA;
-
-		m_FXAA.BindBuffer<PShader>(8u);
-		m_FXAA.GetData() = (uint32_t)doFXAA;
-		m_FXAA.UpdateBuffer();
-		// --------
 
 		RenderSystem::BindRenderTargetView(m_backBuffer);
 		RenderSystem::BindShader<VShader>(m_postProcessVS);

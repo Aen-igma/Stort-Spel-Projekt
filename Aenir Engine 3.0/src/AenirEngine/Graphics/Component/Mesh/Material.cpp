@@ -44,18 +44,22 @@ namespace Aen {
     }
 
     void Material::SetDiffuseMap(const std::string& textureName) {
+        if(!Aen::ResourceHandler::TextureExist(textureName)) throw;
         m_textures[0] = &Aen::ResourceHandler::GetTexture(textureName);
     }
 
     void Material::SetNormalMap(const std::string& textureName) {
+        if(!Aen::ResourceHandler::TextureExist(textureName)) throw;
         m_textures[1] = &Aen::ResourceHandler::GetTexture(textureName);
     }
 
     void Material::SetEmissionMap(const std::string& textureName) {
+        if(!Aen::ResourceHandler::TextureExist(textureName)) throw;
         m_textures[2] = &Aen::ResourceHandler::GetTexture(textureName);
     }
 
     void Material::SetOpacityMap(const std::string& textureName) {
+        if(!Aen::ResourceHandler::TextureExist(textureName)) throw;
         m_textures[3] = &Aen::ResourceHandler::GetTexture(textureName);
     }
 
