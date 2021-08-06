@@ -9,6 +9,7 @@ cbuffer CellShaderModel : register(b1) {
 	float4 baseColor;
 	float4 shadowColor;
 	float4 specularColor;
+	float4 rimLightColor;
 	float4 innerEdgeColor;
 	float4 outerEdgeColor;
 	float innerEdgeThickness;
@@ -17,8 +18,8 @@ cbuffer CellShaderModel : register(b1) {
 	float specularStrength;
 	float roughness;
 	float shadowOffset;
-	float outerFalloff;
 	float innerFalloff;
+	float outerFalloff;
 	float rimLightIntensity;
 	float rimLightSize;
 };

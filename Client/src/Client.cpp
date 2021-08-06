@@ -20,14 +20,17 @@ void Client::Start() {
 	Aen::Mesh& pPlane = Aen::ResourceHandler::CreateMesh("plane");
 	//Aen::Mesh& aniMesh = Aen::ResourceHandler::CreateMesh("ani");
 	Aen::Mesh& seeUMesh = Aen::ResourceHandler::CreateMesh("seeu");
-	Aen::Mesh& sphereMesh = Aen::ResourceHandler::CreateMesh("sphereMesh");
+	Aen::Mesh& sphereMesh1 = Aen::ResourceHandler::CreateMesh("sphereMesh1");
+	Aen::Mesh& sphereMesh2 = Aen::ResourceHandler::CreateMesh("sphereMesh2");
 
 	pPlane.Load("../Resource/Test/Plane.obj");
 	//aniMesh.Load("../Resource/Ani/Ani.obj");
 	seeUMesh.Load("../Resource/Seeu/Seeu.obj");
-	sphereMesh.Load("../Resource/Test/sphere.obj");
+	sphereMesh1.Load("../Resource/Test/sphere.obj");
+	sphereMesh2.Load("../Resource/Test/sphere.obj");
 
 	Aen::Material& pMaterial1 = Aen::ResourceHandler::CreateMaterial("cubeMaterial");
+	Aen::Material& hair = Aen::ResourceHandler::CreateMaterial("hairMaterial", false);
 	/*Aen::Material& aniClothes = Aen::ResourceHandler::CreateMaterial("aniClothes");
 	Aen::Material& aniBody = Aen::ResourceHandler::CreateMaterial("aniBody");
 	Aen::Material& aniHair = Aen::ResourceHandler::CreateMaterial("aniHair");
@@ -40,8 +43,14 @@ void Client::Start() {
 	Aen::Material& seeU04 = Aen::ResourceHandler::CreateMaterial("seeU04");
 	Aen::Material& seeU05 = Aen::ResourceHandler::CreateMaterial("seeU05");
 
-	Aen::Material& glow = Aen::ResourceHandler::CreateMaterial("glow");
-	m_mat = &glow;
+	Aen::Material& seeU001 = Aen::ResourceHandler::CreateMaterial("seeU001");
+	Aen::Material& seeU011 = Aen::ResourceHandler::CreateMaterial("seeU011");
+	Aen::Material& seeU021 = Aen::ResourceHandler::CreateMaterial("seeU021");
+	Aen::Material& seeU031 = Aen::ResourceHandler::CreateMaterial("seeU031");
+	Aen::Material& seeU041 = Aen::ResourceHandler::CreateMaterial("seeU041");
+
+	hair.Create("HairShader");
+	Aen::Material& red = Aen::ResourceHandler::CreateMaterial("red");
 
 	/*aniClothes.LoadeAndSetDiffuseMap("../Resource/Ani/Cloths_1.png");
 	aniBody.LoadeAndSetDiffuseMap("../Resource/Ani/Body.png");
@@ -53,6 +62,12 @@ void Client::Start() {
 	seeU02.LoadeAndSetDiffuseMap("../Resource/Seeu/SeeU02.png");
 	seeU03.LoadeAndSetDiffuseMap("../Resource/Seeu/SeeU03.png");
 	seeU04.LoadeAndSetDiffuseMap("../Resource/Seeu/SeeU04.png");
+
+	seeU001.SetDiffuseMap("SeeU00");
+	seeU011.SetDiffuseMap("SeeU01");
+	seeU021.SetDiffuseMap("SeeU02");
+	seeU031.SetDiffuseMap("SeeU03");
+	seeU041.SetDiffuseMap("SeeU04");
 
 	pMaterial1["SpecularColor"] = Aen::Color::White;
 	pMaterial1["SpecularPower"] = 1.f;
@@ -120,8 +135,8 @@ void Client::Start() {
 
 	AEN_ENDL;
 
-	seeU00["OuterEdgeThickness"] = 0.004f;
-	seeU00["InnerEdgeThickness"] = 0.002f;
+	seeU00["OuterEdgeThickness"] = 0.0006f;
+	seeU00["InnerEdgeThickness"] = 0.0004f;
 	seeU00["OuterEdgeColor"] = Aen::Color(0.08f, 0.08f, 0.1f, 1.f);
 	seeU00["InnerEdgeColor"] = Aen::Color(0.08f, 0.08f, 0.1f, 1.f);
 	seeU00["SpecularColor"] = Aen::Color(1.f, 0.4f, 0.f, 1.f);
@@ -129,9 +144,12 @@ void Client::Start() {
 	seeU00["SpecularStrength"] = 0.3f;
 	seeU00["Roughness"] = 0.5f;
 	seeU00["ShadowOffset"] = -0.3f;
+	seeU00["RimLightSize"] = 0.4f;
+	seeU00["RimLightColor"] = Aen::Color::Red;
+	seeU00["RimLightIntensity"] = 0.5f;
 
-	seeU01["OuterEdgeThickness"] = 0.001f;
-	seeU01["InnerEdgeThickness"] = 0.003f;
+	seeU01["OuterEdgeThickness"] = 0.0003f;
+	seeU01["InnerEdgeThickness"] = 0.0005f;
 	seeU01["OuterEdgeColor"] = Aen::Color(0.3f, 0.15f, 0.f, 1.f);
 	seeU01["InnerEdgeColor"] = Aen::Color(0.3f, 0.15f, 0.f, 1.f);
 	seeU01["SpecularColor"] = Aen::Color(1.f, 0.5f, 0.f, 1.f);
@@ -140,8 +158,8 @@ void Client::Start() {
 	seeU01["Roughness"] = 1.f;
 	seeU01["ShadowOffset"] = 0.4f;
 
-	seeU02["OuterEdgeThickness"] = 0.003f;
-	seeU02["InnerEdgeThickness"] = 0.003f;
+	seeU02["OuterEdgeThickness"] = 0.0005f;
+	seeU02["InnerEdgeThickness"] = 0.0005f;
 	seeU02["OuterEdgeColor"] = Aen::Color(0.1f, 0.1f, 0.1f, 1.f);
 	seeU02["InnerEdgeColor"] = Aen::Color(0.1f, 0.1f, 0.1f, 1.f);
 	seeU02["SpecularColor"] = Aen::Color::Orange;
@@ -149,17 +167,20 @@ void Client::Start() {
 	seeU02["SpecularStrength"] = 0.1f;
 	seeU02["Roughness"] = 1.f;
 
-	seeU03["OuterEdgeThickness"] = 0.008f;
-	seeU03["InnerEdgeThickness"] = 0.003f;
+	seeU03["OuterEdgeThickness"] = 0.001f;
+	seeU03["InnerEdgeThickness"] = 0.0005f;
 	seeU03["OuterEdgeColor"] = Aen::Color(0.5f, 0.1f, 0.f, 1.f);
 	seeU03["InnerEdgeColor"] = Aen::Color(0.5f, 0.1f, 0.f, 1.f);
 	seeU03["SpecularColor"] = Aen::Color::Orange;
 	seeU03["SpecularPower"] = 0.1f;
 	seeU03["SpecularStrength"] = 0.2f;
 	seeU03["Roughness"] = 1.f;
+	seeU03["RimLightSize"] = 0.45f;
+	seeU03["RimLightColor"] = Aen::Color::Orange;
+	seeU03["RimLightIntensity"] = 0.6f;
 
-	seeU04["OuterEdgeThickness"] = 0.003f;
-	seeU04["InnerEdgeThickness"] = 0.003f;
+	seeU04["OuterEdgeThickness"] = 0.0005f;
+	seeU04["InnerEdgeThickness"] = 0.0005f;
 	seeU04["OuterEdgeColor"] = Aen::Color(0.3f ,0.1f, 0.f, 1.f);
 	seeU04["InnerEdgeColor"] = Aen::Color(0.3f, 0.1f, 0.f, 1.f);
 	seeU04["SpecularColor"] = Aen::Color::Orange;
@@ -167,8 +188,8 @@ void Client::Start() {
 	seeU04["SpecularStrength"] = 0.1f;
 	seeU04["Roughness"] = 1.f;
 
-	seeU05["OuterEdgeThickness"] = 0.003f;
-	seeU05["InnerEdgeThickness"] = 0.003f;
+	seeU05["OuterEdgeThickness"] = 0.0005f;
+	seeU05["InnerEdgeThickness"] = 0.0005f;
 	seeU05["OuterEdgeColor"] = Aen::Color::Cyan;
 	seeU05["InnerEdgeColor"] = Aen::Color::Cyan;
 	seeU05["BaseColor"] = Aen::Color::Cyan;
@@ -177,6 +198,61 @@ void Client::Start() {
 	seeU05["SpecularStrength"] = 0.f;
 	seeU05["Roughness"] = 0.f;
 
+	// ------------------------------------------------------
+
+	seeU001["OuterEdgeThickness"] = 0.004f;
+	seeU001["InnerEdgeThickness"] = 0.002f;
+	seeU001["OuterEdgeColor"] = Aen::Color(0.08f, 0.08f, 0.1f, 1.f);
+	seeU001["InnerEdgeColor"] = Aen::Color(0.08f, 0.08f, 0.1f, 1.f);
+	seeU001["SpecularColor"] = Aen::Color(1.f, 0.4f, 0.f, 1.f);
+	seeU001["SpecularPower"] = 0.5f;
+	seeU001["SpecularStrength"] = 0.3f;
+	seeU001["Roughness"] = 0.5f;
+	seeU001["ShadowOffset"] = -0.3f;
+	seeU001["RimLightSize"] = 0.4f;
+	seeU001["RimLightColor"] = Aen::Color::Red;
+	seeU001["RimLightIntensity"] = 0.5f;
+		  
+	seeU011["OuterEdgeThickness"] = 0.001f;
+	seeU011["InnerEdgeThickness"] = 0.003f;
+	seeU011["OuterEdgeColor"] = Aen::Color(0.3f, 0.15f, 0.f, 1.f);
+	seeU011["InnerEdgeColor"] = Aen::Color(0.3f, 0.15f, 0.f, 1.f);
+	seeU011["SpecularColor"] = Aen::Color(1.f, 0.5f, 0.f, 1.f);
+	seeU011["SpecularPower"] = 0.05f;
+	seeU011["SpecularStrength"] = 0.2f;
+	seeU011["Roughness"] = 1.f;
+	seeU011["ShadowOffset"] = 0.4f;
+		  
+	seeU021["OuterEdgeThickness"] = 0.003f;
+	seeU021["InnerEdgeThickness"] = 0.003f;
+	seeU021["OuterEdgeColor"] = Aen::Color(0.1f, 0.1f, 0.1f, 1.f);
+	seeU021["InnerEdgeColor"] = Aen::Color(0.1f, 0.1f, 0.1f, 1.f);
+	seeU021["SpecularColor"] = Aen::Color::Orange;
+	seeU021["SpecularPower"] = 0.1f;
+	seeU021["SpecularStrength"] = 0.1f;
+	seeU021["Roughness"] = 1.f;
+		  
+	seeU031["OuterEdgeThickness"] = 0.008f;
+	seeU031["InnerEdgeThickness"] = 0.003f;
+	seeU031["OuterEdgeColor"] = Aen::Color(0.5f, 0.1f, 0.f, 1.f);
+	seeU031["InnerEdgeColor"] = Aen::Color(0.5f, 0.1f, 0.f, 1.f);
+	seeU031["SpecularColor"] = Aen::Color::Orange;
+	seeU031["SpecularPower"] = 0.1f;
+	seeU031["SpecularStrength"] = 0.2f;
+	seeU031["Roughness"] = 1.f;
+	seeU031["RimLightSize"] = 0.45f;
+	seeU031["RimLightColor"] = Aen::Color::Orange;
+	seeU031["RimLightIntensity"] = 0.6f;
+		  
+	seeU041["OuterEdgeThickness"] = 0.003f;
+	seeU041["InnerEdgeThickness"] = 0.003f;
+	seeU041["OuterEdgeColor"] = Aen::Color(0.3f, 0.1f, 0.f, 1.f);
+	seeU041["InnerEdgeColor"] = Aen::Color(0.3f, 0.1f, 0.f, 1.f);
+	seeU041["SpecularColor"] = Aen::Color::Orange;
+	seeU041["SpecularPower"] = 0.2f;
+	seeU041["SpecularStrength"] = 0.1f;
+	seeU041["Roughness"] = 1.f;
+
 	seeUMesh.PrintMaterialSlots();
 	seeUMesh.SetMaterial("seeU00", seeU00);
 	seeUMesh.SetMaterial("seeU01", seeU01);
@@ -184,6 +260,12 @@ void Client::Start() {
 	seeUMesh.SetMaterial("seeU03", seeU03);
 	seeUMesh.SetMaterial("seeU04", seeU04);
 	seeUMesh.SetMaterial("seeU05", seeU05);
+	
+	seeUMesh.SetMaterial("seeU001", seeU001);
+	seeUMesh.SetMaterial("seeU011", seeU011);
+	seeUMesh.SetMaterial("seeU021", seeU021);
+	seeUMesh.SetMaterial("seeU031", seeU031);
+	seeUMesh.SetMaterial("seeU041", seeU041);
 
 	m_SeeU.AddComponent<Aen::MeshInstance>();
 	m_SeeU.GetComponent<Aen::MeshInstance>().SetMesh(seeUMesh);
@@ -191,20 +273,39 @@ void Client::Start() {
 	m_SeeU.SetScale(0.06f, 0.06f, 0.06f);
 	m_SeeU.SetRot(0.f, 180.f, 0.f);
 
-	glow["OuterEdgeThickness"] = 0.003f;
-	glow["InnerEdgeThickness"] = 0.0f;
-	glow["OuterEdgeColor"] = Aen::Color::Black;
-	glow["InnerEdgeColor"] = Aen::Color::Black;
-	glow["BaseColor"] = Aen::Color(0.1f, 0.1f, 0.4f, 1.f);
-	glow["SpecularColor"] = Aen::Color::White;
-	glow["SpecularPower"] = 0.2f;
-	glow["SpecularStrength"] = 1.f;
-	glow["Roughness"] = 0.7f;
+	red["OuterEdgeThickness"] = 0.005f;
+	red["InnerEdgeThickness"] = 0.0f;	
+	red["OuterEdgeColor"] = Aen::Color(0.2f, 0.f, 0.f, 1.f);
+	red["InnerEdgeColor"] = Aen::Color(0.2f, 0.f, 0.f, 1.f);
+	red["BaseColor"] = Aen::Color(0.6f, 0.1f, 0.f, 1.f);
+	red["SpecularColor"] = Aen::Color::White;
+	red["SpecularPower"] = 0.2f;
+	red["SpecularStrength"] = 1.f;
+	red["Roughness"] = 0.7f;
+	red["RimLightSize"] = 0.35f;
+	red["ShadowOffset"] = 0.4f;
 
-	sphereMesh.SetMaterial(glow);
-	m_sphere.AddComponent<Aen::MeshInstance>();
-	m_sphere.GetComponent<Aen::MeshInstance>().SetMesh(sphereMesh);
-	m_sphere.SetPos(0.f, 0.f, 1.f);
+	hair["OuterEdgeThickness"] = 0.005f;
+	hair["InnerEdgeThickness"] = 0.0f;
+	hair["OuterEdgeColor"] = Aen::Color(0.3f, 0.3f, 0.f, 1.f);
+	hair["InnerEdgeColor"] = Aen::Color(0.3f, 0.3f, 0.f, 1.f);
+	hair["BaseColor"] = Aen::Color(0.9f, 0.8f, 0.2f, 1.f);
+	hair["SpecularColor"] = Aen::Color::White;
+	hair["SpecularPower"] = 0.2f;
+	hair["SpecularStrength"] = 1.f;
+	hair["Roughness"] = 0.7f;
+	hair["RimLightSize"] = 0.35f;
+	hair["ShadowOffset"] = 0.3f;
+
+	sphereMesh1.SetMaterial(red);
+	m_sphere1.AddComponent<Aen::MeshInstance>();
+	m_sphere1.GetComponent<Aen::MeshInstance>().SetMesh(sphereMesh1);
+	m_sphere1.SetPos(3.f, 0.f, 3.f);
+
+	sphereMesh2.SetMaterial(hair);
+	m_sphere2.AddComponent<Aen::MeshInstance>();
+	m_sphere2.GetComponent<Aen::MeshInstance>().SetMesh(sphereMesh2);
+	m_sphere2.SetPos(5.f, 0.f, 2.f);
 
 	Aen::Input::SetMouseVisible(false);
 }

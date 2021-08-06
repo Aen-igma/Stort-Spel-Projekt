@@ -3,6 +3,7 @@ cbuffer CellShaderModel : register(b1) {
 	float4 baseColor;
 	float4 shadowColor;
 	float4 specularColor;
+	float4 rimLightColor;
 	float4 innerEdgeColor;
 	float4 outerEdgeColor;
 	float innerEdgeThickness;
@@ -11,8 +12,8 @@ cbuffer CellShaderModel : register(b1) {
 	float specularStrength;
 	float roughness;
 	float shadowOffset;
-	float outerFalloff;
 	float innerFalloff;
+	float outerFalloff;
 	float rimLightIntensity;
 	float rimLightSize;
 };
@@ -90,10 +91,12 @@ PS_Output main(PS_Input input) : SV_Target0{
 		float3 cLightDir = normalize(camPos - input.worldPos);
 		float dotND = dot(lights[i].dir, normal);
 		float dotNP = dot(pLightDir, normal);
+		float dotNC = dot(cLightDir, normal);
 
 		float dist = distance(lights[i].pos, input.worldPos);
 		float attenuation = 1.f / (lights[i].dist.x + lights[i].dist.y * dist + lights[i].dist.z * dist * dist);
-		float theta = (lights[i].type == 2) ? max(dot(cLightDir, -reflect(normalize(lights[i].dir), normalize(normal))), 0.f) : max(dot(cLightDir, -reflect(pLightDir, normalize(normal))), 0.f);
+		float3 dotDir = (lights[i].type == 2) ? reflect(normalize(lights[i].dir), normalize(normal)) : reflect(pLightDir, normalize(normal));
+		float theta = max(dot(cLightDir, -dotDir), 0.f);
 		float power = clamp(1.f - specularPower, 0.f, 1.f);
 		float specBlurr = pow(theta, clamp(power * 50.f, 1.f, 50.f));
 		float s1 = (theta > power - specBlurr + 1.f);
@@ -101,6 +104,7 @@ PS_Output main(PS_Input input) : SV_Target0{
 
 		float3 diffuse = lights[i].color.rgb * lights[i].strength;
 		float3 specular = specularColor.rgb * lerp(s1, s2, roughness) * specularStrength;
+		float3 rim = (max(1.f - dotNC, 0.f) > 1.f - rimLightSize) * max(dot(cLightDir, dotDir), 0.f) * rimLightColor * rimLightIntensity;
 		
 		if(lights[i].type == 0 && dotND > shadowOffset && dist < lights[i].dist.w) {
 			float spot = pow(max(dot(pLightDir, lights[i].dir), 0.f), lights[i].ang);
@@ -115,6 +119,8 @@ PS_Output main(PS_Input input) : SV_Target0{
 		if(lights[i].type == 2 && dotND > shadowOffset) {
 			finalPixel += diffuse + specular;
 		}
+
+		finalPixel += rim;
 	}
 
 	output.diffuse = float4(saturate(finalPixel * diffuseM), 1.f);

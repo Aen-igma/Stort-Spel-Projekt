@@ -47,6 +47,12 @@ namespace Aen {
 			return *m_materials.at(name);
 		}
 
+		static Material& CreateMaterial(const std::string& name, const std::string& shaderName) {
+			if(m_shaders.count(shaderName) == 0) throw;
+			m_materials.emplace(name, AEN_NEW Material(*m_shaders.at(shaderName)));
+			return *m_materials.at(name);
+		}
+
 		static void RemoveMaterial(const std::string& name) {
 			if(m_materials.count(name) > 0) {
 				delete m_materials.at(name);

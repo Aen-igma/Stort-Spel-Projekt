@@ -34,8 +34,10 @@ namespace Aen {
 		public:
 		Material(const bool& useDefaultShader = false);
 		Material(ShaderModel& shaderModel);
+		Material(const std::string& shaderName);
 
 		void Create(ShaderModel& shaderModel);
+		void Create(const std::string& shaderName);
 		void CreateDefault();
 
 		void SetDiffuseMap(Texture& texture);

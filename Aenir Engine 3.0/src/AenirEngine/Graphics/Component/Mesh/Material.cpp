@@ -17,9 +17,19 @@ namespace Aen {
         :m_pShaderModel(&shaderModel), m_dBuffer(shaderModel.m_dbLayout.second), 
         m_textures{nullptr, nullptr, nullptr, nullptr} {}
 
+    Material::Material(const std::string& shaderName)
+        : m_pShaderModel(&ResourceHandler::GetShader(shaderName)), m_dBuffer(ResourceHandler::GetShader(shaderName).m_dbLayout.second),
+        m_textures{nullptr, nullptr, nullptr, nullptr} {}
+
     void Material::Create(ShaderModel& shaderModel) {
         m_pShaderModel = &shaderModel;
         m_dBuffer.Create(shaderModel.m_dbLayout.second);
+    }
+
+    void Material::Create(const std::string& shaderName) {
+        if(!ResourceHandler::ShaderExist(shaderName)) throw;
+        m_pShaderModel = &ResourceHandler::GetShader(shaderName);
+        m_dBuffer.Create(m_pShaderModel->m_dbLayout.second);
     }
 
     void Material::CreateDefault() {
