@@ -178,7 +178,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\EntityHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Light\Light.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp" />
-    <ClCompile Include="src\AenirEngine\Graphics\Component\ResourceHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Resource.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp" />
@@ -226,7 +226,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\EntityHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Light\Light.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h" />
-    <ClInclude Include="src\AenirEngine\Graphics\Component\ResourceHandler.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Resource.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\CBuffer.h" />

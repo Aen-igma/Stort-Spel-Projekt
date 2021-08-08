@@ -1,6 +1,6 @@
 #pragma once
 #include"ComponentHandler.h"
-#include"ResourceHandler.h"
+#include"Resource.h"
 #include"EntityHandler.h"
 
 namespace Aen {

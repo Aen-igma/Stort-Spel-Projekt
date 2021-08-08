@@ -21,7 +21,7 @@ namespace Aen {
 		m_viewPort.MaxDepth = 1.f;
 
 		if(!m_postProcessVS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessVS.cso")))
-			if(m_postProcessVS.Create(L"PostProcessVS.cso"))
+			if(!m_postProcessVS.Create(L"PostProcessVS.cso"))
 				throw;
 
 		if(!m_postProcessPS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessPS.cso")))

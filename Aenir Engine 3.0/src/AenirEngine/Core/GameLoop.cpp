@@ -34,13 +34,17 @@ namespace Aen {
 			while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
 				m_deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start);
 				m_start = ResClock::now();
-				Input::Update();
-				m_app->Update(static_cast<float>(m_deltaTime.count()));
-				m_renderer->Draw();
+
+				if(m_app->window.IsActive()) {
+					Input::Update();
+					m_app->Update(static_cast<float>(m_deltaTime.count()));
+				}
 			}
+
+			m_renderer->Draw();
 		}
 
-		ResourceHandler::Destroy();
+		Resource::Destroy();
 		GCore::Concealed::Release();
 		delete m_app;
 		delete m_renderer;

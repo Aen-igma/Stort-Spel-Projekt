@@ -18,7 +18,7 @@ namespace Aen {
         m_textures{nullptr, nullptr, nullptr, nullptr} {}
 
     Material::Material(const std::string& shaderName)
-        : m_pShaderModel(&ResourceHandler::GetShader(shaderName)), m_dBuffer(ResourceHandler::GetShader(shaderName).m_dbLayout.second),
+        : m_pShaderModel(&Resource::GetShader(shaderName)), m_dBuffer(Resource::GetShader(shaderName).m_dbLayout.second),
         m_textures{nullptr, nullptr, nullptr, nullptr} {}
 
     void Material::Create(ShaderModel& shaderModel) {
@@ -27,8 +27,8 @@ namespace Aen {
     }
 
     void Material::Create(const std::string& shaderName) {
-        if(!ResourceHandler::ShaderExist(shaderName)) throw;
-        m_pShaderModel = &ResourceHandler::GetShader(shaderName);
+        if(!Resource::ShaderExist(shaderName)) throw;
+        m_pShaderModel = &Resource::GetShader(shaderName);
         m_dBuffer.Create(m_pShaderModel->m_dbLayout.second);
     }
 
@@ -54,42 +54,42 @@ namespace Aen {
     }
 
     void Material::SetDiffuseMap(const std::string& textureName) {
-        if(!Aen::ResourceHandler::TextureExist(textureName)) throw;
-        m_textures[0] = &Aen::ResourceHandler::GetTexture(textureName);
+        if(!Aen::Resource::TextureExist(textureName)) throw;
+        m_textures[0] = &Aen::Resource::GetTexture(textureName);
     }
 
     void Material::SetNormalMap(const std::string& textureName) {
-        if(!Aen::ResourceHandler::TextureExist(textureName)) throw;
-        m_textures[1] = &Aen::ResourceHandler::GetTexture(textureName);
+        if(!Aen::Resource::TextureExist(textureName)) throw;
+        m_textures[1] = &Aen::Resource::GetTexture(textureName);
     }
 
     void Material::SetEmissionMap(const std::string& textureName) {
-        if(!Aen::ResourceHandler::TextureExist(textureName)) throw;
-        m_textures[2] = &Aen::ResourceHandler::GetTexture(textureName);
+        if(!Aen::Resource::TextureExist(textureName)) throw;
+        m_textures[2] = &Aen::Resource::GetTexture(textureName);
     }
 
     void Material::SetOpacityMap(const std::string& textureName) {
-        if(!Aen::ResourceHandler::TextureExist(textureName)) throw;
-        m_textures[3] = &Aen::ResourceHandler::GetTexture(textureName);
+        if(!Aen::Resource::TextureExist(textureName)) throw;
+        m_textures[3] = &Aen::Resource::GetTexture(textureName);
     }
 
     void Material::LoadeAndSetDiffuseMap(const std::string& dir) {
-        m_textures[0] = &Aen::ResourceHandler::CreateTexture(GetNameFromPath(dir));
+        m_textures[0] = &Aen::Resource::CreateTexture(GetNameFromPath(dir));
         m_textures[0]->LoadTexture(dir);
     }
 
     void Material::LoadeAndSetNormalMap(const std::string& dir) {
-        m_textures[1] = &Aen::ResourceHandler::CreateTexture(GetNameFromPath(dir));
+        m_textures[1] = &Aen::Resource::CreateTexture(GetNameFromPath(dir));
         m_textures[1]->LoadTexture(dir);
     }
 
     void Material::LoadeAndSetEmissionMap(const std::string& dir) {
-        m_textures[2] = &Aen::ResourceHandler::CreateTexture(GetNameFromPath(dir));
+        m_textures[2] = &Aen::Resource::CreateTexture(GetNameFromPath(dir));
         m_textures[2]->LoadTexture(dir);
     }
 
     void Material::LoadeAndSetOpacityMap(const std::string& dir) {
-        m_textures[3] = &Aen::ResourceHandler::CreateTexture(GetNameFromPath(dir));
+        m_textures[3] = &Aen::Resource::CreateTexture(GetNameFromPath(dir));
         m_textures[3]->LoadTexture(dir);
     }
 

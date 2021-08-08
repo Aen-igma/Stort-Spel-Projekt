@@ -25,7 +25,6 @@ class Client : public Aen::App {
 	Aen::Entity m_plane;
 	Aen::Entity m_plane1;
 
-	//Aen::Entity m_Ani;
 	Aen::Entity m_SeeU;
 	Aen::Entity m_sphere1;
 	Aen::Entity m_sphere2;

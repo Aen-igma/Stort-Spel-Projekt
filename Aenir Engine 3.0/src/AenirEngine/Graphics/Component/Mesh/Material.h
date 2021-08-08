@@ -26,7 +26,7 @@ namespace Aen {
 		private:
 		~ShaderModel() = default;
 
-		friend class ResourceHandler;
+		friend class Resource;
 		friend class Renderer;
 	};
 
@@ -64,7 +64,7 @@ namespace Aen {
 		DBuffer m_dBuffer;
 		Texture* m_textures[4];
 
-		friend class ResourceHandler;
+		friend class Resource;
 		friend class Renderer;
 	};
 }

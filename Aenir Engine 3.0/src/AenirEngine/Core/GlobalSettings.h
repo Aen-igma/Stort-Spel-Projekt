@@ -8,7 +8,7 @@ namespace Aen {
 		public:
 		
 		static void SetDefaultShader(const std::string& name) {
-			m_pDefaultShader = &ResourceHandler::GetShader(name);
+			m_pDefaultShader = &Resource::GetShader(name);
 		}
 
 		static ShaderModel* GetDefaultShader() {
@@ -43,7 +43,7 @@ namespace Aen {
 
 			// -------------------------- Initialize Default ShaderModel -------------------------- //
 
-			m_pDefaultShader = &ResourceHandler::CreateShader("CellShader");
+			m_pDefaultShader = &Resource::CreateShader("CellShader");
 
 			if(!m_pDefaultShader->m_VShaderPass1.Create(AEN_OUTPUT_DIR_WSTR(L"CellShaderVS.cso")))
 				if(!m_pDefaultShader->m_VShaderPass1.Create(L"CellShaderVS.cso"))
@@ -123,7 +123,7 @@ namespace Aen {
 
 			// -------------------------- Initialize Default ShaderModel -------------------------- //
 
-			ShaderModel& hairShader = ResourceHandler::CreateShader("HairShader");
+			ShaderModel& hairShader = Resource::CreateShader("HairShader");
 
 			if(!hairShader.m_VShaderPass1.Create(AEN_OUTPUT_DIR_WSTR(L"HairShaderVS.cso")))
 				if(!hairShader.m_VShaderPass1.Create(L"HairShaderVS.cso"))
@@ -203,13 +203,13 @@ namespace Aen {
 
 			// --------------------------------- Default Material --------------------------------- //
 
-			Aen::Material& defaultMaterial = ResourceHandler::CreateMaterial("DefaultMaterial");
-			Aen::Texture& defaultTexture = ResourceHandler::CreateTexture("DefaultTexture");
+			Aen::Material& defaultMaterial = Resource::CreateMaterial("DefaultMaterial");
+			Aen::Texture& defaultTexture = Resource::CreateTexture("DefaultTexture");
 			defaultMaterial["InnerEdgeThickness"] = 0.0006f;
 			defaultMaterial["OuterEdgeThickness"] = 0.0006f;
 			defaultMaterial["InnerEdgeColor"] = Aen::Color::Magenta;
 			defaultMaterial["OuterEdgeColor"] = Aen::Color::Magenta;
-			defaultTexture.LoadTexture("../Resource/Missing_Textures.png");
+			defaultTexture.LoadTexture(AEN_RESOURCE_DIR("Missing_Textures.png"));
 			defaultMaterial.SetDiffuseMap(defaultTexture);
 		}
 

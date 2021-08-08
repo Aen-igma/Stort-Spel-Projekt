@@ -33,7 +33,7 @@ float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_TARGET {
 	float pY = (1.f / (float)height);
 
 	float luma[9];
-	float lumaAvrg;
+	float lumaAvrg = 0.f;
 	for(uint i = 0u; i < 9u; i++) {
 		float2 uvPos = uv + sPoint[i] * float2(pX, pY);
 		luma[i] = Luminosity(diffuseMap.Sample(clampSampler, uvPos).rgb);

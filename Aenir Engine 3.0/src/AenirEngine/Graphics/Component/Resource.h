@@ -7,7 +7,7 @@
 
 namespace Aen {
 
-	class AEN_DECLSPEC ResourceHandler {
+	class AEN_DECLSPEC Resource {
 		public:
 
 		// -------------- ShaderModel ----------- //
@@ -127,7 +127,7 @@ namespace Aen {
 
 		private:
 
-		ResourceHandler();
+		Resource();
 
 
 		static void Destroy() {

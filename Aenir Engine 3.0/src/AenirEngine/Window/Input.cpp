@@ -151,15 +151,18 @@ namespace Aen {
 		return raw;
 	}
 
-	const Vec2i Input::GetMousePos(Window window) {
+	const Vec2i Input::GetMousePos(Window& window) {
 		POINT p;
-		if(ScreenToClient(window.m_hwnd, &p))
-			return Vec2i(p.x, p.y);
+		ZeroMemory(&p, sizeof(POINT));
+		if(GetCursorPos(&p))
+			if(ScreenToClient(window.m_hwnd, &p))
+				return Vec2i(p.x, p.y);
 		return Vec2i::zero;
 	}
 
 	const Vec2i Input::GetMousePos() {
 		POINT p;
+		ZeroMemory(&p, sizeof(POINT));
 		if(GetCursorPos(&p))
 			return Vec2i(p.x, p.y);
 		return Vec2i::zero;

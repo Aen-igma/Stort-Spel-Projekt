@@ -37,7 +37,7 @@ namespace Aen {
 		std::vector<PartitionData> m_partitions;
 		std::unordered_map<std::string, uint32_t> m_meshMaterialName;
 
-		friend class ResourceHandler;
+		friend class Resource;
 		friend class MeshInstance;
 		friend class Renderer;
 	};

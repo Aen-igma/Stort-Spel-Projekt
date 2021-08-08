@@ -168,6 +168,10 @@ namespace Aen {
 		return static_cast<float>(m_width) / static_cast<float>(m_height);
 	}
 
+	const bool Window::IsActive() const {
+		return (m_hwnd == GetActiveWindow());
+	}
+
 	LRESULT Window::WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 		switch(uMsg) {

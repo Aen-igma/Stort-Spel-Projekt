@@ -6,13 +6,13 @@
 namespace Aen {
 	
 	Mesh::Mesh()
-		:m_pMaterials(1u, &ResourceHandler::GetMaterial("DefaultMaterial")) {}
+		:m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
 	
 	Mesh::Mesh(const std::string& dir) {
 		ImportObj(m_vertices, dir, m_partitions, m_meshMaterialName);
 		if(m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_meshMaterialName.size());
-			m_pMaterials.resize(m_meshMaterialName.size(), &ResourceHandler::GetMaterial("DefaultMaterial"));
+			m_pMaterials.resize(m_meshMaterialName.size(), &Resource::GetMaterial("DefaultMaterial"));
 		}
 	}
 	
@@ -27,7 +27,7 @@ namespace Aen {
 		ImportObj(m_vertices, dir, m_partitions, m_meshMaterialName);
 		if(m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_meshMaterialName.size());
-			m_pMaterials.resize(m_meshMaterialName.size(), &ResourceHandler::GetMaterial("DefaultMaterial"));
+			m_pMaterials.resize(m_meshMaterialName.size(), &Resource::GetMaterial("DefaultMaterial"));
 		}
 	}
 
@@ -42,8 +42,8 @@ namespace Aen {
 
 	void Mesh::SetMaterial(const std::string& materialSlotName, const std::string& materialName) {
 		if(m_meshMaterialName.count(materialSlotName) == 0) throw;
-		if(!ResourceHandler::MaterialExist(materialName)) throw;
-		m_pMaterials[m_meshMaterialName.at(materialSlotName)] = &ResourceHandler::GetMaterial(materialName);
+		if(!Resource::MaterialExist(materialName)) throw;
+		m_pMaterials[m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
 	}
 
 	Mesh::~Mesh() {

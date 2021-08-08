@@ -99,7 +99,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\ComponentHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\ResourceHandler.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Resource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animation.cpp">
@@ -278,7 +278,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\ResourceHandler.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animation.h">

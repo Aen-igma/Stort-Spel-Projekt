@@ -15,7 +15,7 @@ namespace Aen {
 
 		ShaderResource m_shaderResource;
 
-		friend class ResourceHandler;
+		friend class Resource;
 		friend class Renderer;
 	};
 }

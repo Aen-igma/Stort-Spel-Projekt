@@ -17,51 +17,40 @@ void Client::Start() {
 	Aen::GlobalSettings::SetMainCamera(m_camera);
 	Aen::GlobalSettings::SetBGColor(Aen::Color::White);
 
-	Aen::Mesh& pPlane = Aen::ResourceHandler::CreateMesh("plane");
-	//Aen::Mesh& aniMesh = Aen::ResourceHandler::CreateMesh("ani");
-	Aen::Mesh& seeUMesh = Aen::ResourceHandler::CreateMesh("seeu");
-	Aen::Mesh& sphereMesh1 = Aen::ResourceHandler::CreateMesh("sphereMesh1");
-	Aen::Mesh& sphereMesh2 = Aen::ResourceHandler::CreateMesh("sphereMesh2");
+	Aen::Mesh& pPlane = Aen::Resource::CreateMesh("plane");
+	Aen::Mesh& seeUMesh = Aen::Resource::CreateMesh("seeu");
+	Aen::Mesh& sphereMesh1 = Aen::Resource::CreateMesh("sphereMesh1");
+	Aen::Mesh& sphereMesh2 = Aen::Resource::CreateMesh("sphereMesh2");
 
-	pPlane.Load("../Resource/Test/Plane.obj");
-	//aniMesh.Load("../Resource/Ani/Ani.obj");
-	seeUMesh.Load("../Resource/Seeu/Seeu.obj");
-	sphereMesh1.Load("../Resource/Test/sphere.obj");
-	sphereMesh2.Load("../Resource/Test/sphere.obj");
+	pPlane.Load(AEN_RESOURCE_DIR("Test/Plane.obj"));
+	seeUMesh.Load(AEN_RESOURCE_DIR("Seeu/Seeu.obj"));
+	sphereMesh1.Load(AEN_RESOURCE_DIR("Test/sphere.obj"));
+	sphereMesh2.Load(AEN_RESOURCE_DIR("Test/sphere.obj"));
 
-	Aen::Material& pMaterial1 = Aen::ResourceHandler::CreateMaterial("cubeMaterial");
-	Aen::Material& hair = Aen::ResourceHandler::CreateMaterial("hairMaterial", false);
-	/*Aen::Material& aniClothes = Aen::ResourceHandler::CreateMaterial("aniClothes");
-	Aen::Material& aniBody = Aen::ResourceHandler::CreateMaterial("aniBody");
-	Aen::Material& aniHair = Aen::ResourceHandler::CreateMaterial("aniHair");
-	Aen::Material& aniExp = Aen::ResourceHandler::CreateMaterial("aniExp");*/
+	Aen::Material& pMaterial1 = Aen::Resource::CreateMaterial("cubeMaterial");
+	Aen::Material& hair = Aen::Resource::CreateMaterial("hairMaterial", false);
 
-	Aen::Material& seeU00 = Aen::ResourceHandler::CreateMaterial("seeU00");
-	Aen::Material& seeU01 = Aen::ResourceHandler::CreateMaterial("seeU01");
-	Aen::Material& seeU02 = Aen::ResourceHandler::CreateMaterial("seeU02");
-	Aen::Material& seeU03 = Aen::ResourceHandler::CreateMaterial("seeU03");
-	Aen::Material& seeU04 = Aen::ResourceHandler::CreateMaterial("seeU04");
-	Aen::Material& seeU05 = Aen::ResourceHandler::CreateMaterial("seeU05");
+	Aen::Material& seeU00 = Aen::Resource::CreateMaterial("seeU00");
+	Aen::Material& seeU01 = Aen::Resource::CreateMaterial("seeU01");
+	Aen::Material& seeU02 = Aen::Resource::CreateMaterial("seeU02");
+	Aen::Material& seeU03 = Aen::Resource::CreateMaterial("seeU03");
+	Aen::Material& seeU04 = Aen::Resource::CreateMaterial("seeU04");
+	Aen::Material& seeU05 = Aen::Resource::CreateMaterial("seeU05");
 
-	Aen::Material& seeU001 = Aen::ResourceHandler::CreateMaterial("seeU001");
-	Aen::Material& seeU011 = Aen::ResourceHandler::CreateMaterial("seeU011");
-	Aen::Material& seeU021 = Aen::ResourceHandler::CreateMaterial("seeU021");
-	Aen::Material& seeU031 = Aen::ResourceHandler::CreateMaterial("seeU031");
-	Aen::Material& seeU041 = Aen::ResourceHandler::CreateMaterial("seeU041");
+	Aen::Material& seeU001 = Aen::Resource::CreateMaterial("seeU001");
+	Aen::Material& seeU011 = Aen::Resource::CreateMaterial("seeU011");
+	Aen::Material& seeU021 = Aen::Resource::CreateMaterial("seeU021");
+	Aen::Material& seeU031 = Aen::Resource::CreateMaterial("seeU031");
+	Aen::Material& seeU041 = Aen::Resource::CreateMaterial("seeU041");
 
 	hair.Create("HairShader");
-	Aen::Material& red = Aen::ResourceHandler::CreateMaterial("red");
+	Aen::Material& red = Aen::Resource::CreateMaterial("red");
 
-	/*aniClothes.LoadeAndSetDiffuseMap("../Resource/Ani/Cloths_1.png");
-	aniBody.LoadeAndSetDiffuseMap("../Resource/Ani/Body.png");
-	aniHair.LoadeAndSetDiffuseMap("../Resource/Ani/Hair.png");
-	aniExp.LoadeAndSetDiffuseMap("../Resource/Ani/Exp.png");*/
-
-	seeU00.LoadeAndSetDiffuseMap("../Resource/Seeu/SeeU00.png");
-	seeU01.LoadeAndSetDiffuseMap("../Resource/Seeu/SeeU01.png");
-	seeU02.LoadeAndSetDiffuseMap("../Resource/Seeu/SeeU02.png");
-	seeU03.LoadeAndSetDiffuseMap("../Resource/Seeu/SeeU03.png");
-	seeU04.LoadeAndSetDiffuseMap("../Resource/Seeu/SeeU04.png");
+	seeU00.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Seeu/SeeU00.png"));
+	seeU01.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Seeu/SeeU01.png"));
+	seeU02.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Seeu/SeeU02.png"));
+	seeU03.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Seeu/SeeU03.png"));
+	seeU04.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Seeu/SeeU04.png"));
 
 	seeU001.SetDiffuseMap("SeeU00");
 	seeU011.SetDiffuseMap("SeeU01");
@@ -91,47 +80,6 @@ void Client::Start() {
 	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
 	m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(0.6f);
 	m_dLight.SetRot(55.f, 165.f, 0.f);
-	
-	/*AEN_ENDL;
-
-	aniClothes["OuterEdgeThickness"] = 0.0012f;
-	aniClothes["InnerEdgeThickness"] = 0.0012f;
-	aniClothes["OuterEdgeColor"] = Aen::Color(0.1f, 0.16f, 0.23f, 1.f);
-	aniClothes["InnerEdgeColor"] = Aen::Color(0.1f, 0.16f, 0.23f, 1.f);
-	aniClothes["SpecularColor"] = Aen::Color(0.5f, 1.f, 1.f, 1.f);
-	aniClothes["SpecularPower"] = 300.f;
-
-	aniBody["OuterEdgeThickness"] = 0.f;
-	aniBody["InnerEdgeThickness"] = 0.0004f;
-	aniBody["OuterEdgeColor"] = Aen::Color(0.1f, 0.1f, 0.1f, 1.f);
-	aniBody["InnerEdgeColor"] = Aen::Color(0.1f, 0.1f, 0.1f, 1.f);
-	aniBody["SpecularColor"] = Aen::Color(1.f, 0.f, 0.0f, 0.05f);
-	aniBody["SpecularPower"] = 50.f;
-
-	aniHair["OuterEdgeThickness"] = 0.0003f;
-	aniHair["InnerEdgeThickness"] = 0.0004f;
-	aniHair["OuterEdgeColor"] = Aen::Color(0.f, 0.07f, 0.2f, 1.f);
-	aniHair["InnerEdgeColor"] = Aen::Color(0.f, 0.07f, 0.2f, 1.f);
-	aniHair["SpecularColor"] = Aen::Color::White;
-	aniHair["SpecularPower"] = 100.f;
-
-	aniExp["OuterEdgeThickness"] = 0.f;
-	aniExp["InnerEdgeThickness"] = 0.f;
-	aniExp["OuterEdgeColor"] = Aen::Color::Black;
-	aniExp["InnerEdgeColor"] = Aen::Color::Black;
-	aniExp["SpecularColor"] = Aen::Color(0.f, 0.f, 0.f, 0.f);
-	aniExp["SpecularPower"] = 0.f;
-
-	aniMesh.PrintMaterialSlots();
-	aniMesh.SetMaterial("aniClothes", aniClothes);
-	aniMesh.SetMaterial("aniBody", aniBody);
-	aniMesh.SetMaterial("aniHair", aniHair);
-	aniMesh.SetMaterial("aniExp", aniExp);
-
-	m_Ani.AddComponent<Aen::MeshInstance>();
-	m_Ani.GetComponent<Aen::MeshInstance>().SetMesh(aniMesh);
-	m_Ani.SetPos(-2.f, -1.f, 3.f);
-	m_Ani.SetRot(0.f, 180.f, 0.f);*/
 
 	AEN_ENDL;
 
