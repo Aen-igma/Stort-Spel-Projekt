@@ -18,6 +18,7 @@ namespace Aen {
 			ID3D10Blob* m_byteCode;
 
 			//friend class ILayout; // this not working
+			friend class Reflection; // this not working
 		};
 
 		template<>

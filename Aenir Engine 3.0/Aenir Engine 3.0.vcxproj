@@ -187,6 +187,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\GBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\IBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ILayout.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Reflection.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RState.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Sampler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\GBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\IBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ILayout.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Reflection.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RState.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Sampler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\SBuffer.h" />

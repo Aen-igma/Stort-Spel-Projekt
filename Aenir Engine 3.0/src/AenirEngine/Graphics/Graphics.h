@@ -18,4 +18,5 @@
 #include"DirectX11/ScreenQuad.h"
 #include"DirectX11/Shader.h"
 #include"DirectX11/ShaderResource.h"
+#include"DirectX11/Reflection.h"
 //#endif
