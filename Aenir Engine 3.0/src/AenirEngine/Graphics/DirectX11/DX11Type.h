@@ -23,3 +23,4 @@ using ComRasterizerState = Microsoft::WRL::ComPtr<ID3D11RasterizerState>;
 using ComRenderTargetView = Microsoft::WRL::ComPtr<ID3D11RenderTargetView>;
 using ComSamplerState = Microsoft::WRL::ComPtr<ID3D11SamplerState>;
 using ComReflection = Microsoft::WRL::ComPtr<ID3D11ShaderReflection>;
+using ComBlob = Microsoft::WRL::ComPtr<ID3DBlob>;

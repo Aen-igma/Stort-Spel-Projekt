@@ -1,11 +1,11 @@
 
-cbuffer TranformBuffer : register(b0) {
+cbuffer Aen_CB_Transform {
 	float4x4 vMat;
 	float4x4 pMat;
 	float4x4 mdlMat;
 }
 
-cbuffer CellShaderModel : register(b1) {
+cbuffer CB_CellShader {
 	float4 baseColor;
 	float4 shadowColor;
 	float4 specularColor;
@@ -24,7 +24,7 @@ cbuffer CellShaderModel : register(b1) {
 	float rimLightSize;
 };
 
-cbuffer Camera : register(b3) {
+cbuffer Aen_CB_Camera {
 	float3 camPos;
 	float pad;
 	float3 camfDir;
@@ -56,7 +56,7 @@ texture2D posMap : POSMAP: register(t1);
 texture2D normalMap : NORMALMAP: register(t2);
 texture2D depthMap : DEPTHMAP: register(t3);
 
-SamplerState borderSampler : BSAMPLER: register(s0);
+SamplerState borderSampler : BSAMPLER;
 
 float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_Target {
 

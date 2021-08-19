@@ -10,7 +10,7 @@ namespace Aen {
 		Mat4f m_mdlMat;
 	};
 
-	struct VB_Camera {
+	struct CB_Camera {
 		Vec3f pos;
 		float pad;
 		Vec3f fDir;
@@ -28,7 +28,7 @@ namespace Aen {
 
 		private:
 		void Initialize();
-		void Draw();
+		void Render();
 
 		Window& m_window;
 		
@@ -36,7 +36,7 @@ namespace Aen {
 
 		CBuffer<CB_Transform> m_cbTransform;
 		CBuffer<uint32_t> m_cbLightCount;
-		CBuffer<VB_Camera> m_cbCamera;
+		CBuffer<CB_Camera> m_cbCamera;
 		CBuffer<Vec4i> m_cbUseTexture;
 		SBuffer<SB_Light> m_sbLight;
 

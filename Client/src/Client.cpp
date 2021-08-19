@@ -28,7 +28,6 @@ void Client::Start() {
 	sphereMesh2.Load(AEN_RESOURCE_DIR("Test/sphere.obj"));
 
 	Aen::Material& pMaterial1 = Aen::Resource::CreateMaterial("cubeMaterial");
-	Aen::Material& hair = Aen::Resource::CreateMaterial("hairMaterial", false);
 
 	Aen::Material& seeU00 = Aen::Resource::CreateMaterial("seeU00");
 	Aen::Material& seeU01 = Aen::Resource::CreateMaterial("seeU01");
@@ -43,8 +42,8 @@ void Client::Start() {
 	Aen::Material& seeU031 = Aen::Resource::CreateMaterial("seeU031");
 	Aen::Material& seeU041 = Aen::Resource::CreateMaterial("seeU041");
 
-	hair.Create("HairShader");
 	Aen::Material& red = Aen::Resource::CreateMaterial("red");
+	Aen::Material& blue = Aen::Resource::CreateMaterial("blue");
 
 	seeU00.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Seeu/SeeU00.png"));
 	seeU01.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Seeu/SeeU01.png"));
@@ -233,24 +232,24 @@ void Client::Start() {
 	red["RimLightSize"] = 0.35f;
 	red["ShadowOffset"] = 0.4f;
 
-	hair["OuterEdgeThickness"] = 0.005f;
-	hair["InnerEdgeThickness"] = 0.0f;
-	hair["OuterEdgeColor"] = Aen::Color(0.3f, 0.3f, 0.f, 1.f);
-	hair["InnerEdgeColor"] = Aen::Color(0.3f, 0.3f, 0.f, 1.f);
-	hair["BaseColor"] = Aen::Color(0.9f, 0.8f, 0.2f, 1.f);
-	hair["SpecularColor"] = Aen::Color::White;
-	hair["SpecularPower"] = 0.2f;
-	hair["SpecularStrength"] = 1.f;
-	hair["Roughness"] = 0.7f;
-	hair["RimLightSize"] = 0.35f;
-	hair["ShadowOffset"] = 0.3f;
+	blue["OuterEdgeThickness"] = 0.005f;
+	blue["InnerEdgeThickness"] = 0.0f;	
+	blue["OuterEdgeColor"] = Aen::Color(0.f, 0.1f, 0.6f, 1.f);
+	blue["InnerEdgeColor"] = Aen::Color(0.f, 0.1f, 0.6f, 1.f);
+	blue["BaseColor"] = Aen::Color(0.f, 0.1f, 0.6f, 1.f);
+	blue["SpecularColor"] = Aen::Color::White;
+	blue["SpecularPower"] = 0.2f;
+	blue["SpecularStrength"] = 1.f;
+	blue["Roughness"] = 0.7f;
+	blue["RimLightSize"] = 0.35f;
+	blue["ShadowOffset"] = 0.4f;
 
 	sphereMesh1.SetMaterial(red);
 	m_sphere1.AddComponent<Aen::MeshInstance>();
 	m_sphere1.GetComponent<Aen::MeshInstance>().SetMesh(sphereMesh1);
 	m_sphere1.SetPos(3.f, 0.f, 3.f);
 
-	sphereMesh2.SetMaterial(hair);
+	sphereMesh2.SetMaterial(blue);
 	m_sphere2.AddComponent<Aen::MeshInstance>();
 	m_sphere2.GetComponent<Aen::MeshInstance>().SetMesh(sphereMesh2);
 	m_sphere2.SetPos(5.f, 0.f, 2.f);

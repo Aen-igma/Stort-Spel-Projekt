@@ -4,26 +4,40 @@
 
 namespace Aen {
 
-	struct ShaderModel {
-		ShaderModel() = default;
-
-		using PLayout = std::pair<UINT, DBLayout>;
+	class ShaderModel {
+		public:
 		using PSampler = std::pair<UINT, Sampler>;
 
-		ILayout m_iLayoutPass1;
-		VShader m_VShaderPass1;
-		PShader m_PShaderPass1;
-		PSampler m_samplerDataPass1;
+		ShaderModel() = delete;
+		ShaderModel(Window& window);
 
-		ILayout m_iLayoutPass2;
-		VShader m_VShaderPass2;
-		PShader m_PShaderPass2;
-		PSampler m_samplerDataPass2;
+		const bool SetFirstPass(const std::wstring& VSDir, const std::wstring& PSDir, const SamplerType& samplerType);
+		const bool SetSecondPass(const std::wstring& VSDir, const std::wstring& PSDir, const SamplerType& samplerType);
 
-		PLayout m_dbLayout;
-		GBuffer m_gBuffer;
+		DBLayout m_dbLayout;
+		std::string m_bufferName;
 
 		private:
+
+		VShader m_VShaderPass1;
+		PShader m_PShaderPass1;
+		ILayout m_iLayoutPass1;
+		Reflection m_VSReflectPass1;
+		Reflection m_PSReflectPass1;
+		PSampler m_samplerDataPass1;
+		uint32_t m_slotsPass1[14];
+
+		VShader m_VShaderPass2;
+		PShader m_PShaderPass2;
+		ILayout m_iLayoutPass2;
+		Reflection m_VSReflectPass2;
+		Reflection m_PSReflectPass2;
+		PSampler m_samplerDataPass2;
+		uint32_t m_slotsPass2[14];
+
+		GBuffer m_gBuffer;
+		Window& m_window;
+
 		~ShaderModel() = default;
 
 		friend class Resource;

@@ -41,7 +41,7 @@ namespace Aen {
 				}
 			}
 
-			m_renderer->Draw();
+			m_renderer->Render();
 		}
 
 		Resource::Destroy();

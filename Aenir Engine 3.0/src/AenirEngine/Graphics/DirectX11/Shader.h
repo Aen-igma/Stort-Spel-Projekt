@@ -5,63 +5,39 @@ namespace Aen {
 
 	namespace Concealed {
 
+		#define AEN_DEF X(ID3D11VertexShader,	 CreateVertexShader)\
+						X(ID3D11HullShader,		 CreateHullShader)\
+						X(ID3D11ComputeShader,	 CreateComputeShader)\
+						X(ID3D11DomainShader,	 CreateDomainShader)\
+						X(ID3D11GeometryShader,  CreateGeometryShader)\
+						X(ID3D11PixelShader,	 CreatePixelShader)
+
 		template<typename T>
 		class TShader : public GCore {
 			public:
 			TShader()
-				:m_shader(NULL), m_byteCode(nullptr) {}
+				:m_shader(NULL), m_byteCode(NULL) {}
 
 			const bool Create(const std::wstring& dir);
 
 			//private:
 			Microsoft::WRL::ComPtr<T> m_shader;
-			ID3D10Blob* m_byteCode;
+			ComBlob m_byteCode;
 
 			//friend class ILayout; // this not working
-			friend class Reflection; // this not working
+			friend class Reflection;
 		};
 
-		template<>
-		inline const bool TShader<ID3D11VertexShader>::Create(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
-				return false;
-			return SUCCEEDED(m_device->CreateVertexShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
+		#define X(T, func) template<> inline const bool TShader<T>::Create(const std::wstring& dir) {\
+			if(FAILED(D3DReadFileToBlob(dir.c_str(), m_byteCode.GetAddressOf())))\
+				return false;\
+			\
+			return SUCCEEDED(m_device->func(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), NULL, m_shader.GetAddressOf()));\
 		}
 
-		template<>
-		inline const bool TShader<ID3D11HullShader>::Create(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
-				return false;
-			return SUCCEEDED(m_device->CreateHullShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
-		}
-
-		template<>
-		inline const bool TShader<ID3D11ComputeShader>::Create(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
-				return false;
-			return SUCCEEDED(m_device->CreateComputeShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
-		}
-
-		template<>
-		inline const bool TShader<ID3D11DomainShader>::Create(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
-				return false;
-			return SUCCEEDED(m_device->CreateDomainShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
-		}
-
-		template<>
-		inline const bool TShader<ID3D11GeometryShader>::Create(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
-				return false;
-			return SUCCEEDED(m_device->CreateGeometryShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
-		}
-
-		template<>
-		inline const bool TShader<ID3D11PixelShader>::Create(const std::wstring& dir) {
-			if (FAILED(D3DReadFileToBlob(dir.c_str(), &m_byteCode)))
-				return false;
-			return SUCCEEDED(m_device->CreatePixelShader(m_byteCode->GetBufferPointer(), m_byteCode->GetBufferSize(), nullptr, &m_shader));
-		}
+		AEN_DEF
+		#undef X
+		#undef AEN_DEF
 	}
 	
 	using VShader = Concealed::TShader<ID3D11VertexShader>;

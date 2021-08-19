@@ -19,6 +19,7 @@
 
 #include<chrono>
 
+#include<optional>
 #include<string>
 #include<unordered_map>
 #include<map>

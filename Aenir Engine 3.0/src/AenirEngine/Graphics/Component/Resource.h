@@ -16,8 +16,8 @@ namespace Aen {
 			return m_shaders.count(name) > 0;
 		}
 
-		static ShaderModel& CreateShader(const std::string& name) {
-			m_shaders.emplace(name, AEN_NEW ShaderModel());
+		static ShaderModel& CreateShader(const std::string& name, Window& window) {
+			m_shaders.emplace(name, AEN_NEW ShaderModel(window));
 			return *m_shaders.at(name);
 		}
 
