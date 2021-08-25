@@ -52,8 +52,9 @@ namespace Aen {
         DXGI_ADAPTER_DESC1 desc;
         pAdapter->GetDesc1(&desc);
 
-        const UINT featureLvls = 1;
+        const UINT featureLvls = 2;
         D3D_FEATURE_LEVEL featureLvl[featureLvls] = {
+            D3D_FEATURE_LEVEL_11_1,
             D3D_FEATURE_LEVEL_11_0
         };
 

@@ -45,15 +45,28 @@ namespace Aen {
 
 			m_pDefaultShader = &Resource::CreateShader("CellShader", window);
 
-			if(!m_pDefaultShader->SetFirstPass(AEN_OUTPUT_DIR_WSTR(L"CellShaderVS.cso"), AEN_OUTPUT_DIR_WSTR(L"CellShaderPS.cso"), SamplerType::WRAP))
-				if(!m_pDefaultShader->SetFirstPass(L"CellShaderVS.cso", L"CellShaderPS.cso", SamplerType::WRAP))
-					throw;
+			ShaderModelDesc SMDesc;
+			SMDesc.VSDirPass1 = AEN_OUTPUT_DIR_WSTR(L"CellShaderVS.cso");
+			SMDesc.PSDirPass1 = AEN_OUTPUT_DIR_WSTR(L"CellShaderPS.cso");
+			SMDesc.samplerTypePass1 = SamplerType::WRAP;
+			SMDesc.VSDirPass2 = AEN_OUTPUT_DIR_WSTR(L"CellPostVS.cso");
+			SMDesc.PSDirPass2 = AEN_OUTPUT_DIR_WSTR(L"CellPostPS.cso");
+			SMDesc.samplerTypePass2 = SamplerType::CLAMP;
+			SMDesc.bufferName = "CB_CellShader";
 
-			if(!m_pDefaultShader->SetSecondPass(AEN_OUTPUT_DIR_WSTR(L"CellPostVS.cso"), AEN_OUTPUT_DIR_WSTR(L"CellPostPS.cso"), SamplerType::CLAMP))
-				if(!m_pDefaultShader->SetSecondPass(L"CellPostVS.cso", L"CellPostPS.cso", SamplerType::CLAMP))
-					throw;
+			if(!m_pDefaultShader->Create(SMDesc)) {
+				SMDesc.VSDirPass1 = L"CellShaderVS.cso";
+				SMDesc.PSDirPass1 = L"CellShaderPS.cso";
+				SMDesc.samplerTypePass1 = SamplerType::WRAP;
+				SMDesc.VSDirPass2 = L"CellPostVS.cso";
+				SMDesc.PSDirPass2 = L"CellPostPS.cso";
+				SMDesc.samplerTypePass2 = SamplerType::CLAMP;
+				SMDesc.bufferName = "CB_CellShader";
 
-			m_pDefaultShader->m_bufferName = "CB_CellShader";
+				if(!m_pDefaultShader->Create(SMDesc))
+					throw;
+			}
+
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"BaseColor"					);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"ShadowColor"				);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"SpecularColor"				);

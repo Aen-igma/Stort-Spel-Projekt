@@ -245,6 +245,7 @@ void Client::Start() {
 	blue["ShadowOffset"] = 0.4f;
 
 	sphereMesh1.SetMaterial(red);
+	m_sphere1.SetRenderLayer(2);
 	m_sphere1.AddComponent<Aen::MeshInstance>();
 	m_sphere1.GetComponent<Aen::MeshInstance>().SetMesh(sphereMesh1);
 	m_sphere1.SetPos(3.f, 0.f, 3.f);

@@ -16,6 +16,7 @@ namespace Aen {
 		template<class T>
 		T& GetComponent();
 
+		void SetRenderLayer(const int& layer);
 		void SetParent(Entity& parent);
 		void RemoveParent();
 
@@ -43,6 +44,7 @@ namespace Aen {
 
 		uint32_t m_id;
 		uint32_t m_parentId;
+		uint32_t m_layer;
 		bool m_hasParent;
 
 		friend class Renderer;
@@ -80,7 +82,7 @@ namespace Aen {
 	template<>
 	inline void Entity::AddComponent<MeshInstance>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
-			ComponentHandler::CreateMeshInstance(m_id);
+			ComponentHandler::CreateMeshInstance(m_id, m_layer + 3);
 
 		AddComponent<Translation>();
 		AddComponent<Rotation>();

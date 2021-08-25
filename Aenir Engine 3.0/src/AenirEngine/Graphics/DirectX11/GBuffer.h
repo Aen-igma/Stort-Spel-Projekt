@@ -12,6 +12,9 @@ namespace Aen {
 		void Create(Window& window, const uint32_t& count = 1u);
 		const uint32_t GetCount();
 
+		ComRenderTargetView GetRtv(const uint32_t& index);
+		ComShaderResourceView GetSrv(const uint32_t& index);
+
 		friend class RenderSystem;
 
 		private:

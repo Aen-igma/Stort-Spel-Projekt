@@ -7,6 +7,7 @@
 #include<immintrin.h>
 #include<iostream>
 #include<sstream>
+#include<thread>
 #include<cmath>
 
 #include<d3dcompiler.h>
@@ -25,4 +26,5 @@
 #include<map>
 #include<stack>
 #include<queue>
+#include<array>
 #include<vector>

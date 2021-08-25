@@ -1,6 +1,7 @@
 #pragma once
 #include"../Graphics/RenderSystem.h"
 #include"../Graphics/Component/Entity.h"
+#include<thread>
 
 namespace Aen {
 
@@ -29,11 +30,13 @@ namespace Aen {
 		private:
 		void Initialize();
 		void Render();
+		void Draw(std::unordered_map<uint32_t, MeshInstance*>& meshLayer, const uint32_t& layer);
 
 		Window& m_window;
 		
 		ScreenQuad m_screenQuad;
 
+		CBuffer<Color> m_cbBGColor;
 		CBuffer<CB_Transform> m_cbTransform;
 		CBuffer<uint32_t> m_cbLightCount;
 		CBuffer<CB_Camera> m_cbCamera;
@@ -41,18 +44,20 @@ namespace Aen {
 		SBuffer<SB_Light> m_sbLight;
 
 		GBuffer m_postProcessBuffer;
+		GBuffer m_layerBuffer;
 		BBuffer m_backBuffer;
 		
 		VShader m_postProcessVS;
 		PShader m_postProcessPS;
+		PShader m_combineLayersPS;
 		Sampler m_clampSampler;
 		ILayout m_postLayout;
 
 		D3D11_VIEWPORT m_viewPort;
-		Depth m_depth;
-		Stencil m_writeStencil;
-		Stencil m_maskStencil;
-		Stencil m_offStencil;
+		Depth m_depth[7];
+		Stencil m_writeStencil[7];
+		Stencil m_maskStencil[7];
+		Stencil m_offStencil[7];
 		RState m_rasterizerState;
 	};
 }

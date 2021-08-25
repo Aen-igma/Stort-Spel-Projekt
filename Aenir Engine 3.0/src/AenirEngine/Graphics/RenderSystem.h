@@ -116,6 +116,14 @@ namespace Aen {
             m_dContext->OMSetRenderTargets(size, gBuffer.m_rtvs.data(), NULL);
         }
 
+        static void BindRenderTargetView(ComRenderTargetView rtv, Depth& depth) {
+            m_dContext->OMSetRenderTargets(1, rtv.GetAddressOf(), depth.m_dsView.Get());
+        }
+
+        static void BindRenderTargetView(ComRenderTargetView rtv) {
+            m_dContext->OMSetRenderTargets(1, rtv.GetAddressOf(), NULL);
+        }
+        
         template<class T>
         static void BindShaderResourceView(const UINT& startSlot, GBuffer& gBuffer);
         
@@ -124,6 +132,9 @@ namespace Aen {
 
         template<class T>
         static void BindShaderResourceView(const UINT& slot, DepthMap& depthMap);
+
+        template<class T>
+        static void BindShaderResourceView(const UINT& slot, ComShaderResourceView srv);
 
         template<class T>
         static void BindSamplers(const UINT& slot, Sampler& sampler);
@@ -179,7 +190,9 @@ namespace Aen {
     #define PS(startSlot, count, srv) PSSetShaderResources(startSlot, count, srv)
 
     #define X(sName, lName) template<> inline void RenderSystem::UnBindShaderResources<lName> (const UINT& startSlot, const UINT& count) {\
-        static std::vector<ID3D11ShaderResourceView*> pSrv(count, nullptr);\
+        static std::vector<ID3D11ShaderResourceView*> pSrv;\
+        pSrv.reserve(count);\
+        pSrv.resize(count, nullptr);\
         m_dContext->sName(startSlot, count, pSrv.data());\
     }
 
@@ -209,6 +222,15 @@ namespace Aen {
 
     #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& slot, DepthMap& depthMap) {\
         m_dContext->sName(slot, 1, depthMap.m_srv.GetAddressOf());\
+    }
+
+    DEF_SHADER
+    #undef X
+
+    // ---------------------------- BindShaderResourceView for ComSRV -------------------------------
+
+    #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& slot, ComShaderResourceView srv) {\
+        m_dContext->sName(slot, 1, srv.GetAddressOf());\
     }
 
     DEF_SHADER

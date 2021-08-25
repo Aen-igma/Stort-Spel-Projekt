@@ -4,6 +4,16 @@
 
 namespace Aen {
 
+	struct ShaderModelDesc {
+		std::wstring PSDirPass1;
+		std::wstring PSDirPass2;
+		std::wstring VSDirPass1;
+		std::wstring VSDirPass2;
+		SamplerType samplerTypePass1;
+		SamplerType samplerTypePass2;
+		std::string bufferName;
+	};
+
 	class ShaderModel {
 		public:
 		using PSampler = std::pair<UINT, Sampler>;
@@ -11,13 +21,12 @@ namespace Aen {
 		ShaderModel() = delete;
 		ShaderModel(Window& window);
 
-		const bool SetFirstPass(const std::wstring& VSDir, const std::wstring& PSDir, const SamplerType& samplerType);
-		const bool SetSecondPass(const std::wstring& VSDir, const std::wstring& PSDir, const SamplerType& samplerType);
+		const bool Create(const ShaderModelDesc& desc);
 
 		DBLayout m_dbLayout;
-		std::string m_bufferName;
 
 		private:
+		std::string m_bufferName;
 
 		VShader m_VShaderPass1;
 		PShader m_PShaderPass1;
@@ -25,7 +34,7 @@ namespace Aen {
 		Reflection m_VSReflectPass1;
 		Reflection m_PSReflectPass1;
 		PSampler m_samplerDataPass1;
-		uint32_t m_slotsPass1[14];
+		uint32_t m_slotsPass1[16];
 
 		VShader m_VShaderPass2;
 		PShader m_PShaderPass2;
@@ -33,7 +42,7 @@ namespace Aen {
 		Reflection m_VSReflectPass2;
 		Reflection m_PSReflectPass2;
 		PSampler m_samplerDataPass2;
-		uint32_t m_slotsPass2[14];
+		uint32_t m_slotsPass2[16];
 
 		GBuffer m_gBuffer;
 		Window& m_window;

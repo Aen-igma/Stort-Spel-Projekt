@@ -53,32 +53,40 @@ namespace Aen {
 	}
 
 	void Stencil::SetStencil(const bool& useDepth, const StencilType& type) {
-        D3D11_DEPTH_STENCIL_DESC dsDesc;
-        ZeroMemory(&dsDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+
+        D3D11_DEPTH_STENCIL_DESC dsDesc = CD3D11_DEPTH_STENCIL_DESC{CD3D11_DEFAULT{}};
 
         dsDesc.DepthEnable = useDepth;
         dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
         dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-        dsDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
-        dsDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
-
-        dsDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
-        dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
 
         if(type == StencilType::Write) {
             dsDesc.StencilEnable = TRUE;
-            dsDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
-            dsDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
-            dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;
-            dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_LESS_EQUAL;
-        } else if(type == StencilType::Mask) {
-            dsDesc.StencilEnable = FALSE;
+            dsDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+
             dsDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
             dsDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
             dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-            dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_NOT_EQUAL;
+            dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_NEVER;
+
+            dsDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+            dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+            dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+            dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+        } else if(type == StencilType::Mask) {
+            dsDesc.StencilEnable = TRUE;
+            dsDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+
+            dsDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+            dsDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+            dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+            dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_NEVER;
+
+            dsDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+            dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+            dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+            dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_LESS_EQUAL;
         }
 
         if(FAILED(m_device->CreateDepthStencilState(&dsDesc, m_dsState.GetAddressOf())))

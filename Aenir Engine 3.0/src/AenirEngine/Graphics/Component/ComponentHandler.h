@@ -5,6 +5,7 @@
 #include"Light/Light.h"
 
 #include<unordered_map>
+#include<array>
 #include<map>
 
 namespace Aen {
@@ -45,8 +46,9 @@ namespace Aen {
 			return m_mesheInstances.count(id) > 0;
 		}
 
-		static void CreateMeshInstance(const uint32_t& id) {
+		static void CreateMeshInstance(const uint32_t& id, const uint32_t& layer) {
 			m_mesheInstances.emplace(id, AEN_NEW MeshInstance());
+			m_meshLayer[layer].emplace(id, m_mesheInstances.at(id));
 		}
 
 		static void RemoveMeshInstance(const uint32_t& id) {
@@ -240,6 +242,18 @@ namespace Aen {
 			return *pDLight;
 		}
 
+		// ----------- Mesh Instance Layer ---------- //
+
+		static void SetRenderLayer(MeshInstance& mesh, const uint32_t id, const uint32_t& layer) {
+			m_meshLayer[layer].emplace(id, &mesh);
+		}
+
+		static std::unordered_map<uint32_t, MeshInstance*>& GetLayer(const uint32_t& layer) {
+			return m_meshLayer[layer];
+		}
+
+		// ------------------------------------------ //
+
 		static std::unordered_map<uint32_t, Camera*> m_cameras;
 		static std::unordered_map<uint32_t, MeshInstance*> m_mesheInstances;
 		static std::unordered_map<uint32_t, Translation*> m_translations;
@@ -247,6 +261,8 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Scale*> m_scales;
 		static std::multimap<uint32_t, Light*> m_lights;
 		
+		static std::array<std::unordered_map<uint32_t, MeshInstance*>, 7> m_meshLayer;
+
 		friend class Entity;
 		friend class Renderer;
 	};

@@ -17,9 +17,23 @@ namespace Aen {
 	}
 
 	Entity::Entity()
-		:m_id(m_iDs), m_parentId(-1), m_hasParent(false) {
+		:m_id(m_iDs), m_parentId(UINT_MAX), m_layer(0), m_hasParent(false) {
 		EntityHandler::m_entities.emplace(m_id, this);
 		m_iDs++;
+	}
+
+	void Entity::SetRenderLayer(const int& layer) {
+		if(m_layer == layer) return;
+
+		if(ComponentHandler::MeshInstanceExist(m_id)) {
+			int l = layer;
+			Clamp(l, -3, 3);
+			ComponentHandler::GetLayer(m_layer + 3).at(m_id) = nullptr;
+			ComponentHandler::GetLayer(m_layer + 3).erase(m_id);
+			ComponentHandler::SetRenderLayer(ComponentHandler::GetMeshInstance(m_id), m_id, l + 3);
+		}
+
+		m_layer = layer;
 	}
 
 	void Entity::SetParent(Entity& parent) {
@@ -32,7 +46,7 @@ namespace Aen {
 
 	void Entity::RemoveParent() {
 		m_hasParent = false;
-		m_parentId = -1;
+		m_parentId = UINT_MAX;
 	}
 
 	void Entity::SetPos(const Vec3f& pos) {

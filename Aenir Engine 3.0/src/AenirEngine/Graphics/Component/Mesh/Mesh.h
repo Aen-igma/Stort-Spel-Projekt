@@ -52,7 +52,7 @@ namespace Aen {
 		private:
 		~MeshInstance();
 
-		Mesh* m_mesh;
+		Mesh* m_pMesh;
 
 		friend class ComponentHandler;
 		friend class Renderer;

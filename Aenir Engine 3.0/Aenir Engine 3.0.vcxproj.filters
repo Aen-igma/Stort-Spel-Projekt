@@ -308,5 +308,6 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairPostVS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairShaderPS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairShaderVS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CombineLayersPS.hlsl" />
   </ItemGroup>
 </Project>

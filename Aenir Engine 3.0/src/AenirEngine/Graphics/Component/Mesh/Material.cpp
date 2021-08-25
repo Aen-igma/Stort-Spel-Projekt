@@ -7,18 +7,54 @@ namespace Aen {
 
     ShaderModel::ShaderModel(Window& window)
         :m_window(window) {}
-    const bool ShaderModel::SetFirstPass(const std::wstring& VSDir, const std::wstring& PSDir, const SamplerType& samplerType) {
 
-        if(!m_VShaderPass1.Create(VSDir))
+    const bool ShaderModel::Create(const ShaderModelDesc& desc) {
+
+        // Shaders
+
+        if(!m_VShaderPass1.Create(desc.VSDirPass1))
             return false;
 
-        if(!m_PShaderPass1.Create(PSDir))
+        if(!m_PShaderPass1.Create(desc.PSDirPass1))
             return false;
+
+        if(!m_VShaderPass2.Create(desc.VSDirPass2))
+            return false;
+
+        if(!m_PShaderPass2.Create(desc.PSDirPass2))
+            return false;
+
+        // Input Layouts
 
         m_iLayoutPass1.Create(m_VShaderPass1);
-        
+        m_iLayoutPass2.Create(m_VShaderPass2);
+
+        // Reflections
+
         m_VSReflectPass1.Create(m_VShaderPass1);
         m_PSReflectPass1.Create(m_PShaderPass1);
+        m_VSReflectPass2.Create(m_VShaderPass2);
+        m_PSReflectPass2.Create(m_PShaderPass2);
+
+        // Pass Transition Test
+
+        UINT inputCount = 0;
+        UINT outputCount = 0;
+
+        for(auto& i : m_PSReflectPass2.GetBindDescs())
+            if(i.second.Type == D3D_SIT_TEXTURE)
+                inputCount ++;
+        
+        outputCount = m_PSReflectPass1.GetOutputDesc().size();
+        
+        if(inputCount != outputCount)
+            throw;
+
+        // GBuffer
+
+        m_gBuffer.Create(m_window, m_PSReflectPass1.GetOutputDesc().size());
+
+        // Samplers
 
         UINT samplerRegister = UINT_MAX;
         for(auto& i : m_PSReflectPass1.GetBindDescs()) {
@@ -32,63 +68,9 @@ namespace Aen {
             return false;
 
         m_samplerDataPass1.first = samplerRegister;
-        m_samplerDataPass1.second.Create(samplerType);
+        m_samplerDataPass1.second.Create(desc.samplerTypePass1);
 
-        if(m_PSReflectPass1.GetOutputDesc().size() == 0)
-            return false;
-
-        m_gBuffer.Create(m_window, m_PSReflectPass1.GetOutputDesc().size());
-
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescTranform = m_VSReflectPass1.GetBindDescByName("Aen_CB_Transform");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescLightCount = m_VSReflectPass1.GetBindDescByName("Aen_CB_LightCount");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescCamera = m_VSReflectPass1.GetBindDescByName("Aen_CB_Camera");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescUseTexture = m_VSReflectPass1.GetBindDescByName("Aen_CB_UseTexture");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescLight = m_VSReflectPass1.GetBindDescByName("Aen_SB_Light");
-            
-        if(bDescTranform) m_slotsPass1[0] = bDescTranform.value().BindPoint; else m_slotsPass1[0] = UINT_MAX;
-        if(bDescLightCount) m_slotsPass1[1] = bDescLightCount.value().BindPoint; else m_slotsPass1[1] = UINT_MAX;
-        if(bDescCamera) m_slotsPass1[2] = bDescCamera.value().BindPoint; else m_slotsPass1[2] = UINT_MAX;
-        if(bDescUseTexture) m_slotsPass1[3] = bDescUseTexture.value().BindPoint; else m_slotsPass1[3] = UINT_MAX;
-        if(bDescLight) m_slotsPass1[4] = bDescLight.value().BindPoint; else m_slotsPass1[4] = UINT_MAX;
-
-        bDescTranform = m_PSReflectPass1.GetBindDescByName("Aen_CB_Transform");
-        bDescLightCount = m_PSReflectPass1.GetBindDescByName("Aen_CB_LightCount");
-        bDescCamera = m_PSReflectPass1.GetBindDescByName("Aen_CB_Camera");
-        bDescUseTexture = m_PSReflectPass1.GetBindDescByName("Aen_CB_UseTexture");
-        bDescLight = m_PSReflectPass1.GetBindDescByName("Aen_SB_Light");
-
-        if(bDescTranform) m_slotsPass1[5] = bDescTranform.value().BindPoint; else m_slotsPass1[5] = UINT_MAX;
-        if(bDescLightCount) m_slotsPass1[6] = bDescLightCount.value().BindPoint; else m_slotsPass1[6] = UINT_MAX;
-        if(bDescCamera) m_slotsPass1[7] = bDescCamera.value().BindPoint; else m_slotsPass1[7] = UINT_MAX;
-        if(bDescUseTexture) m_slotsPass1[8] = bDescUseTexture.value().BindPoint; else m_slotsPass1[8] = UINT_MAX;
-        if(bDescLight) m_slotsPass1[9] = bDescLight.value().BindPoint; else m_slotsPass1[9] = UINT_MAX;
-
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescDiffuseMap = m_PSReflectPass1.GetBindDescByName("Aen_DiffuseMap");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescNormalMap = m_PSReflectPass1.GetBindDescByName("Aen_NormalMap");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescEmissionMap = m_PSReflectPass1.GetBindDescByName("Aen_EmissionMap");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescOpacityMap = m_PSReflectPass1.GetBindDescByName("Aen_OpacityMap");
-
-        if(bDescDiffuseMap) m_slotsPass1[10] = bDescDiffuseMap.value().BindPoint; else m_slotsPass1[10] = UINT_MAX;
-        if(bDescNormalMap) m_slotsPass1[11] = bDescNormalMap.value().BindPoint; else m_slotsPass1[11] = UINT_MAX;
-        if(bDescEmissionMap) m_slotsPass1[12] = bDescEmissionMap.value().BindPoint; else m_slotsPass1[12] = UINT_MAX;
-        if(bDescOpacityMap) m_slotsPass1[13] = bDescOpacityMap.value().BindPoint; else m_slotsPass1[13] = UINT_MAX;
-
-        return true;
-    }
-
-    const bool ShaderModel::SetSecondPass(const std::wstring& VSDir, const std::wstring& PSDir, const SamplerType& samplerType) {
-        if(!m_VShaderPass2.Create(VSDir))
-            return false;
-
-        if(!m_PShaderPass2.Create(PSDir))
-            return false;
-
-        m_iLayoutPass2.Create(m_VShaderPass2);
-
-        m_VSReflectPass2.Create(m_VShaderPass2);
-        m_PSReflectPass2.Create(m_PShaderPass2);
-
-        UINT samplerRegister = UINT_MAX;
+        samplerRegister = UINT_MAX;
         for(auto& i : m_PSReflectPass2.GetBindDescs()) {
             if(i.second.Type == D3D_SIT_SAMPLER) {
                 samplerRegister = i.second.BindPoint;
@@ -100,19 +82,73 @@ namespace Aen {
             return false;
 
         m_samplerDataPass2.first = samplerRegister;
-        m_samplerDataPass2.second.Create(samplerType);
+        m_samplerDataPass2.second.Create(desc.samplerTypePass2);
 
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescTranform = m_VSReflectPass2.GetBindDescByName("Aen_CB_Transform");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescLightCount = m_VSReflectPass2.GetBindDescByName("Aen_CB_LightCount");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescCamera = m_VSReflectPass2.GetBindDescByName("Aen_CB_Camera");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescUseTexture = m_VSReflectPass2.GetBindDescByName("Aen_CB_UseTexture");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescLight = m_VSReflectPass2.GetBindDescByName("Aen_SB_Light");
-        
-        if(bDescTranform) m_slotsPass2[0] = bDescTranform.value().BindPoint; else m_slotsPass2[0] = UINT_MAX;
-        if(bDescLightCount) m_slotsPass2[1] = bDescLightCount.value().BindPoint; else m_slotsPass2[1] = UINT_MAX;
-        if(bDescCamera) m_slotsPass2[2] = bDescCamera.value().BindPoint; else m_slotsPass2[2] = UINT_MAX;
-        if(bDescUseTexture) m_slotsPass2[3] = bDescUseTexture.value().BindPoint; else m_slotsPass2[3] = UINT_MAX;
-        if(bDescLight) m_slotsPass2[4] = bDescLight.value().BindPoint; else m_slotsPass2[4] = UINT_MAX;
+        if(m_PSReflectPass1.GetOutputDesc().size() == 0)
+            return false;
+
+        // Buffer Name Test
+
+        if(desc.bufferName.empty())
+            throw;
+
+        m_bufferName = desc.bufferName;
+
+        // Slots
+
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescTranform = m_VSReflectPass1.GetBindDescByName("Aen_CB_Transform");
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescLightCount = m_VSReflectPass1.GetBindDescByName("Aen_CB_LightCount");
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescCamera = m_VSReflectPass1.GetBindDescByName("Aen_CB_Camera");
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescUseTexture = m_VSReflectPass1.GetBindDescByName("Aen_CB_UseTexture");
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescLight = m_VSReflectPass1.GetBindDescByName("Aen_SB_Light");
+
+        m_slotsPass1[0] = (bDescTranform) ? bDescTranform.value().BindPoint : UINT_MAX;
+        m_slotsPass1[1] = (bDescLightCount) ? bDescLightCount.value().BindPoint : UINT_MAX;
+        m_slotsPass1[2] = (bDescCamera) ? bDescCamera.value().BindPoint : UINT_MAX;
+        m_slotsPass1[3] = (bDescUseTexture) ? bDescUseTexture.value().BindPoint : UINT_MAX;
+        m_slotsPass1[4] = (bDescLight) ? bDescLight.value().BindPoint : UINT_MAX;
+
+        bDescTranform = m_PSReflectPass1.GetBindDescByName("Aen_CB_Transform");
+        bDescLightCount = m_PSReflectPass1.GetBindDescByName("Aen_CB_LightCount");
+        bDescCamera = m_PSReflectPass1.GetBindDescByName("Aen_CB_Camera");
+        bDescUseTexture = m_PSReflectPass1.GetBindDescByName("Aen_CB_UseTexture");
+        bDescLight = m_PSReflectPass1.GetBindDescByName("Aen_SB_Light");
+
+        m_slotsPass1[5] = (bDescTranform) ? bDescTranform.value().BindPoint : UINT_MAX;
+        m_slotsPass1[6] = (bDescLightCount) ? bDescLightCount.value().BindPoint : UINT_MAX;
+        m_slotsPass1[7] = (bDescCamera) ? bDescCamera.value().BindPoint : UINT_MAX;
+        m_slotsPass1[8] = (bDescUseTexture) ? bDescUseTexture.value().BindPoint : UINT_MAX;
+        m_slotsPass1[9] = (bDescLight) ? bDescLight.value().BindPoint : UINT_MAX;
+
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescDiffuseMap = m_PSReflectPass1.GetBindDescByName("Aen_DiffuseMap");
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescNormalMap = m_PSReflectPass1.GetBindDescByName("Aen_NormalMap");
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescEmissionMap = m_PSReflectPass1.GetBindDescByName("Aen_EmissionMap");
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescOpacityMap = m_PSReflectPass1.GetBindDescByName("Aen_OpacityMap");
+
+        m_slotsPass1[10] = (bDescDiffuseMap) ? bDescDiffuseMap.value().BindPoint : UINT_MAX;
+        m_slotsPass1[11] = (bDescNormalMap) ? bDescNormalMap.value().BindPoint : UINT_MAX;
+        m_slotsPass1[12] = (bDescEmissionMap) ? bDescEmissionMap.value().BindPoint : UINT_MAX;
+        m_slotsPass1[13] = (bDescOpacityMap) ? bDescOpacityMap.value().BindPoint : UINT_MAX;
+
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescDBufferVS = m_VSReflectPass1.GetBindDescByName(m_bufferName);
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescDBufferPS = m_PSReflectPass1.GetBindDescByName(m_bufferName);
+
+        m_slotsPass1[14] = (bDescDBufferVS) ? bDescDBufferVS.value().BindPoint : UINT_MAX;
+        m_slotsPass1[15] = (bDescDBufferPS) ? bDescDBufferPS.value().BindPoint : UINT_MAX;
+
+
+
+        bDescTranform = m_VSReflectPass2.GetBindDescByName("Aen_CB_Transform");
+        bDescLightCount = m_VSReflectPass2.GetBindDescByName("Aen_CB_LightCount");
+        bDescCamera = m_VSReflectPass2.GetBindDescByName("Aen_CB_Camera");
+        bDescUseTexture = m_VSReflectPass2.GetBindDescByName("Aen_CB_UseTexture");
+        bDescLight = m_VSReflectPass2.GetBindDescByName("Aen_SB_Light");
+
+        m_slotsPass2[0] = (bDescTranform) ? bDescTranform.value().BindPoint : UINT_MAX;
+        m_slotsPass2[1] = (bDescLightCount) ? bDescLightCount.value().BindPoint : UINT_MAX;
+        m_slotsPass2[2] = (bDescCamera) ? bDescCamera.value().BindPoint : UINT_MAX;
+        m_slotsPass2[3] = (bDescUseTexture) ? bDescUseTexture.value().BindPoint : UINT_MAX;
+        m_slotsPass2[4] = (bDescLight) ? bDescLight.value().BindPoint : UINT_MAX;
 
         bDescTranform = m_PSReflectPass2.GetBindDescByName("Aen_CB_Transform");
         bDescLightCount = m_PSReflectPass2.GetBindDescByName("Aen_CB_LightCount");
@@ -120,21 +156,27 @@ namespace Aen {
         bDescUseTexture = m_PSReflectPass2.GetBindDescByName("Aen_CB_UseTexture");
         bDescLight = m_PSReflectPass2.GetBindDescByName("Aen_SB_Light");
 
-        if(bDescTranform) m_slotsPass2[5] = bDescTranform.value().BindPoint; else m_slotsPass2[5] = UINT_MAX;
-        if(bDescLightCount) m_slotsPass2[6] = bDescLightCount.value().BindPoint; else m_slotsPass2[6] = UINT_MAX;
-        if(bDescCamera) m_slotsPass2[7] = bDescCamera.value().BindPoint; else m_slotsPass2[7] = UINT_MAX;
-        if(bDescUseTexture) m_slotsPass2[8] = bDescUseTexture.value().BindPoint; else m_slotsPass2[8] = UINT_MAX;
-        if(bDescLight) m_slotsPass2[9] = bDescLight.value().BindPoint; else m_slotsPass2[9] = UINT_MAX;
+        m_slotsPass2[5] = (bDescTranform) ? bDescTranform.value().BindPoint : UINT_MAX;
+        m_slotsPass2[6] = (bDescLightCount) ? bDescLightCount.value().BindPoint : UINT_MAX;
+        m_slotsPass2[7] = (bDescCamera) ? bDescCamera.value().BindPoint : UINT_MAX;
+        m_slotsPass2[8] = (bDescUseTexture) ? bDescUseTexture.value().BindPoint : UINT_MAX;
+        m_slotsPass2[9] = (bDescLight) ? bDescLight.value().BindPoint : UINT_MAX;
 
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescDiffuseMap = m_PSReflectPass2.GetBindDescByName("Aen_DiffuseMap");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescNormalMap = m_PSReflectPass2.GetBindDescByName("Aen_NormalMap");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescEmissionMap = m_PSReflectPass2.GetBindDescByName("Aen_EmissionMap");
-        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescOpacityMap = m_PSReflectPass2.GetBindDescByName("Aen_OpacityMap");
+        bDescDiffuseMap = m_PSReflectPass2.GetBindDescByName("Aen_DiffuseMap");
+        bDescNormalMap = m_PSReflectPass2.GetBindDescByName("Aen_NormalMap");
+        bDescEmissionMap = m_PSReflectPass2.GetBindDescByName("Aen_EmissionMap");
+        bDescOpacityMap = m_PSReflectPass2.GetBindDescByName("Aen_OpacityMap");
 
-        if(bDescDiffuseMap) m_slotsPass2[10] = bDescDiffuseMap.value().BindPoint; else m_slotsPass2[10] = UINT_MAX;
-        if(bDescNormalMap) m_slotsPass2[11] = bDescNormalMap.value().BindPoint; else m_slotsPass2[11] = UINT_MAX;
-        if(bDescEmissionMap) m_slotsPass2[12] = bDescEmissionMap.value().BindPoint; else m_slotsPass2[12] = UINT_MAX;
-        if(bDescOpacityMap) m_slotsPass2[13] = bDescOpacityMap.value().BindPoint; else m_slotsPass2[13] = UINT_MAX;
+        m_slotsPass2[10] = (bDescDiffuseMap) ? bDescDiffuseMap.value().BindPoint : UINT_MAX;
+        m_slotsPass2[11] = (bDescNormalMap) ? bDescNormalMap.value().BindPoint : UINT_MAX;
+        m_slotsPass2[12] = (bDescEmissionMap) ? bDescEmissionMap.value().BindPoint : UINT_MAX;
+        m_slotsPass2[13] = (bDescOpacityMap) ? bDescOpacityMap.value().BindPoint : UINT_MAX;
+
+        bDescDBufferVS = m_VSReflectPass2.GetBindDescByName(m_bufferName);
+        bDescDBufferPS = m_PSReflectPass2.GetBindDescByName(m_bufferName);
+
+        m_slotsPass2[14] = (bDescDBufferVS) ? bDescDBufferVS.value().BindPoint : UINT_MAX;
+        m_slotsPass2[15] = (bDescDBufferPS) ? bDescDBufferPS.value().BindPoint : UINT_MAX;
 
         return true;
     }

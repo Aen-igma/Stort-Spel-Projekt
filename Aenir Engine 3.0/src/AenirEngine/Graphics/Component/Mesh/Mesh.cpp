@@ -52,16 +52,16 @@ namespace Aen {
 	}
 
 	MeshInstance::~MeshInstance() {
-		m_mesh = nullptr;
+		m_pMesh = nullptr;
 	}
 
 	MeshInstance::MeshInstance()
-		:m_mesh(nullptr) {}
+		:m_pMesh(nullptr) {}
 
 	MeshInstance::MeshInstance(Mesh& mesh)
-		:m_mesh(&mesh) {}
+		:m_pMesh(&mesh) {}
 
 	void MeshInstance::SetMesh(Mesh& mesh) {
-		m_mesh = &mesh;
+		m_pMesh = &mesh;
 	}
 }

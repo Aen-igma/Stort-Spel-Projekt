@@ -113,4 +113,12 @@ namespace Aen {
 		return m_rtvs.size();
 	}
 
+	ComRenderTargetView GBuffer::GetRtv(const uint32_t& index) {
+		return ComRenderTargetView(m_rtvs[index]);
+	}
+
+	ComShaderResourceView GBuffer::GetSrv(const uint32_t& index) {
+		return ComShaderResourceView(m_srvs[index]);
+	}
+
 }
