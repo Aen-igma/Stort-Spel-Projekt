@@ -2,6 +2,8 @@
 #include"Mesh.h"
 #include"Core/GlobalSettings.h"
 #include"Importer/ObjImporter.h"
+#include<thread>
+#include<thread>
 
 namespace Aen {
 	
@@ -24,7 +26,8 @@ namespace Aen {
 	}
 
 	void Mesh::Load(const std::string& dir) {
-		ImportObj(m_vertices, dir, m_partitions, m_meshMaterialName);
+		std::thread worker(ImportObj, std::ref(m_vertices), dir, std::ref(m_partitions), std::ref(m_meshMaterialName));
+		worker.join();
 		if(m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_meshMaterialName.size());
 			m_pMaterials.resize(m_meshMaterialName.size(), &Resource::GetMaterial("DefaultMaterial"));

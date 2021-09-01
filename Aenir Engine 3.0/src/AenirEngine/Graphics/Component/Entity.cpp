@@ -108,4 +108,17 @@ namespace Aen {
 	const Vec3f& Entity::GetScale() {
 		return ComponentHandler::GetScale(m_id).GetScale();
 	}
+
+	const Mat4f Entity::GetTransformation() {
+
+		Mat4f pos = (ComponentHandler::TranslationExist(m_id)) ? ComponentHandler::GetTranslation(m_id).GetTranform() : Mat4f::identity;
+		Mat4f rot = (ComponentHandler::RotationExist(m_id)) ? ComponentHandler::GetRotation(m_id).GetTranform() : Mat4f::identity;
+		Mat4f scale = (ComponentHandler::ScaleExist(m_id)) ? ComponentHandler::GetScale(m_id).GetTranform() : Mat4f::identity;
+
+		Mat4f parentMatrix;
+		if(m_hasParent)
+			parentMatrix = EntityHandler::GetEntity(m_parentId).GetTransformation();
+
+		return scale * rot * pos * parentMatrix;
+	}
 }

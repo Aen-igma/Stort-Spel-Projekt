@@ -14,12 +14,12 @@ namespace Aen {
 		if(!Input::Initialize())
 			exit(-1);
 
-		if(!GCore::Concealed::Initialize(m_app->window))
+		if(!GCore::Concealed::Initialize(m_app->m_window))
 			exit(-1);
 
-		GlobalSettings::Initialize(m_app->window);
+		GlobalSettings::Initialize(m_app->m_window);
 
-		m_renderer = AEN_NEW Renderer(m_app->window);
+		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 
 		m_app->Start();
@@ -35,13 +35,13 @@ namespace Aen {
 				m_deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start);
 				m_start = ResClock::now();
 
-				if(m_app->window.IsActive()) {
+				if(m_app->m_window.IsActive()) {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
-			}
 
-			m_renderer->Render();
+				m_renderer->Render(); // VSync
+			}
 		}
 
 		Resource::Destroy();

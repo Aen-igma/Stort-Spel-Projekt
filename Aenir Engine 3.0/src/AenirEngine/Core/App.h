@@ -16,6 +16,6 @@ namespace Aen {
 		friend class GameLoop;
 
 		protected:
-		Window window;
+		Window m_window;
 	};
 }

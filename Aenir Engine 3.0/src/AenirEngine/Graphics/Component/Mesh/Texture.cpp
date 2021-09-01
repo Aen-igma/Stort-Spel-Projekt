@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "Texture.h"
+#include<thread>
 
 namespace Aen {
 
@@ -9,6 +10,7 @@ namespace Aen {
 	}
 	
 	void Texture::LoadTexture(const std::string& dir) {
-		m_shaderResource.LoadResource(dir);
+		std::thread worker(&ShaderResource::LoadResource, &m_shaderResource, dir);
+		worker.join();
 	}
 }

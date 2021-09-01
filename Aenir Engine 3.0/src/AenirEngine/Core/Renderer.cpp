@@ -144,21 +144,7 @@ namespace Aen {
 
 			if(pMesh) {
 
-				uint32_t id = i.first;
-
-				Mat4f parentTranform;
-				if(EntityHandler::GetEntity(id).m_hasParent) {
-					uint32_t parentId = EntityHandler::GetEntity(id).m_parentId;
-					Mat4f parentPos = (ComponentHandler::TranslationExist(parentId)) ? ComponentHandler::GetTranslation(parentId).GetTranform() : Mat4f::identity;
-					Mat4f parentRot = (ComponentHandler::RotationExist(parentId)) ? ComponentHandler::GetRotation(parentId).GetTranform() : Mat4f::identity;
-					Mat4f parentScale = (ComponentHandler::ScaleExist(parentId)) ? ComponentHandler::GetScale(parentId).GetTranform() : Mat4f::identity;
-					parentTranform = parentScale * parentRot * parentPos;
-				}
-
-				Mat4f pos = (ComponentHandler::TranslationExist(id)) ? ComponentHandler::GetTranslation(id).GetTranform() : Mat4f::identity;
-				Mat4f rot = (ComponentHandler::RotationExist(id)) ? ComponentHandler::GetRotation(id).GetTranform() : Mat4f::identity;
-				Mat4f scale = (ComponentHandler::ScaleExist(id)) ? ComponentHandler::GetScale(id).GetTranform() : Mat4f::identity;
-				m_cbTransform.GetData().m_mdlMat = (scale * rot * pos * parentTranform).Transposed();
+				m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(i.first).GetTransformation().Transposed();
 				m_cbTransform.UpdateBuffer();
 
 				Material* pMaterial = (pMesh && pMesh->m_pMaterials[0]) ? pMesh->m_pMaterials[0] : nullptr;
@@ -188,20 +174,7 @@ namespace Aen {
 
 				// Transform
 
-				uint32_t id = i.first;
-				Mat4f parentTranform;
-				if(EntityHandler::GetEntity(id).m_hasParent) {
-					uint32_t parentId = EntityHandler::GetEntity(id).m_parentId;
-					Mat4f parentPos = (ComponentHandler::TranslationExist(parentId)) ? ComponentHandler::GetTranslation(parentId).GetTranform() : Mat4f::identity;
-					Mat4f parentRot = (ComponentHandler::RotationExist(parentId)) ? ComponentHandler::GetRotation(parentId).GetTranform() : Mat4f::identity;
-					Mat4f parentScale = (ComponentHandler::ScaleExist(parentId)) ? ComponentHandler::GetScale(parentId).GetTranform() : Mat4f::identity;
-					parentTranform = parentScale * parentRot * parentPos;
-				}
-
-				Mat4f pos = (ComponentHandler::TranslationExist(id)) ? ComponentHandler::GetTranslation(id).GetTranform() : Mat4f::identity;
-				Mat4f rot = (ComponentHandler::RotationExist(id)) ? ComponentHandler::GetRotation(id).GetTranform() : Mat4f::identity;
-				Mat4f scale = (ComponentHandler::ScaleExist(id)) ? ComponentHandler::GetScale(id).GetTranform() : Mat4f::identity;
-				m_cbTransform.GetData().m_mdlMat = (scale * rot * pos * parentTranform).Transposed();
+				m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(i.first).GetTransformation().Transposed();
 				m_cbTransform.UpdateBuffer();
 
 				// Mesh and Material

@@ -40,6 +40,8 @@ namespace Aen {
 		const Vec3f& GetScale();
 
 		private:
+		const Mat4f GetTransformation();
+
 		static uint32_t m_iDs;
 
 		uint32_t m_id;
@@ -81,6 +83,16 @@ namespace Aen {
 
 	template<>
 	inline void Entity::AddComponent<MeshInstance>() {
+		if(!ComponentHandler::MeshInstanceExist(m_id))
+			ComponentHandler::CreateMeshInstance(m_id, m_layer + 3);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
+	}
+
+	template<>
+	inline void Entity::AddComponent<Mesh>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
 			ComponentHandler::CreateMeshInstance(m_id, m_layer + 3);
 
