@@ -13,155 +13,200 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Graphics">
+      <UniqueIdentifier>{aa53f9f6-3b8d-4f22-a897-618868ee0bcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\DirectX11">
+      <UniqueIdentifier>{55c531f2-af0f-4d6f-b66d-96eb98e72839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{407c511c-b67a-48ad-b8af-e2c512804af3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\DirectX11">
+      <UniqueIdentifier>{9361da54-edc1-4c63-a37a-0ece5740ced9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{aacf4a6e-f8a4-4068-897b-6413ddf6d503}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{76d7c5f2-270c-4079-a08f-16e7dde727ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files">
+      <UniqueIdentifier>{bfa0d884-9798-4e0f-b5ff-30d3860b5c93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\CellShader">
+      <UniqueIdentifier>{b9af8b3b-5fe1-450b-9721-1355de788b43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\HairShader">
+      <UniqueIdentifier>{ce10cc80-c8f5-4d98-b228-cba231c4f9a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Window">
+      <UniqueIdentifier>{b6cac8aa-7470-4540-8606-2b191740997a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Window">
+      <UniqueIdentifier>{af468b9d-d662-4736-a0c8-2264c733fcd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ThirdParty">
+      <UniqueIdentifier>{0e5c060c-9ac7-4adf-9222-02e47818a731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ThirdParty">
+      <UniqueIdentifier>{3868da35-b2f4-4002-b8bf-ff96d3b0fda9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ThirdParty\ImGui">
+      <UniqueIdentifier>{afa2cc1d-903f-42bd-a329-ec79038ab2e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ThirdParty\ImGui">
+      <UniqueIdentifier>{c1b25acf-8485-4805-a93a-da57dcd2b33c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Math">
+      <UniqueIdentifier>{df43aee7-3fbf-475f-8515-7dd51671a364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Component">
+      <UniqueIdentifier>{ab75d832-fc5c-48e0-9ea2-52441636128d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Component">
+      <UniqueIdentifier>{1c555d38-a582-41b8-b4a6-9fd71dd8ff21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Component\Animation">
+      <UniqueIdentifier>{90a9a88d-9427-4bc4-aa77-bb34e8b12c1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Component\Camera">
+      <UniqueIdentifier>{ef57c9e7-47c9-491a-8696-40f0b2d047e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Component\Light">
+      <UniqueIdentifier>{e259c711-3853-4dc7-bfba-cd1e07827a52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Component\Mesh">
+      <UniqueIdentifier>{72c4b2cc-d76a-44f9-a568-cfbb84e93b92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Component\Tranform">
+      <UniqueIdentifier>{0aab85ac-8bec-46ef-9e9e-6adf55adc038}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Component\Animation">
+      <UniqueIdentifier>{2dfc4fc0-5dfc-4fe4-baa4-26917886e60d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Component\Camera">
+      <UniqueIdentifier>{ab4f948a-2062-45e8-8118-98b77b5ec5ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Component\Light">
+      <UniqueIdentifier>{9905c78f-b6b7-4518-88f9-fe1114147821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Component\Mesh">
+      <UniqueIdentifier>{f7b16ce0-6d76-441d-963b-9066728e6e24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Component\Tranform">
+      <UniqueIdentifier>{f1b2d019-dc83-4316-bc09-fecfe5a3a5ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Importer">
+      <UniqueIdentifier>{828903be-e8d7-40e3-b892-6c38532f4708}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AenirEngine\Window\Input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Window\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Core\App.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DX11Core.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\IBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Depth.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ILayout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Sampler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\PCH\PCH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Material.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Texture.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DBuffer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Graphics\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Depth.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Camera\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Entity.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DX11Core.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\GBuffer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Graphics\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Core\Renderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\IBuffer.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Core\GlobalSettings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\EntityHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\ComponentHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Resource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Light\Light.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ILayout.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Reflection.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Graphics\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RState.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Sampler.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp">
+      <Filter>Source Files\Graphics\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Core\App.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Core\GlobalSettings.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Core\Renderer.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Window\Input.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Window\Window.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\ComponentHandler.cpp">
+      <Filter>Source Files\Graphics\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Entity.cpp">
+      <Filter>Source Files\Graphics\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\EntityHandler.cpp">
+      <Filter>Source Files\Graphics\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Resource.cpp">
+      <Filter>Source Files\Graphics\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animation.cpp">
+      <Filter>Source Files\Graphics\Component\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Camera\Camera.cpp">
+      <Filter>Source Files\Graphics\Component\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Light\Light.cpp">
+      <Filter>Source Files\Graphics\Component\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Material.cpp">
+      <Filter>Source Files\Graphics\Component\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp">
+      <Filter>Source Files\Graphics\Component\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Texture.cpp">
+      <Filter>Source Files\Graphics\Component\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp">
+      <Filter>Source Files\Graphics\Component\Tranform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Window\Input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Window\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Window\WindowDef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Window\WindowDesc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Window\WindowHandle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\AenMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Circle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Color.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\MathFunctions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Quaternion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Rect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Simd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Tracer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine.h">
@@ -170,73 +215,10 @@
     <ClInclude Include="src\AenirEngine\WinMain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Core\App.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\AenDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\AenCore.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Core\GameLoop.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DX11Core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DX11Type.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\CBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\IBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\SBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Depth.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ILayout.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DepthMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Sampler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\AenGraphics.h">
@@ -245,69 +227,196 @@
     <ClInclude Include="src\PCH\PCH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Texture.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\AenirEngine\Graphics\Graphics.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BBuffer.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\CBuffer.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DBuffer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Graphics\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Depth.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DepthMap.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DX11Core.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\EntityHandler.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DX11Type.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\GBuffer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Graphics\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Core\Renderer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\IBuffer.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Core\GlobalSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Stencil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Light\Light.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ILayout.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Reflection.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Graphics\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RState.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Sampler.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\SBuffer.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Shader.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Stencil.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h">
+      <Filter>Header Files\Graphics\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Core\App.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Core\GameLoop.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Core\GlobalSettings.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Core\Renderer.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Window\Input.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Window\Window.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Window\WindowDef.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Window\WindowDesc.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Window\WindowHandle.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\stb_image.h">
+      <Filter>Header Files\ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Circle.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Color.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\MathFunctions.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Matrix.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Quaternion.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Rect.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Simd.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Tracer.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Vector.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h">
+      <Filter>Header Files\Graphics\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Entity.h">
+      <Filter>Header Files\Graphics\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\EntityHandler.h">
+      <Filter>Header Files\Graphics\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Resource.h">
+      <Filter>Header Files\Graphics\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animation.h">
+      <Filter>Header Files\Graphics\Component\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\Camera.h">
+      <Filter>Header Files\Graphics\Component\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Light\Light.h">
+      <Filter>Header Files\Graphics\Component\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Material.h">
+      <Filter>Header Files\Graphics\Component\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h">
+      <Filter>Header Files\Graphics\Component\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Texture.h">
+      <Filter>Header Files\Graphics\Component\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.h">
+      <Filter>Header Files\Graphics\Component\Tranform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h">
+      <Filter>Header Files\Importer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderVS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderPS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellPostVS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellPostPS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessPS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessVS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairPostPS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairPostVS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairShaderPS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairShaderVS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CombineLayersPS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessVS.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessPS.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CombineLayersPS.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairShaderVS.hlsl">
+      <Filter>Shader Files\HairShader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairPostPS.hlsl">
+      <Filter>Shader Files\HairShader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairPostVS.hlsl">
+      <Filter>Shader Files\HairShader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairShaderPS.hlsl">
+      <Filter>Shader Files\HairShader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderVS.hlsl">
+      <Filter>Shader Files\CellShader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellPostPS.hlsl">
+      <Filter>Shader Files\CellShader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellPostVS.hlsl">
+      <Filter>Shader Files\CellShader</Filter>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderPS.hlsl">
+      <Filter>Shader Files\CellShader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
