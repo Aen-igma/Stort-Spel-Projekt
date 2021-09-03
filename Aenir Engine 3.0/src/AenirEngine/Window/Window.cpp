@@ -172,6 +172,10 @@ namespace Aen {
 		return (m_hwnd == GetActiveWindow());
 	}
 
+	HWND& Window::GetWHND() {
+		return m_hwnd;
+	}
+
 	LRESULT Window::WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 		switch(uMsg) {

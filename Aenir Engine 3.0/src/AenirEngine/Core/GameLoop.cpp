@@ -22,6 +22,13 @@ namespace Aen {
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		ImGui_ImplDX11_Init(GCore::m_device.Get(), GCore::m_dContext.Get());
+		ImGui_ImplWin32_Init(m_app->m_window.GetWHND());
+		ImGui::StyleColorsDark();
+
 		m_app->Start();
 	}
 
@@ -43,6 +50,10 @@ namespace Aen {
 				m_renderer->Render(); // VSync
 			}
 		}
+
+		ImGui_ImplDX11_Shutdown();
+		ImGui_ImplWin32_Shutdown();
+		ImGui::DestroyContext();
 
 		Resource::Destroy();
 		GCore::Concealed::Release();

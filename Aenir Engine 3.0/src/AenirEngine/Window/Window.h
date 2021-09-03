@@ -19,6 +19,7 @@ namespace Aen {
 		const Vec2i GetWindowPos() const;
 		const float GetAspectRatio() const;
 		const bool IsActive() const;
+		HWND& GetWHND();
 
 		LRESULT CALLBACK WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

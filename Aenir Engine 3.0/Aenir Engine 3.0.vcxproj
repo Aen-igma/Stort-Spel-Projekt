@@ -105,6 +105,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -143,6 +145,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -196,6 +200,12 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Texture.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp" />
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\PCH\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -251,8 +261,15 @@
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Texture.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_internal.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\PCH\PCH.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\stb_image.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />
     <ClInclude Include="src\AenirEngine\Math\Circle.h" />
     <ClInclude Include="src\AenirEngine\Math\Color.h" />
