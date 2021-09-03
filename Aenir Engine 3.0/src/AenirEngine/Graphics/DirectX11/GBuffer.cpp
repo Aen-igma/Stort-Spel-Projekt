@@ -110,7 +110,7 @@ namespace Aen {
     }
 
 	const uint32_t GBuffer::GetCount() {
-		return m_rtvs.size();
+		return static_cast<uint32_t>(m_rtvs.size());
 	}
 
 	ComRenderTargetView GBuffer::GetRtv(const uint32_t& index) {

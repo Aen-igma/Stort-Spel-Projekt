@@ -86,7 +86,7 @@ PS_Output main(PS_Input input) : SV_Target0{
 
 	finalPixel += ambient;
 	
-	for(int i = 0; i < lightCount; i++) {
+	for(uint i = 0; i < lightCount; i++) {
 		float3 pLightDir = normalize(Aen_SB_Light[i].pos - input.worldPos);
 		float3 cLightDir = normalize(camPos - input.worldPos);
 		float dotND = dot(Aen_SB_Light[i].dir, normal);

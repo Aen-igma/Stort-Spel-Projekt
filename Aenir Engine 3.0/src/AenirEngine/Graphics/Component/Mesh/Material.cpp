@@ -45,14 +45,14 @@ namespace Aen {
             if(i.second.Type == D3D_SIT_TEXTURE)
                 inputCount ++;
         
-        outputCount = m_PSReflectPass1.GetOutputDesc().size();
+        outputCount = static_cast<UINT>(m_PSReflectPass1.GetOutputDesc().size());
         
         if(inputCount != outputCount)
             throw;
 
         // GBuffer
 
-        m_gBuffer.Create(m_window, m_PSReflectPass1.GetOutputDesc().size());
+        m_gBuffer.Create(m_window, static_cast<uint32_t>(m_PSReflectPass1.GetOutputDesc().size()));
 
         // Samplers
 

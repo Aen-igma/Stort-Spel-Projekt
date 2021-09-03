@@ -86,7 +86,7 @@ namespace Aen {
 			if(doPartition && !redFace) {
 				doPartition = false;
 				PartitionData data;
-				data.size = vIndex.size() - offset;
+				data.size = static_cast<UINT>(vIndex.size() - offset);
 				data.offset = offset;
 				//data.materialIndex = (meshMaterial.size() > 0) ? meshMaterial.size() - 1u : 0u;
 				data.materialIndex = meshMaterial.at(matName);
@@ -103,11 +103,10 @@ namespace Aen {
 				}
 			}
 		}
-
 		PartitionData data;
-		data.size = vIndex.size() - offset;
+		data.size = static_cast<UINT>(vIndex.size() - offset);
 		data.offset = offset;
-		data.materialIndex = (meshMaterial.size() > 0) ? meshMaterial.size() - 1u : 0u;
+		data.materialIndex = static_cast<UINT>((meshMaterial.size() > 0) ? meshMaterial.size() - 1u : 0u);
 		partitions.emplace_back(data);
 		mesh.resize(vIndex.size());
 
@@ -168,7 +167,7 @@ namespace Aen {
 			size = static_cast<int>(dir.size()) - i;
 		}
 
-		for(uint32_t i = dir.size() - size; i < dir.size(); i++) {
+		for(uint32_t i = static_cast<uint32_t>(dir.size() - size); i < dir.size(); i++) {
 			if(dir.at(i) == '.') break;
 			name += dir.at(i);
 		}

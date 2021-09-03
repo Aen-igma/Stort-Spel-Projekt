@@ -234,8 +234,8 @@ namespace Aen {
 
 	bool Window::Initialize() {
 		RECT rect = RECT();
-		rect.left = GetSystemMetrics(SM_CXSCREEN) * 0.5f - m_width * 0.5f;
-		rect.top = GetSystemMetrics(SM_CYSCREEN) * 0.5f - m_height * 0.5f;
+		rect.left = static_cast<LONG>(GetSystemMetrics(SM_CXSCREEN) * 0.5f - m_width * 0.5f);
+		rect.top = static_cast<LONG>(GetSystemMetrics(SM_CYSCREEN) * 0.5f - m_height * 0.5f);
 		rect.right = rect.left + m_width;
 		rect.bottom = rect.top + m_height;
 		AdjustWindowRect(&rect, m_style, FALSE);
