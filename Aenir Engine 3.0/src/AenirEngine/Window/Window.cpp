@@ -3,6 +3,7 @@
 #include"Window.h"
 #include"Input.h"
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace Aen {
 
@@ -193,7 +194,7 @@ namespace Aen {
 		return DefWindowProcW(hwnd, uMsg, wParam, lParam);
 	}
 
-	extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	
 	LRESULT Window::MsgRouter(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		Window* pWnd = nullptr;
 

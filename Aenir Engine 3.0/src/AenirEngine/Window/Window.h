@@ -49,5 +49,6 @@ namespace Aen {
 		Vec2i wPos;
 
 		friend struct WindowHandle;
+		friend class GCore;
 	};
 }

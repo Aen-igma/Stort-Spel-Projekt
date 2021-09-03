@@ -7,7 +7,7 @@ namespace Aen {
     ComDeviceContext GCore::m_dContext{nullptr};
     ComSwapChain GCore::m_sChain{nullptr};
 
-	bool GCore::Concealed::Initialize(Window& window) {
+	bool GCore::Concealed::Initialize(const Window& window) {
     
         DXGI_SWAP_CHAIN_DESC sChainDesc;
         ZeroMemory(&sChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
@@ -25,7 +25,7 @@ namespace Aen {
         
         sChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         sChainDesc.BufferCount = 1;
-        sChainDesc.OutputWindow = window.GetWHND();
+        sChainDesc.OutputWindow = window.m_hwnd;
         sChainDesc.Windowed = true;
         sChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
         sChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
