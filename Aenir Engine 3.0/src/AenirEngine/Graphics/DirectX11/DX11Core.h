@@ -3,7 +3,9 @@
 #include"..\..\AenWindow.h"
 #include"..\..\AenMath.h"
 #include"DX11Type.h"
+#include"..\..\ThirdParty\SimpleMath\SimpleMath.h"
 
+namespace sm = DirectX::SimpleMath;
 
 namespace Aen {
 

@@ -219,6 +219,9 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -422,6 +425,9 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessVS.hlsl">
@@ -457,5 +463,10 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderPS.hlsl">
       <Filter>Shader Files\CellShader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
