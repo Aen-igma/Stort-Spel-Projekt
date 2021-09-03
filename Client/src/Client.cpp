@@ -85,8 +85,8 @@ void Client::Update(const float& deltaTime) {
 			wDesc.style =  AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
 			m_window.LoadSettings(wDesc);
 		} else {
-			wDesc.width = GetSystemMetrics(SM_CXSCREEN) * static_cast<UINT>(0.4f);
-			wDesc.height = GetSystemMetrics(SM_CYSCREEN) * static_cast<UINT>(0.4f);
+			wDesc.width = static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f);
+			wDesc.height = static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f);
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_OVERLAPPEDWINDOW | AEN_WS_VISIBLE;
 			m_window.LoadSettings(wDesc);
