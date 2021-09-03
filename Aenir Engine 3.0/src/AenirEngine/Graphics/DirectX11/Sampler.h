@@ -8,7 +8,8 @@ namespace Aen {
 		MIRROR = 2,
 		CLAMP = 3,
 		BORDER = 4,
-		MIRROR_ONCE = 5
+		MIRROR_ONCE = 5,
+		NONE = 6
 	};
 
 	class Sampler : public GCore {

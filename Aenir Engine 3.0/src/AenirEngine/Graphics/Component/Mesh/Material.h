@@ -9,8 +9,8 @@ namespace Aen {
 		std::wstring PSDirPass2;
 		std::wstring VSDirPass1;
 		std::wstring VSDirPass2;
-		SamplerType samplerTypePass1;
-		SamplerType samplerTypePass2;
+		SamplerType samplerTypePass1 = SamplerType::NONE;
+		SamplerType samplerTypePass2 = SamplerType::NONE;
 		std::string bufferName;
 	};
 
