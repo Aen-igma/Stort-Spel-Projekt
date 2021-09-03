@@ -155,7 +155,7 @@ namespace Aen {
 		POINT p;
 		ZeroMemory(&p, sizeof(POINT));
 		if(GetCursorPos(&p))
-			if(ScreenToClient(window.m_hwnd, &p))
+			if(ScreenToClient(window.GetWHND(), &p))
 				return Vec2i(p.x, p.y);
 		return Vec2i::zero;
 	}

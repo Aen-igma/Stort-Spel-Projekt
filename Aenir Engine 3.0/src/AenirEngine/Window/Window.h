@@ -1,6 +1,9 @@
 #pragma once
 #include"..\AenMath.h"
 #include"WindowDesc.h"
+#include "ThirdParty\ImGui\imgui.h"
+#include "ThirdParty\ImGui\imgui_impl_win32.h"
+#include "ThirdParty\ImGui\imgui_impl_dx11.h"
 
 namespace Aen {
 
@@ -46,7 +49,5 @@ namespace Aen {
 		Vec2i wPos;
 
 		friend struct WindowHandle;
-		friend class Input;
-		friend class GCore;
 	};
 }

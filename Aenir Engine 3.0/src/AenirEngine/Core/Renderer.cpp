@@ -113,7 +113,6 @@ namespace Aen {
 		RenderSystem::BindShaderResourceView<PShader>(0u, m_layerBuffer);
 
 		m_screenQuad.Draw();
-
 		// Post Process pass
 
 		RenderSystem::UnBindShaderResources<PShader>(0u, m_layerBuffer.GetCount());
@@ -125,6 +124,17 @@ namespace Aen {
 		RenderSystem::BindShaderResourceView<PShader>(0u, m_postProcessBuffer);
 
 		m_screenQuad.Draw();
+
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+		ImGui::Begin("Debug");
+		ImGui::Text("deez");
+		// code here
+
+		ImGui::End();
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 		// Present
 

@@ -3,6 +3,7 @@
 #include"Window.h"
 #include"Input.h"
 
+
 namespace Aen {
 
 	int Window::idIt(0);
@@ -192,14 +193,18 @@ namespace Aen {
 		return DefWindowProcW(hwnd, uMsg, wParam, lParam);
 	}
 
+	extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT Window::MsgRouter(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		Window* pWnd = nullptr;
+
+		if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam)) return true;
 
 		if(uMsg == WM_NCCREATE) {
 			pWnd = (Window*)reinterpret_cast<LPCREATESTRUCT>(lParam)->lpCreateParams;
 			SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
 		} else
 			pWnd = reinterpret_cast<Window*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+
 
 		switch(uMsg) {
 			case WM_INPUT: {
