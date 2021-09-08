@@ -55,6 +55,8 @@ void Client::Update(const float& deltaTime) {
 	axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
 	axis.y = (float)Aen::Input::KeyPress(Aen::Key::SPACE) - (float)Aen::Input::KeyPress(Aen::Key::LSHIFT);
 	axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S);
+
+	
 	
 	static Aen::Vec2i mouseAxis;
 	mouseAxis = Aen::Input::GetRawMouse();
