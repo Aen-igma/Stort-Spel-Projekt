@@ -11,7 +11,7 @@ namespace Aen {
 
 	class GCore {
 		private:
-
+			
 		struct Concealed {
 			static bool Initialize(const Window& window);
 			static void Release();
