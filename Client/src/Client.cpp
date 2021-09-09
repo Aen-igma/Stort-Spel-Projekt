@@ -1,6 +1,7 @@
 #include"AenirEngine.h"
 #include"Client.h"
 
+
 Client::~Client() {
 
 }
@@ -9,6 +10,13 @@ Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, cons
 	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(50.f), m_toggleCamera(true), m_toggleFullScreen(false) {}
 
 void Client::Start() {
+
+	// --------------------------------- FMOD ----------------------------------- //
+
+	FMOD::System_Create(&m_fmSys);
+	FMOD_RESULT fr = m_fmSys->init(32, FMOD_INIT_NORMAL, nullptr);
+	if (fr != FMOD_OK) throw;
+	m_fmSys->createSound(AEN_RESOURCE_DIR_C_STR("Sounds/boom.wav"), 0, nullptr, &m_fmtestSound);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -48,6 +56,14 @@ void Client::Start() {
 }
 
 void Client::Update(const float& deltaTime) {
+
+	// ----------------------------------- Sound ---------------------------------------- //
+	
+	if (Aen::Input::KeyDown(Aen::Key::J))
+	{
+		m_fmSys->playSound(m_fmtestSound, 0, false, &m_fmChannel);
+		m_fmChannel->setVolume(.5f);
+	}
 
 	// ------------------------------ Camera Controler ---------------------------------- //
 

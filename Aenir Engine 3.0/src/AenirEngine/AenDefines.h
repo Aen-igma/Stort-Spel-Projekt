@@ -6,6 +6,7 @@
 	#define AEN_ENDL std::cout << std::endl
 	
 	#define AEN_RESOURCE_DIR(file) "../Resource/" + std::string(file)
+	#define AEN_RESOURCE_DIR_C_STR(file) ("../Resource/" + std::string(file)).c_str()
 
 	#ifdef _WIN64
 	#define AEN_OUTPUT_DIR_STR(file) "../bin/Debug-x64/" + std::string(file)
