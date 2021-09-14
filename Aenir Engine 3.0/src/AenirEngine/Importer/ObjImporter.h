@@ -1,5 +1,5 @@
 #pragma once
-#include"Graphics/Component/Mesh/Mesh.h"
+#include"Graphics/Component/Drawable/Mesh/Mesh.h"
 #include<iostream>
 #include<fstream>
 
