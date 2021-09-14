@@ -34,6 +34,7 @@ namespace Aen {
 
 	void Mesh::Load(const std::string& dir) {
 
+		Assimp::Importer importer;
 		std::thread worker(ImportObj, std::ref(m_vertices), dir, std::ref(m_partitions), std::ref(m_meshMaterialName));
 		worker.join();
 		if(m_meshMaterialName.size() > 0) {
