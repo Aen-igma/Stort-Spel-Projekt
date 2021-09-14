@@ -1,6 +1,6 @@
 #pragma once
 
-#include <random>
+#include <cstdint>
 
-int LehmerInt();
-void setLehmerSeed(int seed);
+const int LehmerInt();
+void SetLehmerSeed(const int seed);
