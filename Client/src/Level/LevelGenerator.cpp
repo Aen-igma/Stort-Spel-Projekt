@@ -40,7 +40,7 @@ const Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
 		result = RNGRoomFromVector(fourway);
 		type = 4;
 	}
-	if (!(type == 4)) //Exludes 4 way junctions, for the time being
+	if (!(type == 4)) //Exludes 4 way junctions, for the time being //Rotates rooms to align connections
 	{
 		if (connectionDir % 0xA > 0) {
 			//Connection going north, rotate 1 connection south
