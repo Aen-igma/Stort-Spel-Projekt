@@ -100,6 +100,12 @@
     <Filter Include="Header Files\Importer">
       <UniqueIdentifier>{828903be-e8d7-40e3-b892-6c38532f4708}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Quadtree">
+      <UniqueIdentifier>{907fe65a-3d1a-47c7-becb-99a250cdca82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Quadtree">
+      <UniqueIdentifier>{8063b997-fa71-4dbd-a73b-f60fe3f6c8bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\PCH\PCH.cpp">
@@ -221,6 +227,9 @@
     </ClCompile>
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Quadtree.cpp">
+      <Filter>Source Files\Quadtree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -427,6 +436,9 @@
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Quadtree.h">
+      <Filter>Header Files\Quadtree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
