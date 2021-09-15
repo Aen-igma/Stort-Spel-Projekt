@@ -17,6 +17,8 @@ namespace Aen {
 		if(!GCore::Concealed::Initialize(m_app->m_window))
 			exit(-1);
 
+		m_PhysX.initPhysics(TRUE);
+
 		GlobalSettings::Initialize(m_app->m_window);
 
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
@@ -46,7 +48,7 @@ namespace Aen {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
-
+				m_PhysX.runPhysics();
 				m_renderer->Render(); // VSync
 			}
 		}
@@ -54,6 +56,8 @@ namespace Aen {
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
+
+		m_PhysX.closePhysics();
 
 		Resource::Destroy();
 		GCore::Concealed::Release();
