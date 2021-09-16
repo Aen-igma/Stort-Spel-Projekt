@@ -23,11 +23,6 @@ namespace Aen {
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 
-		//FMOD::System_Create(&m_fmSys);
-		//FMOD_RESULT fr = m_fmSys->init(32, FMOD_INIT_NORMAL, nullptr);
-		//if (fr != FMOD_OK) throw;
-		//m_fmSys->createSound((AEN_RESOURCE_DIR("Sounds/boom.wav")).c_str(), 0, nullptr, &m_fmtestSound);
-
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
@@ -47,12 +42,6 @@ namespace Aen {
 			while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
 				m_deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start);
 				m_start = ResClock::now();
-
-				//if (Aen::Input::KeyDown(Aen::Key::J))
-				//{
-				//	m_fmSys->playSound(m_fmtestSound, 0, false, &m_fmChannel);
-				//	m_fmChannel->setVolume(.5f);
-				//}
 
 				if(m_app->m_window.IsActive()) {
 					Input::Update();
