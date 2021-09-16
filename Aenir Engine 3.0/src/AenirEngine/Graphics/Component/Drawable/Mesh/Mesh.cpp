@@ -6,11 +6,11 @@
 
 #undef min
 
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
-#include "assimp/matrix4x4.h"
-#include "assimp/cimport.h"
+#include"assimp/Importer.hpp"
+#include"assimp/scene.h"
+#include"assimp/postprocess.h"
+#include"assimp/matrix4x4.h"
+#include"assimp/cimport.h"
 
 namespace Aen {
 	
@@ -33,8 +33,6 @@ namespace Aen {
 	}
 
 	void Mesh::Load(const std::string& dir) {
-
-
 		std::thread worker(ImportObj, std::ref(m_vertices), dir, std::ref(m_partitions), std::ref(m_meshMaterialName));
 		worker.join();
 		if(m_meshMaterialName.size() > 0) {
