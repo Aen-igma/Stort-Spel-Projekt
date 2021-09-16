@@ -56,10 +56,14 @@ void PhysXWrap::initPhysics()
 	m_Pvd = PxCreatePvd(*m_Foundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
 	m_Pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-	
+
 	m_ToleranceScale.length = 100;
 	m_ToleranceScale.speed = 981;
 	m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, m_ToleranceScale, true, m_Pvd);
+	if (!m_Physics) throw("PxCreatePhysics Failed!");
+
+	m_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *m_Foundation, PxCookingParams(m_ToleranceScale));
+	if (!m_Cooking) throw("PxCreateCooking Failed!");
 
 	PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -30.f, 0.0f);
@@ -84,10 +88,9 @@ void PhysXWrap::initPhysics()
 	m_Scene->addActor(*groundPlane);
 
 	createStack(PxTransform(PxVec3(0, 1, stackZ -= 10.0f)), 10, 2.0f);
-
-	//if (!interactive)
 	createDynamic(PxTransform(PxVec3(0, 40, 100)), PxSphereGeometry(10), PxVec3(0, -50, -100));
 }
+
 
 void PhysXWrap::closePhysics()
 {
@@ -103,7 +106,6 @@ void PhysXWrap::closePhysics()
 		transport->release();
 	}
 	m_Foundation->release(); // Always release last
-	
 	
 	printf("GoodbyeWorld.\n");
 }
