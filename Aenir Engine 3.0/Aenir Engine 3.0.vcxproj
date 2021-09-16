@@ -74,21 +74,25 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\intermediate\$(Configuration)-$(PlatformShortName)\</IntDir>
+    <LibraryPath>E:\Github\Stort-Spel-Projekt\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\intermediate\$(Configuration)-$(PlatformShortName)\</IntDir>
+    <LibraryPath>E:\Github\Stort-Spel-Projekt\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\intermediate\$(Configuration)-$(PlatformShortName)\</IntDir>
+    <LibraryPath>E:\Github\Stort-Spel-Projekt\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\intermediate\$(Configuration)-$(PlatformShortName)\</IntDir>
+    <LibraryPath>E:\Github\Stort-Spel-Projekt\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,17 +101,20 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -118,7 +125,7 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -127,8 +134,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -137,17 +149,20 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;d2d1.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXPvdSDK_static_64.lib;PhysXExtensions_static_64.lib;PhysXCooking_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\PhysX\lib\debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;fmodL_vc.lib;d2d1.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\Debug x64\</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -158,19 +173,22 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXPvdSDK_static_64.lib;PhysXExtensions_static_64.lib;PhysXCooking_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\PhysX\lib\release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;fmod_vc.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\Release x64\</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animation.cpp" />
@@ -210,7 +228,6 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp" />
     <ClCompile Include="src\PCH\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -277,7 +294,6 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h" />
     <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />
