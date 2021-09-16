@@ -30,9 +30,5 @@ namespace Aen {
 		DurationLD m_deltaTime;
 
 		Renderer* m_renderer;
-
-		FMOD::System* m_fmSys;
-		FMOD::Sound* m_fmtestSound;
-		FMOD::Channel* m_fmChannel;
 	};
 }
