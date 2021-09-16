@@ -4,6 +4,7 @@
 #include<dxgi1_6.h>
 #include<d3d11.h>
 #include<wrl.h>
+#include<d2d1_1.h>
 
 using ComDevice = Microsoft::WRL::ComPtr<ID3D11Device>;
 using ComDeviceContext = Microsoft::WRL::ComPtr<ID3D11DeviceContext>;

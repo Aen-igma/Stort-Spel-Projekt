@@ -62,18 +62,4 @@ namespace Aen {
 		for(auto& i : m_pMaterials)
 			i = nullptr;
 	}
-
-	MeshInstance::~MeshInstance() {
-		m_pMesh = nullptr;
-	}
-
-	MeshInstance::MeshInstance()
-		:m_pMesh(nullptr) {}
-
-	MeshInstance::MeshInstance(Mesh& mesh)
-		:m_pMesh(&mesh) {}
-
-	void MeshInstance::SetMesh(Mesh& mesh) {
-		m_pMesh = &mesh;
-	}
 }

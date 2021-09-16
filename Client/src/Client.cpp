@@ -1,5 +1,6 @@
 #include"AenirEngine.h"
 #include"Client.h"
+#include"Level/LevelGenerator.h"
 
 Client::~Client() {
 
@@ -45,6 +46,11 @@ void Client::Start() {
 
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
 	Aen::Input::SetMouseVisible(false);
+
+	// ------------------- Procedural generation testing staging grounds ------- //
+	
+	LevelGenerator::GenerationTestingFunction();
+
 }
 
 void Client::Update(const float& deltaTime) {
@@ -55,6 +61,8 @@ void Client::Update(const float& deltaTime) {
 	axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
 	axis.y = (float)Aen::Input::KeyPress(Aen::Key::SPACE) - (float)Aen::Input::KeyPress(Aen::Key::LSHIFT);
 	axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S);
+
+	
 	
 	static Aen::Vec2i mouseAxis;
 	mouseAxis = Aen::Input::GetRawMouse();

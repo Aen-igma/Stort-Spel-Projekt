@@ -1,5 +1,5 @@
 #pragma once
-#include"..\..\Graphics.h"
+#include"..\..\..\Graphics.h"
 
 namespace Aen {
 
@@ -17,5 +17,6 @@ namespace Aen {
 
 		friend class Resource;
 		friend class Renderer;
+		friend class MeshInstance;
 	};
 }

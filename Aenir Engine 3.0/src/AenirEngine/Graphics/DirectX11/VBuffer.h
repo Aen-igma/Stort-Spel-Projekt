@@ -36,9 +36,7 @@ namespace Aen {
 			srData.SysMemPitch = 0;
 			srData.SysMemSlicePitch = 0;
 
-			if(FAILED(m_device->CreateBuffer(&bDesc, &srData, &m_buffer)))
-				return false;
-
+			if (FAILED(m_device->CreateBuffer(&bDesc, &srData, &m_buffer))) return false;
 			return true;
 		}
 
