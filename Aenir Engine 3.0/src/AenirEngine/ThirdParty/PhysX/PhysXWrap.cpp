@@ -28,7 +28,7 @@ void PhysXWrap::createStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
 	{
 		for (PxU32 j = 0; j < size - i; j++)
 		{
-			PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
+			PxTransform localTm(PxVec3(PxReal(j * 4) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
 			PxRigidDynamic* body = m_Physics->createRigidDynamic(t.transform(localTm));
 			body->attachShape(*shape);
 			PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
@@ -61,7 +61,7 @@ void PhysXWrap::initPhysics(bool interactive)
 	m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, m_ToleranceScale, true, m_Pvd);
 
 	PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, -30.f, 0.0f);
 	m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = m_Dispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
