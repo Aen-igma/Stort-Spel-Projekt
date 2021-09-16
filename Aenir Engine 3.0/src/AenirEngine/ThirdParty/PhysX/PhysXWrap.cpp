@@ -1,5 +1,6 @@
 #include"PCH.h"
-#include"PhysXWrap.h"
+//#include"PhysXWrap.h"
+#include"ThirdParty\PhysX\PhysXWrap.h"
 
 PhysXWrap::PhysXWrap()
 {
@@ -8,6 +9,8 @@ PhysXWrap::PhysXWrap()
 	this->m_Material =   NULL;
 	this->m_Scene =		 NULL;
 	this->m_Pvd =		 NULL;
+	this->m_Physics =    NULL;
+	this->m_Cooking =    NULL;
 	this->stackZ =		 10.0f;
 }
 
@@ -18,6 +21,8 @@ PhysXWrap::~PhysXWrap()
 	this->m_Material = NULL;
 	this->m_Scene = NULL;
 	this->m_Pvd = NULL;
+	this->m_Physics = NULL;
+	this->m_Cooking = NULL;
 }
 
 void PhysXWrap::createStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
@@ -98,6 +103,8 @@ void PhysXWrap::closePhysics()
 	m_Scene->release();
 	m_Dispatcher->release();
 	m_Physics->release();
+	m_Cooking->release();
+
 	if (m_Pvd)
 	{
 		physx::PxPvdTransport* transport = m_Pvd->getTransport();
