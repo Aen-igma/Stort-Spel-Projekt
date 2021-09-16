@@ -1,5 +1,5 @@
 #pragma once
-#include"..\..\Graphics.h"
+#include"..\..\..\Graphics.h"
 #include"Texture.h"
 
 namespace Aen {
@@ -51,6 +51,7 @@ namespace Aen {
 
 		friend class Resource;
 		friend class Renderer;
+		friend class MeshInstance;
 	};
 
 	class AEN_DECLSPEC Material {
@@ -89,5 +90,6 @@ namespace Aen {
 
 		friend class Resource;
 		friend class Renderer;
+		friend class MeshInstance;
 	};
 }
