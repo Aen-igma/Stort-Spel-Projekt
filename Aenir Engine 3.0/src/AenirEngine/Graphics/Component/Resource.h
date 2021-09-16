@@ -1,7 +1,7 @@
 #pragma once
-#include"Mesh/Material.h"
-#include"Mesh/Texture.h"
-#include"Mesh/Mesh.h"
+#include"Drawable/Mesh/Material.h"
+#include"Drawable/Mesh/Texture.h"
+#include"Drawable/Mesh/Mesh.h"
 
 #include<unordered_map>
 

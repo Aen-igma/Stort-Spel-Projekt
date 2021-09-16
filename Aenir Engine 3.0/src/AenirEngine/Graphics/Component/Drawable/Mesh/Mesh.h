@@ -41,21 +41,4 @@ namespace Aen {
 		friend class MeshInstance;
 		friend class Renderer;
 	};
-
-	class AEN_DECLSPEC MeshInstance {
-		public:
-		MeshInstance();
-		MeshInstance(Mesh& mesh);
-
-		void SetMesh(Mesh& mesh);
-
-		private:
-		~MeshInstance();
-
-		Mesh* m_pMesh;
-
-		friend class ComponentHandler;
-		friend class Renderer;
-		friend class Entity;
-	};
 }
