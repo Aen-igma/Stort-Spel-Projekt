@@ -17,7 +17,7 @@ namespace Aen {
 		if(!GCore::Concealed::Initialize(m_app->m_window))
 			exit(-1);
 
-		m_PhysX.initPhysics(TRUE);
+		m_PhysX.initPhysics();
 
 		GlobalSettings::Initialize(m_app->m_window);
 

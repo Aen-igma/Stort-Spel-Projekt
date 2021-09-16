@@ -278,8 +278,6 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PxAllocatorCallback.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\UserErrorCallback.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h" />
     <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />

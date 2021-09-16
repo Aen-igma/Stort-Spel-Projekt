@@ -22,13 +22,13 @@ PhysXWrap::~PhysXWrap()
 
 void PhysXWrap::createStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
 {
-
+	
 	PxShape* shape = m_Physics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *m_Material);
 	for (PxU32 i = 0; i < size; i++)
 	{
 		for (PxU32 j = 0; j < size - i; j++)
 		{
-			PxTransform localTm(PxVec3(PxReal(j * 4) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
+			PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
 			PxRigidDynamic* body = m_Physics->createRigidDynamic(t.transform(localTm));
 			body->attachShape(*shape);
 			PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
@@ -48,10 +48,11 @@ PxRigidDynamic* PhysXWrap::createDynamic(const PxTransform& t, const PxGeometry&
 	return dynamic;
 }
 
-void PhysXWrap::initPhysics(bool interactive)
+void PhysXWrap::initPhysics()
 {
 	m_Foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_DefaultAllocatorCallback, m_DefaultErrorCallback);
 	if (!m_Foundation) throw("PxCreateFoundation Failed!");
+
 	m_Pvd = PxCreatePvd(*m_Foundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
 	m_Pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
@@ -67,6 +68,9 @@ void PhysXWrap::initPhysics(bool interactive)
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	m_Scene = m_Physics->createScene(sceneDesc);
 
+	//if (!PxInitExtensions(*m_Physics, m_Pvd)) throw ("PxInitExtensions Failed!");
+		
+
 	PxPvdSceneClient* pvdClient = m_Scene->getScenePvdClient();
 	if (pvdClient)
 	{
@@ -79,10 +83,10 @@ void PhysXWrap::initPhysics(bool interactive)
 	PxRigidStatic* groundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0), *m_Material);
 	m_Scene->addActor(*groundPlane);
 
-	createStack(PxTransform(PxVec3(0, 20, stackZ -= 10.0f)), 10, 2.0f);
+	createStack(PxTransform(PxVec3(0, 1, stackZ -= 10.0f)), 10, 2.0f);
 
 	//if (!interactive)
-	//createDynamic(PxTransform(PxVec3(0, 40, 100)), PxsphereGeometry(10), PxVec3(0, -50, -100));
+	createDynamic(PxTransform(PxVec3(0, 40, 100)), PxSphereGeometry(10), PxVec3(0, -50, -100));
 }
 
 void PhysXWrap::closePhysics()
@@ -98,7 +102,7 @@ void PhysXWrap::closePhysics()
 		m_Pvd = NULL;
 		transport->release();
 	}
-	m_Foundation->release();
+	m_Foundation->release(); // Always release last
 	
 	
 	printf("GoodbyeWorld.\n");
