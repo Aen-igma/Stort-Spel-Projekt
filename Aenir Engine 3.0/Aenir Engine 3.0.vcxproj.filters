@@ -189,13 +189,13 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Light\Light.cpp">
       <Filter>Source Files\Graphics\Component\Light</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Material.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Material.cpp">
       <Filter>Source Files\Graphics\Component\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Mesh.cpp">
       <Filter>Source Files\Graphics\Component\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Texture.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.cpp">
       <Filter>Source Files\Graphics\Component\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp">
@@ -222,8 +222,11 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.cpp">
-      <Filter>Source Files\ThirdParty</Filter>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -389,13 +392,13 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Light\Light.h">
       <Filter>Header Files\Graphics\Component\Light</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Material.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Material.h">
       <Filter>Header Files\Graphics\Component\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Mesh.h">
       <Filter>Header Files\Graphics\Component\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Texture.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h">
       <Filter>Header Files\Graphics\Component\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.h">
@@ -431,13 +434,10 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h">
-      <Filter>Header Files\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PxAllocatorCallback.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\UserErrorCallback.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
