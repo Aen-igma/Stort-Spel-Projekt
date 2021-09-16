@@ -1,6 +1,7 @@
 #pragma once
 #include"AenirEngine.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
+#include"Level/LevelGenerator.h"
 
 class Client : public Aen::App {
 	public:
@@ -24,7 +25,7 @@ class Client : public Aen::App {
 	Aen::Entity m_plane;
 	Aen::Entity m_cube;
 
-	std::vector<Aen::Entity> m_cubes;
+	Aen::Entity rooms[mapSize * mapSize * 9];
 
 };
 

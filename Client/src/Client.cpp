@@ -1,6 +1,5 @@
 #include"AenirEngine.h"
 #include"Client.h"
-#include"Level/LevelGenerator.h"
 
 Client::~Client() {
 
@@ -34,13 +33,13 @@ void Client::Start() {
 
 	// -------------------------- Setup Entities -------------------------------- //
 
-	m_plane.AddComponent<Aen::MeshInstance>();
-	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	m_plane.SetPos(0.f, -2.f, 0.f);
-	m_plane.SetScale(20.f, 1.f, 20.f);
+	//m_plane.AddComponent<Aen::MeshInstance>();
+	//m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	//m_plane.SetPos(0.f, -2.f, 0.f);
+	//m_plane.SetScale(20.f, 1.f, 20.f);
 
-	m_cube.AddComponent<Aen::MeshInstance>();
-	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	//m_cube.AddComponent<Aen::MeshInstance>();
+	//m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
 
 	// --------------------------- Setup Window --------------------------------- //
 
@@ -49,8 +48,20 @@ void Client::Start() {
 
 	// ------------------- Procedural generation testing staging grounds ------- //
 	
-	LevelGenerator::GenerationTestingFunction();
+	//LevelGenerator::GenerationTestingFunction();
+	SetLehmerSeed(100);
+	LehmerInt;
+	Room* map = LevelGenerator::GenerationTestingFunction();
+	
 
+
+	for (UINT y = 0; y < mapSize * 3; y++) {
+		for (UINT x = 0; x < mapSize * 3; x++) {
+			rooms[x + y * mapSize].AddComponent<Aen::MeshInstance>();
+			rooms[x + y * mapSize].GetComponent<Aen::MeshInstance>().SetMesh(cube);
+			rooms[x + y * mapSize].SetPos(x * 2 , 0.f, y * 2);
+		}
+	}
 }
 
 void Client::Update(const float& deltaTime) {
@@ -72,6 +83,49 @@ void Client::Update(const float& deltaTime) {
 		m_toggleCamera = !m_toggleCamera;
 	}
 
+	if (Aen::Input::KeyDown(Aen::Key::H)) {
+
+		Room* map = LevelGenerator::GenerationTestingFunction();
+
+		//for (UINT y = 0; y < mapSize; y++) {
+		//	for (UINT x = 0; x < mapSize; x++) {
+		//		if (map[x + y * mapSize].m_present) {
+		//			rooms[x + y * mapSize].SetScale(1, 1, 1);
+		//		}
+		//	}
+		//}
+		for (int y = 0; y < mapSize; y++) {
+			for (int x = 0; x < mapSize; x++) {
+				if (map[x + y * mapSize].m_present) {
+					rooms[x + y * mapSize].SetScale(0, 0, 0);
+					rooms[(3 * mapSize * y + 1) + (3 * x)].SetScale(0, 0, 0);
+					rooms[(3 * mapSize * y + 1) + (3 * x + 2)].SetScale(0, 0, 0);
+					rooms[(3 * mapSize * y + 2) + (3 * x + 1)].SetScale(0, 0, 0);
+					rooms[(3 * mapSize * y + 0) + (3 * x + 1)].SetScale(0, 0, 0);
+					if (map[x + y * mapSize].m_north)
+					{
+						rooms[(3 * mapSize * y + 0) + (3 * x + 1)].SetScale(1, 1, 1);
+						rooms[(3 * mapSize * y + 1 ) + (3 * x + 1)].SetScale(1, 1, 1);
+					}
+					if (map[x + y * mapSize].m_south)
+					{
+						rooms[(3 * mapSize * y + 2) + (3 * x + 1)].SetScale(1, 1, 1);
+						rooms[(3 * mapSize * y + 1) + (3 * x + 1)].SetScale(1, 1, 1);
+					}
+					if (map[x + y * mapSize].m_east)
+					{
+						rooms[(3 * mapSize * y + 1) + (3 * x + 2)].SetScale(1, 1, 1);
+						rooms[(3 * mapSize * y + 1) + (3 * x + 1)].SetScale(1, 1, 1);
+					}
+					if (map[x + y * mapSize].m_west)
+					{
+						rooms[(3 * mapSize * y + 1) + (3 * x)].SetScale(1, 1, 1);
+						rooms[(3 * mapSize * y + 1) + (3 * x + 1)].SetScale(1, 1, 1);
+					}
+				}
+			}
+		}
+	}
 	if(m_toggleCamera) {
 		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;
 		Aen::Input::SetMousePos(m_window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_window.GetSize() * 0.5f));

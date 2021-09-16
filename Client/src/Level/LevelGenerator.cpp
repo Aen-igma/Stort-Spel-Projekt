@@ -1,14 +1,14 @@
 
 #include "LevelGenerator.h"
 
-const Room LevelGenerator::RNGRoomFromVector(const std::vector<Room>& roomVec) {
+Room LevelGenerator::RNGRoomFromVector(const std::vector<Room>& roomVec) {
 	//Todo implement weigths
 	Room t = roomVec[LehmerInt() % roomVec.size()];
 	t.m_present = true;
 	return t;
 };
 
-const Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
+Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
 
 	Room result;
 	if (connectionDir < 1 || connectionDir > 9999) {
@@ -17,7 +17,7 @@ const Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
 
 
 	uint32_t weightS = 15;
-	uint32_t weightB = 25;
+	uint32_t weightB = 15;
 	uint32_t weightT = 25;
 	uint32_t weightF = 10;
 
@@ -150,7 +150,7 @@ const Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
 }
 
 
-void LevelGenerator::GenerateLevel() {	
+Room* LevelGenerator::GenerateLevel() {
 	//bool presence[mapSize][mapSize] = { 0 }; 
 
 	for (int y = 0; y < mapSize; y++) {
@@ -241,12 +241,13 @@ void LevelGenerator::GenerateLevel() {
 		}
 	}
 
+	return *map;
 }
-void LevelGenerator::GenerationTestingFunction()
+Room* LevelGenerator::GenerationTestingFunction()
 {
 	char cmap[mapSize * 3][mapSize * 3];
 
-	SetLehmerSeed(0);
+	//SetLehmerSeed(0);
 
 	//Straight corridors
 	Room a;
@@ -333,8 +334,8 @@ void LevelGenerator::GenerationTestingFunction()
 			std::cout << std::endl;
 		}
 		std::cout << std::endl;
-		std::cout << std::endl;
 	}
+	return *map;
 };
 
 Room::Room()

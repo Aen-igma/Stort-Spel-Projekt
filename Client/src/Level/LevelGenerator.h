@@ -74,10 +74,10 @@ static Room map[mapSize][mapSize];
 
 class LevelGenerator {
 private:
-	static const Room RNGRoomFromVector(const std::vector<Room>& roomVec);
-	static const Room RNGRoom(const uint32_t connectionDir);
+	static Room RNGRoomFromVector(const std::vector<Room>& roomVec);
+	static Room RNGRoom(const uint32_t connectionDir);
 public:
-	static void GenerateLevel();
+	static Room* GenerateLevel();
 
-	static void GenerationTestingFunction();
+	static Room* GenerationTestingFunction();
 };
