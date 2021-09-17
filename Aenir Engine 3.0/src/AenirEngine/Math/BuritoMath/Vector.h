@@ -1,13 +1,4 @@
 #pragma once
-
-// --------------------------------------------------------------------------------------------------------------------- //
-//                                       /\               \ \    / /      | |                                            //
-//                                      /  \   ___ _ __    \ \  / /__  ___| |_ ___  _ __                                 //
-//                                     / /\ \ / _ \ '_ \    \ \/ / _ \/ __| __/ _ \| '__|                                //
-//                                    / ____ \  __/ | | |    \  /  __/ (__| || (_) | |                                   //
-//                                   /_/    \_\___|_| |_|     \/ \___|\___|\__\___/|_|                                   //
-// --------------------------------------------------------------------------------------------------------------------- //
-
 #include"MathFunctions.h"
 
 namespace Aen {
@@ -18,31 +9,38 @@ namespace Aen {
 
 		template<class T>
 		struct TVecN<T, 2> {
-			TVecN<T, 2>() :x(0), y(0) {}
+			TVecN<T, 2>() :smVec() {}
+			TVecN<T, 2>(const T& t) :smVec(t) {}
 			TVecN<T, 2>(const T& x, const T& y) :x(x), y(y) {}
 			TVecN<T, 2>(const TVecN<T, 3>& rhs) :x(rhs.x), y(rhs.y) {}
 			union {
+				sm::Vector2 smVec;
 				struct {T x, y;};
 				struct {T r, g;};
+				T arr[2];
 			};
 		};
 
 		template<class T>
 		struct TVecN<T, 3> {
-			TVecN<T, 3>() :x(0), y(0), z(0) {}
+			TVecN<T, 3>() :smVec() {}
+			TVecN<T, 3>(const T& t) :smVec(t) {}
 			TVecN<T, 3>(const T& x, const T& y, const T& z) :x(x), y(y), z(z) {}
 			TVecN<T, 3>(const TVecN<T, 2>& rhs, const T& z) :x(rhs.x), y(rhs.y), z(z) {}
 			TVecN<T, 3>(const T& x, const TVecN<T, 2>& rhs) :x(x), y(rhs.x), z(rhs.y) {}
 			TVecN<T, 3>(const TVecN<T, 4>& rhs) :x(rhs.x), y(rhs.y), z(rhs.z) {}
 			union {
+				sm::Vector3 smVec;
 				struct {T x, y, z;};
 				struct {T r, g, b;};
+				T arr[3];
 			};
 		};
 
 		template<class T>
 		struct TVecN<T, 4> {
-			TVecN<T, 4>() :x(0), y(0), z(0), w(0) {}
+			TVecN<T, 4>() :smVec() {}
+			TVecN<T, 4>(const T& t) :smVec(t) {}
 			TVecN<T, 4>(const T& x, const T& y, const T& z, const T& w) :x(x), y(y), z(z), w(w) {}
 			TVecN<T, 4>(const TVecN<T, 2>& rhs1, const TVecN<T, 2>& rhs2) :x(rhs1.x), y(rhs1.y), z(rhs2.x), w(rhs2.y) {}
 			TVecN<T, 4>(const TVecN<T, 2>& rhs, const T& z, const T& w) :x(rhs.x), y(rhs.y), z(z), w(w) {}
@@ -51,9 +49,11 @@ namespace Aen {
 			TVecN<T, 4>(const TVecN<T, 3>& rhs, const T& w) :x(rhs.x), y(rhs.y), z(rhs.z), w(w) {}
 			TVecN<T, 4>(const T& x, const TVecN<T, 3>& rhs) :x(x), y(rhs.x), z(rhs.y), w(rhs.z) {}
 			union {
+				sm::Vector4 smVec;
 				struct {T x, y, z, w;};
 				struct {T r, g, b, a;};
 				struct {T h, s, v, a;};
+				T arr[4];
 			};
 		};
 
@@ -63,6 +63,9 @@ namespace Aen {
 
 		template<class T, uint32_t N>
 		struct TVec : public TVecN<T, N> {
+
+			using TVecN<T, N>::smVec;
+			using TVecN<T, N>::arr;
 
 			TVec() noexcept;
 			TVec(const TVec& rhs) noexcept = default;
@@ -74,18 +77,6 @@ namespace Aen {
 
 			TVec& operator= (const TVec& rhs) noexcept;
 			TVec& operator= (const T rhs[N]) noexcept;
-			template<class = std::enable_if_t<N == 4>>
-			TVec& operator= (const TQuat<T>& rhs) noexcept {
-				using TVecN<T, 4>::x;
-				using TVecN<T, 4>::y;
-				using TVecN<T, 4>::z;
-				using TVecN<T, 4>::w;
-				x = rhs.x;
-				y = rhs.y;
-				z = rhs.z;
-				w = rhs.w;
-				return *this;
-			}
 
 			TVec& operator+= (const TVec& rhs) noexcept;
 			TVec& operator-= (const TVec& rhs) noexcept;
@@ -99,12 +90,12 @@ namespace Aen {
 			TVec operator* (const T& rhs) const noexcept;
 			T operator* (const TVec& rhs) const noexcept;
 
+
 			template<class = std::enable_if_t<N == 3>>
-			TVec<T, 3> operator% (const TVec<T, 3>& rhs) const noexcept{
-			return TVec<T, 3>
-				((*this)[1] * rhs.z - (*this)[2] * rhs.y, 
-				-((*this)[0] * rhs.z - (*this)[2] * rhs.x), 
-				(*this)[0] * rhs.y - (*this)[1] * rhs.x);
+			TVec<T, 3> operator% (const TVec<T, 3>& rhs) const noexcept {
+				TVecN<T, 3> res;
+				smVec.Cross(rhs.smVec, res.smVec);
+				return res;
 			}
 
 			T& operator[] (const uint32_t& i) throw();
@@ -131,14 +122,10 @@ namespace Aen {
 		// ---------------------------------------------- Constructor -------------------------------------------------- //
 
 		template<class T, uint32_t N>
-		inline TVec<T, N>::TVec() noexcept {
-			for(uint32_t i = 0; i < N; i++) (*this)[i] = 0;
-		}
+		inline TVec<T, N>::TVec() noexcept :TVecN<T, N>() {}
 
 		template<class T, uint32_t N>
-		inline TVec<T, N>::TVec(const T& t) noexcept {
-			for(uint32_t i = 0; i < N; i++) (*this)[i] = t;
-		}
+		inline TVec<T, N>::TVec(const T& t) noexcept :TVecN<T, N>(t) {}
 
 		template<class T, uint32_t N>
 		template<class ...Ts>
@@ -154,7 +141,7 @@ namespace Aen {
 
 		template<class T, uint32_t N>
 		inline TVec<T, N>& TVec<T, N>::operator= (const TVec& rhs) noexcept {
-			for(uint32_t i = 0; i < N; i++) (*this)[i] = rhs[i];
+			smVec = rhs.smVec;
 			return *this;
 		}
 
@@ -166,13 +153,13 @@ namespace Aen {
 
 		template<class T, uint32_t N>
 		inline TVec<T, N>& TVec<T, N>::operator+= (const TVec& rhs) noexcept {
-			for(uint32_t i = 0; i < N; i++) (*this)[i] += rhs[i];
+			smVec += rhs.smVec;
 			return *this;
 		}
 
 		template<class T, uint32_t N>
 		inline TVec<T, N>& TVec<T, N>::operator-= (const TVec& rhs) noexcept {
-			for(uint32_t i = 0; i < N; i++) (*this)[i] -= rhs[i];
+			smVec -= rhs.smVec;
 			return *this;
 		}
 
@@ -199,28 +186,28 @@ namespace Aen {
 		template<class T, uint32_t N>
 		inline TVec<T, N> TVec<T, N>::operator+ (const TVec& rhs) const noexcept {
 			TVec<T, N> out;
-			for(uint32_t i = 0; i < N; i++) out[i] = (*this)[i] + rhs[i];
+			out.smVec = smVec + rhs.smVec;
 			return out;
 		}
 
 		template<class T, uint32_t N>
 		inline TVec<T, N> TVec<T, N>::operator- (const TVec& rhs) const noexcept {
 			TVec<T, N> out;
-			for(uint32_t i = 0; i < N; i++) out[i] = (*this)[i] - rhs[i];
+			out.smVec = smVec - rhs.smVec;
 			return out;
 		}
 
 		template<class T, uint32_t N>
 		inline TVec<T, N> TVec<T, N>::operator* (const T& rhs) const noexcept {
 			TVec<T, N> out;
-			for(uint32_t i = 0; i < N; i++) out[i] = (*this)[i] * rhs;
+			out.smVec = smVec * rhs;
 			return out;
 		}
 
 		template<class T, uint32_t N>
 		inline T TVec<T, N>::operator* (const TVec& rhs) const noexcept {
 			T out(0);
-			for(uint32_t i = 0; i < N; i++) out += (*this)[i] * rhs[i];
+			out = smVec.Dot(rhs.smVec);
 			return out;
 		}
 
@@ -228,12 +215,12 @@ namespace Aen {
 
 		template<class T, uint32_t N>
 		inline T& TVec<T, N>::operator[] (const uint32_t& i) throw() {
-			if(i < N) return reinterpret_cast<T*>(this)[i];
+			return arr[i];
 		}
 
 		template<class T, uint32_t N>
 		inline const T& TVec<T, N>::operator[] (const uint32_t& i) const throw() {
-			if(i < N) return reinterpret_cast<const T*>(this)[i];
+			return arr[i];
 		}
 
 		// -------------------------------------------- Cast Operators ------------------------------------------------- //
@@ -251,34 +238,13 @@ namespace Aen {
 
 		template<class T, uint32_t N>
 		inline const float TVec<T, N>::Magnitude() const noexcept {
-			float m = 0.f;
-			for(uint32_t i = 0; i < N; i++) m += (*this)[i] * (*this)[i];
-			return std::sqrt(m);
-		}
-
-		template<class T, uint32_t N>
-		inline const float* Normalize(const TVec<float, N>* vec, std::true_type) {
-			return SSE_Vec_Normalize<N>((float*)vec);
-		}
-
-		template<class T, uint32_t N>
-		inline const float* Normalize(const TVec<T, N>* vec, std::false_type) {
-			TVec<float, N> temp(*vec);
-			return SSE_Vec_Normalize<N>((float*)&temp);
+			return smVec.Length();
 		}
 
 		template<class T, uint32_t N>
 		inline const TVec<float, N> TVec<T, N>::Normalized() const noexcept {
-			TVec<float, N> out;
-			#ifdef AEN_SSE2
-			out = Normalize<T, N>(this, std::conditional_t<std::is_same<float, T>::value, std::true_type, std::false_type>());
-			#else
-
-			float mag = Magnitude();
-			float iSqrt = (mag != 0.f) ? (1.f / mag) : 0.f;
-			for(uint32_t i = 0; i < N; i++) out[i] = (*this)[i] * iSqrt;
-			#endif
-
+			TVec<float, N> out(*this);
+			out.smVec.Normalize();
 			return out;
 		}
 
@@ -306,10 +272,6 @@ namespace Aen {
 	}
 
 	// --------------------------------------------------- Type Alias -------------------------------------------------- //
-
-	using Vec2d = Concealed::TVec<double, 2>;
-	using Vec3d = Concealed::TVec<double, 3>;
-	using Vec4d = Concealed::TVec<double, 4>;
 
 	using Vec2f = Concealed::TVec<float, 2>;
 	using Vec3f = Concealed::TVec<float, 3>;
