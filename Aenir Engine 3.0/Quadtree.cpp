@@ -27,7 +27,7 @@ Quadtree::~Quadtree()
 {
 }
 
-//Node into quadtree
+//Insert Node into quadtree
 void Quadtree::insert(Node* node)
 {
 	if (node == NULL)
@@ -51,6 +51,7 @@ void Quadtree::insert(Node* node)
 	}
 	if ((m_topLeft.m_x + m_botRight.m_x) / 2 >= node->m_pos.m_x)
 	{
+		//Indicates topLeftTree
 		if ((m_topLeft.m_y + m_botRight.m_y) / 2 >= node->m_pos.m_y)
 		{
 			if (m_ptopLeftTree == NULL)
@@ -60,6 +61,7 @@ void Quadtree::insert(Node* node)
 				m_ptopLeftTree->insert(node);
 			}
 		}
+		//BotLeftTree
 		else
 		{
 			if (m_pbotLeftTree == NULL)
@@ -69,14 +71,90 @@ void Quadtree::insert(Node* node)
 		}
 
 	}
+	else
+	{
+		if ((m_topLeft.m_y + m_botRight.m_y) / 2 >= node->m_pos.m_y)
+		{
+			if (m_ptopRightTree == NULL)
+			{
+				m_ptopRightTree = new Quadtree(
+					Point((m_topLeft.m_x + m_botRight.m_x) / 2,
+						(m_topLeft.m_y) / 2),
+					Point(m_botRight.m_x, m_botRight.m_y));
+
+			}
+			m_ptopRightTree->insert(node);
+		}
+		else
+		{
+			if (m_pbotRightTree == NULL)
+			{
+				m_pbotRightTree = new Quadtree(
+					Point((m_topLeft.m_x + m_botRight.m_x) / 2,
+						(m_topLeft.m_y + m_botRight.m_y) / 2),
+					Point(m_botRight.m_x, m_botRight.m_y));		
+			}
+			m_pbotRightTree->insert(node);
+		}
+	}
 }
 
 Node* Quadtree::search(Point point)
 {
-	return nullptr;
+	if (!inBoundery(point))
+	{
+		return NULL;
+	}
+	if (pnode != NULL)
+	{
+		return pnode;
+	}
+	if ((m_topLeft.m_x + m_botRight.m_x )/ 2 >= point.m_x)
+	{
+		if ((m_topLeft.m_y + m_botRight.m_y) / 2 >= point.m_y)
+		{
+			if (m_ptopLeftTree == NULL)
+			{
+				return NULL;
+			}
+			return m_ptopLeftTree->search(point);
+		}
+		else
+		{
+			if (m_pbotLeftTree == NULL)
+			{
+				return NULL;
+			}
+			return m_pbotLeftTree->search(point);
+		}
+	}
+	else
+	{
+		if ((m_topLeft.m_y + m_botRight.m_y) / 2 >= point.m_y)
+		{
+			if (m_ptopRightTree == NULL)
+			{
+				return NULL;
+			}
+			return m_ptopRightTree->search(point);
+		}
+		else
+		{
+			if (m_pbotRightTree == NULL)
+			{
+				return NULL;
+			}
+			return m_ptopRightTree->search(point);
+		}
+		
+	}
 }
 
-bool Quadtree::inBoundery(Point)
+bool Quadtree::inBoundery(Point point)
 {
-	return false;
+	return (point.m_x >= m_topLeft.m_x &&
+		point.m_x <= m_botRight.m_x &&
+		point.m_y >= m_topLeft.m_y &&
+		point.m_y <= m_botRight.m_y);
+
 }

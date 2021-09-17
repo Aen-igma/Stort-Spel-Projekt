@@ -19,6 +19,21 @@ struct Point {
 	}
 };
 
+struct XY
+{
+	float m_x;
+	float m_y;
+};
+
+//Axis aligned bounding box with hald dimension and center
+struct AABB
+{
+
+	XY center;
+	float halfDimension;
+
+};
+
 //To construct the boundery box, needs to use the window x,y for right cordinates
 struct Rectangle
 {
@@ -62,14 +77,14 @@ public:
 
 	void insert(Node* node);
 	Node* search(Point point);
-	bool inBoundery(Point);
+	bool inBoundery(Point point);
 
 	void boundery(float x, float y, float z, float h){};
 	void subDivide() {};
 private:
 
 	Point m_topLeft;
-	Point m_topRight;
+	Point m_botRight;
 
 	Node* pnode;
 
