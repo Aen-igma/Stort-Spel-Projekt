@@ -24,10 +24,10 @@ public:
 	PhysXWrap();
 	~PhysXWrap();
 
-	void createStack(const PxTransform& t, PxU32 size, PxReal halfExtent);
-	PxRigidDynamic* createDynamic(const PxTransform& t, const PxGeometry& geometry, const PxVec3& velocity = PxVec3(0));
+	void CreateStack(const PxTransform& t, PxU32 size, PxReal halfExtent);
+	PxRigidDynamic* CreateDynamic(const PxTransform& t, const PxGeometry& geometry, const float& density, const PxVec3& velocity = PxVec3(0));
 
-	void initPhysics();
-	void closePhysics();
-	void runPhysics();
+	void InitPhysics();
+	void ClosePhysics();
+	void RunPhysics(const float& deltaTime);
 };
