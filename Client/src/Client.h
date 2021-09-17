@@ -25,7 +25,7 @@ class Client : public Aen::App {
 	Aen::Entity m_plane;
 	Aen::Entity m_cube;
 
-	Aen::Entity rooms[mapSize * mapSize * 9];
+	Aen::Entity rooms[mapSize * mapSize];
 
 };
 

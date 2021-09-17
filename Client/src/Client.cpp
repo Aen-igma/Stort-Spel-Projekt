@@ -55,8 +55,8 @@ void Client::Start() {
 	
 
 
-	for (UINT y = 0; y < mapSize * 3; y++) {
-		for (UINT x = 0; x < mapSize * 3; x++) {
+	for (UINT y = 0; y < mapSize; y++) {
+		for (UINT x = 0; x < mapSize; x++) {
 			rooms[x + y * mapSize].AddComponent<Aen::MeshInstance>();
 			rooms[x + y * mapSize].GetComponent<Aen::MeshInstance>().SetMesh(cube);
 			rooms[x + y * mapSize].SetPos(x * 2 , 0.f, y * 2);
@@ -87,41 +87,13 @@ void Client::Update(const float& deltaTime) {
 
 		Room* map = LevelGenerator::GenerationTestingFunction();
 
-		//for (UINT y = 0; y < mapSize; y++) {
-		//	for (UINT x = 0; x < mapSize; x++) {
-		//		if (map[x + y * mapSize].m_present) {
-		//			rooms[x + y * mapSize].SetScale(1, 1, 1);
-		//		}
-		//	}
-		//}
-		for (int y = 0; y < mapSize; y++) {
-			for (int x = 0; x < mapSize; x++) {
+		for (UINT y = 0; y < mapSize; y++) {
+			for (UINT x = 0; x < mapSize; x++) {
 				if (map[x + y * mapSize].m_present) {
+					rooms[x + y * mapSize].SetScale(1, 1, 1);
+				}
+				else {
 					rooms[x + y * mapSize].SetScale(0, 0, 0);
-					rooms[(3 * mapSize * y + 1) + (3 * x)].SetScale(0, 0, 0);
-					rooms[(3 * mapSize * y + 1) + (3 * x + 2)].SetScale(0, 0, 0);
-					rooms[(3 * mapSize * y + 2) + (3 * x + 1)].SetScale(0, 0, 0);
-					rooms[(3 * mapSize * y + 0) + (3 * x + 1)].SetScale(0, 0, 0);
-					if (map[x + y * mapSize].m_north)
-					{
-						rooms[(3 * mapSize * y + 0) + (3 * x + 1)].SetScale(1, 1, 1);
-						rooms[(3 * mapSize * y + 1 ) + (3 * x + 1)].SetScale(1, 1, 1);
-					}
-					if (map[x + y * mapSize].m_south)
-					{
-						rooms[(3 * mapSize * y + 2) + (3 * x + 1)].SetScale(1, 1, 1);
-						rooms[(3 * mapSize * y + 1) + (3 * x + 1)].SetScale(1, 1, 1);
-					}
-					if (map[x + y * mapSize].m_east)
-					{
-						rooms[(3 * mapSize * y + 1) + (3 * x + 2)].SetScale(1, 1, 1);
-						rooms[(3 * mapSize * y + 1) + (3 * x + 1)].SetScale(1, 1, 1);
-					}
-					if (map[x + y * mapSize].m_west)
-					{
-						rooms[(3 * mapSize * y + 1) + (3 * x)].SetScale(1, 1, 1);
-						rooms[(3 * mapSize * y + 1) + (3 * x + 1)].SetScale(1, 1, 1);
-					}
 				}
 			}
 		}

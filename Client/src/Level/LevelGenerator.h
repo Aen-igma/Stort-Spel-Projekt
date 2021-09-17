@@ -12,14 +12,16 @@ enum class SpecialRoom{ NONE, ENTRANCE, EXIT, ARENA, SHOP };
 struct Room {
 	bool m_enclosed = false; //Var used in level generation, true when room is surrounded
 	bool m_present = false;
-	SpecialRoom m_roomSpecial = SpecialRoom::NONE;
 
+
+	SpecialRoom m_roomSpecial = SpecialRoom::NONE;
 
 	//connection location
 	uint32_t m_north = 0;
-	uint32_t m_east = 0;
-	uint32_t m_south = 0;
-	uint32_t m_west = 0;
+	uint32_t m_east = 00;
+	uint32_t m_south = 000;
+	uint32_t m_west = 0000;
+
 
 	//Probabilities
 	float m_baseChance = 0;
