@@ -1,8 +1,6 @@
 #pragma once
 #include"AenirEngine.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
-#include"AenirEngine/ThirdParty/fmod/fmod.hpp"
-#include"AenirEngine/ThirdParty/fmod/fmod_errors.h"
 
 class Client : public Aen::App {
 	public:
@@ -26,9 +24,8 @@ class Client : public Aen::App {
 	Aen::Entity m_plane;
 	Aen::Entity m_cube;
 
-	FMOD::System* m_fmSys;
-	FMOD::Sound* m_fmtestSound;
-	FMOD::Channel* m_fmChannel;
+	std::vector<Aen::Entity> m_cubes;
+
 };
 
 

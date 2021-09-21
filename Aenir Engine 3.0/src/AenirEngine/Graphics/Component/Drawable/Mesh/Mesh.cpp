@@ -3,7 +3,14 @@
 #include"Core/GlobalSettings.h"
 #include"Importer/ObjImporter.h"
 #include<thread>
-#include<thread>
+
+#undef min
+
+#include"assimp/Importer.hpp"
+#include"assimp/scene.h"
+#include"assimp/postprocess.h"
+#include"assimp/matrix4x4.h"
+#include"assimp/cimport.h"
 
 namespace Aen {
 	

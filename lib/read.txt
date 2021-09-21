@@ -1,0 +1,2 @@
+Debug - assimp-vc142-mtd
+Release - assimp-vc142-mt

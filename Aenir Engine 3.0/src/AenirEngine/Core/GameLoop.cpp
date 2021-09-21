@@ -19,7 +19,6 @@ namespace Aen {
 
 		GlobalSettings::Initialize(m_app->m_window);
 
-
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 

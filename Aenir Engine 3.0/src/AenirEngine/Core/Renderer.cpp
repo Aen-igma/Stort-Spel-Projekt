@@ -104,7 +104,7 @@ namespace Aen {
 			}
 
 		// Combine Layers Pass
-		
+
 		RenderSystem::SetInputLayout(m_postLayout);
 		RenderSystem::UnBindRenderTargets(1u);
 

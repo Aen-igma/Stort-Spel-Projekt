@@ -101,7 +101,7 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -129,7 +129,7 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -157,15 +157,15 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;fmodL_vc.lib;d2d1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;fmodL_vc.lib;d2d1.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\Debug x64\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -185,7 +185,7 @@
       <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -194,8 +194,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;fmod_vc.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\Release x64\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -260,11 +260,11 @@
     <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AenirEngine\BuritoMath.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animation.h" />
     <ClInclude Include="src\AenirEngine.h" />
     <ClInclude Include="src\AenirEngine\AenCore.h" />
     <ClInclude Include="src\AenirEngine\AenGraphics.h" />
-    <ClInclude Include="src\AenirEngine\AenMath.h" />
     <ClInclude Include="src\AenirEngine\AenDefines.h" />
     <ClInclude Include="src\AenirEngine\Core\App.h" />
     <ClInclude Include="src\AenirEngine\Core\GameLoop.h" />
@@ -302,6 +302,11 @@
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h" />
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\MathFunctions.h" />
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Matrix.h" />
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Vector.h" />
+    <ClInclude Include="src\AenirEngine\Math\Burito\Burito.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h" />
@@ -313,15 +318,6 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h" />
     <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />
-    <ClInclude Include="src\AenirEngine\Math\Circle.h" />
-    <ClInclude Include="src\AenirEngine\Math\Color.h" />
-    <ClInclude Include="src\AenirEngine\Math\MathFunctions.h" />
-    <ClInclude Include="src\AenirEngine\Math\Matrix.h" />
-    <ClInclude Include="src\AenirEngine\Math\Quaternion.h" />
-    <ClInclude Include="src\AenirEngine\Math\Rect.h" />
-    <ClInclude Include="src\AenirEngine\Math\Simd.h" />
-    <ClInclude Include="src\AenirEngine\Math\Tracer.h" />
-    <ClInclude Include="src\AenirEngine\Math\Vector.h" />
     <ClInclude Include="src\AenirEngine\AenWindow.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Graphics.h" />
     <ClInclude Include="src\AenirEngine\WinMain.h" />
