@@ -3,57 +3,57 @@
 #include <vector>
 #include <cstdint>
 #include "RandomNumberGenerator.h"
-enum class SpecialRoom{ NONE, ENTRANCE, EXIT, ARENA, SHOP };
+enum class SpecialRoom{ NONE, ENTRANCE, EXIT, BOSS, ARENA, ITEM };
 //
 //  n
 //w + e
 //  s
 //
 struct Room {
-	bool m_enclosed = false; //Var used in level generation, true when room is surrounded
-	bool m_present = false;
+	bool m_enclosed	= false; //Var used in level generation, true when room is surrounded
+	bool m_present	= false;
 
 
 	SpecialRoom m_roomSpecial = SpecialRoom::NONE;
 
 	//connection location
-	uint32_t m_north = 0;
-	uint32_t m_east = 00;
-	uint32_t m_south = 000;
-	uint32_t m_west = 0000;
+	uint32_t m_north	= 0;	//	   0 -    9
+	uint32_t m_east		= 00;	//	  00 -   90
+	uint32_t m_south	= 000;	//	 000 -  900
+	uint32_t m_west		= 0000;	//	0000 - 9000
 
 
 	//Probabilities
-	float m_baseChance = 0;
-	float m_dynamic1 = 0;
-	float m_dynamic2 = 0;
-	float m_dynamic3 = 0;
-	float m_dynamic4 = 0;
+	float m_baseChance	= 0;
+	float m_dynamic1	= 0;
+	float m_dynamic2	= 0;
+	float m_dynamic3	= 0;
+	float m_dynamic4	= 0;
 
 	void rotateCW() { //Clockwise rotation
 		uint32_t temp = m_north;
-		m_north = m_west;
-		m_west = m_south;
-		m_south = m_east;
-		m_east = temp;
+		m_north	= m_west;
+		m_west	= m_south;
+		m_south	= m_east;
+		m_east	= temp;
 		//TODO rotate associated model
 	}
 	void rotateCCW() { //count clockwise rotation
 		uint32_t temp = m_north;
-		m_north = m_east;
-		m_east = m_south;
-		m_south = m_west;
-		m_west = temp;
+		m_north	= m_east;
+		m_east	= m_south;
+		m_south	= m_west;
+		m_west	= temp;
 		//TODO rotate associated model
 	}
 	void rotate180() {
 		uint32_t temp = m_north;
-		m_north = m_south;
-		m_south = temp;
+		m_north	 = m_south;
+		m_south	 = temp;
 
-		temp = m_east;
-		m_east = m_west;
-		m_west = temp;
+		temp	= m_east;
+		m_east	= m_west;
+		m_west	= temp;
 		//TODO rotate associated model
 	}
 
