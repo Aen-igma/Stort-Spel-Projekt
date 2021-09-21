@@ -4,11 +4,11 @@
 #include <cstdint>
 #include "RandomNumberGenerator.h"
 enum class SpecialRoom{ NONE, ENTRANCE, EXIT, BOSS, ARENA, ITEM };
-/////////
-//  n  //
-//w + e//
-//  s  //
-/////////
+///////
+//  n  
+//w + e
+//  s  
+///////
 struct Room {
 	bool m_enclosed	= false; //Var used in level generation, true when room is surrounded
 	bool m_present	= false;
@@ -17,9 +17,9 @@ struct Room {
 	SpecialRoom m_roomSpecial = SpecialRoom::NONE;
 
 	//connection location
-	uint32_t m_north	= 0;	//	   0 -    9
-	uint32_t m_east		= 00;	//	  00 -   90
-	uint32_t m_south	= 000;	//	 000 -  900
+	uint32_t m_north	=    0;	//	   0 -    9
+	uint32_t m_east		=   00;	//	  00 -   90
+	uint32_t m_south	=  000;	//	 000 -  900
 	uint32_t m_west		= 0000;	//	0000 - 9000
 
 
