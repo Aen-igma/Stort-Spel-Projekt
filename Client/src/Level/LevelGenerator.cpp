@@ -328,6 +328,7 @@ Room* LevelGenerator::GenerationTestingFunction()
 		}
 		cmap[3 * 4 + 1][3 * 3 + 1] = 'X';
 		for (int i = 0; i < 3 * mapSize; i++) {
+			std::cout << (char)9;
 			for (int j = 0; j < 3 * mapSize; j++) {
 				std::cout << cmap[i][j];
 			}
