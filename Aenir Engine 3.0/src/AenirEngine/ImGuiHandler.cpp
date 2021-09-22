@@ -452,7 +452,7 @@ namespace Aen {
 		itemList.erase(itemList.begin() + selectedEntity);
 
 		cout << "en " << entityCount << " sel " << selectedEntity << endl;
-		deleteList.erase(deleteList.begin() + (entityCount - selectedEntity));
+		deleteList.erase(deleteList.begin() + (entityList.size() - selectedEntity));
 		cubeCount--;
 		entityCount--;
 
