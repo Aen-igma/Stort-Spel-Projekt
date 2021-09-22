@@ -151,14 +151,12 @@ Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
 
 
 Room* LevelGenerator::GenerateLevel() {
-	//bool presence[mapSize][mapSize] = { 0 }; 
 
 	for (int y = 0; y < mapSize; y++) {
 		for (int x = 0; x < mapSize; x++) {
 			map[x][y] = Room();
 		}
 	}
-	//presence[3][4] = true;
 	map[3][4] = RNGRoomFromVector(levelentrances);
 
 	bool openConnections = true;
@@ -169,12 +167,10 @@ Room* LevelGenerator::GenerateLevel() {
 		for (int y = 0; y < mapSize; y++) {
 
 			for (int x = 0; x < mapSize; x++) {
-
 				if (map[x][y].m_present) {
 
 					if (y + 1 < mapSize) {										//Prevents out of bounds
 						if (map[x][y].m_south && !map[x][y + 1].m_present) {	//Checks if region is clear
-							//presence[x][y + 1] = true;						//Sets region to not clear
 							map[x][y + 1] = RNGRoom(map[x][y].m_south * 0x64);	//Insert random room (Pass along direction)
 							maxRooms--;											//reduce maxRooms
 							break;												//Break to go generate off other rooms (Experimental)
@@ -183,7 +179,6 @@ Room* LevelGenerator::GenerateLevel() {
 
 					if (y - 1 >= 0) {
 						if (map[x][y].m_north && !map[x][y - 1].m_present) {
-							//presence[x][y - 1] = true;
 							map[x][y - 1] = RNGRoom(map[x][y].m_north * 0x1);
 							maxRooms--;
 							break;
@@ -191,7 +186,6 @@ Room* LevelGenerator::GenerateLevel() {
 					}
 					if (x + 1 < mapSize) {
 						if (map[x][y].m_east && !map[x + 1][y].m_present) {
-							//presence[x + 1][y] = true;
 							map[x + 1][y] = RNGRoom(map[x][y].m_east * 0xA);
 							maxRooms--;
 							break;
@@ -199,7 +193,6 @@ Room* LevelGenerator::GenerateLevel() {
 					}
 					if (x - 1 >= 0) {
 						if (map[x][y].m_west && !map[x - 1][y].m_present) {
-							//presence[x - 1][y] = true;
 							map[x - 1][y] = RNGRoom(map[x][y].m_west * 0x3E8);
 							maxRooms--;
 							break;
@@ -247,7 +240,6 @@ Room* LevelGenerator::GenerationTestingFunction()
 {
 	char cmap[mapSize * 3][mapSize * 3];
 
-	//SetLehmerSeed(0);
 
 	//Straight corridors
 	Room a;
