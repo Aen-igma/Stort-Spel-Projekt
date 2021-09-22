@@ -231,6 +231,7 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.cpp" />
+    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp" />
     <ClCompile Include="src\PCH\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -486,6 +487,7 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleUtilTelemetry.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleWheels.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h" />
     <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />

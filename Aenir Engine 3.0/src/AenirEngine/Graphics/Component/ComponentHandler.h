@@ -3,6 +3,7 @@
 #include"Camera/Camera.h"
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
+#include"ThirdParty\PhysX\RigidBody.h"
 
 #include<unordered_map>
 #include<array>
@@ -242,6 +243,32 @@ namespace Aen {
 			return *pDLight;
 		}
 
+		// ----------- Rigid Body Component ----------- //
+
+		static const bool RigidExist(const uint32_t& id) {
+			return m_rigids.count(id) > 0;
+		}
+
+		static void CreateRigid(const uint32_t& id) {
+			m_rigids.emplace(id, AEN_NEW RigidBody());
+		}
+
+		static void RemoveRigid(const uint32_t& id) {
+			if (m_rigids.count(id) > 0) {
+				delete m_rigids.at(id);
+				m_rigids.at(id) = nullptr;
+				m_rigids.erase(id);
+			}
+		}
+
+		static RigidBody& GetRigid(const uint32_t& id) {
+			if (m_rigids.count(id) > 0)
+				return *m_rigids.at(id);
+			throw;
+		}
+
+		// -------------------------------------------- //
+
 		// ----------- Mesh Instance Layer ---------- //
 
 		static void SetRenderLayer(MeshInstance& mesh, const uint32_t id, const uint32_t& layer) {
@@ -260,6 +287,7 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Rotation*> m_rotations;
 		static std::unordered_map<uint32_t, Scale*> m_scales;
 		static std::multimap<uint32_t, Light*> m_lights;
+		static std::unordered_map<uint32_t, RigidBody*> m_rigids;
 		
 		static std::array<std::unordered_map<uint32_t, Drawable*>, 7> m_meshLayer;
 
