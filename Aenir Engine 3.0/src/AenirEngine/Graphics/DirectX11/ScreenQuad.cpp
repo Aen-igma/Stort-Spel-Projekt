@@ -15,8 +15,8 @@ namespace Aen {
 		m_vBuffer.Create(quad, 4);
 
 		DWORD ind[6]{
-			0, 1, 2,
-			0, 2, 3
+			0, 2, 1,
+			0, 3, 2,
 		};
 
 		m_iBuffer.Create(ind, 6);
