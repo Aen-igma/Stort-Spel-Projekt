@@ -4,6 +4,7 @@
 #include"Mesh/Mesh.h"
 #include"Light/Light.h"
 
+
 #include<unordered_map>
 #include<array>
 #include<map>
@@ -265,6 +266,7 @@ namespace Aen {
 
 		friend class Entity;
 		friend class Renderer;
+		friend class ImGuiHandler;
 	};
 
 }

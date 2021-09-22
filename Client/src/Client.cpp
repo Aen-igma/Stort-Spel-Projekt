@@ -41,6 +41,10 @@ void Client::Start() {
 	m_cube.AddComponent<Aen::MeshInstance>();
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
 
+
+
+	Aen::GlobalSettings::getImGuiHandler()->readAllModelsFromHandler();
+
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));

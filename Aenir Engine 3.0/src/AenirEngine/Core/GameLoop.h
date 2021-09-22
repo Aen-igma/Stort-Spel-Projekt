@@ -1,9 +1,6 @@
 #pragma once
 #include"App.h"
 #include<chrono>
-#include "ThirdParty/ImGui/imgui.h"
-#include "ThirdParty/ImGui/imgui_impl_win32.h"
-#include "ThirdParty/ImGui/imgui_impl_dx11.h"
 
 namespace Aen {
 
@@ -26,7 +23,6 @@ namespace Aen {
 		TimePoint m_end;
 		DurationLD m_frameTime;
 		DurationLD m_deltaTime;
-
 		Renderer* m_renderer;
 	};
 }

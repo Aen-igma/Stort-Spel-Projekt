@@ -200,10 +200,12 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Texture.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp" />
+    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_stdlib.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp" />
@@ -261,12 +263,14 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Stencil.h" />
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Texture.h" />
+    <ClInclude Include="src\AenirEngine\ImGuiHandler.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_internal.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_stdlib.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h" />

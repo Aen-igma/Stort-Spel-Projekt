@@ -2,6 +2,7 @@
 #include"Renderer.h"
 #include"GlobalSettings.h"
 
+
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
@@ -125,16 +126,15 @@ namespace Aen {
 
 		m_screenQuad.Draw();
 
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
-		ImGui::Begin("Debug");
-		ImGui::Text("deez");
-		// code here
+		//Aen::GlobalSettings::guiHandler;
+		Aen::GlobalSettings::guiHandler->newFrame();
+		Aen::GlobalSettings::guiHandler->sceneListWindow();
+		Aen::GlobalSettings::guiHandler->assetWindow();
+		Aen::GlobalSettings::guiHandler->propertyWindow();
+		Aen::GlobalSettings::guiHandler->toolWindow();
+		Aen::GlobalSettings::guiHandler->materialWindow();
+		Aen::GlobalSettings::guiHandler->render();
 
-		ImGui::End();
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 		// Present
 

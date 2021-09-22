@@ -202,25 +202,31 @@
       <Filter>Source Files\Graphics\Component\Tranform</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp">
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp">
+      <Filter>Source Files\ThirdParty</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_stdlib.cpp">
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -402,31 +408,37 @@
       <Filter>Header Files\Importer</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_internal.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h">
+      <Filter>Header Files\ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_stdlib.h">
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -466,7 +478,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ThirdParty</Filter>
     </None>
   </ItemGroup>
 </Project>

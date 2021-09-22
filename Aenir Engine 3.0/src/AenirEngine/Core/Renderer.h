@@ -1,6 +1,9 @@
 #pragma once
 #include"../Graphics/RenderSystem.h"
 #include"../Graphics/Component/Entity.h"
+#include "../ImGuiHandler.h"
+
+
 #include<thread>
 
 namespace Aen {
@@ -59,5 +62,8 @@ namespace Aen {
 		Stencil m_maskStencil[7];
 		Stencil m_offStencil[7];
 		RState m_rasterizerState;
+
+		//ImGuiHandler guiHandler;
+
 	};
 }

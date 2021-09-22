@@ -25,5 +25,6 @@ namespace Aen {
 		
 		friend class Entity;
 		friend class Renderer;
+		friend class ImGuiHandler;
 	};
 }
