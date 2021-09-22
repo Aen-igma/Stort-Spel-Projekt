@@ -5,6 +5,11 @@
 
 namespace Aen {
 
+	struct CB_DispatchInfo {
+		Vec2i threadGroups;
+		Vec2i totalThreads;
+	};
+
 	struct CB_Transform {
 		Mat4f m_vMat;
 		Mat4f m_pMat;
@@ -59,10 +64,22 @@ namespace Aen {
 		ILayout m_postLayout;
 
 		D3D11_VIEWPORT m_viewPort;
-		Depth m_depth;
+		DepthMap m_depthMap;
 		Stencil m_writeStencil;
 		Stencil m_maskStencil;
 		Stencil m_offStencil;
 		RState m_rasterizerState;
+
+		// Temp ---------------
+
+		CBuffer<CB_DispatchInfo> m_dispatchInfo;
+		CShader m_frustumCS;
+		CShader m_lightCullCS;
+		UAView m_frustums;
+		UAView m_lIndexCount;
+		UAView m_lIndex;
+		RWTexture2D m_lGrid;
+
+		// --------------------
 	};
 }

@@ -215,6 +215,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ILayout.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Reflection.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RState.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Sampler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.cpp" />
@@ -222,6 +223,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\UAView.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp" />
@@ -275,6 +277,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ILayout.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Reflection.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RState.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Sampler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\SBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.h" />
@@ -283,6 +286,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Material.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Stencil.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\UAView.h" />
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
@@ -362,6 +366,16 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\FrustomCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairPostPS.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
@@ -401,6 +415,16 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\LightCullCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

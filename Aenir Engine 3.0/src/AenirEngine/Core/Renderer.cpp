@@ -5,10 +5,10 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(900), m_postProcessBuffer(window), m_layerBuffer(window, 7u), 
-		m_backBuffer(), m_viewPort(), m_clampSampler(SamplerType::CLAMP), m_depth(m_window), m_writeStencil(true, StencilType::Write), 
+		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), m_postProcessBuffer(window), m_layerBuffer(window, 7u), 
+		m_backBuffer(), m_viewPort(), m_clampSampler(SamplerType::CLAMP), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
-		m_rasterizerState(FillMode::Solid, CullMode::Front) {}
+		m_rasterizerState(FillMode::Solid, CullMode::Front), m_dispatchInfo(), m_frustumCS(), m_lightCullCS(), m_frustums(), m_lIndexCount(), m_lIndex(), m_lGrid() {}
 
 	void Renderer::Initialize() {
 
@@ -34,6 +34,43 @@ namespace Aen {
 				throw;
 
 		m_postLayout.Create(m_postProcessVS);
+
+
+		// temp --------------------------------------------------------------------
+
+		m_dispatchInfo.GetData().threadGroups.x = (int)std::ceilf((float)m_window.GetSize().x / 256.f);
+		m_dispatchInfo.GetData().threadGroups.y = (int)std::ceilf((float)m_window.GetSize().y / 256.f);
+
+		m_dispatchInfo.GetData().totalThreads.x = m_window.GetSize().x;
+		m_dispatchInfo.GetData().totalThreads.y = m_window.GetSize().y;
+
+		uint32_t size = m_window.GetSize().x / 16 * m_window.GetSize().y / 16;
+		m_frustums.Create(64, size);
+
+		if(!m_frustumCS.Create(AEN_OUTPUT_DIR_WSTR(L"FrustomCS.cso")))
+			if(!m_frustumCS.Create(L"FrustomCS.cso"))
+				throw;
+
+		m_dispatchInfo.UpdateBuffer();
+		m_dispatchInfo.BindBuffer<CShader>(0u);
+		RenderSystem::BindUnOrderedAccessView(0u, m_frustums);
+		RenderSystem::BindShader(m_frustumCS);
+
+		RenderSystem::Dispatch(m_dispatchInfo.GetData().threadGroups, 1u);
+
+		RenderSystem::UnBindShader<CShader>();
+		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
+
+		if(!m_lightCullCS.Create(AEN_OUTPUT_DIR_WSTR(L"LightCullCS.cso")))
+			if(!m_lightCullCS.Create(L"LightCullCS.cso"))
+				throw;
+
+		const uint32_t avarageLights = 200u;
+		m_lGrid.Create(m_window.GetSize().x / 16, m_window.GetSize().y / 16);
+		m_lIndexCount.Create(sizeof(uint32_t), size * avarageLights);
+		m_lIndex.Create(sizeof(uint32_t), size * avarageLights);
+
+		//--------------------------------------------------------------------------
 
 		RenderSystem::SetViewPort(m_viewPort);
 		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
@@ -89,18 +126,37 @@ namespace Aen {
 			if(ComponentHandler::m_meshLayer[i].size() > 0) {
 
 				RenderSystem::UnBindRenderTargets(1u);
-				RenderSystem::BindRenderTargetView(m_depth);
+				RenderSystem::BindRenderTargetView(m_depthMap);
 				RenderSystem::SetDepthStencilState(m_offStencil, 0xFF);
 				
 				// Pre Depth Pass
 
 				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, k.first, i);
 
+				// Light Clip Pass
+
+				RenderSystem::UnBindRenderTargets(1u);
+
+				m_sbLight.BindSRV<CShader>(0u);
+				RenderSystem::BindShaderResourceView<CShader>(1u, m_frustums);
+				RenderSystem::BindShaderResourceView<CShader>(2u, m_depthMap);
+				RenderSystem::BindUnOrderedAccessView(0u, m_lIndexCount);
+				RenderSystem::BindUnOrderedAccessView(1u, m_lIndex);
+				RenderSystem::BindUnOrderedAccessView(2u, m_lGrid);
+				m_dispatchInfo.BindBuffer<CShader>(0u);
+				RenderSystem::BindShader(m_lightCullCS);
+				
+				RenderSystem::Dispatch(m_dispatchInfo.GetData().threadGroups, 1u);
+				
+				RenderSystem::UnBindShader<CShader>();
+				RenderSystem::UnBindUnOrderedAccessViews(0u, 3u);
+				RenderSystem::UnBindShaderResources<CShader>(0u, 3u);
+
 				// Draw pass
 
 				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, k.first, i);
 
-				RenderSystem::ClearDepthStencilView(m_depth, true, false);
+				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}
 
 		// Combine Layers Pass

@@ -23,7 +23,7 @@ void Client::Start() {
 
 	m_dLight.AddComponent<Aen::DirectionalLight>();
 	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
-	m_dLight.SetRot(45.f, 135.f, 0.f);
+	m_dLight.SetRot(45.f, -135.f, 0.f);
 
 	// ----------------------------- Load Meshes -------------------------------- //
 

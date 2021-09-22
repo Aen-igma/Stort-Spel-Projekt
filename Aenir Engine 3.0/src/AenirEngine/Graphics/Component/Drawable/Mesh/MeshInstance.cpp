@@ -76,10 +76,10 @@ namespace Aen {
 
 						RenderSystem::UnBindRenderTargets(1u);
 						RenderSystem::ClearRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, Color(0.f, 0.f, 0.f, 0.f));
-						RenderSystem::BindRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, renderer.m_depth);
+						RenderSystem::BindRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, renderer.m_depthMap);
 				}
 
-				RenderSystem::ClearDepthStencilView(renderer.m_depth, false, true);
+				RenderSystem::ClearDepthStencilView(renderer.m_depthMap, false, true);
 				RenderSystem::SetDepthStencilState(renderer.m_writeStencil, 0xFF);
 				m_pMesh->m_vertices.Draw(m_pMesh->m_partitions[i].size, m_pMesh->m_partitions[i].offset);
 
@@ -119,7 +119,7 @@ namespace Aen {
 					RenderSystem::BindShaderResourceView<PShader>(0, pMaterial->m_pShaderModel->m_gBuffer);
 				}
 
-				RenderSystem::BindRenderTargetView(renderer.m_layerBuffer.GetRtv(layer), renderer.m_depth);
+				RenderSystem::BindRenderTargetView(renderer.m_layerBuffer.GetRtv(layer), renderer.m_depthMap);
 				RenderSystem::SetDepthStencilState(renderer.m_maskStencil, 0xFF);
 
 				renderer.m_screenQuad.Draw();
