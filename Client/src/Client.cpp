@@ -44,6 +44,10 @@ void Client::Start() {
 
 
 	Aen::GlobalSettings::getImGuiHandler()->readAllModelsFromHandler();
+	Aen::GlobalSettings::getImGuiHandler()->readAllFilesFromResourceFolder();
+
+	cout << endl;
+
 
 	// --------------------------- Setup Window --------------------------------- //
 
