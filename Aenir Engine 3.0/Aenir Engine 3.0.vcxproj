@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CreateThumbnail.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animation.cpp" />
     <ClCompile Include="src\AenirEngine\Core\App.cpp" />
     <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp" />
@@ -276,6 +277,9 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\stb_image.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\stb_image_resize.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\stb_image_write.h" />
     <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />
     <ClInclude Include="src\AenirEngine\Math\Circle.h" />
