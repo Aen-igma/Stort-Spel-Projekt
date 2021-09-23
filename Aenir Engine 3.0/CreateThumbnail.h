@@ -12,12 +12,12 @@ struct ImageByteData {
 
 	std::unique_ptr<unsigned char> imageData;
 	void LoadImage(const char* file);
+
+	static void MakeThumbnail(const ImageByteData* source, const ImageByteData* destination) {
+		stbir_resize_uint8(source->imageData.get(), source->x, source->y, 1, destination->imageData.get(), destination->x, destination->y, 1, destination->channels);
+	}
+	static void SaveImage(const ImageByteData* source, const char* filepath) {
+		stbi_write_png(filepath, source->x, source->y, 8, source->imageData.get(), 1);
+	}
 };
 
-void MakeThumbnail(const ImageByteData* source, const ImageByteData* destination) {
-	stbir_resize_uint8(source->imageData.get(), source->x, source->y, 1, destination->imageData.get(), destination->x, destination->y, 1, destination->channels);
-}
-
-void SaveImage(const ImageByteData* source, const char* filepath) {
-	stbi_write_png(filepath, source->x, source->y, 8, source->imageData.get(), 1);
-}
