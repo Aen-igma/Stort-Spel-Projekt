@@ -26,4 +26,3 @@ struct ImageByteData {
 		stbi_write_png(filepath, source->x, source->y, 8, source->imageData.get(), 1);
 	}
 };
-
