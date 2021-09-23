@@ -127,6 +127,11 @@ namespace Aen {
 		AddComponent<Rotation>();
 	}
 
+	template<>
+	inline void Entity::AddComponent<RigidBody>() {
+		if (!ComponentHandler::RigidExist(m_id))
+			ComponentHandler::CreateRigid(m_id);
+	}
 
 	// --------------- GetComponent -----------------
 
@@ -168,5 +173,10 @@ namespace Aen {
 	template<>
 	inline DirectionalLight& Entity::GetComponent() {
 		return ComponentHandler::GetDirectionalLight(m_id);
+	}
+
+	template<>
+	inline RigidBody& Entity::GetComponent() {
+		return ComponentHandler::GetRigid(m_id);
 	}
 }

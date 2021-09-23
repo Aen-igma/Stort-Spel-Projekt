@@ -234,6 +234,9 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -1014,6 +1017,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

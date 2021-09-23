@@ -17,7 +17,10 @@ namespace Aen {
 		if(!GCore::Concealed::Initialize(m_app->m_window))
 			exit(-1);
 
-		m_PhysX.InitPhysics(100, 981);
+
+		PhysXService::SetInstance(&m_PhysX);
+		PhysXService::GetInstance()->InitPhysics(100, 981);
+		//m_PhysX.InitPhysics(100, 981);
 
 		GlobalSettings::Initialize(m_app->m_window);
 
@@ -48,7 +51,8 @@ namespace Aen {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
-				m_PhysX.RunPhysics(m_deltaTime.count());
+				PhysXService::GetInstance()->RunPhysics(m_deltaTime.count());
+				//m_PhysX.RunPhysics(m_deltaTime.count());
 				m_renderer->Render(); // VSync
 			}
 		}
@@ -57,8 +61,9 @@ namespace Aen {
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
 
-		m_PhysX.ClosePhysics();
-
+		PhysXService::GetInstance()->ClosePhysics();
+		//m_PhysX.ClosePhysics();
+		
 		Resource::Destroy();
 		GCore::Concealed::Release();
 		delete m_app;

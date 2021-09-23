@@ -12,6 +12,7 @@ namespace Aen {
 		ComponentHandler::RemoveSpotLight(m_id);
 		ComponentHandler::RemovePointLight(m_id);
 		ComponentHandler::RemoveDirectionalLight(m_id);
+		ComponentHandler::RemoveRigid(m_id);
 
 		EntityHandler::RemoveEntity(m_id);
 	}
