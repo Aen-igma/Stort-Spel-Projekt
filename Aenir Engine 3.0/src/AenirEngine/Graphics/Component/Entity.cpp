@@ -14,6 +14,7 @@ namespace Aen {
 		ComponentHandler::RemoveDirectionalLight(m_id);
 
 		EntityHandler::RemoveEntity(m_id);
+		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
 	}
 
 	Entity::Entity()
