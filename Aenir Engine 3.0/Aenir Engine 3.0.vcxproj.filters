@@ -1016,10 +1016,10 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.h">
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.h">
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

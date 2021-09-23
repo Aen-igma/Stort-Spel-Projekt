@@ -26,10 +26,12 @@ public:
 
 	void CreateStack(const PxTransform& t, PxU32 size, PxReal halfExtent);
 	PxRigidDynamic* CreateDynamic(const PxTransform& t, const PxGeometry& geometry, const float& density, const PxVec3& velocity = PxVec3(0));
+	void CreateDemo();
 
 	void AddActor(PxRigidStatic *staticActor);
 	void AddActor(PxRigidDynamic* dynamicActor); 
 	PxPhysics* GetPxPhysics() const;
+
 
 	void InitPhysics(int toleranceLength, int toleranceSpeed);
 	void ClosePhysics();

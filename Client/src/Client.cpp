@@ -38,16 +38,16 @@ void Client::Start() {
 	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	m_plane.SetPos(0.f, -2.f, 0.f);
 	m_plane.SetScale(20.f, 1.f, 20.f);
-	m_plane.AddComponent<Aen::RigidBody>();
-	m_plane.GetComponent<Aen::RigidBody>().CreateMaterial();
-	m_plane.GetComponent<Aen::RigidBody>().CreatePlane();
-	//m_plane.GetComponent<Aen::RigidBody>().CreateShape(m_plane)
+	//m_plane.AddComponent<Aen::RigidBody>();
+	//m_plane.GetComponent<Aen::RigidBody>().CreateMaterial();
+	//m_plane.GetComponent<Aen::RigidBody>().CreatePlane();
+
 
 	m_cube.AddComponent<Aen::MeshInstance>();
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	m_cube.AddComponent<Aen::RigidBody>();
-	m_cube.GetComponent<Aen::RigidBody>().CreateMaterial();
-	m_cube.GetComponent<Aen::RigidBody>().CreateCube();
+	//m_cube.AddComponent<Aen::RigidBody>();
+	//m_cube.GetComponent<Aen::RigidBody>().CreateMaterial();
+	//m_cube.GetComponent<Aen::RigidBody>().CreateCube();
 
 	// --------------------------- Setup Window --------------------------------- //
 

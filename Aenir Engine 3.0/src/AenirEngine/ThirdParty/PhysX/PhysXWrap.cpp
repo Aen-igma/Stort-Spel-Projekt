@@ -11,7 +11,7 @@ PhysXWrap::PhysXWrap()
 	this->m_Pvd =		 NULL;
 	this->m_Physics =    NULL;
 	this->m_Cooking =    NULL;
-	this->stackZ =		 10.0f;
+	this->stackZ =		 9.0f;
 }
 
 PhysXWrap::~PhysXWrap()
@@ -47,11 +47,24 @@ PxShape* shape = m_Physics->createShape(PxBoxGeometry(halfExtent, halfExtent, ha
 PxRigidDynamic* PhysXWrap::CreateDynamic(const PxTransform& t, const PxGeometry& geometry, const float& density, const PxVec3& velocity)
 {
 	PxRigidDynamic* dynamic = PxCreateDynamic(*m_Physics, t, geometry, *m_Material, density);
-	dynamic->setAngularDamping(0.5f);
+	dynamic->setAngularDamping(0.1f);
 	dynamic->setLinearVelocity(velocity);
 	m_Scene->addActor(*dynamic);
 
 	return dynamic;
+}
+
+void PhysXWrap::CreateDemo()
+{
+	m_Material = m_Physics->createMaterial(0.5f, 0.5f, 0.6f);
+
+	PxRigidStatic* groundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0), *m_Material);
+	m_Scene->addActor(*groundPlane);
+
+	CreateStack(PxTransform(PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
+	CreateDynamic(PxTransform(PxVec3(0, 40, 120)), PxBoxGeometry(5.f, 5.f, 5.f), 20.f, PxVec3(0, -10, -100));
+	CreateStack(PxTransform(PxVec3(100, 0, stackZ -= 10.0f)), 10, 2.0f);
+	CreateDynamic(PxTransform(PxVec3(100, 40, 120)), PxSphereGeometry(10), 20.f, PxVec3(0, -10, -100));
 }
 
 void PhysXWrap::AddActor(PxRigidStatic* staticActor)
@@ -68,6 +81,7 @@ PxPhysics* PhysXWrap::GetPxPhysics() const
 {
 	return this->m_Physics;
 }
+
 
 void PhysXWrap::InitPhysics(int toleranceLength, int toleranceSpeed)
 {

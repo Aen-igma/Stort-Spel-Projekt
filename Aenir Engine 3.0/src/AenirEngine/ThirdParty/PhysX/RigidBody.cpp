@@ -7,15 +7,19 @@ namespace Aen
 	{
 		m_Material = NULL;
 		m_LocalPhysics = PhysXService::GetInstance()->GetPxPhysics();
+		//m_LocalPhysics = PxCreateBasePhysics();
 		m_StaticBody = NULL;
 		m_DynamicBody = NULL;
 		
 
 	}
+
 	RigidBody::~RigidBody()
 	{
 
 	}
+
+	
 
 	void RigidBody::CreateMaterial(float staticFriction, float dynamicFriction, float restitution)
 	{
@@ -38,7 +42,7 @@ namespace Aen
 		float vX, float vY, float vZ)
 	{
 		const PxTransform t = PxTransform(PxVec3(tX, tY, tZ));
-		const PxGeometry geometry = PxBoxGeometry(cubeX, cubeY, cubeZ);
+		const PxGeometry geometry = PxBoxGeometry(PxReal(cubeX), PxReal(cubeY), PxReal(cubeZ));
 		PxVec3 velocity = PxVec3(vX, vY, vZ);
 
 		m_DynamicBody = PxCreateDynamic(*m_LocalPhysics, t, geometry, *m_Material, density);
