@@ -120,16 +120,9 @@ namespace Aen {
 		{
 			if (ImGui::BeginTabItem("Model"))
 			{
-				if (ImGui::Button("Cube"))
-				{
-					addCube();
-				}
-				if (ImGui::Button("Plane"))
-				{
-					addPlane();
-				}
+				handleButton();
 
-				if (ImGui::Button("Delete"))
+				if (addButton("Delete"))
 				{
 					removeObject();
 				}
@@ -203,7 +196,6 @@ namespace Aen {
 				ImGui::Combo("Parent", &selectedItem, items, IM_ARRAYSIZE(items));
 
 				ImGui::EndTabItem();
-
 			}
 
 			if (ImGui::BeginTabItem("Material"))
@@ -401,18 +393,18 @@ namespace Aen {
 
 	void ImGuiHandler::addCube()
 	{
-		addBase("Cube", cubeCount, "Cube.obj");
+		addBase("Cube", "Cube.obj");
 	}
 
 	void ImGuiHandler::addPlane()
 	{
-		addBase("Plane", planeCount, "Plane.obj");
+		addBase("Plane", "Plane.obj");
 	}
 
-	void ImGuiHandler::addBase(string meshName, int& count, string objName)
+	void ImGuiHandler::addBase(string meshName, string objName)
 	{
 		Aen::Entity* entity = AEN_NEW(Aen::Entity);
-		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName + std::to_string(count));
+		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName + std::to_string(entityCount));
 		mesh.Load(AEN_RESOURCE_DIR(objName));
 
 		entity->AddComponent<Aen::MeshInstance>();
@@ -420,7 +412,6 @@ namespace Aen {
 
 		addModel(entity);
 		deleteList.push_back(entityList.size());
-		count++;
 	}
 	
 	string ImGuiHandler::checkType(Aen::Entity* entity)
@@ -439,24 +430,68 @@ namespace Aen {
 		else
 		{
 			type = "Asset" + std::to_string(entityCount);
-			entityCount++;
+			
 		}
-
+		entityCount++;
 
 		return type;
 	}
 
-	void ImGuiHandler::removeObject()
+	void ImGuiHandler::readAllFilesFromResourceFolder()
 	{
-		//delete entityList[selectedEntity];
-		itemList.erase(itemList.begin() + selectedEntity);
+		string filePath = "../Resource/";
+		string fileName = "";
+		string fileType = "";
+		//int index = 0;
 
-		cout << "en " << entityCount << " sel " << selectedEntity << endl;
-		deleteList.erase(deleteList.begin() + (entityList.size() - selectedEntity));
-		cubeCount--;
-		entityCount--;
+		for (const auto & entry : std::filesystem::directory_iterator(filePath))
+		{
+			fileName = entry.path().filename().string();
+			fileType = fileName.substr(fileName.find_last_of(".") + 1);
+			
+			if (fileType == "obj")
+			{
+				objFileName.push_back(fileName);
+				cout << fileName << endl;
+			}
+			else if (fileType == "png" || fileType == "jpg")
+			{
+				textureFileName.push_back(fileType);
+			}
+		}
+	}
+
+	bool ImGuiHandler::addButton(string name)
+	{
+			return ImGui::Button(name.c_str());
+	}
+
+	void ImGuiHandler::handleButton()
+	{
+		for (size_t i = 0; i < objFileName.size(); i++)
+		{
+			if (addButton(objFileName[i].substr(0, objFileName[i].length() - 4)))
+			{
+				addBase(objFileName[i].substr(0, objFileName[i].length() - 4), objFileName[i]);
+			}
+		}
 
 	}
 
+	void ImGuiHandler::removeObject()
+	{
+
+		for (int i = 0; i < deleteList.size(); i++)
+		{
+			if (selectedEntity == deleteList[i] - 1)
+			{
+				/*delete entityList[selectedEntity];
+				entityList.erase(entityList.begin() + selectedEntity);
+				itemList.erase(itemList.begin() + selectedEntity);
+				deleteList.erase(deleteList.begin() + i);
+				entityCount--;*/
+			}
+		}
+	}
 }
 
