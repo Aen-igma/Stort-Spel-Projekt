@@ -1,7 +1,7 @@
 #include "RandomNumberGenerator.h"
 
 static uint64_t nLehmer = 0;
-const int LehmerInt() {
+const uint64_t LehmerInt() {
 	nLehmer += 0xe120fc15;
 	uint64_t temp;
 	temp = (uint64_t)nLehmer * 0x4a39b70d;
