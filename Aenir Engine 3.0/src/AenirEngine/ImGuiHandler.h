@@ -4,6 +4,7 @@
 #include "Graphics/Component/ComponentHandler.h"
 #include "Graphics/Component/Entity.h"
 #include <filesystem>
+#include "CreateThumbnail.h"
 
 #include "ThirdParty/ImGui/imgui.h"
 #include "ThirdParty/ImGui/imgui_stdlib.h"
@@ -22,58 +23,64 @@ namespace Aen {
 	class AEN_DECLSPEC ImGuiHandler {
 
 	private:
+		void SaveThumbnail(string& destinationPath, string& filePathDestination,
+			string& sourcePath, string& filePathSource,
+			Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i);
+
+	private:
 		//bool initialized = false;
 
-		Aen::EntityHandler* entityHandlerPtr;
+		Aen::EntityHandler* mp_entityHandlerPtr;
 
-		vector<Aen::Entity*> entityList;
+		vector<Aen::Entity*> m_entityList;
+		vector<string> m_itemList;
+		vector<bool> m_hitBoxList;
+		vector<int> m_deleteList;
+		vector<string> m_objFileName;
+		vector<string> m_objName;
+		vector<string> m_textureFileName;
+		vector<string> m_textureName;
 
-		vector<string> itemList;
-		vector<bool> hitBoxList;
-		vector<int> deleteList;
-		vector<string> objFileName;
-		vector<string> textureFileName;
-
-		int selectedEntity = 0;
-		float xyzTranslation[3] = { 0,0,0 };
-		float xyzRotation[3] = { 0,0,0 };
-		float xyzScale[3] = { 1,1,1 };
-		int entityCount = 0;
+		int m_selectedEntity = 0;
+		float m_xyzTranslation[3] = { 0,0,0 };
+		float m_xyzRotation[3] = { 0,0,0 };
+		float m_xyzScale[3] = { 1,1,1 };
+		int m_entityCount = 0;
 
 	public:
 		ImGuiHandler();
 		~ImGuiHandler();
 
+		void StartUp();
 
+		void Initialize(const HWND& hwnd, ID3D11Device* mp_device, ID3D11DeviceContext* mp_dContext);
+		void NewFrame();
+		void Render();
+		void Release();
+		void SceneListWindow();
+		void AssetWindow();
+		void ColorWheel();
+		void PropertyWindow();
+		void ToolWindow();
+		void MaterialWindow();
+		void Update();
 
-		void initialize(HWND& hwnd, ID3D11Device* m_device, ID3D11DeviceContext* m_dContext);
-		void newFrame();
-		void render();
-		void release();
-		void sceneListWindow();
-		void assetWindow();
-		void colorWheel();
-		void propertyWindow();
-		void toolWindow();
-		void materialWindow();
-		void update();
+		void AddModel(Aen::Entity* entity);
+		void ReadAllModelsFromHandler();
+		void CreatePreviewTextureThumbnail();
 
-		void addModel(Aen::Entity* entity);
-		void readAllModelsFromHandler();
+		void SetValues();
+		void SetDefaultValue();
+		void ZeroValue();
+		void SetMaterialValues();
 
-		void setValues();
-		void setDefaultValue();
-		void zeroValue();
+		void AddBase(const string &meshName, const string &objName);
+		void RemoveObject();
 
-		void addCube();
-		void addPlane();
-		void addBase(string meshName, string objName);
-		void removeObject();
-
-		void readAllFilesFromResourceFolder();
-		bool addButton(string name);
-		void handleButton();
-		string checkType(Aen::Entity* entity);
+		void ReadAllFilesFromResourceFolder();
+		bool AddButton(const string& name);
+		void HandleButton();
+		const string CheckType(Aen::Entity* entity);
 	};
 }
 

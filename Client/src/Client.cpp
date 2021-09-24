@@ -41,10 +41,7 @@ void Client::Start() {
 	m_cube.AddComponent<Aen::MeshInstance>();
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
 
-
-
-	Aen::GlobalSettings::getImGuiHandler()->readAllModelsFromHandler();
-	Aen::GlobalSettings::getImGuiHandler()->readAllFilesFromResourceFolder();
+	Aen::GlobalSettings::GetImGuiHandler()->StartUp();
 
 	cout << endl;
 

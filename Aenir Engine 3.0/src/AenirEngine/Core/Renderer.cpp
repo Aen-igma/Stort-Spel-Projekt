@@ -127,13 +127,13 @@ namespace Aen {
 		m_screenQuad.Draw();
 
 		//Aen::GlobalSettings::guiHandler;
-		Aen::GlobalSettings::guiHandler->newFrame();
-		Aen::GlobalSettings::guiHandler->sceneListWindow();
-		Aen::GlobalSettings::guiHandler->assetWindow();
-		Aen::GlobalSettings::guiHandler->propertyWindow();
-		Aen::GlobalSettings::guiHandler->toolWindow();
-		Aen::GlobalSettings::guiHandler->materialWindow();
-		Aen::GlobalSettings::guiHandler->render();
+		Aen::GlobalSettings::mp_guiHandler->NewFrame();
+		Aen::GlobalSettings::mp_guiHandler->SceneListWindow();
+		Aen::GlobalSettings::mp_guiHandler->AssetWindow();
+		Aen::GlobalSettings::mp_guiHandler->PropertyWindow();
+		Aen::GlobalSettings::mp_guiHandler->ToolWindow();
+		Aen::GlobalSettings::mp_guiHandler->MaterialWindow();
+		Aen::GlobalSettings::mp_guiHandler->Render();
 
 
 		// Present

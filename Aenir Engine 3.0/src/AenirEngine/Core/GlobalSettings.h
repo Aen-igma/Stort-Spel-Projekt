@@ -32,8 +32,8 @@ namespace Aen {
 			return m_BGColor;
 		}
 
-		static ImGuiHandler*& getImGuiHandler() {
-			return guiHandler;
+		static ImGuiHandler*& GetImGuiHandler() {
+			return mp_guiHandler;
 		}
 
 
@@ -126,7 +126,7 @@ namespace Aen {
 		static Entity* m_pMainCamera;
 		static Color m_BGColor;
 
-		static ImGuiHandler* guiHandler;
+		static ImGuiHandler* mp_guiHandler;
 
 	};
 

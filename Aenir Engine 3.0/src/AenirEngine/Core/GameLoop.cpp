@@ -23,7 +23,7 @@ namespace Aen {
 		m_renderer->Initialize();
 
 		// imGui initialize
-		Aen::GlobalSettings::getImGuiHandler()->initialize(m_app->m_window.GetWHND(), GCore::m_device.Get(), GCore::m_dContext.Get());
+		Aen::GlobalSettings::GetImGuiHandler()->Initialize(m_app->m_window.GetWHND(), GCore::m_device.Get(), GCore::m_dContext.Get());
 
 		m_app->Start();
 	}
@@ -48,8 +48,8 @@ namespace Aen {
 		}
 
 		// Destroy imGui
-		Aen::GlobalSettings::getImGuiHandler()->release();
-		delete Aen::GlobalSettings::getImGuiHandler();
+		Aen::GlobalSettings::GetImGuiHandler()->Release();
+		delete Aen::GlobalSettings::GetImGuiHandler();
 		
 		Resource::Destroy();
 		GCore::Concealed::Release();

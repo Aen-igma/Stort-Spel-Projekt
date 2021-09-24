@@ -3,6 +3,7 @@
 
 namespace Aen {
 
+	
 	ImGuiHandler::ImGuiHandler()
 	{
 	}
@@ -10,27 +11,49 @@ namespace Aen {
 	ImGuiHandler::~ImGuiHandler()
 	{
 
-		if (deleteList.size() > 0)
+		if (m_deleteList.size() > 0)
 		{
-			for (size_t i = 0; i < deleteList.size(); i++)
+			for (size_t i = 0; i < m_deleteList.size(); i++)
 			{
-				delete entityList[deleteList[i] - 1];
+				delete m_entityList[m_deleteList[i] - 1];
 			}
 		}
 	}
 
-	void ImGuiHandler::initialize(HWND& hwnd, ID3D11Device* m_device, ID3D11DeviceContext* m_dContext)
+	void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
+		string& sourcePath, string& filePathSource, 
+		Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i)
+	{
+		destinationPath = filePathDestination + m_textureName[i] + "_Thumbnail.png";
+		sourcePath = filePathSource + m_textureFileName[i];
+
+		source.LoadImageThumb(sourcePath.c_str());
+		source.MakeThumbnail(&destination);
+		destination.SaveImage(destinationPath.c_str());
+
+		source.freeData();
+		destination.freeData();
+	}
+
+	void ImGuiHandler::StartUp()
+	{
+		ReadAllModelsFromHandler();
+		ReadAllFilesFromResourceFolder();
+		CreatePreviewTextureThumbnail();
+	}
+
+	void ImGuiHandler::Initialize(const HWND& hwnd, ID3D11Device* mp_device, ID3D11DeviceContext* mp_dContext)
 	{
 		// SetUp ImGui
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui_ImplWin32_Init(hwnd);
-		ImGui_ImplDX11_Init(m_device, m_dContext);
+		ImGui_ImplDX11_Init(mp_device, mp_dContext);
 		ImGui::StyleColorsDark();
 	}
 
-	void ImGuiHandler::newFrame()
+	void ImGuiHandler::NewFrame()
 	{
 		// Start the ImGui frame
 		ImGui_ImplDX11_NewFrame();
@@ -38,21 +61,21 @@ namespace Aen {
 		ImGui::NewFrame();
 	}
 
-	void ImGuiHandler::render()
+	void ImGuiHandler::Render()
 	{
 		// Draw
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
 
-	void ImGuiHandler::release()
+	void ImGuiHandler::Release()
 	{
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
 	}
 	
-	void ImGuiHandler::sceneListWindow()
+	void ImGuiHandler::SceneListWindow()
 	{
 		ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_MenuBar);
 
@@ -81,18 +104,16 @@ namespace Aen {
 			ImGui::EndMenuBar();
 		}
 
-
-
 		ImGui::BeginChild("List");
 
 		if (ImGui::BeginListBox("Test"))
 		{
-			for (size_t i = 0; i < itemList.size(); i++)
+			for (size_t i = 0; i < m_itemList.size(); i++)
 			{
-				const bool is_selected = (selectedEntity == i);
-				if (ImGui::Selectable(itemList[i].c_str(), is_selected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+				const bool is_selected = (m_selectedEntity == i);
+				if (ImGui::Selectable(m_itemList[i].c_str(), is_selected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
 				{
-					selectedEntity = i;
+					m_selectedEntity = static_cast<int>(i);
 				}
 
 				if (is_selected == true)
@@ -112,7 +133,7 @@ namespace Aen {
 
 	}
 
-	void ImGuiHandler::assetWindow()
+	void ImGuiHandler::AssetWindow()
 	{
 		ImGui::Begin("Assets", nullptr);
 		ImGui::Separator();
@@ -120,11 +141,11 @@ namespace Aen {
 		{
 			if (ImGui::BeginTabItem("Model"))
 			{
-				handleButton();
+				HandleButton();
 
-				if (addButton("Delete"))
+				if (AddButton("Delete"))
 				{
-					removeObject();
+					RemoveObject();
 				}
 
 				ImGui::EndTabItem();
@@ -140,7 +161,7 @@ namespace Aen {
 		ImGui::End();
 	}
 
-	void ImGuiHandler::colorWheel()
+	void ImGuiHandler::ColorWheel()
 	{
 		ImGui::Begin("Color", nullptr);
 		static float color[3] = { 255,255,255 };
@@ -148,7 +169,7 @@ namespace Aen {
 		ImGui::End();
 	}
 
-	void ImGuiHandler::propertyWindow()
+	void ImGuiHandler::PropertyWindow()
 	{
 
 		static bool hitBoxEnable = false;
@@ -172,7 +193,7 @@ namespace Aen {
 		////static ImVec2 imageSize = ImVec2(50, 50);
 		////ImGui::Image("Display", imageSize,)
 
-		setDefaultValue();
+		SetDefaultValue();
 
 		ImGui::Begin("Mesh Properties", nullptr);
 
@@ -182,11 +203,11 @@ namespace Aen {
 			{
 				if (ImGui::CollapsingHeader("Transform Attributes"))
 				{
-					ImGui::InputFloat3("Translate", xyzTranslation);
-					ImGui::InputFloat3("Rotate", xyzRotation);
-					ImGui::InputFloat3("Scale", xyzScale);
+					ImGui::InputFloat3("Translate", m_xyzTranslation);
+					ImGui::InputFloat3("Rotate", m_xyzRotation);
+					ImGui::InputFloat3("Scale", m_xyzScale);
 
-					setValues();
+					SetValues();
 				}
 
 				ImGui::Checkbox("Hit box", &hitBoxEnable);
@@ -198,11 +219,44 @@ namespace Aen {
 				ImGui::EndTabItem();
 			}
 
+
 			if (ImGui::BeginTabItem("Material"))
 			{
+
 				if (ImGui::CollapsingHeader("Common Material Properties"))
 				{
-					ImGui::SliderFloat("Color", &albedoColor, 0.0f, 1.0f);
+					static int currentIndex = 0;
+					if (ImGui::BeginCombo("Test", m_textureName[currentIndex].c_str()))
+					{
+						for (size_t i = 0; i < m_textureName.size(); i++)
+						{
+							static bool isSelected = (currentIndex == i);
+							
+							if (ImGui::Selectable(m_textureName[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+							{
+								currentIndex = i;
+								//string imageName = AEN_RESOURCE_DIR(m_textureFileName[i]);
+								//Aen::Texture& texture = Aen::Resource::CreateTexture("test");
+								//texture.LoadTexture(imageName);
+
+
+
+
+
+
+
+								
+							}
+
+							if (isSelected)
+							{
+								ImGui::SetItemDefaultFocus();
+							}
+						}
+
+						ImGui::EndCombo();
+					}
+
 					ImGui::SliderFloat("Transparency", &transparency, 0.0f, 1.0f);
 					ImGui::SliderFloat("Ambient Color", &ambientColor, 0.0f, 1.0f);
 					ImGui::SliderFloat("Diffuse", &diffuse, 0.0f, 1.0f);
@@ -217,18 +271,15 @@ namespace Aen {
 				{
 					ImGui::SliderFloat("Specular Color", &specularColor, 0.0f, 1.0f);
 					ImGui::SliderFloat("Reflectivity", &reflectivity, 0.0f, 1.0f);
-
 				}
 				ImGui::EndTabItem();
 			}
-
 			ImGui::EndTabBar();
 		}
-
 		ImGui::End();
 	}
 
-	void ImGuiHandler::toolWindow()
+	void ImGuiHandler::ToolWindow()
 	{
 		static int mode = -1;
 		static const std::string stringArray[3] = { "Move","Rotate","Scale" };
@@ -237,7 +288,7 @@ namespace Aen {
 		ImGui::Begin("a", nullptr);
 		for (int i = 0; i < 3; i++)
 		{
-			if (ImGui::Button(stringArray[i].c_str()));
+			if (ImGui::Button(stringArray[i].c_str()))
 			{
 				mode = i;
 
@@ -258,163 +309,228 @@ namespace Aen {
 		ImGui::End();
 	}
 
-	void ImGuiHandler::materialWindow()
+	void ImGuiHandler::MaterialWindow()
 	{
 		/*static string testString = "a";
 		ImGui::InputText("test", &testString);*/
 	}
 
-	void ImGuiHandler::update()
+	void ImGuiHandler::Update()
 	{
 
 
 	}
 
-	void ImGuiHandler::addModel(Aen::Entity* entity)
+	void ImGuiHandler::AddModel(Aen::Entity* entity)
 	{
-		entityList.push_back(entity);
-		itemList.push_back("Asset" + std::to_string(entityCount));
-		entityCount++;
+		m_entityList.push_back(entity);
+		m_itemList.push_back("Asset" + std::to_string(m_entityCount));
+		m_entityCount++;
 	}
 
-	void ImGuiHandler::readAllModelsFromHandler()
+	void ImGuiHandler::ReadAllModelsFromHandler()
 	{
-		if (entityList.size() < entityHandlerPtr->m_entities.size())
+		if (m_entityList.size() < mp_entityHandlerPtr->m_entities.size())
 		{
-			for (std::pair<uint32_t, Aen::Entity*> element : entityHandlerPtr->m_entities)
+			for (std::pair<uint32_t, Aen::Entity*> element : mp_entityHandlerPtr->m_entities)
 			{
-				entityList.push_back(element.second);
-				itemList.push_back(checkType(element.second));
+				m_entityList.push_back(element.second);
+				m_itemList.push_back(CheckType(element.second));
 			}
 		}
 	}
 
-	void ImGuiHandler::setDefaultValue()
+	void ImGuiHandler::CreatePreviewTextureThumbnail()
+	{
+		string filePathDestination = "../Resource/Thumbnail/";
+		string filePathSource = "../Resource/";
+		string destinationPath;
+		string sourcePath;
+
+		string fileNameDestination = "";
+
+		Aen::ImageByteData destination;
+		destination.x = 50;
+		destination.y = 50;
+		destination.channels = 4;
+
+		Aen::ImageByteData source;
+
+		if (std::filesystem::is_empty(filePathDestination))
+		{
+			cout << "is empty" << endl;
+
+			for (int i = 0; i < m_textureFileName.size(); i++)
+			{
+				SaveThumbnail(destinationPath, filePathDestination,
+					sourcePath, filePathSource,
+					source, destination, i);
+			}
+		}
+		else
+		{
+			int numberOfFile = 0;
+
+			for (int i = 0; i < m_textureFileName.size(); i++)
+			{
+				for (const auto& entryTwo : std::filesystem::directory_iterator(filePathDestination))
+				{
+					fileNameDestination = entryTwo.path().filename().string();
+
+					if ((m_textureName[i] == fileNameDestination.substr(0, fileNameDestination.length() - (4 + 10))) != true)
+					{
+						SaveThumbnail(destinationPath, filePathDestination,
+							sourcePath, filePathSource,
+							source, destination, i);
+					}
+					else
+					{
+						cout << "Already exist" << endl;
+					}
+
+				}
+			}
+		}
+	}
+
+	void ImGuiHandler::SetDefaultValue()
 	{
 
-		if (entityList.size() > 0 && selectedEntity < entityList.size())
+		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
-			uint32_t id = entityList[selectedEntity]->getID();
+			uint32_t id = m_entityList[m_selectedEntity]->getID();
 
 			if (Aen::ComponentHandler::TranslationExist(id))
 			{
-				xyzTranslation[0] = entityList[selectedEntity]->GetPos().x;
-				xyzTranslation[1] = entityList[selectedEntity]->GetPos().y;
-				xyzTranslation[2] = entityList[selectedEntity]->GetPos().z;
+				m_xyzTranslation[0] = m_entityList[m_selectedEntity]->GetPos().x;
+				m_xyzTranslation[1] = m_entityList[m_selectedEntity]->GetPos().y;
+				m_xyzTranslation[2] = m_entityList[m_selectedEntity]->GetPos().z;
 			}
 			else
 			{
 				for (int i = 0; i < 3; i++)
 				{
-					xyzTranslation[i] = 0;
+					m_xyzTranslation[i] = 0;
 				}
 			}
 
 			if (Aen::ComponentHandler::RotationExist(id))
 			{
-				xyzRotation[0] = entityList[selectedEntity]->GetRot().x;
-				xyzRotation[1] = entityList[selectedEntity]->GetRot().y;
-				xyzRotation[2] = entityList[selectedEntity]->GetRot().z;
+				m_xyzRotation[0] = m_entityList[m_selectedEntity]->GetRot().x;
+				m_xyzRotation[1] = m_entityList[m_selectedEntity]->GetRot().y;
+				m_xyzRotation[2] = m_entityList[m_selectedEntity]->GetRot().z;
 			}
 			else
 			{
 				for (int i = 0; i < 3; i++)
 				{
-					xyzRotation[i] = 0;
+					m_xyzRotation[i] = 0;
 				}
 			}
 
 			if (Aen::ComponentHandler::ScaleExist(id))
 			{
-				xyzScale[0] = entityList[selectedEntity]->GetScale().x;
-				xyzScale[1] = entityList[selectedEntity]->GetScale().y;
-				xyzScale[2] = entityList[selectedEntity]->GetScale().z;
+				m_xyzScale[0] = m_entityList[m_selectedEntity]->GetScale().x;
+				m_xyzScale[1] = m_entityList[m_selectedEntity]->GetScale().y;
+				m_xyzScale[2] = m_entityList[m_selectedEntity]->GetScale().z;
 			}
 			else
 			{
-
 				for (int i = 0; i < 3; i++)
 				{
 					if ((Aen::ComponentHandler::DirectionalLightExist(id) || Aen::ComponentHandler::SpotLightExist(id) || Aen::ComponentHandler::PointLightExist(id)))
 					{
-						xyzScale[i] = 0;
+						m_xyzScale[i] = 0;
 					}
 					else
 					{
-						xyzScale[i] = 1;
+						m_xyzScale[i] = 1;
 					}
 				}
 			}
 		}
 		else
 		{
-			zeroValue();
+			ZeroValue();
 
 		}
 	}
 
-	void ImGuiHandler::setValues()
+	void ImGuiHandler::SetValues()
 	{
-		if (entityList.size() > 0 && selectedEntity < entityList.size())
+		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
-			uint32_t id = entityList[selectedEntity]->getID();
+			uint32_t id = m_entityList[m_selectedEntity]->getID();
 
 			if (Aen::ComponentHandler::TranslationExist(id)) 
 			{
-				entityList[selectedEntity]->SetPos(xyzTranslation[0], xyzTranslation[1], xyzTranslation[2]);
+				m_entityList[m_selectedEntity]->SetPos(m_xyzTranslation[0], m_xyzTranslation[1], m_xyzTranslation[2]);
 			}
 						
 			if (Aen::ComponentHandler::RotationExist(id)) 
 			{
-				entityList[selectedEntity]->SetRot(xyzRotation[0], xyzRotation[1], xyzRotation[2]);
+				m_entityList[m_selectedEntity]->SetRot(m_xyzRotation[0], m_xyzRotation[1], m_xyzRotation[2]);
 			}
 					
 			if (Aen::ComponentHandler::ScaleExist(id)) 
 			{
-				entityList[selectedEntity]->SetScale(xyzScale[0], xyzScale[1], xyzScale[2]);
+				m_entityList[m_selectedEntity]->SetScale(m_xyzScale[0], m_xyzScale[1], m_xyzScale[2]);
 			}
 
 		}
 		else
 		{
-			zeroValue();
+			ZeroValue();
 		}
 	}
 
-	void ImGuiHandler::zeroValue()
+	void ImGuiHandler::ZeroValue()
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			xyzTranslation[i] = 0;
-			xyzRotation[i] = 0;
-			xyzScale[i] = 1;
+			m_xyzTranslation[i] = 0;
+			m_xyzRotation[i] = 0;
+			m_xyzScale[i] = 1;
 		}
 	}
 
-	void ImGuiHandler::addCube()
+	void ImGuiHandler::SetMaterialValues()
 	{
-		addBase("Cube", "Cube.obj");
+		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
+		{
+			uint32_t id = m_entityList[m_selectedEntity]->getID();
+
+			m_entityList[m_selectedEntity]->SetPos(m_xyzTranslation[0], m_xyzTranslation[1], m_xyzTranslation[2]);
+						
+			m_entityList[m_selectedEntity]->SetRot(m_xyzRotation[0], m_xyzRotation[1], m_xyzRotation[2]);
+			
+
+			if (Aen::ComponentHandler::ScaleExist(id))
+			{
+				m_entityList[m_selectedEntity]->SetScale(m_xyzScale[0], m_xyzScale[1], m_xyzScale[2]);
+			}
+
+		}
+		else
+		{
+			ZeroValue();
+		}
 	}
 
-	void ImGuiHandler::addPlane()
-	{
-		addBase("Plane", "Plane.obj");
-	}
-
-	void ImGuiHandler::addBase(string meshName, string objName)
+	void ImGuiHandler::AddBase(const string& meshName, const string& m_objName)
 	{
 		Aen::Entity* entity = AEN_NEW(Aen::Entity);
-		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName + std::to_string(entityCount));
-		mesh.Load(AEN_RESOURCE_DIR(objName));
+		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName + std::to_string(m_entityCount));
+		mesh.Load(AEN_RESOURCE_DIR(m_objName));
 
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
 
-		addModel(entity);
-		deleteList.push_back(entityList.size());
+		AddModel(entity);
+		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 	}
-	
-	string ImGuiHandler::checkType(Aen::Entity* entity)
+
+	const string ImGuiHandler::CheckType(Aen::Entity* entity)
 	{
 		string type = "";
 		uint32_t id = entity->getID();
@@ -429,20 +545,18 @@ namespace Aen {
 		}
 		else
 		{
-			type = "Asset" + std::to_string(entityCount);
-			
+			type = "Asset" + std::to_string(m_entityCount);
+			m_entityCount++;
 		}
-		entityCount++;
 
 		return type;
 	}
-
-	void ImGuiHandler::readAllFilesFromResourceFolder()
+	
+	void ImGuiHandler::ReadAllFilesFromResourceFolder()
 	{
 		string filePath = "../Resource/";
 		string fileName = "";
 		string fileType = "";
-		//int index = 0;
 
 		for (const auto & entry : std::filesystem::directory_iterator(filePath))
 		{
@@ -451,45 +565,50 @@ namespace Aen {
 			
 			if (fileType == "obj")
 			{
-				objFileName.push_back(fileName);
-				cout << fileName << endl;
+				m_objFileName.push_back(fileName);
+				m_objName.push_back(fileName.substr(0, fileName.length() - 4));
+				cout << fileName.substr(0, fileName.length() - 4) << endl;
 			}
 			else if (fileType == "png" || fileType == "jpg")
 			{
-				textureFileName.push_back(fileType);
+				m_textureFileName.push_back(fileName);
+				m_textureName.push_back(fileName.substr(0, fileName.length() - 4));
+				cout << fileName.substr(0, fileName.length() - 4) << endl;
 			}
 		}
 	}
 
-	bool ImGuiHandler::addButton(string name)
+	bool ImGuiHandler::AddButton(const string &name)
 	{
 			return ImGui::Button(name.c_str());
 	}
 
-	void ImGuiHandler::handleButton()
+	void ImGuiHandler::HandleButton()
 	{
-		for (size_t i = 0; i < objFileName.size(); i++)
+		for (size_t i = 0; i < m_objFileName.size(); i++)
 		{
-			if (addButton(objFileName[i].substr(0, objFileName[i].length() - 4)))
+			if (AddButton(m_objName[i]))
 			{
-				addBase(objFileName[i].substr(0, objFileName[i].length() - 4), objFileName[i]);
+				AddBase(m_objName[i], m_objFileName[i]);
 			}
 		}
 
 	}
 
-	void ImGuiHandler::removeObject()
+
+
+	void ImGuiHandler::RemoveObject()
 	{
 
-		for (int i = 0; i < deleteList.size(); i++)
+		for (int i = 0; i < m_deleteList.size(); i++)
 		{
-			if (selectedEntity == deleteList[i] - 1)
+			if (m_selectedEntity == m_deleteList[i] - 1)
 			{
-				/*delete entityList[selectedEntity];
-				entityList.erase(entityList.begin() + selectedEntity);
-				itemList.erase(itemList.begin() + selectedEntity);
-				deleteList.erase(deleteList.begin() + i);
-				entityCount--;*/
+				delete m_entityList[m_selectedEntity];
+				m_entityList.erase(m_entityList.begin() + m_selectedEntity);
+				m_itemList.erase(m_itemList.begin() + m_selectedEntity);
+				m_deleteList.erase(m_deleteList.begin() + i);
+				m_entityCount--;
 			}
 		}
 	}
