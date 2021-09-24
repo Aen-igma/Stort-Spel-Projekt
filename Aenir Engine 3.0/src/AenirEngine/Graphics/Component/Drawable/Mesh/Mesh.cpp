@@ -18,6 +18,11 @@ namespace Aen {
 		:m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
 	
 	Mesh::Mesh(const std::string& dir) {
+
+		const aiScene* animTest = aiImportFile("../Resource/Cube.obj", aiProcessPreset_TargetRealtime_MaxQuality);
+		std::cout << "Number of meshes: " << animTest->mMeshes << std::endl;
+		std::cout << "Number of verts: " << animTest->mMeshes[0]->mVertices << std::endl;
+
 		ImportObj(m_vertices, dir, m_partitions, m_meshMaterialName);
 		if(m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_meshMaterialName.size());
