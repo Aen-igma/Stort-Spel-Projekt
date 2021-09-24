@@ -1,6 +1,7 @@
 #include "RandomNumberGenerator.h"
 
 static uint64_t nLehmer = 0;
+static uint64_t lehmerConstSeed = 0;
 const uint64_t LehmerInt() {
 	nLehmer += 0xe120fc15;
 	uint64_t temp;
@@ -12,5 +13,10 @@ const uint64_t LehmerInt() {
 }
 
 void SetLehmerSeed(const int seed) {
-	nLehmer = seed;
+	nLehmer = seed + lehmerConstSeed;
+}
+
+void SetLehmerConstSeed(const int seed)
+{
+	lehmerConstSeed = seed;
 }

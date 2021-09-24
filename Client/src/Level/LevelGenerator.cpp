@@ -1,11 +1,10 @@
 
 #include "LevelGenerator.h"
 
-Room LevelGenerator::RNGRoomFromVector(const std::vector<Room>& roomVec) {
+Room LevelGenerator::RNGRoomFromVector(std::vector<Room>& roomVec) {
 	//Todo implement weigths
-	Room t = roomVec[LehmerInt() % roomVec.size()];
-	t.m_present = true;
-	return t;
+
+	return roomVec[LehmerInt() % roomVec.size()];
 };
 
 Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
@@ -42,79 +41,87 @@ Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
 		result = RNGRoomFromVector(fourway);
 		type = 4;
 	}
+	AlignRoom(&result, connectionDir, type);
+	//result.m_present = true;
+	return result;
+}
+
+void LevelGenerator::AlignRoom(Room* room, const uint32_t& connectionDir, unsigned char& type)
+{
+	uint32_t randNum;
 	if (!(type == 4)) //Exludes 4 way junctions, for the time being //Rotates rooms to align connections
 	{
-		if (connectionDir % 0xA > 0) {
+		if (connectionDir % 10 > 0) {
 			//Connection going north, rotate 1 connection south
 			switch (type)
 			{
 			case 1:
 				break;
 			case 2:
-				if (LehmerInt() % 100 > 50) {
-					result.rotateCW();
+				if (LehmerInt() % 0x80 > 0x40) {
+					room->rotateCW();
 				}
 				else {
-					result.rotate180();
+					room->rotate180();
 				}
 				break;
 			case 3:
-				randNum = LehmerInt() % 99;
-				if (randNum < 33)
-					result.rotate180();
-				else if (randNum < 66)
-					result.rotateCW();
+				randNum = LehmerInt() % 0x120;
+				if (randNum < 0x60)
+					room->rotate180();
+				else if (randNum < 0xC0)
+					room->rotateCW();
 				else
-					result.rotateCCW();
+					room->rotateCCW();
 				break;
 			default:
 				break;
 			}
 		}
-		else if (connectionDir % 0x64 > 0) {
+		else if (connectionDir % 100 > 0) {
 			//Connection going east, rotate 1 connection west
 			switch (type)
 			{
 			case 1:
-				result.rotateCCW();
+				room->rotateCCW();
 				break;
 			case 2:
-				if (LehmerInt() % 100 > 50) {
-					result.rotateCCW();
+				if (LehmerInt() % 0x80 > 0x40) {
+					room->rotateCCW();
 				}
 				else {
-					result.rotate180();
+					room->rotate180();
 				}
 				break;
 			case 3:
-				if (LehmerInt() % 100 > 50) {
-					result.rotateCCW();
+				if (LehmerInt() % 0x80 > 0x40) {
+					room->rotateCCW();
 				}
 				else {
-					result.rotate180();
+					room->rotate180();
 				}
 				break;
 			default:
 				break;
 			}
 		}
-		else if (connectionDir % 0x3E8 > 0) {
+		else if (connectionDir % 1000 > 0) {
 			//Connection going south, rotate 1 connection north
 			switch (type)
 			{
 			case 1:
 				break;
 			case 2:
-				if (LehmerInt() % 100 > 50) {
-					result.rotateCCW();
+				if (LehmerInt() % 0x80 > 0x40) {
+					room->rotateCCW();
 				}
 				break;
 			case 3:
-				randNum = LehmerInt() % 99;
-				if (randNum < 33)
-					result.rotateCW();
-				else if (randNum < 66)
-					result.rotateCCW();
+				randNum = LehmerInt() % 0x120;
+				if (randNum < 0x60)
+					room->rotateCW();
+				else if (randNum < 0xC0)
+					room->rotateCCW();
 				break;
 			default:
 				break;
@@ -125,19 +132,19 @@ Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
 			switch (type)
 			{
 			case 1:
-				result.rotateCW();
+				room->rotateCW();
 				break;
 			case 2:
-				if (LehmerInt() % 100 > 50) {
-					result.rotateCW();
+				if (LehmerInt() % 0x80 > 0x40) {
+					room->rotateCW();
 				}
 				break;
 			case 3:
-				if (LehmerInt() % 100 > 50) {
-					result.rotateCW();
+				if (LehmerInt() % 0x80 > 0x40) {
+					room->rotateCW();
 				}
 				else {
-					result.rotate180();
+					room->rotate180();
 				}
 				break;
 			default:
@@ -145,8 +152,6 @@ Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
 			}
 		}
 	}
-	result.m_present = true;
-	return result;
 }
 
 
@@ -171,7 +176,7 @@ Room* LevelGenerator::GenerateLevel() {
 
 					if (y + 1 < mapSize) {										//Prevents out of bounds
 						if (map[x][y].m_south && !map[x][y + 1].m_present) {	//Checks if region is clear
-							map[x][y + 1] = RNGRoom(map[x][y].m_south * 0x64);	//Insert random room (Pass along direction)
+							map[x][y + 1] = RNGRoom(map[x][y].m_south * 0x064);	//Insert random room (Pass along direction)
 							maxRooms--;											//reduce maxRooms
 							break;												//Break to go generate off other rooms (Experimental)
 						}
@@ -179,14 +184,14 @@ Room* LevelGenerator::GenerateLevel() {
 
 					if (y - 1 >= 0) {
 						if (map[x][y].m_north && !map[x][y - 1].m_present) {
-							map[x][y - 1] = RNGRoom(map[x][y].m_north * 0x1);
+							map[x][y - 1] = RNGRoom(map[x][y].m_north * 0x001);
 							maxRooms--;
 							break;
 						}
 					}
 					if (x + 1 < mapSize) {
 						if (map[x][y].m_east && !map[x + 1][y].m_present) {
-							map[x + 1][y] = RNGRoom(map[x][y].m_east * 0xA);
+							map[x + 1][y] = RNGRoom(map[x][y].m_east * 0x00A);
 							maxRooms--;
 							break;
 						}
@@ -243,41 +248,50 @@ Room* LevelGenerator::GenerationTestingFunction()
 
 	//Straight corridors
 	Room a;
+	a.m_baseChance = 0xf;
 	a.m_north = 1;
 	a.m_south = 1;
+	a.m_present = true;
 
 	straight.push_back(a);
 
 	//90 degree corners
-	Room c;
-	c.m_north = 1;
-	c.m_east = 1;
-
-	bend.push_back(c);
+	Room b;
+	b.m_baseChance = 0xf;
+	b.m_north = 1;
+	b.m_east = 1;
+	b.m_present = true;
+	bend.push_back(b);
 
 
 	//T junction
-	Room l;
+	Room c;
 
-	l.m_north = 1;
-	l.m_east = 1;
-	l.m_west = 1;
+	c.m_baseChance = 0xf;
+	c.m_north = 1;
+	c.m_east = 1;
+	c.m_west = 1;
+	c.m_present = true;
 
-	threeway.push_back(l);
+	threeway.push_back(c);
 
 	//4-way junction
-	Room p;
-	p.m_north = 1;
-	p.m_east = 1;
-	p.m_south = 1;
-	p.m_west = 1;
+	Room d;
+	d.m_baseChance = 0xf;
+	d.m_north = 1;
+	d.m_east = 1;
+	d.m_south = 1;
+	d.m_west = 1;
+	d.m_present = true;
 
-	fourway.push_back(p);
+	fourway.push_back(d);
 
 	//entrance
-	Room q;
-	q.m_north = 1;
-	levelentrances.push_back(q);
+	Room e;
+	e.m_baseChance = 0xf;
+	e.m_north = 1;
+	e.m_present = true;
+	levelentrances.push_back(e);
 
 
 	for (int k = 0; k < 1; k++) {
@@ -329,7 +343,55 @@ Room* LevelGenerator::GenerationTestingFunction()
 		std::cout << std::endl;
 	}
 	return *map;
-};
+}
+
+void LevelGenerator::AddRoomToGeneration(Room* room)
+{
+	uint32_t connectionDir;
+
+	connectionDir = room->m_north + room->m_east *10 + room->m_south *100 + room->m_west *1000;
+
+	switch (room->m_roomSpecial)
+	{
+	case SpecialRoom::NONE:
+		break;
+	case SpecialRoom::ENTRANCE:
+		levelentrances.push_back(*room);
+		break;
+	case SpecialRoom::EXIT:
+		levelexit.push_back(*room);
+		break;
+	case SpecialRoom::BOSS:
+		break;
+	case SpecialRoom::ARENA:
+		levelarena.push_back(*room);
+		break;
+	case SpecialRoom::ITEM:
+		break;
+	default:
+		break;
+	}
+	if (room->m_roomSpecial == SpecialRoom::NONE) {
+		switch (connectionDir)
+		{
+		case 0101:
+			straight.push_back(*room);
+			break;
+		case 0011:
+			bend.push_back(*room);
+			break;
+		case 1011:
+			threeway.push_back(*room);
+			break;
+		case 1111:
+			fourway.push_back(*room);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 
 Room::Room()
 {

@@ -4,23 +4,25 @@
 #include <cstdint>
 #include "RandomNumberGenerator.h"
 enum class SpecialRoom{ NONE, ENTRANCE, EXIT, BOSS, ARENA, ITEM };
-///////
-//  n  
-//w + e
-//  s  
-///////
+enum class RoomTheme{ GENERIC, BONES, VAMP, JUNGLE};
+/////////
+//  n  //
+//w + e// Compass lol
+//  s  //
+/////////
 struct Room {
 	bool m_enclosed	= false; //Var used in level generation, true when room is surrounded
 	bool m_present	= false;
 
 
 	SpecialRoom m_roomSpecial = SpecialRoom::NONE;
+	RoomTheme m_roomTHeme = RoomTheme::GENERIC;
 
 	//connection location
-	uint32_t m_north	=    0;	//	   0 -    9
-	uint32_t m_east		=   00;	//	  00 -   90
-	uint32_t m_south	=  000;	//	 000 -  900
-	uint32_t m_west		= 0000;	//	0000 - 9000
+	uint32_t m_north	=    0;	//	___0 - ___9		 //	Straight	: 0101	: NS
+	uint32_t m_east		=   00;	//	__0_ - __9_		 //	Bend		: 0011	: NE
+	uint32_t m_south	=  000;	//	_0__ - _9__		 //	T junction	: 1011	: NEW
+	uint32_t m_west		= 0000;	//	0___ - 9___		 //	Four way	: 1111	: NESW
 
 
 	//Probabilities
@@ -76,10 +78,14 @@ static Room map[mapSize][mapSize];
 
 class LevelGenerator {
 private:
-	static Room RNGRoomFromVector(const std::vector<Room>& roomVec);
+	static Room RNGRoomFromVector(std::vector<Room>& roomVec);
 	static Room RNGRoom(const uint32_t connectionDir);
+	static void AlignRoom(Room* room, const uint32_t& connectionDir, unsigned char& type);
 public:
 	static Room* GenerateLevel();
 
 	static Room* GenerationTestingFunction();
+
+	static void AddRoomToGeneration(Room* room);
+
 };

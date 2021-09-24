@@ -2,7 +2,12 @@
 #include"Client.h"
 
 Client::~Client() {
-
+	for (UINT i = 0; i < mapSize * mapSize; i++) {
+		if (rooms[i] != nullptr) {
+			delete rooms[i];
+			rooms[i] = nullptr;
+		}
+	}
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
@@ -31,6 +36,7 @@ void Client::Start() {
 	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
 
+	m_meshcube = &cube;
 	// -------------------------- Setup Entities -------------------------------- //
 
 	//m_plane.AddComponent<Aen::MeshInstance>();
@@ -49,17 +55,25 @@ void Client::Start() {
 	// ------------------- Procedural generation testing staging grounds ------- //
 	
 	//LevelGenerator::GenerationTestingFunction();
-	SetLehmerSeed(100);
-	LehmerInt;
+	SetLehmerConstSeed(100);
+	LehmerInt();
 	Room* map = LevelGenerator::GenerationTestingFunction();
 	
 
 
 	for (UINT y = 0; y < mapSize; y++) {
 		for (UINT x = 0; x < mapSize; x++) {
-			rooms[x + y * mapSize].AddComponent<Aen::MeshInstance>();
-			rooms[x + y * mapSize].GetComponent<Aen::MeshInstance>().SetMesh(cube);
-			rooms[x + y * mapSize].SetPos(x * 2 , 0.f, y * 2);
+			if (map[x + y * mapSize].m_present) {
+				rooms[x + y * mapSize] = new Aen::Entity();
+				rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
+				rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+				rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
+			}
+			else {
+				if (rooms[x + y * mapSize] != nullptr)
+					delete rooms[x + y * mapSize];
+				rooms[x + y * mapSize] = nullptr;
+			}
 		}
 	}
 }
@@ -82,16 +96,25 @@ void Client::Update(const float& deltaTime) {
 	}
 
 	if (Aen::Input::KeyDown(Aen::Key::H)) {
-
+		
+		SetLehmerConstSeed(LehmerInt());
 		Room* map = LevelGenerator::GenerationTestingFunction();
-
+		 
 		for (UINT y = 0; y < mapSize; y++) {
 			for (UINT x = 0; x < mapSize; x++) {
 				if (map[x + y * mapSize].m_present) {
-					rooms[x + y * mapSize].SetScale(1, 1, 1);
+					if (rooms[x + y * mapSize] == nullptr) {
+						rooms[x + y * mapSize] = new Aen::Entity();
+						rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
+						rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+						rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
+					}
 				}
 				else {
-					rooms[x + y * mapSize].SetScale(0, 0, 0);
+					if (rooms[x + y * mapSize] != nullptr){
+						delete rooms[x + y * mapSize];
+						rooms[x + y * mapSize] = nullptr;
+					}
 				}
 			}
 		}
