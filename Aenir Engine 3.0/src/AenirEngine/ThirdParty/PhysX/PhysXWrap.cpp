@@ -4,41 +4,41 @@
 
 PhysXWrap::PhysXWrap()
 {
-	this->m_Dispatcher = NULL;
-	this->m_Foundation = NULL;
-	this->m_Material =   NULL;
-	this->m_Scene =		 NULL;
-	this->m_Pvd =		 NULL;
-	this->m_Physics =    NULL;
-	this->m_Cooking =    NULL;
-	this->stackZ =		 9.0f;
+	this->mp_Dispatcher = NULL;
+	this->mp_Foundation = NULL;
+	this->mp_Material =   NULL;
+	this->mp_Scene =		 NULL;
+	this->mp_Pvd =		 NULL;
+	this->mp_Physics =    NULL;
+	this->mp_Cooking =    NULL;
+	this->m_StackZ =		 9.0f;
 }
 
 PhysXWrap::~PhysXWrap()
 {
-	this->m_Dispatcher = NULL;
-	this->m_Foundation = NULL;
-	this->m_Material = NULL;
-	this->m_Scene = NULL;
-	this->m_Pvd = NULL;
-	this->m_Physics = NULL;
-	this->m_Cooking = NULL;
+	this->mp_Dispatcher = NULL;
+	this->mp_Foundation = NULL;
+	this->mp_Material = NULL;
+	this->mp_Scene = NULL;
+	this->mp_Pvd = NULL;
+	this->mp_Physics = NULL;
+	this->mp_Cooking = NULL;
 }
 
 void PhysXWrap::CreateStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
 {
 	
-PxShape* shape = m_Physics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *m_Material);
+PxShape* shape = mp_Physics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *mp_Material);
 	//PxShape* shape = m_Physics->createShape(PxSphereGeometry(2), *m_Material);
 	for (PxU32 i = 0; i < size; i++)
 	{
 		for (PxU32 j = 0; j < size - i; j++)
 		{
 			PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
-			PxRigidDynamic* body = m_Physics->createRigidDynamic(t.transform(localTm));
+			PxRigidDynamic* body = mp_Physics->createRigidDynamic(t.transform(localTm));
 			body->attachShape(*shape);
 			PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-			m_Scene->addActor(*body);
+			mp_Scene->addActor(*body);
 		}
 	}
 	shape->release();
@@ -46,68 +46,68 @@ PxShape* shape = m_Physics->createShape(PxBoxGeometry(halfExtent, halfExtent, ha
 
 PxRigidDynamic* PhysXWrap::CreateDynamic(const PxTransform& t, const PxGeometry& geometry, const float& density, const PxVec3& velocity)
 {
-	PxRigidDynamic* dynamic = PxCreateDynamic(*m_Physics, t, geometry, *m_Material, density);
+	PxRigidDynamic* dynamic = PxCreateDynamic(*mp_Physics, t, geometry, *mp_Material, density);
 	dynamic->setAngularDamping(0.1f);
 	dynamic->setLinearVelocity(velocity);
-	m_Scene->addActor(*dynamic);
+	mp_Scene->addActor(*dynamic);
 
 	return dynamic;
 }
 
 void PhysXWrap::CreateDemo()
 {
-	m_Material = m_Physics->createMaterial(0.5f, 0.5f, 0.6f);
+	mp_Material = mp_Physics->createMaterial(0.5f, 0.5f, 0.6f);
 
-	PxRigidStatic* groundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0), *m_Material);
-	m_Scene->addActor(*groundPlane);
+	PxRigidStatic* groundPlane = PxCreatePlane(*mp_Physics, PxPlane(0, 1, 0, 0), *mp_Material);
+	mp_Scene->addActor(*groundPlane);
 
-	CreateStack(PxTransform(PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
+	CreateStack(PxTransform(PxVec3(0, 0, m_StackZ -= 10.0f)), 10, 2.0f);
 	CreateDynamic(PxTransform(PxVec3(0, 40, 120)), PxBoxGeometry(5.f, 5.f, 5.f), 20.f, PxVec3(0, -10, -100));
-	CreateStack(PxTransform(PxVec3(100, 0, stackZ -= 10.0f)), 10, 2.0f);
+	CreateStack(PxTransform(PxVec3(100, 0, m_StackZ -= 10.0f)), 10, 2.0f);
 	CreateDynamic(PxTransform(PxVec3(100, 40, 120)), PxSphereGeometry(10), 20.f, PxVec3(0, -10, -100));
 }
 
 void PhysXWrap::AddActor(PxRigidStatic* staticActor)
 {
-	m_Scene->addActor(*staticActor);
+	mp_Scene->addActor(*staticActor);
 }
 
 void PhysXWrap::AddActor(PxRigidDynamic* dynamicActor)
 {
-	m_Scene->addActor(*dynamicActor);
+	mp_Scene->addActor(*dynamicActor);
 }
 
 PxPhysics* PhysXWrap::GetPxPhysics() const
 {
-	return this->m_Physics;
+	return this->mp_Physics;
 }
 
 
 void PhysXWrap::InitPhysics(int toleranceLength, int toleranceSpeed)
 {
-	m_Foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_DefaultAllocatorCallback, m_DefaultErrorCallback);
-	if (!m_Foundation) throw("PxCreateFoundation Failed!");
+	mp_Foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_DefaultAllocatorCallback, m_DefaultErrorCallback);
+	if (!mp_Foundation) throw("PxCreateFoundation Failed!");
 
-	m_Pvd = PxCreatePvd(*m_Foundation);
+	mp_Pvd = PxCreatePvd(*mp_Foundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
-	m_Pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+	mp_Pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
 	m_ToleranceScale.length = toleranceLength;
 	m_ToleranceScale.speed = toleranceSpeed;
-	m_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation, m_ToleranceScale, true, m_Pvd);
-	if (!m_Physics) throw("PxCreatePhysics Failed!");
+	mp_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *mp_Foundation, m_ToleranceScale, true, mp_Pvd);
+	if (!mp_Physics) throw("PxCreatePhysics Failed!");
 
-	m_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *m_Foundation, PxCookingParams(m_ToleranceScale));
-	if (!m_Cooking) throw("PxCreateCooking Failed!");
+	mp_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *mp_Foundation, PxCookingParams(m_ToleranceScale));
+	if (!mp_Cooking) throw("PxCreateCooking Failed!");
 
-	PxSceneDesc sceneDesc(m_Physics->getTolerancesScale());
+	PxSceneDesc sceneDesc(mp_Physics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -30.f, 0.0f);
-	m_Dispatcher = PxDefaultCpuDispatcherCreate(2);
-	sceneDesc.cpuDispatcher = m_Dispatcher;
+	mp_Dispatcher = PxDefaultCpuDispatcherCreate(2);
+	sceneDesc.cpuDispatcher = mp_Dispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-	m_Scene = m_Physics->createScene(sceneDesc);	
+	mp_Scene = mp_Physics->createScene(sceneDesc);	
 
-	PxPvdSceneClient* pvdClient = m_Scene->getScenePvdClient();
+	PxPvdSceneClient* pvdClient = mp_Scene->getScenePvdClient();
 	if (pvdClient)
 	{
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
@@ -129,25 +129,25 @@ void PhysXWrap::InitPhysics(int toleranceLength, int toleranceSpeed)
 void PhysXWrap::ClosePhysics()
 {
 	
-	m_Scene->release();
-	m_Dispatcher->release();
-	m_Physics->release();
-	m_Cooking->release();
+	mp_Scene->release();
+	mp_Dispatcher->release();
+	mp_Physics->release();
+	mp_Cooking->release();
 
-	if (m_Pvd)
+	if (mp_Pvd)
 	{
-		physx::PxPvdTransport* transport = m_Pvd->getTransport();
-		m_Pvd->release();
-		m_Pvd = NULL;
+		physx::PxPvdTransport* transport = mp_Pvd->getTransport();
+		mp_Pvd->release();
+		mp_Pvd = NULL;
 		transport->release();
 	}
-	m_Foundation->release(); // Always release last
+	mp_Foundation->release(); // Always release last
 	
 	printf("GoodbyeWorld.\n");
 }
 
 void PhysXWrap::RunPhysics(const float& deltaTime)
 {
-		m_Scene->simulate(deltaTime);
-		m_Scene->fetchResults(true);
+		mp_Scene->simulate(deltaTime);
+		mp_Scene->fetchResults(true);
 }

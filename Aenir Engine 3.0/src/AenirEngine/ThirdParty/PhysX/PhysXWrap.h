@@ -11,14 +11,14 @@ private:
 	PxDefaultAllocator		m_DefaultAllocatorCallback;
 	PxDefaultErrorCallback  m_DefaultErrorCallback;
 	PxTolerancesScale		m_ToleranceScale;
-	PxDefaultCpuDispatcher* m_Dispatcher;
-	PxFoundation*		    m_Foundation;
-	PxMaterial*			    m_Material;
-	PxPhysics*				m_Physics;
-	PxCooking*				m_Cooking;
-	PxScene*			    m_Scene;
-	PxReal					stackZ;
-	PxPvd*					m_Pvd;
+	PxDefaultCpuDispatcher* mp_Dispatcher;
+	PxFoundation*		    mp_Foundation;
+	PxMaterial*			    mp_Material;
+	PxPhysics*				mp_Physics;
+	PxCooking*				mp_Cooking;
+	PxScene*			    mp_Scene;
+	PxReal					m_StackZ;
+	PxPvd*					mp_Pvd;
 
 public:
 	PhysXWrap();

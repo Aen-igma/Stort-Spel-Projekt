@@ -3,7 +3,7 @@
 #include"Camera/Camera.h"
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
-#include"ThirdParty\PhysX\RigidBody.h"
+#include"ThirdParty/PhysX/RigidBody.h"
 
 #include<unordered_map>
 #include<array>
@@ -286,8 +286,9 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Translation*> m_translations;
 		static std::unordered_map<uint32_t, Rotation*> m_rotations;
 		static std::unordered_map<uint32_t, Scale*> m_scales;
-		static std::multimap<uint32_t, Light*> m_lights;
 		static std::unordered_map<uint32_t, RigidBody*> m_rigids;
+		static std::multimap<uint32_t, Light*> m_lights;
+		
 		
 		static std::array<std::unordered_map<uint32_t, Drawable*>, 7> m_meshLayer;
 

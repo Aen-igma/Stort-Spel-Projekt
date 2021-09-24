@@ -4,25 +4,25 @@ using namespace physx;
 
 class PhysXService {
 private:
-    static PhysXWrap* m_PhysXService;
+    static PhysXWrap* mp_PhysXService;
 
 public:
    
     PhysXService() {
-        m_PhysXService = nullptr;
+        mp_PhysXService = nullptr;
     };
 
     virtual ~PhysXService() {
-        delete m_PhysXService; 
+        delete mp_PhysXService; 
     };
 
     static PhysXWrap* GetInstance() {
-        if (!m_PhysXService)
-            m_PhysXService = new PhysXWrap;
-        return m_PhysXService;
+        if (!mp_PhysXService)
+            mp_PhysXService = new PhysXWrap;
+        return mp_PhysXService;
     };
 
     static void SetInstance(PhysXWrap* instance) {
-        m_PhysXService = instance;
+        mp_PhysXService = instance;
     };
 };

@@ -8,8 +8,8 @@ namespace Aen {
 	std::unordered_map<uint32_t, Translation*> ComponentHandler::m_translations;
 	std::unordered_map<uint32_t, Rotation*>	ComponentHandler::m_rotations;
 	std::unordered_map<uint32_t, Scale*> ComponentHandler::m_scales;
-	std::multimap<uint32_t, Light*> ComponentHandler::m_lights;
 	std::unordered_map<uint32_t, RigidBody*> ComponentHandler::m_rigids;
+	std::multimap<uint32_t, Light*> ComponentHandler::m_lights;
 
 	std::array<std::unordered_map<uint32_t, Drawable*>, 7> ComponentHandler::m_meshLayer;
 
