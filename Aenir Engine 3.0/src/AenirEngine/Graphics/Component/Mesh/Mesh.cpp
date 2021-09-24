@@ -67,4 +67,19 @@ namespace Aen {
 	void MeshInstance::SetMesh(Mesh& mesh) {
 		m_pMesh = &mesh;
 	}
+
+	void MeshInstance::SetMaterial(Material& material) {
+		if(m_pMesh)
+			m_pMesh->SetMaterial(material);
+	}
+
+	void MeshInstance::SetMaterial(const std::string& materialSlotName, Material& material) {
+		if(m_pMesh)
+			m_pMesh->SetMaterial(materialSlotName, material);
+	}
+
+	void MeshInstance::SetMaterial(const std::string& materialSlotName, const std::string& materialName) {
+		if(m_pMesh)
+			m_pMesh->SetMaterial(materialSlotName, materialName);
+	}
 }

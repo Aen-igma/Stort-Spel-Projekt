@@ -25,12 +25,13 @@ namespace Aen {
 
 		void PrintMaterialSlots();
 		void Load(const std::string& dir);
-		void SetMaterial(Material& material);
-		void SetMaterial(const std::string& materialSlotName, Material& material);
-		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
 
 		private:
 		~Mesh();
+
+		void SetMaterial(Material& material);
+		void SetMaterial(const std::string& materialSlotName, Material& material);
+		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
 
 		VBuffer<Vertex> m_vertices;
 		std::vector<Material*> m_pMaterials;
@@ -48,6 +49,10 @@ namespace Aen {
 		MeshInstance(Mesh& mesh);
 
 		void SetMesh(Mesh& mesh);
+		void SetMaterial(Material& material);
+		void SetMaterial(const std::string& materialSlotName, Material& material);
+		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
+
 
 		private:
 		~MeshInstance();
