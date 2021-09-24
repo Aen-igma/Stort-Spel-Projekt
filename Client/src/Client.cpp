@@ -21,9 +21,21 @@ void Client::Start() {
 
 	// ------------------------ Setup Directional Light ------------------------- //
 
-	m_dLight.AddComponent<Aen::DirectionalLight>();
-	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
-	m_dLight.SetRot(45.f, -135.f, 0.f);
+	//m_dLight.AddComponent<Aen::DirectionalLight>();
+	//m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
+	//m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
+	//m_dLight.SetRot(45.f, -135.f, 0.f);
+
+	// --------------------------- Setup Spot Light ----------------------------- //
+
+	/*m_spotLight.AddComponent<Aen::SpotLight>();
+	m_spotLight.GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Red);
+	m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(1.f);
+	m_spotLight.GetComponent<Aen::SpotLight>().SetConeSize(40.f);
+	m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(500.f);
+	m_spotLight.GetComponent<Aen::SpotLight>().SetLightDist(1.f, 0.f, 0.f, 50.f);
+	m_spotLight.SetPos(0.f, 2.f, -5.f);
+	m_spotLight.SetRot(45.f, 0.f, 0.f);*/
 
 	// ----------------------------- Load Meshes -------------------------------- //
 
@@ -39,6 +51,12 @@ void Client::Start() {
 	m_plane.SetPos(0.f, -2.f, 0.f);
 	m_plane.SetScale(20.f, 1.f, 20.f);
 
+	m_plane1.AddComponent<Aen::MeshInstance>();
+	m_plane1.GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	m_plane1.SetPos(0.f, 8.f, -10.f);
+	m_plane1.SetScale(20.f, 1.f, 20.f);
+	m_plane1.SetRot(90.f, 0.f, 0.f);
+
 	m_cube.AddComponent<Aen::MeshInstance>();
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
 
@@ -51,6 +69,7 @@ void Client::Start() {
 	
 	LevelGenerator::GenerationTestingFunction();
 
+	srand((unsigned int)time(NULL));
 }
 
 void Client::Update(const float& deltaTime) {
@@ -103,4 +122,39 @@ void Client::Update(const float& deltaTime) {
 
 	if(Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		m_window.Exit();
+
+	// ---------------------------------------------------------------------------------- //
+
+	if(Aen::Input::KeyDown(Aen::Key::G)) {
+		Aen::Entity* e = AEN_NEW Aen::Entity;
+
+		int r = rand() % 3;
+		Aen::Color clr;
+		switch(r) {
+			case 0: clr = Aen::Color::Red;
+			break;
+			case 1: clr = Aen::Color::Green;
+			break;
+			case 2: clr = Aen::Color::Blue;
+			break;
+		}
+
+		e->AddComponent<Aen::PointLight>();
+		e->GetComponent<Aen::PointLight>().SetColor(clr);
+		e->GetComponent<Aen::PointLight>().SetLightDist(1.f, 1.f, 1.f, 5.f);
+		e->GetComponent<Aen::PointLight>().SetStrength(100.f);
+		e->SetPos(rand() % 20 - 10, 1.f / (rand() % 100) + 0.5f, rand() % 20 - 10);
+		m_pLights.emplace(ind++, e);
+		e = nullptr;
+	}
+
+	if(Aen::Input::KeyPress(Aen::Key::H)) {
+		for(auto i : m_pLights) {
+			int index = i.first;
+			delete i.second;
+			i.second = nullptr;
+			m_pLights.erase(index);
+			break;
+		}
+	}
 }

@@ -47,8 +47,8 @@ namespace Aen {
         
         outputCount = static_cast<UINT>(m_PSReflectPass1.GetOutputDesc().size());
         
-        if(inputCount != outputCount)
-            throw;
+        /*if(inputCount != outputCount)
+            throw;*/
 
         // GBuffer
 

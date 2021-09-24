@@ -24,7 +24,14 @@ float Luminosity(in float3 clr) {
 	return sqrt(dot(clr, float3(0.299f, 0.587f, 0.114f)));
 }
 
+// temp---
+texture2D<uint2> CullMap : CULLMAP: register(t4);
+// -------
+
 float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_TARGET {
+
+	uint cullM = CullMap.Load(int3(uv.x * 120, uv.y * 68, 0)).g;
+	float4 tintColor = float4(cullM, 0.f, 0.f, 1.f);
 
 	uint width, height;
 	diffuseMap.GetDimensions(width, height);
@@ -65,5 +72,6 @@ float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_TARGET {
 	
 	float4 diffuse = float4(sqrt(avrgColor / length), 0.f);
 
+	//return saturate(diffuse + tintColor);
 	return diffuse;
 }

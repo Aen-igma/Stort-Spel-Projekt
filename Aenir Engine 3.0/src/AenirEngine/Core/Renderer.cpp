@@ -38,13 +38,12 @@ namespace Aen {
 
 		// temp --------------------------------------------------------------------
 
-		m_dispatchInfo.GetData().threadGroups.x = (int)std::ceilf((float)m_window.GetSize().x / 256.f);
-		m_dispatchInfo.GetData().threadGroups.y = (int)std::ceilf((float)m_window.GetSize().y / 256.f);
+		m_dispatchInfo.GetData().numThreads.x = m_window.GetSize().x;
+		m_dispatchInfo.GetData().numThreads.y = m_window.GetSize().y;
+		m_dispatchInfo.GetData().threadGroups.x = (int)std::ceil((float)m_window.GetSize().x / 16.f) + 1;
+		m_dispatchInfo.GetData().threadGroups.y = (int)std::ceil((float)m_window.GetSize().y / 16.f) + 1;
 
-		m_dispatchInfo.GetData().totalThreads.x = m_window.GetSize().x;
-		m_dispatchInfo.GetData().totalThreads.y = m_window.GetSize().y;
-
-		uint32_t size = m_window.GetSize().x / 16 * m_window.GetSize().y / 16;
+		uint32_t size = m_dispatchInfo.GetData().threadGroups.x * m_dispatchInfo.GetData().threadGroups.y;
 		m_frustums.Create(64, size);
 
 		if(!m_frustumCS.Create(AEN_OUTPUT_DIR_WSTR(L"FrustomCS.cso")))
@@ -66,19 +65,16 @@ namespace Aen {
 				throw;
 
 		const uint32_t avarageLights = 200u;
-		m_lGrid.Create(m_window.GetSize().x / 16, m_window.GetSize().y / 16);
-		m_lIndexCount.Create(sizeof(uint32_t), size * avarageLights);
-		m_lIndex.Create(sizeof(uint32_t), size * avarageLights);
-
-		//--------------------------------------------------------------------------
-
-		RenderSystem::SetViewPort(m_viewPort);
-		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
-		RenderSystem::SetRasteriserState(m_rasterizerState);
+		m_lGrid.Create(m_dispatchInfo.GetData().threadGroups);
+		m_lIndexCount.Create(sizeof(uint32_t), avarageLights * size);
+		m_lIndex.Create(sizeof(uint32_t), avarageLights * size);
 	}
 
 	void Renderer::Render() {
 		
+		RenderSystem::SetViewPort(m_viewPort);
+		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
+		RenderSystem::SetRasteriserState(m_rasterizerState);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::ClearRenderTargetView(m_layerBuffer, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::ClearRenderTargetView(m_postProcessBuffer, Color(0.f, 0.f, 0.f, 0.f));
@@ -133,7 +129,7 @@ namespace Aen {
 
 				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, k.first, i);
 
-				// Light Clip Pass
+				// Light Cull Pass
 
 				RenderSystem::UnBindRenderTargets(1u);
 
@@ -143,8 +139,10 @@ namespace Aen {
 				RenderSystem::BindUnOrderedAccessView(0u, m_lIndexCount);
 				RenderSystem::BindUnOrderedAccessView(1u, m_lIndex);
 				RenderSystem::BindUnOrderedAccessView(2u, m_lGrid);
-				m_dispatchInfo.BindBuffer<CShader>(0u);
 				RenderSystem::BindShader(m_lightCullCS);
+				m_dispatchInfo.BindBuffer<CShader>(0u);
+				m_cbLightCount.BindBuffer<CShader>(1u);
+				m_cbTransform.BindBuffer<CShader>(2u);
 				
 				RenderSystem::Dispatch(m_dispatchInfo.GetData().threadGroups, 1u);
 				
@@ -176,6 +174,7 @@ namespace Aen {
 		m_screenQuad.Draw();
 		// Post Process pass
 
+
 		RenderSystem::UnBindShaderResources<PShader>(0u, m_layerBuffer.GetCount());
 		RenderSystem::UnBindRenderTargets(m_postProcessBuffer.GetCount());
 
@@ -183,6 +182,10 @@ namespace Aen {
 		RenderSystem::BindShader<VShader>(m_postProcessVS);
 		RenderSystem::BindShader<PShader>(m_postProcessPS);
 		RenderSystem::BindShaderResourceView<PShader>(0u, m_postProcessBuffer);
+
+		// temp ------------------
+		RenderSystem::BindShaderResourceView<PShader>(4, m_lGrid);
+		// -----------------------
 
 		m_screenQuad.Draw();
 
@@ -200,6 +203,7 @@ namespace Aen {
 		// Present
 
 		RenderSystem::Present();
+		RenderSystem::ClearState();
 	}
 
 	//void Renderer::Draw(std::unordered_map<uint32_t, MeshInstance*>& meshLayer, const uint32_t& layer) {

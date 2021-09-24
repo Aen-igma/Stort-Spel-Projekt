@@ -176,6 +176,9 @@ namespace Aen {
         static void BindShaderResourceView(const UINT& slot, UAView& uAView);
 
         template<class T>
+        static void BindShaderResourceView(const UINT& slot, RWTexture2D& tex2d);
+
+        template<class T>
         static void BindSamplers(const UINT& slot, Sampler& sampler);
 
         template<class T>
@@ -303,6 +306,15 @@ namespace Aen {
 
     #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& slot, UAView& uAView) {\
     m_dContext->sName(slot, 1, uAView.m_srv.GetAddressOf());\
+    }
+
+    DEF_SHADER
+    #undef X
+
+    // -------------------------- BindShaderResourceView for RWTexture2D ----------------------------
+
+    #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& slot, RWTexture2D& tex2d) {\
+    m_dContext->sName(slot, 1, tex2d.m_srv.GetAddressOf());\
     }
 
     DEF_SHADER

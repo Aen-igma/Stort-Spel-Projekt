@@ -7,7 +7,7 @@ namespace Aen {
 
 	struct CB_DispatchInfo {
 		Vec2i threadGroups;
-		Vec2i totalThreads;
+		Vec2i numThreads;
 	};
 
 	struct CB_Transform {

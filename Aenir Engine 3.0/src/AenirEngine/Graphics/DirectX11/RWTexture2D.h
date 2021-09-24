@@ -9,6 +9,7 @@ namespace Aen {
 		RWTexture2D();
 
 		void Create(const UINT& width, const UINT& height);
+		void Create(const Vec2i& size);
 
 		friend class RenderSystem;
 

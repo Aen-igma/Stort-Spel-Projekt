@@ -68,13 +68,21 @@ texture2D Aen_NormalMap : NORMALMAP;
 texture2D Aen_EmissionMap : EMISSIONMAP;
 texture2D Aen_OpacityMap : OPACITYMAP;
 
+// temp---
+RWStructuredBuffer<uint> LightIndexList : register(u4);
+texture2D<uint2> CullMap : CULLMAP: register(t4);
+// -------
+
+
 StructuredBuffer<Light> Aen_SB_Light;
 
 SamplerState wrapSampler : WSAMPLER;
 
-PS_Output main(PS_Input input) : SV_Target0{
+PS_Output main(PS_Input input) : SV_Target0 {
 
 	PS_Output output;
+	uint2 tileIndex = uint2(floor(input.pos.xy / 16));
+	uint2 cullM = CullMap[tileIndex].rg;
 
 	float3 finalPixel = float3(0.f, 0.f, 0.f);
 
@@ -86,7 +94,11 @@ PS_Output main(PS_Input input) : SV_Target0{
 
 	finalPixel += ambient;
 	
-	for(uint i = 0; i < lightCount; i++) {
+	//for(uint i = 0; i < lightCount; i++) {
+
+	for(uint k = cullM.x; k < cullM.x + cullM.y; k++) {
+		uint i = LightIndexList[k];
+
 		float3 pLightDir = normalize(Aen_SB_Light[i].pos - input.worldPos);
 		float3 cLightDir = normalize(camPos - input.worldPos);
 		float dotND = dot(Aen_SB_Light[i].dir, normal);

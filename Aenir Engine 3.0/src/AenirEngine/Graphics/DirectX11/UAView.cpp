@@ -33,7 +33,7 @@ namespace Aen {
 		uADesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 		uADesc.Buffer.FirstElement = 0;
 		uADesc.Format = DXGI_FORMAT_UNKNOWN;      
-		uADesc.Buffer.NumElements = size / stride; 
+		uADesc.Buffer.NumElements = size; 
 
 		if(FAILED(m_device->CreateUnorderedAccessView(m_buffer.Get(), &uADesc, m_uav.GetAddressOf())))
 			throw;
@@ -44,7 +44,7 @@ namespace Aen {
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
 		srvDesc.Buffer.FirstElement = 0;
 		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-		srvDesc.Buffer.NumElements = size / stride;
+		srvDesc.Buffer.NumElements = size;
 
 		if(FAILED(m_device->CreateShaderResourceView(m_buffer.Get(), &srvDesc, m_srv.GetAddressOf())))
 			throw;
@@ -71,7 +71,7 @@ namespace Aen {
 		uADesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 		uADesc.Buffer.FirstElement = 0;
 		uADesc.Format = DXGI_FORMAT_UNKNOWN;  
-		uADesc.Buffer.NumElements = size / stride;
+		uADesc.Buffer.NumElements = size;
 
 		if(FAILED(m_device->CreateUnorderedAccessView(m_buffer.Get(), &uADesc, m_uav.GetAddressOf())))
 			throw;
@@ -82,7 +82,7 @@ namespace Aen {
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
 		srvDesc.Buffer.FirstElement = 0;
 		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-		srvDesc.Buffer.NumElements = size / stride;
+		srvDesc.Buffer.NumElements = size;
 
 		if(FAILED(m_device->CreateShaderResourceView(m_buffer.Get(), &srvDesc, m_srv.GetAddressOf())))
 			throw;

@@ -79,6 +79,11 @@ namespace Aen {
 						RenderSystem::BindRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, renderer.m_depthMap);
 				}
 
+				// temp --------------------------------------
+				RenderSystem::BindUnOrderedAccessView(4u, renderer.m_lIndex);
+				RenderSystem::BindShaderResourceView<PShader>(4u, renderer.m_lGrid);
+				//--------------------------------------------
+
 				RenderSystem::ClearDepthStencilView(renderer.m_depthMap, false, true);
 				RenderSystem::SetDepthStencilState(renderer.m_writeStencil, 0xFF);
 				m_pMesh->m_vertices.Draw(m_pMesh->m_partitions[i].size, m_pMesh->m_partitions[i].offset);

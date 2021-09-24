@@ -3,9 +3,19 @@
 #define NUM_LIGHTS 1024
 
 cbuffer dispatchInfo : register(b0) {
-    uint2 threadGroups;
-    uint2 totalThreads;
+    int2 threadGroups;
+    int2 totalThreads;
 };
+
+cbuffer lightCount : register(b1) {
+    uint lCount;
+};
+
+cbuffer Aen_CB_Transform : register(b2) {
+    float4x4 vMat;
+    float4x4 pMat;
+    float4x4 mdlMat;
+}
 
 struct Plane {
     float3 normal;
@@ -46,7 +56,7 @@ struct CS_Input {
     uint gIndex : SV_GroupIndex;
 };
 
-RWStructuredBuffer<uint> LightIndeCounter : register(u0);
+RWStructuredBuffer<uint> LightIndexCounter : register(u0);
 RWStructuredBuffer<uint> LightIndexList : register(u1);
 RWTexture2D<uint2> LightGrid : register(u2);
 
@@ -93,8 +103,8 @@ bool ConeInsidePlane(Cone cone, Plane plane) {
 
 bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zNear, float zFar) {
 
-    if (sphere.pos.z - sphere.radius > zNear || sphere.pos.z + sphere.radius < zFar)
-        return false;
+   /*if (sphere.pos.z - sphere.radius > zNear || sphere.pos.z + sphere.radius < zFar)
+        return false;*/
 
     for(int i = 0; i < 4; i++)
         if(SphereInsidePlane(sphere, frustum.planes[i]))
@@ -104,26 +114,92 @@ bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zNear, float zFar
 }
 
 bool ConeInsideFrustum( Cone cone, Frustum frustum, float zNear, float zFar ) {
-    bool result = true;
 
-    Plane nearPlane = {float3( 0.f, 0.f, -1.f), -zNear};
+    /*Plane nearPlane = {float3( 0.f, 0.f, -1.f), -zNear};
     Plane farPlane = {float3( 0.f, 0.f, 1.f), zFar};
 
     if(ConeInsidePlane(cone, nearPlane) || ConeInsidePlane(cone, farPlane))
-        return false;
+        return false;*/
 
     for(int i = 0; i < 4; i++)
         if(ConeInsidePlane(cone, frustum.planes[i]))
             return false;
 
-    return result;
+    return true;
 }
 
-[numthreads(GRID_SIZE, GRID_SIZE, 1)]
+[numthreads(1, 1, 1)]
 void main(CS_Input input) {
 
-    int2 uv = input.dtId.xy;
-    float fDepth = depthMap.Load(int3(uv, 0 )).r;
+    /*int2 uv = input.gId.xy * 16 + 8;
+    float fDepth = depthMap.Load(int3(uv, 0)).r;
+    
+    uint uDepth = asuint(fDepth);
+    
+    if (input.gIndex == 0) {
+        uMinDepth = 0xffffffff;
+        uMaxDepth = 0;
+        LightCount = 0;
+        GroupFrustum = frustums[input.gId.x + (input.gId.y * threadGroups.x)];
+    }
+    
+    GroupMemoryBarrierWithGroupSync();
+    
+    InterlockedMin(uMinDepth, uDepth);
+    InterlockedMax(uMaxDepth, uDepth);
+    
+    GroupMemoryBarrierWithGroupSync();
+    
+    float fMinDepth = asfloat(uMinDepth);
+    float fMaxDepth = asfloat(uMaxDepth);
+    
+    float minDepthVS = ScreenToView(float4(0.f, 0.f, fMinDepth, 1.f)).z;
+    float maxDepthVS = ScreenToView(float4(0.f, 0.f, fMaxDepth, 1.f)).z;
+    float nearClipVS = ScreenToView(float4(0.f, 0.f, 0.f, 1.f)).z;
+    
+    Plane minPlane = {float3(0.f, 0.f, -1.f), -minDepthVS};*/
+    
+    uint count = 0;
+    uint offset = input.gId.x * 200 + input.gId.y * threadGroups.x;
+
+    for(uint i = 0; i < lCount; i++) {
+        Light light = Aen_SB_Light[i];
+
+        float3 p = mul(float4(light.pos, 1.f), vMat).xyz;
+        float3 n = normalize(mul(float4(light.dir, 0.f), vMat));
+        float d = light.dist.w;
+        switch(light.type) {
+            case 0:
+                float coneRadius = tan(radians(90.f - light.ang)) * d;
+                Cone cone = {p, d, -n, coneRadius};
+
+                if(ConeInsideFrustum(cone, frustums[input.gId.x + input.gId.y * threadGroups.x], 0, 0))
+                    if(p.z < 0.f) {
+                        LightIndexList[offset + count++] = i;
+                    }
+
+            break;
+            case 1:
+                Sphere sphere = {p, d};
+
+                if(SphereInsideFrustum(sphere, frustums[input.gId.x + input.gId.y * threadGroups.x], 0, 0))
+                    if (p.z < 0.f){
+                        LightIndexList[offset + count++] = i;
+                    }
+
+            break;
+            case 2:
+                LightIndexList[offset + count++] = i;
+            break;
+        }
+    }
+
+    LightGrid[input.gId.xy] = uint2(offset, count);
+    
+    //GroupMemoryBarrierWithGroupSync();
+    
+    /*int2 uv = input.dtId.xy;
+    float fDepth = depthMap.Load(int3(uv, 0)).r;
 
     uint uDepth = asuint(fDepth);
     
@@ -182,7 +258,7 @@ void main(CS_Input input) {
     GroupMemoryBarrierWithGroupSync();
 
     if (input.gIndex == 0) {
-        InterlockedAdd(LightIndeCounter[0], LightCount, LightIndexStartOffset);
+        InterlockedAdd(LightIndexCounter[0], LightCount, LightIndexStartOffset);
         LightGrid[input.gId.xy] = uint2(LightIndexStartOffset, LightCount);
     }
 
@@ -190,5 +266,5 @@ void main(CS_Input input) {
 
     for(i = input.gIndex; i < LightCount; i += GRID_SIZE * GRID_SIZE) {
         LightIndexList[LightIndexStartOffset + i] = LightList[i];
-    }
+    }*/
 }

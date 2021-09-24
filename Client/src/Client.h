@@ -21,11 +21,15 @@ class Client : public Aen::App {
 
 	Aen::Entity m_camera;
 	Aen::Entity m_dLight;
+	Aen::Entity m_spotLight;
 	Aen::Entity m_plane;
+	Aen::Entity m_plane1;
 	Aen::Entity m_cube;
 
 	std::vector<Aen::Entity> m_cubes;
 
+	std::unordered_map<int, Aen::Entity*> m_pLights;
+	int ind;
 };
 
 

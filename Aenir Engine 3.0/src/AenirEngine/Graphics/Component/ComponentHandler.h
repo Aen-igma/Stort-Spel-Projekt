@@ -252,6 +252,10 @@ namespace Aen {
 			return m_meshLayer[layer];
 		}
 
+		static void RemoveMeshFromLayer(const uint32_t id, const uint32_t& layer) {
+			m_meshLayer[layer].erase(id);
+		}
+
 		// ------------------------------------------ //
 
 		static std::unordered_map<uint32_t, Camera*> m_cameras;
