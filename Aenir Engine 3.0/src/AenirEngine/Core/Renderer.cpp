@@ -50,23 +50,38 @@ namespace Aen {
 
 		if(GlobalSettings::m_pMainCamera) {
 
+			pt::CamClass* pbetterCam = GlobalSettings::m_pMainBetterCam;
 			Entity* pCam = GlobalSettings::m_pMainCamera;
 
-			Vec3f pos = pCam->GetPos();
-			Vec3f rot = pCam->GetRot();
+			//Vec3f pos = pCam->GetPos();
+			//Vec3f rot = pCam->GetRot();
 
-			pCam->GetComponent<Camera>().UpdateView(pos, rot);
+			sm::Vector3 pos = pbetterCam->getPosition();
+			sm::Vector3 rot = pbetterCam->getRotation();
+
 			
-			m_cbCamera.GetData().pos = pos;
-			m_cbCamera.GetData().fDir = pCam->GetComponent<Camera>().GetForward();
-			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
+
+			//pCam->GetComponent<Camera>().UpdateView(pos, rot);
+			
+
+			m_cbCamera.GetData().pos = pbetterCam->getPosition();
+			m_cbCamera.GetData().uDir = pbetterCam->getUpV();
+			m_cbCamera.GetData().fDir = pbetterCam->getForwardV();
+			//m_cbCamera.GetData().pos = { pos.x, pos.y, pos.z };
+			//m_cbCamera.GetData().fDir = pCam->GetComponent<Camera>().GetForward();
+			//m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
 			m_cbCamera.UpdateBuffer();
 
-			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
-			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+			//m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+			//m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+
+			m_cbTransform.GetData().m_vMat = pbetterCam->getView().Transpose();
+			m_cbTransform.GetData().m_pMat = pbetterCam->getProj().Transpose();
 		} else {
-			m_cbTransform.GetData().m_vMat = Mat4f::identity;
-			m_cbTransform.GetData().m_pMat = Mat4f::identity;
+			m_cbTransform.GetData().m_pMat = sm::Matrix::Identity;
+			m_cbTransform.GetData().m_vMat = sm::Matrix::Identity;
+			//m_cbTransform.GetData().m_vMat = Mat4f::identity;
+			//m_cbTransform.GetData().m_pMat = Mat4f::identity;
 		}
 
 		// Light

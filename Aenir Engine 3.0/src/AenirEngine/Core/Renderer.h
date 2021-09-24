@@ -13,6 +13,14 @@ namespace Aen {
 		CB_Transform() :m_vMat(Mat4f::identity), m_pMat(Mat4f::identity), m_mdlMat(Mat4f::identity) {}
 	};
 
+	struct SMCB_Transform {
+		sm::Matrix m_vMat;
+		sm::Matrix m_pMat;
+		sm::Matrix m_mdlMat;
+
+		//SMCB_Transform() :m_vMat(Mat4f::identity), m_pMat(Mat4f::identity), m_mdlMat(Mat4f::identity) {}
+	};
+
 	struct CB_Camera {
 		Vec3f pos;
 		float pad;
@@ -22,6 +30,17 @@ namespace Aen {
 		float pad2;
 
 		CB_Camera() :pos(), pad(0.f), fDir(), pad1(0.f), uDir(), pad2(0.f) {}
+	};
+
+	struct SMCB_Camera {
+		sm::Vector3 pos;
+		float pad;
+		sm::Vector3 fDir;
+		float pad1;
+		sm::Vector3 uDir;
+		float pad2;
+
+		SMCB_Camera() :pos(), pad(0.f), fDir(), pad1(0.f), uDir(), pad2(0.f) {}
 	};
 
 	class Renderer {
@@ -44,7 +63,7 @@ namespace Aen {
 		CBuffer<Color> m_cbBGColor;
 		CBuffer<CB_Transform> m_cbTransform;
 		CBuffer<uint32_t> m_cbLightCount;
-		CBuffer<CB_Camera> m_cbCamera;
+		CBuffer<SMCB_Camera> m_cbCamera;
 		CBuffer<Vec4i> m_cbUseTexture;
 		SBuffer<SB_Light> m_sbLight;
 

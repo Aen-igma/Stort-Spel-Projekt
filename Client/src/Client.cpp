@@ -18,6 +18,7 @@ void Client::Start() {
 	m_camera.SetPos(0.f, 0.f, -2.f);
 
 	Aen::GlobalSettings::SetMainCamera(m_camera);
+	Aen::GlobalSettings::setPtCam(m_cam);
 
 	// ------------------------ Setup Directional Light ------------------------- //
 
