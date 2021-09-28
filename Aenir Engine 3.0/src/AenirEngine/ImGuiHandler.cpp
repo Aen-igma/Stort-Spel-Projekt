@@ -212,9 +212,9 @@ namespace Aen {
 
 				ImGui::Checkbox("Hit box", &hitBoxEnable);
 
-				static const char* items[]{ "None", "Test", "Test1", "Test2" };
 				static int selectedItem = 0;
-				ImGui::Combo("Parent", &selectedItem, items, IM_ARRAYSIZE(items));
+
+				CustomCombo(selectedItem,"Parent");
 
 				ImGui::EndTabItem();
 			}
@@ -235,17 +235,18 @@ namespace Aen {
 							if (ImGui::Selectable(m_textureName[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
 							{
 								currentIndex = i;
-								//string imageName = AEN_RESOURCE_DIR(m_textureFileName[i]);
-								//Aen::Texture& texture = Aen::Resource::CreateTexture("test");
-								//texture.LoadTexture(imageName);
 
+								cout << "index " << i << endl;
+								cout << "currentIndex " << currentIndex << endl;
 
+								string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
+								Aen::Texture& texture = Aen::Resource::CreateTexture("Texture");
+								texture.LoadTexture(imageName);
+								Aen::Material& mat = Aen::Resource::CreateMaterial("Material", true);
+								mat.SetDiffuseMap(texture);
 
-
-
-
-
-								
+								size_t id = m_entityList[m_selectedEntity]->getID();
+								Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
 							}
 
 							if (isSelected)
@@ -253,10 +254,8 @@ namespace Aen {
 								ImGui::SetItemDefaultFocus();
 							}
 						}
-
 						ImGui::EndCombo();
 					}
-
 					ImGui::SliderFloat("Transparency", &transparency, 0.0f, 1.0f);
 					ImGui::SliderFloat("Ambient Color", &ambientColor, 0.0f, 1.0f);
 					ImGui::SliderFloat("Diffuse", &diffuse, 0.0f, 1.0f);
@@ -550,6 +549,31 @@ namespace Aen {
 		}
 
 		return type;
+	}
+
+	void ImGuiHandler::CustomCombo(int& index, string name)
+	{
+		if (ImGui::BeginCombo(name.c_str(), m_itemList[index].c_str()))
+		{
+			for (size_t i = 0; i < m_itemList.size(); i++)
+			{
+				static bool isSelected = (index == i);
+
+				if (ImGui::Selectable(m_itemList[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+				{
+					index = i;
+					cout << "index " << i << endl;
+					cout << "index 2" << index << endl;
+
+				}
+
+				if (isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
 	}
 	
 	void ImGuiHandler::ReadAllFilesFromResourceFolder()

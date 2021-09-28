@@ -47,6 +47,8 @@ namespace Aen {
 		float m_xyzScale[3] = { 1,1,1 };
 		int m_entityCount = 0;
 
+		int test_Count = 0;
+
 	public:
 		ImGuiHandler();
 		~ImGuiHandler();
@@ -81,6 +83,8 @@ namespace Aen {
 		bool AddButton(const string& name);
 		void HandleButton();
 		const string CheckType(Aen::Entity* entity);
+
+		void CustomCombo(int& index, string name);
 	};
 }
 
