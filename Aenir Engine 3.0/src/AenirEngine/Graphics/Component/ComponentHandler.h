@@ -1,7 +1,7 @@
 #pragma once
 #include"Tranform/Tranform.h"
 #include"Camera/Camera.h"
-#include"Mesh/Mesh.h"
+#include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
 
 
@@ -249,7 +249,7 @@ namespace Aen {
 			m_meshLayer[layer].emplace(id, &mesh);
 		}
 
-		static std::unordered_map<uint32_t, MeshInstance*>& GetLayer(const uint32_t& layer) {
+		static std::unordered_map<uint32_t, Drawable*>& GetLayer(const uint32_t& layer) {
 			return m_meshLayer[layer];
 		}
 
@@ -265,7 +265,7 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Scale*> m_scales;
 		static std::multimap<uint32_t, Light*> m_lights;
 		
-		static std::array<std::unordered_map<uint32_t, MeshInstance*>, 7> m_meshLayer;
+		static std::array<std::unordered_map<uint32_t, Drawable*>, 7> m_meshLayer;
 
 		friend class Entity;
 		friend class Renderer;

@@ -12,6 +12,8 @@ namespace Aen {
 		Mat4f m_vMat;
 		Mat4f m_pMat;
 		Mat4f m_mdlMat;
+
+		CB_Transform() :m_vMat(Mat4f::identity), m_pMat(Mat4f::identity), m_mdlMat(Mat4f::identity) {}
 	};
 
 	struct CB_Camera {
@@ -21,6 +23,8 @@ namespace Aen {
 		float pad1;
 		Vec3f uDir;
 		float pad2;
+
+		CB_Camera() :pos(), pad(0.f), fDir(), pad1(0.f), uDir(), pad2(0.f) {}
 	};
 
 	class Renderer {
@@ -29,11 +33,12 @@ namespace Aen {
 		Renderer(Window& window);
 
 		friend class GameLoop;
+		friend class MeshInstance;
 
 		private:
 		void Initialize();
 		void Render();
-		void Draw(std::unordered_map<uint32_t, MeshInstance*>& meshLayer, const uint32_t& layer);
+		//void Draw(std::unordered_map<uint32_t, MeshInstance*>& meshLayer, const uint32_t& layer);
 
 		Window& m_window;
 		
@@ -57,10 +62,10 @@ namespace Aen {
 		ILayout m_postLayout;
 
 		D3D11_VIEWPORT m_viewPort;
-		Depth m_depth[7];
-		Stencil m_writeStencil[7];
-		Stencil m_maskStencil[7];
-		Stencil m_offStencil[7];
+		Depth m_depth;
+		Stencil m_writeStencil;
+		Stencil m_maskStencil;
+		Stencil m_offStencil;
 		RState m_rasterizerState;
 
 		//ImGuiHandler guiHandler;

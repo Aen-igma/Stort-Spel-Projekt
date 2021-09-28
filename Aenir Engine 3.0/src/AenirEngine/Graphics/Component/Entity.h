@@ -52,6 +52,7 @@ namespace Aen {
 		bool m_hasParent;
 
 		friend class Renderer;
+		friend class MeshInstance;
 	};
 
 	// --------------------- AddComponent ---------------------------

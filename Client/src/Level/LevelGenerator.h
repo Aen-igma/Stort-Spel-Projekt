@@ -11,6 +11,7 @@ enum class SpecialRoom{ NONE, ENTRANCE, EXIT, ARENA, SHOP };
 //
 struct Room {
 	bool m_enclosed = false; //Var used in level generation, true when room is surrounded
+	bool m_present = false;
 	SpecialRoom m_roomSpecial = SpecialRoom::NONE;
 
 
@@ -53,6 +54,9 @@ struct Room {
 		m_west = temp;
 		//TODO rotate associated model
 	}
+
+	Room();
+	Room(const Room &p);
 };
 
 static std::vector<Room> levelentrances;

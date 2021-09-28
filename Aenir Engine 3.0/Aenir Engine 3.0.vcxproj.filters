@@ -189,13 +189,13 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Light\Light.cpp">
       <Filter>Source Files\Graphics\Component\Light</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Material.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Material.cpp">
       <Filter>Source Files\Graphics\Component\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Mesh.cpp">
       <Filter>Source Files\Graphics\Component\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Texture.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.cpp">
       <Filter>Source Files\Graphics\Component\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp">
@@ -231,12 +231,15 @@
     <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\AenMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine.h">
@@ -347,33 +350,6 @@
     <ClInclude Include="src\AenirEngine\Window\WindowHandle.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Circle.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Color.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\MathFunctions.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Matrix.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Quaternion.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Rect.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Simd.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Tracer.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Vector.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h">
       <Filter>Header Files\Graphics\Component</Filter>
     </ClInclude>
@@ -395,13 +371,13 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Light\Light.h">
       <Filter>Header Files\Graphics\Component\Light</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Material.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Material.h">
       <Filter>Header Files\Graphics\Component\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Mesh.h">
       <Filter>Header Files\Graphics\Component\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Texture.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h">
       <Filter>Header Files\Graphics\Component\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.h">
@@ -453,6 +429,30 @@
       <Filter>Header Files\ThirdParty</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\CreateThumbnail.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Burito\Burito.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\BuritoMath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\MathFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
