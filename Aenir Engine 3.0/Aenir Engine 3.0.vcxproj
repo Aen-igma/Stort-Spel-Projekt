@@ -115,6 +115,10 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -141,6 +145,10 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -163,6 +171,10 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -189,6 +201,10 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animation.cpp" />
@@ -244,11 +260,11 @@
     <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AenirEngine\BuritoMath.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animation.h" />
     <ClInclude Include="src\AenirEngine.h" />
     <ClInclude Include="src\AenirEngine\AenCore.h" />
     <ClInclude Include="src\AenirEngine\AenGraphics.h" />
-    <ClInclude Include="src\AenirEngine\AenMath.h" />
     <ClInclude Include="src\AenirEngine\AenDefines.h" />
     <ClInclude Include="src\AenirEngine\Core\App.h" />
     <ClInclude Include="src\AenirEngine\Core\GameLoop.h" />
@@ -286,6 +302,11 @@
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h" />
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\MathFunctions.h" />
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Matrix.h" />
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Vector.h" />
+    <ClInclude Include="src\AenirEngine\Math\Burito\Burito.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h" />
@@ -297,15 +318,6 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h" />
     <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />
-    <ClInclude Include="src\AenirEngine\Math\Circle.h" />
-    <ClInclude Include="src\AenirEngine\Math\Color.h" />
-    <ClInclude Include="src\AenirEngine\Math\MathFunctions.h" />
-    <ClInclude Include="src\AenirEngine\Math\Matrix.h" />
-    <ClInclude Include="src\AenirEngine\Math\Quaternion.h" />
-    <ClInclude Include="src\AenirEngine\Math\Rect.h" />
-    <ClInclude Include="src\AenirEngine\Math\Simd.h" />
-    <ClInclude Include="src\AenirEngine\Math\Tracer.h" />
-    <ClInclude Include="src\AenirEngine\Math\Vector.h" />
     <ClInclude Include="src\AenirEngine\AenWindow.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Graphics.h" />
     <ClInclude Include="src\AenirEngine\WinMain.h" />

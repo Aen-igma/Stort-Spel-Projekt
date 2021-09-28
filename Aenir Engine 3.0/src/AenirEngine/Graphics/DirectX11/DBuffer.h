@@ -1,5 +1,5 @@
 #pragma once
-#include"AenMath.h"
+#include"BuritoMath.h"
 #include"Shader.h"
 
 namespace Aen {
@@ -9,8 +9,6 @@ namespace Aen {
 			X(Float2)\
 			X(Float3)\
 			X(Float4)\
-			X(Float2x2)\
-			X(Float3x3)\
 			X(Float4x4)\
 			X(Int)\
 			X(Int2)\
@@ -42,14 +40,6 @@ namespace Aen {
 	};
 	template<> struct DBMap<Float4> {
 		using DType = Vec4f;
-		static constexpr size_t size = sizeof(DType);
-	};
-	template<> struct DBMap<Float2x2> {
-		using DType = Mat2f;
-		static constexpr size_t size = sizeof(DType);
-	};
-	template<> struct DBMap<Float3x3> {
-		using DType = Mat3f;
 		static constexpr size_t size = sizeof(DType);
 	};
 	template<> struct DBMap<Float4x4> {
@@ -93,12 +83,6 @@ namespace Aen {
 	};
 	template<> struct DBRMap<Color> {
 		static constexpr DBType type = Float4;
-	};
-	template<> struct DBRMap<Mat2f> {
-		static constexpr DBType type = Float2x2;
-	};
-	template<> struct DBRMap<Mat3f> {
-		static constexpr DBType type = Float3x3;
 	};
 	template<> struct DBRMap<Mat4f> {
 		static constexpr DBType type = Float4x4;
