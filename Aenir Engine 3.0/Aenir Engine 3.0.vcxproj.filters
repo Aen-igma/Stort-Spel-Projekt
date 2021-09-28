@@ -222,19 +222,16 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp">
       <Filter>Source Files\ThirdParty</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_stdlib.cpp">
-      <Filter>Source Files\ThirdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -413,24 +410,6 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h">
       <Filter>Header Files\ThirdParty</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_stdlib.h">
-      <Filter>Header Files\ThirdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\stb_image.h">
-      <Filter>Header Files\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\stb_image_resize.h">
-      <Filter>Header Files\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\stb_image_write.h">
-      <Filter>Header Files\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\CreateThumbnail.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -453,6 +432,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\CreateThumbnail.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateThumbnail.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -495,5 +483,6 @@
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">
       <Filter>Header Files\ThirdParty</Filter>
     </None>
+    <None Include="copy" />
   </ItemGroup>
 </Project>

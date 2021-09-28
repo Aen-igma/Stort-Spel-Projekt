@@ -98,7 +98,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -126,7 +126,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -154,7 +154,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -182,7 +182,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -207,6 +207,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animation.cpp" />
     <ClCompile Include="src\AenirEngine\Core\App.cpp" />
     <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp" />
@@ -238,6 +239,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp" />
+    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp" />
@@ -260,7 +262,9 @@
     <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CreateThumbnail.h" />
     <ClInclude Include="src\AenirEngine\BuritoMath.h" />
+    <ClInclude Include="src\AenirEngine\CreateThumbnail.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animation.h" />
     <ClInclude Include="src\AenirEngine.h" />
     <ClInclude Include="src\AenirEngine\AenCore.h" />
@@ -301,6 +305,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Stencil.h" />
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
+    <ClInclude Include="src\AenirEngine\ImGuiHandler.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\MathFunctions.h" />
@@ -440,6 +445,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="copy" />
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

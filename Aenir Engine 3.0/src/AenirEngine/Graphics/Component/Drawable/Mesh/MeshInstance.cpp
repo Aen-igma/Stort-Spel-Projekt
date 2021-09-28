@@ -5,17 +5,56 @@
 
 namespace Aen {
 	MeshInstance::~MeshInstance() {
+		for(auto& i : m_pMaterials)
+			i = nullptr;
+
+		m_pMaterials.clear();
 		m_pMesh = nullptr;
 	}
 
 	MeshInstance::MeshInstance()
-		:m_pMesh(nullptr) {}
+		:m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
 
 	MeshInstance::MeshInstance(Mesh& mesh)
 		:m_pMesh(&mesh) {}
 
+	void MeshInstance::RemoveMesh() {
+		for(auto& i : m_pMaterials)
+			i = nullptr;
+		m_pMaterials.clear();
+		m_pMesh = nullptr;
+
+		m_pMaterials.reserve(1u);
+		m_pMaterials.resize(1u, &Resource::GetMaterial("DefaultMaterial"));
+	}
+
 	void MeshInstance::SetMesh(Mesh& mesh) {
 		m_pMesh = &mesh;
+
+		if(m_pMesh->m_meshMaterialName.size() > 0) {
+			m_pMaterials.reserve(m_pMesh->m_meshMaterialName.size());
+			m_pMaterials.resize(m_pMesh->m_meshMaterialName.size(), &Resource::GetMaterial("DefaultMaterial"));
+		}
+	}
+
+	void MeshInstance::PrintMaterialSlots() {
+		if(m_pMesh)
+			m_pMesh->PrintMaterialSlots();
+	}
+
+	void MeshInstance::SetMaterial(Material& material) {
+		m_pMaterials[0] = &material;
+	}
+
+	void MeshInstance::SetMaterial(const std::string& materialSlotName, Material& material) {
+		if(m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
+		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &material;
+	}
+
+	void MeshInstance::SetMaterial(const std::string& materialSlotName, const std::string& materialName) {
+		if(m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
+		if(!Resource::MaterialExist(materialName)) throw;
+		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
 	}
 
 	void MeshInstance::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) {
@@ -36,7 +75,7 @@ namespace Aen {
 				// Opaque pass
 
 				uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
-				Material* pMaterial = (m_pMesh->m_pMaterials[materialIndex]) ? m_pMesh->m_pMaterials[materialIndex] : nullptr;
+				Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
 				if(pMaterial) {
 
 					RenderSystem::UnBindShaderResources<PShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
@@ -134,7 +173,7 @@ namespace Aen {
 			renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
-			Material* pMaterial = (m_pMesh && m_pMesh->m_pMaterials[0]) ? m_pMesh->m_pMaterials[0] : nullptr;
+			Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 			if(pMaterial) {
 				RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass1);
 				RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass1);
