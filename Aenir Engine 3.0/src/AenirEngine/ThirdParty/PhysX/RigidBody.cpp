@@ -14,6 +14,45 @@ namespace Aen
 
 	}
 
+	const Mat4f RigidBody::GetTransform() {
+
+		PxTransform t;
+		ZeroMemory(&t, sizeof(PxTransform));
+		if(mp_DynamicBody)
+			t = mp_DynamicBody->getGlobalPose();
+
+		/*if(mp_StaticBody)
+			t = mp_StaticBody->getGlobalPose();*/
+
+		return MatQuaternion(t.q.x, t.q.y, t.q.z, t.q.w) * MatTranslate(t.p.x, t.p.y, t.p.z);
+	}
+
+	void RigidBody::SetPos(const Vec3f& pos) {
+
+		PxTransform t(pos.x, pos.y, pos. z);
+
+		if(mp_DynamicBody)
+			mp_DynamicBody->setGlobalPose(t);
+
+		if(mp_StaticBody)
+			mp_StaticBody->setGlobalPose(t);
+	}
+
+	void RigidBody::SetPos(const float& x, const float& y, const float& z) {
+
+		PxTransform t(PxVec3(x, y, z));
+
+		if(mp_DynamicBody)
+			mp_DynamicBody->setGlobalPose(t);
+
+		if(mp_StaticBody)
+			mp_StaticBody->setGlobalPose(t);
+	}
+
+	void RigidBody::SetRot(const Vec3f& rot) {}
+
+	void RigidBody::SetRot(const float& p, const float& y, const float& r) {}
+
 	void RigidBody::CreateMaterial(float staticFriction, float dynamicFriction, float restitution)
 	{
 		mp_Material = mp_LocalPhysics->createMaterial(staticFriction, dynamicFriction, restitution);
@@ -28,7 +67,7 @@ namespace Aen
 
 	void RigidBody::CreateCube(float density, Aen::Vec3f cubeLengths, Aen::Vec3f transform, Aen::Vec3f velocity)
 	{
-		PxRigidDynamic* mp_DynamicBody = PxCreateDynamic(*mp_LocalPhysics, 
+		mp_DynamicBody = PxCreateDynamic(*mp_LocalPhysics, 
 			PxTransform(PxVec3(transform.x, transform.y, transform.z)),
 			PxBoxGeometry(PxReal(cubeLengths.x), PxReal(cubeLengths.y), PxReal(cubeLengths.z)), 
 			*mp_Material, density);

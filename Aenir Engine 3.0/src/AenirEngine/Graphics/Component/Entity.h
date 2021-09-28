@@ -41,6 +41,9 @@ namespace Aen {
 
 		private:
 		const Mat4f GetTransformation();
+		const Mat4f GetPosMat();
+		const Mat4f GetRotMat();
+		const Mat4f GetScaleMat();
 
 		static uint32_t m_iDs;
 

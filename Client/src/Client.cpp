@@ -15,39 +15,52 @@ void Client::Start() {
 
 	m_camera.AddComponent<Aen::Camera>();
 	m_camera.GetComponent<Aen::Camera>().SetCameraPerspective(100.f, m_window.GetAspectRatio(), 0.01f, 100.f);
-	m_camera.SetPos(0.f, 0.f, -2.f);
+	m_camera.SetPos(0.f, 1.f, -2.f);
 
 	Aen::GlobalSettings::SetMainCamera(m_camera);
 
 	// ------------------------ Setup Directional Light ------------------------- //
 
 	m_dLight.AddComponent<Aen::DirectionalLight>();
-	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
+	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(0.6f, 0.7f, 1.f, 1.f);
 	m_dLight.SetRot(45.f, 135.f, 0.f);
 
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
-	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
+	m_ReimuTex = &Aen::Resource::CreateTexture("ReimuTex");
+	Aen::Material& ReimuMat = Aen::Resource::CreateMaterial("ReimuMat");
+	m_cubeMesh = &Aen::Resource::CreateMesh("Cube");
 	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
-	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
+	m_cubeMesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
+	m_ReimuTex->LoadTexture(AEN_RESOURCE_DIR("Reimu.png"));
+	ReimuMat.SetDiffuseMap(*m_ReimuTex);
+	m_cubeMesh->SetMaterial(ReimuMat);
+
+	ReimuMat["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
+	ReimuMat["InnerEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
+	ReimuMat["OuterEdgeThickness"] = 0.003f;
+	ReimuMat["InnerEdgeThickness"] = 0.003f;
 
 	// -------------------------- Setup Entities -------------------------------- //
 
-	m_plane.AddComponent<Aen::MeshInstance>();
-	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	m_plane.SetPos(0.f, -2.f, 0.f);
-	m_plane.SetScale(20.f, 1.f, 20.f);
 	m_plane.AddComponent<Aen::RigidBody>();
+	m_plane.AddComponent<Aen::MeshInstance>();
+
+	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	m_plane.GetComponent<Aen::RigidBody>().CreateMaterial();
 	m_plane.GetComponent<Aen::RigidBody>().CreatePlane();
+	//m_plane.SetPos(0.f, -2.f, 0.f);
+	m_plane.SetScale(20.f, 1.f, 20.f);
 
 
+	/*m_cube.AddComponent<Aen::RigidBody>();
 	m_cube.AddComponent<Aen::MeshInstance>();
+
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	m_cube.AddComponent<Aen::RigidBody>();
 	m_cube.GetComponent<Aen::RigidBody>().CreateMaterial();
 	m_cube.GetComponent<Aen::RigidBody>().CreateCube();
+	m_cube.SetPos(0.f, 10.f, 0.f);*/
 
 	// --------------------------- Setup Window --------------------------------- //
 
@@ -110,4 +123,29 @@ void Client::Update(const float& deltaTime) {
 
 	if(Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		m_window.Exit();
+
+	// ------------------------------------- Cubes -------------------------------------- //
+
+	if(Aen::Input::KeyPress(Aen::Key::G)) {
+		Aen::Entity* e = AEN_NEW Aen::Entity();
+		e->AddComponent<Aen::RigidBody>();
+		e->AddComponent<Aen::MeshInstance>();
+		
+		e->GetComponent<Aen::MeshInstance>().SetMesh(*m_cubeMesh);
+		e->GetComponent<Aen::RigidBody>().CreateMaterial();
+		e->GetComponent<Aen::RigidBody>().CreateCube();
+		e->SetPos(0.f, 10.f, 0.f);
+
+		m_cubes.emplace(m_cubeCount++, e);
+		e = nullptr;
+	}
+
+	if(Aen::Input::KeyPress(Aen::Key::H)) {
+		for(auto& i : m_cubes) {
+			delete i.second;
+			i.second = nullptr;
+			m_cubes.erase(i.first);
+			break;
+		}
+	}
 }

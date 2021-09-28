@@ -24,7 +24,10 @@ namespace Aen {
 
 			// Transform
 
-			renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
+			if(ComponentHandler::RigidExist(id))
+				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(id).GetScaleMat() * ComponentHandler::GetRigid(id).GetTransform()).Transposed();
+			else
+				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
 			// Mesh and Material
@@ -131,7 +134,10 @@ namespace Aen {
 
 		if(m_pMesh) {
 
-			renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
+			if(ComponentHandler::RigidExist(id))
+				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(id).GetScaleMat() * ComponentHandler::GetRigid(id).GetTransform()).Transposed();
+			else
+				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
 			Material* pMaterial = (m_pMesh && m_pMesh->m_pMaterials[0]) ? m_pMesh->m_pMaterials[0] : nullptr;

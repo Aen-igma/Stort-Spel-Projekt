@@ -20,7 +20,7 @@ namespace Aen {
 
 		PhysXService::SetInstance(&m_PhysX);
 		PhysXService::GetInstance()->InitPhysics(100, 981);
-		PhysXService::GetInstance()->CreateDemo();
+		//PhysXService::GetInstance()->CreateDemo();
 
 		GlobalSettings::Initialize(m_app->m_window);
 
