@@ -19,6 +19,40 @@ namespace Aen {
 
 		GlobalSettings::Initialize(m_app->m_window);
 
+		//QuadTree
+	
+		//Node a(Point(1, 1), 1);
+		//Node b(Point(2, 5), 2);
+		//Node c(Point(7, 6), 3);
+		//m_Center.Insert(&a);
+		//m_Center.Insert(&b);
+		//m_Center.Insert(&c);
+
+	
+
+		Quadtree m_Center(Point(1, 1), Point(8, 8));
+		Node a(Point(1, 1), 1);
+		Node b(Point(2, 5), 2);
+		Node c(Point(7, 6), 3);
+		m_Center.Insert(&a);
+		m_Center.Insert(&b);
+		m_Center.Insert(&c);
+
+		/*std::string word = std::to_string(m_Center->Search(Point(1, 1))->m_data);*/
+	
+
+		//Vet inte hur man ska fixa detta  får fråga senare
+
+		/*std::cout << "Node A: " << m_Center->Search(Point(1,1))->m_data << "\n";*/
+
+		//std::cout << "Node A: " << m_Center->Search(Point(1,1))->m_data << "\n";
+		//std::cout << "Node B: " << m_Center.search(Point(2,5))->m_data << "\n";
+		//std::cout << "Node C: " << m_Center.search(Point(7,6))->m_data << "\n";
+		//std::cout << "None-Existing node: " << m_Center.search(Point(5, 5));
+		std::cout << std::endl;
+
+
+
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 
@@ -28,6 +62,8 @@ namespace Aen {
 		ImGui_ImplDX11_Init(GCore::m_device.Get(), GCore::m_dContext.Get());
 		ImGui_ImplWin32_Init(m_app->m_window.GetWHND());
 		ImGui::StyleColorsDark();
+
+	
 
 		m_app->Start();
 	}

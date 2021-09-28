@@ -1,6 +1,7 @@
 #pragma once
 #include"App.h"
 #include<chrono>
+#include "QuadTree/Quadtree.h"
 #include "ThirdParty/ImGui/imgui.h"
 #include "ThirdParty/ImGui/imgui_impl_win32.h"
 #include "ThirdParty/ImGui/imgui_impl_dx11.h"
@@ -15,6 +16,8 @@ namespace Aen {
 
 		void Initialize();
 		void Run();
+
+		/*Quadtree* m_Center;*/
 
 		App* m_app;
 		private:
