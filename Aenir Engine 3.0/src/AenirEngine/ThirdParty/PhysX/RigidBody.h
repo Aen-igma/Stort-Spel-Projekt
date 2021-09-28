@@ -2,12 +2,13 @@
 //#include"Include\PxPhysicsAPI.h"
 #include"PhysXService.h"
 #include"BuritoMath.h"
+#include"AenDefines.h"
 
 using namespace physx;
 
 namespace Aen
 {
-	class RigidBody {
+	class AEN_DECLSPEC RigidBody {
 	private:
 		
 		PxMaterial* mp_Material;

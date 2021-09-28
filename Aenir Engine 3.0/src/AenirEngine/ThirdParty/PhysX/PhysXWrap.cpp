@@ -77,7 +77,7 @@ void PhysXWrap::AddActor(PxRigidDynamic* dynamicActor)
 	mp_Scene->addActor(*dynamicActor);
 }
 
-PxPhysics* PhysXWrap::GetPxPhysics() const
+PxPhysics*& PhysXWrap::GetPxPhysics()
 {
 	return this->mp_Physics;
 }

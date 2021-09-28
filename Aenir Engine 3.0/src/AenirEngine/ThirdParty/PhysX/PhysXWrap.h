@@ -30,7 +30,7 @@ public:
 
 	void AddActor(PxRigidStatic *staticActor);
 	void AddActor(PxRigidDynamic* dynamicActor); 
-	PxPhysics* GetPxPhysics() const;
+	PxPhysics*& GetPxPhysics();
 
 
 	void InitPhysics(int toleranceLength, int toleranceSpeed);

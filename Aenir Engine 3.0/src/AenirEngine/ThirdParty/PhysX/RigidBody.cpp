@@ -4,12 +4,15 @@
 namespace Aen
 {
 	RigidBody::RigidBody()
+		:mp_Material(NULL), mp_LocalPhysics(PhysXService::GetInstance()->GetPxPhysics()), mp_StaticBody(NULL), mp_DynamicBody(NULL)
 	{
-		mp_Material = NULL;
+		/*mp_Material = NULL;
 		mp_LocalPhysics = PhysXService::GetInstance()->GetPxPhysics();
-		//m_LocalPhysics = PxCreateBasePhysics();
+		m_LocalPhysics = PxCreateBasePhysics();
 		mp_StaticBody = NULL;
-		mp_DynamicBody = NULL;
+		mp_DynamicBody = NULL;*/
+
+		//PxCreateBasePhysics();
 	}
 
 	RigidBody::~RigidBody()
