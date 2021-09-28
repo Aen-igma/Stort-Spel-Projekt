@@ -1,5 +1,4 @@
 #include"PCH.h"
-//#include"PhysXWrap.h"
 #include"ThirdParty\PhysX\PhysXWrap.h"
 
 PhysXWrap::PhysXWrap()
@@ -7,29 +6,29 @@ PhysXWrap::PhysXWrap()
 	this->mp_Dispatcher = NULL;
 	this->mp_Foundation = NULL;
 	this->mp_Material =   NULL;
-	this->mp_Scene =		 NULL;
-	this->mp_Pvd =		 NULL;
+	this->mp_Scene =	  NULL;
+	this->mp_Pvd =		  NULL;
 	this->mp_Physics =    NULL;
 	this->mp_Cooking =    NULL;
-	this->m_StackZ =		 9.0f;
+	this->m_StackZ =	  9.0f;
 }
 
 PhysXWrap::~PhysXWrap()
 {
 	this->mp_Dispatcher = NULL;
 	this->mp_Foundation = NULL;
-	this->mp_Material = NULL;
-	this->mp_Scene = NULL;
-	this->mp_Pvd = NULL;
-	this->mp_Physics = NULL;
-	this->mp_Cooking = NULL;
+	this->mp_Material =   NULL;
+	this->mp_Scene =      NULL;
+	this->mp_Pvd =	      NULL;
+	this->mp_Physics =    NULL;
+	this->mp_Cooking =    NULL;
 }
 
 void PhysXWrap::CreateStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
 {
-	
+
 PxShape* shape = mp_Physics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *mp_Material);
-	//PxShape* shape = m_Physics->createShape(PxSphereGeometry(2), *m_Material);
+
 	for (PxU32 i = 0; i < size; i++)
 	{
 		for (PxU32 j = 0; j < size - i; j++)
