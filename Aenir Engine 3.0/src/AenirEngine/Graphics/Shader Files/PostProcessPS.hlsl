@@ -1,4 +1,14 @@
 
+cbuffer toggleHeatMap {
+	uint heatMap;
+};
+
+cbuffer Aen_CB_Transform : register(b1) {
+	float4x4 vMat;
+	float4x4 pMat;
+	float4x4 mdlMat;
+}
+
 static float2 sPoint[9] = {
 	float2(-1.f, 1.f), float2(0.f, 1.f), float2(1.f, 1.f),
 	float2(-1.f, 0.f), float2(0.f, 0.f), float2(1.f, 0.f),
@@ -30,8 +40,12 @@ texture2D<uint2> CullMap : CULLMAP: register(t4);
 
 float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_TARGET {
 
-	uint cullM = CullMap.Load(int3(uv.x * 120, uv.y * 68, 0)).g;
-	float4 tintColor = float4(cullM, 0.f, 0.f, 1.f);
+	uint cullM = CullMap[uint2(floor(pos.xy / 16.f))].g;
+	float4 tintColor = float4(0.f, 0.f, 0.f, 0.f);
+	float t = 1.5f / float(cullM);
+
+	if(cullM > 0)
+		tintColor = lerp(float4(1.f, 0.f, 0.f, 1.f), float4(0.f, 1.f, 0.f, 1.f), t);
 
 	uint width, height;
 	diffuseMap.GetDimensions(width, height);
@@ -72,6 +86,8 @@ float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_TARGET {
 	
 	float4 diffuse = float4(sqrt(avrgColor / length), 0.f);
 
-	//return saturate(diffuse + tintColor);
+	if(heatMap)
+		return saturate(diffuse + tintColor);
+
 	return diffuse;
 }

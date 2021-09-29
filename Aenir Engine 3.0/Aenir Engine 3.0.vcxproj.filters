@@ -475,7 +475,6 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderPS.hlsl">
       <Filter>Shader Files\CellShader</Filter>
     </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\FrustomCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\LightCullCS.hlsl" />
   </ItemGroup>
   <ItemGroup>

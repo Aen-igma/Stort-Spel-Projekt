@@ -73,10 +73,8 @@ namespace Aen {
 		// Temp ---------------
 
 		CBuffer<CB_DispatchInfo> m_dispatchInfo;
-		CShader m_frustumCS;
+		CBuffer<uint32_t> m_heatMap;
 		CShader m_lightCullCS;
-		UAView m_frustums;
-		UAView m_lIndexCount;
 		UAView m_lIndex;
 		RWTexture2D m_lGrid;
 

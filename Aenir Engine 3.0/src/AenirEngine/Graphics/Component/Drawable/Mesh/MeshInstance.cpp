@@ -80,7 +80,7 @@ namespace Aen {
 				}
 
 				// temp --------------------------------------
-				RenderSystem::BindUnOrderedAccessView(4u, renderer.m_lIndex);
+				RenderSystem::BindShaderResourceView<PShader>(5u, renderer.m_lIndex);
 				RenderSystem::BindShaderResourceView<PShader>(4u, renderer.m_lGrid);
 				//--------------------------------------------
 

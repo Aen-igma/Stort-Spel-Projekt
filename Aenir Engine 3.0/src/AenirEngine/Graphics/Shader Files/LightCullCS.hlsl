@@ -1,10 +1,9 @@
 
 #define GRID_SIZE 16
-#define NUM_LIGHTS 1024
 
 cbuffer dispatchInfo : register(b0) {
     int2 threadGroups;
-    int2 totalThreads;
+    int2 numThreads;
 };
 
 cbuffer lightCount : register(b1) {
@@ -19,7 +18,7 @@ cbuffer Aen_CB_Transform : register(b2) {
 
 struct Plane {
     float3 normal;
-    float dist;
+    float3 pos;
 };
 
 struct Sphere {
@@ -56,43 +55,67 @@ struct CS_Input {
     uint gIndex : SV_GroupIndex;
 };
 
-RWStructuredBuffer<uint> LightIndexCounter : register(u0);
-RWStructuredBuffer<uint> LightIndexList : register(u1);
-RWTexture2D<uint2> LightGrid : register(u2);
+RWStructuredBuffer<uint> LightIndexList : register(u0);
+RWTexture2D<uint2> LightGrid : register(u1);
 
 StructuredBuffer<Light> Aen_SB_Light : register(t0);
-StructuredBuffer<Frustum> frustums : register(t1);
-Texture2D depthMap : DEPTHMAP : register(t2);
+Texture2D depthMap : DEPTHMAP : register(t1);
 
+float4x4 inverse(float4x4 m) {
+    float n11 = m[0][0], n12 = m[1][0], n13 = m[2][0], n14 = m[3][0];
+    float n21 = m[0][1], n22 = m[1][1], n23 = m[2][1], n24 = m[3][1];
+    float n31 = m[0][2], n32 = m[1][2], n33 = m[2][2], n34 = m[3][2];
+    float n41 = m[0][3], n42 = m[1][3], n43 = m[2][3], n44 = m[3][3];
 
-groupshared uint uMinDepth;
-groupshared uint uMaxDepth;
+    float t11 = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44;
+    float t12 = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44;
+    float t13 = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44;
+    float t14 = n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34;
 
-groupshared Frustum GroupFrustum;
+    float det = n11 * t11 + n21 * t12 + n31 * t13 + n41 * t14;
+    float idet = 1.0f / det;
 
-groupshared uint LightCount;
-groupshared uint LightIndexStartOffset;
-groupshared uint LightList[1024];
+    float4x4 ret;
 
+    ret[0][0] = t11 * idet;
+    ret[0][1] = (n24 * n33 * n41 - n23 * n34 * n41 - n24 * n31 * n43 + n21 * n34 * n43 + n23 * n31 * n44 - n21 * n33 * n44) * idet;
+    ret[0][2] = (n22 * n34 * n41 - n24 * n32 * n41 + n24 * n31 * n42 - n21 * n34 * n42 - n22 * n31 * n44 + n21 * n32 * n44) * idet;
+    ret[0][3] = (n23 * n32 * n41 - n22 * n33 * n41 - n23 * n31 * n42 + n21 * n33 * n42 + n22 * n31 * n43 - n21 * n32 * n43) * idet;
 
-void AppendLight(uint lightIndex) {
-    uint index;
-    InterlockedAdd(LightCount, 1, index);
-    if (index < 1024)
-        LightList[index] = lightIndex;
+    ret[1][0] = t12 * idet;
+    ret[1][1] = (n13 * n34 * n41 - n14 * n33 * n41 + n14 * n31 * n43 - n11 * n34 * n43 - n13 * n31 * n44 + n11 * n33 * n44) * idet;
+    ret[1][2] = (n14 * n32 * n41 - n12 * n34 * n41 - n14 * n31 * n42 + n11 * n34 * n42 + n12 * n31 * n44 - n11 * n32 * n44) * idet;
+    ret[1][3] = (n12 * n33 * n41 - n13 * n32 * n41 + n13 * n31 * n42 - n11 * n33 * n42 - n12 * n31 * n43 + n11 * n32 * n43) * idet;
+
+    ret[2][0] = t13 * idet;
+    ret[2][1] = (n14 * n23 * n41 - n13 * n24 * n41 - n14 * n21 * n43 + n11 * n24 * n43 + n13 * n21 * n44 - n11 * n23 * n44) * idet;
+    ret[2][2] = (n12 * n24 * n41 - n14 * n22 * n41 + n14 * n21 * n42 - n11 * n24 * n42 - n12 * n21 * n44 + n11 * n22 * n44) * idet;
+    ret[2][3] = (n13 * n22 * n41 - n12 * n23 * n41 - n13 * n21 * n42 + n11 * n23 * n42 + n12 * n21 * n43 - n11 * n22 * n43) * idet;
+
+    ret[3][0] = t14 * idet;
+    ret[3][1] = (n13 * n24 * n31 - n14 * n23 * n31 + n14 * n21 * n33 - n11 * n24 * n33 - n13 * n21 * n34 + n11 * n23 * n34) * idet;
+    ret[3][2] = (n14 * n22 * n31 - n12 * n24 * n31 - n14 * n21 * n32 + n11 * n24 * n32 + n12 * n21 * n34 - n11 * n22 * n34) * idet;
+    ret[3][3] = (n12 * n23 * n31 - n13 * n22 * n31 + n13 * n21 * n32 - n11 * n23 * n32 - n12 * n21 * n33 + n11 * n22 * n33) * idet;
+
+    return ret;
 }
 
 float4 ScreenToView(float4 screen) {
-    float2 uv = screen.xy / totalThreads;
-    return float4(float2(uv.x, 1.f - uv.y) * 2.f - 1.f, screen.z, screen.w);
+    float2 uv = screen.xy / float2(numThreads);
+    return float4(float2(uv.x, 1.f - uv.y) * 2.f - 1.f, screen.zw);
 }
 
 bool SphereInsidePlane(Sphere sphere, Plane plane) {
-    return dot(plane.normal, sphere.pos) - plane.dist < -sphere.radius;
+    return dot(plane.normal, (sphere.pos - plane.pos)) < -sphere.radius;
+}
+
+bool PointInsideSphere(Sphere sphere, float3 p) {
+    float dist = length(p - sphere.pos);
+    return dist < sphere.radius;
 }
 
 bool PointInsidePlane( float3 p, Plane plane ) {
-    return dot(plane.normal, p) - plane.dist < 0;
+    return dot(plane.normal, (p - plane.pos)) < 0;
 }
 
 bool ConeInsidePlane(Cone cone, Plane plane) {
@@ -101,10 +124,22 @@ bool ConeInsidePlane(Cone cone, Plane plane) {
     return PointInsidePlane(cone.pos, plane) && PointInsidePlane(Q, plane);
 }
 
-bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zNear, float zFar) {
+Plane CreatePlane(float3 p0, float3 p1, float3 p2) {
 
-   /*if (sphere.pos.z - sphere.radius > zNear || sphere.pos.z + sphere.radius < zFar)
-        return false;*/
+    Plane plane;
+    float3 v0 = p1 - p0;
+    float3 v1 = p2 - p0;
+
+    plane.normal = normalize(cross(v0, v1));
+    plane.pos = p0;
+
+    return plane;
+}
+
+bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zPos, float zFar) {
+
+    if (zFar < zPos)
+        return false;
 
     for(int i = 0; i < 4; i++)
         if(SphereInsidePlane(sphere, frustum.planes[i]))
@@ -113,12 +148,9 @@ bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zNear, float zFar
     return true;
 }
 
-bool ConeInsideFrustum( Cone cone, Frustum frustum, float zNear, float zFar ) {
+bool ConeInsideFrustum(Cone cone, Frustum frustum, float zPos, float zFar) {
 
-    /*Plane nearPlane = {float3( 0.f, 0.f, -1.f), -zNear};
-    Plane farPlane = {float3( 0.f, 0.f, 1.f), zFar};
-
-    if(ConeInsidePlane(cone, nearPlane) || ConeInsidePlane(cone, farPlane))
+    /*if (zFar < zPos)
         return false;*/
 
     for(int i = 0; i < 4; i++)
@@ -131,140 +163,77 @@ bool ConeInsideFrustum( Cone cone, Frustum frustum, float zNear, float zFar ) {
 [numthreads(1, 1, 1)]
 void main(CS_Input input) {
 
-    /*int2 uv = input.gId.xy * 16 + 8;
-    float fDepth = depthMap.Load(int3(uv, 0)).r;
-    
-    uint uDepth = asuint(fDepth);
-    
-    if (input.gIndex == 0) {
-        uMinDepth = 0xffffffff;
-        uMaxDepth = 0;
-        LightCount = 0;
-        GroupFrustum = frustums[input.gId.x + (input.gId.y * threadGroups.x)];
+    uint2 uv = input.gId.xy * 16u;
+
+    float fDepth = 0.f;
+    for(uint i = 0u; i < 256u; i++) {
+        float depth = depthMap[uv + uint2(i % 16, i / 16 % 16)].r;
+        if(depth > fDepth)
+            fDepth = depth;
     }
     
-    GroupMemoryBarrierWithGroupSync();
-    
-    InterlockedMin(uMinDepth, uDepth);
-    InterlockedMax(uMaxDepth, uDepth);
-    
-    GroupMemoryBarrierWithGroupSync();
-    
-    float fMinDepth = asfloat(uMinDepth);
-    float fMaxDepth = asfloat(uMaxDepth);
-    
-    float minDepthVS = ScreenToView(float4(0.f, 0.f, fMinDepth, 1.f)).z;
-    float maxDepthVS = ScreenToView(float4(0.f, 0.f, fMaxDepth, 1.f)).z;
-    float nearClipVS = ScreenToView(float4(0.f, 0.f, 0.f, 1.f)).z;
-    
-    Plane minPlane = {float3(0.f, 0.f, -1.f), -minDepthVS};*/
-    
     uint count = 0;
-    uint offset = input.gId.x * 200 + input.gId.y * threadGroups.x;
+    uint offset = input.gId.x * 200 + input.gId.y * threadGroups.x * 200;
+
+    float4x4 ivpMat = inverse(mul(vMat, pMat));
+    float4 camPos = mul(ScreenToView(float4(input.gId.xy * 16u, 0.f, 1.f)), ivpMat);
+    camPos.xyz = camPos.xyz / camPos.w;
+
+    float4 corners[4];
+    corners[0] = float4(input.gId.xy * 16, -1.f, 1.f);
+    corners[1] = float4(float2(input.gId.x + 1, input.gId.y) * 16, -1.f, 1.f );
+    corners[2] = float4(float2(input.gId.x, input.gId.y + 1) * 16, -1.f, 1.f );
+    corners[3] = float4(float2(input.gId.x + 1, input.gId.y + 1) * 16, -1.f, 1.f );
+
+    for(uint i = 0u; i < 4; i++) {
+        corners[i] = ScreenToView(corners[i]);
+        corners[i] = mul(corners[i], ivpMat);
+        corners[i].xyz = corners[i].xyz / corners[i].w;
+    }
+
+    Frustum frustum;
+    frustum.planes[0] = CreatePlane(camPos.xyz, corners[0].xyz, corners[2].xyz);
+    frustum.planes[1] = CreatePlane(camPos.xyz, corners[1].xyz, corners[0].xyz);
+    frustum.planes[2] = CreatePlane(camPos.xyz, corners[2].xyz, corners[3].xyz);
+    frustum.planes[3] = CreatePlane(camPos.xyz, corners[3].xyz, corners[1].xyz);
 
     for(uint i = 0; i < lCount; i++) {
         Light light = Aen_SB_Light[i];
 
-        float3 p = mul(float4(light.pos, 1.f), vMat).xyz;
-        float3 n = normalize(mul(float4(light.dir, 0.f), vMat));
-        float d = light.dist.w;
+        float3 p = light.pos;
+        float3 n = light.dir;
+        float d = light.dist.w + 2.f;
+
+        float3 dir = normalize(camPos - p);
+        float4 vPos = mul(float4(p + dir * d, 1.f), mul(vMat, pMat));
+        float3 lDepth = vPos.z / vPos.w;
+        Sphere sphere = {p, d};
+
         switch(light.type) {
             case 0:
                 float coneRadius = tan(radians(90.f - light.ang)) * d;
                 Cone cone = {p, d, -n, coneRadius};
 
-                if(ConeInsideFrustum(cone, frustums[input.gId.x + input.gId.y * threadGroups.x], 0, 0))
-                    if(p.z < 0.f) {
-                        LightIndexList[offset + count++] = i;
-                    }
+                if(ConeInsideFrustum(cone, frustum, lDepth, fDepth)) {
+                    LightIndexList[offset + count] = i;
+                    count++;
+                }
 
             break;
             case 1:
-                Sphere sphere = {p, d};
 
-                if(SphereInsideFrustum(sphere, frustums[input.gId.x + input.gId.y * threadGroups.x], 0, 0))
-                    if (p.z < 0.f){
-                        LightIndexList[offset + count++] = i;
-                    }
+                if(SphereInsideFrustum(sphere, frustum, lDepth, fDepth) || PointInsideSphere(sphere, camPos.xyz)) {
+                    LightIndexList[offset + count] = i;
+                    count++;
+                }
 
             break;
             case 2:
-                LightIndexList[offset + count++] = i;
+                LightIndexList[offset + count] = i;
+                count++;
             break;
         }
     }
 
     LightGrid[input.gId.xy] = uint2(offset, count);
-    
-    //GroupMemoryBarrierWithGroupSync();
-    
-    /*int2 uv = input.dtId.xy;
-    float fDepth = depthMap.Load(int3(uv, 0)).r;
-
-    uint uDepth = asuint(fDepth);
-    
-    if (input.gIndex == 0) {
-        uMinDepth = 0xffffffff;
-        uMaxDepth = 0;
-        LightCount = 0;
-        GroupFrustum = frustums[input.gId.x + (input.gId.y * threadGroups.x)];
-    }
-
-    GroupMemoryBarrierWithGroupSync();
-
-    InterlockedMin(uMinDepth, uDepth);
-    InterlockedMax(uMaxDepth, uDepth);
-
-    GroupMemoryBarrierWithGroupSync();
-
-    float fMinDepth = asfloat(uMinDepth);
-    float fMaxDepth = asfloat(uMaxDepth);
-
-    float minDepthVS = ScreenToView(float4(0.f, 0.f, fMinDepth, 1.f)).z;
-    float maxDepthVS = ScreenToView(float4(0.f, 0.f, fMaxDepth, 1.f)).z;
-    float nearClipVS = ScreenToView(float4(0.f, 0.f, 0.f, 1.f)).z;
-    
-    Plane minPlane = {float3(0.f, 0.f, -1.f), -minDepthVS};
-
-    for (uint i = input.gId; i < NUM_LIGHTS; i += GRID_SIZE * GRID_SIZE) {
-        Light light = Aen_SB_Light[i];
-        float attenuation = 1.f / (Aen_SB_Light[i].dist.x + Aen_SB_Light[i].dist.y + Aen_SB_Light[i].dist.z);
-        switch(light.type) {
-            case 0: {
-                float coneRadius = tan(radians(light.ang)) * attenuation;
-                Cone cone = {light.pos, attenuation, light.dir, coneRadius};
-
-                if(ConeInsideFrustum(cone, GroupFrustum, nearClipVS, maxDepthVS))
-                    if(!ConeInsidePlane(cone, minPlane))
-                        AppendLight(i);
-            }
-            break;
-            case 1: {
-                Sphere sphere = {light.pos, attenuation};
-
-                if (SphereInsideFrustum(sphere, GroupFrustum, nearClipVS, maxDepthVS))
-                    if (!SphereInsidePlane(sphere, minPlane))
-                        AppendLight(i);
-            }
-            break;
-            case 2: {
-                AppendLight(i);
-            }
-            break;
-        }
-        
-    }
-
-    GroupMemoryBarrierWithGroupSync();
-
-    if (input.gIndex == 0) {
-        InterlockedAdd(LightIndexCounter[0], LightCount, LightIndexStartOffset);
-        LightGrid[input.gId.xy] = uint2(LightIndexStartOffset, LightCount);
-    }
-
-    GroupMemoryBarrierWithGroupSync();
-
-    for(i = input.gIndex; i < LightCount; i += GRID_SIZE * GRID_SIZE) {
-        LightIndexList[LightIndexStartOffset + i] = LightList[i];
-    }*/
 }

@@ -15,7 +15,8 @@ void Client::Start() {
 
 	m_camera.AddComponent<Aen::Camera>();
 	m_camera.GetComponent<Aen::Camera>().SetCameraPerspective(100.f, m_window.GetAspectRatio(), 0.01f, 100.f);
-	m_camera.SetPos(0.f, 0.f, -2.f);
+	//m_camera.GetComponent<Aen::Camera>().SetCameraOrthographic(m_window.GetSize().x * 0.02f, m_window.GetSize().y * 0.02f, 0.01f, 100.f);
+	m_camera.SetPos(0.f, 0.f, 0.f);
 
 	Aen::GlobalSettings::SetMainCamera(m_camera);
 
@@ -41,24 +42,31 @@ void Client::Start() {
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
+	Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
 	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
+	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
 	// -------------------------- Setup Entities -------------------------------- //
+
+	m_sphere.AddComponent<Aen::MeshInstance>();
+	m_sphere.GetComponent<Aen::MeshInstance>().SetMesh(sphere);
 
 	m_plane.AddComponent<Aen::MeshInstance>();
 	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	m_plane.SetPos(0.f, -2.f, 0.f);
-	m_plane.SetScale(20.f, 1.f, 20.f);
+	m_plane.SetScale(40.f, 1.f, 40.f);
 
-	m_plane1.AddComponent<Aen::MeshInstance>();
+	/*m_plane1.AddComponent<Aen::MeshInstance>();
 	m_plane1.GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	m_plane1.SetPos(0.f, 8.f, -10.f);
 	m_plane1.SetScale(20.f, 1.f, 20.f);
-	m_plane1.SetRot(90.f, 0.f, 0.f);
+	m_plane1.SetRot(90.f, 0.f, 0.f);*/
 
 	m_cube.AddComponent<Aen::MeshInstance>();
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	m_cube.SetPos(0.f, 8.f, 10.f);
+	m_cube.SetScale(20.f, 20.f, 1.f);
 
 	// --------------------------- Setup Window --------------------------------- //
 
@@ -77,9 +85,9 @@ void Client::Update(const float& deltaTime) {
 	// ------------------------------ Camera Controler ---------------------------------- //
 
 	Aen::Vec3f axis;
-	axis.x = (float)Aen::Input::KeyPress(Aen::Key::A) - (float)Aen::Input::KeyPress(Aen::Key::D);
+	axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
 	axis.y = (float)Aen::Input::KeyPress(Aen::Key::SPACE) - (float)Aen::Input::KeyPress(Aen::Key::LSHIFT);
-	axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S);
+	axis.z = (float)Aen::Input::KeyPress(Aen::Key::S) - (float)Aen::Input::KeyPress(Aen::Key::W);
 	
 	static Aen::Vec2i mouseAxis;
 	mouseAxis = Aen::Input::GetRawMouse();
@@ -94,7 +102,7 @@ void Client::Update(const float& deltaTime) {
 		Aen::Input::SetMousePos(m_window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_window.GetSize() * 0.5f));
 		m_camera.MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
 		m_camera.Move(0.f, axis.y * deltaTime * m_speed * focus, 0.f);
-		m_camera.Rotate((float)mouseAxis.y * deltaTime * m_mouseSense, (float)mouseAxis.x * deltaTime * -m_mouseSense, 0.f);
+		m_camera.Rotate((float)mouseAxis.y * deltaTime * -m_mouseSense, (float)mouseAxis.x * deltaTime * -m_mouseSense, 0.f);
 	}
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
@@ -128,7 +136,7 @@ void Client::Update(const float& deltaTime) {
 	if(Aen::Input::KeyDown(Aen::Key::G)) {
 		Aen::Entity* e = AEN_NEW Aen::Entity;
 
-		int r = rand() % 3;
+		int r = rand() % 6;
 		Aen::Color clr;
 		switch(r) {
 			case 0: clr = Aen::Color::Red;
@@ -137,13 +145,19 @@ void Client::Update(const float& deltaTime) {
 			break;
 			case 2: clr = Aen::Color::Blue;
 			break;
+			case 3: clr = Aen::Color::Magenta;
+			break;
+			case 4: clr = Aen::Color::Yellow;
+			break;
+			case 5: clr = Aen::Color::Cyan;
+			break;
 		}
 
 		e->AddComponent<Aen::PointLight>();
 		e->GetComponent<Aen::PointLight>().SetColor(clr);
 		e->GetComponent<Aen::PointLight>().SetLightDist(1.f, 1.f, 1.f, 5.f);
 		e->GetComponent<Aen::PointLight>().SetStrength(100.f);
-		e->SetPos(rand() % 20 - 10, 1.f / (rand() % 100) + 0.5f, rand() % 20 - 10);
+		e->SetPos(rand() % 20 - 10, 1.f / (rand() % 100) + 0.5f, rand() % 20 - 20);
 		m_pLights.emplace(ind++, e);
 		e = nullptr;
 	}
@@ -157,4 +171,13 @@ void Client::Update(const float& deltaTime) {
 			break;
 		}
 	}
+
+	//for(auto i : m_pLights) {
+	//	Aen::Vec4f l = i.second->GetComponent<Aen::PointLight>().GetDist();
+	//	Aen::Vec3f p = i.second->GetPos();
+	//	//p = Aen::Transform(m_camera.GetComponent<Aen::Camera>().GetView(), p);
+	//	m_sphere.SetPos(p);
+	//	m_sphere.SetScale(l.w, l.w, l.w);
+	//	break;
+	//}
 }
