@@ -31,7 +31,7 @@ namespace Aen
 		~RigidBody();
 		
 
-		void CreateMaterial(float staticFriction = 0.5f, float dynamicFriction = 0.5f, float restitution = 0.6f);
+		void CreateMaterial(float staticFriction = 1.f, float dynamicFriction = 1.f, float restitution = 0.2f);
 		//nX, nY, nZ, distance
 		void CreatePlane(Aen::Vec4f planeParameters = Aen::Vec4f(0.f, 1.f, 0.f, 0.f)); 
 		void CreateCube(float density = 50.f, Aen::Vec3f cubeLengths = Aen::Vec3f(0.5f, 0.5f, 0.5f),

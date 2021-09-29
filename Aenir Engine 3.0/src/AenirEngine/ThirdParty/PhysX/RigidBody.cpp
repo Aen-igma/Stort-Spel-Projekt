@@ -60,7 +60,8 @@ namespace Aen
 
 	void RigidBody::CreateMaterial(float staticFriction, float dynamicFriction, float restitution)
 	{
-		mp_Material = mp_LocalPhysics->createMaterial(staticFriction, dynamicFriction, restitution);
+		mp_Material = mp_LocalPhysics->createMaterial(PxReal(staticFriction), PxReal(dynamicFriction), PxReal(restitution));
+		mp_Material->setFlag(PxMaterialFlag::eIMPROVED_PATCH_FRICTION, true);
 	}
 
 	void RigidBody::CreatePlane(Aen::Vec4f planeParameters)
@@ -78,6 +79,7 @@ namespace Aen
 			*mp_Material, density);
 		mp_DynamicBody->setAngularDamping(0.5f);
 		mp_DynamicBody->setLinearVelocity(PxVec3(velocity.x, velocity.y, velocity.z));
+		mp_DynamicBody->setSleepThreshold(PxReal(1));
 		PhysXService::GetInstance()->AddActor(mp_DynamicBody);
 
 	}
