@@ -45,16 +45,6 @@ void Client::Start() {
 
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
 	Aen::Input::SetMouseVisible(false);
-
-	Quadtree m_Center(Point(1,1), Point(8,8));
-	Node a(Point(1, 1), 1);
-	Node b(Point(2, 5), 2);
-	Node c(Point(7, 6), 3);
-	m_Center.Insert(&a);
-	m_Center.Insert(&b);
-	m_Center.Insert(&c);
-
-	std::cout << "Node A: " << m_Center.Search(Point(1, 1))->m_data << "\n";
 }
 
 void Client::Update(const float& deltaTime) {

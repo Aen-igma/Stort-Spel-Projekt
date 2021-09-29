@@ -1,9 +1,6 @@
 #pragma once
-#include "AenWindow.h"
-#include "AenGraphics.h"
 #include "AenDefines.h"
-#include "Graphics/Graphics.h"
-
+#include "AenMath.h"
 //Points where we mark on the 2D space. Used to hold details of a point
 struct Point {
 	int m_x;
@@ -69,28 +66,27 @@ struct Node
 	{
 		m_data = 0;
 	}
-
 };
 
-typedef struct vertex
-{
-	float x, y, z;
-
-}VERTEX;
-
-typedef struct Nodes
-{
-	int bType; //Tells us which type of node it is
-	VERTEX vBoundCoordinates[4];
-	unsigned int uiBranches[4];
-	unsigned int uiVertexStrip1[8];
-	unsigned int uiVertexStrip2[8];
-	unsigned int uiVertexStrip3[8];
-	unsigned int uiVertexStrip4[8];
-	unsigned int uiID;
-	unsigned int uiParentID;
-
-}NODES;
+//typedef struct vertex
+//{
+//	float x, y, z;
+//
+//}VERTEX;
+//
+//typedef struct Nodes
+//{
+//	int bType; //Tells us which type of node it is
+//	VERTEX vBoundCoordinates[4];
+//	unsigned int uiBranches[4];
+//	unsigned int uiVertexStrip1[8];
+//	unsigned int uiVertexStrip2[8];
+//	unsigned int uiVertexStrip3[8];
+//	unsigned int uiVertexStrip4[8];
+//	unsigned int uiID;
+//	unsigned int uiParentID;
+//
+//}NODES;
 
 
 
@@ -108,21 +104,19 @@ public:
 
 	void Boundery(float x, float y, float z, float h){};
 
-	void CreateNode(unsigned int Bounding[4], unsigned int ParentID, unsigned int NodeID);
-
 	void SubDivide() {};
 private:
 
+	//Boundery of Node
 	Point m_topLeft;
 	Point m_botRight;
 
 	//contains the details of node
-	Node* pnode;
-	Nodes* pNodeList;
+	Node* m_pNode;
 
 	//Children of this quadtree
-	Quadtree *m_ptopLeftTree;
-	Quadtree *m_ptopRightTree;
+	Quadtree* m_ptopLeftTree;
+	Quadtree* m_ptopRightTree;
 	Quadtree* m_pbotLeftTree;
 	Quadtree* m_pbotRightTree;
 

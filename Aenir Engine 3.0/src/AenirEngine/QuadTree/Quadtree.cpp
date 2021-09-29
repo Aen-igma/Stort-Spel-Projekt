@@ -5,7 +5,7 @@ Quadtree::Quadtree()
 {
 	m_topLeft = Point(0,0);
 	m_botRight = Point(0,0);
-	pnode = NULL;
+	m_pNode = NULL;
 	m_ptopLeftTree = NULL;
 	m_ptopRightTree = NULL;
 	m_pbotLeftTree = NULL;
@@ -14,7 +14,7 @@ Quadtree::Quadtree()
 
 Quadtree::Quadtree(Point topL, Point botR)
 {
-	pnode = NULL;
+	m_pNode = NULL;
 	m_ptopLeftTree = NULL;
 	m_ptopRightTree = NULL;
 	m_pbotLeftTree = NULL;
@@ -37,12 +37,12 @@ void Quadtree::Insert(Node* node)
 		return;
 	//We are at a quad of unit area
 	//We cannot subdivde this quad further
-	if (abs(m_topLeft.m_x - m_botRight.m_x ) <= 1 && 
-		abs(m_topLeft.m_y - m_botRight.m_y) <= 1)
+	if (std::abs(m_topLeft.m_x - m_botRight.m_x ) <= 1 && 
+		std::abs(m_topLeft.m_y - m_botRight.m_y) <= 1)
 	{
-		if (pnode = NULL)
+		if (m_pNode = NULL)
 		{
-			pnode = node;
+			m_pNode = node;
 		}
 		return;
 	}
@@ -84,7 +84,6 @@ void Quadtree::Insert(Node* node)
 						(m_topLeft.m_y + m_botRight.m_y) / 2));
 			m_ptopRightTree->Insert(node);
 		}
-
 		// Indicates botRightTree
 		else
 		{
@@ -105,8 +104,8 @@ Node* Quadtree::Search(Point point)
 		return NULL;
 	//We are at a quad of unit area
 	//We cannot subdivde this quad further
-	if (pnode != NULL)
-		return pnode;
+	if (m_pNode != NULL)
+		return m_pNode;
 	if ((m_topLeft.m_x + m_botRight.m_x) / 2 >= point.m_x)
 	{
 		// Indicates topLeftTree
@@ -116,7 +115,6 @@ Node* Quadtree::Search(Point point)
 				return NULL;
 			return m_ptopLeftTree->Search(point);
 		}
-
 		// Indicates botLeftTree
 		else
 		{
@@ -134,13 +132,12 @@ Node* Quadtree::Search(Point point)
 				return NULL;
 			return m_ptopRightTree->Search(point);
 		}
-		
 		// Indicates botRightTree
 		else
 		{
-			if (m_ptopRightTree == NULL)
+			if (m_pbotRightTree == NULL)
 				return NULL;
-			return m_ptopRightTree->Search(point);
+			return m_pbotRightTree->Search(point);
 		}
 	}
 }
@@ -153,11 +150,4 @@ bool Quadtree::InBoundery(Point point)
 		point.m_y <= m_botRight.m_y);
 }
 
-void Quadtree::CreateNode(unsigned int Bounding[4], unsigned int ParentID, unsigned int NodeID)
-{
-	static unsigned int TotalTreeID = 0;
-	unsigned int uiNodeType;
-	unsigned int uiWidth, uiHeight;
 
-
-}
