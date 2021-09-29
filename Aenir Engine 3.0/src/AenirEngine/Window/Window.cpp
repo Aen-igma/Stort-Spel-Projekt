@@ -198,6 +198,8 @@ namespace Aen {
 	LRESULT Window::MsgRouter(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		Window* pWnd = nullptr;
 
+
+
 		if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam)) return true;
 
 		if(uMsg == WM_NCCREATE) {
@@ -216,8 +218,8 @@ namespace Aen {
 					std::unique_ptr<BYTE[]> rawData = std::make_unique<BYTE[]>(dataSize);
 					if(GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawData.get(), &dataSize, sizeof(RAWINPUTHEADER)) == dataSize) {
 						RAWINPUT* raw = reinterpret_cast<RAWINPUT*>(rawData.get());
-						if(raw->header.dwType == RIM_TYPEMOUSE && (raw->data.mouse.lLastX != 0 || raw->data.mouse.lLastY != 0)) {
-							Input::OnRawMouse((int)raw->data.mouse.lLastX, (int)raw->data.mouse.lLastY);
+						if(raw->header.dwType == RIM_TYPEMOUSE /*&& (raw->data.mouse.lLastX != 0 || raw->data.mouse.lLastY != 0)*/) {
+							Input::OnRawMouse(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
 						}
 					}
 				}

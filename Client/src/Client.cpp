@@ -17,10 +17,10 @@ void Client::Start() {
 	m_camera.GetComponent<Aen::Camera>().SetCameraPerspective(100.f, m_window.GetAspectRatio(), 0.01f, 100.f);
 	m_camera.SetPos(0.f, 0.f, -2.f);
 
-	m_cam.setProjMatrix(80.f, m_window.GetAspectRatio(), .1f, 100);
+	//m_cam.setProjMatrix(80.f, m_window.GetAspectRatio(), .1f, 100);
 
 	Aen::GlobalSettings::SetMainCamera(m_camera);
-	Aen::GlobalSettings::setPtCam(m_cam);
+	//Aen::GlobalSettings::setPtCam(m_cam);
 
 	// ------------------------ Setup Directional Light ------------------------- //
 

@@ -192,7 +192,7 @@ namespace Aen {
 		std::memcpy(prevKeys, keys, sizeof(unsigned char) * 256);
 		GetKeyboardState(keys);
 
-		while(rawMouse.size() > 2u)
+		while(rawMouse.size() > 4u)
 			rawMouse.pop();
 
 		static const WORD xButtons[] = {

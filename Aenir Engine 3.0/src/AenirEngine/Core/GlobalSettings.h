@@ -19,9 +19,9 @@ namespace Aen {
 			m_pMainCamera = &camera;
 		}
 
-		static void setPtCam(pt::CamClass& cam) {
-			m_pMainBetterCam = &cam;
-		}
+		//static void setPtCam(CamClass& cam) {
+		//	m_pMainTempCam = &cam;
+		//}
 
 		static void SetBGColor(const Color& color) {
 			m_BGColor = color;
@@ -120,7 +120,7 @@ namespace Aen {
 		static ShaderModel* m_pDefaultShader;
 		static Window* m_pWindow;
 		static Entity* m_pMainCamera;
-		static pt::CamClass* m_pMainBetterCam;
+		//static CamClass* m_pMainTempCam;
 		static Color m_BGColor;
 	};
 }

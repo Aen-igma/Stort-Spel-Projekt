@@ -16,7 +16,7 @@ namespace Aen {
 	struct SMCB_Transform {
 		sm::Matrix m_vMat;
 		sm::Matrix m_pMat;
-		sm::Matrix m_mdlMat;
+		Mat4f m_mdlMat;
 
 		//SMCB_Transform() :m_vMat(Mat4f::identity), m_pMat(Mat4f::identity), m_mdlMat(Mat4f::identity) {}
 	};
@@ -63,7 +63,7 @@ namespace Aen {
 		CBuffer<Color> m_cbBGColor;
 		CBuffer<CB_Transform> m_cbTransform;
 		CBuffer<uint32_t> m_cbLightCount;
-		CBuffer<SMCB_Camera> m_cbCamera;
+		CBuffer<CB_Camera> m_cbCamera;
 		CBuffer<Vec4i> m_cbUseTexture;
 		SBuffer<SB_Light> m_sbLight;
 

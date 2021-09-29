@@ -1,24 +1,27 @@
+#include "PCH.h"
 #include "NewCam.h"
 
-pt::CamClass::CamClass():
-	m_pos(0,0,0), m_rot(0,0,0)
+
+
+CamClass::CamClass() :
+	m_pos(0, 0, 0), m_rot(0, 0, 0)
 {
 	updateViewM();
 }
 
-void pt::CamClass::setProjMatrix(float fovDegrees, float aspectRatio, float nearZ, float farZ)
+void CamClass::setProjMatrix(float fovDegrees, float aspectRatio, float nearZ, float farZ)
 {
 	float fovRad = (fovDegrees / 360.f) * DirectX::XM_2PI;
 	m_projMatrix = DirectX::XMMatrixPerspectiveFovRH(fovDegrees, aspectRatio, nearZ, farZ);
 }
 
-void pt::CamClass::rotate(sm::Vector3 xyz)
+void CamClass::rotate(sm::Vector3 xyz)
 {
 	m_rot += xyz;
 	updateViewM();
 }
 
-void pt::CamClass::updateViewM()
+void CamClass::updateViewM()
 {
 	sm::Matrix camRotMat = DirectX::XMMatrixRotationRollPitchYawFromVector(m_rot);
 	DirectX::XMVECTOR camTarget = DirectX::XMVector3TransformCoord(DEFAULT_FORWARD, camRotMat);
@@ -28,70 +31,98 @@ void pt::CamClass::updateViewM()
 	m_viewMatrix = dx::XMMatrixLookAtRH(m_pos, camTarget, upDir);
 
 	sm::Matrix vecRotationMat = dx::XMMatrixRotationRollPitchYaw(m_rot.x, m_rot.y, m_rot.z);
-	this->m_forwardV = XMVector3TransformCoord(this->DEFAULT_FORWARD, vecRotationMat);
-	this->m_backV = XMVector3TransformCoord(this->DEFAULT_BACKWARD, vecRotationMat);
-	this->m_leftV = XMVector3TransformCoord(this->DEFAULT_LEFT, vecRotationMat);
-	this->m_rightV = XMVector3TransformCoord(this->DEFAULT_RIGHT, vecRotationMat);
+	m_forwardV = XMVector3TransformCoord(this->DEFAULT_FORWARD, vecRotationMat);
+	m_backV = XMVector3TransformCoord(this->DEFAULT_BACKWARD, vecRotationMat);
+	m_leftV = XMVector3TransformCoord(this->DEFAULT_LEFT, vecRotationMat);
+	m_rightV = XMVector3TransformCoord(this->DEFAULT_RIGHT, vecRotationMat);
+	m_upV = XMVector3TransformCoord({ 0,1,0,0 }, vecRotationMat);
 }
 
-const sm::Matrix pt::CamClass::getView() const
+const sm::Matrix CamClass::getView() const
 {
 	return m_viewMatrix;
 }
 
-const sm::Matrix pt::CamClass::getProj() const
+const sm::Matrix CamClass::getProj() const
 {
 	return m_projMatrix;
 }
 
-const sm::Vector3 pt::CamClass::getPosition() const
+const sm::Vector3 CamClass::getPosition() const
 {
 	return m_pos;
 }
 
-const sm::Vector3 pt::CamClass::getRotation() const
+const sm::Vector3 CamClass::getRotation() const
 {
 	return m_rot;
 }
 
-void pt::CamClass::setPosition(float x, float y, float z)
+const sm::Vector3 CamClass::getForwardV() const
+{
+	return m_forwardV;
+}
+
+const sm::Vector3 CamClass::getLeftV() const
+{
+	return m_leftV;
+}
+
+const sm::Vector3 CamClass::getRightV() const
+{
+	return m_rightV;
+}
+
+const sm::Vector3 CamClass::getBackV() const
+{
+	return m_backV;
+}
+
+const sm::Vector3 CamClass::getUpV() const
+{
+	return m_upV;
+}
+
+void CamClass::setPosition(float x, float y, float z)
 {
 	m_pos = { x,y,z };
 	updateViewM();
 }
 
-void pt::CamClass::setPosition(sm::Vector3 xyz)
+void CamClass::setPosition(sm::Vector3 xyz)
 {
 	m_pos = xyz;
 	updateViewM();
 }
 
-void pt::CamClass::setRotation(float x, float y, float z)
+void CamClass::setRotation(float x, float y, float z)
 {
 	m_rot = { x,y,z };
 	updateViewM();
 }
 
-void pt::CamClass::setRotation(sm::Vector3 xyz)
+void CamClass::setRotation(sm::Vector3 xyz)
 {
 	m_rot = xyz;
 	updateViewM();
 }
 
-void pt::CamClass::move(float x, float y, float z)
+void CamClass::move(float x, float y, float z)
 {
 	m_pos += {x, y, z};
 	updateViewM();
 }
 
-void pt::CamClass::move(sm::Vector3 xyz)
+void CamClass::move(sm::Vector3 xyz)
 {
 	m_pos += xyz;
 	updateViewM();
 }
 
-void pt::CamClass::rotate(float x, float y, float z)
+void CamClass::rotate(float x, float y, float z)
 {
-	m_rot += {x,y,z};
+	m_rot += {x, y, z};
 	updateViewM();
 }
+
+

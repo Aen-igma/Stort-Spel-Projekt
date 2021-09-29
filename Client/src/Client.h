@@ -19,7 +19,6 @@ class Client : public Aen::App {
 	bool m_toggleCamera;
 	bool m_toggleFullScreen;
 
-	pt::CamClass m_cam;
 	Aen::Entity m_camera;
 	Aen::Entity m_dLight;
 	Aen::Entity m_plane;
