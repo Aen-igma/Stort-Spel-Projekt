@@ -11,7 +11,12 @@ namespace Aen
 
 	RigidBody::~RigidBody()
 	{
-
+		if (mp_DynamicBody != NULL)
+		{
+			PhysXService::GetInstance()->RemoveActor(mp_DynamicBody);
+			mp_DynamicBody->release();
+			mp_Material->release();
+		}
 	}
 
 	const Mat4f RigidBody::GetTransform() {

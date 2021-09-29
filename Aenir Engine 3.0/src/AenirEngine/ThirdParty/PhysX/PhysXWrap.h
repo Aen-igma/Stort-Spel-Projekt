@@ -28,8 +28,10 @@ public:
 	PxRigidDynamic* CreateDynamic(const PxTransform& t, const PxGeometry& geometry, const float& density, const PxVec3& velocity = PxVec3(0));
 	void CreateDemo();
 
-	void AddActor(PxRigidStatic *staticActor);
+	void AddActor(PxRigidStatic* staticActor);
 	void AddActor(PxRigidDynamic* dynamicActor); 
+	//void RemoveActor(PxRigidStatic* staticActor);
+	void RemoveActor(PxRigidDynamic* dynamicActor);
 	PxPhysics*& GetPxPhysics();
 
 

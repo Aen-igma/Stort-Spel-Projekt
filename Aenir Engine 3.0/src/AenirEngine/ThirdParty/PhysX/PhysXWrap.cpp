@@ -76,6 +76,16 @@ void PhysXWrap::AddActor(PxRigidDynamic* dynamicActor)
 	mp_Scene->addActor(*dynamicActor);
 }
 
+//void PhysXWrap::RemoveActor(PxRigidStatic* staticActor)
+//{
+//	mp_Scene->removeActor(*staticActor);
+//}
+
+void PhysXWrap::RemoveActor(PxRigidDynamic* dynamicActor)
+{
+	mp_Scene->removeActor(*dynamicActor);
+}
+
 PxPhysics*& PhysXWrap::GetPxPhysics()
 {
 	return this->mp_Physics;
@@ -113,15 +123,6 @@ void PhysXWrap::InitPhysics(int toleranceLength, int toleranceSpeed)
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
-	//m_Material = m_Physics->createMaterial(0.5f, 0.5f, 0.6f);
-
-	//PxRigidStatic* groundPlane = PxCreatePlane(*m_Physics, PxPlane(0, 1, 0, 0), *m_Material);
-	//m_Scene->addActor(*groundPlane);
-
-	//CreateStack(PxTransform(PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
-	/*CreateDynamic(PxTransform(PxVec3(0, 40, 100)), PxBoxGeometry(5.f, 3.f, 3.f), 50.f, PxVec3(0, -10, -100));
-	CreateStack(PxTransform(PxVec3(100, 0, stackZ -= 10.0f)), 10, 2.0f);
-	CreateDynamic(PxTransform(PxVec3(100, 40, 100)), PxSphereGeometry(10), 20.f, PxVec3(0, -30, -100));*/
 }
 
 
