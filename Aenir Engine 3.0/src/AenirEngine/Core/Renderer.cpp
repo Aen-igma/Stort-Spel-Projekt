@@ -131,7 +131,7 @@ namespace Aen {
 
 		m_screenQuad.Draw();
 
-		//Aen::GlobalSettings::guiHandler;
+	#ifdef _DEBUG
 		Aen::GlobalSettings::mp_guiHandler->NewFrame();
 		Aen::GlobalSettings::mp_guiHandler->SceneListWindow();
 		Aen::GlobalSettings::mp_guiHandler->AssetWindow();
@@ -139,6 +139,9 @@ namespace Aen {
 		Aen::GlobalSettings::mp_guiHandler->ToolWindow();
 		Aen::GlobalSettings::mp_guiHandler->MaterialWindow();
 		Aen::GlobalSettings::mp_guiHandler->Render();
+	#endif
+
+		
 
 
 		// Present
