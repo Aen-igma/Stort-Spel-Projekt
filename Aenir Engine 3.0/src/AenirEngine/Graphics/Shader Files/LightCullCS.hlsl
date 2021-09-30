@@ -1,9 +1,10 @@
 
-#define GRID_SIZE 16
-
 cbuffer dispatchInfo : register(b0) {
     int2 threadGroups;
     int2 numThreads;
+    int2 windowSize;
+    uint avarageLights;
+    uint pad;
 };
 
 cbuffer lightCount : register(b1) {
@@ -101,12 +102,12 @@ float4x4 inverse(float4x4 m) {
 }
 
 float4 ScreenToView(float4 screen) {
-    float2 uv = screen.xy / float2(numThreads);
+    float2 uv = screen.xy / float2(windowSize);
     return float4(float2(uv.x, 1.f - uv.y) * 2.f - 1.f, screen.zw);
 }
 
 bool SphereInsidePlane(Sphere sphere, Plane plane) {
-    return dot(plane.normal, (sphere.pos - plane.pos)) < -sphere.radius;
+    return dot(plane.normal, plane.pos - sphere.pos) < -sphere.radius;
 }
 
 bool PointInsideSphere(Sphere sphere, float3 p) {
@@ -141,7 +142,7 @@ bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zPos, float zFar)
     if (zFar < zPos)
         return false;
 
-    for(int i = 0; i < 4; i++)
+    for(uint i = 0u; i < 4u; i++)
         if(SphereInsidePlane(sphere, frustum.planes[i]))
             return false;
 
@@ -150,8 +151,8 @@ bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zPos, float zFar)
 
 bool ConeInsideFrustum(Cone cone, Frustum frustum, float zPos, float zFar) {
 
-    /*if (zFar < zPos)
-        return false;*/
+    if (zFar < zPos)
+        return false;
 
     for(int i = 0; i < 4; i++)
         if(ConeInsidePlane(cone, frustum.planes[i]))
@@ -163,27 +164,27 @@ bool ConeInsideFrustum(Cone cone, Frustum frustum, float zPos, float zFar) {
 [numthreads(1, 1, 1)]
 void main(CS_Input input) {
 
-    uint2 uv = input.gId.xy * 16u;
+    uint2 id = input.gId.xy;
+    uint2 uv = id * 16u;
 
     float fDepth = 0.f;
-    for(uint i = 0u; i < 256u; i++) {
-        float depth = depthMap[uv + uint2(i % 16, i / 16 % 16)].r;
-        if(depth > fDepth)
-            fDepth = depth;
+    for(uint i = 0u; i < 16u; i++) {
+        float depth = depthMap[uv + uint2((i % 4u) * 4u, ((i / 4u) % 4u) * 4u)].r;
+        fDepth = (depth > fDepth) ? depth : fDepth;
     }
     
     uint count = 0;
-    uint offset = input.gId.x * 200 + input.gId.y * threadGroups.x * 200;
+    uint offset = id.x * avarageLights + id.y * numThreads.x * avarageLights;
 
     float4x4 ivpMat = inverse(mul(vMat, pMat));
-    float4 camPos = mul(ScreenToView(float4(input.gId.xy * 16u, 0.f, 1.f)), ivpMat);
+    float4 camPos = mul(ScreenToView(float4(id * 16u, 0.f, 1.f)), ivpMat);
     camPos.xyz = camPos.xyz / camPos.w;
 
     float4 corners[4];
-    corners[0] = float4(input.gId.xy * 16, -1.f, 1.f);
-    corners[1] = float4(float2(input.gId.x + 1, input.gId.y) * 16, -1.f, 1.f );
-    corners[2] = float4(float2(input.gId.x, input.gId.y + 1) * 16, -1.f, 1.f );
-    corners[3] = float4(float2(input.gId.x + 1, input.gId.y + 1) * 16, -1.f, 1.f );
+    corners[0] = float4(id * 16, -1.f, 1.f);
+    corners[1] = float4(float2(id.x + 1, id.y) * 16, -1.f, 1.f );
+    corners[2] = float4(float2(id.x, id.y + 1) * 16, -1.f, 1.f );
+    corners[3] = float4(float2(id.x + 1, id.y + 1) * 16, -1.f, 1.f );
 
     for(uint i = 0u; i < 4; i++) {
         corners[i] = ScreenToView(corners[i]);
@@ -197,32 +198,47 @@ void main(CS_Input input) {
     frustum.planes[2] = CreatePlane(camPos.xyz, corners[2].xyz, corners[3].xyz);
     frustum.planes[3] = CreatePlane(camPos.xyz, corners[3].xyz, corners[1].xyz);
 
+    float4 middle = mul(ScreenToView(float4(id * 16 + 8, 0.f, 1.f)), ivpMat);
+    middle.xyz = middle.xyz / middle.w;
+
     for(uint i = 0; i < lCount; i++) {
         Light light = Aen_SB_Light[i];
 
         float3 p = light.pos;
         float3 n = light.dir;
-        float d = light.dist.w + 2.f;
+        float d = light.dist.w + 1.f;
 
-        float3 dir = normalize(camPos - p);
-        float4 vPos = mul(float4(p + dir * d, 1.f), mul(vMat, pMat));
-        float3 lDepth = vPos.z / vPos.w;
-        Sphere sphere = {p, d};
+        float3 dir = normalize(middle.xyz - p);
+        Sphere sphere;
+        float lDepth = 0.f;
+        float4 vPos = float4(0.f, 0.f, 0.f, 0.f);
 
         switch(light.type) {
             case 0:
                 float coneRadius = tan(radians(90.f - light.ang)) * d;
                 Cone cone = {p, d, -n, coneRadius};
 
-                if(ConeInsideFrustum(cone, frustum, lDepth, fDepth)) {
+                vPos = mul(float4(p + dir * d * (1.f - dot(dir, n)), 1.f), mul(vMat, pMat));
+                lDepth = vPos.z / vPos.w;
+
+                sphere.pos = p;
+                sphere.radius = d * (1.f - dot(dir, n));
+
+                if(ConeInsideFrustum(cone, frustum, lDepth, fDepth) || PointInsideSphere(sphere, camPos.xyz)) {
                     LightIndexList[offset + count] = i;
                     count++;
                 }
 
             break;
             case 1:
+                sphere.pos = p;
+                sphere.radius = d;
 
-                if(SphereInsideFrustum(sphere, frustum, lDepth, fDepth) || PointInsideSphere(sphere, camPos.xyz)) {
+                vPos = mul(float4(p + dir * d, 1.f), mul(vMat, pMat));
+                lDepth = vPos.z / vPos.w;
+
+                Sphere lS = {p, d + 2.5f};
+                if(SphereInsideFrustum(sphere, frustum, lDepth, fDepth) || PointInsideSphere(lS, camPos.xyz)) {
                     LightIndexList[offset + count] = i;
                     count++;
                 }
@@ -235,5 +251,5 @@ void main(CS_Input input) {
         }
     }
 
-    LightGrid[input.gId.xy] = uint2(offset, count);
+    LightGrid[id] = uint2(offset, count);
 }

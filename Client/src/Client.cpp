@@ -15,28 +15,27 @@ void Client::Start() {
 
 	m_camera.AddComponent<Aen::Camera>();
 	m_camera.GetComponent<Aen::Camera>().SetCameraPerspective(100.f, m_window.GetAspectRatio(), 0.01f, 100.f);
-	//m_camera.GetComponent<Aen::Camera>().SetCameraOrthographic(m_window.GetSize().x * 0.02f, m_window.GetSize().y * 0.02f, 0.01f, 100.f);
 	m_camera.SetPos(0.f, 0.f, 0.f);
 
 	Aen::GlobalSettings::SetMainCamera(m_camera);
 
 	// ------------------------ Setup Directional Light ------------------------- //
 
-	//m_dLight.AddComponent<Aen::DirectionalLight>();
-	//m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
-	//m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
-	//m_dLight.SetRot(45.f, -135.f, 0.f);
+	m_dLight.AddComponent<Aen::DirectionalLight>();
+	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
+	m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
+	m_dLight.SetRot(45.f, -135.f, 0.f);
 
 	// --------------------------- Setup Spot Light ----------------------------- //
 
-	/*m_spotLight.AddComponent<Aen::SpotLight>();
+	m_spotLight.AddComponent<Aen::SpotLight>();
 	m_spotLight.GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Red);
 	m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(1.f);
 	m_spotLight.GetComponent<Aen::SpotLight>().SetConeSize(40.f);
 	m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(500.f);
-	m_spotLight.GetComponent<Aen::SpotLight>().SetLightDist(1.f, 0.f, 0.f, 50.f);
+	m_spotLight.GetComponent<Aen::SpotLight>().SetLightDist(1.f, 0.f, 0.f, 10.f);
 	m_spotLight.SetPos(0.f, 2.f, -5.f);
-	m_spotLight.SetRot(45.f, 0.f, 0.f);*/
+	m_spotLight.SetRot(45.f, 0.f, 0.f);
 
 	// ----------------------------- Load Meshes -------------------------------- //
 

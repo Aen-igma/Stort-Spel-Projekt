@@ -8,7 +8,7 @@ namespace Aen {
 		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), m_postProcessBuffer(window), m_layerBuffer(window, 7u), 
 		m_backBuffer(), m_viewPort(), m_clampSampler(SamplerType::CLAMP), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
-		m_rasterizerState(FillMode::Solid, CullMode::Front), m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid() {}
+		m_rasterizerState(FillMode::Solid, CullMode::Front), m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u) {}
 
 	void Renderer::Initialize() {
 
@@ -33,25 +33,24 @@ namespace Aen {
 			if(!m_combineLayersPS.Create(L"CombineLayersPS.cso"))
 				throw;
 
-		m_postLayout.Create(m_postProcessVS);
-
-
-		// temp --------------------------------------------------------------------
-
-		m_dispatchInfo.GetData().numThreads.x = m_window.GetSize().x;
-		m_dispatchInfo.GetData().numThreads.y = m_window.GetSize().y;
-		m_dispatchInfo.GetData().threadGroups.x = (int)std::ceil((float)m_window.GetSize().x / 16.f) + 1;
-		m_dispatchInfo.GetData().threadGroups.y = (int)std::ceil((float)m_window.GetSize().y / 16.f) + 1;
-		m_dispatchInfo.UpdateBuffer();
-		
 		if(!m_lightCullCS.Create(AEN_OUTPUT_DIR_WSTR(L"LightCullCS.cso")))
 			if(!m_lightCullCS.Create(L"LightCullCS.cso"))
 				throw;
 
-		const uint32_t avarageLights = 200u;
-		uint32_t size = m_dispatchInfo.GetData().threadGroups.x * m_dispatchInfo.GetData().threadGroups.y;
-		m_lIndex.Create(sizeof(uint32_t), avarageLights * size);
-		m_lGrid.Create(m_dispatchInfo.GetData().threadGroups);
+		m_postLayout.Create(m_postProcessVS);
+
+		m_dispatchInfo.GetData().windowSize.x = m_window.GetSize().x;
+		m_dispatchInfo.GetData().windowSize.y = m_window.GetSize().y;
+		m_dispatchInfo.GetData().numThreads.x = (int)std::ceil((float)m_window.GetSize().x / 16.f);
+		m_dispatchInfo.GetData().numThreads.y = (int)std::ceil((float)m_window.GetSize().y / 16.f);
+		m_dispatchInfo.GetData().threadGroups.x = (int)std::ceil((float)m_window.GetSize().x / 16.f);
+		m_dispatchInfo.GetData().threadGroups.y = (int)std::ceil((float)m_window.GetSize().y / 16.f);
+		m_dispatchInfo.GetData().avarageLights = m_avarageLights;
+		m_dispatchInfo.UpdateBuffer();
+
+		uint32_t size = m_dispatchInfo.GetData().numThreads.x * m_dispatchInfo.GetData().numThreads.y;
+		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
+		m_lGrid.Create(m_dispatchInfo.GetData().numThreads);
 	}
 
 	void Renderer::Render() {
@@ -165,7 +164,7 @@ namespace Aen {
 		RenderSystem::BindShader<PShader>(m_postProcessPS);
 		RenderSystem::BindShaderResourceView<PShader>(0u, m_postProcessBuffer);
 
-		// temp ------------------
+		#ifdef _DEBUG
 		RenderSystem::BindShaderResourceView<PShader>(4, m_lGrid);
 
 		static bool toggle = false;
@@ -175,63 +174,13 @@ namespace Aen {
 		m_heatMap.BindBuffer<PShader>(0u);
 
 		m_cbTransform.BindBuffer<CShader>(1u);
-
-		// -----------------------
+		#endif
 
 		m_screenQuad.Draw();
-
-		/*ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
-		ImGui::Begin("Debug");
-		ImGui::Text("deez");*/
-		// code here
-
-		/*ImGui::End();
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());*/
 
 		// Present
 
 		RenderSystem::Present();
 		RenderSystem::ClearState();
 	}
-
-	//void Renderer::Draw(std::unordered_map<uint32_t, MeshInstance*>& meshLayer, const uint32_t& layer) {
-
-	//	// Pre Depth Pass
-
-	//	RenderSystem::UnBindRenderTargets(1u);
-	//	RenderSystem::BindRenderTargetView(m_depth[layer]);
-	//	RenderSystem::SetDepthStencilState(m_offStencil[layer], 0xFF);
-
-	//	for(auto& i : meshLayer) {
-	//		Mesh* pMesh = i.second->m_pMesh;
-
-	//		if(pMesh) {
-
-	//			m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(i.first).GetTransformation().Transposed();
-	//			m_cbTransform.UpdateBuffer();
-
-	//			Material* pMaterial = (pMesh && pMesh->m_pMaterials[0]) ? pMesh->m_pMaterials[0] : nullptr;
-	//			if(pMaterial) {
-	//				RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass1);
-	//				RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass1);
-	//				RenderSystem::UnBindShader<PShader>();
-
-	//				uint32_t* slots = pMaterial->m_pShaderModel->m_slotsPass1;
-	//				if(slots[0] != UINT_MAX) m_cbTransform.BindBuffer<VShader>(slots[0]);
-	//				if(slots[1] != UINT_MAX) m_cbLightCount.BindBuffer<VShader>(slots[1]);
-	//				if(slots[2] != UINT_MAX) m_cbCamera.BindBuffer<VShader>(slots[2]);
-	//				if(slots[3] != UINT_MAX) m_cbUseTexture.BindBuffer<VShader>(slots[3]);
-	//				if(slots[4] != UINT_MAX) m_sbLight.BindSRV<VShader>(slots[4]);
-	//			}
-
-	//			pMesh->m_vertices.BindBuffer();
-	//			pMesh->m_vertices.Draw();
-	//		}
-	//	}
-
-	//	
-	//}
 }
