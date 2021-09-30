@@ -60,8 +60,11 @@ namespace Aen {
 		// new raw mouse func
 		static MouseEvent ReadEvent();
 		static bool BufferIsEmbty();
-		private:
+		static void toggleRawMouse(bool b = !m_isRawMouseOn);
+		static const bool GetIsRawMouseOn();
 
+		private:
+		static bool m_isRawMouseOn;
 		static void SetRawMouse(int x, int y);
 		static std::queue<MouseEvent> m_mouseBuffer;
 

@@ -68,22 +68,23 @@ void Client::Update(const float& deltaTime) {
 	
 	if(Aen::Input::KeyDown(Aen::Key::TAB)) {
 		Aen::Input::SetMouseVisible(m_toggleCamera);
+		Aen::Input::toggleRawMouse();
 		m_toggleCamera = !m_toggleCamera;
 	}
 
-	while (!Aen::Input::BufferIsEmbty())
-	{
-		Aen::MouseEvent me = Aen::Input::ReadEvent();
-		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
-			m_camera.Rotate((float)me.GetPos().y * .5f, -(float)me.GetPos().x * .5f, 0.f);
-	}
+	
 	if(m_toggleCamera) {
 		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;
 		Aen::Input::SetMousePos(m_window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_window.GetSize() * 0.5f));
 		m_camera.MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
 		m_camera.Move(0.f, axis.y * deltaTime * m_speed * focus, 0.f);
 		//m_camera.Rotate((float)mouseAxis.y * deltaTime * m_mouseSense, (float)mouseAxis.x * deltaTime * -m_mouseSense, 0.f);
-		
+		while (!Aen::Input::BufferIsEmbty())
+		{
+			Aen::MouseEvent me = Aen::Input::ReadEvent();
+			if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
+				m_camera.Rotate((float)me.GetPos().y * .05f, -(float)me.GetPos().x * .05f, 0.f);
+		}
 	}
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //

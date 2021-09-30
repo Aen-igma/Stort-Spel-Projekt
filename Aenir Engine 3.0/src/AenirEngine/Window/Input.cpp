@@ -8,6 +8,7 @@ namespace Aen {
 
 	std::queue<Vec2i> Input::rawMouse;
 	std::queue<MouseEvent> Input::m_mouseBuffer;
+	bool Input::m_isRawMouseOn = true;
 
 	bool Input::activeGP[XUSER_MAX_COUNT];
 	bool Input::GPKeys[XUSER_MAX_COUNT][14];
@@ -147,9 +148,19 @@ namespace Aen {
 		return { x,y };
 	}
 
+	const bool Input::GetIsRawMouseOn()
+	{
+		return m_isRawMouseOn;
+	}
+
 	bool Input::BufferIsEmbty()
 	{
 		return m_mouseBuffer.empty();
+	}
+
+	void Input::toggleRawMouse(bool b)
+	{
+		m_isRawMouseOn = b;
 	}
 
 	const Vec2i Input::GetRawMouse() {
@@ -193,7 +204,10 @@ namespace Aen {
 
 	void Input::SetRawMouse(int x, int y)
 	{
-		return m_mouseBuffer.push(MouseEvent(MouseEvent::MouseInput::RAW_MOVE, x, y));
+		if(m_isRawMouseOn)
+			return m_mouseBuffer.push(MouseEvent(MouseEvent::MouseInput::RAW_MOVE, x, y));
+		else
+			return;
 	}
 
 	void Input::OnRawMouse(const int& x, const int& y) {
