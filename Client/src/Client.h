@@ -23,9 +23,6 @@ class Client : public Aen::App {
 	Aen::Entity m_dLight;
 	Aen::Entity m_plane;
 	Aen::Entity m_cube;
-
-	std::vector<Aen::Entity> m_cubes;
-
 };
 
 

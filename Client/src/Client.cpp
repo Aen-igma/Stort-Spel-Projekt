@@ -54,8 +54,6 @@ void Client::Start() {
 
 	// ------------------- Procedural generation testing staging grounds ------- //
 	
-	LevelGenerator::GenerationTestingFunction();
-
 }
 
 void Client::Update(const float& deltaTime) {

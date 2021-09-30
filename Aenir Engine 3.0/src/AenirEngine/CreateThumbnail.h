@@ -5,12 +5,12 @@
 namespace Aen {
 
 	struct ImageByteData {
-		int x; // width
-		int y; // height
-		int n; // 8 bit
+		int x = 0; // width
+		int y = 0; // height
+		int n = 0; // 8 bit
 		int channels = 4;
 		
-		unsigned char* imageData;
+		unsigned char* imageData = nullptr;
 
 		void LoadImageThumb(const char* file);
 
@@ -22,7 +22,7 @@ namespace Aen {
 
 		static void SaveImage(const ImageByteData* source, const char* filepath);
 
-		void freeData();
+		void FreeData();
 	};
 }
 

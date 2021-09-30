@@ -37,7 +37,7 @@ namespace Aen {
 		stbi_write_png(filepath, source->x, source->y, source->channels, source->imageData, source->x * source->channels);
 	}
 
-	void ImageByteData::freeData()
+	void ImageByteData::FreeData()
 	{
 		stbi_image_free(imageData);
 	}

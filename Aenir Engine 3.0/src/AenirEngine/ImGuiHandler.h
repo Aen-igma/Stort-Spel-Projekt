@@ -5,8 +5,10 @@
 #include "Graphics/Component/Entity.h"
 #include <filesystem>
 #include "CreateThumbnail.h"
+#include "LevelExporter.h"
 
 #include "ThirdParty/ImGui/imgui.h"
+#include "ThirdParty/ImGui/imfilebrowser.h"
 #include "ThirdParty/ImGui/imgui_stdlib.h"
 #include "ThirdParty/ImGui/imgui_impl_win32.h"
 #include "ThirdParty/ImGui/imgui_impl_dx11.h"
@@ -28,18 +30,25 @@ namespace Aen {
 			Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i);
 
 	private:
-		//bool initialized = false;
 
 		Aen::EntityHandler* mp_entityHandlerPtr;
-
 		vector<Aen::Entity*> m_entityList;
+
+		// Display in scene list
 		vector<string> m_itemList;
-		vector<bool> m_hitBoxList;
+		//vector<bool> m_hitBoxList;
+
 		vector<int> m_deleteList;
+
 		vector<string> m_objFileName;
 		vector<string> m_objName;
+
 		vector<string> m_textureFileName;
 		vector<string> m_textureName;
+
+		// Type
+		vector<string> m_entityType;
+
 
 		int m_selectedEntity = 0;
 		float m_xyzTranslation[3] = { 0,0,0 };
@@ -47,7 +56,14 @@ namespace Aen {
 		float m_xyzScale[3] = { 1,1,1 };
 		int m_entityCount = 0;
 
-		int test_Count = 0;
+		ImGui::FileBrowser fileDialog;
+		string openOrSave;
+
+		LevelExporter m_levelExporter;
+
+		vector<string> m_meshObjList;
+
+		
 
 	public:
 		ImGuiHandler();
@@ -85,6 +101,7 @@ namespace Aen {
 		const string CheckType(Aen::Entity* entity);
 
 		void CustomCombo(int& index, string name);
+
 	};
 }
 

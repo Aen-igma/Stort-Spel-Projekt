@@ -15,7 +15,7 @@ namespace Aen {
 		{
 			for (size_t i = 0; i < m_deleteList.size(); i++)
 			{
-				delete m_entityList[m_deleteList[i] - 1];
+				delete m_entityList[m_deleteList[i] - static_cast<size_t>(1)];
 			}
 		}
 	}
@@ -31,8 +31,8 @@ namespace Aen {
 		source.MakeThumbnail(&destination);
 		destination.SaveImage(destinationPath.c_str());
 
-		source.freeData();
-		destination.freeData();
+		source.FreeData();
+		destination.FreeData();
 	}
 
 	void ImGuiHandler::StartUp()
@@ -51,6 +51,10 @@ namespace Aen {
 		ImGui_ImplWin32_Init(hwnd);
 		ImGui_ImplDX11_Init(mp_device, mp_dContext);
 		ImGui::StyleColorsDark();
+
+		fileDialog.SetTitle("Open");
+		fileDialog.SetTypeFilters({ ".h",".cpp" });
+
 	}
 
 	void ImGuiHandler::NewFrame()
@@ -63,6 +67,7 @@ namespace Aen {
 
 	void ImGuiHandler::Render()
 	{
+
 		// Draw
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -85,23 +90,41 @@ namespace Aen {
 			{
 				if (ImGui::MenuItem("Open..", "Ctrl + O"))
 				{
-
+					openOrSave = "Open";
+					fileDialog.SetTitle("Open");
+					fileDialog.Open();
 				}
 
 				if (ImGui::MenuItem("Save..", "Ctrl + S"))
 				{
-
-				}
-
-				if (ImGui::MenuItem("Close..", "Ctrl + W"))
-				{
-					//windowClose = false;
+					openOrSave = "Save";
+					fileDialog.SetTitle("Save as");
+					fileDialog.Open();
 				}
 
 				ImGui::EndMenu();
 			}
 
 			ImGui::EndMenuBar();
+		}
+
+		fileDialog.Display();
+
+		if (fileDialog.HasSelected())
+		{
+			if (openOrSave == "Open")
+			{
+				std::cout << "Selected filename " << fileDialog.GetSelected().string() << std::endl;
+
+			}
+			else if(openOrSave == "Save")
+			{
+				std::cout << "Selected fileDir " << fileDialog.GetPwd().string() << std::endl;
+				m_levelExporter.writeInto(m_entityList, m_itemList, m_meshObjList, m_textureFileName, m_entityType);
+
+			}
+
+			fileDialog.ClearSelected();
 		}
 
 		ImGui::BeginChild("List");
@@ -203,62 +226,60 @@ namespace Aen {
 			{
 				if (ImGui::CollapsingHeader("Transform Attributes"))
 				{
-					ImGui::InputFloat3("Translate", m_xyzTranslation);
-					ImGui::InputFloat3("Rotate", m_xyzRotation);
-					ImGui::InputFloat3("Scale", m_xyzScale);
-
 					SetValues();
 				}
 
 				ImGui::Checkbox("Hit box", &hitBoxEnable);
 
 				static int selectedItem = 0;
-
 				CustomCombo(selectedItem,"Parent");
 
 				ImGui::EndTabItem();
 			}
 
-
 			if (ImGui::BeginTabItem("Material"))
 			{
-
 				if (ImGui::CollapsingHeader("Common Material Properties"))
 				{
-					static int currentIndex = 0;
-					if (ImGui::BeginCombo("Test", m_textureName[currentIndex].c_str()))
+					if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 					{
-						for (size_t i = 0; i < m_textureName.size(); i++)
+						uint32_t id = m_entityList[m_selectedEntity]->getID();
+
+						if (Aen::ComponentHandler::MeshInstanceExist(id))
 						{
-							static bool isSelected = (currentIndex == i);
+							static int currentIndex = 0;
+							if (ImGui::BeginCombo("Test", m_textureName[currentIndex].c_str()))
+							{
+								for (size_t i = 0; i < m_textureName.size(); i++)
+								{
+									static bool isSelected = (currentIndex == i);
+
+									if (ImGui::Selectable(m_textureName[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+									{
+										currentIndex = static_cast<int>(i);
+										string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
+										Aen::Texture& texture = Aen::Resource::CreateTexture("Texture");
+										texture.LoadTexture(imageName);
+										Aen::Material& mat = Aen::Resource::CreateMaterial("Material", true);
+										mat.SetDiffuseMap(texture);
+
+										size_t id = m_entityList[m_selectedEntity]->getID();
+										Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
+									}
+
+									if (isSelected)
+									{
+										ImGui::SetItemDefaultFocus();
+									}
+								}
+								ImGui::EndCombo();
+							}
+							ImGui::SliderFloat("Transparency", &transparency, 0.0f, 1.0f);
+							ImGui::SliderFloat("Ambient Color", &ambientColor, 0.0f, 1.0f);
+							ImGui::SliderFloat("Diffuse", &diffuse, 0.0f, 1.0f);
 							
-							if (ImGui::Selectable(m_textureName[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
-							{
-								currentIndex = i;
-
-								cout << "index " << i << endl;
-								cout << "currentIndex " << currentIndex << endl;
-
-								string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
-								Aen::Texture& texture = Aen::Resource::CreateTexture("Texture");
-								texture.LoadTexture(imageName);
-								Aen::Material& mat = Aen::Resource::CreateMaterial("Material", true);
-								mat.SetDiffuseMap(texture);
-
-								size_t id = m_entityList[m_selectedEntity]->getID();
-								Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
-							}
-
-							if (isSelected)
-							{
-								ImGui::SetItemDefaultFocus();
-							}
 						}
-						ImGui::EndCombo();
 					}
-					ImGui::SliderFloat("Transparency", &transparency, 0.0f, 1.0f);
-					ImGui::SliderFloat("Ambient Color", &ambientColor, 0.0f, 1.0f);
-					ImGui::SliderFloat("Diffuse", &diffuse, 0.0f, 1.0f);
 				}
 
 				if (ImGui::CollapsingHeader("Normal Mapping"))
@@ -310,8 +331,6 @@ namespace Aen {
 
 	void ImGuiHandler::MaterialWindow()
 	{
-		/*static string testString = "a";
-		ImGui::InputText("test", &testString);*/
 	}
 
 	void ImGuiHandler::Update()
@@ -323,7 +342,8 @@ namespace Aen {
 	void ImGuiHandler::AddModel(Aen::Entity* entity)
 	{
 		m_entityList.push_back(entity);
-		m_itemList.push_back("Asset" + std::to_string(m_entityCount));
+		m_itemList.push_back("Model" + std::to_string(m_entityCount));
+		m_entityType.push_back("Model");
 		m_entityCount++;
 	}
 
@@ -463,16 +483,19 @@ namespace Aen {
 
 			if (Aen::ComponentHandler::TranslationExist(id)) 
 			{
+				ImGui::InputFloat3("Translate", m_xyzTranslation);
 				m_entityList[m_selectedEntity]->SetPos(m_xyzTranslation[0], m_xyzTranslation[1], m_xyzTranslation[2]);
 			}
 						
 			if (Aen::ComponentHandler::RotationExist(id)) 
 			{
+				ImGui::InputFloat3("Rotate", m_xyzRotation);
 				m_entityList[m_selectedEntity]->SetRot(m_xyzRotation[0], m_xyzRotation[1], m_xyzRotation[2]);
 			}
 					
 			if (Aen::ComponentHandler::ScaleExist(id)) 
 			{
+				ImGui::InputFloat3("Scale", m_xyzScale);
 				m_entityList[m_selectedEntity]->SetScale(m_xyzScale[0], m_xyzScale[1], m_xyzScale[2]);
 			}
 
@@ -516,14 +539,16 @@ namespace Aen {
 		}
 	}
 
-	void ImGuiHandler::AddBase(const string& meshName, const string& m_objName)
+	void ImGuiHandler::AddBase(const string& meshName, const string& objName)
 	{
 		Aen::Entity* entity = AEN_NEW(Aen::Entity);
 		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName + std::to_string(m_entityCount));
-		mesh.Load(AEN_RESOURCE_DIR(m_objName));
+		mesh.Load(AEN_RESOURCE_DIR(objName));
 
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
+
+		m_meshObjList.push_back(objName);
 
 		AddModel(entity);
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
@@ -534,20 +559,39 @@ namespace Aen {
 		string type = "";
 		uint32_t id = entity->getID();
 
-		if (Aen::ComponentHandler::CameraExist(id))
+		if (Aen::ComponentHandler::MeshInstanceExist(id))
+		{
+			type = "Model" + std::to_string(m_entityCount);
+			m_entityType.push_back("Model");
+			m_meshObjList.push_back("Cube.obj");
+			m_entityCount++;
+		}
+		else if (Aen::ComponentHandler::CameraExist(id))
 		{
 			type = "Camera";
+			m_entityType.push_back(type);			
 		}
-		else if ((Aen::ComponentHandler::DirectionalLightExist(id) || Aen::ComponentHandler::SpotLightExist(id) || Aen::ComponentHandler::PointLightExist(id)))
+		else if (Aen::ComponentHandler::DirectionalLightExist(id))
 		{
-			type = "light";
+			type = "Directional light";
+			m_entityType.push_back(type);
+		}
+		else if (Aen::ComponentHandler::SpotLightExist(id))
+		{
+			type = "Spot light";
+			m_entityType.push_back(type);
+		}
+		else if (Aen::ComponentHandler::PointLightExist(id))
+		{
+			type = "Point light";
+			m_entityType.push_back(type);
 		}
 		else
 		{
 			type = "Asset" + std::to_string(m_entityCount);
+			m_entityType.push_back("Asset");
 			m_entityCount++;
 		}
-
 		return type;
 	}
 
@@ -561,10 +605,7 @@ namespace Aen {
 
 				if (ImGui::Selectable(m_itemList[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
 				{
-					index = i;
-					cout << "index " << i << endl;
-					cout << "index 2" << index << endl;
-
+					index = static_cast<int>(i);
 				}
 
 				if (isSelected)
@@ -575,6 +616,8 @@ namespace Aen {
 			ImGui::EndCombo();
 		}
 	}
+
+
 	
 	void ImGuiHandler::ReadAllFilesFromResourceFolder()
 	{

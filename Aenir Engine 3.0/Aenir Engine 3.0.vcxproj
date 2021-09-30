@@ -160,6 +160,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -240,6 +241,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp" />
     <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\LevelExporter.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp" />
@@ -262,7 +264,6 @@
     <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CreateThumbnail.h" />
     <ClInclude Include="src\AenirEngine\BuritoMath.h" />
     <ClInclude Include="src\AenirEngine\CreateThumbnail.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animation.h" />
@@ -307,12 +308,15 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
     <ClInclude Include="src\AenirEngine\ImGuiHandler.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
+    <ClInclude Include="src\AenirEngine\LevelExporter.h" />
+    <ClInclude Include="src\AenirEngine\LevelHeader.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\MathFunctions.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Matrix.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Vector.h" />
     <ClInclude Include="src\AenirEngine\Math\Burito\Burito.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imfilebrowser.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.h" />
