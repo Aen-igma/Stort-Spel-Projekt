@@ -191,16 +191,52 @@ namespace Aen {
 				break;
 		}
 
-		return DefWindowProcW(hwnd, uMsg, wParam, lParam);
+		return InputProc(hwnd, uMsg, wParam, lParam);
+	}
+
+	LRESULT Window::InputProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam)) return true;
+		switch (uMsg) 
+		{
+		case WM_INPUT: {
+			UINT dataSize = 0;
+			GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, NULL, &dataSize, sizeof(RAWINPUTHEADER));
+
+			if (dataSize > 0)
+			{
+				std::unique_ptr<BYTE[]> rawData = std::make_unique<BYTE[]>(dataSize);
+				if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawData.get(), &dataSize, sizeof(RAWINPUTHEADER)) == dataSize)
+				{
+					RAWINPUT* raw = reinterpret_cast<RAWINPUT*>(rawData.get());
+					if (raw->header.dwType == RIM_TYPEMOUSE /*&& (raw->data.mouse.lLastX != 0 || raw->data.mouse.lLastY != 0)*/) {
+						//Input::OnRawMouse(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
+						Input::SetRawMouse(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
+					}
+				}
+			}
+
+			return DefWindowProc(hwnd, uMsg, wParam, lParam);
+		}
+		default:
+			return DefWindowProc(hwnd, uMsg, wParam, lParam);
+		}
 	}
 
 	
-	LRESULT Window::MsgRouter(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	LRESULT Window::MsgRouter(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		//switch (uMsg)
+		//{
+		//case WM_NCCREATE:
+		//	const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
+		//	Window* pWindow = reinterpret_cast<Window*>(pCreate->lpCreateParams);
+		//	if (pWindow == nullptr) throw;
+		//	SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWindow));
+		//default:
+		//	return pWindow->InputProc(hwnd, uMsg, wParam, lParam);
+		//}
 		Window* pWnd = nullptr;
-
-
-
-		if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam)) return true;
 
 		if(uMsg == WM_NCCREATE) {
 			pWnd = (Window*)reinterpret_cast<LPCREATESTRUCT>(lParam)->lpCreateParams;
@@ -208,29 +244,9 @@ namespace Aen {
 		} else
 			pWnd = reinterpret_cast<Window*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
 
-
-		switch(uMsg) {
-			case WM_INPUT: {
-				UINT dataSize = 0;
-				GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, NULL, &dataSize, sizeof(RAWINPUTHEADER));
-
-				if(dataSize > 0) {
-					std::unique_ptr<BYTE[]> rawData = std::make_unique<BYTE[]>(dataSize);
-					if(GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawData.get(), &dataSize, sizeof(RAWINPUTHEADER)) == dataSize) {
-						RAWINPUT* raw = reinterpret_cast<RAWINPUT*>(rawData.get());
-						if(raw->header.dwType == RIM_TYPEMOUSE /*&& (raw->data.mouse.lLastX != 0 || raw->data.mouse.lLastY != 0)*/) {
-							Input::OnRawMouse(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
-						}
-					}
-				}
-
-				return DefWindowProcW(hwnd, uMsg, wParam, lParam);
-			}
-		}
-
 		if(pWnd)
 			return pWnd->WinProc(hwnd, uMsg, wParam, lParam);
-		return DefWindowProcW(hwnd, uMsg, wParam, lParam);
+		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
 
 	bool Window::Register() {

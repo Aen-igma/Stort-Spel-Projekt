@@ -7,6 +7,7 @@ namespace Aen {
 	unsigned char Input::prevKeys[256];
 
 	std::queue<Vec2i> Input::rawMouse;
+	std::queue<MouseEvent> Input::m_mouseBuffer;
 
 	bool Input::activeGP[XUSER_MAX_COUNT];
 	bool Input::GPKeys[XUSER_MAX_COUNT][14];
@@ -141,6 +142,16 @@ namespace Aen {
 		ShowCursor(isVisible);
 	}
 
+	Vec2i MouseEvent::GetPos() const
+	{
+		return { x,y };
+	}
+
+	bool Input::BufferIsEmbty()
+	{
+		return m_mouseBuffer.empty();
+	}
+
 	const Vec2i Input::GetRawMouse() {
 
 		if(rawMouse.empty())
@@ -166,6 +177,23 @@ namespace Aen {
 		if(GetCursorPos(&p))
 			return Vec2i(p.x, p.y);
 		return Vec2i::zero;
+	}
+
+	MouseEvent Input::ReadEvent()
+	{
+		if (m_mouseBuffer.empty()) 
+			return MouseEvent();
+		else
+		{
+			MouseEvent e = m_mouseBuffer.front();
+			m_mouseBuffer.pop();
+			return e;
+		}
+	}
+
+	void Input::SetRawMouse(int x, int y)
+	{
+		return m_mouseBuffer.push(MouseEvent(MouseEvent::MouseInput::RAW_MOVE, x, y));
 	}
 
 	void Input::OnRawMouse(const int& x, const int& y) {
@@ -229,5 +257,21 @@ namespace Aen {
 				analogs[i][2].y = (float)gpState.Gamepad.bRightTrigger / 256.f;
 			}
 		}
+	}
+	MouseEvent::MouseEvent():
+		x(0), y(0), m_type(MouseInput::Invalid)
+	{}
+	MouseEvent::MouseEvent(const MouseInput type, const int x, const int y):
+		m_type(type), x(x), y(y)
+	{}
+
+	bool MouseEvent::IsValid() const
+	{
+		return m_type != MouseInput::Invalid;
+	}
+
+	MouseEvent::MouseInput MouseEvent::getInputType() const
+	{
+		return m_type;
 	}
 }

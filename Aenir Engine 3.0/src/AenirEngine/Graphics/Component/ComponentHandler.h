@@ -1,7 +1,6 @@
 #pragma once
 #include"Tranform/Tranform.h"
 #include"Camera/Camera.h"
-#include"Camera/NewCam.h"
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
 

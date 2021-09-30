@@ -12,6 +12,25 @@ namespace Aen {
 	enum class DZType;
 	enum class ADZType;
 
+	class AEN_DECLSPEC MouseEvent
+	{
+	public:
+		enum MouseInput {
+			SCROLL_UP, SCROLL_DOWN,
+			RAW_MOVE,
+			Invalid
+		};
+	private:
+		MouseInput m_type;
+		int x, y;
+	public:
+		MouseEvent();
+		MouseEvent(const MouseInput type, const int x, const int y);
+		bool IsValid() const;
+		Vec2i GetPos() const;
+		MouseInput getInputType() const;
+	};
+
 	class AEN_DECLSPEC Input {
 		public:
 
@@ -38,8 +57,15 @@ namespace Aen {
 		static const Vec2i GetMousePos(Window& window);
 		static const Vec2i GetMousePos();
 
+		// new raw mouse func
+		static MouseEvent ReadEvent();
+		static bool BufferIsEmbty();
 		private:
 
+		static void SetRawMouse(int x, int y);
+		static std::queue<MouseEvent> m_mouseBuffer;
+
+		// raw mouse end
 		static void OnRawMouse(const int& x, const int& y);
 		static bool Initialize();
 		static void Update();
