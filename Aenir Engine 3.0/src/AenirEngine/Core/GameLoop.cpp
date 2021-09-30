@@ -32,19 +32,6 @@ namespace Aen {
 
 	
 		//QuadTree
-		m_Center = new Quadtree(Point(0,0), Point(8,8));
-		Node a(Point(1, 1), 1);
-		Node b(Point(2, 5), 2);
-		Node c(Point(7, 6), 3);
-		m_Center->Insert(&a);
-		m_Center->Insert(&b);
-		m_Center->Insert(&c);
-
-		//Vet inte hur man ska fixa detta  får fråga senare
-		std::cout << "Node A: " << m_Center->Search(Point(2, 5))->m_data << "\n";
-		//std::cout << "Node B: " << m_Center->Search(Point(2,5))->m_data << "\n";
-		//std::cout << "Node C: " << m_Center->Search(Point(7,6))->m_data << "\n";
-		//std::cout << "None-Existing node: " << m_Center->Search(Point(5, 5));
 		std::cout << std::endl;
 
 		m_app->Start();

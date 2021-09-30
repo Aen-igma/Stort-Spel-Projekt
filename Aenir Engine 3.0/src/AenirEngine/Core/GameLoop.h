@@ -17,7 +17,7 @@ namespace Aen {
 		void Initialize();
 		void Run();
 
-		Quadtree* m_Center;
+		/*Quadtree* m_Center;*/
 
 		App* m_app;
 		private:
