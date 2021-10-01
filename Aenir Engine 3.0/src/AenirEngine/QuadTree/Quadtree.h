@@ -48,6 +48,7 @@ struct AABB
 		m_center = center;
 		m_halfDimension = halfDimension;
 	}
+
 };
 
 //To construct the boundery box, needs to use the window x,y for right cordinates
@@ -103,12 +104,12 @@ struct Node
 //
 //}NODES;
 
-//New
+//New object class. Meant to handle data of object
 struct Object
 {
 	friend class Quadtree;
 public:
-	AABB m_bound;
+	AABB m_Objbound;
 	Object() { };
 	Object(const AABB&, void* data = nullptr);
 	void setData(void* data);
@@ -123,7 +124,8 @@ class Quadtree
 {
 public:
 	Quadtree();
-	Quadtree(Point topL, Point botR);
+	Quadtree(const AABB& bound, const unsigned& capacity, const unsigned& maxLevel,
+		const unsigned& level = 0, Quadtree* parent = nullptr);
 	~Quadtree();
 
 	//void Insert(Node* node);
@@ -136,15 +138,12 @@ public:
 	void update(Object* object);
 	bool contains(Object* object)const;
 	void search(const AABB& object, const std::function<void(Object*)> &callback)const;
-	void subDivide();
-
-
 	unsigned getTotalChildren() const;
 	unsigned getTotalObjects() const;
 	void clear();
 
 
-
+	//Old shit
 	Node* Search(Point point);
 	bool InBoundery(Point point);
 	void Boundery(float x, float y, float z, float h){};
@@ -161,18 +160,19 @@ private:
 
 	//New
 	const int QT_NODE_CAPACITY = 4;
-	AABB m_boundery;
+	AABB m_bound;
 	Quadtree* m_parent;
 	Quadtree* m_children[4];
 	bool m_isLeaf = true;
 	double m_centerX;
 	double m_centerY;
 	unsigned m_level;
+	unsigned m_maxLevel;
 	unsigned m_capacity;
 	std::vector<Object*> m_Object;
-	void subdivideQuad();
-	Quadtree* getChild(const AABB& child) const;
+	void subdivide();
 
+	Quadtree* getChild(const AABB&) const;
 
 	//Children of this quadtree
 	Quadtree* m_northEast;

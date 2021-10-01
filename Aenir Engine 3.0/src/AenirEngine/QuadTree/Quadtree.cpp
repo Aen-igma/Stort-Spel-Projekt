@@ -12,15 +12,22 @@ Quadtree::Quadtree()
 	m_southEast = NULL;
 }
 
-Quadtree::Quadtree(Point topL, Point botR)
+Quadtree::Quadtree(const AABB& bound, const unsigned& capacity, const unsigned& maxLevel,
+	const unsigned& level, Quadtree* parent)
+	:m_capacity(capacity),
+	m_maxLevel(maxLevel),
+	m_level(level),
+	m_parent(parent),
+	m_centerX((bound.left + bound.right) * 0.5f),
+	m_centerY((bound.bottom + bound.top) * 0.5f),
+	m_bound(bound)
 {
 	m_pNode = NULL;
 	m_northWest = NULL;
 	m_northEast = NULL;
 	m_southWest = NULL;
 	m_southEast = NULL;
-	m_topLeft = topL;
-	m_botRight = botR;
+
 }
 
 Quadtree::~Quadtree()
@@ -112,17 +119,20 @@ bool Quadtree::insert(Object* object)
 	}
 	if (!m_isLeaf)
 	{
-		if (Quadtree* child = getChild(object->m_bound))
+		if (Quadtree* child = getChild(object->m_Objbound))
 		{
 			return child->insert(object);
 		}
 	}
 	m_Object.push_back(object);
-
+	if (m_isLeaf && m_level < m_maxLevel && m_Object.size() >= m_capacity)
+	{
+		subdivide();
+	}
 	for (unsigned i = 0; i < m_Object.size(); i++)
 	{
 		Object* object = m_Object[i];
-		if (Quadtree* child = getChild(object->m_bound))
+		if (Quadtree* child = getChild(object->m_Objbound))
 		{
 			m_Object.erase(m_Object.begin() + i);
 			object->m_qt = nullptr;
@@ -152,7 +162,7 @@ bool Quadtree::remove(Object* object)
 void Quadtree::update(Object* object)
 {
 	Quadtree* node = object->m_qt;
-	if (node->m_parent == nullptr || object->m_bound.within(node->m_boundery))
+	if (node->m_parent == nullptr || object->m_Objbound.within(node->m_bound))
 	{
 		return;
 	}
@@ -160,7 +170,7 @@ void Quadtree::update(Object* object)
 	do
 	{
 		node->m_parent;
-		if (object->m_bound.within(node->m_boundery))
+		if (object->m_Objbound.within(node->m_bound))
 		{
 			break;
 		}
@@ -181,7 +191,7 @@ bool Quadtree::contains(Object* object) const
 	return std::find(m_Object.begin(), m_Object.end(), object) != m_Object.end();
 }
 
-void Quadtree::search(const AABB& object, const std::function<void(Object*)>& callback) const
+void Quadtree::search(const AABB& object, const std::function<void(Object*)>& callback)const
 {
 	if (!m_isLeaf)
 	{
@@ -193,7 +203,7 @@ void Quadtree::search(const AABB& object, const std::function<void(Object*)>& ca
 		{
 			for ( auto && node : m_children)
 			{
-				if (node->m_boundery.intersects(object))
+				if (node->m_bound.intersects(object))
 				{
 					node->search(object, callback);
 				}
@@ -202,7 +212,7 @@ void Quadtree::search(const AABB& object, const std::function<void(Object*)>& ca
 	}
 	for (auto && node : m_Object)
 	{
-		if (node->m_bound.intersects(object))
+		if (node->m_Objbound.intersects(object))
 		{
 			/*callback(object);*/
 		}
@@ -210,12 +220,13 @@ void Quadtree::search(const AABB& object, const std::function<void(Object*)>& ca
 }
 
 
-void Quadtree::subDivide()
+void Quadtree::subdivide()
 {
-	m_children[0] = new Quadtree(); //BotRight
-	m_children[1] = new Quadtree(); //BotLeft
-	m_children[2] = new Quadtree(); //TopLeft
-	m_children[3] = new Quadtree(); //TopRight
+	m_children[0] = new Quadtree({ m_centerX, m_centerY, m_bound.right ,m_bound.bottom }, m_capacity, m_maxLevel, m_level +1, this); //BotRight
+	m_children[1] = new Quadtree({ m_bound.left, m_centerY, m_centerX ,m_bound.bottom }, m_capacity, m_maxLevel, m_level + 1, this); //BotLeft
+	m_children[2] = new Quadtree({ m_bound.left, m_bound.top, m_centerX ,m_centerY }, m_capacity, m_maxLevel, m_level + 1, this); //TopLeft
+	m_children[3] = new Quadtree({ m_centerX, m_bound.top, m_bound.right ,m_centerY }, m_capacity, m_maxLevel, m_level + 1, this); //TopRight
+	m_isLeaf = false;
 }
 
 Quadtree* Quadtree::getChild(const AABB &child)const
@@ -338,10 +349,7 @@ void Quadtree::clear()
 		m_isLeaf = true;
 	}
 }
-Node* Quadtree::Search(Point point)
-{
-	return nullptr;
-}
+
 //check if current quad tree contains a point
 bool Quadtree::InBoundery(Point point)
 {
@@ -350,6 +358,23 @@ bool Quadtree::InBoundery(Point point)
 		point.m_y >= m_topLeft.m_y &&
 		point.m_y <= m_botRight.m_y);
 }
+
+//Quadtree* Quadtree::getChild(const AABB &bound) const
+//{
+//	bool m_bottom = bound.bottom > m_centerY;
+//	bool m_left = bound.left < m_centerX;
+//	bool m_top = !m_bottom && m_bound.top < m_centerY;
+//	if (m_left && bound.right < m_centerX) {
+//		if (m_top)    return m_children[1]; // top left
+//		if (m_bottom) return m_children[2]; // bottom left
+//	}
+//	else if (!m_left) {
+//		if (m_top)    return m_children[0]; // top right
+//		if (m_bottom) return m_children[3]; // bottom right
+//	}
+//	return nullptr;
+//}
+
 
 AABB::AABB(const double& l, const double& t, const double& r, const double b)
 	:left(l),top(t),right(r),bottom(b)
@@ -373,4 +398,20 @@ bool AABB::intersects(const AABB& bound) const
 	if (bound.bottom <= top)
 		return false;
 	return true;
+}
+
+Object::Object(const AABB& boundery, void* data)
+	:m_Objbound(boundery),m_data(data)
+{
+
+}
+
+void Object::setData(void* data)
+{
+	m_data = data;
+}
+
+void* Object::getData() const
+{
+	return m_data;
 }
