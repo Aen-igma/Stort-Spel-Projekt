@@ -239,7 +239,7 @@ namespace Aen {
 				{
 					if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 					{
-						uint32_t id = m_entityList[m_selectedEntity]->getID();
+						uint32_t id = m_entityList[m_selectedEntity]->GetID();
 
 						if (Aen::ComponentHandler::MeshInstanceExist(id))
 						{
@@ -259,7 +259,7 @@ namespace Aen {
 										Aen::Material& mat = Aen::Resource::CreateMaterial("Material", true);
 										mat.SetDiffuseMap(texture);
 
-										size_t id = m_entityList[m_selectedEntity]->getID();
+										size_t id = m_entityList[m_selectedEntity]->GetID();
 										Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
 									}
 
@@ -413,7 +413,7 @@ namespace Aen {
 
 		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
-			uint32_t id = m_entityList[m_selectedEntity]->getID();
+			uint32_t id = m_entityList[m_selectedEntity]->GetID();
 
 			if (Aen::ComponentHandler::TranslationExist(id))
 			{
@@ -475,7 +475,7 @@ namespace Aen {
 	{
 		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
-			uint32_t id = m_entityList[m_selectedEntity]->getID();
+			uint32_t id = m_entityList[m_selectedEntity]->GetID();
 
 			if (Aen::ComponentHandler::TranslationExist(id)) 
 			{
@@ -516,7 +516,7 @@ namespace Aen {
 	{
 		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
-			uint32_t id = m_entityList[m_selectedEntity]->getID();
+			uint32_t id = m_entityList[m_selectedEntity]->GetID();
 
 			m_entityList[m_selectedEntity]->SetPos(m_xyzTranslation[0], m_xyzTranslation[1], m_xyzTranslation[2]);
 						
@@ -554,7 +554,7 @@ namespace Aen {
 	const string ImGuiHandler::CheckType(Aen::Entity* entity)
 	{
 		string type = "";
-		uint32_t id = entity->getID();
+		uint32_t id = entity->GetID();
 
 		if (Aen::ComponentHandler::MeshInstanceExist(id))
 		{
@@ -595,7 +595,7 @@ namespace Aen {
 
 	void ImGuiHandler::CustomCombo(int& index, string name)
 	{
-		if (ImGui::BeginCombo(name.c_str(), m_itemList[index].c_str()))
+		/*if (ImGui::BeginCombo(name.c_str(), m_itemList[index].c_str()))
 		{
 			for (size_t i = 0; i < m_itemList.size(); i++)
 			{
@@ -612,7 +612,7 @@ namespace Aen {
 				}
 			}
 			ImGui::EndCombo();
-		}
+		}*/
 	}
 
 

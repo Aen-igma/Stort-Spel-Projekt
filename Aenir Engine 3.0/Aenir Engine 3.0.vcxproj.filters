@@ -234,6 +234,15 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -438,6 +447,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\CreateThumbnail.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
