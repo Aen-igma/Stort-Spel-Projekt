@@ -6,11 +6,15 @@ namespace Aen {
 	class DepthMap : public GCore {
 		public:
 		~DepthMap();
-		DepthMap() = delete;
+		DepthMap();
 		DepthMap(const UINT& dimensions);
+		DepthMap(const UINT& width, const UINT& height);
+		DepthMap(const Window& window);
 
+		void Create(const UINT& dimensions);
+		void Create(const UINT& width, const UINT& height);
+		void Create(const Window& window);
 		void SetViewPort();
-		void SetDSView();
 
 		friend class RenderSystem;
 

@@ -19,4 +19,6 @@
 #include"DirectX11/Shader.h"
 #include"DirectX11/ShaderResource.h"
 #include"DirectX11/Reflection.h"
+#include"DirectX11/UAView.h"
+#include"DirectX11/RWTexture2D.h"
 //#endif

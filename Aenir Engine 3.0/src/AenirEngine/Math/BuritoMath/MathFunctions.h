@@ -268,5 +268,27 @@ namespace Aen {
 		return Concealed::TVec<T, 3>(Aen::RadToDeg(p), Aen::RadToDeg(y), Aen::RadToDeg(r));
 	}
 	
+	// ----------------------------------------------- Quaternion Math Functions ------------------------------------------- //
+
+	template<class T>
+	inline const Concealed::TMat<T> MatQuaternion(const Concealed::TVec<T, 4>& quat) noexcept {
+
+		Concealed::TMat<T> out;
+		sm::Quaternion q(quat.smVec);
+		out.smMat = sm::Matrix::CreateFromQuaternion(q);
+
+		return out;
+	}
+
+	template<class T>
+	inline const Concealed::TMat<T> MatQuaternion(const T& x, const T& y, const T& z, const T& w) noexcept {
+
+		Concealed::TMat<T> out;
+		sm::Quaternion q(x, y, z, w);
+		out.smMat = sm::Matrix::CreateFromQuaternion(q);
+
+		return out;
+	}
+
 	// --------------------------------------------------------------------------------------------------------------------- //
 }
