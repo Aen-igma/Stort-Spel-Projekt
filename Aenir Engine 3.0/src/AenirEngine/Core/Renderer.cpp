@@ -153,8 +153,8 @@ namespace Aen {
 		RenderSystem::BindShaderResourceView<PShader>(0u, m_layerBuffer);
 
 		m_screenQuad.Draw();
-		// Post Process pass
 
+		// Post Process pass
 
 		RenderSystem::UnBindShaderResources<PShader>(0u, m_layerBuffer.GetCount());
 		RenderSystem::UnBindRenderTargets(m_postProcessBuffer.GetCount());
