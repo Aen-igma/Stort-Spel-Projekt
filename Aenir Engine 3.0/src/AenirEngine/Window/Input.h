@@ -27,7 +27,7 @@ namespace Aen {
 		MouseEvent();
 		MouseEvent(const MouseInput type, const int x, const int y);
 		bool IsValid() const;
-		Vec2i GetPos() const;
+		POINT GetPos() const;
 		MouseInput getInputType() const;
 	};
 
@@ -53,29 +53,28 @@ namespace Aen {
 		static void SetMousePos(const Vec2i& pos);
 		static void SetMousePos(const int& x, const int& y);
 		static void SetMouseVisible(const bool& isVisible);
-		static const Vec2i GetRawMouse();
 		static const Vec2i GetMousePos(Window& window);
 		static const Vec2i GetMousePos();
 
-		// new raw mouse func
 		static MouseEvent ReadEvent();
-		static bool BufferIsEmbty();
+		static bool MouseBufferIsEmbty();
 		static void ToggleRawMouse(bool b = !m_isRawMouseOn);
 		static const bool GetIsRawMouseOn();
+		static const POINT GetRawMouse();
 
 		private:
 		static bool m_isRawMouseOn;
 		static void SetRawMouse(int x, int y);
+		static void OnWheelUp(int x, int y);
+		static void OnWheelDown(int x, int y);
 		static std::queue<MouseEvent> m_mouseBuffer;
 
 		// raw mouse end
-		static void OnRawMouse(const int& x, const int& y);
 		static bool Initialize();
 		static void Update();
 
 		static unsigned char keys[256];
 		static unsigned char prevKeys[256];
-		static std::queue<Vec2i> rawMouse;
 
 		static bool activeGP[XUSER_MAX_COUNT];
 		static bool GPKeys[XUSER_MAX_COUNT][14];

@@ -7,7 +7,7 @@ Client::~Client() {
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
-	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(50.f), m_toggleCamera(true), m_toggleFullScreen(false) {}
+	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(8.f), m_toggleCamera(true), m_toggleFullScreen(false) {}
 
 void Client::Start() {
 
@@ -48,12 +48,34 @@ void Client::Start() {
 	Aen::Input::SetMouseVisible(false);
 
 	// ------------------- Procedural generation testing staging grounds ------- //
-	
+
 	LevelGenerator::GenerationTestingFunction();
 
 }
 
 void Client::Update(const float& deltaTime) {
+
+	// --------------------------- Raw Mouse and scroll Input --------------------------- //
+
+	while (!Aen::Input::MouseBufferIsEmbty())
+	{
+		Aen::MouseEvent me = Aen::Input::ReadEvent();
+
+		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
+		{
+			m_camera.Rotate(
+				(float)me.GetPos().y * m_mouseSense * deltaTime,
+				-(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
+		}
+		if (me.getInputType() == Aen::MouseEvent::SCROLL_UP) {
+			printf("scroll up\n");
+
+		}
+		else if (me.getInputType() == Aen::MouseEvent::SCROLL_DOWN) {
+			printf("scroll down\n");
+
+		}
+	}
 
 	// ------------------------------ Camera Controler ---------------------------------- //
 
@@ -61,45 +83,38 @@ void Client::Update(const float& deltaTime) {
 	axis.x = (float)Aen::Input::KeyPress(Aen::Key::A) - (float)Aen::Input::KeyPress(Aen::Key::D);
 	axis.y = (float)Aen::Input::KeyPress(Aen::Key::SPACE) - (float)Aen::Input::KeyPress(Aen::Key::LSHIFT);
 	axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S);
-	
+
 	static Aen::Vec2i mouseAxis;
-	
-	//mouseAxis = Aen::Input::GetRawMouse();
-	
-	if(Aen::Input::KeyDown(Aen::Key::TAB)) {
+
+	if (Aen::Input::KeyDown(Aen::Key::TAB)) {
 		Aen::Input::SetMouseVisible(m_toggleCamera);
 		Aen::Input::ToggleRawMouse();
 		m_toggleCamera = !m_toggleCamera;
 	}
-
-	
-	if(m_toggleCamera) {
+	if (m_toggleCamera) {
 		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;
 		Aen::Input::SetMousePos(m_window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_window.GetSize() * 0.5f));
 		m_camera.MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
 		m_camera.Move(0.f, axis.y * deltaTime * m_speed * focus, 0.f);
-		//m_camera.Rotate((float)mouseAxis.y * deltaTime * m_mouseSense, (float)mouseAxis.x * deltaTime * -m_mouseSense, 0.f);
-		while (!Aen::Input::BufferIsEmbty())
-		{
-			Aen::MouseEvent me = Aen::Input::ReadEvent();
-			if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
-				m_camera.Rotate((float)me.GetPos().y * .05f, -(float)me.GetPos().x * .05f, 0.f);
-		}
+		
+
 	}
+
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
-	if(Aen::Input::KeyDown(Aen::Key::F1)) { 
+	if (Aen::Input::KeyDown(Aen::Key::F1)) {
 		m_toggleFullScreen = !m_toggleFullScreen;
 		Aen::WindowDesc wDesc;
 
-		if(m_toggleFullScreen){
+		if (m_toggleFullScreen) {
 			wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
 			wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
-			wDesc.style =  AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
+			wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
 			m_window.LoadSettings(wDesc);
-		} else {
+		}
+		else {
 			wDesc.width = static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f);
 			wDesc.height = static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f);
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
@@ -110,6 +125,7 @@ void Client::Update(const float& deltaTime) {
 
 	// ------------------------------ Quick Exist Button -------------------------------- //
 
-	if(Aen::Input::KeyDown(Aen::Key::ESCAPE))
+	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		m_window.Exit();
+
 }

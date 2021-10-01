@@ -193,36 +193,6 @@ namespace Aen {
 
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
-
-	//LRESULT Window::InputProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-	//{
-	//	if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam)) return true;
-	//	switch (uMsg) 
-	//	{
-	//	case WM_INPUT: {
-	//		UINT dataSize = 0;
-	//		GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, NULL, &dataSize, sizeof(RAWINPUTHEADER));
-
-	//		if (dataSize > 0)
-	//		{
-	//			std::unique_ptr<BYTE[]> rawData = std::make_unique<BYTE[]>(dataSize);
-	//			if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawData.get(), &dataSize, sizeof(RAWINPUTHEADER)) == dataSize)
-	//			{
-	//				RAWINPUT* raw = reinterpret_cast<RAWINPUT*>(rawData.get());
-	//				if (raw->header.dwType == RIM_TYPEMOUSE /*&& (raw->data.mouse.lLastX != 0 || raw->data.mouse.lLastY != 0)*/) {
-	//					//Input::OnRawMouse(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
-	//					Input::SetRawMouse(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
-	//				}
-	//			}
-	//		}
-
-	//		return DefWindowProc(hwnd, uMsg, wParam, lParam);
-	//	}
-	//	default:
-	//		return DefWindowProc(hwnd, uMsg, wParam, lParam);
-	//	}
-	//}
-
 	
 	LRESULT Window::MsgRouter(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
@@ -236,14 +206,11 @@ namespace Aen {
 		} else
 			pWnd = reinterpret_cast<Window*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
 
-
-
-
-		switch (uMsg) {
-			case WM_INPUT: {
+		switch (uMsg)
+		{
+		case WM_INPUT: {
 			UINT dataSize = 0;
 			GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, NULL, &dataSize, sizeof(RAWINPUTHEADER));
-
 			if (dataSize > 0) {
 				std::unique_ptr<BYTE[]> rawData = std::make_unique<BYTE[]>(dataSize);
 				if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawData.get(), &dataSize, sizeof(RAWINPUTHEADER)) == dataSize) {
@@ -253,8 +220,19 @@ namespace Aen {
 					}
 				}
 			}
-
-			return DefWindowProcW(hwnd, uMsg, wParam, lParam);
+		}
+		case WM_MOUSEWHEEL:
+		{
+			int x = LOWORD(lParam);
+			int y = HIWORD(lParam);
+			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+			{
+				Input::OnWheelUp(x, y);
+			}
+			else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
+			{
+				Input::OnWheelDown(x, y);
+			}
 		}
 		}
 
