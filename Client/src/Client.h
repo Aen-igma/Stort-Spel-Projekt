@@ -27,6 +27,12 @@ class Client : public Aen::App {
 
 	std::vector<Aen::Entity> m_cubes;
 
+	std::unordered_map<int, Aen::Entity*> m_reimubes;
+	Aen::Mesh* m_reimubeMesh;
+	Aen::Material* m_ReimuMat;
+	Aen::Texture* m_ReimuTex;
+	int m_reimubeCount;
+
 	std::unordered_map<int, Aen::Entity*> m_pLights;
 	int ind;
 };

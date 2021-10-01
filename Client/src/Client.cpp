@@ -46,6 +46,20 @@ void Client::Start() {
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
 	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
+	// ----------------------------- Load Reimushes -------------------------------- //
+
+	m_ReimuTex = &Aen::Resource::CreateTexture("ReimuTex");
+	m_ReimuMat = &Aen::Resource::CreateMaterial("ReimuMat");
+	m_reimubeMesh = &Aen::Resource::CreateMesh("Cube");
+	m_reimubeMesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
+	m_ReimuTex->LoadTexture(AEN_RESOURCE_DIR("Reimu.png"));
+	m_ReimuMat->SetDiffuseMap(*m_ReimuTex);
+
+	(*m_ReimuMat)["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
+	(*m_ReimuMat)["InnerEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
+	(*m_ReimuMat)["OuterEdgeThickness"] = 0.003f;
+	(*m_ReimuMat)["InnerEdgeThickness"] = 0.003f;
+
 	// -------------------------- Setup Entities -------------------------------- //
 
 	m_sphere.AddComponent<Aen::MeshInstance>();
@@ -53,7 +67,11 @@ void Client::Start() {
 
 	m_plane.AddComponent<Aen::MeshInstance>();
 	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	m_plane.SetPos(0.f, -2.f, 0.f);
+	m_plane.AddComponent<Aen::RigidBody>();
+	m_plane.GetComponent<Aen::RigidBody>().CreateMaterial();
+	m_plane.GetComponent<Aen::RigidBody>().CreatePlane();
+
+	//m_plane.SetPos(0.f, -2.f, 0.f);
 	m_plane.SetScale(40.f, 1.f, 40.f);
 
 	/*m_plane1.AddComponent<Aen::MeshInstance>();
@@ -200,12 +218,29 @@ void Client::Update(const float& deltaTime) {
 		}
 	}
 
-	//for(auto i : m_pLights) {
-	//	Aen::Vec4f l = i.second->GetComponent<Aen::PointLight>().GetDist();
-	//	Aen::Vec3f p = i.second->GetPos();
-	//	//p = Aen::Transform(m_camera.GetComponent<Aen::Camera>().GetView(), p);
-	//	m_sphere.SetPos(p);
-	//	m_sphere.SetScale(l.w, l.w, l.w);
-	//	break;
-	//}
+	// ------------------------------------- Reimubes -------------------------------------- //
+
+	if (Aen::Input::KeyPress(Aen::Key::J)) {
+		Aen::Entity* e = AEN_NEW Aen::Entity();
+		e->AddComponent<Aen::RigidBody>();
+		e->AddComponent<Aen::MeshInstance>();
+
+		e->GetComponent<Aen::MeshInstance>().SetMesh(*m_reimubeMesh);
+		e->GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
+		e->GetComponent<Aen::RigidBody>().CreateMaterial();
+		e->GetComponent<Aen::RigidBody>().CreateCube();
+		e->SetPos(0.f, 10.f, 0.f);
+
+		m_reimubes.emplace(m_reimubeCount++, e);
+		e = nullptr;
+	}
+
+	if (Aen::Input::KeyPress(Aen::Key::K)) {
+		for (auto& i : m_reimubes) {
+			delete i.second;
+			i.second = nullptr;
+			m_reimubes.erase(i.first);
+			break;
+		}
+	}
 }
