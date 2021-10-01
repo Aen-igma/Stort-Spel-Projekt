@@ -180,7 +180,7 @@ void Client::Update(const float& deltaTime) {
 			}
 		}
 	}
-	if(m_toggleCamera) {
+	if (Aen::Input::KeyPress(Aen::Key::RMOUSE)) {
 		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;
 		m_camera.MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
 		m_camera.Move(0.f, axis.y * deltaTime * m_speed * focus, 0.f);
