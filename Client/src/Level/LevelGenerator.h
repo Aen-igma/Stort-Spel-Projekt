@@ -16,14 +16,14 @@ struct Room {
 
 
 	SpecialRoom m_roomSpecial = SpecialRoom::NONE;
-	RoomTheme m_roomTHeme = RoomTheme::GENERIC;
+	RoomTheme m_roomTheme = RoomTheme::GENERIC;
 
-	//connection location
-	uint32_t m_north	=    0;	//	___0 - ___9		 //	Straight	: 0101	: NS
-	uint32_t m_east		=   00;	//	__0_ - __9_		 //	Bend		: 0011	: NE
-	uint32_t m_south	=  000;	//	_0__ - _9__		 //	T junction	: 1011	: NEW
-	uint32_t m_west		= 0000;	//	0___ - 9___		 //	Four way	: 1111	: NESW
-
+	////connection location
+	//uint32_t m_north		=    0;	//	___0 - ___9		 //	Straight	: 0101	: NS
+	//uint32_t m_east		=   00;	//	__0_ - __9_		 //	Bend		: 0011	: NE
+	//uint32_t m_south		=  000;	//	_0__ - _9__		 //	T junction	: 1011	: NEW
+	//uint32_t m_west		= 0000;	//	0___ - 9___		 //	Four way	: 1111	: NESW
+	uint16_t connectionDirections = 0000;
 
 	//Probabilities
 	float m_baseChance	= 0;
@@ -33,29 +33,24 @@ struct Room {
 	float m_dynamic4	= 0;
 
 	void rotateCW() { //Clockwise rotation
-		uint32_t temp = m_north;
-		m_north	= m_west;
-		m_west	= m_south;
-		m_south	= m_east;
-		m_east	= temp;
+		connectionDirections *=10u;
+		if(connectionDirections >= 10000u)
+			connectionDirections += connectionDirections - 9999u;
 		//TODO rotate associated model
 	}
 	void rotateCCW() { //count clockwise rotation
-		uint32_t temp = m_north;
-		m_north	= m_east;
-		m_east	= m_south;
-		m_south	= m_west;
-		m_west	= temp;
+		uint16_t temp = connectionDirections % 10u;
+		connectionDirections /= 10u;
+		connectionDirections += 1000u * temp;
 		//TODO rotate associated model
 	}
 	void rotate180() {
-		uint32_t temp = m_north;
-		m_north	 = m_south;
-		m_south	 = temp;
-
-		temp	= m_east;
-		m_east	= m_west;
-		m_west	= temp;
+		uint16_t temp = connectionDirections % 10u;
+		connectionDirections /= 10u;
+		connectionDirections += 1000u * temp;
+		temp = connectionDirections % 10u;
+		connectionDirections /= 10u;
+		connectionDirections += 1000u * temp;
 		//TODO rotate associated model
 	}
 
@@ -63,14 +58,17 @@ struct Room {
 	Room(const Room &p);
 };
 
-static std::vector<Room> levelentrances;
-static std::vector<Room> levelexit;
-static std::vector<Room> levelarena;
+static std::vector<Room> levelRoom;
 
-static std::vector<Room> straight;
-static std::vector<Room> bend;
-static std::vector<Room> threeway;
-static std::vector<Room> fourway;
+static std::vector<uint16_t> levelEntrances;
+static std::vector<uint16_t> levelExit;
+static std::vector<uint16_t> levelArena;
+static std::vector<uint16_t> levelBoss;
+static std::vector<uint16_t> levelItem;
+static std::vector<uint16_t> straight;
+static std::vector<uint16_t> bend;
+static std::vector<uint16_t> threeway;
+static std::vector<uint16_t> fourway;
 
 static const int mapSize = 8;
 static Room map[mapSize][mapSize];
@@ -78,7 +76,7 @@ static Room map[mapSize][mapSize];
 
 class LevelGenerator {
 private:
-	static Room RNGRoomFromVector(std::vector<Room>& roomVec);
+	static Room RNGRoomFromVector(std::vector<uint16_t>& roomVec);
 	static Room RNGRoom(const uint32_t connectionDir);
 	static void AlignRoom(Room* room, const uint32_t& connectionDir, unsigned char& type);
 public:

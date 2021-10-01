@@ -1,10 +1,10 @@
 
 #include "LevelGenerator.h"
 
-Room LevelGenerator::RNGRoomFromVector(std::vector<Room>& roomVec) {
+Room LevelGenerator::RNGRoomFromVector(std::vector<uint16_t>& roomVec) {
 	//Todo implement weigths
 
-	return roomVec[LehmerInt() % roomVec.size()];
+	return levelRoom[roomVec[LehmerInt() % roomVec.size()]];
 };
 
 Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
@@ -51,7 +51,7 @@ void LevelGenerator::AlignRoom(Room* room, const uint32_t& connectionDir, unsign
 	uint32_t randNum;
 	if (!(type == 4)) //Exludes 4 way junctions, for the time being //Rotates rooms to align connections
 	{
-		if (connectionDir % 10 > 0) {
+		if ((connectionDir / 1u) % 10u > 0) {
 			//Connection going north, rotate 1 connection south
 			switch (type)
 			{
@@ -78,7 +78,7 @@ void LevelGenerator::AlignRoom(Room* room, const uint32_t& connectionDir, unsign
 				break;
 			}
 		}
-		else if (connectionDir % 100 > 0) {
+		else if ((connectionDir / 10u) % 10u > 0) {
 			//Connection going east, rotate 1 connection west
 			switch (type)
 			{
@@ -105,7 +105,7 @@ void LevelGenerator::AlignRoom(Room* room, const uint32_t& connectionDir, unsign
 				break;
 			}
 		}
-		else if (connectionDir % 1000 > 0) {
+		else if ((connectionDir / 100u) % 10u > 0) {
 			//Connection going south, rotate 1 connection north
 			switch (type)
 			{
@@ -127,7 +127,7 @@ void LevelGenerator::AlignRoom(Room* room, const uint32_t& connectionDir, unsign
 				break;
 			}
 		}
-		else {
+		else if ((connectionDir / 1000u) % 10u > 0) {
 			//Connection going west, rotate 1 connection east
 			switch (type)
 			{
@@ -162,7 +162,7 @@ Room* LevelGenerator::GenerateLevel() {
 			map[x][y] = Room();
 		}
 	}
-	map[3][4] = RNGRoomFromVector(levelentrances);
+	map[3][4] = RNGRoomFromVector(levelEntrances);
 
 	bool openConnections = true;
 	int maxRooms = 24; //Soft limit
@@ -174,31 +174,25 @@ Room* LevelGenerator::GenerateLevel() {
 			for (int x = 0; x < mapSize; x++) {
 				if (map[x][y].m_present) {
 
-					if (y + 1 < mapSize) {										//Prevents out of bounds
-						if (map[x][y].m_south && !map[x][y + 1].m_present) {	//Checks if region is clear
-							map[x][y + 1] = RNGRoom(map[x][y].m_south * 0x064);	//Insert random room (Pass along direction)
-							maxRooms--;											//reduce maxRooms
-							break;												//Break to go generate off other rooms (Experimental)
+					if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
+					{																				//Prevents out of bounds
+						if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {	//Checks if region is clear
+							map[x][y - 1] = RNGRoom(0x001u);										//Insert random room (Pass along direction)
+							maxRooms--;																//reduce maxRooms
+							break;																	//Break to go generate off other rooms (Experimental)
 						}
-					}
-
-					if (y - 1 >= 0) {
-						if (map[x][y].m_north && !map[x][y - 1].m_present) {
-							map[x][y - 1] = RNGRoom(map[x][y].m_north * 0x001);
+						else if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
+							map[x + 1][y] = RNGRoom(0x00Au);
 							maxRooms--;
 							break;
+						}												
+						else if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
+							map[x][y + 1] = RNGRoom(0x064u);										
+							maxRooms--;																
+							break;																	
 						}
-					}
-					if (x + 1 < mapSize) {
-						if (map[x][y].m_east && !map[x + 1][y].m_present) {
-							map[x + 1][y] = RNGRoom(map[x][y].m_east * 0x00A);
-							maxRooms--;
-							break;
-						}
-					}
-					if (x - 1 >= 0) {
-						if (map[x][y].m_west && !map[x - 1][y].m_present) {
-							map[x - 1][y] = RNGRoom(map[x][y].m_west * 0x3E8);
+						else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
+							map[x - 1][y] = RNGRoom(0x3E8u);
 							maxRooms--;
 							break;
 						}
@@ -210,24 +204,18 @@ Room* LevelGenerator::GenerateLevel() {
 
 			for (int x = 0; x < mapSize; x++) {
 				if (map[x][y].m_present) {
-
-					if (y - 1 >= 0) {
-						if (map[x][y].m_north && !map[x][y - 1].m_present) {
+					if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
+					{																				
+						if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {
 							numOpenConnections++;
 						}
-					}
-					if (x + 1 < mapSize) {
-						if (map[x][y].m_east && !map[x + 1][y].m_present) {
+						if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
+							numOpenConnections++;
+						}												
+						if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
 							numOpenConnections++;
 						}
-					}
-					if (y + 1 < mapSize) {
-						if (map[x][y].m_south && !map[x][y + 1].m_present) {
-							numOpenConnections++;
-						}
-					}
-					if (x - 1 >= 0) {
-						if (map[x][y].m_west && !map[x - 1][y].m_present) {
+						if ((map[x][y].connectionDirections / 1000u) % 10u && !map[x - 1][y].m_present) {
 							numOpenConnections++;
 						}
 					}
@@ -249,49 +237,43 @@ Room* LevelGenerator::GenerationTestingFunction()
 	//Straight corridors
 	Room a;
 	a.m_baseChance = 0xf;
-	a.m_north = 1;
-	a.m_south = 1;
+	a.connectionDirections = 101;
 	a.m_present = true;
 
-	straight.push_back(a);
+	AddRoomToGeneration(&a);
 
 	//90 degree corners
 	Room b;
 	b.m_baseChance = 0xf;
-	b.m_north = 1;
-	b.m_east = 1;
 	b.m_present = true;
-	bend.push_back(b);
+	b.connectionDirections = 11;
 
+	AddRoomToGeneration(&b);
 
 	//T junction
 	Room c;
 
 	c.m_baseChance = 0xf;
-	c.m_north = 1;
-	c.m_east = 1;
-	c.m_west = 1;
+	c.connectionDirections = 1011;
 	c.m_present = true;
 
-	threeway.push_back(c);
+	AddRoomToGeneration(&c);
 
 	//4-way junction
 	Room d;
 	d.m_baseChance = 0xf;
-	d.m_north = 1;
-	d.m_east = 1;
-	d.m_south = 1;
-	d.m_west = 1;
+	d.connectionDirections = 1111;
 	d.m_present = true;
 
-	fourway.push_back(d);
+	AddRoomToGeneration(&d);
 
 	//entrance
 	Room e;
 	e.m_baseChance = 0xf;
-	e.m_north = 1;
+	e.connectionDirections = 0001;
 	e.m_present = true;
-	levelentrances.push_back(e);
+	e.m_roomSpecial = SpecialRoom::ENTRANCE;
+	AddRoomToGeneration(&e);
 
 
 	for (int k = 0; k < 1; k++) {
@@ -309,25 +291,22 @@ Room* LevelGenerator::GenerationTestingFunction()
 		for (int y = 0; y < mapSize; y++) {
 			for (int x = 0; x < mapSize; x++) {
 				if(map[x][y].m_present){
-					if (map[x][y].m_north)
+					cmap[3 * y + 1][3 * x + 1] = '0';
+					if (map[x][y].connectionDirections % 10u)
 					{
-						cmap[3 * y + 0][3 * x + 1] = '|';
-						cmap[3 * y + 1][3 * x + 1] = '0';
+						cmap[3 * y + 0][3 * x + 1] = '|'; //North
 					}
-					if (map[x][y].m_south)
+					if ((map[x][y].connectionDirections / 10u) % 10u)
 					{
-						cmap[3 * y + 2][3 * x + 1] = '|';
-						cmap[3 * y + 1][3 * x + 1] = '0';
+						cmap[3 * y + 1][3 * x + 2] = '-'; //East
 					}
-					if (map[x][y].m_east)
+					if ((map[x][y].connectionDirections / 100u) % 10u)
 					{
-						cmap[3 * y + 1][3 * x + 2] = '-';
-						cmap[3 * y + 1][3 * x + 1] = '0';
+						cmap[3 * y + 2][3 * x + 1] = '|'; //South
 					}
-					if (map[x][y].m_west)
+					if ((map[x][y].connectionDirections / 1000u) % 10u)
 					{
-						cmap[3 * y + 1][3 * x] = '-';
-						cmap[3 * y + 1][3 * x + 1] = '0';
+						cmap[3 * y + 1][3 * x + 0] = '-'; //West
 					}
 				}
 			}
@@ -347,48 +326,50 @@ Room* LevelGenerator::GenerationTestingFunction()
 
 void LevelGenerator::AddRoomToGeneration(Room* room)
 {
-	uint32_t connectionDir;
 
-	connectionDir = room->m_north + room->m_east *10 + room->m_south *100 + room->m_west *1000;
+	//connectionDir = room->m_north + room->m_east *10 + room->m_south *100 + room->m_west *1000;
+
+	levelRoom.push_back(*room);
+
 
 	switch (room->m_roomSpecial)
 	{
 	case SpecialRoom::NONE:
-		break;
-	case SpecialRoom::ENTRANCE:
-		levelentrances.push_back(*room);
-		break;
-	case SpecialRoom::EXIT:
-		levelexit.push_back(*room);
-		break;
-	case SpecialRoom::BOSS:
-		break;
-	case SpecialRoom::ARENA:
-		levelarena.push_back(*room);
-		break;
-	case SpecialRoom::ITEM:
-		break;
-	default:
-		break;
-	}
-	if (room->m_roomSpecial == SpecialRoom::NONE) {
-		switch (connectionDir)
+		switch (room->connectionDirections)
 		{
-		case 0101:
-			straight.push_back(*room);
+		case 101:
+			straight.push_back(levelRoom.size() - 1);
 			break;
-		case 0011:
-			bend.push_back(*room);
+		case 11:
+			bend.push_back(levelRoom.size() - 1);
 			break;
 		case 1011:
-			threeway.push_back(*room);
+			threeway.push_back(levelRoom.size() - 1);
 			break;
 		case 1111:
-			fourway.push_back(*room);
+			fourway.push_back(levelRoom.size() - 1);
 			break;
 		default:
 			break;
 		}
+		break;
+	case SpecialRoom::ENTRANCE:
+		levelEntrances.push_back(levelRoom.size() - 1);
+		break;
+	case SpecialRoom::EXIT:
+		levelExit.push_back(levelRoom.size() - 1);
+		break;
+	case SpecialRoom::BOSS:
+		levelBoss.push_back(levelRoom.size() - 1);
+		break;
+	case SpecialRoom::ARENA:
+		levelArena.push_back(levelRoom.size() - 1);
+		break;
+	case SpecialRoom::ITEM:
+		levelItem.push_back(levelRoom.size() - 1);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -401,10 +382,7 @@ Room::Room()
 
 
 	//connection location
-	m_north = 0;
-	m_east = 0;
-	m_south = 0;
-	m_west = 0;
+	connectionDirections = 0;
 
 	//Probabilities
 	m_baseChance = 0;
@@ -422,10 +400,7 @@ Room::Room(const Room& p)
 
 
 	//connection location
-	m_north = p.m_north;
-	m_east = p.m_east;
-	m_south = p.m_south;
-	m_west = p.m_west;
+	connectionDirections = p.connectionDirections;
 
 	//Probabilities
 	m_baseChance = p.m_baseChance;
