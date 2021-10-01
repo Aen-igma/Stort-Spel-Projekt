@@ -1,5 +1,6 @@
 #pragma once
 #include"AenirEngine.h"
+#include "../src/States/Gameplay.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
 
 class Client : public Aen::App {
@@ -25,7 +26,6 @@ class Client : public Aen::App {
 	Aen::Entity m_cube;
 
 	std::vector<Aen::Entity> m_cubes;
-
 };
 
 

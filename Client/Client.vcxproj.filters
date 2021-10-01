@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Level">
       <UniqueIdentifier>{3cde0f54-6355-4825-926d-6b372afde062}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\States">
+      <UniqueIdentifier>{756402a8-f74a-4339-9289-593caac98b2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Client.h">
@@ -29,6 +32,9 @@
     </ClInclude>
     <ClInclude Include="src\Level\RandomNumberGenerator.h">
       <Filter>Header Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\States\States.h">
+      <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

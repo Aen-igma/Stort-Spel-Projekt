@@ -7,10 +7,10 @@ Client::~Client() {
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
-	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(50.f), m_toggleCamera(true), m_toggleFullScreen(false) {}
+	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(50.f), m_toggleCamera(true), m_toggleFullScreen(false){}
 
-void Client::Start() {
-
+void Client::Start()
+{
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	m_camera.AddComponent<Aen::Camera>();
@@ -50,7 +50,6 @@ void Client::Start() {
 	// ------------------- Procedural generation testing staging grounds ------- //
 	
 	LevelGenerator::GenerationTestingFunction();
-
 }
 
 void Client::Update(const float& deltaTime) {
