@@ -168,8 +168,8 @@ void main(CS_Input input) {
     uint2 uv = id * 16u;
 
     float fDepth = 0.f;
-    for(uint i = 0u; i < 16u; i++) {
-        float depth = depthMap[uv + uint2((i % 4u) * 4u, ((i / 4u) % 4u) * 4u)].r;
+    for(uint i = 0u; i < 64u; i++) {
+        float depth = depthMap[uv + uint2((i % 8u) * 2u, (floor(i / 8u) % 8u) * 2u)].r;
         fDepth = (depth > fDepth) ? depth : fDepth;
     }
     
