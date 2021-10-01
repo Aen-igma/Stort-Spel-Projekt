@@ -20,9 +20,9 @@ namespace Aen {
 	{
 	private:
 
-		string filePath = "../LevelFolder/";
-		string fileName = "LevelFile.Level";
-		ofstream outfile;
+		string m_filePath = "../LevelFolder/";
+		string m_fileName = "LevelFile.Level";
+		ofstream m_outfile;
 
 		RoomStruct m_RoomVector;
 		vector<ModelStruct> m_ModelVector;
@@ -34,21 +34,19 @@ namespace Aen {
 	public:
 
 		LevelExporter();
-		void openFile();
-		void closeFile();
+		~LevelExporter();
+
+		void OpenFile();
+		void CloseFile();
 
 		template<class T>
-		void writeToFile(T* whatToWrite, std::ofstream& outfile);
+		void WriteToFile(T* whatToWrite, std::ofstream& outfile);
 
-		void writeInto(vector<Aen::Entity*>& entityList, vector<string>& itemList,vector<string>& meshObjList, vector<string>& textureFileName, vector<string>& entityType);
+		void WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList,vector<string>& meshObjList, vector<string>& textureFileName, vector<string>& entityType);
 		string Type(Aen::Entity* entity);
 
 
 	};
 
-	template<class T>
-	inline void LevelExporter::writeToFile(T* whatToWrite, std::ofstream& outfile)
-	{
-		outfile.write((const char*)&*whatToWrite, sizeof(T));
-	}
+	
 }

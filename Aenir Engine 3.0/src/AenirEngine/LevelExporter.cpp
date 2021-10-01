@@ -5,21 +5,33 @@ namespace Aen {
 
 	LevelExporter::LevelExporter()
 	{
+		OpenFile();
 	}
 
-	void LevelExporter::openFile()
+	LevelExporter::~LevelExporter()
 	{
-		outfile.open(filePath + fileName, std::ofstream::out | std::ofstream::binary);
-
+		CloseFile();
 	}
 
-	void LevelExporter::closeFile()
+	void LevelExporter::OpenFile()
 	{
-		outfile.close();
+		m_outfile.open(m_filePath + m_fileName, std::ofstream::out | std::ofstream::binary);
 
 	}
 
-	void LevelExporter::writeInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, vector<string>& meshObjList, vector<string>& textureFileName, vector<string>& entityType)
+	void LevelExporter::CloseFile()
+	{
+		m_outfile.close();
+
+	}
+
+	template<class T>
+	inline void LevelExporter::WriteToFile(T* whatToWrite, std::ofstream& outfile)
+	{
+		outfile.write((const char*)&*whatToWrite, sizeof(T));
+	}
+
+	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, vector<string>& meshObjList, vector<string>& textureFileName, vector<string>& entityType)
 	{
 		cout << "writeInto" << endl;
 		cout << "entityList " << entityList.size() << endl;
@@ -30,7 +42,7 @@ namespace Aen {
 
 
 		RoomStruct roomStruct;
-		ModelStruct modelStruct;
+		ModelStruct* modelStruct = new ModelStruct();
 		TextureStruct textureStruct;
 		LightStruct lightStruct;
 		MaterialStruct materialStruct;
@@ -46,9 +58,25 @@ namespace Aen {
 		{
 			if (entityType[i] == "Model")
 			{
-				strcpy(modelStruct.name, itemList[i].c_str());
-				strcpy(modelStruct.mesh, meshObjList[meshIndex].c_str());
-				m_ModelVector.push_back(modelStruct);
+				strcpy(modelStruct->name, itemList[i].c_str());
+				strcpy(modelStruct->mesh, meshObjList[meshIndex].c_str());
+
+				modelStruct->translation[0] = entityList[i]->GetPos().x;
+				modelStruct->translation[1] = entityList[i]->GetPos().y;
+				modelStruct->translation[2] = entityList[i]->GetPos().z;
+
+				modelStruct->rotation[0] = entityList[i]->GetRot().x;
+				modelStruct->rotation[1] = entityList[i]->GetRot().y;
+				modelStruct->rotation[2] = entityList[i]->GetRot().z;
+
+				modelStruct->scale[0] = entityList[i]->GetScale().x;
+				modelStruct->scale[1] = entityList[i]->GetScale().y;
+				modelStruct->scale[2] = entityList[i]->GetScale().z;
+
+				strcpy(modelStruct->type, "type");
+				strcpy(modelStruct->sound, "sound");
+
+				m_ModelVector.push_back(*modelStruct);
 				cout << m_ModelVector[meshIndex].name << endl;
 				cout << m_ModelVector[meshIndex].mesh << endl;
 				meshIndex++;
@@ -71,6 +99,18 @@ namespace Aen {
 
 			cout << endl;
 		}
+
+		ModelHeader *modelHeader = new ModelHeader();
+		WriteToFile(modelHeader, m_outfile);
+
+		for (size_t i = 0; i < m_ModelVector.size(); i++)
+		{
+			*modelStruct = m_ModelVector[i];
+			WriteToFile(modelStruct, m_outfile);
+		}
+
 		m_ModelVector.clear();
+
+		delete modelHeader;
 	}
 }

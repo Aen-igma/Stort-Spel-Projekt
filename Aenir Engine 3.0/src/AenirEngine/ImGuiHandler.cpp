@@ -51,10 +51,6 @@ namespace Aen {
 		ImGui_ImplWin32_Init(hwnd);
 		ImGui_ImplDX11_Init(mp_device, mp_dContext);
 		ImGui::StyleColorsDark();
-
-		fileDialog.SetTitle("Open");
-		fileDialog.SetTypeFilters({ ".h",".cpp" });
-
 	}
 
 	void ImGuiHandler::NewFrame()
@@ -90,16 +86,16 @@ namespace Aen {
 			{
 				if (ImGui::MenuItem("Open..", "Ctrl + O"))
 				{
-					openOrSave = "Open";
-					fileDialog.SetTitle("Open");
-					fileDialog.Open();
+					m_openOrSave = "Open";
+					m_fileDialog.SetTitle("Open");
+					m_fileDialog.Open();
 				}
 
 				if (ImGui::MenuItem("Save..", "Ctrl + S"))
 				{
-					openOrSave = "Save";
-					fileDialog.SetTitle("Save as");
-					fileDialog.Open();
+					m_openOrSave = "Save";
+					m_fileDialog.SetTitle("Save as");
+					m_fileDialog.Open();
 				}
 
 				ImGui::EndMenu();
@@ -108,23 +104,23 @@ namespace Aen {
 			ImGui::EndMenuBar();
 		}
 
-		fileDialog.Display();
+		m_fileDialog.Display();
 
-		if (fileDialog.HasSelected())
+		if (m_fileDialog.HasSelected())
 		{
-			if (openOrSave == "Open")
+			if (m_openOrSave == "Open")
 			{
-				std::cout << "Selected filename " << fileDialog.GetSelected().string() << std::endl;
+				std::cout << "Selected filename " << m_fileDialog.GetSelected().string() << std::endl;
 
 			}
-			else if(openOrSave == "Save")
+			else if(m_openOrSave == "Save")
 			{
-				std::cout << "Selected fileDir " << fileDialog.GetPwd().string() << std::endl;
-				m_levelExporter.writeInto(m_entityList, m_itemList, m_meshObjList, m_textureFileName, m_entityType);
+				std::cout << "Selected fileDir " << m_fileDialog.GetPwd().string() << std::endl;
+				m_levelExporter.WriteInto(m_entityList, m_itemList, m_meshObjList, m_textureFileName, m_entityType);
 
 			}
 
-			fileDialog.ClearSelected();
+			m_fileDialog.ClearSelected();
 		}
 
 		ImGui::BeginChild("List");
@@ -549,6 +545,7 @@ namespace Aen {
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
 
 		m_meshObjList.push_back(objName);
+		m_textureFileList.push_back("Missing_Textures.png");
 
 		AddModel(entity);
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
@@ -564,6 +561,7 @@ namespace Aen {
 			type = "Model" + std::to_string(m_entityCount);
 			m_entityType.push_back("Model");
 			m_meshObjList.push_back("Cube.obj");
+			m_textureFileList.push_back("Missing_Textures.png");
 			m_entityCount++;
 		}
 		else if (Aen::ComponentHandler::CameraExist(id))

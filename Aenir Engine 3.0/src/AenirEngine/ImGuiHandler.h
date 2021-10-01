@@ -56,12 +56,15 @@ namespace Aen {
 		float m_xyzScale[3] = { 1,1,1 };
 		int m_entityCount = 0;
 
-		ImGui::FileBrowser fileDialog;
-		string openOrSave;
+		ImGui::FileBrowser m_fileDialog;
+		string m_openOrSave;
 
+		// Level exporter info
 		LevelExporter m_levelExporter;
-
 		vector<string> m_meshObjList;
+		vector<string> m_textureFileList;
+
+
 
 		
 

@@ -47,8 +47,9 @@ struct ModelStruct
 	char name[MESH_NAME_MAX_LENGTH]; // name for editor
 	char mesh[MESH_NAME_MAX_LENGTH]; // what obj
 	float translation[3];
-	float scale[3];
 	float rotation[3];
+	float scale[3];
+
 	char type[TYPE_NAME]; // enemy etc
 	//Texture texture;
 	char sound[MESH_NAME_MAX_LENGTH];
