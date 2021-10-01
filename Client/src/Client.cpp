@@ -68,7 +68,7 @@ void Client::Update(const float& deltaTime) {
 	
 	if(Aen::Input::KeyDown(Aen::Key::TAB)) {
 		Aen::Input::SetMouseVisible(m_toggleCamera);
-		Aen::Input::toggleRawMouse();
+		Aen::Input::ToggleRawMouse();
 		m_toggleCamera = !m_toggleCamera;
 	}
 

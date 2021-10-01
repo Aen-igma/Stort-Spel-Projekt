@@ -60,7 +60,7 @@ namespace Aen {
 		// new raw mouse func
 		static MouseEvent ReadEvent();
 		static bool BufferIsEmbty();
-		static void toggleRawMouse(bool b = !m_isRawMouseOn);
+		static void ToggleRawMouse(bool b = !m_isRawMouseOn);
 		static const bool GetIsRawMouseOn();
 
 		private:

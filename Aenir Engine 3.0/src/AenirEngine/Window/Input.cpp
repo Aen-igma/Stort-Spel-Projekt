@@ -158,7 +158,7 @@ namespace Aen {
 		return m_mouseBuffer.empty();
 	}
 
-	void Input::toggleRawMouse(bool b)
+	void Input::ToggleRawMouse(bool b)
 	{
 		m_isRawMouseOn = b;
 	}
