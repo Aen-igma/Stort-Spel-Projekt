@@ -108,14 +108,14 @@ struct Object
 {
 	friend class Quadtree;
 public:
-	AABB _bound;
+	AABB m_bound;
 	Object() { };
 	Object(const AABB&, void* data = nullptr);
 	void setData(void* data);
 	void* getData() const;
 private:
-	void* _data = nullptr;
-	Quadtree* _qt = nullptr;
+	void* m_data = nullptr;
+	Quadtree* m_qt = nullptr;
 };
 
 //MainClass for building quadtree
@@ -170,7 +170,7 @@ private:
 	unsigned m_level;
 	unsigned m_capacity;
 	std::vector<Object*> m_Object;
-	void subDivide();
+	void subdivideQuad();
 	Quadtree* getChild(const AABB& child) const;
 
 

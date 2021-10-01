@@ -106,13 +106,13 @@ void Quadtree::InsertXYZ(XYZ xyz)
 
 bool Quadtree::insert(Object* object)
 {
-	if (object->_qt != nullptr)
+	if (object->m_qt != nullptr)
 	{
 		return false;
 	}
 	if (!m_isLeaf)
 	{
-		if (Quadtree* child = getChild(object->_bound))
+		if (Quadtree* child = getChild(object->m_bound))
 		{
 			return child->insert(object);
 		}
@@ -122,10 +122,10 @@ bool Quadtree::insert(Object* object)
 	for (unsigned i = 0; i < m_Object.size(); i++)
 	{
 		Object* object = m_Object[i];
-		if (Quadtree* child = getChild(object->_bound))
+		if (Quadtree* child = getChild(object->m_bound))
 		{
 			m_Object.erase(m_Object.begin() + i);
-			object->_qt = nullptr;
+			object->m_qt = nullptr;
 			child->insert(object);
 		}
 		else i++;
@@ -135,16 +135,50 @@ bool Quadtree::insert(Object* object)
 
 bool Quadtree::remove(Object* object)
 {
-	return false;
+	if (object->m_qt == nullptr)
+	{
+		return false;
+	}
+	if (object->m_qt != this)
+	{
+		return object->m_qt->remove(object);
+	}
+
+	m_Object.erase(std::find(m_Object.begin(), m_Object.end(), object));
+	object->m_qt = nullptr;
+	return true;
 }
 
 void Quadtree::update(Object* object)
 {
+	Quadtree* node = object->m_qt;
+	if (node->m_parent == nullptr || object->m_bound.within(node->m_boundery))
+	{
+		return;
+	}
+	node->remove(object);
+	do
+	{
+		node->m_parent;
+		if (object->m_bound.within(node->m_boundery))
+		{
+			break;
+		}
+	} while (node->m_parent != nullptr);
+	node->insert(object);
 }
 
 bool Quadtree::contains(Object* object) const
 {
-	return false;
+	if (object->m_qt == nullptr)
+	{
+		return false;
+	}
+	if (object->m_qt != this)
+	{
+		return object->m_qt->contains(object);
+	}
+	return std::find(m_Object.begin(), m_Object.end(), object) != m_Object.end();
 }
 
 void Quadtree::search(const AABB& object, const std::function<void(Object*)>& callback) const
@@ -168,7 +202,7 @@ void Quadtree::search(const AABB& object, const std::function<void(Object*)>& ca
 	}
 	for (auto && node : m_Object)
 	{
-		if (node->_bound.intersects(object))
+		if (node->m_bound.intersects(object))
 		{
 			/*callback(object);*/
 		}
@@ -176,10 +210,42 @@ void Quadtree::search(const AABB& object, const std::function<void(Object*)>& ca
 }
 
 
-
 void Quadtree::subDivide()
 {
+	m_children[0] = new Quadtree(); //BotRight
+	m_children[1] = new Quadtree(); //BotLeft
+	m_children[2] = new Quadtree(); //TopLeft
+	m_children[3] = new Quadtree(); //TopRight
+}
 
+Quadtree* Quadtree::getChild(const AABB &child)const
+{
+	bool bottom = child.bottom > m_centerY;
+	bool left = child.left < m_centerX;
+	bool top = !bottom && child.top < m_centerY;
+	if (left && child.right < m_centerX)
+	{
+		if (top)
+		{
+			return m_children[1]; //topLeft
+		}
+		if (bottom)
+		{
+			return m_children[2]; //bottomLeft
+		}
+	}
+	else if (!left)
+	{
+		if (top)
+		{
+			return m_children[0]; //topRight
+		}
+		if (bottom)
+		{
+			return m_children[3]; //BottomRight
+		}
+	}
+	return nullptr;
 }
 
 unsigned Quadtree::getTotalChildren() const
