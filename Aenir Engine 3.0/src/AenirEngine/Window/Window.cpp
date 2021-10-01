@@ -191,7 +191,7 @@ namespace Aen {
 				break;
 		}
 
-		return DefWindowProc(hwnd, uMsg, wParam, lParam);
+		return DefWindowProcW(hwnd, uMsg, wParam, lParam);
 	}
 	
 	LRESULT Window::MsgRouter(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -238,7 +238,7 @@ namespace Aen {
 
 		if(pWnd)
 			return pWnd->WinProc(hwnd, uMsg, wParam, lParam);
-		return DefWindowProc(hwnd, uMsg, wParam, lParam);
+		return DefWindowProcW(hwnd, uMsg, wParam, lParam);
 	}
 
 	bool Window::Register() {
@@ -294,8 +294,8 @@ namespace Aen {
 
 		RECT rect;
 		if(GetWindowRect(m_hwnd, &rect)) {
-			wPos[0] = rect.left;
-			wPos[1] = rect.top;
+			wPos.x = rect.left;
+			wPos.y = rect.top;
 		}
 
 		return true;

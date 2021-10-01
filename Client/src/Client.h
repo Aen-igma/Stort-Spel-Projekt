@@ -15,7 +15,6 @@ class Client : public Aen::App {
 	float m_speed;
 	float m_fSpeed;
 	float m_mouseSense;
-	bool m_toggleCamera;
 	bool m_toggleFullScreen;
 
 	Aen::Entity m_camera;

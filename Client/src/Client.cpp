@@ -7,7 +7,7 @@ Client::~Client() {
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
-	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(8.f), m_toggleCamera(true), m_toggleFullScreen(false) {}
+	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false) {}
 
 void Client::Start() {
 
@@ -71,11 +71,11 @@ void Client::Start() {
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
-	Aen::Input::SetMouseVisible(false);
 
 	// ------------------- Procedural generation testing staging grounds ------- //
 
 	LevelGenerator::GenerationTestingFunction();
+	Aen::Input::ToggleRawMouse(false);
 
 	srand((unsigned int)time(NULL));
 }
@@ -113,20 +113,24 @@ void Client::Update(const float& deltaTime) {
 	
 	static Aen::Vec2i mouseAxis;
 
-	if (Aen::Input::KeyDown(Aen::Key::TAB)) {
-		Aen::Input::SetMouseVisible(m_toggleCamera);
-		Aen::Input::ToggleRawMouse();
-		m_toggleCamera = !m_toggleCamera;
-	}
-	if (m_toggleCamera) {
+	if(Aen::Input::KeyPress(Aen::Key::RMOUSE)) {
 		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;
-		Aen::Input::SetMousePos(m_window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_window.GetSize() * 0.5f));
 		m_camera.MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
 		m_camera.Move(0.f, axis.y * deltaTime * m_speed * focus, 0.f);
-		
 
+		if(m_toggleFullScreen)
+			Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
+		else
+			Aen::Input::SetMousePos(m_window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_window.GetSize() * 0.5f));
+	} 
+
+	if(Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
+		Aen::Input::SetMouseVisible(false);
+		Aen::Input::ToggleRawMouse(true);
+	} else if(Aen::Input::KeyUp(Aen::Key::RMOUSE)) {
+		Aen::Input::SetMouseVisible(true);
+		Aen::Input::ToggleRawMouse(false);
 	}
-
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
