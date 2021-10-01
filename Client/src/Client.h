@@ -11,8 +11,12 @@ class Client : public Aen::App {
 
 	void Start() override;
 	void Update(const float& deltaTime) override;
+	void ChangeState();
 
 	private:
+
+	State* state;
+	States m_typeState;
 
 	float m_speed;
 	float m_fSpeed;

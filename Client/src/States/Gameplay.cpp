@@ -5,7 +5,7 @@ void Gameplay::Update(float time)
 
 }
 
-void Gameplay::Render(float time)
+void Gameplay::Initialize()
 {
 
 }

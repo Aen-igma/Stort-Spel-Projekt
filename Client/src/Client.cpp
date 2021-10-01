@@ -7,10 +7,13 @@ Client::~Client() {
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
-	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(50.f), m_toggleCamera(true), m_toggleFullScreen(false){}
+	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(50.f), m_toggleCamera(true), m_toggleFullScreen(false),
+	state(nullptr), m_typeState(States::Main_Menu)
+{}
 
 void Client::Start()
 {
+	State::SetState(States::Gameplay);
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	m_camera.AddComponent<Aen::Camera>();
@@ -102,4 +105,12 @@ void Client::Update(const float& deltaTime) {
 
 	if(Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		m_window.Exit();
+}
+
+void Client::ChangeState()
+{
+	delete state;
+	state = nullptr;
+	
+
 }
