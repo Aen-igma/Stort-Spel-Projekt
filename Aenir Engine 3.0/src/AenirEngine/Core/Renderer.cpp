@@ -5,10 +5,10 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(900), m_postProcessBuffer(window), m_layerBuffer(window, 7u), 
-		m_backBuffer(), m_viewPort(), m_clampSampler(SamplerType::CLAMP), m_depth(m_window), m_writeStencil(true, StencilType::Write), 
+		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), m_postProcessBuffer(window), m_layerBuffer(window, 7u), 
+		m_backBuffer(), m_viewPort(), m_clampSampler(SamplerType::CLAMP), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
-		m_rasterizerState(FillMode::Solid, CullMode::Front) {}
+		m_rasterizerState(FillMode::Solid, CullMode::Front), m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u) {}
 
 	void Renderer::Initialize() {
 
@@ -33,15 +33,31 @@ namespace Aen {
 			if(!m_combineLayersPS.Create(L"CombineLayersPS.cso"))
 				throw;
 
+		if(!m_lightCullCS.Create(AEN_OUTPUT_DIR_WSTR(L"LightCullCS.cso")))
+			if(!m_lightCullCS.Create(L"LightCullCS.cso"))
+				throw;
+
 		m_postLayout.Create(m_postProcessVS);
 
-		RenderSystem::SetViewPort(m_viewPort);
-		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
-		RenderSystem::SetRasteriserState(m_rasterizerState);
+		m_dispatchInfo.GetData().windowSize.x = m_window.GetSize().x;
+		m_dispatchInfo.GetData().windowSize.y = m_window.GetSize().y;
+		m_dispatchInfo.GetData().numThreads.x = (int)std::ceil((float)m_window.GetSize().x / 16.f);
+		m_dispatchInfo.GetData().numThreads.y = (int)std::ceil((float)m_window.GetSize().y / 16.f);
+		m_dispatchInfo.GetData().threadGroups.x = (int)std::ceil((float)m_window.GetSize().x / 16.f);
+		m_dispatchInfo.GetData().threadGroups.y = (int)std::ceil((float)m_window.GetSize().y / 16.f);
+		m_dispatchInfo.GetData().avarageLights = m_avarageLights;
+		m_dispatchInfo.UpdateBuffer();
+
+		uint32_t size = m_dispatchInfo.GetData().numThreads.x * m_dispatchInfo.GetData().numThreads.y;
+		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
+		m_lGrid.Create(m_dispatchInfo.GetData().numThreads);
 	}
 
 	void Renderer::Render() {
 		
+		RenderSystem::SetViewPort(m_viewPort);
+		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
+		RenderSystem::SetRasteriserState(m_rasterizerState);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::ClearRenderTargetView(m_layerBuffer, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::ClearRenderTargetView(m_postProcessBuffer, Color(0.f, 0.f, 0.f, 0.f));
@@ -50,21 +66,36 @@ namespace Aen {
 
 		if(GlobalSettings::m_pMainCamera) {
 
+			//CamClass* pTempCam = GlobalSettings::m_pMainTempCam;
 			Entity* pCam = GlobalSettings::m_pMainCamera;
 
 			Vec3f pos = pCam->GetPos();
 			Vec3f rot = pCam->GetRot();
 
+			//sm::Vector3 pos = pTempCam->getPosition();
+			//sm::Vector3 rot = pTempCam->getRotation();
+
+			
+
 			pCam->GetComponent<Camera>().UpdateView(pos, rot);
 			
-			m_cbCamera.GetData().pos = pos;
+
+			//m_cbCamera.GetData().pos = pTempCam->getPosition();
+			//m_cbCamera.GetData().uDir = pTempCam->getUpV();
+			//m_cbCamera.GetData().fDir = pTempCam->getForwardV();
+			m_cbCamera.GetData().pos = { pos.x, pos.y, pos.z };
 			m_cbCamera.GetData().fDir = pCam->GetComponent<Camera>().GetForward();
 			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
 			m_cbCamera.UpdateBuffer();
 
 			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
 			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+
+			//m_cbTransform.GetData().m_vMat = pTempCam->getView().Transpose();
+			//m_cbTransform.GetData().m_pMat = pTempCam->getProj().Transpose();
 		} else {
+			//m_cbTransform.GetData().m_pMat = sm::Matrix::Identity;
+			//m_cbTransform.GetData().m_vMat = sm::Matrix::Identity;
 			m_cbTransform.GetData().m_vMat = Mat4f::identity;
 			m_cbTransform.GetData().m_pMat = Mat4f::identity;
 		}
@@ -89,18 +120,37 @@ namespace Aen {
 			if(ComponentHandler::m_meshLayer[i].size() > 0) {
 
 				RenderSystem::UnBindRenderTargets(1u);
-				RenderSystem::BindRenderTargetView(m_depth);
+				RenderSystem::BindRenderTargetView(m_depthMap);
 				RenderSystem::SetDepthStencilState(m_offStencil, 0xFF);
 				
 				// Pre Depth Pass
 
 				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, k.first, i);
 
+				// Light Cull Pass
+
+				RenderSystem::UnBindRenderTargets(1u);
+
+				m_sbLight.BindSRV<CShader>(0u);
+				RenderSystem::BindShaderResourceView<CShader>(1u, m_depthMap);
+				RenderSystem::BindUnOrderedAccessView(0u, m_lIndex);
+				RenderSystem::BindUnOrderedAccessView(1u, m_lGrid);
+				RenderSystem::BindShader(m_lightCullCS);
+				m_dispatchInfo.BindBuffer<CShader>(0u);
+				m_cbLightCount.BindBuffer<CShader>(1u);
+				m_cbTransform.BindBuffer<CShader>(2u);
+				
+				RenderSystem::Dispatch(m_dispatchInfo.GetData().threadGroups, 1u);
+				
+				RenderSystem::UnBindShader<CShader>();
+				RenderSystem::UnBindUnOrderedAccessViews(0u, 3u);
+				RenderSystem::UnBindShaderResources<CShader>(0u, 3u);
+
 				// Draw pass
 
 				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, k.first, i);
 
-				RenderSystem::ClearDepthStencilView(m_depth, true, false);
+				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}
 
 		// Combine Layers Pass
@@ -118,6 +168,7 @@ namespace Aen {
 		RenderSystem::BindShaderResourceView<PShader>(0u, m_layerBuffer);
 
 		m_screenQuad.Draw();
+
 		// Post Process pass
 
 		RenderSystem::UnBindShaderResources<PShader>(0u, m_layerBuffer.GetCount());
@@ -128,59 +179,32 @@ namespace Aen {
 		RenderSystem::BindShader<PShader>(m_postProcessPS);
 		RenderSystem::BindShaderResourceView<PShader>(0u, m_postProcessBuffer);
 
+		#ifdef _DEBUG
+		RenderSystem::BindShaderResourceView<PShader>(4, m_lGrid);
+
+		static bool toggle = false;
+		toggle = (Input::KeyDown(Key::NUM1)) ? !toggle : toggle;
+		m_heatMap.GetData() = toggle;
+		m_heatMap.UpdateBuffer();
+		m_heatMap.BindBuffer<PShader>(0u);
+
+		m_cbTransform.BindBuffer<CShader>(1u);
+		#endif
+
 		m_screenQuad.Draw();
 
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
-		ImGui::Begin("Debug");
-		ImGui::Text("deez");
-		// code here
-
-		ImGui::End();
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
+#ifdef _DEBUG
+		Aen::GlobalSettings::mp_guiHandler->NewFrame();
+		Aen::GlobalSettings::mp_guiHandler->SceneListWindow();
+		Aen::GlobalSettings::mp_guiHandler->AssetWindow();
+		Aen::GlobalSettings::mp_guiHandler->PropertyWindow();
+		Aen::GlobalSettings::mp_guiHandler->ToolWindow();
+		Aen::GlobalSettings::mp_guiHandler->MaterialWindow();
+		Aen::GlobalSettings::mp_guiHandler->Render();
+#endif
 		// Present
 
 		RenderSystem::Present();
+		RenderSystem::ClearState();
 	}
-
-	//void Renderer::Draw(std::unordered_map<uint32_t, MeshInstance*>& meshLayer, const uint32_t& layer) {
-
-	//	// Pre Depth Pass
-
-	//	RenderSystem::UnBindRenderTargets(1u);
-	//	RenderSystem::BindRenderTargetView(m_depth[layer]);
-	//	RenderSystem::SetDepthStencilState(m_offStencil[layer], 0xFF);
-
-	//	for(auto& i : meshLayer) {
-	//		Mesh* pMesh = i.second->m_pMesh;
-
-	//		if(pMesh) {
-
-	//			m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(i.first).GetTransformation().Transposed();
-	//			m_cbTransform.UpdateBuffer();
-
-	//			Material* pMaterial = (pMesh && pMesh->m_pMaterials[0]) ? pMesh->m_pMaterials[0] : nullptr;
-	//			if(pMaterial) {
-	//				RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass1);
-	//				RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass1);
-	//				RenderSystem::UnBindShader<PShader>();
-
-	//				uint32_t* slots = pMaterial->m_pShaderModel->m_slotsPass1;
-	//				if(slots[0] != UINT_MAX) m_cbTransform.BindBuffer<VShader>(slots[0]);
-	//				if(slots[1] != UINT_MAX) m_cbLightCount.BindBuffer<VShader>(slots[1]);
-	//				if(slots[2] != UINT_MAX) m_cbCamera.BindBuffer<VShader>(slots[2]);
-	//				if(slots[3] != UINT_MAX) m_cbUseTexture.BindBuffer<VShader>(slots[3]);
-	//				if(slots[4] != UINT_MAX) m_sbLight.BindSRV<VShader>(slots[4]);
-	//			}
-
-	//			pMesh->m_vertices.BindBuffer();
-	//			pMesh->m_vertices.Draw();
-	//		}
-	//	}
-
-	//	
-	//}
 }

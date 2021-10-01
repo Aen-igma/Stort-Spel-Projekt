@@ -34,7 +34,7 @@ namespace Aen {
 		Reflection m_VSReflectPass1;
 		Reflection m_PSReflectPass1;
 		PSampler m_samplerDataPass1;
-		uint32_t m_slotsPass1[16];
+		uint32_t m_slotsPass1[18];
 
 		VShader m_VShaderPass2;
 		PShader m_PShaderPass2;
@@ -42,7 +42,7 @@ namespace Aen {
 		Reflection m_VSReflectPass2;
 		Reflection m_PSReflectPass2;
 		PSampler m_samplerDataPass2;
-		uint32_t m_slotsPass2[16];
+		uint32_t m_slotsPass2[18];
 
 		GBuffer m_gBuffer;
 		Window& m_window;

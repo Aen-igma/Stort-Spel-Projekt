@@ -123,6 +123,13 @@ namespace Aen {
 		return ComponentHandler::GetScale(m_id).GetScale();
 	}
 
+	const uint32_t& Entity::GetID()
+	{
+		return m_id;
+	}
+
+
+
 	const Mat4f Entity::GetTransformation() {
 
 		Mat4f pos = (ComponentHandler::TranslationExist(m_id)) ? ComponentHandler::GetTranslation(m_id).GetTranform() : Mat4f::identity;

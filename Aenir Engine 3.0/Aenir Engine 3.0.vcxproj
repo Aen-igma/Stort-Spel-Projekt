@@ -154,19 +154,18 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS;_DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXFoundation_64.lib;PhysXPvdSDK_static_64.lib;fmodL_vc.lib;d2d1.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\Debug x64\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\PhysX\lib\debug\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;fmodL_vc.lib;d2d1.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\Debug x64\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -183,21 +182,20 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS;NDEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AEN_BUILD_DLL;AEN_PLATFORM_WINDOWS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Aenir Engine 3.0\src\PCH\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\;C:\Users\maffi\Documents\GitHub\Aenir-Engine-3.0\Aenir Engine 3.0\src\PCH;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXFoundation_64.lib;PhysXPvdSDK_static_64.lib;fmod_vc.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\Release x64\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\PhysX\lib\release\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xinput.lib;d3d11.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;fmod_vc.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\fmod\lib\;$(SolutionDir)Aenir Engine 3.0\src\AenirEngine\ThirdParty\assimp\Release x64\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -209,6 +207,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animation.cpp" />
     <ClCompile Include="src\AenirEngine\Core\App.cpp" />
     <ClCompile Include="src\AenirEngine\Core\GameLoop.cpp" />
@@ -233,6 +232,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ILayout.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Reflection.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RState.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Sampler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\ShaderResource.cpp" />
@@ -240,15 +240,15 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\UAView.cpp" />
+    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\LevelExporter.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.cpp" />
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.cpp" />
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp" />
     <ClCompile Include="src\PCH\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -266,6 +266,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\BuritoMath.h" />
+    <ClInclude Include="src\AenirEngine\CreateThumbnail.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animation.h" />
     <ClInclude Include="src\AenirEngine.h" />
     <ClInclude Include="src\AenirEngine\AenCore.h" />
@@ -296,6 +297,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ILayout.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Reflection.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RState.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Sampler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\SBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\ScreenQuad.h" />
@@ -304,9 +306,13 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Material.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\DBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Stencil.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\UAView.h" />
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
+    <ClInclude Include="src\AenirEngine\ImGuiHandler.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
+    <ClInclude Include="src\AenirEngine\LevelExporter.h" />
+    <ClInclude Include="src\AenirEngine\LevelHeader.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\MathFunctions.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Matrix.h" />
@@ -320,197 +326,6 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\Px.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxAllocatorCallback.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxBitAndData.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxBounds3.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxErrorCallback.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxErrors.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxFlags.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxIntrinsics.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxIO.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxMat33.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxMat44.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxMath.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxMemory.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxPlane.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxPreprocessor.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxProfiler.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxQuat.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxSharedAssert.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxSimpleTypes.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxStrideIterator.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxTransform.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxUnionCast.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxVec2.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxVec3.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\PxVec4.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\unix\PxUnixIntrinsics.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\foundation\windows\PxWindowsIntrinsics.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\characterkinematic\PxBoxController.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\characterkinematic\PxCapsuleController.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\characterkinematic\PxController.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\characterkinematic\PxControllerBehavior.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\characterkinematic\PxControllerManager.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\characterkinematic\PxControllerObstacles.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\characterkinematic\PxExtended.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\collision\PxCollisionDefs.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxBase.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxCollection.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxCoreUtilityTypes.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxMetaData.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxMetaDataFlags.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxPhysicsInsertionCallback.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxPhysXCommonConfig.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxProfileZone.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxRenderBuffer.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxSerialFramework.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxSerializer.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxStringTable.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxTolerancesScale.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\PxTypeInfo.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\common\windows\PxWindowsDelayLoadHook.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\cooking\PxBVH33MidphaseDesc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\cooking\PxBVH34MidphaseDesc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\cooking\PxBVHStructureDesc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\cooking\Pxc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\cooking\PxConvexMeshDesc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\cooking\PxCooking.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\cooking\PxMidphaseDesc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\cooking\PxTriangleMeshDesc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\cudamanager\PxCudaContextManager.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\cudamanager\PxCudaMemoryManager.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxBinaryConverter.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxBroadPhaseExt.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxCollectionExt.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxConstraintExt.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxContactJoint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxConvexMeshExt.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxD6Joint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxD6JointCreate.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxDefaultAllocator.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxDefaultCpuDispatcher.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxDefaultErrorCallback.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxDefaultSimulationFilterShader.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxDefaultStreams.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxDistanceJoint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxExtensionsAPI.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxFixedJoint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxJoint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxJointLimit.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxMassProperties.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxPrismaticJoint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxRaycastCCD.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxRepXSerializer.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxRepXSimpleType.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxRevoluteJoint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxRigidActorExt.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxRigidBodyExt.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxSceneQueryExt.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxSerialization.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxShapeExt.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxSimpleFactory.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxSmoothNormals.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxSphericalJoint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxStringTableExt.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\extensions\PxTriangleMeshExt.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\filebuf\PxFileBuf.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\foundation\PxAssert.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\foundation\PxFoundationConfig.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\foundation\PxMathUtils.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxBoxGeometry.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxBVHStructure.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxCapsuleGeometry.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxConvexMesh.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxConvexMeshGeometry.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxGeometry.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxGeometryHelpers.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxGeometryQuery.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxHeightField.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxHeightFieldDesc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxHeightFieldFlag.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxHeightFieldGeometry.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxHeightFieldSample.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxMeshQuery.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxMeshScale.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxPlaneGeometry.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxSimpleTriangleMesh.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxSphereGeometry.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxTriangle.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxTriangleMesh.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geometry\PxTriangleMeshGeometry.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geomutils\GuContactBuffer.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\geomutils\GuContactPoint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\gpu\PxGpu.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\pvd\PxPvd.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\pvd\PxPvdSceneClient.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\pvd\PxPvdTransport.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxActor.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxAggregate.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxArticulation.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxArticulationBase.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxArticulationJoint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxArticulationJointReducedCoordinate.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxArticulationLink.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxArticulationReducedCoordinate.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxBatchQuery.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxBatchQueryDesc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxBroadPhase.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxClient.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxConfig.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxConstraint.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxConstraintDesc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxContact.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxContactModifyCallback.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxDeletionListener.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxFiltering.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxForceMode.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxFoundation.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxImmediateMode.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxLockedData.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxMaterial.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxPhysics.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxPhysicsAPI.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxPhysicsSerialization.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxPhysicsVersion.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxPhysXConfig.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxPruningStructure.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxQueryFiltering.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxQueryReport.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxRigidActor.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxRigidBody.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxRigidDynamic.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxRigidStatic.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxScene.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxSceneDesc.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxSceneLock.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxShape.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxSimulationEventCallback.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxSimulationStatistics.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\PxVisualizationParameter.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\solver\PxSolverDefs.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\task\PxCpuDispatcher.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\task\PxTask.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\task\PxTaskDefine.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\task\PxTaskManager.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleComponents.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleDrive.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleDrive4W.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleDriveNW.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleDriveTank.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleNoDrive.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleSDK.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleShaders.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleTireFriction.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleUpdate.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleUtil.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleUtilControl.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleUtilSetup.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleUtilTelemetry.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\Include\vehicle\PxVehicleWheels.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h" />
     <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />
@@ -613,6 +428,16 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\LightCullCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

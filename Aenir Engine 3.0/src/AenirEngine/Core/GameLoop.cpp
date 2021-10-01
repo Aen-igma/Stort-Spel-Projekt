@@ -17,23 +17,16 @@ namespace Aen {
 		if(!GCore::Concealed::Initialize(m_app->m_window))
 			exit(-1);
 
-
-		PhysXService::SetInstance(&m_PhysX);
-		PhysXService::GetInstance()->InitPhysics(100, 981);
-		//PhysXService::GetInstance()->CreateDemo();
-
 		GlobalSettings::Initialize(m_app->m_window);
 
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO();
-		ImGui_ImplDX11_Init(GCore::m_device.Get(), GCore::m_dContext.Get());
-		ImGui_ImplWin32_Init(m_app->m_window.GetWHND());
-		ImGui::StyleColorsDark();
-
+		// imGui initialize
+		#ifdef _DEBUG
+			Aen::GlobalSettings::GetImGuiHandler()->Initialize(m_app->m_window.GetWHND(), GCore::m_device.Get(), GCore::m_dContext.Get());
+		#endif	
+		
 		m_app->Start();
 	}
 
@@ -51,18 +44,18 @@ namespace Aen {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
-				PhysXService::GetInstance()->RunPhysics(m_deltaTime.count());
-				//m_PhysX.RunPhysics(m_deltaTime.count());
+
 				m_renderer->Render(); // VSync
 			}
 		}
 
-		ImGui_ImplDX11_Shutdown();
-		ImGui_ImplWin32_Shutdown();
-		ImGui::DestroyContext();
+		// Destroy imGui
 
-		PhysXService::GetInstance()->ClosePhysics();
-		//m_PhysX.ClosePhysics();
+	#ifdef _DEBUG
+		Aen::GlobalSettings::GetImGuiHandler()->Release();
+		delete Aen::GlobalSettings::GetImGuiHandler();
+	#endif
+
 		
 		Resource::Destroy();
 		GCore::Concealed::Release();

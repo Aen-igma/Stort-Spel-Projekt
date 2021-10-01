@@ -6,7 +6,8 @@ namespace Aen {
 	unsigned char Input::keys[256];
 	unsigned char Input::prevKeys[256];
 
-	std::queue<Vec2i> Input::rawMouse;
+	std::queue<MouseEvent> Input::m_mouseBuffer;
+	bool Input::m_isRawMouseOn = true;
 
 	bool Input::activeGP[XUSER_MAX_COUNT];
 	bool Input::GPKeys[XUSER_MAX_COUNT][14];
@@ -141,14 +142,34 @@ namespace Aen {
 		ShowCursor(isVisible);
 	}
 
-	const Vec2i Input::GetRawMouse() {
+	POINT MouseEvent::GetPos() const
+	{
+		return { x,y };
+	}
 
-		if(rawMouse.empty())
-			return Vec2i::zero;
+	const bool Input::GetIsRawMouseOn()
+	{
+		return m_isRawMouseOn;
+	}
 
-		Vec2i raw = rawMouse.front();
-		rawMouse.pop();
-		return raw;
+	const POINT Input::GetRawMouse()
+	{
+	
+		MouseEvent me = ReadEvent();
+		if (me.getInputType() == MouseEvent::RAW_MOVE)
+			return me.GetPos();
+		else return {0,0};
+
+	}
+
+	bool Input::MouseBufferIsEmbty()
+	{
+		return m_mouseBuffer.empty();
+	}
+
+	void Input::ToggleRawMouse(bool b)
+	{
+		m_isRawMouseOn = b;
 	}
 
 	const Vec2i Input::GetMousePos(Window& window) {
@@ -168,8 +189,34 @@ namespace Aen {
 		return Vec2i::zero;
 	}
 
-	void Input::OnRawMouse(const int& x, const int& y) {
-		rawMouse.push({x, y});
+	MouseEvent Input::ReadEvent()
+	{
+		if (m_mouseBuffer.empty()) 
+			return MouseEvent();
+		else
+		{
+			MouseEvent e = m_mouseBuffer.front();
+			m_mouseBuffer.pop();
+			return e;
+		}
+	}
+
+	void Input::SetRawMouse(int x, int y)
+	{
+		if(m_isRawMouseOn)
+			return m_mouseBuffer.push(MouseEvent(MouseEvent::MouseInput::RAW_MOVE, x, y));
+		else
+			return;
+	}
+
+	void Input::OnWheelUp(int x, int y)
+	{
+		return m_mouseBuffer.push(MouseEvent(MouseEvent::MouseInput::SCROLL_UP, x, y));
+	}
+
+	void Input::OnWheelDown(int x, int y)
+	{
+		return m_mouseBuffer.push(MouseEvent(MouseEvent::MouseInput::SCROLL_DOWN, x, y));
 	}
 
 	bool Input::Initialize() {
@@ -191,9 +238,6 @@ namespace Aen {
 		GetKeyState(0);
 		std::memcpy(prevKeys, keys, sizeof(unsigned char) * 256);
 		GetKeyboardState(keys);
-
-		while(rawMouse.size() > 2u)
-			rawMouse.pop();
 
 		static const WORD xButtons[] = {
 			XINPUT_GAMEPAD_A,
@@ -229,5 +273,21 @@ namespace Aen {
 				analogs[i][2].y = (float)gpState.Gamepad.bRightTrigger / 256.f;
 			}
 		}
+	}
+	MouseEvent::MouseEvent():
+		x(0), y(0), m_type(MouseInput::Invalid)
+	{}
+	MouseEvent::MouseEvent(const MouseInput type, const int x, const int y):
+		m_type(type), x(x), y(y)
+	{}
+
+	bool MouseEvent::IsValid() const
+	{
+		return m_type != MouseInput::Invalid;
+	}
+
+	MouseEvent::MouseInput MouseEvent::getInputType() const
+	{
+		return m_type;
 	}
 }

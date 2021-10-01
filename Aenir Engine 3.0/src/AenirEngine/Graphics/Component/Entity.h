@@ -39,6 +39,8 @@ namespace Aen {
 		const Vec3f& GetRot();
 		const Vec3f& GetScale();
 
+		const uint32_t& GetID();
+
 		private:
 		const Mat4f GetTransformation();
 		const Mat4f GetPosMat();

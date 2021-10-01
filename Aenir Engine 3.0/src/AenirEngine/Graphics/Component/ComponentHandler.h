@@ -299,6 +299,7 @@ namespace Aen {
 		friend class Entity;
 		friend class MeshInstance;
 		friend class Renderer;
+		friend class ImGuiHandler;
 	};
 
 }

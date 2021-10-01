@@ -22,7 +22,7 @@ cbuffer Aen_CB_LightCount {
 	uint lightCount;
 }
 
-cbuffer Aen_CB_Camera : register(b7) {
+cbuffer Aen_CB_Camera {
 	float3 camPos;
 	float pad;
 	float3 camfDir;
@@ -68,13 +68,18 @@ texture2D Aen_NormalMap : NORMALMAP;
 texture2D Aen_EmissionMap : EMISSIONMAP;
 texture2D Aen_OpacityMap : OPACITYMAP;
 
+texture2D<uint2> Aen_LightGrid : LIGHTGRID;
+StructuredBuffer<uint> Aen_LightIndexList;
+
 StructuredBuffer<Light> Aen_SB_Light;
 
 SamplerState wrapSampler : WSAMPLER;
 
-PS_Output main(PS_Input input) : SV_Target0{
+PS_Output main(PS_Input input) : SV_Target0 {
 
 	PS_Output output;
+	uint2 tileIndex = uint2(floor(input.pos.xy / 16.f));
+	uint2 lightGrid = Aen_LightGrid[tileIndex].rg;
 
 	float3 finalPixel = float3(0.f, 0.f, 0.f);
 
@@ -85,8 +90,10 @@ PS_Output main(PS_Input input) : SV_Target0{
 	float3 ambient = shadowColor;
 
 	finalPixel += ambient;
-	
-	for(uint i = 0; i < lightCount; i++) {
+
+	for(uint k = lightGrid.r; k < lightGrid.r + lightGrid.g != 0; k++) {
+		uint i = Aen_LightIndexList[k];
+
 		float3 pLightDir = normalize(Aen_SB_Light[i].pos - input.worldPos);
 		float3 cLightDir = normalize(camPos - input.worldPos);
 		float dotND = dot(Aen_SB_Light[i].dir, normal);
