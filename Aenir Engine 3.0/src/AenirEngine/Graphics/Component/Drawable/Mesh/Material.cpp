@@ -47,7 +47,7 @@ namespace Aen {
         
         outputCount = static_cast<UINT>(m_PSReflectPass1.GetOutputDesc().size());
         
-        if(inputCount != outputCount)
+        if(inputCount < outputCount)
             throw;
 
         // GBuffer
@@ -132,9 +132,13 @@ namespace Aen {
 
         std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescDBufferVS = m_VSReflectPass1.GetBindDescByName(m_bufferName);
         std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescDBufferPS = m_PSReflectPass1.GetBindDescByName(m_bufferName);
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescLightGrid = m_PSReflectPass1.GetBindDescByName("Aen_LightGrid");
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescLightIndexList = m_PSReflectPass1.GetBindDescByName("Aen_LightIndexList");
 
         m_slotsPass1[14] = (bDescDBufferVS) ? bDescDBufferVS.value().BindPoint : UINT_MAX;
         m_slotsPass1[15] = (bDescDBufferPS) ? bDescDBufferPS.value().BindPoint : UINT_MAX;
+        m_slotsPass1[16] = (bDescLightGrid) ? bDescLightGrid.value().BindPoint : UINT_MAX;
+        m_slotsPass1[17] = (bDescLightIndexList) ? bDescLightIndexList.value().BindPoint : UINT_MAX;
 
 
 
@@ -174,9 +178,13 @@ namespace Aen {
 
         bDescDBufferVS = m_VSReflectPass2.GetBindDescByName(m_bufferName);
         bDescDBufferPS = m_PSReflectPass2.GetBindDescByName(m_bufferName);
+        bDescLightGrid = m_PSReflectPass2.GetBindDescByName("Aen_LightGrid");
+        bDescLightIndexList = m_PSReflectPass2.GetBindDescByName("Aen_LightIndexList");
 
         m_slotsPass2[14] = (bDescDBufferVS) ? bDescDBufferVS.value().BindPoint : UINT_MAX;
         m_slotsPass2[15] = (bDescDBufferPS) ? bDescDBufferPS.value().BindPoint : UINT_MAX;
+        m_slotsPass2[16] = (bDescLightGrid) ? bDescLightGrid.value().BindPoint : UINT_MAX;
+        m_slotsPass2[17] = (bDescLightIndexList) ? bDescLightIndexList.value().BindPoint : UINT_MAX;
 
         return true;
     }

@@ -14,6 +14,7 @@ namespace Aen {
 		ComponentHandler::RemoveDirectionalLight(m_id);
 
 		EntityHandler::RemoveEntity(m_id);
+		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
 	}
 
 	Entity::Entity()
@@ -108,6 +109,13 @@ namespace Aen {
 	const Vec3f& Entity::GetScale() {
 		return ComponentHandler::GetScale(m_id).GetScale();
 	}
+
+	const uint32_t& Entity::GetID()
+	{
+		return m_id;
+	}
+
+
 
 	const Mat4f Entity::GetTransformation() {
 

@@ -51,6 +51,9 @@ namespace Aen {
 		m_light.m_dist = Vec4f(attA, attB, attC, dist);
 	}
 
+	const Vec4f PointLight::GetDist() {
+		return m_light.m_dist;
+	}
 
 	DirectionalLight::DirectionalLight()
 		:Light(LightType::DirectionalLight, Vec4f::zero) {}

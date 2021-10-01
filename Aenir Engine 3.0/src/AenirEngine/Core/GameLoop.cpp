@@ -22,13 +22,11 @@ namespace Aen {
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO();
-		ImGui_ImplDX11_Init(GCore::m_device.Get(), GCore::m_dContext.Get());
-		ImGui_ImplWin32_Init(m_app->m_window.GetWHND());
-		ImGui::StyleColorsDark();
-
+		// imGui initialize
+		#ifdef _DEBUG
+			Aen::GlobalSettings::GetImGuiHandler()->Initialize(m_app->m_window.GetWHND(), GCore::m_device.Get(), GCore::m_dContext.Get());
+		#endif	
+		
 		m_app->Start();
 	}
 
@@ -51,10 +49,14 @@ namespace Aen {
 			}
 		}
 
-		ImGui_ImplDX11_Shutdown();
-		ImGui_ImplWin32_Shutdown();
-		ImGui::DestroyContext();
+		// Destroy imGui
 
+	#ifdef _DEBUG
+		Aen::GlobalSettings::GetImGuiHandler()->Release();
+		delete Aen::GlobalSettings::GetImGuiHandler();
+	#endif
+
+		
 		Resource::Destroy();
 		GCore::Concealed::Release();
 		delete m_app;
