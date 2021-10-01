@@ -13,7 +13,7 @@ enum class RoomTheme{ GENERIC, BONES, VAMP, JUNGLE};
 struct Room {
 	bool m_enclosed	= false; //Var used in level generation, true when room is surrounded
 	bool m_present	= false;
-
+	
 
 	SpecialRoom m_roomSpecial = SpecialRoom::NONE;
 	RoomTheme m_roomTheme = RoomTheme::GENERIC;
@@ -65,6 +65,7 @@ static std::vector<uint16_t> levelExit;
 static std::vector<uint16_t> levelArena;
 static std::vector<uint16_t> levelBoss;
 static std::vector<uint16_t> levelItem;
+
 static std::vector<uint16_t> straight;
 static std::vector<uint16_t> bend;
 static std::vector<uint16_t> threeway;
@@ -77,8 +78,26 @@ static Room map[mapSize][mapSize];
 class LevelGenerator {
 private:
 	static Room RNGRoomFromVector(std::vector<uint16_t>& roomVec);
-	static Room RNGRoom(const uint32_t connectionDir);
-	static void AlignRoom(Room* room, const uint32_t& connectionDir, unsigned char& type);
+	static Room RNGRoom(const uint16_t connectionDir);
+	static void AlignRoom(Room* room, const uint16_t& connectionDir, unsigned char& type);
+
+
+	//static std::vector<Room>* mptr_levelRoom;
+
+	//static std::vector<uint16_t>* mptr_levelEntrances;
+	//static std::vector<uint16_t>* mptr_levelExit;
+	//static std::vector<uint16_t>* mptr_levelArena;
+	//static std::vector<uint16_t>* mptr_levelBoss;
+	//static std::vector<uint16_t>* mptr_levelItem;
+
+	//static std::vector<uint16_t>* mptr_straight;
+	//static std::vector<uint16_t>* mptr_bend;
+	//static std::vector<uint16_t>* mptr_threeway;
+	//static std::vector<uint16_t>* mptr_fourway;
+
+	//static Room* mptr_map;
+
+
 public:
 	static Room* GenerateLevel();
 

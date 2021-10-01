@@ -7,7 +7,7 @@ Room LevelGenerator::RNGRoomFromVector(std::vector<uint16_t>& roomVec) {
 	return levelRoom[roomVec[LehmerInt() % roomVec.size()]];
 };
 
-Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
+Room LevelGenerator::RNGRoom(const uint16_t connectionDir) {
 
 	Room result;
 	if (connectionDir < 1 || connectionDir > 9999) {
@@ -46,7 +46,7 @@ Room LevelGenerator::RNGRoom(const uint32_t connectionDir) {
 	return result;
 }
 
-void LevelGenerator::AlignRoom(Room* room, const uint32_t& connectionDir, unsigned char& type)
+void LevelGenerator::AlignRoom(Room* room, const uint16_t& connectionDir, unsigned char& type)
 {
 	uint32_t randNum;
 	if (!(type == 4)) //Exludes 4 way junctions, for the time being //Rotates rooms to align connections
