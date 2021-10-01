@@ -126,7 +126,7 @@ void Client::Update(const float& deltaTime) {
 
 	// ------------------------------------- Cubes -------------------------------------- //
 
-	if(Aen::Input::KeyPress(Aen::Key::G)) {
+	if(Aen::Input::KeyPress(Aen::Key::J)) {
 		Aen::Entity* e = AEN_NEW Aen::Entity();
 		e->AddComponent<Aen::RigidBody>();
 		e->AddComponent<Aen::MeshInstance>();
@@ -140,7 +140,7 @@ void Client::Update(const float& deltaTime) {
 		e = nullptr;
 	}
 
-	if(Aen::Input::KeyPress(Aen::Key::H)) {
+	if(Aen::Input::KeyPress(Aen::Key::K)) {
 		for(auto& i : m_cubes) {
 			delete i.second;
 			i.second = nullptr;
