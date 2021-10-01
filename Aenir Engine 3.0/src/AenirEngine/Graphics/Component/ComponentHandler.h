@@ -4,9 +4,6 @@
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
 
-//#include "LevelExporter.h"
-
-
 #include<unordered_map>
 #include<array>
 #include<map>
@@ -258,6 +255,7 @@ namespace Aen {
 		static void RemoveMeshFromLayer(const uint32_t id, const uint32_t& layer) {
 			m_meshLayer[layer].erase(id);
 		}
+
 		// ------------------------------------------ //
 
 		static std::unordered_map<uint32_t, Camera*> m_cameras;
@@ -271,8 +269,6 @@ namespace Aen {
 
 		friend class Entity;
 		friend class Renderer;
-		friend class ImGuiHandler;
-		//friend class LevelExporter;
 	};
 
 }

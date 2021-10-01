@@ -1,12 +1,17 @@
 #pragma once
 #include"../Graphics/RenderSystem.h"
 #include"../Graphics/Component/Entity.h"
-#include "../ImGuiHandler.h"
-
-
 #include<thread>
 
 namespace Aen {
+
+	struct CB_DispatchInfo {
+		Vec2i threadGroups;
+		Vec2i numThreads;
+		Vec2i windowSize;
+		uint32_t avarageLights;
+		uint32_t pad;
+	};
 
 	struct CB_Transform {
 		Mat4f m_vMat;
@@ -38,7 +43,6 @@ namespace Aen {
 		private:
 		void Initialize();
 		void Render();
-		//void Draw(std::unordered_map<uint32_t, MeshInstance*>& meshLayer, const uint32_t& layer);
 
 		Window& m_window;
 		
@@ -62,13 +66,18 @@ namespace Aen {
 		ILayout m_postLayout;
 
 		D3D11_VIEWPORT m_viewPort;
-		Depth m_depth;
+		DepthMap m_depthMap;
 		Stencil m_writeStencil;
 		Stencil m_maskStencil;
 		Stencil m_offStencil;
 		RState m_rasterizerState;
 
-		//ImGuiHandler guiHandler;
-
+		CBuffer<CB_DispatchInfo> m_dispatchInfo;
+		CBuffer<uint32_t> m_heatMap;
+		CShader m_lightCullCS;
+		UAView m_lIndex;
+		RWTexture2D m_lGrid;
+		Vec2i m_dispatchCall;
+		const uint32_t m_avarageLights;
 	};
 }

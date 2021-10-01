@@ -51,6 +51,7 @@ static int vRow[9] = {
 	-1, -2, -1
 };
 
+
 texture2D diffuseMap : DIFFUSEMAP: register(t0);
 texture2D posMap : POSMAP: register(t1);
 texture2D normalMap : NORMALMAP: register(t2);
