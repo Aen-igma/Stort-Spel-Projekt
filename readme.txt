@@ -1,0 +1,1 @@
+ifall programmet inte hittar dll filer, öppna lib/copy-dll.cmd
