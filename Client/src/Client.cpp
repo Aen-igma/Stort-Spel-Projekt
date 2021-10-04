@@ -294,12 +294,18 @@ void Client::Update(const float& deltaTime) {
 		}
 	}
 }
-}
 
-void Client::ChangeState()
+
+void Client::ChangeState(const States& states)
 {
-	delete state;
-	state = nullptr;
+	delete m_state;
+	m_state = nullptr;
 	
+	switch (states)
+		case States::Gameplay: m_state = new Gameplay();
 
+	if (m_state)
+		m_state->Initialize();
+
+	m_typeState = states;
 }
