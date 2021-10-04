@@ -12,6 +12,25 @@ namespace Aen {
 	enum class DZType;
 	enum class ADZType;
 
+	class AEN_DECLSPEC MouseEvent
+	{
+	public:
+		enum MouseInput {
+			SCROLL_UP, SCROLL_DOWN,
+			RAW_MOVE,
+			Invalid
+		};
+	private:
+		MouseInput m_type;
+		int x, y;
+	public:
+		MouseEvent();
+		MouseEvent(const MouseInput type, const int x, const int y);
+		bool IsValid() const;
+		POINT GetPos() const;
+		MouseInput getInputType() const;
+	};
+
 	class AEN_DECLSPEC Input {
 		public:
 
@@ -34,19 +53,28 @@ namespace Aen {
 		static void SetMousePos(const Vec2i& pos);
 		static void SetMousePos(const int& x, const int& y);
 		static void SetMouseVisible(const bool& isVisible);
-		static const Vec2i GetRawMouse();
 		static const Vec2i GetMousePos(Window& window);
 		static const Vec2i GetMousePos();
 
-		private:
+		static MouseEvent ReadEvent();
+		static bool MouseBufferIsEmbty();
+		static void ToggleRawMouse(bool b = !m_isRawMouseOn);
+		static const bool GetIsRawMouseOn();
+		static const POINT GetRawMouse();
 
-		static void OnRawMouse(const int& x, const int& y);
+		private:
+		static bool m_isRawMouseOn;
+		static void SetRawMouse(int x, int y);
+		static void OnWheelUp(int x, int y);
+		static void OnWheelDown(int x, int y);
+		static std::queue<MouseEvent> m_mouseBuffer;
+
+		// raw mouse end
 		static bool Initialize();
 		static void Update();
 
 		static unsigned char keys[256];
 		static unsigned char prevKeys[256];
-		static std::queue<Vec2i> rawMouse;
 
 		static bool activeGP[XUSER_MAX_COUNT];
 		static bool GPKeys[XUSER_MAX_COUNT][14];

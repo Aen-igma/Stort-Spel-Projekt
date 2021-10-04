@@ -9,12 +9,18 @@ namespace Aen {
 		MeshInstance();
 		MeshInstance(Mesh& mesh);
 
+		void RemoveMesh();
 		void SetMesh(Mesh& mesh);
+		void PrintMaterialSlots();
+		void SetMaterial(Material& material);
+		void SetMaterial(const std::string& materialSlotName, Material& material);
+		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
 
 		private:
 		~MeshInstance();
 
 		Mesh* m_pMesh;
+		std::vector<Material*> m_pMaterials;
 
 		friend class ComponentHandler;
 		friend class Renderer;

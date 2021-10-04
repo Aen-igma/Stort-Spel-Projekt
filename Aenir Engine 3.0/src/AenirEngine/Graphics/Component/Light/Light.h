@@ -67,6 +67,8 @@ namespace Aen {
 		void SetLightDist(const Vec4f& dist);
 		void SetLightDist(const float& attA, const float& attB, const float& attC, const float& dist);
 
+		const Vec4f GetDist();
+
 		private:
 		~PointLight() = default;
 

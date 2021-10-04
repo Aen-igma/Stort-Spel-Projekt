@@ -5,17 +5,56 @@
 
 namespace Aen {
 	MeshInstance::~MeshInstance() {
+		for(auto& i : m_pMaterials)
+			i = nullptr;
+
+		m_pMaterials.clear();
 		m_pMesh = nullptr;
 	}
 
 	MeshInstance::MeshInstance()
-		:m_pMesh(nullptr) {}
+		:m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
 
 	MeshInstance::MeshInstance(Mesh& mesh)
 		:m_pMesh(&mesh) {}
 
+	void MeshInstance::RemoveMesh() {
+		for(auto& i : m_pMaterials)
+			i = nullptr;
+		m_pMaterials.clear();
+		m_pMesh = nullptr;
+
+		m_pMaterials.reserve(1u);
+		m_pMaterials.resize(1u, &Resource::GetMaterial("DefaultMaterial"));
+	}
+
 	void MeshInstance::SetMesh(Mesh& mesh) {
 		m_pMesh = &mesh;
+
+		if(m_pMesh->m_meshMaterialName.size() > 0) {
+			m_pMaterials.reserve(m_pMesh->m_meshMaterialName.size());
+			m_pMaterials.resize(m_pMesh->m_meshMaterialName.size(), &Resource::GetMaterial("DefaultMaterial"));
+		}
+	}
+
+	void MeshInstance::PrintMaterialSlots() {
+		if(m_pMesh)
+			m_pMesh->PrintMaterialSlots();
+	}
+
+	void MeshInstance::SetMaterial(Material& material) {
+		m_pMaterials[0] = &material;
+	}
+
+	void MeshInstance::SetMaterial(const std::string& materialSlotName, Material& material) {
+		if(m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
+		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &material;
+	}
+
+	void MeshInstance::SetMaterial(const std::string& materialSlotName, const std::string& materialName) {
+		if(m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
+		if(!Resource::MaterialExist(materialName)) throw;
+		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
 	}
 
 	void MeshInstance::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) {
@@ -24,7 +63,10 @@ namespace Aen {
 
 			// Transform
 
-			renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
+			if(ComponentHandler::RigidExist(id))
+				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(id).GetScaleMat() * ComponentHandler::GetRigid(id).GetTransform()).Transposed();
+			else
+				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
 			// Mesh and Material
@@ -36,7 +78,7 @@ namespace Aen {
 				// Opaque pass
 
 				uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
-				Material* pMaterial = (m_pMesh->m_pMaterials[materialIndex]) ? m_pMesh->m_pMaterials[materialIndex] : nullptr;
+				Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
 				if(pMaterial) {
 
 					RenderSystem::UnBindShaderResources<PShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
@@ -76,10 +118,13 @@ namespace Aen {
 
 						RenderSystem::UnBindRenderTargets(1u);
 						RenderSystem::ClearRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, Color(0.f, 0.f, 0.f, 0.f));
-						RenderSystem::BindRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, renderer.m_depth);
+						RenderSystem::BindRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, renderer.m_depthMap);
+
+						if(slots[16] != UINT_MAX) RenderSystem::BindShaderResourceView<PShader>(slots[16], renderer.m_lGrid);
+						if(slots[17] != UINT_MAX) RenderSystem::BindShaderResourceView<PShader>(slots[17], renderer.m_lIndex);
 				}
 
-				RenderSystem::ClearDepthStencilView(renderer.m_depth, false, true);
+				RenderSystem::ClearDepthStencilView(renderer.m_depthMap, false, true);
 				RenderSystem::SetDepthStencilState(renderer.m_writeStencil, 0xFF);
 				m_pMesh->m_vertices.Draw(m_pMesh->m_partitions[i].size, m_pMesh->m_partitions[i].offset);
 
@@ -117,9 +162,12 @@ namespace Aen {
 					RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass2);
 					RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
 					RenderSystem::BindShaderResourceView<PShader>(0, pMaterial->m_pShaderModel->m_gBuffer);
+
+					if(slots[16] != UINT_MAX) RenderSystem::BindShaderResourceView<PShader>(slots[16], renderer.m_lGrid);
+					if(slots[17] != UINT_MAX) RenderSystem::BindShaderResourceView<PShader>(slots[17], renderer.m_lIndex);
 				}
 
-				RenderSystem::BindRenderTargetView(renderer.m_layerBuffer.GetRtv(layer), renderer.m_depth);
+				RenderSystem::BindRenderTargetView(renderer.m_layerBuffer.GetRtv(layer), renderer.m_depthMap);
 				RenderSystem::SetDepthStencilState(renderer.m_maskStencil, 0xFF);
 
 				renderer.m_screenQuad.Draw();
@@ -131,10 +179,13 @@ namespace Aen {
 
 		if(m_pMesh) {
 
-			renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
+			if(ComponentHandler::RigidExist(id))
+				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(id).GetScaleMat() * ComponentHandler::GetRigid(id).GetTransform()).Transposed();
+			else
+				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
-			Material* pMaterial = (m_pMesh && m_pMesh->m_pMaterials[0]) ? m_pMesh->m_pMaterials[0] : nullptr;
+			Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 			if(pMaterial) {
 				RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass1);
 				RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass1);
