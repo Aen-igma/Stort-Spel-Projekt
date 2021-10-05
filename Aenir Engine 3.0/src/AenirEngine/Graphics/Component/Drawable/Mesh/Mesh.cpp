@@ -15,14 +15,19 @@
 namespace Aen {
 	
 	Mesh::Mesh()
-		:m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
+		:m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {
+	
+		/*const aiScene* animTest = aiImportFile("../Resource/rectAnirectAni.fbx", aiProcessPreset_TargetRealtime_MaxQuality);
+		std::cout << "Number of meshes: " << animTest->mNumMeshes << std::endl;
+		std::cout << "Number of verts: " << animTest->mMeshes[0]->mNumVertices << std::endl;
+		std::cout << "Does mesh have Animations?: " << animTest->HasAnimations() << std::endl;
+		std::cout << "Name of Animation: " << (animTest->mAnimations[0]->mName).C_Str() << std::endl;
+		std::cout << "Duration of Ani: " << animTest->mAnimations[0]->mDuration << std::endl;
+		std::cout << "Number of Ani: " << animTest->mNumAnimations << std::endl;
+		std::cout << "mBones: " << (animTest->mMeshes[0]->mBones[0]->mName).C_Str() << std::endl;*/
+	}
 	
 	Mesh::Mesh(const std::string& dir) {
-
-		const aiScene* animTest = aiImportFile("../Resource/Cube.obj", aiProcessPreset_TargetRealtime_MaxQuality);
-		std::cout << "Number of meshes: " << animTest->mMeshes << std::endl;
-		std::cout << "Number of verts: " << animTest->mMeshes[0]->mVertices << std::endl;
-
 		ImportObj(m_vertices, dir, m_partitions, m_meshMaterialName);
 		if(m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_meshMaterialName.size());
