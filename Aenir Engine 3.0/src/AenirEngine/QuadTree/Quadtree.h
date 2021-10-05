@@ -24,30 +24,25 @@ struct Point {
 	}
 };
 
-struct XYZ
+struct XY
 {
 	int m_x;
 	int m_y;
-	int m_z;
+	XY(int x = 0, int y = 0);
+
 };
 
 //Axis aligned bounding box with half dimension and center
 struct AABB
 {
-	double left, top, right, bottom;
+	XY minLeft, minRight, maxLeft, maxRight;
+	XY m_center;
 
-	AABB(){}
-	AABB(const double &l, const double &t, const double &r, const double b);
-	bool within(const AABB& bound) const;
-	bool intersects(const AABB& bound)const;
-
-	XYZ m_center;
-	float m_halfDimension;
-	AABB(XYZ center, float halfDimension)
-	{
-		m_center = center;
-		m_halfDimension = halfDimension;
-	}
+	AABB();
+	AABB(const XY& min, const XY& max);
+	AABB(const double& minX, const double& minY, const double& maxX, const double& maxY);
+	bool within() const; // skicka in spelarens position och kolla om spelaren befiner sig i denna delen av quadtree
+	//bool intersects(const AABB& bound)const;
 
 };
 
@@ -69,20 +64,20 @@ struct Rectangle
 
 //The objects that we wanted store in quadtree 
 //Need to change it to so it takes in vertex data
-struct Node
-{
-	XYZ m_xyz;
-	int m_data;
-	Node(XYZ xyz, int data)
-	{
-		m_xyz = xyz;
-		m_data = data;
-	}
-	Node()
-	{
-		m_data = 0;
-	}
-};
+//struct Node
+//{
+//	XYZ m_xyz;
+//	int m_data;
+//	Node(XYZ xyz, int data)
+//	{
+//		m_xyz = xyz;
+//		m_data = data;
+//	}
+//	Node()
+//	{
+//		m_data = 0;
+//	}
+//};
 
 //typedef struct vertex
 //{
@@ -124,7 +119,7 @@ class Quadtree
 {
 public:
 	Quadtree();
-	Quadtree(const AABB& bound, const unsigned& capacity, const unsigned& maxLevel,
+	Quadtree(const AABB& quad, const unsigned& capacity, const unsigned& maxLevel,
 		const unsigned& level = 0, Quadtree* parent = nullptr);
 	~Quadtree();
 
@@ -132,7 +127,7 @@ public:
 
 
 	//New shit
-	void InsertXYZ(XYZ xyz);
+	void InsertXYZ(XY xy);
 	bool insert(Object* object);
 	bool remove(Object* object);
 	void update(Object* object);
@@ -144,35 +139,35 @@ public:
 
 
 	//Old shit
-	Node* Search(Point point);
+	/*Node* Search(Point point);
 	bool InBoundery(Point point);
-	void Boundery(float x, float y, float z, float h){};
+	void Boundery(float x, float y, float z, float h){};*/
 
 private:
 
 	//Boundery of Node
-	Point m_topLeft;
-	Point m_botRight;
+	/*Point m_topLeft;
+	Point m_botRight;*/
 
 	//contains the details of node
-	Node* m_pNode;
+	//Node* m_pNode;
 
 
 	//New
 	const int QT_NODE_CAPACITY = 4;
-	AABB m_bound;
+	AABB m_quad;
 	Quadtree* m_parent;
 	Quadtree* m_children[4];
 	bool m_isLeaf = true;
-	double m_centerX;
-	double m_centerY;
+	//double m_centerX;
+	//double m_centerY;
 	unsigned m_level;
 	unsigned m_maxLevel;
 	unsigned m_capacity;
 	std::vector<Object*> m_Object;
 	void subdivide();
 
-	Quadtree* getChild(const AABB&) const;
+	//Quadtree* getChild(const AABB&) const;
 
 	//Children of this quadtree
 	Quadtree* m_northEast;

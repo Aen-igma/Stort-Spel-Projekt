@@ -36,21 +36,14 @@ namespace Aen {
 		this->m_right = 1000.0f;
 		this->m_top = 0.0f;
 		this->m_bot = 1000.0f;
-		m_Center = new Quadtree();
-		AxisAlignedBoundBox->bottom = this->m_bot;
+		m_Quadtree = new Quadtree();
+		//AABB
+		AxisAlignedBoundBox = new AABB(this->m_left, this->m_top, this->m_right, this->m_bot);
+		/*AxisAlignedBoundBox->bottom = this->m_bot;
 		AxisAlignedBoundBox->top = this->m_top;
 		AxisAlignedBoundBox->left = this->m_left;
-		AxisAlignedBoundBox->right = this->m_right;
+		AxisAlignedBoundBox->right = this->m_right;*/
 
-		float x;
-		float y;
-		float z;
-		x = 500.0f;
-		y = 500.0f;
-		z = 500.0f;
-		float xyz = x, y, z;
-
-		
 
 		std::cout << std::endl;
 

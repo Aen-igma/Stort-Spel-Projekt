@@ -18,7 +18,7 @@ namespace Aen {
 		void Run();
 
 		/*Quadtree* m_Center;*/
-		Quadtree* m_Center;
+		Quadtree* m_Quadtree;
 		Object* object;
 		AABB* AxisAlignedBoundBox;
 
