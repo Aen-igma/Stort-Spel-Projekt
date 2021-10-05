@@ -30,8 +30,28 @@ namespace Aen {
 		ImGui_ImplWin32_Init(m_app->m_window.GetWHND());
 		ImGui::StyleColorsDark();
 
-	
+
 		//QuadTree
+		this->m_left = 0.0f;
+		this->m_right = 1000.0f;
+		this->m_top = 0.0f;
+		this->m_bot = 1000.0f;
+		m_Center = new Quadtree();
+		AxisAlignedBoundBox->bottom = this->m_bot;
+		AxisAlignedBoundBox->top = this->m_top;
+		AxisAlignedBoundBox->left = this->m_left;
+		AxisAlignedBoundBox->right = this->m_right;
+
+		float x;
+		float y;
+		float z;
+		x = 500.0f;
+		y = 500.0f;
+		z = 500.0f;
+		float xyz = x, y, z;
+
+		
+
 		std::cout << std::endl;
 
 		m_app->Start();
@@ -53,15 +73,20 @@ namespace Aen {
 				}
 
 				m_renderer->Render(); // VSync
+				
 			}
 		}
-
+		
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
 
 		Resource::Destroy();
 		GCore::Concealed::Release();
+
+		//Quadtree
+		m_Center->clear();
+
 		delete m_app;
 		delete m_renderer;
 	}

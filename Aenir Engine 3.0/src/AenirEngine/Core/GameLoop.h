@@ -18,6 +18,15 @@ namespace Aen {
 		void Run();
 
 		/*Quadtree* m_Center;*/
+		Quadtree* m_Center;
+		Object* object;
+		AABB* AxisAlignedBoundBox;
+
+		int cap = 10;
+		float m_left;
+		float m_right;
+		float m_top;
+		float m_bot;
 
 		App* m_app;
 		private:
