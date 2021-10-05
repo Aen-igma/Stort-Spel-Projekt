@@ -2,6 +2,7 @@
 #include"Drawable/Mesh/Material.h"
 #include"Drawable/Mesh/Texture.h"
 #include"Drawable/Mesh/Mesh.h"
+#include"Animation/Animation.h"
 
 #include<unordered_map>
 
@@ -125,6 +126,32 @@ namespace Aen {
 			throw;
 		}
 
+		// ------------------ Animations ----------------- //
+
+		static const bool AnimationExist(const std::string& name) {
+			return m_animations.count(name) > 0;
+		}
+
+		static Animation& CreateAnimation(const std::string& name) {
+			m_animations.emplace(name, AEN_NEW Animation());
+			return *m_animations.at(name);
+		}
+		
+		static void RemoveAnimation(const std::string& name) {
+			if (m_animations.count(name) < 0) {
+				delete m_animations.at(name);
+				m_animations.at(name) = nullptr;
+				m_animations.erase(name);
+			}
+		}
+
+		static Animation& GetAnimation(const std::string& name) {
+			if (m_animations.count(name) > 0)
+				return *m_animations.at(name);
+			
+			throw;
+		}
+
 		private:
 
 		Resource();
@@ -163,18 +190,28 @@ namespace Aen {
 					delete i.second;
 					i.second = nullptr;
 				}
+
+			// --------------- Animations -------------- //
+
+			for(auto& i : m_animations)
+				if (i.second) {
+					delete i.second;
+					i.second = nullptr;
+				}
 		}
 
 		static std::unordered_map<std::string, ShaderModel*> m_shaders;
 		static std::unordered_map<std::string, Material*> m_materials;
 		static std::unordered_map<std::string, Texture*> m_textures;
 		static std::unordered_map<std::string, Mesh*> m_meshes;
+		static std::unordered_map<std::string, Animation*> m_animations;
 
 		friend class Mesh;
 		friend class Texture;
 		friend class Material;
 		friend class ShaderModel;
 		friend class GameLoop;
+		friend class Animation;
 	};
 
 }

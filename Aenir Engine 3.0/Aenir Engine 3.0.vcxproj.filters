@@ -252,6 +252,9 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animator.cpp">
+      <Filter>Source Files\Graphics\Component\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -478,6 +481,9 @@
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animator.h">
+      <Filter>Header Files\Graphics\Component\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

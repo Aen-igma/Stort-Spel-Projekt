@@ -4,6 +4,7 @@
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
 #include"ThirdParty/PhysX/RigidBody.h"
+#include"Animation/Animator.h"
 
 #include<unordered_map>
 #include<array>
@@ -284,12 +285,37 @@ namespace Aen {
 		}
 		// ------------------------------------------ //
 
+		// ------------------ Animator --------------------- //
+		static const bool AnimatorExists(const uint32_t& id) {
+			return m_animators.count(id) > 0;
+		}
+
+		static void CreateAnimator(const uint32_t& id) {
+			m_animators.emplace(id, AEN_NEW Animator());
+		}
+
+		static void RemoveAnimators(const uint32_t& id) {
+			if (m_animators.count(id) > 0) {
+				delete m_animators.at(id);
+				m_animators.at(id) = nullptr;
+				m_animators.erase(id);
+			}
+		}
+
+		static Animator& GetAnimator(const uint32_t& id) {
+			if (m_animators.count(id) > 0)
+				return *m_animators.at(id);
+		}
+		// --------------------------------------------------//
+
+
 		static std::unordered_map<uint32_t, Camera*> m_cameras;
 		static std::unordered_map<uint32_t, MeshInstance*> m_mesheInstances;
 		static std::unordered_map<uint32_t, Translation*> m_translations;
 		static std::unordered_map<uint32_t, Rotation*> m_rotations;
 		static std::unordered_map<uint32_t, Scale*> m_scales;
 		static std::unordered_map<uint32_t, RigidBody*> m_rigids;
+		static std::unordered_map<uint32_t, Animator*> m_animators;
 		static std::multimap<uint32_t, Light*> m_lights;
 		
 		

@@ -50,6 +50,10 @@ void Client::Start() {
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
 	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
+	/*Aen::Animation& aniTest = Aen::Resource::CreateAnimation("test");
+	aniTest.printTest();*/
+	
+
 	// ----------------------------- Load Reimushes -------------------------------- //
 
 	m_ReimuTex = &Aen::Resource::CreateTexture("ReimuTex");
@@ -86,6 +90,8 @@ void Client::Start() {
 	m_plane1.SetRot(90.f, 0.f, 0.f);*/
 
 	m_cube.AddComponent<Aen::MeshInstance>();
+	/*m_cube.AddComponent<Aen::Animator>();
+	m_cube.GetComponent<Aen::Animator>().printSomething();*/
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
 	m_cube.SetPos(0.f, 8.f, 10.f);
 	m_cube.SetScale(20.f, 20.f, 1.f);

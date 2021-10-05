@@ -1,10 +1,17 @@
 #pragma once
 #include"../../Graphics.h"
 
-namespace Aem {
+namespace Aen {
 
-	class Animation {
-	
+	class AEN_DECLSPEC Animation {
+	public:
+		Animation();
+		void printTest();
+	private:
+		~Animation();
+
+		friend class Resource;
+		friend class Renderer;
 	};
 
 }

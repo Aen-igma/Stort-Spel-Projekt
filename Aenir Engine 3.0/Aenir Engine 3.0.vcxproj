@@ -209,6 +209,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animator.cpp" />
     <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animation.cpp" />
     <ClCompile Include="src\AenirEngine\Core\App.cpp" />
@@ -270,6 +271,7 @@
     <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animator.h" />
     <ClInclude Include="src\AenirEngine\BuritoMath.h" />
     <ClInclude Include="src\AenirEngine\CreateThumbnail.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animation.h" />

@@ -138,6 +138,17 @@ namespace Aen {
 			ComponentHandler::CreateRigid(m_id);
 	}
 
+	template<>
+	inline void Entity::AddComponent<Animator>() {
+		if (!ComponentHandler::AnimatorExists(m_id))
+			ComponentHandler::CreateAnimator(m_id);
+
+		AddComponent<MeshInstance>();
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
+	}
+
 	// --------------- GetComponent -----------------
 
 	template<>
@@ -183,5 +194,10 @@ namespace Aen {
 	template<>
 	inline RigidBody& Entity::GetComponent() {
 		return ComponentHandler::GetRigid(m_id);
+	}
+
+	template<>
+	inline Animator& Entity::GetComponent() {
+		return ComponentHandler::GetAnimator(m_id);
 	}
 }
