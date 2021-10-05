@@ -1,8 +1,9 @@
 #include "States.h"
 
-States State::m_currentState{ States::Main_Menu };
+States State::m_currentState{ States::Gameplay };
 
-State::State()
+State::State(Aen::Window& window)
+	:m_Window(window)
 {
 }
 

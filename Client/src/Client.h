@@ -1,8 +1,7 @@
 #pragma once
-#include"AenirEngine.h"
-#include "../src/States/Gameplay.h"
-#include"AenirEngine/ThirdParty/ImGui/imgui.h"
-#include"Level/LevelGenerator.h"
+#include "States\Gameplay.h"
+#include "States\Menu.h"
+#include "AenirEngine.h"
 
 class Client : public Aen::App {
 	public:
@@ -15,37 +14,9 @@ class Client : public Aen::App {
 	void ChangeState(const States& states);
 
 	private:
-
-	State* m_state;
+	State* mp_state;
 	States m_typeState;
-
-	float m_speed;
-	float m_fSpeed;
-	float m_mouseSense;
-	bool m_toggleFullScreen;
-
-	Aen::Entity m_camera;
-	Aen::Entity m_dLight;
-	Aen::Entity m_spotLight;
-	Aen::Entity m_plane;
-	Aen::Entity m_plane1;
-	Aen::Entity m_cube;
-	
-	Aen::Mesh* m_meshcube;
-	Aen::Entity m_sphere;
-
-	Aen::Entity* rooms[mapSize * mapSize];
-
-	std::unordered_map<int, Aen::Entity*> m_reimubes;
-	Aen::Mesh* m_reimubeMesh;
-	Aen::Material* m_ReimuMat;
-	Aen::Texture* m_ReimuTex;
-	int m_reimubeCount;
-
-	std::unordered_map<int, Aen::Entity*> m_pLights;
-	int ind;
 };
-
 
 Aen::App* Aen::CreateApp() {
 

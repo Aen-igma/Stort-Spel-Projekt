@@ -339,7 +339,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />
     <ClInclude Include="src\AenirEngine\AenWindow.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Graphics.h" />
-    <ClInclude Include="src\AenirEngine\WinMain.h" />
+    <ClInclude Include="src\AenirEngine\WinMain.cpp" />
     <ClInclude Include="src\AenirEngine\Window\Input.h" />
     <ClInclude Include="src\AenirEngine\Window\Window.h" />
     <ClInclude Include="src\AenirEngine\Window\WindowDef.h" />

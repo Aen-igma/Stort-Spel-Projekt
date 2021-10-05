@@ -1,19 +1,22 @@
 #pragma once
-#include "PCH\PCH.h"
+#include "AenirEngine\AenCore.h"
 
-enum class States { Main_Menu, Loadscreen, Gameplay, Gameover, Ending};
+enum class States { Main_Menu, Loadscreen, Gameplay, Gameover, None};
 
 class State {
 private:
 	static States m_currentState;
 
-public:
+protected:
+	Aen::Window& m_Window;
 
-	State();
+public:
+	State(Aen::Window& window);
+
 	static void SetState(const States& state);
 	States& GetCurrentState()const;
 
 	virtual ~State();
-	virtual void Update(float time) = 0;
+	virtual void Update(const float& deltaTime) = 0;
 	virtual void Initialize() = 0;
 };

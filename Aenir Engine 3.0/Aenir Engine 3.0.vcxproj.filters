@@ -260,7 +260,7 @@
     <ClInclude Include="src\AenirEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\WinMain.h">
+    <ClInclude Include="src\AenirEngine\WinMain.cpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\AenDefines.h">

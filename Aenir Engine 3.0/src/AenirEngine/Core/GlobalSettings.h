@@ -36,7 +36,10 @@ namespace Aen {
 			return mp_guiHandler;
 		}
 
-
+		static void RemoveMainCamera()
+		{
+			m_pMainCamera = nullptr;
+		}
 
 		friend class GameLoop;
 		friend class Renderer;
