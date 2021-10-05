@@ -39,8 +39,13 @@ namespace Aen {
 		const Vec3f& GetRot();
 		const Vec3f& GetScale();
 
+		const uint32_t& GetID();
+
 		private:
 		const Mat4f GetTransformation();
+		const Mat4f GetPosMat();
+		const Mat4f GetRotMat();
+		const Mat4f GetScaleMat();
 
 		static uint32_t m_iDs;
 
@@ -127,6 +132,11 @@ namespace Aen {
 		AddComponent<Rotation>();
 	}
 
+	template<>
+	inline void Entity::AddComponent<RigidBody>() {
+		if (!ComponentHandler::RigidExist(m_id))
+			ComponentHandler::CreateRigid(m_id);
+	}
 
 	// --------------- GetComponent -----------------
 
@@ -168,5 +178,10 @@ namespace Aen {
 	template<>
 	inline DirectionalLight& Entity::GetComponent() {
 		return ComponentHandler::GetDirectionalLight(m_id);
+	}
+
+	template<>
+	inline RigidBody& Entity::GetComponent() {
+		return ComponentHandler::GetRigid(m_id);
 	}
 }
