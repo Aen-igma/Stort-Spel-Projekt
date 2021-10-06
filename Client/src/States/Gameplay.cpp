@@ -3,7 +3,6 @@
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false)
 {
-
 }
 
 Gameplay::~Gameplay()
@@ -208,18 +207,19 @@ void Gameplay::Update(const float& deltaTime)
 	}
 
 	// ------------------------------------- States -------------------------------------- //
-	if (Aen::Input::KeyDown(Aen::Key::NUMPAD1))
+	if (Aen::Input::KeyDown(Aen::Key::NUMPAD0))
 	{
 		State::SetState(States::Main_Menu);
 	}
-
 	cout << "gameplay\n";
 }
 
 void Gameplay::Initialize()
 {
+	char x = 219;
 	// ----------------------------- Setup Camera ------------------------------- //
 
+	printf("Loading: ", x);
 	m_camera.AddComponent<Aen::Camera>();
 	m_camera.GetComponent<Aen::Camera>().SetCameraPerspective(70.f, m_Window.GetAspectRatio(), 0.01f, 100.f);
 	m_camera.SetPos(0.f, 0.f, -2.f);
@@ -227,14 +227,14 @@ void Gameplay::Initialize()
 	Aen::GlobalSettings::SetMainCamera(m_camera);
 
 	//// ------------------------ Setup Directional Light ------------------------- //
-
+	printf("%c", x);
 	m_dLight.AddComponent<Aen::DirectionalLight>();
 	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
 	m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
 	m_dLight.SetRot(45.f, -135.f, 0.f);
 
 	//// --------------------------- Setup Spot Light ----------------------------- //
-
+	printf("%c", x);
 	m_spotLight.AddComponent<Aen::SpotLight>();
 	m_spotLight.GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Red);
 	m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(1.f);
@@ -243,9 +243,9 @@ void Gameplay::Initialize()
 	m_spotLight.GetComponent<Aen::SpotLight>().SetLightDist(1.f, 0.f, 0.f, 10.f);
 	m_spotLight.SetPos(0.f, 2.f, -5.f);
 	m_spotLight.SetRot(45.f, 0.f, 0.f);
-
+	printf("%c", x);
 	//// ----------------------------- Load Meshes -------------------------------- //
-
+	printf("%c", x);
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
 	Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
@@ -254,31 +254,31 @@ void Gameplay::Initialize()
 	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
 	//// ----------------------------- Load Reimushes -------------------------------- //
-
+	printf("%c", x);
 	m_ReimuTex = &Aen::Resource::CreateTexture("ReimuTex");
 	m_ReimuMat = &Aen::Resource::CreateMaterial("ReimuMat");
 	m_reimubeMesh = &Aen::Resource::CreateMesh("Cube");
 	m_reimubeMesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
 	m_ReimuTex->LoadTexture(AEN_RESOURCE_DIR("Reimu.png"));
 	m_ReimuMat->SetDiffuseMap(*m_ReimuTex);
-
+	printf("%c", x);
 	(*m_ReimuMat)["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
 	(*m_ReimuMat)["InnerEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
 	(*m_ReimuMat)["OuterEdgeThickness"] = 0.003f;
 	(*m_ReimuMat)["InnerEdgeThickness"] = 0.003f;
-
+	printf("%c", x);
 	m_meshcube = &cube;
 	//// -------------------------- Setup Entities -------------------------------- //
-
+	printf("%c", x);
 	m_sphere.AddComponent<Aen::MeshInstance>();
 	m_sphere.GetComponent<Aen::MeshInstance>().SetMesh(sphere);
-
+	printf("%c", x);
 	m_plane.AddComponent<Aen::MeshInstance>();
 	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	m_plane.AddComponent<Aen::RigidBody>();
 	m_plane.GetComponent<Aen::RigidBody>().CreateMaterial();
 	m_plane.GetComponent<Aen::RigidBody>().CreatePlane();
-
+	printf("%c", x);
 	//m_plane.SetPos(0.f, -2.f, 0.f);
 	m_plane.SetScale(40.f, 1.f, 40.f);
 
@@ -287,25 +287,25 @@ void Gameplay::Initialize()
 	m_plane1.SetPos(0.f, 8.f, -10.f);
 	m_plane1.SetScale(20.f, 1.f, 20.f);
 	m_plane1.SetRot(90.f, 0.f, 0.f);*/
-
+	printf("%c", x);
 	m_cube.AddComponent<Aen::MeshInstance>();
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
 	m_cube.SetPos(0.f, 8.f, 10.f);
 	m_cube.SetScale(20.f, 20.f, 1.f);
-
+	printf("%c", x);
 	Aen::GlobalSettings::GetImGuiHandler()->StartUp();
 	//// --------------------------- Setup Window --------------------------------- //
-
+	printf("%c", x);
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
-
+	printf("%c", x);
 	//// ------------------- Procedural generation testing staging grounds ------- //
 
+	printf("%c", x);
 	LevelGenerator::GenerationTestingFunction();
 	srand((unsigned int)time(NULL));
 	SetLehmerConstSeed(100);
 	LehmerInt();
 	Room* map = LevelGenerator::GenerationTestingFunction();
-
 	for (UINT y = 0; y < mapSize; y++) {
 		for (UINT x = 0; x < mapSize; x++) {
 			if (map[x + y * mapSize].m_present) {
@@ -321,6 +321,7 @@ void Gameplay::Initialize()
 			}
 		}
 	}
-
 	Aen::Input::ToggleRawMouse(false);
+	State::SetLoad(true);
 }
+

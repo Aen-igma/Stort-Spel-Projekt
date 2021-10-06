@@ -33,7 +33,6 @@ private:
 	int ind;
 
 public:
-
 	Gameplay(Aen::Window& window);
 	~Gameplay()override;
 

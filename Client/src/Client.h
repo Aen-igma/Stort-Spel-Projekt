@@ -1,6 +1,7 @@
 #pragma once
 #include "States\Gameplay.h"
 #include "States\Menu.h"
+#include "States\Loadscreen.h"
 #include "AenirEngine.h"
 
 class Client : public Aen::App {
@@ -16,6 +17,8 @@ class Client : public Aen::App {
 	private:
 	State* mp_state;
 	States m_typeState;
+
+	Gameplay* gameplay;
 };
 
 Aen::App* Aen::CreateApp() {
