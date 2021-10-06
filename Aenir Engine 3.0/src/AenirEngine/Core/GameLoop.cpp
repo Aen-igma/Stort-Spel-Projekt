@@ -30,23 +30,19 @@ namespace Aen {
 		ImGui_ImplWin32_Init(m_app->m_window.GetWHND());
 		ImGui::StyleColorsDark();
 
-
-		//QuadTree
-		this->m_left = 0.0f;
-		this->m_right = 1000.0f;
-		this->m_top = 0.0f;
-		this->m_bot = 1000.0f;
-		m_Quadtree = new Quadtree();
+		//top left corner and bottom right corner of entire game world
+		this->m_minX = 0.0f;
+		this->m_minY = 0.0f;
+		this->m_maxX = 1000.0f;
+		this->m_maxY = 1000.0f;
 		//AABB
-		AxisAlignedBoundBox = new AABB(this->m_left, this->m_top, this->m_right, this->m_bot);
-		/*AxisAlignedBoundBox->bottom = this->m_bot;
-		AxisAlignedBoundBox->top = this->m_top;
-		AxisAlignedBoundBox->left = this->m_left;
-		AxisAlignedBoundBox->right = this->m_right;*/
-
+		m_AxisAlignedBoundBox = new AABB(this->m_minX, this->m_minY, this->m_maxX, this->m_maxY);
+		//QuadTree
+		m_Quadtree = new Quadtree(*m_AxisAlignedBoundBox, m_quadCap, 3);
+		//Object
+		//m_Object = new Object(m_AxisAlignedBoundBox);
 
 		std::cout << std::endl;
-
 		m_app->Start();
 	}
 
@@ -78,7 +74,8 @@ namespace Aen {
 		GCore::Concealed::Release();
 
 		//Quadtree
-		m_Center->clear();
+		m_Quadtree->clear();
+		
 
 		delete m_app;
 		delete m_renderer;

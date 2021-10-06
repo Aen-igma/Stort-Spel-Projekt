@@ -17,16 +17,17 @@ namespace Aen {
 		void Initialize();
 		void Run();
 
-		/*Quadtree* m_Center;*/
+		//Quadtree
 		Quadtree* m_Quadtree;
-		Object* object;
-		AABB* AxisAlignedBoundBox;
+		AABB* m_AxisAlignedBoundBox;
+		Object* m_Object;
 
-		int cap = 10;
-		float m_left;
-		float m_right;
-		float m_top;
-		float m_bot;
+
+		int m_quadCap = 10;
+		float m_minX;
+		float m_minY;
+		float m_maxX;
+		float m_maxY;
 
 		App* m_app;
 		private:
