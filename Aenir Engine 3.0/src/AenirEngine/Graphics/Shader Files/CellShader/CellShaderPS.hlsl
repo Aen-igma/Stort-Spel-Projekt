@@ -6,6 +6,8 @@ cbuffer CB_CellShader {
 	float4 rimLightColor;
 	float4 innerEdgeColor;
 	float4 outerEdgeColor;
+	float4 glowColor;
+	float glowStr;
 	float innerEdgeThickness;
 	float outerEdgeThickness;
 	float specularPower;
@@ -85,11 +87,18 @@ PS_Output main(PS_Input input) : SV_Target0 {
 
 	float3 diffuseM = (useDiffuse) ? Aen_DiffuseMap.Sample(wrapSampler, input.uv) + shadowColor * 0.1f : baseColor;
 	float3 normalM = normalize(Aen_NormalMap.Sample(wrapSampler, input.uv).rgb * 2.f - 1.f);
+	float3 emissionM = Aen_EmissionMap.Sample(wrapSampler, input.uv);
 
 	float3 normal = (useNormal) ? float4(mul(normalM, input.tbn), 1.f) : float4(normalize(input.tbn._m20_m21_m22), 1.f);
 	float3 ambient = shadowColor;
 
+
 	finalPixel += ambient;
+
+	if (useEmission) {
+		float3 em = emissionM * glowColor * glowStr;
+		finalPixel += em;
+	}
 
 	for(uint k = lightGrid.r; k < lightGrid.r + lightGrid.g != 0; k++) {
 		uint i = Aen_LightIndexList[k];

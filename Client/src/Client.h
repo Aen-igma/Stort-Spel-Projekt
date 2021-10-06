@@ -25,6 +25,8 @@ class Client : public Aen::App {
 	Aen::Entity m_plane;
 	Aen::Entity m_plane1;
 	Aen::Entity m_cube;
+
+	Aen::Entity m_emiCube;
 	
 	Aen::Mesh* m_meshcube;
 	Aen::Entity m_sphere;

@@ -64,8 +64,6 @@ namespace Aen {
 		vector<string> m_meshObjList;
 		vector<string> m_textureFileList;
 
-
-
 		
 
 	public:
@@ -85,6 +83,9 @@ namespace Aen {
 		void ToolWindow();
 		void MaterialWindow();
 		void Update();
+		
+		void NewWindow(const char* windowName);
+		void AddSliderFloat(const char* label, float* value, float min = 0.f, float max = 1.f);
 
 		void AddModel(Aen::Entity* entity);
 		void ReadAllModelsFromHandler();

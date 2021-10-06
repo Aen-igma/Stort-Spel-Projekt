@@ -19,7 +19,7 @@ void Client::Start() {
 
 	m_camera.AddComponent<Aen::Camera>();
 	m_camera.GetComponent<Aen::Camera>().SetCameraPerspective(70.f, m_window.GetAspectRatio(), 0.01f, 100.f);
-	m_camera.SetPos(0.f, 0.f, -2.f);
+	m_camera.SetPos(0.f, 2.f, -2.f);
 
 	Aen::GlobalSettings::SetMainCamera(m_camera);
 
@@ -27,7 +27,7 @@ void Client::Start() {
 
 	m_dLight.AddComponent<Aen::DirectionalLight>();
 	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
-	m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
+	m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(.5f);
 	m_dLight.SetRot(45.f, -135.f, 0.f);
 
 	// --------------------------- Setup Spot Light ----------------------------- //
@@ -65,6 +65,18 @@ void Client::Start() {
 	(*m_ReimuMat)["InnerEdgeThickness"] = 0.003f;
 
 	m_meshcube = &cube;
+
+	// ----------------------------- Load EmissionCube -------------------------------- //
+
+	Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
+	Aen::Texture& neko = Aen::Resource::CreateTexture("NekoTexture");
+	Aen::Material& emissionMtrl = Aen::Resource::CreateMaterial("EmiMtrl");
+	face.LoadTexture(AEN_RESOURCE_DIR("emmission2.png"));
+	neko.LoadTexture(AEN_RESOURCE_DIR("cat.png"));
+	emissionMtrl.SetEmissionMap(face);
+	emissionMtrl.SetDiffuseMap(neko);
+	emissionMtrl["GlowColor"] = Aen::Color::Green;
+
 	// -------------------------- Setup Entities -------------------------------- //
 
 	m_sphere.AddComponent<Aen::MeshInstance>();
@@ -84,11 +96,17 @@ void Client::Start() {
 	m_plane1.SetPos(0.f, 8.f, -10.f);
 	m_plane1.SetScale(20.f, 1.f, 20.f);
 	m_plane1.SetRot(90.f, 0.f, 0.f);*/
-
+	
 	m_cube.AddComponent<Aen::MeshInstance>();
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
 	m_cube.SetPos(0.f, 8.f, 10.f);
 	m_cube.SetScale(20.f, 20.f, 1.f);
+
+	m_emiCube.AddComponent<Aen::MeshInstance>();
+	m_emiCube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	m_emiCube.GetComponent<Aen::MeshInstance>().SetMaterial(emissionMtrl);
+	m_emiCube.SetPos(0.f, 2.f, 2.f);
+	
 
 	Aen::GlobalSettings::GetImGuiHandler()->StartUp();
 	// --------------------------- Setup Window --------------------------------- //
@@ -223,7 +241,7 @@ void Client::Update(const float& deltaTime) {
 
 	// ------------------------------ Quick Exist Button -------------------------------- //
 
-	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
+	if (Aen::Input::KeyDown(Aen::Key::TAB))
 		m_window.Exit();
 
 	// ---------------------------------------------------------------------------------- //

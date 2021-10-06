@@ -335,6 +335,16 @@ namespace Aen {
 
 	}
 
+	void ImGuiHandler::NewWindow(const char* windowName)
+	{
+		ImGui::Begin(windowName);
+	}
+
+	void ImGuiHandler::AddSliderFloat(const char* label, float* value, float min, float max)
+	{
+		ImGui::SliderFloat(label, value, min, max);
+	}
+
 	void ImGuiHandler::AddModel(Aen::Entity* entity)
 	{
 		m_entityList.push_back(entity);
