@@ -200,6 +200,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Texture.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp" />
+    <ClCompile Include="src\AenirEngine\QuadTree\Node.cpp" />
     <ClCompile Include="src\AenirEngine\QuadTree\Quadtree.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
@@ -263,6 +264,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Texture.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
+    <ClInclude Include="src\AenirEngine\QuadTree\Node.h" />
     <ClInclude Include="src\AenirEngine\QuadTree\Quadtree.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h" />
