@@ -65,8 +65,12 @@ namespace Aen {
 
 			if(ComponentHandler::RigidExist(id))
 				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(id).GetScaleMat() * ComponentHandler::GetRigid(id).GetTransform()).Transposed();
-			else
+			else {
+				if(ComponentHandler::CharacterControllerExist(id))
+					ComponentHandler::GetTranslation(id).SetPos(ComponentHandler::GetCharacterController(id).GetPos());
+
 				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
+			}
 			renderer.m_cbTransform.UpdateBuffer();
 
 			// Mesh and Material
@@ -181,6 +185,8 @@ namespace Aen {
 
 			if(ComponentHandler::RigidExist(id))
 				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(id).GetScaleMat() * ComponentHandler::GetRigid(id).GetTransform()).Transposed();
+			else if(ComponentHandler::CharacterControllerExist(id))
+				renderer.m_cbTransform.GetData().m_mdlMat = (ComponentHandler::GetScale(id).GetTranform() * ComponentHandler::GetRotation(id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(id).GetPos())).Transposed();
 			else
 				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
 			renderer.m_cbTransform.UpdateBuffer();

@@ -25,6 +25,10 @@ class Client : public Aen::App {
 	Aen::Entity m_plane;
 	Aen::Entity m_plane1;
 	Aen::Entity m_cube;
+	Aen::Entity m_player;
+	Aen::Vec3f m_camDir;
+	Aen::Vec3f m_dir;
+	float m_roll;
 	
 	Aen::Mesh* m_meshcube;
 	Aen::Entity m_sphere;

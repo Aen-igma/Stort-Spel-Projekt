@@ -66,23 +66,13 @@ namespace Aen {
 
 		if(GlobalSettings::m_pMainCamera) {
 
-			//CamClass* pTempCam = GlobalSettings::m_pMainTempCam;
 			Entity* pCam = GlobalSettings::m_pMainCamera;
 
 			Vec3f pos = pCam->GetPos();
 			Vec3f rot = pCam->GetRot();
 
-			//sm::Vector3 pos = pTempCam->getPosition();
-			//sm::Vector3 rot = pTempCam->getRotation();
-
-			
-
 			pCam->GetComponent<Camera>().UpdateView(pos, rot);
 			
-
-			//m_cbCamera.GetData().pos = pTempCam->getPosition();
-			//m_cbCamera.GetData().uDir = pTempCam->getUpV();
-			//m_cbCamera.GetData().fDir = pTempCam->getForwardV();
 			m_cbCamera.GetData().pos = { pos.x, pos.y, pos.z };
 			m_cbCamera.GetData().fDir = pCam->GetComponent<Camera>().GetForward();
 			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
@@ -90,12 +80,7 @@ namespace Aen {
 
 			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
 			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
-
-			//m_cbTransform.GetData().m_vMat = pTempCam->getView().Transpose();
-			//m_cbTransform.GetData().m_pMat = pTempCam->getProj().Transpose();
 		} else {
-			//m_cbTransform.GetData().m_pMat = sm::Matrix::Identity;
-			//m_cbTransform.GetData().m_vMat = sm::Matrix::Identity;
 			m_cbTransform.GetData().m_vMat = Mat4f::identity;
 			m_cbTransform.GetData().m_pMat = Mat4f::identity;
 		}

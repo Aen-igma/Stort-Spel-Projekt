@@ -243,13 +243,16 @@
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Physics\Physics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\CharacterController\CharacterController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -470,13 +473,19 @@
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Physics\Physics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysX.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\CharacterController\CharacterController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

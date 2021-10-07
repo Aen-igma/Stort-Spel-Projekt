@@ -11,7 +11,7 @@ Client::~Client() {
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
-	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false) {}
+	:Aen::App(desc, windowName, className), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(3.f), m_toggleFullScreen(false), m_camDir(0.f, 0.f, -1.f) {}
 
 void Client::Start() {
 
@@ -19,7 +19,7 @@ void Client::Start() {
 
 	m_camera.AddComponent<Aen::Camera>();
 	m_camera.GetComponent<Aen::Camera>().SetCameraPerspective(70.f, m_window.GetAspectRatio(), 0.01f, 100.f);
-	m_camera.SetPos(0.f, 0.f, -2.f);
+	m_camera.SetPos(0.f, 2.f, -2.f);
 
 	Aen::GlobalSettings::SetMainCamera(m_camera);
 
@@ -70,11 +70,9 @@ void Client::Start() {
 	m_sphere.AddComponent<Aen::MeshInstance>();
 	m_sphere.GetComponent<Aen::MeshInstance>().SetMesh(sphere);
 
+	m_plane.AddComponent<Aen::RigidBody>();
 	m_plane.AddComponent<Aen::MeshInstance>();
 	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	m_plane.AddComponent<Aen::RigidBody>();
-	m_plane.GetComponent<Aen::RigidBody>().CreateMaterial();
-	m_plane.GetComponent<Aen::RigidBody>().CreatePlane();
 
 	//m_plane.SetPos(0.f, -2.f, 0.f);
 	m_plane.SetScale(40.f, 1.f, 40.f);
@@ -89,6 +87,14 @@ void Client::Start() {
 	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
 	m_cube.SetPos(0.f, 8.f, 10.f);
 	m_cube.SetScale(20.f, 20.f, 1.f);
+
+	m_player.AddComponent<Aen::MeshInstance>();
+	m_player.AddComponent<Aen::CharacterController>();
+	m_player.GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	m_player.GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
+	m_player.SetScale(1.f, 2.f, 1.f);
+	m_player.SetPos(0.f, 2.f, 0.f);
+
 
 	Aen::GlobalSettings::GetImGuiHandler()->StartUp();
 	// --------------------------- Setup Window --------------------------------- //
@@ -120,7 +126,6 @@ void Client::Start() {
 	}
 
 	Aen::Input::ToggleRawMouse(false);
-
 }
 
 void Client::Update(const float& deltaTime) {
@@ -133,9 +138,11 @@ void Client::Update(const float& deltaTime) {
 
 		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
 		{
-			m_camera.Rotate(
-				-(float)me.GetPos().y * m_mouseSense * deltaTime,
-				-(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
+			static Aen::Vec2f m;
+			m.x += -(float)me.GetPos().x * m_mouseSense * deltaTime;
+			m.y += -(float)me.GetPos().y * m_mouseSense * deltaTime;
+			m.y = Aen::Clamp(m.y, -135.f, -45.f);
+			m_camDir = Aen::Transform(Aen::MatRotate(m.y, m.x, 0.f), Aen::Vec3f(0.f, 1.f, 0.f)). Normalized();
 		}
 		if (me.getInputType() == Aen::MouseEvent::SCROLL_UP) {
 			printf("scroll up\n");
@@ -151,10 +158,45 @@ void Client::Update(const float& deltaTime) {
 
 	Aen::Vec3f axis;
 	axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
-	axis.y = (float)Aen::Input::KeyPress(Aen::Key::SPACE) - (float)Aen::Input::KeyPress(Aen::Key::LSHIFT);
-	axis.z = (float)Aen::Input::KeyPress(Aen::Key::S) - (float)Aen::Input::KeyPress(Aen::Key::W);
-	
-	static Aen::Vec2i mouseAxis;
+	axis.y -= 9.f;
+	axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S);
+
+	if(Aen::Input::KeyDown(Aen::Key::SPACE))
+		m_roll = 4.f;
+
+	if(m_roll > 1.f) {
+		m_roll -= 0.1f;
+	} else {
+		m_roll = 1.f;
+	}
+
+	m_dir = Aen::Vec3f(m_camDir.x, 0.f, m_camDir.z).Normalized() * axis.z + (Aen::Vec3f(m_camDir.x, 0.f, m_camDir.z).Normalized() % Aen::Vec3f(0.f, 1.f, 0.f)) * axis.x;
+	m_dir.y = axis.y;
+	if(axis.x || axis.z)
+		m_player.GetComponent<Aen::CharacterController>().Move(m_dir.Normalized() * m_roll, deltaTime);
+	else
+		m_player.GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(0.f, -1.f, 0.f) + Aen::Vec3f(m_camDir.x, 0.f, m_camDir.z).Normalized() * (m_roll - 1.f) * 0.1f, deltaTime);
+	m_camera.GetComponent<Aen::Camera>().LookTowards(Aen::Lerp(m_camera.GetComponent<Aen::Camera>().GetForward(), m_camDir, 0.6f));
+
+	Aen::Vec3f p = (m_player.GetPos() + m_camDir * -4.f) - m_camera.GetPos();
+	Aen::Vec3f camPos = Aen::Lerp(m_camera.GetPos(), m_player.GetPos() + m_camDir * -4.f + p * 3.f, 0.3f);
+	m_camera.SetPos(camPos);
+
+	static bool toggle;
+	if(Aen::Input::KeyDown(Aen::Key::RMOUSE))
+		toggle = !toggle;
+
+	if(Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
+		Aen::Input::SetMouseVisible(!toggle);
+		Aen::Input::ToggleRawMouse(toggle);
+	}
+
+	if(toggle) {
+		if(m_toggleFullScreen)
+			Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
+		else
+			Aen::Input::SetMousePos(m_window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_window.GetSize() * 0.5f));
+	}
 
 	if (Aen::Input::KeyDown(Aen::Key::L)) {
 		
@@ -179,24 +221,6 @@ void Client::Update(const float& deltaTime) {
 				}
 			}
 		}
-	}
-	if (Aen::Input::KeyPress(Aen::Key::RMOUSE)) {
-		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;
-		m_camera.MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
-		m_camera.Move(0.f, axis.y * deltaTime * m_speed * focus, 0.f);
-
-		if(m_toggleFullScreen)
-			Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
-		else
-			Aen::Input::SetMousePos(m_window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_window.GetSize() * 0.5f));
-	} 
-
-	if(Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
-		Aen::Input::SetMouseVisible(false);
-		Aen::Input::ToggleRawMouse(true);
-	} else if(Aen::Input::KeyUp(Aen::Key::RMOUSE)) {
-		Aen::Input::SetMouseVisible(true);
-		Aen::Input::ToggleRawMouse(false);
 	}
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
@@ -276,8 +300,9 @@ void Client::Update(const float& deltaTime) {
 
 		e->GetComponent<Aen::MeshInstance>().SetMesh(*m_reimubeMesh);
 		e->GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
-		e->GetComponent<Aen::RigidBody>().CreateMaterial();
-		e->GetComponent<Aen::RigidBody>().CreateCube();
+		e->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::DYNAMIC);
+		e->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE);
+
 		e->SetPos(0.f, 10.f, 0.f);
 
 		m_reimubes.emplace(m_reimubeCount++, e);

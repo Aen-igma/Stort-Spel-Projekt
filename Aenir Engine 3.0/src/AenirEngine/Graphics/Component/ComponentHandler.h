@@ -3,7 +3,8 @@
 #include"Camera/Camera.h"
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
-#include"ThirdParty/PhysX/RigidBody.h"
+#include"RigidBody/RigidBody.h"
+#include"CharacterController/CharacterController.h"
 
 #include<unordered_map>
 #include<array>
@@ -267,9 +268,33 @@ namespace Aen {
 			throw;
 		}
 
+		// ------ CharacterController Component ------- //
+
+		static const bool CharacterControllerExist(const uint32_t& id) {
+			return m_characterControllers.count(id) > 0;
+		}
+
+		static void CreateCharacterController(const uint32_t& id) {
+			m_characterControllers.emplace(id, AEN_NEW CharacterController());
+		}
+
+		static void RemoveCharacterController(const uint32_t& id) {
+			if (m_characterControllers.count(id) > 0) {
+				delete m_characterControllers.at(id);
+				m_characterControllers.at(id) = nullptr;
+				m_characterControllers.erase(id);
+			}
+		}
+
+		static CharacterController& GetCharacterController(const uint32_t& id) {
+			if (m_characterControllers.count(id) > 0)
+				return *m_characterControllers.at(id);
+			throw;
+		}
+
 		// -------------------------------------------- //
 
-		// ----------- Mesh Instance Layer ---------- //
+		// ----------- Mesh Instance Layer ------------ //
 
 		static void SetRenderLayer(MeshInstance& mesh, const uint32_t id, const uint32_t& layer) {
 			m_meshLayer[layer].emplace(id, &mesh);
@@ -290,6 +315,7 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Rotation*> m_rotations;
 		static std::unordered_map<uint32_t, Scale*> m_scales;
 		static std::unordered_map<uint32_t, RigidBody*> m_rigids;
+		static std::unordered_map<uint32_t, CharacterController*> m_characterControllers;
 		static std::multimap<uint32_t, Light*> m_lights;
 		
 		
