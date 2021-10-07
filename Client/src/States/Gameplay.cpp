@@ -301,11 +301,12 @@ void Gameplay::Initialize()
 	//// ------------------- Procedural generation testing staging grounds ------- //
 
 	printf("%c", x);
-	LevelGenerator::GenerationTestingFunction();
+	//LevelGenerator::GenerationTestingFunction();
 	srand((unsigned int)time(NULL));
 	SetLehmerConstSeed(100);
 	LehmerInt();
 	Room* map = LevelGenerator::GenerationTestingFunction();
+
 	for (UINT y = 0; y < mapSize; y++) {
 		for (UINT x = 0; x < mapSize; x++) {
 			if (map[x + y * mapSize].m_present) {
@@ -315,9 +316,10 @@ void Gameplay::Initialize()
 				rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
 			}
 			else {
-				if (rooms[x + y * mapSize] != nullptr)
+				if (rooms[x + y * mapSize] != nullptr) {
 					//delete rooms[x + y * mapSize]; //messes up something
-				rooms[x + y * mapSize] = nullptr;
+					rooms[x + y * mapSize] = nullptr;
+				}
 			}
 		}
 	}
