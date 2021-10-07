@@ -1,25 +1,20 @@
 #pragma once
 #include "Node.h"
-
-
+#include <DirectXMath.h>
 
 //MainClass for building quadtree
 class Quadtree
 {
 public:
 	Quadtree();
-	//Quadtree(const Aen::Vec2f& min, const Aen::Vec2f& max, const unsigned& capacity = 3,
-	//	const unsigned& maxLevel = 1, const unsigned& level = 0);
+	Quadtree(AABB quad, const unsigned& level = 0, 
+		const unsigned& maxLevel = 1, const unsigned& capacity = 3);
 	~Quadtree();
+	/*Quadtree(const Aen::Vec2f& min, const Aen::Vec2f& max, const unsigned& capacity = 3,
+		const unsigned& maxLevel = 1, const unsigned& level = 0);*/
+	void insertNode(DirectX::BoundingBox* obj);
+
 	
-	void initNode(const Aen::Vec2f& min, const Aen::Vec2f& max, const unsigned& capacity = 3,
-		const unsigned& maxLevel = 1, const unsigned& level = 0);
-
-	void initializeTree();
-	Object* findActiveQuad(const int& posX, const int& posY);
-
-	//void update(Object* object);
-	//void clear();
 
 private:
 	Node* root;
@@ -35,6 +30,11 @@ private:
 	//Old code
 	//void subdivide();
 };
+	//old code
+	//void initializeTree();
+	//Object* findActiveQuad(const int& posX, const int& posY);
+	//void update(Object* object);
+	//void clear();
 
 /*//Old shit
 	Node* Search(Point point);

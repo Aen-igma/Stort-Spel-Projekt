@@ -4,63 +4,68 @@
 Quadtree::Quadtree()
 {
 	this->root = nullptr;
-	//m_level = 0;
-	//m_maxLevel = 1;
-	//m_capacity = 1;
-
 }
 
 //Quadtree::Quadtree(const Aen::Vec2f& min, const Aen::Vec2f& max, const unsigned& capacity, 
 //	const unsigned& maxLevel, const unsigned& level)
 //{
-//	this->root
+//	this->root = new Node(min, max, capacity, maxLevel, level);
+//	std::cout << "I'm done: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
 //}
+
+Quadtree::Quadtree(AABB quad, const unsigned& level, 
+	const unsigned& maxLevel, const unsigned& capacity)
+{
+	this->root = new Node(quad, capacity, maxLevel, level);
+
+	std::cout << "I'm done: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
+}
 
 Quadtree::~Quadtree()
 {
 
 }
 
-void Quadtree::initNode(const Aen::Vec2f& min, const Aen::Vec2f& max, const unsigned& capacity, 
-	const unsigned& maxLevel, const unsigned& level)
+void Quadtree::insertNode(DirectX::BoundingBox* obj)
 {
-
+	this->root->insert(obj); //Har en parent realtion med node - detaljerad beskriving senare 
 }
 
-void Quadtree::initializeTree()
-{
-	while (m_nrOf > m_capacity)
-	{
-		subdivide();
-		for (int i; i < 4; i++)
-		{
-			m_children[i]->initializeTree();
-		};
-	}
-	std::cout << "I'm done :)\nLevel: " << m_level << std::endl; //Säger hur långt det gick i levels
-}
 
-Object* Quadtree::findActiveQuad(const int& posX, const int& posY)
-{
-	bool quadFound = false;
-	if (m_isLeaf)
-	{
-		quadFound = m_quad.within(posX, posY);
-	}
-	else
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			m_children[i]->findActiveQuad(posX, posY);
-		}
-	}
-	if (quadFound)
-	{
-		return m_Objects;
-	}
-	return nullptr;
-}
 
+//void Quadtree::initializeTree()
+//{
+//	while (m_nrOf > m_capacity)
+//	{
+//		subdivide();
+//		for (int i; i < 4; i++)
+//		{
+//			m_children[i]->initializeTree();
+//		};
+//	}
+//	std::cout << "I'm done :)\nLevel: " << m_level << std::endl; //Säger hur långt det gick i levels
+//}
+
+//Object* Quadtree::findActiveQuad(const int& posX, const int& posY)
+//{
+//	bool quadFound = false;
+//	if (m_isLeaf)
+//	{
+//		quadFound = m_quad.within(posX, posY);
+//	}
+//	else
+//	{
+//		for (int i = 0; i < 4; i++)
+//		{
+//			m_children[i]->findActiveQuad(posX, posY);
+//		}
+//	}
+//	if (quadFound)
+//	{
+//		return m_Objects;
+//	}
+//	return nullptr;
+//}
 
 //void Quadtree::subdivide()
 //{

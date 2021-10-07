@@ -38,9 +38,21 @@ namespace Aen {
 		//AABB
 		m_AxisAlignedBoundBox = new AABB(this->m_minX, this->m_minY, this->m_maxX, this->m_maxY);
 		//QuadTree
-		m_Quadtree = new Quadtree(*m_AxisAlignedBoundBox, m_quadCap, 3);
-		//Object
-		//m_Object = new Object(m_AxisAlignedBoundBox);
+		m_Quadtree = new Quadtree(*m_AxisAlignedBoundBox, 0, 3, m_quadCap);
+		//List of all static objects in the world bellow
+
+		m_boundingBoxes = new DirectX::BoundingBox[10];
+		for (int i = 0; i < 10; i++)
+		{
+			m_boundingBoxes[i] = DirectX::BoundingBox(DirectX::XMFLOAT3(1.f + i, 1.f, 0.f), DirectX::XMFLOAT3(1.f, 1.f, 1.f));
+		}
+		//for-loop going through all static objects in the world and inserting them one by one
+		for (int i = 0; i < 10; i++)
+		{
+			m_Quadtree->insertNode(m_boundingBoxes[i]);
+		}
+
+
 
 		std::cout << std::endl;
 		m_app->Start();

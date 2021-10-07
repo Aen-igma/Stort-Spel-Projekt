@@ -22,6 +22,8 @@ namespace Aen {
 		AABB* m_AxisAlignedBoundBox;
 		Object* m_Object;
 
+		DirectX::BoundingBox* m_boundingBoxes; //Temp behållare för bounding box. Ska simulera våra statiska objekt
+
 
 		int m_quadCap = 10;
 		float m_minX;
