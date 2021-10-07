@@ -1,8 +1,6 @@
 #pragma once
 #include "Graphics/DirectX11/DX11Core.h"
 #include "Graphics/Component/Resource.h"
-#include "Graphics/Component/ComponentHandler.h"
-#include "Graphics/Component/Entity.h"
 #include <filesystem>
 #include "CreateThumbnail.h"
 #include "LevelExporter.h"
@@ -19,6 +17,7 @@ using std::string;
 using std::vector;
 using std::cout;
 using std::endl;
+using std::to_string;
 
 namespace Aen {
 
@@ -30,6 +29,8 @@ namespace Aen {
 			Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i);
 
 	private:
+
+		string m_roomProperty[4] = {"","","",""};
 
 		Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> m_entityList;
@@ -64,10 +65,6 @@ namespace Aen {
 		vector<string> m_meshObjList;
 		vector<string> m_textureFileList;
 
-
-
-		
-
 	public:
 		ImGuiHandler();
 		~ImGuiHandler();
@@ -84,9 +81,9 @@ namespace Aen {
 		void PropertyWindow();
 		void ToolWindow();
 		void MaterialWindow();
-		void Update();
 
 		void AddModel(Aen::Entity* entity);
+		void AddLight(Aen::Entity* entity, string type);
 		void ReadAllModelsFromHandler();
 		void CreatePreviewTextureThumbnail();
 
@@ -96,15 +93,21 @@ namespace Aen {
 		void SetMaterialValues();
 
 		void AddBase(const string &meshName, const string &objName);
+		void AddPointLight();
+		void AddSpotLight();
+		void AddDirectional();
 		void RemoveObject();
 
 		void ReadAllFilesFromResourceFolder();
 		bool AddButton(const string& name);
-		void HandleButton();
+		void ModelButtons();
+		void LightButtons();
 		const string CheckType(Aen::Entity* entity);
 
-		void CustomCombo(int& index, string name);
+		void CustomCombo(vector<string>& list,string name, string type);
 
+		void ChangeMaterial(int &currentIndex);
+		void ChangeTexture(int& currentIndex, int& i);
 	};
 }
 

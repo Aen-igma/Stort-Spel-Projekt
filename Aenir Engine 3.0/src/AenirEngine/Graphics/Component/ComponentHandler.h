@@ -4,9 +4,6 @@
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
 
-//#include "LevelExporter.h"
-
-
 #include<unordered_map>
 #include<array>
 #include<map>
@@ -272,7 +269,7 @@ namespace Aen {
 		friend class Entity;
 		friend class Renderer;
 		friend class ImGuiHandler;
-		//friend class LevelExporter;
+		friend class LevelExporter;
 	};
 
 }

@@ -3,7 +3,7 @@
 
 namespace Aen {
 
-	
+
 	ImGuiHandler::ImGuiHandler()
 	{
 	}
@@ -21,7 +21,7 @@ namespace Aen {
 	}
 
 	void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
-		string& sourcePath, string& filePathSource, 
+		string& sourcePath, string& filePathSource,
 		Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i)
 	{
 		destinationPath = filePathDestination + m_textureName[i] + "_Thumbnail.png";
@@ -75,7 +75,7 @@ namespace Aen {
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
 	}
-	
+
 	void ImGuiHandler::SceneListWindow()
 	{
 		ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_MenuBar);
@@ -111,13 +111,11 @@ namespace Aen {
 			if (m_openOrSave == "Open")
 			{
 				std::cout << "Selected filename " << m_fileDialog.GetSelected().string() << std::endl;
-
 			}
-			else if(m_openOrSave == "Save")
+			else if (m_openOrSave == "Save")
 			{
 				std::cout << "Selected fileDir " << m_fileDialog.GetPwd().string() << std::endl;
-				m_levelExporter.WriteInto(m_entityList, m_itemList, m_meshObjList, m_textureFileName, m_entityType);
-
+				m_levelExporter.WriteInto(m_entityList, m_itemList, m_meshObjList, m_textureFileName, m_entityType, m_roomProperty);
 			}
 
 			m_fileDialog.ClearSelected();
@@ -125,7 +123,7 @@ namespace Aen {
 
 		ImGui::BeginChild("List");
 
-		if (ImGui::BeginListBox("Test"))
+		if (ImGui::BeginListBox(""))
 		{
 			for (size_t i = 0; i < m_itemList.size(); i++)
 			{
@@ -160,7 +158,7 @@ namespace Aen {
 		{
 			if (ImGui::BeginTabItem("Model"))
 			{
-				HandleButton();
+				ModelButtons();
 
 				if (AddButton("Delete"))
 				{
@@ -172,7 +170,7 @@ namespace Aen {
 
 			if (ImGui::BeginTabItem("Light"))
 			{
-				ImGui::Text("Light");
+				LightButtons();
 				ImGui::EndTabItem();
 			}
 			ImGui::EndTabBar();
@@ -214,7 +212,9 @@ namespace Aen {
 
 		SetDefaultValue();
 
-		ImGui::Begin("Mesh Properties", nullptr);
+		ImGui::Begin("Properties", nullptr);
+
+		
 
 		if (ImGui::BeginTabBar("#Property Tab", ImGuiTabBarFlags_None))
 		{
@@ -227,8 +227,7 @@ namespace Aen {
 
 				ImGui::Checkbox("Hit box", &hitBoxEnable);
 
-				static int selectedItem = 0;
-				CustomCombo(selectedItem,"Parent");
+				CustomCombo(m_itemList,"Parent" ,"");
 
 				ImGui::EndTabItem();
 			}
@@ -243,37 +242,12 @@ namespace Aen {
 
 						if (Aen::ComponentHandler::MeshInstanceExist(id))
 						{
-							static int currentIndex = 0;
-							if (ImGui::BeginCombo("Test", m_textureName[currentIndex].c_str()))
-							{
-								for (size_t i = 0; i < m_textureName.size(); i++)
-								{
-									static bool isSelected = (currentIndex == i);
 
-									if (ImGui::Selectable(m_textureName[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
-									{
-										currentIndex = static_cast<int>(i);
-										string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
-										Aen::Texture& texture = Aen::Resource::CreateTexture("Texture");
-										texture.LoadTexture(imageName);
-										Aen::Material& mat = Aen::Resource::CreateMaterial("Material", true);
-										mat.SetDiffuseMap(texture);
-
-										size_t id = m_entityList[m_selectedEntity]->getID();
-										Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
-									}
-
-									if (isSelected)
-									{
-										ImGui::SetItemDefaultFocus();
-									}
-								}
-								ImGui::EndCombo();
-							}
+							CustomCombo(m_textureName, "Test", "Material");
 							ImGui::SliderFloat("Transparency", &transparency, 0.0f, 1.0f);
 							ImGui::SliderFloat("Ambient Color", &ambientColor, 0.0f, 1.0f);
 							ImGui::SliderFloat("Diffuse", &diffuse, 0.0f, 1.0f);
-							
+
 						}
 					}
 				}
@@ -290,6 +264,36 @@ namespace Aen {
 				}
 				ImGui::EndTabItem();
 			}
+
+			if (ImGui::BeginTabItem("Room"))
+			{
+				static int selectedTheme = 0;
+				static int selectedType = 0;
+				static int selectedSpecial = 0;
+				static int probability = 0;
+
+				const char* roomTheme[] = { "Normal Dungeon", "Aztec", "Gothic" };
+				const char* roomType[] = { "Exit", "Entrance", "Crossing" };
+				const char* specialRoom[] = { "Normal", "Boss"};
+
+				m_roomProperty[0] = roomType[selectedType];
+				m_roomProperty[1] = specialRoom[selectedSpecial];
+				m_roomProperty[2] = roomTheme[selectedTheme];
+				m_roomProperty[3] = to_string(probability);
+
+
+				ImGui::Combo("Room Theme", &selectedTheme, roomTheme, IM_ARRAYSIZE(roomTheme));
+
+				ImGui::Combo("Room Type", &selectedType, roomType, IM_ARRAYSIZE(roomType));
+
+				ImGui::Combo("Special Room", &selectedSpecial, specialRoom, IM_ARRAYSIZE(specialRoom));
+
+				ImGui::DragInt("Probability", &probability, 1.0f, 0.0f, 100.0f, "%.d", 0);
+
+				ImGui::EndTabItem();
+			}
+
+
 			ImGui::EndTabBar();
 		}
 		ImGui::End();
@@ -329,17 +333,19 @@ namespace Aen {
 	{
 	}
 
-	void ImGuiHandler::Update()
-	{
-
-
-	}
-
 	void ImGuiHandler::AddModel(Aen::Entity* entity)
 	{
 		m_entityList.push_back(entity);
 		m_itemList.push_back("Model" + std::to_string(m_entityCount));
 		m_entityType.push_back("Model");
+		m_entityCount++;
+	}
+
+	void ImGuiHandler::AddLight(Aen::Entity* entity, string type)
+	{
+		m_entityList.push_back(entity);
+		m_itemList.push_back(type + std::to_string(m_entityCount));
+		m_entityType.push_back(type);
 		m_entityCount++;
 	}
 
@@ -402,7 +408,6 @@ namespace Aen {
 					{
 						cout << "Already exist" << endl;
 					}
-
 				}
 			}
 		}
@@ -477,21 +482,21 @@ namespace Aen {
 		{
 			uint32_t id = m_entityList[m_selectedEntity]->getID();
 
-			if (Aen::ComponentHandler::TranslationExist(id)) 
+			if (Aen::ComponentHandler::TranslationExist(id))
 			{
-				ImGui::InputFloat3("Translate", m_xyzTranslation);
+				ImGui::DragFloat3("Translate", m_xyzTranslation, 0.02f);
 				m_entityList[m_selectedEntity]->SetPos(m_xyzTranslation[0], m_xyzTranslation[1], m_xyzTranslation[2]);
 			}
-						
-			if (Aen::ComponentHandler::RotationExist(id)) 
+
+			if (Aen::ComponentHandler::RotationExist(id))
 			{
-				ImGui::InputFloat3("Rotate", m_xyzRotation);
+				ImGui::DragFloat3("Rotate", m_xyzRotation, 0.02f);
 				m_entityList[m_selectedEntity]->SetRot(m_xyzRotation[0], m_xyzRotation[1], m_xyzRotation[2]);
 			}
-					
-			if (Aen::ComponentHandler::ScaleExist(id)) 
+
+			if (Aen::ComponentHandler::ScaleExist(id))
 			{
-				ImGui::InputFloat3("Scale", m_xyzScale);
+				ImGui::DragFloat3("Scale", m_xyzScale, 0.02f);
 				m_entityList[m_selectedEntity]->SetScale(m_xyzScale[0], m_xyzScale[1], m_xyzScale[2]);
 			}
 
@@ -519,15 +524,12 @@ namespace Aen {
 			uint32_t id = m_entityList[m_selectedEntity]->getID();
 
 			m_entityList[m_selectedEntity]->SetPos(m_xyzTranslation[0], m_xyzTranslation[1], m_xyzTranslation[2]);
-						
 			m_entityList[m_selectedEntity]->SetRot(m_xyzRotation[0], m_xyzRotation[1], m_xyzRotation[2]);
-			
 
 			if (Aen::ComponentHandler::ScaleExist(id))
 			{
 				m_entityList[m_selectedEntity]->SetScale(m_xyzScale[0], m_xyzScale[1], m_xyzScale[2]);
 			}
-
 		}
 		else
 		{
@@ -551,6 +553,124 @@ namespace Aen {
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 	}
 
+	
+	void ImGuiHandler::AddPointLight()
+	{
+		Aen::Entity* light = AEN_NEW(Aen::Entity);
+
+		light->AddComponent<Aen::PointLight>();
+		light->GetComponent<Aen::PointLight>().SetColor(Aen::Color::Blue);
+		light->GetComponent<Aen::PointLight>().SetLightDist(30);
+		light->GetComponent<Aen::PointLight>().SetStrength(20);
+		light->SetPos(0, 0, 0);
+
+		AddLight(light, "Point light");			
+		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
+	}
+
+	void ImGuiHandler::AddSpotLight()
+	{
+		Aen::Entity* light = AEN_NEW(Aen::Entity);
+
+		light->AddComponent<Aen::SpotLight>();
+		light->GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Red);
+		light->GetComponent<Aen::SpotLight>().SetConeSize(5);
+		light->GetComponent<Aen::SpotLight>().SetLightDist(20);
+		light->GetComponent<Aen::SpotLight>().SetStrength(10);
+
+		AddLight(light, "Spot light");
+		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
+	}
+
+	void ImGuiHandler::AddDirectional()
+	{
+		Aen::Entity* light = AEN_NEW(Aen::Entity);
+
+		light->AddComponent<Aen::DirectionalLight>();
+		light->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
+		light->SetRot(45.f, 135.f, 0.f);
+
+		AddLight(light, "Directional light");
+		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
+	}
+
+	void ImGuiHandler::ChangeMaterial(int& currentIndex)
+	{
+		string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
+		Aen::Texture& texture = Aen::Resource::CreateTexture("Texture");
+		texture.LoadTexture(imageName);
+		Aen::Material& mat = Aen::Resource::CreateMaterial("Material", true);
+		mat.SetDiffuseMap(texture);
+
+		size_t id = m_entityList[m_selectedEntity]->getID();
+		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
+	}
+
+	void ImGuiHandler::ChangeTexture(int& currentIndex, int& i)
+	{
+	}
+
+	void ImGuiHandler::ReadAllFilesFromResourceFolder()
+	{
+		string filePath = "../Resource/";
+		string fileName = "";
+		string fileType = "";
+
+		for (const auto& entry : std::filesystem::directory_iterator(filePath))
+		{
+			fileName = entry.path().filename().string();
+			fileType = fileName.substr(fileName.find_last_of(".") + 1);
+
+			if (fileType == "obj")
+			{
+				m_objFileName.push_back(fileName);
+				m_objName.push_back(fileName.substr(0, fileName.length() - 4));
+				cout << fileName.substr(0, fileName.length() - 4) << endl;
+			}
+			else if (fileType == "png" || fileType == "jpg")
+			{
+				m_textureFileName.push_back(fileName);
+				m_textureName.push_back(fileName.substr(0, fileName.length() - 4));
+				cout << fileName.substr(0, fileName.length() - 4) << endl;
+			}
+		}
+	}
+
+	bool ImGuiHandler::AddButton(const string& name)
+	{
+		return ImGui::Button(name.c_str());
+	}
+
+	void ImGuiHandler::ModelButtons()
+	{
+		for (size_t i = 0; i < m_objFileName.size(); i++)
+		{
+			if (AddButton(m_objName[i]))
+			{
+				AddBase(m_objName[i], m_objFileName[i]);
+			}
+		}
+	}
+
+	void ImGuiHandler::LightButtons()
+	{
+		if (AddButton("Point Light"))
+		{
+			AddPointLight();
+		}
+
+		if (AddButton("Spot Light"))
+		{
+			AddSpotLight();
+		}
+
+		if (AddButton("Directional light"))
+		{
+			AddDirectional();
+		}
+		
+	}
+
 	const string ImGuiHandler::CheckType(Aen::Entity* entity)
 	{
 		string type = "";
@@ -561,13 +681,12 @@ namespace Aen {
 			type = "Model" + std::to_string(m_entityCount);
 			m_entityType.push_back("Model");
 			m_meshObjList.push_back("Cube.obj");
-			m_textureFileList.push_back("Missing_Textures.png");
 			m_entityCount++;
 		}
 		else if (Aen::ComponentHandler::CameraExist(id))
 		{
 			type = "Camera";
-			m_entityType.push_back(type);			
+			m_entityType.push_back(type);
 		}
 		else if (Aen::ComponentHandler::DirectionalLightExist(id))
 		{
@@ -593,17 +712,24 @@ namespace Aen {
 		return type;
 	}
 
-	void ImGuiHandler::CustomCombo(int& index, string name)
+	void ImGuiHandler::CustomCombo(vector<string>& list, string name, string type)
 	{
-		if (ImGui::BeginCombo(name.c_str(), m_itemList[index].c_str()))
-		{
-			for (size_t i = 0; i < m_itemList.size(); i++)
-			{
-				static bool isSelected = (index == i);
+		static int currentIndex = 0;
 
-				if (ImGui::Selectable(m_itemList[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+		if (ImGui::BeginCombo(name.c_str(), list[currentIndex].c_str()))
+		{
+			for (size_t i = 0; i < list.size(); i++)
+			{
+				static bool isSelected = (currentIndex == i);
+
+				if (ImGui::Selectable(list[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
 				{
-					index = static_cast<int>(i);
+					currentIndex = static_cast<int>(i);
+					
+					if (type == "Material")
+					{
+						ChangeMaterial(currentIndex);
+					}
 				}
 
 				if (isSelected)
@@ -615,56 +741,10 @@ namespace Aen {
 		}
 	}
 
-
 	
-	void ImGuiHandler::ReadAllFilesFromResourceFolder()
-	{
-		string filePath = "../Resource/";
-		string fileName = "";
-		string fileType = "";
-
-		for (const auto & entry : std::filesystem::directory_iterator(filePath))
-		{
-			fileName = entry.path().filename().string();
-			fileType = fileName.substr(fileName.find_last_of(".") + 1);
-			
-			if (fileType == "obj")
-			{
-				m_objFileName.push_back(fileName);
-				m_objName.push_back(fileName.substr(0, fileName.length() - 4));
-				cout << fileName.substr(0, fileName.length() - 4) << endl;
-			}
-			else if (fileType == "png" || fileType == "jpg")
-			{
-				m_textureFileName.push_back(fileName);
-				m_textureName.push_back(fileName.substr(0, fileName.length() - 4));
-				cout << fileName.substr(0, fileName.length() - 4) << endl;
-			}
-		}
-	}
-
-	bool ImGuiHandler::AddButton(const string &name)
-	{
-			return ImGui::Button(name.c_str());
-	}
-
-	void ImGuiHandler::HandleButton()
-	{
-		for (size_t i = 0; i < m_objFileName.size(); i++)
-		{
-			if (AddButton(m_objName[i]))
-			{
-				AddBase(m_objName[i], m_objFileName[i]);
-			}
-		}
-
-	}
-
-
 
 	void ImGuiHandler::RemoveObject()
 	{
-
 		for (int i = 0; i < m_deleteList.size(); i++)
 		{
 			if (m_selectedEntity == m_deleteList[i] - 1)
