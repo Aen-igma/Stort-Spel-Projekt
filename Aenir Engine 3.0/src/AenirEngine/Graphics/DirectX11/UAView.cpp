@@ -88,4 +88,10 @@ namespace Aen {
 			throw;
 	}
 
+	void UAView::Create(BBuffer& bbuffer)
+	{
+		if (FAILED(m_device->CreateUnorderedAccessView(bbuffer.m_backBuffer.Get(), NULL, m_uav.GetAddressOf())))
+			throw;
+	}
+
 }

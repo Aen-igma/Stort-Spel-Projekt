@@ -32,7 +32,7 @@ namespace Aen {
 		CB_Camera() :pos(), pad(0.f), fDir(), pad1(0.f), uDir(), pad2(0.f) {}
 	};
 
-	class Renderer {
+	class Renderer : GCore {
 		public:
 		Renderer() = delete;
 		Renderer(Window& window);
@@ -75,6 +75,10 @@ namespace Aen {
 		CBuffer<CB_DispatchInfo> m_dispatchInfo;
 		CBuffer<uint32_t> m_heatMap;
 		CShader m_lightCullCS;
+
+		CShader m_bloomCS;
+		UAView m_backBufferUAV;
+
 		UAView m_lIndex;
 		RWTexture2D m_lGrid;
 		Vec2i m_dispatchCall;

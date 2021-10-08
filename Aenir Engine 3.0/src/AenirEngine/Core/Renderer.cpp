@@ -21,6 +21,10 @@ namespace Aen {
 		m_viewPort.MinDepth = 0.f;
 		m_viewPort.MaxDepth = 1.f;
 
+		if (!m_bloomCS.Create(AEN_OUTPUT_DIR_WSTR(L"BloomCS.cso")))
+			if (!m_bloomCS.Create(L"BloomCS.cso"))
+				throw;
+
 		if(!m_postProcessVS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessVS.cso")))
 			if(!m_postProcessVS.Create(L"PostProcessVS.cso"))
 				throw;
@@ -51,6 +55,8 @@ namespace Aen {
 		uint32_t size = m_dispatchInfo.GetData().numThreads.x * m_dispatchInfo.GetData().numThreads.y;
 		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
 		m_lGrid.Create(m_dispatchInfo.GetData().numThreads);
+
+		m_backBufferUAV.Create(m_backBuffer);
 	}
 
 	void Renderer::Render() {
