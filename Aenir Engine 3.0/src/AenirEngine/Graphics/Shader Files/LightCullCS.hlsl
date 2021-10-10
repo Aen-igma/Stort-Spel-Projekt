@@ -164,7 +164,7 @@ bool ConeInsideFrustum(Cone cone, Frustum frustum, float zPos, float zFar) {
 [numthreads(1, 1, 1)]
 void main(CS_Input input) {
 
-    uint2 id = input.gId.xy;
+    uint2 id = input.dtId.xy;
     uint2 uv = id * 16u;
 
     float fDepth = 0.f;

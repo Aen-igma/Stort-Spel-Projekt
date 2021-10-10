@@ -1,6 +1,11 @@
 RWTexture2D<unorm float4> backBuffer;
 
-[numthreads(32, 18, 1)]
+static const int WIDTH = 32;
+//static const float div = (1080.f / 1980.f);
+
+static const int HEIGHT = 32;
+
+[numthreads(WIDTH, HEIGHT, 1)]
 
 void main(uint3 DTid : SV_DispatchThreadID)
 {

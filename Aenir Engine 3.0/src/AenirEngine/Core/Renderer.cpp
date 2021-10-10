@@ -199,13 +199,28 @@ namespace Aen {
 
 		m_screenQuad.Draw();
 
+
+
+
+		static int im_dispatch[2] = { 32, 32 };
+
+		RenderSystem::BindRenderTargetView(m_nullrtv);
+		RenderSystem::BindShader<CShader>(m_bloomCS);
+		RenderSystem::BindUnOrderedAccessView(0, m_backBufferUAV);
+		RenderSystem::Dispatch(im_dispatch[0], im_dispatch[1], 1);
+		RenderSystem::UnBindUnOrderedAccessViews(0, 1);
+		RenderSystem::BindRenderTargetView(m_backBuffer);
+
 #ifdef _DEBUG
 		Aen::GlobalSettings::mp_guiHandler->NewFrame();
-		Aen::GlobalSettings::mp_guiHandler->SceneListWindow();
-		Aen::GlobalSettings::mp_guiHandler->AssetWindow();
-		Aen::GlobalSettings::mp_guiHandler->PropertyWindow();
-		Aen::GlobalSettings::mp_guiHandler->ToolWindow();
-		Aen::GlobalSettings::mp_guiHandler->MaterialWindow();
+		ImGui::Begin("Dispatcher");
+		ImGui::DragInt2("Disptach", im_dispatch, 1.f, 1, 100);
+		ImGui::End();
+		//Aen::GlobalSettings::mp_guiHandler->SceneListWindow();
+		//Aen::GlobalSettings::mp_guiHandler->AssetWindow();
+		//Aen::GlobalSettings::mp_guiHandler->PropertyWindow();
+		//Aen::GlobalSettings::mp_guiHandler->ToolWindow();
+		//Aen::GlobalSettings::mp_guiHandler->MaterialWindow();
 		Aen::GlobalSettings::mp_guiHandler->Render();
 #endif
 		// Present

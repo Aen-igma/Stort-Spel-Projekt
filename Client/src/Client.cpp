@@ -241,7 +241,7 @@ void Client::Update(const float& deltaTime) {
 
 	// ------------------------------ Quick Exist Button -------------------------------- //
 
-	if (Aen::Input::KeyDown(Aen::Key::TAB))
+	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		m_window.Exit();
 
 	// ---------------------------------------------------------------------------------- //

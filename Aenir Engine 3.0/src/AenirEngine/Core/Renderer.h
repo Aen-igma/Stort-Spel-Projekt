@@ -79,6 +79,8 @@ namespace Aen {
 		CShader m_bloomCS;
 		UAView m_backBufferUAV;
 
+		ComRenderTargetView m_nullrtv = nullptr;
+
 		UAView m_lIndex;
 		RWTexture2D m_lGrid;
 		Vec2i m_dispatchCall;
