@@ -216,6 +216,7 @@ void Gameplay::Update(const float& deltaTime)
 
 void Gameplay::Initialize()
 {
+	State::SetLoad(false);
 	char x = 219;
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -323,7 +324,8 @@ void Gameplay::Initialize()
 			}
 		}
 	}
+
 	Aen::Input::ToggleRawMouse(false);
-	State::SetLoad(true);
+	cout << "Press To Continue\n";
 }
 

@@ -16,10 +16,10 @@ void MainMenu::Update(const float& deltaTime)
 	{
 		State::SetState(States::Loadscreen);
 	}
+	cout << "Menu\n";
 }
 
 void MainMenu::Initialize()
 {
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
-	cout << "Menu\n";
 }

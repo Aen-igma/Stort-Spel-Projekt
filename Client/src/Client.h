@@ -17,6 +17,7 @@ class Client : public Aen::App {
 	private:
 	State* mp_state;
 	States m_typeState;
+	thread work;
 
 	Gameplay* gameplay;
 };

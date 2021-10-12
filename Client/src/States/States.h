@@ -1,9 +1,11 @@
 #pragma once
 #include "AenirEngine\AenCore.h"
+#include <thread>
 
 enum class States { Main_Menu, Loadscreen, Gameplay, Gameover, None};
 
-class State {
+class State : public std::thread
+{
 private:
 	static States m_currentState;
 	static bool m_load;

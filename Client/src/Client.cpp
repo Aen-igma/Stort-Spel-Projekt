@@ -6,7 +6,7 @@ Client::~Client() {
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
-	:Aen::App(desc, windowName, className), mp_state(nullptr), m_typeState(States::None), gameplay(nullptr)
+	:Aen::App(desc, windowName, className), mp_state(nullptr), m_typeState(States::None)
 {}
 
 void Client::Start()
@@ -23,8 +23,13 @@ void Client::Update(const float& deltaTime)
 
 	if (mp_state)
 		mp_state->Update(deltaTime);
-}
 
+	if (gameplay->GetLoaded())
+	{
+		work = std::thread(&Gameplay::Initialize, gameplay); //Initialize Gameplay
+		work.detach();
+	}
+}
 
 void Client::ChangeState(const States& states)
 {
@@ -34,7 +39,6 @@ void Client::ChangeState(const States& states)
 	switch (states) 
 	{
 		case States::Gameplay:
-			//mp_state = AEN_NEW Gameplay(m_window);
 			mp_state = gameplay;
 			gameplay = nullptr;
 			break;
@@ -43,16 +47,12 @@ void Client::ChangeState(const States& states)
 			break;
 		case States::Loadscreen:
 			mp_state = AEN_NEW Loadscreen(m_window);
-			gameplay = AEN_NEW Gameplay(m_window);
-			gameplay->Initialize();
+			gameplay = new Gameplay(m_window);
 			break;
 	}
 
-	if (mp_state && mp_state != gameplay && states != States::Gameplay)
+	if (mp_state && mp_state->GetCurrentState() != States::Gameplay)
 		mp_state->Initialize();
-
-	//if (mp_state)
-	//	mp_state->Initialize();
 
 	m_typeState = states;
 }
