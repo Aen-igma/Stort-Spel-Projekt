@@ -156,7 +156,7 @@ void Client::Update(const float& deltaTime) {
 	
 	static Aen::Vec2i mouseAxis;
 
-	if (Aen::Input::KeyDown(Aen::Key::H)) {
+	if (Aen::Input::KeyDown(Aen::Key::L)) {
 		
 		SetLehmerConstSeed(LehmerInt());
 		Room* map = LevelGenerator::GenerationTestingFunction();
