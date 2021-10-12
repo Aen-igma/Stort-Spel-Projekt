@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <cstdint>
+#include <unordered_map>
+#include <tuple>
 #include "RandomNumberGenerator.h"
 enum class SpecialRoom{ NONE, ENTRANCE, EXIT, BOSS, ARENA, ITEM };
 enum class RoomTheme{ GENERIC, BONES, VAMP, JUNGLE};
@@ -11,6 +13,7 @@ enum class RoomTheme{ GENERIC, BONES, VAMP, JUNGLE};
 //  s  //
 /////////
 struct Room {
+public:
 	bool m_enclosed	= false; //Var used in level generation, true when room is surrounded
 	bool m_present	= false;
 	
@@ -19,11 +22,13 @@ struct Room {
 	RoomTheme m_roomTheme = RoomTheme::GENERIC;
 
 	////connection location
-	//uint32_t m_north		=    0;	//	___0 - ___9		 //	Straight	: 0101	: NS
-	//uint32_t m_east		=   00;	//	__0_ - __9_		 //	Bend		: 0011	: NE
-	//uint32_t m_south		=  000;	//	_0__ - _9__		 //	T junction	: 1011	: NEW
-	//uint32_t m_west		= 0000;	//	0___ - 9___		 //	Four way	: 1111	: NESW
+	//uint32_t m_north		=    0;	|//|	___0 - ___9		 //	Straight	: 0101	: NS
+	//uint32_t m_east		=   00;	|//|	__0_ - __9_		 //	Bend		: 0011	: NE
+	//uint32_t m_south		=  000;	|//|	_0__ - _9__		 //	T junction	: 1011	: NEW
+	//uint32_t m_west		= 0000;	|//|	0___ - 9___		 //	Four way	: 1111	: NESW
 	uint16_t connectionDirections = 0000;
+	//Read only
+	uint16_t m_roomIndex;
 
 	//Probabilities
 	float m_baseChance	= 0;
@@ -60,6 +65,8 @@ struct Room {
 
 static std::vector<Room> levelRoom;
 
+
+//Yes i know i need to do this a better way, i just haven't found out how yet
 static std::vector<uint16_t> levelEntrances;
 static std::vector<uint16_t> levelExit;
 static std::vector<uint16_t> levelArena;
@@ -71,32 +78,18 @@ static std::vector<uint16_t> bend;
 static std::vector<uint16_t> threeway;
 static std::vector<uint16_t> fourway;
 
+//static std::unordered_map<std::tuple<uint16_t, SpecialRoom, RoomTheme>, std::vector<Room>> roomMap;
+
 static const int mapSize = 8;
+static float roomDimension = 1;
 static Room map[mapSize][mapSize];
 
 
 class LevelGenerator {
 private:
 	static Room RNGRoomFromVector(std::vector<uint16_t>& roomVec);
-	static Room RNGRoom(const uint16_t connectionDir);
+	static Room RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex);
 	static void AlignRoom(Room* room, const uint16_t& connectionDir, unsigned char& type);
-
-
-	//static std::vector<Room>* mptr_levelRoom;
-
-	//static std::vector<uint16_t>* mptr_levelEntrances;
-	//static std::vector<uint16_t>* mptr_levelExit;
-	//static std::vector<uint16_t>* mptr_levelArena;
-	//static std::vector<uint16_t>* mptr_levelBoss;
-	//static std::vector<uint16_t>* mptr_levelItem;
-
-	//static std::vector<uint16_t>* mptr_straight;
-	//static std::vector<uint16_t>* mptr_bend;
-	//static std::vector<uint16_t>* mptr_threeway;
-	//static std::vector<uint16_t>* mptr_fourway;
-
-	//static Room* mptr_map;
-
 
 public:
 	static Room* GenerateLevel();
@@ -105,4 +98,11 @@ public:
 
 	static void AddRoomToGeneration(Room* room);
 
+	static const float& GetRoomDimension();
+	static void SetRoomDimension(float dimension);
+
+	static void GetRoomPos(const uint16_t& x, const uint16_t& y, float* xf, float* yf);
+	static uint16_t GetClosestRoomIndex(const float& xf, const float& yf);
+
+	static const Room* GetMapPointer();
 };

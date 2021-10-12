@@ -7,7 +7,7 @@ Room LevelGenerator::RNGRoomFromVector(std::vector<uint16_t>& roomVec) {
 	return levelRoom[roomVec[LehmerInt() % roomVec.size()]];
 };
 
-Room LevelGenerator::RNGRoom(const uint16_t connectionDir) {
+Room LevelGenerator::RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex) {
 
 	Room result;
 	if (connectionDir < 1 || connectionDir > 9999) {
@@ -40,6 +40,9 @@ Room LevelGenerator::RNGRoom(const uint16_t connectionDir) {
 	else if (randNum < (weightF + weightT + weightB + weightS)) {
 		result = RNGRoomFromVector(fourway);
 		type = 4;
+	}
+	if (result.m_roomIndex == roomIndex) {
+		RNGRoom(connectionDir, roomIndex);
 	}
 	AlignRoom(&result, connectionDir, type);
 	//result.m_present = true;
@@ -162,6 +165,8 @@ Room* LevelGenerator::GenerateLevel() {
 			map[x][y] = Room();
 		}
 	}
+
+	int r = LehmerInt() % 4;
 	map[3][4] = RNGRoomFromVector(levelEntrances);
 
 	bool openConnections = true;
@@ -177,22 +182,22 @@ Room* LevelGenerator::GenerateLevel() {
 					if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
 					{																				//Prevents out of bounds
 						if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {	//Checks if region is clear
-							map[x][y - 1] = RNGRoom(0x001u);										//Insert random room (Pass along direction)
+							map[x][y - 1] = RNGRoom(0x001u, map[x][y].m_roomIndex);										//Insert random room (Pass along direction)
 							maxRooms--;																//reduce maxRooms
 							break;																	//Break to go generate off other rooms (Experimental)
 						}
 						else if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
-							map[x + 1][y] = RNGRoom(0x00Au);
+							map[x + 1][y] = RNGRoom(0x00Au, map[x][y].m_roomIndex);
 							maxRooms--;
 							break;
 						}												
 						else if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
-							map[x][y + 1] = RNGRoom(0x064u);										
+							map[x][y + 1] = RNGRoom(0x064u, map[x][y].m_roomIndex);
 							maxRooms--;																
 							break;																	
 						}
 						else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
-							map[x - 1][y] = RNGRoom(0x3E8u);
+							map[x - 1][y] = RNGRoom(0x3E8u, map[x][y].m_roomIndex);
 							maxRooms--;
 							break;
 						}
@@ -240,7 +245,6 @@ Room* LevelGenerator::GenerationTestingFunction()
 	a.connectionDirections = 101;
 	a.m_present = true;
 
-	AddRoomToGeneration(&a);
 
 	//90 degree corners
 	Room b;
@@ -248,7 +252,6 @@ Room* LevelGenerator::GenerationTestingFunction()
 	b.m_present = true;
 	b.connectionDirections = 11;
 
-	AddRoomToGeneration(&b);
 
 	//T junction
 	Room c;
@@ -257,7 +260,6 @@ Room* LevelGenerator::GenerationTestingFunction()
 	c.connectionDirections = 1011;
 	c.m_present = true;
 
-	AddRoomToGeneration(&c);
 
 	//4-way junction
 	Room d;
@@ -265,15 +267,27 @@ Room* LevelGenerator::GenerationTestingFunction()
 	d.connectionDirections = 1111;
 	d.m_present = true;
 
-	AddRoomToGeneration(&d);
+
+	for (int i = 0; i < 4; i++) {
+		a.m_roomTheme = (RoomTheme)i;
+		b.m_roomTheme = (RoomTheme)i;
+		c.m_roomTheme = (RoomTheme)i;
+		d.m_roomTheme = (RoomTheme)i;
+		AddRoomToGeneration(&a);
+		AddRoomToGeneration(&b);
+		AddRoomToGeneration(&c);
+		AddRoomToGeneration(&d);
+	}
 
 	//entrance
 	Room e;
 	e.m_baseChance = 0xf;
-	e.connectionDirections = 0001;
 	e.m_present = true;
 	e.m_roomSpecial = SpecialRoom::ENTRANCE;
-	AddRoomToGeneration(&e);
+	for (int x = 1; x < 1001; x *= 10) {
+		e.connectionDirections = x;
+		AddRoomToGeneration(&e);
+	}
 
 
 	for (int k = 0; k < 1; k++) {
@@ -291,7 +305,7 @@ Room* LevelGenerator::GenerationTestingFunction()
 		for (int y = 0; y < mapSize; y++) {
 			for (int x = 0; x < mapSize; x++) {
 				if(map[x][y].m_present){
-					cmap[3 * y + 1][3 * x + 1] = '0';
+					cmap[3 * y + 1][3 * x + 1] = ((int)'0' + (int)map[x][y].m_roomTheme);
 					if (map[x][y].connectionDirections % 10u)
 					{
 						cmap[3 * y + 0][3 * x + 1] = '|'; //North
@@ -329,8 +343,12 @@ void LevelGenerator::AddRoomToGeneration(Room* room)
 
 	//connectionDir = room->m_north + room->m_east *10 + room->m_south *100 + room->m_west *1000;
 
+	room->m_roomIndex = levelRoom.size();
+
 	levelRoom.push_back(*room);
 
+	//room->m_roomIndex = roomMap[std::make_tuple(room->connectionDirections, (uint16_t)room->m_roomSpecial, (uint16_t)room->m_roomTheme)].size();
+	//roomMap[std::make_tuple(room->connectionDirections, (uint16_t)room->m_roomSpecial, (uint16_t)room->m_roomTheme)].push_back(*room);
 
 	switch (room->m_roomSpecial)
 	{
@@ -338,39 +356,68 @@ void LevelGenerator::AddRoomToGeneration(Room* room)
 		switch (room->connectionDirections)
 		{
 		case 101:
-			straight.push_back(levelRoom.size() - 1);
+			straight.push_back(room->m_roomIndex);
 			break;
 		case 11:
-			bend.push_back(levelRoom.size() - 1);
+			bend.push_back(room->m_roomIndex);
 			break;
 		case 1011:
-			threeway.push_back(levelRoom.size() - 1);
+			threeway.push_back(room->m_roomIndex);
 			break;
 		case 1111:
-			fourway.push_back(levelRoom.size() - 1);
+			fourway.push_back(room->m_roomIndex);
 			break;
 		default:
 			break;
 		}
 		break;
 	case SpecialRoom::ENTRANCE:
-		levelEntrances.push_back(levelRoom.size() - 1);
+		levelEntrances.push_back(room->m_roomIndex);
 		break;
 	case SpecialRoom::EXIT:
-		levelExit.push_back(levelRoom.size() - 1);
+		levelExit.push_back(room->m_roomIndex);
 		break;
 	case SpecialRoom::BOSS:
-		levelBoss.push_back(levelRoom.size() - 1);
+		levelBoss.push_back(room->m_roomIndex);
 		break;
 	case SpecialRoom::ARENA:
-		levelArena.push_back(levelRoom.size() - 1);
+		levelArena.push_back(room->m_roomIndex);
 		break;
 	case SpecialRoom::ITEM:
-		levelItem.push_back(levelRoom.size() - 1);
+		levelItem.push_back(room->m_roomIndex);
 		break;
 	default:
 		break;
 	}
+}
+
+const float& LevelGenerator::GetRoomDimension()
+{
+	return roomDimension;
+}
+
+void LevelGenerator::SetRoomDimension(float dimension)
+{
+	roomDimension = dimension;
+}
+
+void LevelGenerator::GetRoomPos(const uint16_t& x, const uint16_t& y, float* xf, float* yf)
+{
+	*xf = x * roomDimension;
+	*yf = y * roomDimension;
+}
+
+//Floors each coordinates and calculate index for the room most closely matched
+uint16_t LevelGenerator::GetClosestRoomIndex(const float& xf, const float& yf)
+{
+	uint16_t x = std::floorf(xf * (1.f/roomDimension));
+	uint16_t y = std::floorf(yf * (1.f / roomDimension));
+	return uint16_t(x + y * mapSize);
+}
+
+const Room* LevelGenerator::GetMapPointer()
+{
+	return *map;
 }
 
 

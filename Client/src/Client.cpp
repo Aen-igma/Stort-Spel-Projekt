@@ -293,3 +293,20 @@ void Client::Update(const float& deltaTime) {
 		}
 	}
 }
+
+bool levelBuilder::CreateRooms(Aen::Entity** storage, uint8_t x, uint8_t y)
+{
+	//if (storage[x + y * mapSize] == nullptr) {
+	//	storage[x + y * mapSize] = new Aen::Entity();
+	//	storage[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
+	//}
+	////storage[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh();
+	//storage[x + y * mapSize]->SetPos(x * LevelGenerator::GetRoomDimension(), 0.f, y * LevelGenerator::GetRoomDimension());
+	//storage[x + y * mapSize]->SetScale(LevelGenerator::GetRoomDimension(), LevelGenerator::GetRoomDimension(), LevelGenerator::GetRoomDimension());
+	//
+	return false;
+}
+
+levelBuilder::levelBuilder()
+{
+}
