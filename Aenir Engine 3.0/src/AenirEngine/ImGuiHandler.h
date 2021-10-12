@@ -32,9 +32,6 @@ namespace Aen {
 			this->tex = inTex;
 			this->mat = inMat;
 		}
-
-
-		
 	};
 
 	class AEN_DECLSPEC ImGuiHandler {
@@ -62,7 +59,8 @@ namespace Aen {
 
 		vector<string> m_textureFileName;
 		vector<string> m_textureName;
-		unordered_map<unsigned int, MatTexContainer> m_textureOneModelsMap;
+
+		unordered_map<unsigned int, MatTexContainer> m_textureModelsMap;
 
 
 		int m_selectedEntity = 0;
@@ -82,7 +80,6 @@ namespace Aen {
 		vector<string> m_textureFileList;
 
 		vector<string> m_MaterialNameList;
-
 
 		AenIMP::LevelImporter m_levelImporter;
 

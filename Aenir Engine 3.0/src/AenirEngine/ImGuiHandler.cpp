@@ -710,14 +710,13 @@ namespace Aen {
 	{
 		string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
 		string matName = "Material" + to_string(m_selectedEntity);
+		string texName = "Texture" + to_string(m_selectedEntity);
+		UpdateMap(m_selectedEntity, texName, matName);
 
-		Aen::Texture& texture = Aen::Resource::CreateTexture("Texture");
+		Aen::Texture& texture = Aen::Resource::CreateTexture(texName);
 		texture.LoadTexture(imageName);
 		Aen::Material& mat = Aen::Resource::CreateMaterial(matName, true);
 		mat.SetDiffuseMap(texture);
-
-		UpdateMap(m_selectedEntity, m_textureFileName[currentIndex], matName);
-
 
 		size_t id = m_entityList[m_selectedEntity]->getID();
 		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
@@ -729,29 +728,21 @@ namespace Aen {
 
 	void ImGuiHandler::UpdateMap(unsigned int key, string& texValue, string& matValue)
 	{
-		m_textureOneModelsMap.insert(std::make_pair(key, MatTexContainer(texValue, matValue)));
+		m_textureModelsMap.insert(std::make_pair(key, MatTexContainer(texValue, matValue)));
 		unordered_map <unsigned int, MatTexContainer>::iterator it;
+		//for (it = m_textureModelsMap.begin(); it != m_textureModelsMap.end(); ++it) {
 
-		for (it = m_textureOneModelsMap.begin(); it != m_textureOneModelsMap.end(); ++it) {
+		//	cout << "Becore Key => " << it->first << ", Value => " << it->second.tex << " " << it->second.mat << endl;
 
-			cout << "Key => " << it->first << ", Value => " << it->second.tex << " " << it->second.mat << endl;
+		//}
 
-		}
+		it = m_textureModelsMap.find(key);
 
-		cout << endl;
-
-		it = m_textureOneModelsMap.find(key);
-
-		if (it != m_textureOneModelsMap.end())
+		if (it != m_textureModelsMap.end())
 		{
 			it->second = MatTexContainer(texValue, matValue);
 		}
 
-		for (it = m_textureOneModelsMap.begin(); it != m_textureOneModelsMap.end(); ++it) {
-
-			cout << "Key => " << it->first << ", Value => " << it->second.tex << " " << it->second.mat << endl;
-
-		}
 	}
 
 	void ImGuiHandler::ReadAllFilesFromResourceFolder()
