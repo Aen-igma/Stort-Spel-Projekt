@@ -6,6 +6,7 @@ namespace Aen {
 	
 	ImGuiHandler::ImGuiHandler()
 	{
+		
 	}
 
 	ImGuiHandler::~ImGuiHandler()
