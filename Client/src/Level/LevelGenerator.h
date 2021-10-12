@@ -6,12 +6,14 @@
 #include <tuple>
 #include "RandomNumberGenerator.h"
 enum class SpecialRoom{ NONE, ENTRANCE, EXIT, BOSS, ARENA, ITEM };
-enum class RoomTheme{ GENERIC, BONES, VAMP, JUNGLE};
-/////////
-//  n  //
-//w + e// Compass lol
-//  s  //
-/////////
+enum class RoomTheme{ GENERIC, BONES, VAMP, JUNGLE, PLACEHOLDER};
+/*
+|/////////|
+|//  n  //|
+|//w + e//| Compass lol
+|//  s  //|
+|/////////|
+*/
 struct Room {
 public:
 	bool m_enclosed	= false; //Var used in level generation, true when room is surrounded

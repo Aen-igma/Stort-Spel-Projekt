@@ -294,6 +294,11 @@ void Client::Update(const float& deltaTime) {
 	}
 }
 
+//void levelBuilder::setMapPointer(Room* ptr)
+//{
+//	mptr_map = ptr;
+//}
+
 bool levelBuilder::CreateRooms(Aen::Entity** storage, uint8_t x, uint8_t y)
 {
 	//if (storage[x + y * mapSize] == nullptr) {
@@ -309,4 +314,6 @@ bool levelBuilder::CreateRooms(Aen::Entity** storage, uint8_t x, uint8_t y)
 
 levelBuilder::levelBuilder()
 {
+	m_currentTheme = RoomTheme::PLACEHOLDER;
+
 }
