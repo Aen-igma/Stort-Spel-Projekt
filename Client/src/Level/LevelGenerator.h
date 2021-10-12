@@ -5,6 +5,11 @@
 #include <unordered_map>
 #include <tuple>
 #include "RandomNumberGenerator.h"
+//#include "AenirEngine/Graphics/DirectX11/DX11Core.h"
+//#include "AenirEngine/Graphics/Component/Resource.h"
+#include "AenirEngine/Graphics/Component/ComponentHandler.h"
+#include "AenirEngine/Graphics/Component/Entity.h"
+
 enum class SpecialRoom{ NONE, ENTRANCE, EXIT, BOSS, ARENA, ITEM };
 enum class RoomTheme{ GENERIC, BONES, VAMP, JUNGLE, PLACEHOLDER};
 /*
