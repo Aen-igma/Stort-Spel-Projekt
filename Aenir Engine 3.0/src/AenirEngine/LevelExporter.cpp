@@ -96,17 +96,12 @@ namespace Aen {
 			lightStruct->attenuation[2] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_dist.z;
 
 			lightStruct->angle = Aen::ComponentHandler::GetSpotLight(id).m_light.m_angle;
-
-
-
 		}
-	
-		
 		m_LightVector.push_back(*lightStruct);
 	}
 
-	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<ModelStruct>& m_ModelVector,
-		vector<Aen::Entity*>& entityList, vector<string>& entityType,
+	void LevelExporter::modelFunc(ModelStruct*& modelStruct,
+		vector<Aen::Entity*>& entityList,
 		vector<string>& itemList, vector<string>& meshObjList, size_t& index, int meshIndex)
 	{
 		strcpy(modelStruct->name, itemList[index].c_str());
@@ -130,9 +125,29 @@ namespace Aen {
 		m_ModelVector.push_back(*modelStruct);
 	}
 
+	void LevelExporter::roomFunc(RoomStruct*& roomStruct, string array[])
+	{
+		strcpy(roomStruct->type, array[0].c_str());
+		strcpy(roomStruct->special, array[1].c_str());
+		strcpy(roomStruct->theme, array[2].c_str());
+		roomStruct->probability = stoi(array[3].c_str());
+
+		cout << roomStruct->type << endl;
+		cout << roomStruct->special << endl;
+		cout << roomStruct->theme << endl;
+		cout << roomStruct->probability << endl;
+	}
+
+	void LevelExporter::textureFunc(TextureStruct*& textureStruct, vector<string>& textureFileName, size_t& index)
+	{
+		strcpy(textureStruct->name, textureFileName[index].c_str());
+		strcpy(textureStruct->textureType, "test");
+		m_TextureVector.push_back(*textureStruct);
+	}
+
 	LevelExporter::LevelExporter()
 	{
-		OpenFile();
+		
 	}
 
 	LevelExporter::~LevelExporter()
@@ -140,9 +155,9 @@ namespace Aen {
 		CloseFile();
 	}
 
-	void LevelExporter::OpenFile()
+	void LevelExporter::OpenFile(string fileName)
 	{
-		m_outfile.open(m_filePath + m_fileName, std::ofstream::out | std::ofstream::binary);
+		m_outfile.open(m_filePath + fileName + ".Level", std::ofstream::out | std::ofstream::binary);
 
 	}
 
@@ -160,14 +175,21 @@ namespace Aen {
 		outfile.write((const char*)&*whatToWrite, sizeof(T));
 	}
 
-	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, vector<string>& meshObjList, vector<string>& textureFileName, vector<string>& entityType, string array[])
+	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, vector<string>& meshObjList, vector<string>& textureFileName, string array[], string& fileName)
 	{
-		cout << "writeInto" << endl;
-		cout << "entityList " << entityList.size() << endl;
-		cout << "itemList " << itemList.size() << endl;
-		cout << "meshObjList " << meshObjList.size() << endl;
-		cout << "textureFileName " << textureFileName.size() << endl;
-		cout << "entityType " << entityType.size() << endl;
+		OpenFile(fileName);
+		//cout << "writeInto" << endl;
+		//cout << "entityList " << entityList.size() << endl;
+		//cout << "itemList " << itemList.size() << endl;
+		//cout << "meshObjList " << meshObjList.size() << endl;
+		//cout << "textureFileName " << textureFileName.size() << endl;
+
+		RoomHeader* roomHeader = AEN_NEW(RoomHeader);
+		ModelHeader* modelHeader = AEN_NEW(ModelHeader);
+		TextureHeader* textureHeader = AEN_NEW(TextureHeader);
+		MaterialHeader* materialHeader = AEN_NEW(MaterialHeader);
+		LightHeader* lightHeader = AEN_NEW(LightHeader);
+		ParticleHeader* particleHeader = AEN_NEW(ParticleHeader);
 
 		RoomStruct* roomStruct = AEN_NEW(RoomStruct);
 		ModelStruct* modelStruct = AEN_NEW(ModelStruct);
@@ -187,9 +209,9 @@ namespace Aen {
 		{
 			uint32_t id = entityList[i]->getID();
 
-			if (entityType[i] == "Model")
+			if (Aen::ComponentHandler::MeshInstanceExist(id))
 			{
-				modelFunc(modelStruct, m_ModelVector, entityList, entityType, itemList, meshObjList, i, meshIndex);
+				modelFunc(modelStruct, entityList, itemList, meshObjList, i, meshIndex);
 				meshIndex++;
 			}
 			else if ((Aen::ComponentHandler::DirectionalLightExist(id) || Aen::ComponentHandler::SpotLightExist(id) || Aen::ComponentHandler::PointLightExist(id)))
@@ -199,26 +221,15 @@ namespace Aen {
 			cout << endl;
 		}
 
-		RoomHeader* roomHeader = AEN_NEW(RoomHeader);
-		ModelHeader *modelHeader = AEN_NEW(ModelHeader);
-		TextureHeader* textureHeader = AEN_NEW(TextureHeader);
-		MaterialHeader* materialHeader = AEN_NEW(MaterialHeader);
-		LightHeader* lightHeader = AEN_NEW(LightHeader);
-		ParticleHeader* particleHeader = AEN_NEW(ParticleHeader);
+		roomFunc(roomStruct, array);
+
+		for (size_t i = 0; i < m_TextureVector.size(); i++)
+		{
+			textureFunc(textureStruct, textureFileName, i);
+		}
 
 		cout << endl << "start" << endl;
-
-		strcpy(roomStruct->type, array[0].c_str());
-		strcpy(roomStruct->special, array[1].c_str());
-		strcpy(roomStruct->theme, array[2].c_str());
-		roomStruct->probability = stoi(array[3].c_str());
-
-		cout << roomStruct->type << endl;
-		cout << roomStruct->special << endl;
-		cout << roomStruct->theme << endl;
-		cout << roomStruct->probability << endl;
-		cout << endl;
-
+		
 		WriteToFile(roomHeader, m_outfile);
 		WriteToFile(roomStruct, m_outfile);
 
@@ -236,6 +247,16 @@ namespace Aen {
 			WriteToFile(modelHeader, m_outfile);
 			*modelStruct = m_ModelVector[i];
 			WriteToFile(modelStruct, m_outfile);
+		}
+
+		for (size_t i = 0; i < m_TextureVector.size(); i++)
+		{
+			cout << m_TextureVector[i].name << endl;
+			cout << m_TextureVector[i].textureType << endl;
+
+			WriteToFile(textureHeader, m_outfile);
+			*textureStruct = m_TextureVector[i];
+			WriteToFile(textureStruct, m_outfile);
 		}
 
 		for (size_t i = 0; i < m_LightVector.size(); i++)
@@ -279,6 +300,8 @@ namespace Aen {
 
 		delete particleHeader;
 		delete particleStruct;
+
+		CloseFile();
 	}
 
 	LIGHTTYPES LevelExporter::Type(Aen::Entity* entity)

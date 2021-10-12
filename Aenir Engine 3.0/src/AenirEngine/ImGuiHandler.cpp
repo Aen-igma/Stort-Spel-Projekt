@@ -3,7 +3,6 @@
 
 namespace Aen {
 
-
 	ImGuiHandler::ImGuiHandler()
 	{
 	}
@@ -42,6 +41,16 @@ namespace Aen {
 		CreatePreviewTextureThumbnail();
 	}
 
+	void ImGuiHandler::RenderAllWindows()
+	{
+		SceneListWindow();
+		AssetWindow();
+		PropertyWindow();
+		ToolWindow();
+		SaveWindow();
+
+	}
+
 	void ImGuiHandler::Initialize(const HWND& hwnd, ID3D11Device* mp_device, ID3D11DeviceContext* mp_dContext)
 	{
 		// SetUp ImGui
@@ -63,7 +72,6 @@ namespace Aen {
 
 	void ImGuiHandler::Render()
 	{
-
 		// Draw
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -93,9 +101,7 @@ namespace Aen {
 
 				if (ImGui::MenuItem("Save..", "Ctrl + S"))
 				{
-					m_openOrSave = "Save";
-					m_fileDialog.SetTitle("Save as");
-					m_fileDialog.Open();
+					m_saveWindowActive = true;
 				}
 
 				ImGui::EndMenu();
@@ -111,13 +117,15 @@ namespace Aen {
 			if (m_openOrSave == "Open")
 			{
 				std::cout << "Selected filename " << m_fileDialog.GetSelected().string() << std::endl;
+				m_levelImporter.ReadFromFile(m_fileDialog.GetSelected().string());
+				
+				for (size_t i = 0; i < m_levelImporter.GetRoomVector()[0].GetModelVector().size(); i++)
+				{
+					string name = m_levelImporter.GetRoomVector()[0].GetModelVector()[i].name;
+					string mesh = m_levelImporter.GetRoomVector()[0].GetModelVector()[i].mesh;
+					AddBase(name, mesh);
+				}
 			}
-			else if (m_openOrSave == "Save")
-			{
-				std::cout << "Selected fileDir " << m_fileDialog.GetPwd().string() << std::endl;
-				m_levelExporter.WriteInto(m_entityList, m_itemList, m_meshObjList, m_textureFileName, m_entityType, m_roomProperty);
-			}
-
 			m_fileDialog.ClearSelected();
 		}
 
@@ -188,9 +196,7 @@ namespace Aen {
 
 	void ImGuiHandler::PropertyWindow()
 	{
-
 		static bool hitBoxEnable = false;
-
 		static float albedoColor = 0;
 		static float ambientColor = 0;
 		static float transparency = 0;
@@ -199,7 +205,22 @@ namespace Aen {
 		static float specularColor = 0;
 		static float reflectivity = 0;
 
-		static std::string mapName = "";
+		static int selectedTheme = 0;
+		static int selectedType = 0;
+		static int selectedSpecial = 0;
+		static int probability = 0;
+
+		const char* roomTheme[] = { "Normal Dungeon", "Aztec", "Gothic" };
+		const char* roomType[] = { "Exit", "Entrance", "Crossing" };
+		const char* specialRoom[] = { "Normal", "Boss" };
+
+		static char materialName[MESH_NAME_MAX_LENGTH];
+
+		m_roomProperty[0] = roomType[selectedType];
+		m_roomProperty[1] = specialRoom[selectedSpecial];
+		m_roomProperty[2] = roomTheme[selectedTheme];
+		m_roomProperty[3] = to_string(probability);
+
 
 		//string imageName = AEN_RESOURCE_DIR("Place_Holder.png");
 
@@ -214,8 +235,6 @@ namespace Aen {
 
 		ImGui::Begin("Properties", nullptr);
 
-		
-
 		if (ImGui::BeginTabBar("#Property Tab", ImGuiTabBarFlags_None))
 		{
 			if (ImGui::BeginTabItem("Mesh"))
@@ -226,7 +245,6 @@ namespace Aen {
 				}
 
 				ImGui::Checkbox("Hit box", &hitBoxEnable);
-
 				CustomCombo(m_itemList,"Parent" ,"");
 
 				ImGui::EndTabItem();
@@ -234,28 +252,35 @@ namespace Aen {
 
 			if (ImGui::BeginTabItem("Material"))
 			{
+				static bool createNewMaterial = false;
+
 				if (ImGui::CollapsingHeader("Common Material Properties"))
 				{
+					ImGui::Checkbox("Same Material", &createNewMaterial);
+
+					if (createNewMaterial == true)
+					{
+						ImGui::InputText("Material Name", materialName, MESH_NAME_MAX_LENGTH);
+					}
+
 					if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 					{
 						uint32_t id = m_entityList[m_selectedEntity]->getID();
 
 						if (Aen::ComponentHandler::MeshInstanceExist(id))
 						{
-
 							CustomCombo(m_textureName, "Test", "Material");
 							ImGui::SliderFloat("Transparency", &transparency, 0.0f, 1.0f);
 							ImGui::SliderFloat("Ambient Color", &ambientColor, 0.0f, 1.0f);
 							ImGui::SliderFloat("Diffuse", &diffuse, 0.0f, 1.0f);
-
 						}
 					}
 				}
 
-				if (ImGui::CollapsingHeader("Normal Mapping"))
+				/*if (ImGui::CollapsingHeader("Normal Mapping"))
 				{
 					ImGui::InputText("Map", const_cast<char*>(mapName.c_str()), IM_ARRAYSIZE(mapName.c_str()));
-				}
+				}*/
 
 				if (ImGui::CollapsingHeader("Specular Shading"))
 				{
@@ -267,21 +292,6 @@ namespace Aen {
 
 			if (ImGui::BeginTabItem("Room"))
 			{
-				static int selectedTheme = 0;
-				static int selectedType = 0;
-				static int selectedSpecial = 0;
-				static int probability = 0;
-
-				const char* roomTheme[] = { "Normal Dungeon", "Aztec", "Gothic" };
-				const char* roomType[] = { "Exit", "Entrance", "Crossing" };
-				const char* specialRoom[] = { "Normal", "Boss"};
-
-				m_roomProperty[0] = roomType[selectedType];
-				m_roomProperty[1] = specialRoom[selectedSpecial];
-				m_roomProperty[2] = roomTheme[selectedTheme];
-				m_roomProperty[3] = to_string(probability);
-
-
 				ImGui::Combo("Room Theme", &selectedTheme, roomTheme, IM_ARRAYSIZE(roomTheme));
 
 				ImGui::Combo("Room Type", &selectedType, roomType, IM_ARRAYSIZE(roomType));
@@ -293,7 +303,97 @@ namespace Aen {
 				ImGui::EndTabItem();
 			}
 
+			if (ImGui::BeginTabItem("Light"))
+			{
+				uint32_t id = m_entityList[m_selectedEntity]->getID();
+				static float color[4];
+				static float attenuation[3];
+				static float intensity;
+				static float range;
+				static float angle;
 
+				if (Aen::ComponentHandler::DirectionalLightExist(id))
+				{
+					Aen::DirectionalLight &lightPtr = Aen::ComponentHandler::GetDirectionalLight(id);
+
+					color[0] = lightPtr.m_light.m_color.r;
+					color[1] = lightPtr.m_light.m_color.g;
+					color[2] = lightPtr.m_light.m_color.b;
+					color[3] = lightPtr.m_light.m_color.a;
+					intensity = lightPtr.m_light.m_strength;
+					
+					SetValues();
+
+					ImGui::DragFloat4("Color", color, 0.02f);
+					ImGui::DragFloat("Intensity", &intensity, 0.02f);
+
+					lightPtr.SetColor(color[0], color[1], color[2], color[3]);
+					lightPtr.SetStrength(intensity);
+				}
+
+				if (Aen::ComponentHandler::PointLightExist(id))
+				{
+					Aen::PointLight& lightPtr = Aen::ComponentHandler::GetPointLight(id);
+
+					color[0] = lightPtr.m_light.m_color.r;
+					color[1] = lightPtr.m_light.m_color.g;
+					color[2] = lightPtr.m_light.m_color.b;
+					color[3] = lightPtr.m_light.m_color.a;
+
+					intensity = lightPtr.m_light.m_strength;
+
+					attenuation[0] = lightPtr.m_light.m_dist.x;
+					attenuation[1] = lightPtr.m_light.m_dist.y;
+					attenuation[2] = lightPtr.m_light.m_dist.z;
+
+					range = lightPtr.m_light.m_dist.w;
+
+					SetValues();
+
+					ImGui::DragFloat3("Attenuation", m_xyzRotation, 0.02f);
+					ImGui::DragFloat4("Color", color, 0.02f);
+					ImGui::DragFloat("Intensity", &intensity, 0.02f);
+					ImGui::DragFloat3("Attenuation", attenuation, 0.02f);
+					ImGui::DragFloat("Range", &range, 0.02f);
+
+					lightPtr.SetColor(color[0], color[1], color[2], color[3]);
+					lightPtr.SetStrength(intensity);
+					lightPtr.SetLightDist(attenuation[0], attenuation[1], attenuation[2], range);
+				}
+
+				if (Aen::ComponentHandler::SpotLightExist(id))
+				{
+					Aen::SpotLight& lightPtr = Aen::ComponentHandler::GetSpotLight(id);
+
+					color[0] = lightPtr.m_light.m_color.r;
+					color[1] = lightPtr.m_light.m_color.g;
+					color[2] = lightPtr.m_light.m_color.b;
+					color[3] = lightPtr.m_light.m_color.a;
+
+					intensity = lightPtr.m_light.m_strength;
+
+					attenuation[0] = lightPtr.m_light.m_dist.x;
+					attenuation[1] = lightPtr.m_light.m_dist.y;
+					attenuation[2] = lightPtr.m_light.m_dist.z;
+
+					range = lightPtr.m_light.m_dist.w;
+					angle = lightPtr.m_light.m_angle;
+
+					SetValues();
+
+					ImGui::DragFloat4("Color", color, 0.02f);
+					ImGui::DragFloat("Intensity", &intensity, 0.02f);
+					ImGui::DragFloat3("Attenuation", attenuation, 0.02f);
+					ImGui::DragFloat("Range", &range, 0.02f);
+					ImGui::DragFloat("angle", &angle, 0.02f);
+
+					lightPtr.SetColor(color[0], color[1], color[2], color[3]);
+					lightPtr.SetStrength(intensity);
+					lightPtr.SetLightDist(attenuation[0], attenuation[1], attenuation[2], range);
+					lightPtr.SetConeSize(angle);
+				}
+				ImGui::EndTabItem();
+			}
 			ImGui::EndTabBar();
 		}
 		ImGui::End();
@@ -329,15 +429,30 @@ namespace Aen {
 		ImGui::End();
 	}
 
-	void ImGuiHandler::MaterialWindow()
+	void ImGuiHandler::SaveWindow()
 	{
+		if (m_saveWindowActive == true)
+		{
+			ImGui::Begin("Save", nullptr);
+			static char inputString[MESH_NAME_MAX_LENGTH];
+			ImGui::InputText("FileName", inputString, MESH_NAME_MAX_LENGTH);
+
+			if (ImGui::Button("Save"))
+			{
+				string temp = inputString;
+				m_levelExporter.WriteInto(m_entityList, m_itemList, m_meshObjList, m_textureFileName, m_roomProperty, temp);
+				
+				m_saveWindowActive = false;
+				std::memset(inputString, '\0', sizeof(char) * MESH_NAME_MAX_LENGTH);
+			}
+			ImGui::End();
+		}
 	}
 
 	void ImGuiHandler::AddModel(Aen::Entity* entity)
 	{
 		m_entityList.push_back(entity);
 		m_itemList.push_back("Model" + std::to_string(m_entityCount));
-		m_entityType.push_back("Model");
 		m_entityCount++;
 	}
 
@@ -345,7 +460,6 @@ namespace Aen {
 	{
 		m_entityList.push_back(entity);
 		m_itemList.push_back(type + std::to_string(m_entityCount));
-		m_entityType.push_back(type);
 		m_entityCount++;
 	}
 
@@ -415,7 +529,6 @@ namespace Aen {
 
 	void ImGuiHandler::SetDefaultValue()
 	{
-
 		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
 			uint32_t id = m_entityList[m_selectedEntity]->getID();
@@ -472,7 +585,6 @@ namespace Aen {
 		else
 		{
 			ZeroValue();
-
 		}
 	}
 
@@ -519,7 +631,7 @@ namespace Aen {
 
 	void ImGuiHandler::SetMaterialValues()
 	{
-		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
+		/*if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
 			uint32_t id = m_entityList[m_selectedEntity]->getID();
 
@@ -534,7 +646,7 @@ namespace Aen {
 		else
 		{
 			ZeroValue();
-		}
+		}*/
 	}
 
 	void ImGuiHandler::AddBase(const string& meshName, const string& objName)
@@ -560,9 +672,9 @@ namespace Aen {
 
 		light->AddComponent<Aen::PointLight>();
 		light->GetComponent<Aen::PointLight>().SetColor(Aen::Color::Blue);
-		light->GetComponent<Aen::PointLight>().SetLightDist(30);
-		light->GetComponent<Aen::PointLight>().SetStrength(20);
-		light->SetPos(0, 0, 0);
+		light->GetComponent<Aen::PointLight>().SetLightDist(1, 1, 1, 5);
+		light->GetComponent<Aen::PointLight>().SetStrength(100);
+		light->SetPos(1, 0, 0);
 
 		AddLight(light, "Point light");			
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
@@ -575,7 +687,7 @@ namespace Aen {
 		light->AddComponent<Aen::SpotLight>();
 		light->GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Red);
 		light->GetComponent<Aen::SpotLight>().SetConeSize(5);
-		light->GetComponent<Aen::SpotLight>().SetLightDist(20);
+		light->GetComponent<Aen::SpotLight>().SetLightDist(1, 1, 1, 5);
 		light->GetComponent<Aen::SpotLight>().SetStrength(10);
 
 		AddLight(light, "Spot light");
@@ -597,10 +709,15 @@ namespace Aen {
 	void ImGuiHandler::ChangeMaterial(int& currentIndex)
 	{
 		string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
+		string matName = "Material" + to_string(m_selectedEntity);
+
 		Aen::Texture& texture = Aen::Resource::CreateTexture("Texture");
 		texture.LoadTexture(imageName);
-		Aen::Material& mat = Aen::Resource::CreateMaterial("Material", true);
+		Aen::Material& mat = Aen::Resource::CreateMaterial(matName, true);
 		mat.SetDiffuseMap(texture);
+
+		UpdateMap(m_selectedEntity, m_textureFileName[currentIndex], matName);
+
 
 		size_t id = m_entityList[m_selectedEntity]->getID();
 		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
@@ -608,6 +725,33 @@ namespace Aen {
 
 	void ImGuiHandler::ChangeTexture(int& currentIndex, int& i)
 	{
+	}
+
+	void ImGuiHandler::UpdateMap(unsigned int key, string& texValue, string& matValue)
+	{
+		m_textureOneModelsMap.insert(std::make_pair(key, MatTexContainer(texValue, matValue)));
+		unordered_map <unsigned int, MatTexContainer>::iterator it;
+
+		for (it = m_textureOneModelsMap.begin(); it != m_textureOneModelsMap.end(); ++it) {
+
+			cout << "Key => " << it->first << ", Value => " << it->second.tex << " " << it->second.mat << endl;
+
+		}
+
+		cout << endl;
+
+		it = m_textureOneModelsMap.find(key);
+
+		if (it != m_textureOneModelsMap.end())
+		{
+			it->second = MatTexContainer(texValue, matValue);
+		}
+
+		for (it = m_textureOneModelsMap.begin(); it != m_textureOneModelsMap.end(); ++it) {
+
+			cout << "Key => " << it->first << ", Value => " << it->second.tex << " " << it->second.mat << endl;
+
+		}
 	}
 
 	void ImGuiHandler::ReadAllFilesFromResourceFolder()
@@ -679,34 +823,28 @@ namespace Aen {
 		if (Aen::ComponentHandler::MeshInstanceExist(id))
 		{
 			type = "Model" + std::to_string(m_entityCount);
-			m_entityType.push_back("Model");
 			m_meshObjList.push_back("Cube.obj");
 			m_entityCount++;
 		}
 		else if (Aen::ComponentHandler::CameraExist(id))
 		{
 			type = "Camera";
-			m_entityType.push_back(type);
 		}
 		else if (Aen::ComponentHandler::DirectionalLightExist(id))
 		{
 			type = "Directional light";
-			m_entityType.push_back(type);
 		}
 		else if (Aen::ComponentHandler::SpotLightExist(id))
 		{
 			type = "Spot light";
-			m_entityType.push_back(type);
 		}
 		else if (Aen::ComponentHandler::PointLightExist(id))
 		{
 			type = "Point light";
-			m_entityType.push_back(type);
 		}
 		else
 		{
 			type = "Asset" + std::to_string(m_entityCount);
-			m_entityType.push_back("Asset");
 			m_entityCount++;
 		}
 		return type;

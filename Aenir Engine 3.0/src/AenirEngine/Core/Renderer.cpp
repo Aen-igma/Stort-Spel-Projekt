@@ -133,11 +133,7 @@ namespace Aen {
 
 	#ifdef _DEBUG
 		Aen::GlobalSettings::mp_guiHandler->NewFrame();
-		Aen::GlobalSettings::mp_guiHandler->SceneListWindow();
-		Aen::GlobalSettings::mp_guiHandler->AssetWindow();
-		Aen::GlobalSettings::mp_guiHandler->PropertyWindow();
-		Aen::GlobalSettings::mp_guiHandler->ToolWindow();
-		Aen::GlobalSettings::mp_guiHandler->MaterialWindow();
+		Aen::GlobalSettings::mp_guiHandler->RenderAllWindows();
 		Aen::GlobalSettings::mp_guiHandler->Render();
 	#endif
 

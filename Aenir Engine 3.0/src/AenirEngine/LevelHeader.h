@@ -59,6 +59,7 @@ namespace Aen
 
 	struct TextureStruct
 	{
+		// add id maybe
 		char name[TEXTURE_NAME_MAX_LENGTH];
 		char textureType[TYPE_NAME];
 		//char blending[FILE_PATH_NAME_MAX_LENGTH];

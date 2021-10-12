@@ -100,10 +100,16 @@
     <Filter Include="Header Files\Importer">
       <UniqueIdentifier>{828903be-e8d7-40e3-b892-6c38532f4708}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\LevelExporter">
+    <Filter Include="Level">
+      <UniqueIdentifier>{c98af6c7-5c5a-4918-b31e-c6ae50818a26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Level\LevelExporter">
       <UniqueIdentifier>{e88a4808-6f6d-4e0f-b4d6-8fb5483b5efa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\LevelExporter">
+    <Filter Include="Source Files\Level">
+      <UniqueIdentifier>{5781baa3-5121-45d6-abbf-0c399885922e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Level\LevelExporter">
       <UniqueIdentifier>{8f1d3d30-1dd9-4fb1-94b8-111727fd6e0d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -237,11 +243,14 @@
     <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
-      <Filter>Source Files\LevelExporter</Filter>
+      <Filter>Source Files\Level\LevelExporter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelImporter.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -446,17 +455,23 @@
     <ClInclude Include="src\AenirEngine\CreateThumbnail.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imfilebrowser.h">
       <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelExporter.h">
-      <Filter>Header Files\LevelExporter</Filter>
+      <Filter>Level\LevelExporter</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
-      <Filter>Header Files\LevelExporter</Filter>
+      <Filter>Level\LevelExporter</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\RoomFormat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelImporter.h">
+      <Filter>Level</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

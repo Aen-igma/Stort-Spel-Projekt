@@ -31,7 +31,7 @@ namespace Aen {
 	private:
 
 		string m_filePath = "../LevelFolder/";
-		string m_fileName = "LevelFile.Level";
+		//string m_fileName = "LevelFile.Level";
 		ofstream m_outfile;
 
 		vector<ModelStruct> m_ModelVector;
@@ -41,20 +41,23 @@ namespace Aen {
 		vector<ParticleStruct> m_ParticleVector;
 
 		void lightFunc(LightStruct *&lightStruct, vector<LightStruct> &m_LightVector, Entity*& entity);
-		void modelFunc(ModelStruct *& modelStruct, vector<ModelStruct>& m_ModelVector, vector<Aen::Entity*>& entityList, vector<string>& entityType, vector<string>& itemList, vector<string>& meshObjList,size_t& index, int meshIndex);
+		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, vector<string>& itemList, vector<string>& meshObjList,size_t& index, int meshIndex);
+		void roomFunc(RoomStruct*& roomStruct, string array[]);
+		void textureFunc(TextureStruct*& textureStruct, vector<string>& textureFileName, size_t &index);
+
 
 	public:
 
 		LevelExporter();
 		~LevelExporter();
 
-		void OpenFile();
+		void OpenFile(string fileName);
 		void CloseFile();
 
 		template<class T>
 		void WriteToFile(T* whatToWrite, std::ofstream& outfile);
 
-		void WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList,vector<string>& meshObjList, vector<string>& textureFileName, vector<string>& entityType, string array[]);
+		void WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList,vector<string>& meshObjList, vector<string>& textureFileName, string array[], string &fileName);
 		LIGHTTYPES Type(Aen::Entity* entity);
 
 
