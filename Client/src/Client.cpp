@@ -24,10 +24,10 @@ void Client::Update(const float& deltaTime)
 	if (mp_state)
 		mp_state->Update(deltaTime);
 
-	if (gameplay->GetLoaded())
+	if (mp_gameplay->GetLoaded())
 	{
-		work = std::thread(&Gameplay::Initialize, gameplay); //Initialize Gameplay
-		work.detach();
+		m_thread = std::thread(&Gameplay::Initialize, mp_gameplay); //Initialize Gameplay
+		m_thread.detach();
 	}
 }
 
@@ -39,15 +39,15 @@ void Client::ChangeState(const States& states)
 	switch (states) 
 	{
 		case States::Gameplay:
-			mp_state = gameplay;
-			gameplay = nullptr;
+			mp_state = mp_gameplay;
+			mp_gameplay = nullptr;
 			break;
 		case States::Main_Menu:
 			mp_state = AEN_NEW MainMenu(m_window);
 			break;
 		case States::Loadscreen:
 			mp_state = AEN_NEW Loadscreen(m_window);
-			gameplay = new Gameplay(m_window);
+			mp_gameplay = new Gameplay(m_window);
 			break;
 	}
 
