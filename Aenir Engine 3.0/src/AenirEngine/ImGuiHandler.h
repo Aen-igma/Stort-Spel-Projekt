@@ -12,6 +12,8 @@
 #include "ThirdParty/ImGui/imgui_impl_win32.h"
 #include "ThirdParty/ImGui/imgui_impl_dx11.h"
 
+#include <chrono>
+
 #include <vector>
 
 using std::string;

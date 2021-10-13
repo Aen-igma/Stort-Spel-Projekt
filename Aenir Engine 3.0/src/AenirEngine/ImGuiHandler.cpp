@@ -36,9 +36,22 @@ namespace Aen {
 
 	void ImGuiHandler::StartUp()
 	{
+		std::chrono::time_point<std::chrono::system_clock> start, end;
+
+		start = std::chrono::system_clock::now();
+		cout << "Start " << start << endl;
+
 		ReadAllModelsFromHandler();
 		ReadAllFilesFromResourceFolder();
 		CreatePreviewTextureThumbnail();
+
+		end = std::chrono::system_clock::now();
+
+		std::chrono::duration<double> elapsed_seconds = end - start;
+		std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+
+		std::cout << "finished computation at " << std::ctime(&end_time)
+			<< "elapsed time: " << elapsed_seconds.count() << "s\n";
 	}
 
 	void ImGuiHandler::RenderAllWindows()
@@ -750,6 +763,9 @@ namespace Aen {
 		string filePath = "../Resource/";
 		string fileName = "";
 		string fileType = "";
+
+		m_objFileName.reserve(10);
+		m_objName.reserve(10);
 
 		for (const auto& entry : std::filesystem::directory_iterator(filePath))
 		{
