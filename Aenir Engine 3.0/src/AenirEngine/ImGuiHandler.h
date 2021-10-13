@@ -87,6 +87,16 @@ namespace Aen {
 
 		bool m_saveWindowActive = false;
 
+	public:
+		AenIF::Room GetRoom(size_t index);
+
+		void AddLight(Aen::Entity* entity);
+
+		void AddBase(AenIF::Model& model);
+		void AddPointLight(AenIF::Light& input);
+		void AddSpotLight(AenIF::Light& input);
+		void AddDirectional(AenIF::Light& input);
+
 
 	public:
 		ImGuiHandler();
@@ -131,7 +141,6 @@ namespace Aen {
 		void CustomCombo(vector<string>& list,string name, string type);
 
 		void ChangeMaterial(int &currentIndex);
-		void ChangeTexture(int& currentIndex, int& i);
 
 		void UpdateMap(unsigned int key, string& texValue, string& matValue);
 	};
