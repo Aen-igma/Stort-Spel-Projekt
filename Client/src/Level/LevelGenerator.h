@@ -1,8 +1,9 @@
 #pragma once
-#include "AenirEngine/Graphics/DirectX11/DX11Core.h"
-#include "AenirEngine/Graphics/Component/Resource.h"
-#include "AenirEngine/Graphics/Component/ComponentHandler.h"
-#include "AenirEngine/Graphics/Component/Entity.h"
+//#include "AenirEngine/Graphics/DirectX11/DX11Core.h"
+//#include "AenirEngine/BuritoMath.h"
+//#include "AenirEngine/Graphics/Component/Resource.h"
+//#include "AenirEngine/Graphics/Component/ComponentHandler.h"
+//#include "AenirEngine/Graphics/Component/Entity.h"
 
 #include <iostream>
 #include <vector>
@@ -12,7 +13,6 @@
 #include "RandomNumberGenerator.h"
 
 namespace Aen {
-
 	enum class SpecialRoom { NONE, ENTRANCE, EXIT, BOSS, ARENA, ITEM };
 	enum class RoomTheme { GENERIC, BONES, VAMP, JUNGLE, PLACEHOLDER };
 	/*
@@ -27,6 +27,7 @@ namespace Aen {
 		bool m_enclosed = false; //Var used in level generation, true when room is surrounded
 		bool m_present = false;
 
+		void* mptr_mesh;
 
 		SpecialRoom m_roomSpecial = SpecialRoom::NONE;
 		RoomTheme m_roomTheme = RoomTheme::GENERIC;
@@ -88,13 +89,13 @@ namespace Aen {
 	static std::vector<uint16_t> threeway;
 	static std::vector<uint16_t> fourway;
 
-	//static std::unordered_map<std::tuple<uint16_t, SpecialRoom, RoomTheme>, std::vector<Room>> roomMap;
+	static std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::vector<uint16_t> > > masterRoomMap;
 
 	static const int mapSize = 8;
 	static float roomDimension = 1;
 	static Room map[mapSize][mapSize];
 
-
+	
 	class LevelGenerator {
 	private:
 		static Room RNGRoomFromVector(std::vector<uint16_t>& roomVec);

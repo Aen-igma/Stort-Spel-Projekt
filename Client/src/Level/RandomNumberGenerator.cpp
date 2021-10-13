@@ -1,7 +1,10 @@
+#include "PCH/PCH.h"
+
 #include "RandomNumberGenerator.h"
 
 static uint64_t nLehmer = 0;
 static uint64_t lehmerConstSeed = 0;
+
 const uint64_t LehmerInt() {
 	nLehmer += 0xe120fc15;
 	uint64_t temp;

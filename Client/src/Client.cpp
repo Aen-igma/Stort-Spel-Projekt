@@ -2,7 +2,7 @@
 #include"Client.h"
 
 Client::~Client() {
-	for (UINT i = 0; i < mapSize * mapSize; i++) {
+	for (UINT i = 0; i < Aen::mapSize * Aen::mapSize; i++) {
 		if (rooms[i] != nullptr) {
 			delete rooms[i];
 			rooms[i] = nullptr;
@@ -101,20 +101,20 @@ void Client::Start() {
 	srand((unsigned int)time(NULL));
 	SetLehmerConstSeed(100);
 	LehmerInt();
-	Room* map = LevelGenerator::GenerationTestingFunction();
+	Aen::Room* map = Aen::LevelGenerator::GenerationTestingFunction();
 	
-	for (UINT y = 0; y < mapSize; y++) {
-		for (UINT x = 0; x < mapSize; x++) {
-			if (map[x + y * mapSize].m_present) {
-				rooms[x + y * mapSize] = new Aen::Entity();
-				rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
-				rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-				rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
+	for (UINT y = 0; y < Aen::mapSize; y++) {
+		for (UINT x = 0; x < Aen::mapSize; x++) {
+			if (map[x + y * Aen::mapSize].m_present) {
+				rooms[x + y * Aen::mapSize] = new Aen::Entity();
+				rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
+				rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+				rooms[x + y * Aen::mapSize]->SetPos(x * 2, 0.f, y * 2);
 			}
 			else {
-				if (rooms[x + y * mapSize] != nullptr)
-					delete rooms[x + y * mapSize];
-				rooms[x + y * mapSize] = nullptr;
+				if (rooms[x + y * Aen::mapSize] != nullptr)
+					delete rooms[x + y * Aen::mapSize];
+				rooms[x + y * Aen::mapSize] = nullptr;
 			}
 		}
 	}
@@ -159,22 +159,22 @@ void Client::Update(const float& deltaTime) {
 	if (Aen::Input::KeyDown(Aen::Key::L)) {
 		
 		SetLehmerConstSeed(LehmerInt());
-		Room* map = LevelGenerator::GenerationTestingFunction();
+		Aen::Room* map = Aen::LevelGenerator::GenerationTestingFunction();
 		 
-		for (UINT y = 0; y < mapSize; y++) {
-			for (UINT x = 0; x < mapSize; x++) {
-				if (map[x + y * mapSize].m_present) {
-					if (rooms[x + y * mapSize] == nullptr) {
-						rooms[x + y * mapSize] = new Aen::Entity();
-						rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
-						rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-						rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
+		for (UINT y = 0; y < Aen::mapSize; y++) {
+			for (UINT x = 0; x < Aen::mapSize; x++) {
+				if (map[x + y * Aen::mapSize].m_present) {
+					if (rooms[x + y * Aen::mapSize] == nullptr) {
+						rooms[x + y * Aen::mapSize] = new Aen::Entity();
+						rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
+						rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+						rooms[x + y * Aen::mapSize]->SetPos(x * 2, 0.f, y * 2);
 					}
 				}
 				else {
-					if (rooms[x + y * mapSize] != nullptr){
-						delete rooms[x + y * mapSize];
-						rooms[x + y * mapSize] = nullptr;
+					if (rooms[x + y * Aen::mapSize] != nullptr){
+						delete rooms[x + y * Aen::mapSize];
+						rooms[x + y * Aen::mapSize] = nullptr;
 					}
 				}
 			}
@@ -294,26 +294,16 @@ void Client::Update(const float& deltaTime) {
 	}
 }
 
-//void levelBuilder::setMapPointer(Room* ptr)
-//{
-//	mptr_map = ptr;
-//}
 
 bool levelBuilder::CreateRooms(Aen::Entity** storage, uint8_t x, uint8_t y)
 {
-	//if (storage[x + y * mapSize] == nullptr) {
-	//	storage[x + y * mapSize] = new Aen::Entity();
-	//	storage[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
-	//}
-	////storage[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh();
-	//storage[x + y * mapSize]->SetPos(x * LevelGenerator::GetRoomDimension(), 0.f, y * LevelGenerator::GetRoomDimension());
-	//storage[x + y * mapSize]->SetScale(LevelGenerator::GetRoomDimension(), LevelGenerator::GetRoomDimension(), LevelGenerator::GetRoomDimension());
-	//
 	return false;
 }
 
 levelBuilder::levelBuilder()
 {
-	m_currentTheme = RoomTheme::PLACEHOLDER;
-
+	m_meshPtrMap["Straight"] = &Aen::Resource::CreateMesh("corridorPlaceholder");
+	m_meshPtrMap["Bend"] = &Aen::Resource::CreateMesh("bendPlaceholder");
+	m_meshPtrMap["three"] = &Aen::Resource::CreateMesh("twayPlaceholder");
+	m_meshPtrMap["four"] = &Aen::Resource::CreateMesh("fourwayPlaceholder");
 }

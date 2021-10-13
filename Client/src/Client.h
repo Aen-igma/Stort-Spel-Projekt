@@ -3,18 +3,20 @@
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
 #include"Level/LevelGenerator.h"
 
-class levelBuilder : public LevelGenerator {
-private:
-	//Generation storage
-	//Aen::Entity* m_rooms[mapSize * mapSize]; //Static array
-	std::map<RoomTheme, Aen::Mesh*> m_roomMeshes;
-	RoomTheme m_currentTheme;
-	//------------------------//
-	//Room* mptr_map;
-public:
-	//void setMapPointer(Room* ptr);
-	bool CreateRooms(Aen::Entity** storage, uint8_t x, uint8_t y);
-	levelBuilder();
+
+class levelBuilder : public Aen::LevelGenerator {
+	private:
+		//Generation storage
+		std::map<std::string, Aen::Mesh*> m_meshPtrMap;
+		Aen::RoomTheme m_currentTheme;
+		//------------------------//																																				
+		//Room* mptr_map;
+	public:
+		//void setMapPointer(Room* ptr);
+
+		
+		bool CreateRooms(Aen::Entity** storage, uint8_t x, uint8_t y);
+		levelBuilder();
 };
 
 
@@ -46,7 +48,7 @@ class Client : public Aen::App {
 
 	//Generation storage
 	levelBuilder m_buildLevel; //Var name suggestions open
-	Aen::Entity* rooms[mapSize * mapSize]; //Static array
+	Aen::Entity* rooms[Aen::mapSize * Aen::mapSize]; //Static array
 	//std::vector<Aen::Mesh> roomMeshes;
 
 	//-----//

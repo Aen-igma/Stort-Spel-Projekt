@@ -26,7 +26,7 @@ namespace Aen {
 		friend class Entity;
 		friend class Renderer;
 		friend class ImGuiHandler;
-		friend class LevelGenerator;
+		//friend class LevelGenerator;
 		friend class MeshInstance;
 	};
 }
