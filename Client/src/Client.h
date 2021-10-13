@@ -8,7 +8,6 @@ class levelBuilder : public Aen::LevelGenerator {
 	private:
 		//Generation storage
 		std::map<std::string, Aen::Mesh*> m_meshPtrMap;
-		Aen::RoomTheme m_currentTheme;
 		//------------------------//																																				
 		//Room* mptr_map;
 	public:

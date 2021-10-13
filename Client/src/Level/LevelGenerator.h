@@ -33,9 +33,9 @@ namespace Aen {
 		RoomTheme m_roomTheme = RoomTheme::GENERIC;
 
 		////connection location
-		//uint32_t m_north		=    0;	|//|	___0 - ___9		 //	Straight	: 0101	: NS
-		//uint32_t m_east		=   00;	|//|	__0_ - __9_		 //	Bend		: 0011	: NE
-		//uint32_t m_south		=  000;	|//|	_0__ - _9__		 //	T junction	: 1011	: NEW
+		//uint32_t m_north		=    0;	|//|	___0 - ___9		 //	Straight	: 0101	: _S_N
+		//uint32_t m_east		=   00;	|//|	__0_ - __9_		 //	Bend		: 0011	: __EN
+		//uint32_t m_south		=  000;	|//|	_0__ - _9__		 //	T junction	: 1011	: W_EN
 		//uint32_t m_west		= 0000;	|//|	0___ - 9___		 //	Four way	: 1111	: NESW
 		uint16_t connectionDirections = 0000;
 		//Read only
@@ -89,20 +89,26 @@ namespace Aen {
 	static std::vector<uint16_t> threeway;
 	static std::vector<uint16_t> fourway;
 
-	static std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::vector<uint16_t> > > masterRoomMap;
+
+
+	static std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< std::uint16_t, std::vector<uint16_t> > > > masterRoomMap;
+
+
 
 	static const int mapSize = 8;
 	static float roomDimension = 1;
 	static Room map[mapSize][mapSize];
 
+	static RoomTheme m_mapTheme = RoomTheme::PLACEHOLDER;
 	
 	class LevelGenerator {
 	private:
-		static Room RNGRoomFromVector(std::vector<uint16_t>& roomVec);
+		static Room RNGRoomFromVector(std::vector<uint16_t>* roomVec);
 		static Room RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex);
 		static void AlignRoom(Room* room, const uint16_t& connectionDir, unsigned char& type);
 
-
+	protected:
+		static std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
 	public:
 		static Room* GenerateLevel();
 

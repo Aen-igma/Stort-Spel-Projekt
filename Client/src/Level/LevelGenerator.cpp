@@ -5,10 +5,10 @@
 namespace Aen 
 {
 
-	Room LevelGenerator::RNGRoomFromVector(std::vector<uint16_t>& roomVec) {
+	Room LevelGenerator::RNGRoomFromVector(std::vector<uint16_t>* roomVec) {
 		//Todo implement weigths
 
-		return levelRoom[roomVec[LehmerInt() % roomVec.size()]];
+		return levelRoom[(*roomVec)[LehmerInt() % roomVec->size()]];
 	};
 
 	Room LevelGenerator::RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex) {
@@ -17,7 +17,7 @@ namespace Aen
 		if (connectionDir < 1 || connectionDir > 9999) {
 			return result; //Backup incase of invalid direction
 		}
-
+		static int rerolls;
 
 		uint32_t weightS = 15;
 		uint32_t weightB = 15;
@@ -30,24 +30,26 @@ namespace Aen
 		unsigned char type = 0;
 
 		if (randNum < weightS) {
-			result = RNGRoomFromVector(straight);
+			result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 101));
 			type = 1;
 		}
 		else if (randNum < (weightB + weightS)) {
-			result = RNGRoomFromVector(bend);
+			result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 11));
 			type = 2;
 		}
 		else if (randNum < (weightT + weightB + weightS)) {
-			result = RNGRoomFromVector(threeway);
+			result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 1011));
 			type = 3;
 		}
 		else if (randNum < (weightF + weightT + weightB + weightS)) {
-			result = RNGRoomFromVector(fourway);
+			result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 1111));
 			type = 4;
 		}
-		if (result.m_roomIndex == roomIndex) {
-			RNGRoom(connectionDir, roomIndex);
+		if (result.m_roomIndex == roomIndex && rerolls < 4) {
+			result = RNGRoom(connectionDir, roomIndex);
+			rerolls++;
 		}
+		rerolls = 0;
 		AlignRoom(&result, connectionDir, type);
 		//result.m_present = true;
 		return result;
@@ -162,6 +164,11 @@ namespace Aen
 	}
 
 
+	std::vector<uint16_t>* LevelGenerator::GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir)
+	{
+		return &masterRoomMap[theme][special][connectionDir];
+	}
+
 	Room* LevelGenerator::GenerateLevel() {
 
 		for (int y = 0; y < mapSize; y++) {
@@ -171,10 +178,10 @@ namespace Aen
 		}
 
 		int r = LehmerInt() % 4;
-		map[3][4] = RNGRoomFromVector(levelEntrances);
+		map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
 
 		bool openConnections = true;
-		int maxRooms = 24; //Soft limit
+		int maxRooms = 16; //Soft limit
 
 		while (openConnections && maxRooms > 0) {
 			int numOpenConnections = 0;		//Tracks how many connections are open
@@ -242,12 +249,15 @@ namespace Aen
 	{
 		char cmap[mapSize * 3][mapSize * 3];
 
+		m_mapTheme = RoomTheme::PLACEHOLDER;
 
 		//Straight corridors
 		Room a;
 		a.m_baseChance = 0xf;
 		a.connectionDirections = 101;
 		a.m_present = true;
+		a.m_roomTheme = m_mapTheme;
+		AddRoomToGeneration(&a);
 
 
 		//90 degree corners
@@ -255,6 +265,8 @@ namespace Aen
 		b.m_baseChance = 0xf;
 		b.m_present = true;
 		b.connectionDirections = 11;
+		b.m_roomTheme = m_mapTheme;
+		AddRoomToGeneration(&b);
 
 
 		//T junction
@@ -263,6 +275,8 @@ namespace Aen
 		c.m_baseChance = 0xf;
 		c.connectionDirections = 1011;
 		c.m_present = true;
+		c.m_roomTheme = m_mapTheme;
+		AddRoomToGeneration(&c);
 
 
 		//4-way junction
@@ -270,24 +284,16 @@ namespace Aen
 		d.m_baseChance = 0xf;
 		d.connectionDirections = 1111;
 		d.m_present = true;
+		d.m_roomTheme = m_mapTheme;
+		AddRoomToGeneration(&d);
 
-
-		for (int i = 0; i < 4; i++) {
-			a.m_roomTheme = (RoomTheme)i;
-			b.m_roomTheme = (RoomTheme)i;
-			c.m_roomTheme = (RoomTheme)i;
-			d.m_roomTheme = (RoomTheme)i;
-			AddRoomToGeneration(&a);
-			AddRoomToGeneration(&b);
-			AddRoomToGeneration(&c);
-			AddRoomToGeneration(&d);
-		}
 
 		//entrance
 		Room e;
 		e.m_baseChance = 0xf;
 		e.m_present = true;
 		e.m_roomSpecial = SpecialRoom::ENTRANCE;
+		e.m_roomTheme = m_mapTheme;
 		for (int x = 1; x < 1001; x *= 10) {
 			e.connectionDirections = x;
 			AddRoomToGeneration(&e);
@@ -349,6 +355,8 @@ namespace Aen
 		room->m_roomIndex = levelRoom.size();
 
 		levelRoom.push_back(*room);
+
+		masterRoomMap[room->m_roomTheme][room->m_roomSpecial][room->connectionDirections].push_back(room->m_roomIndex);
 
 		//room->m_roomIndex = roomMap[std::make_tuple(room->connectionDirections, (uint16_t)room->m_roomSpecial, (uint16_t)room->m_roomTheme)].size();
 		//roomMap[std::make_tuple(room->connectionDirections, (uint16_t)room->m_roomSpecial, (uint16_t)room->m_roomTheme)].push_back(*room);
@@ -430,6 +438,7 @@ namespace Aen
 		m_present = false;
 		m_roomSpecial = SpecialRoom::NONE;
 
+		mptr_mesh = nullptr;
 
 		//connection location
 		connectionDirections = 0;
@@ -447,7 +456,10 @@ namespace Aen
 		m_enclosed = p.m_enclosed; //Var used in level generation, true when room is surrounded
 		m_present = p.m_present;
 		m_roomSpecial = p.m_roomSpecial;
+		m_roomTheme = p.m_roomTheme;
 
+		mptr_mesh = p.mptr_mesh;
+		this->m_roomIndex = p.m_roomIndex;
 
 		//connection location
 		connectionDirections = p.connectionDirections;
