@@ -1,3 +1,6 @@
+// LevelImporter
+
+
 #include "PCH.h"
 #include "LevelImporter.h"
 
@@ -177,7 +180,7 @@ namespace AenIMP {
 
 	LevelImporter::LevelImporter()
 	{
-		
+
 	}
 
 	LevelImporter::~LevelImporter()
@@ -299,7 +302,6 @@ namespace AenIMP {
 	{
 		return roomVector;
 	}
-	
 
 
 
@@ -365,7 +367,7 @@ namespace AenIMP {
 		}
 	}
 
-	
+
 
 	void CompleteRoom::addRoom(Room* input)
 	{
@@ -441,14 +443,37 @@ namespace AenIMP {
 		for (int i = 0; i < 3; i++)
 		{
 			temp.translation[i] = input->particle->translation[i];
-			
 		}
 		particleVector.push_back(temp);
 	}
+
+	AenIF::Room& CompleteRoom::GetRoom()
+	{
+		return room;
+	}
+
 	vector<AenIF::Model>& CompleteRoom::GetModelVector()
 	{
 		return modelVector;
 	}
+
+	vector<AenIF::Texture>& CompleteRoom::GetTextureVector()
+	{
+		return textureVector;
+	}
+
+	vector<AenIF::Material>& CompleteRoom::GetMaterialVector()
+	{
+		return materialVector;
+	}
+
+	vector<AenIF::Light>& CompleteRoom::GetLightVector()
+	{
+		return lightVector;
+	}
+
+	vector<AenIF::Particle>& CompleteRoom::GetParticleVector()
+	{
+		return particleVector;
+	}
 }
-
-

@@ -1,3 +1,5 @@
+// LevelImporter
+
 #pragma once
 #include "LevelHeader.h"
 #include "RoomFormat.h"
@@ -16,7 +18,7 @@ using std::vector;
 
 namespace AenIMP
 {
-	
+
 	struct Room
 	{
 		Aen::RoomHeader roomHeader;
@@ -112,33 +114,36 @@ namespace AenIMP
 		void addMaterial(Material* input);
 		void addLight(Light* input);
 		void addParticle(Particle* input);
-		
-		vector<AenIF::Model>& GetModelVector();
 
+		AenIF::Room & GetRoom();
+		vector<AenIF::Model>& GetModelVector();
+		vector<AenIF::Texture>& GetTextureVector();
+		vector<AenIF::Material>& GetMaterialVector();
+		vector<AenIF::Light>& GetLightVector();
+		vector<AenIF::Particle>& GetParticleVector();
 	};
 
 	class LevelImporter
 	{
-		private:
-			ifstream infile;
-			std::vector<CompleteRoom> roomVector;
+	private:
+		ifstream infile;
+		std::vector<CompleteRoom> roomVector;
 
-		public:
-			LevelImporter();
-			~LevelImporter();
+	public:
+		LevelImporter();
+		~LevelImporter();
 
-			// Opens a binary file at input [filePath].
-			// Reads all data inside and stores it in a pre defined std::map, then closes the file.    
-			void ReadFromFile(string filePath);
+		// Opens a binary file at input [filePath].
+		// Reads all data inside and stores it in a pre defined std::map, then closes the file.    
+		void ReadFromFile(string filePath);
 
-			// Opens a binary file at input [filepath].
-			void OpenFile(string filePath);
+		// Opens a binary file at input [filepath].
+		void OpenFile(string filePath);
 
-			// Closes the currently opened binary file.
-			void CloseFile();
-			void printArray();
+		// Closes the currently opened binary file.
+		void CloseFile();
+		void printArray();
 
-			vector<CompleteRoom>& GetRoomVector();
-
+		vector<CompleteRoom>& GetRoomVector();
 	};
 }
