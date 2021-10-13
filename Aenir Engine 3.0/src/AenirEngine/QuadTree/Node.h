@@ -4,7 +4,8 @@
 #include <algorithm>
 #include <vector>
 #include <functional>
-
+#include <DirectXMath.h>
+#include <DirectXCollision.h>
 
 //Axis aligned bounding box with half dimension and center
 struct AABB
@@ -16,7 +17,7 @@ struct AABB
 	AABB(const Aen::Vec2f& min, const Aen::Vec2f& max);
 	AABB(const double& minX, const double& minY, const double& maxX, const double& maxY);
 	bool within(const int& posX, const int& posY) const;
-	bool intersects(const AABB& bound)const;
+	//bool intersects(const AABB& bound)const;
 };
 
 struct Object
@@ -38,15 +39,18 @@ public:
 	Node();
 	Node(AABB& quad, const unsigned& level = 0, 
 		const unsigned& max_level = 1, const unsigned& capacity = 3);
+	Node(DirectX::BoundingBox& quad, const unsigned& level = 0,
+		const unsigned& max_level = 1, const unsigned& capacity = 3);
 	~Node();
 	
-	void insert(Object* obj);
+	void insert(DirectX::BoundingBox* obj);
 	void clear();
 
 private:
 	Node* m_children[4] = { nullptr };
 	AABB* m_NodeAABB;
-	std::vector<Object*> m_Objects;
+	DirectX::BoundingBox m_DirectXAABB;
+	std::vector<DirectX::BoundingBox*> m_Objects;
 	unsigned m_level;
 	unsigned m_maxLevel;
 	unsigned m_capacity;

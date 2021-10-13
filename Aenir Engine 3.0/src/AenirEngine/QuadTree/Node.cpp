@@ -12,7 +12,7 @@ AABB::AABB(const Aen::Vec2f& min, const Aen::Vec2f& max)
 	maxLeft(Aen::Vec2f(min.x, max.y)), minRight(Aen::Vec2f(max.x, min.y)),
 	m_center(Aen::Vec2f(max.x / 2, max.y / 2))
 {
-
+	
 }
 
 AABB::AABB(const double& minX, const double& minY, const double& maxX, const double& maxY)
@@ -39,23 +39,24 @@ bool AABB::within(const int& posX, const int& posY) const
 	return false; // return nothing
 }
 
-bool AABB::intersects(const AABB& bound) const
-{
-	if (bound.minRight.x <= minLeft.x && bound.maxRight.y <= maxLeft.y)
-		return false;
-	if (bound.minLeft.x <= minRight.x && bound.maxLeft.y <= maxRight.y)
-		return false;
-	if (bound.minLeft.y <= maxRight.y)
-		return false;
-	if (bound.maxRight.y <= minLeft.y)
-		return false;
-	return true;
-}
+//bool AABB::intersects(const AABB& bound) const
+//{
+//
+//	if (bound.minRight.x <= minLeft.x && bound.maxRight.y <= maxLeft.y)
+//		return false;
+//	if (bound.minLeft.x <= minRight.x && bound.maxLeft.y <= maxRight.y)
+//		return false;
+//	if (bound.minLeft.y <= maxRight.y)
+//		return false;
+//	if (bound.maxRight.y <= minLeft.y)
+//		return false;
+//	return true;
+//}
 
 Object::Object(const AABB& boundery, void* data)
 	:m_Objbound(boundery), m_data(data)
 {
-
+	
 }
 
 void Object::setData(void* data)
@@ -87,14 +88,23 @@ Node::Node(AABB& quad, const unsigned& level, const unsigned& max_level, const u
 	
 }
 
+Node::Node(DirectX::BoundingBox& quad, const unsigned& level, const unsigned& max_level, const unsigned& capacity)
+{
+	//Create node and get quad that was calculated by parent
+	this->m_DirectXAABB = quad;
+	this->m_level = level;
+	this->m_maxLevel = max_level;
+	this->m_capacity = capacity;
+}
+
 Node::~Node()
 {
 
 }
 
-void Node::insert(Object* obj)
+void Node::insert(DirectX::BoundingBox* obj)
 {
-	if(!m_children[0]) //If Nullptr then this is a leaf 
+	if(!m_children[0]) //If nullptr then this is a leaf 
 	{
 		if (m_Objects.size() <= m_capacity) //if there is space in this quad
 		{
@@ -111,10 +121,14 @@ void Node::insert(Object* obj)
 	{
 		for (int i = 0; i < 4; i++)//Kollar igenom alla children
 		{
-			if(m_children[i]->m_NodeAABB->intersects(obj->m_Objbound))
+			if (m_children[i]->m_DirectXAABB.Intersects(*obj))
+			{
+				m_children[i]->insert(obj);
+			}
+			/*if(m_children[i]->m_NodeAABB->intersects(obj->m_Objbound))
 			{
 				m_children[i]->m_Objects.push_back(obj);
-			}
+			}*/
 		}
 
 	}
@@ -128,45 +142,39 @@ void Node::clear()
 
 void Node::subdivide()
 {
-	//Make New Children
-	m_children[0] = new Node(*m_NodeAABB, m_level, m_maxLevel, m_capacity);
-	m_children[1] = new Node(*m_NodeAABB, m_level, m_maxLevel, m_capacity);
-	m_children[2] = new Node(*m_NodeAABB, m_level, m_maxLevel, m_capacity);
-	m_children[3] = new Node(*m_NodeAABB, m_level, m_maxLevel, m_capacity);
+	//------------- Make child quads -------------------//
+	DirectX::XMFLOAT3 tempCenter = DirectX::XMFLOAT3(m_DirectXAABB.Center.x / 2, m_DirectXAABB.Center.y / 2, m_DirectXAABB.Center.z);
+	DirectX::XMFLOAT3 tempExtends = DirectX::XMFLOAT3(m_DirectXAABB.Extents.x / 2, m_DirectXAABB.Extents.y / 2, m_DirectXAABB.Extents.z);
+	DirectX::BoundingBox tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
+	m_children[0] = new Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
-	////------------- Make temp Quads ------------//
-	//AABB tempQuad1 = AABB(this->m_NodeAABB.minLeft.m_x, this->m_quad.minLeft.m_y, this->m_quad.maxRight.m_x / 2, this->m_quad.maxRight.m_y / 2); //TopLeft
-	//AABB tempQuad2 = AABB(this->m_NodeAABB.minRight.m_x / 2, this->m_quad.minRight.m_y, this->m_quad.maxRight.m_x, this->m_quad.maxRight.m_y / 2); //TopRight
-	//AABB tempQuad3 = AABB(this->m_NodeAABB.maxLeft.m_x, this->m_quad.maxLeft.m_y / 2, this->m_quad.maxRight.m_x / 2, this->m_quad.maxRight.m_y); //BotLeft
-	//AABB tempQuad4 = AABB(this->m_NodeAABB.maxRight.m_x / 2, this->m_quad.maxRight.m_y / 2, this->m_quad.maxRight.m_x, this->m_quad.maxRight.m_y); //BotRight
-	//int tempArrSize1 = 0;
-	//int tempArrSize2 = 0;
-	//int tempArrSize3 = 0;
-	//int tempArrSize4 = 0;
-	//Object* tempArr1 = new Object;
-	//Object* tempArr2 = new Object;
-	//Object* tempArr3 = new Object;
-	//Object* tempArr4 = new Object;
-	////------------- Check which objects is in which quad ---------------//
-	//// Compare all elements in m_Objects[] with the temp quads and put objects belonging in a quad into it's corresponding array
-	//int nrOfElements = 10;
-	//for (int i = 0; i < nrOfElements; i++)
-	//{
-	//	if (tempQuad1.intersects(m_Objects[i].m_Objbound))
-	//		tempArr1[tempArrSize1++] = m_Objects[i].m_Objbound;
-	//	if (tempQuad2.intersects(m_Objects[i].m_Objbound))
-	//		tempArr2[tempArrSize2++] = m_Objects[i].m_Objbound;
-	//	if (tempQuad3.intersects(m_Objects[i].m_Objbound))
-	//		tempArr3[tempArrSize3++] = m_Objects[i].m_Objbound;
-	//	if (tempQuad4.intersects(m_Objects[i].m_Objbound))
-	//		tempArr4[tempArrSize4++] = m_Objects[i].m_Objbound;
-	//};
-	////------------- Make child quads -------------------//
-	//m_children[0] = new Quadtree(tempQuad1, m_capacity, m_maxLevel, m_level + 1, tempArr1, tempArrSize1);
-	//m_children[1] = new Quadtree(tempQuad2, m_capacity, m_maxLevel, m_level + 1, tempArr2, tempArrSize2);
-	//m_children[2] = new Quadtree(tempQuad3, m_capacity, m_maxLevel, m_level + 1, tempArr3, tempArrSize3);
-	//m_children[3] = new Quadtree(tempQuad4, m_capacity, m_maxLevel, m_level + 1, tempArr4, tempArrSize4);
-	//m_Objects = nullptr;
+	tempCenter = DirectX::XMFLOAT3(m_DirectXAABB.Center.x + m_DirectXAABB.Extents.x/2,
+		m_DirectXAABB.Center.y - m_DirectXAABB.Extents.y/2, m_DirectXAABB.Center.z);
+	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
+	m_children[1] = new Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
+	tempCenter = DirectX::XMFLOAT3(m_DirectXAABB.Center.x - m_DirectXAABB.Extents.x/2, 
+		m_DirectXAABB.Center.y + m_DirectXAABB.Extents.y/2, m_DirectXAABB.Center.z);
+	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
+	m_children[2] = new Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
+	tempCenter = DirectX::XMFLOAT3(m_DirectXAABB.Center.x + m_DirectXAABB.Extents.x/2, 
+		m_DirectXAABB.Center.y + m_DirectXAABB.Extents.y/2, m_DirectXAABB.Center.z);
+	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
+	m_children[3] = new Node(tempQuad, m_level, m_maxLevel, m_capacity);
+	
+	//------------- Check which objects is in which quad ---------------//
+	for (auto && box : m_Objects)
+	{
+		if (m_children[0]->m_DirectXAABB.Intersects(*box))
+			m_children[0]->insert(box);
+		if (m_children[1]->m_DirectXAABB.Intersects(*box))
+			m_children[1]->insert(box);
+		if (m_children[2]->m_DirectXAABB.Intersects(*box))
+			m_children[2]->insert(box);
+		if (m_children[3]->m_DirectXAABB.Intersects(*box))
+			m_children[3]->insert(box);
+	}
+
+	m_Objects.clear();
 }

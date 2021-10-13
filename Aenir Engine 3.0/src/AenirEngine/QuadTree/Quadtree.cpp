@@ -21,6 +21,14 @@ Quadtree::Quadtree(AABB quad, const unsigned& level,
 	std::cout << "I'm done: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
 }
 
+Quadtree::Quadtree(DirectX::BoundingBox quad, const unsigned& level,
+	const unsigned& maxLevel, const unsigned& capacity)
+{
+	this->root = new Node(quad, capacity, maxLevel, level);
+
+	std::cout << "I'm done: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
+}
+
 Quadtree::~Quadtree()
 {
 
