@@ -21,22 +21,27 @@ Quadtree::Quadtree(AABB quad, const unsigned& level,
 	std::cout << "I'm done: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
 }
 
-Quadtree::Quadtree(DirectX::BoundingBox quad, const unsigned& level,
+Quadtree::Quadtree(DirectX::BoundingBox &quad, const unsigned& level,
 	const unsigned& maxLevel, const unsigned& capacity)
 {
-	this->root = new Node(quad, capacity, maxLevel, level);
+	this->root = new Node(quad, level, maxLevel, capacity);
 
-	std::cout << "I'm done: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
+	std::cout << "I'm root: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
 }
 
 Quadtree::~Quadtree()
 {
-
+	delete this->root;
 }
 
 void Quadtree::insertNode(DirectX::BoundingBox* obj)
 {
 	this->root->insert(obj); //Har en parent realtion med node - detaljerad beskriving senare 
+}
+
+Node* Quadtree::getRoot()
+{
+	return this->root;
 }
 
 

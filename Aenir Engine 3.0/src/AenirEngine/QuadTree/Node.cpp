@@ -95,11 +95,19 @@ Node::Node(DirectX::BoundingBox& quad, const unsigned& level, const unsigned& ma
 	this->m_level = level;
 	this->m_maxLevel = max_level;
 	this->m_capacity = capacity;
+	std::cout << "I'm child: \nLevel : " << level << std::endl << std::endl; 
 }
 
 Node::~Node()
 {
-
+	if (!m_children[0])
+	{
+		for (int i = 0; i < m_Objects.size(); i++)
+		{
+			delete m_Objects[i];	
+		}
+		m_Objects.clear();
+	}
 }
 
 void Node::insert(DirectX::BoundingBox* obj)
@@ -112,9 +120,12 @@ void Node::insert(DirectX::BoundingBox* obj)
 		}
 		else
 		{
-			subdivide(); //
-			insert(obj); //Skickar obj tillbaka för att checka igen om det är ett leaf
+			if(m_level < m_maxLevel)
+			{
+				subdivide(); //
+				insert(obj); //Skickar obj tillbaka för att checka igen om det är ett leaf
 
+			}
 		}
 	}
 	else //If not nullptr then it is not a leaf
@@ -134,6 +145,29 @@ void Node::insert(DirectX::BoundingBox* obj)
 	}
 }
 
+bool Node::inside(DirectX::BoundingBox& playerBox)
+{
+
+	if (!m_children[0]) // if player is inside a leaf quad
+	{
+		if (m_DirectXAABB.Intersects(playerBox))
+		{
+			std::cout << "I'm in a leaf quad on level: " << m_level << std::endl;
+			std::cout << "This Quad has this many objects: " << m_Objects.size() << std::endl;
+			return true;
+		}
+	}
+	else
+	{
+		m_children[0]->inside(playerBox);
+		m_children[1]->inside(playerBox);
+		m_children[2]->inside(playerBox);
+		m_children[3]->inside(playerBox);
+	}
+
+	return false;
+}
+
 
 void Node::clear()
 {
@@ -143,6 +177,7 @@ void Node::clear()
 void Node::subdivide()
 {
 	//------------- Make child quads -------------------//
+	this->m_level++;
 	DirectX::XMFLOAT3 tempCenter = DirectX::XMFLOAT3(m_DirectXAABB.Center.x / 2, m_DirectXAABB.Center.y / 2, m_DirectXAABB.Center.z);
 	DirectX::XMFLOAT3 tempExtends = DirectX::XMFLOAT3(m_DirectXAABB.Extents.x / 2, m_DirectXAABB.Extents.y / 2, m_DirectXAABB.Extents.z);
 	DirectX::BoundingBox tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
@@ -162,7 +197,7 @@ void Node::subdivide()
 		m_DirectXAABB.Center.y + m_DirectXAABB.Extents.y/2, m_DirectXAABB.Center.z);
 	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
 	m_children[3] = new Node(tempQuad, m_level, m_maxLevel, m_capacity);
-	
+
 	//------------- Check which objects is in which quad ---------------//
 	for (auto && box : m_Objects)
 	{

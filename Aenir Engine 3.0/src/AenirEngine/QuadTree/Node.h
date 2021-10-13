@@ -37,13 +37,14 @@ class Node
 {
 public:
 	Node();
-	Node(AABB& quad, const unsigned& level = 0, 
+	Node(AABB& quad, const unsigned& level = 0,
 		const unsigned& max_level = 1, const unsigned& capacity = 3);
 	Node(DirectX::BoundingBox& quad, const unsigned& level = 0,
 		const unsigned& max_level = 1, const unsigned& capacity = 3);
 	~Node();
-	
+
 	void insert(DirectX::BoundingBox* obj);
+	bool inside(DirectX::BoundingBox& playerBox);
 	void clear();
 
 private:
@@ -56,4 +57,4 @@ private:
 	unsigned m_capacity;
 
 	void subdivide();
-}
+};

@@ -19,8 +19,10 @@ namespace Aen {
 
 		//Quadtree
 		Quadtree* m_Quadtree;
-		AABB* m_AxisAlignedBoundBox;
-		Object* m_Object;
+		DirectX::BoundingBox m_WorldBox;
+		DirectX::BoundingBox m_TempPlayer;
+		//AABB* m_AxisAlignedBoundBox;
+		//Object* m_Object;
 
 		DirectX::BoundingBox* m_boundingBoxes; //Temp behållare för bounding box. Ska simulera våra statiska objekt
 

@@ -9,13 +9,13 @@ public:
 	Quadtree();
 	Quadtree(AABB quad, const unsigned& level = 0, 
 		const unsigned& maxLevel = 1, const unsigned& capacity = 3);
-	Quadtree(DirectX::BoundingBox quad, const unsigned& level = 0,
+	Quadtree(DirectX::BoundingBox &quad, const unsigned& level = 0,
 		const unsigned& maxLevel = 1, const unsigned& capacity = 3);
 	~Quadtree();
 	/*Quadtree(const Aen::Vec2f& min, const Aen::Vec2f& max, const unsigned& capacity = 3,
 		const unsigned& maxLevel = 1, const unsigned& level = 0);*/
 	void insertNode(DirectX::BoundingBox* obj);
-
+	Node* getRoot();
 
 private:
 	Node* root;
