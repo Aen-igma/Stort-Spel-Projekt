@@ -78,7 +78,7 @@ namespace Aen {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
-				if(Input::KeyPress(Key::A))
+				if(Input::KeyPress(Key::B))
 				{
 					m_Quadtree->getRoot()->inside(m_TempPlayer);
 				}
