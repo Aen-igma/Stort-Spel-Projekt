@@ -28,7 +28,6 @@ namespace Aen {
 
 		// imGui initialize
 		#ifdef _DEBUG
-			Aen::GlobalSettings::GetImGuiHandler()->Initialize(m_app->m_window.GetWHND(), GCore::m_device.Get(), GCore::m_dContext.Get());
 		#endif	
 		
 		m_app->Start();
@@ -56,7 +55,6 @@ namespace Aen {
 		// Destroy imGui
 
 	#ifdef _DEBUG
-		Aen::GlobalSettings::GetImGuiHandler()->Release();
 		delete Aen::GlobalSettings::GetImGuiHandler();
 	#endif
 		PhysXService::GetInstance()->ClosePhysics();
