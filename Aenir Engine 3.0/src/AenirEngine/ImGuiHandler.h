@@ -52,6 +52,6 @@ namespace Aen {
 
 		void ReadAllFilesFromResourceFolder();
 
-		void LoadLevel(int& index);
+		void LoadLevel(int index);
 	};
 }

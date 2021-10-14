@@ -23,7 +23,7 @@ namespace Aen
 		return m_entityList;
 	}
 
-	void ImGuiHandler::LoadLevel(int& index)
+	void ImGuiHandler::LoadLevel(int index)
 	{
 		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetModelVector().size(); i++)
 		{

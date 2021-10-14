@@ -90,6 +90,10 @@ void Client::Start() {
 	m_cube.SetPos(0.f, 8.f, 10.f);
 	m_cube.SetScale(20.f, 20.f, 1.f);
 
+	Aen::GlobalSettings::GetImGuiHandler()->ReadAllFilesFromResourceFolder();
+	//Aen::GlobalSettings::GetImGuiHandler()->LoadLevel(0);
+
+
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
@@ -296,7 +300,20 @@ void Client::Update(const float& deltaTime) {
 
 bool levelBuilder::CreateRooms(Aen::Entity** storage, uint8_t x, uint8_t y)
 {
-	return false;
+	static const Aen::Room* map_ptr = Aen::LevelGenerator::GetMapPointer();
+
+	if (storage[x + y * Aen::mapSize] == nullptr) {
+		storage[x + y * Aen::mapSize] = new Aen::Entity();
+		storage[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
+		storage[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh((Aen::Mesh&)map_ptr[x + y * Aen::mapSize].mptr_mesh);
+	}
+	else {
+		storage[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh((Aen::Mesh&)map_ptr[x + y * Aen::mapSize].mptr_mesh);
+	}
+	storage[x + y * Aen::mapSize]->SetPos(x * 2, 0.f, y * 2);
+
+
+	return true;
 }
 
 levelBuilder::levelBuilder()
