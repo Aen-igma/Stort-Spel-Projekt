@@ -7,54 +7,37 @@
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
 
-//Axis aligned bounding box with half dimension and center
-struct AABB
-{
-	Aen::Vec2f minLeft, minRight, maxLeft, maxRight; // top left, top right, bottom left, bottom right
-	Aen::Vec2f m_center;
 
-	AABB();
-	AABB(const Aen::Vec2f& min, const Aen::Vec2f& max);
-	AABB(const double& minX, const double& minY, const double& maxX, const double& maxY);
-	bool within(const int& posX, const int& posY) const;
-	//bool intersects(const AABB& bound)const;
-};
-
-struct Object
+struct ObjeStruct
 {
-	friend class Quadtree;
-public:
-	AABB m_Objbound;
-	Object() { };
-	Object(const AABB&, void* data = nullptr);
-	void setData(void* data);
-	void* getData() const;
-private:
-	void* m_data = nullptr;
+	int m_ID;
+	DirectX::BoundingBox* mp_boundBox;
+
+	ObjeStruct();
+	ObjeStruct(int ID, DirectX::BoundingBox* boundingBox);
+	~ObjeStruct();
+
 };
 
 class Node
 {
 public:
 	Node();
-	Node(AABB& quad, const unsigned& level = 0,
-		const unsigned& max_level = 1, const unsigned& capacity = 3);
 	Node(DirectX::BoundingBox& quad, const unsigned& level = 0,
 		const unsigned& max_level = 1, const unsigned& capacity = 3);
 	~Node();
-
-	void insert(DirectX::BoundingBox* obj);
+	void insert(ObjeStruct* obj);
 	bool inside(DirectX::BoundingBox& playerBox);
-	void clear();
-
+	// Builds vector that is view frustrum culled
+	void intersectTest(const DirectX::BoundingFrustum &other, std::vector<int>& output); //Output = Id for objects
+	//Problem kan vara att flera noder kan uppstå, behövs fixas senare.
 private:
 	Node* m_children[4] = { nullptr };
-	AABB* m_NodeAABB;
 	DirectX::BoundingBox m_DirectXAABB;
 	std::vector<DirectX::BoundingBox*> m_Objects;
+	std::vector<ObjeStruct*> m_Objs;
 	unsigned m_level;
 	unsigned m_maxLevel;
 	unsigned m_capacity;
-
 	void subdivide();
 };

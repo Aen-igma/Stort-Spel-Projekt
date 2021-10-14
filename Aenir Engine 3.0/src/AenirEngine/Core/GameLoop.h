@@ -7,7 +7,6 @@
 #include "ThirdParty/ImGui/imgui_impl_dx11.h"
 
 namespace Aen {
-
 	extern App* CreateApp();
 
 	class AEN_DECLSPEC GameLoop {
@@ -23,11 +22,6 @@ namespace Aen {
 		DirectX::BoundingBox m_TempPlayer;
 		DirectX::XMFLOAT3 m_PlayerCenter;
 		DirectX::XMFLOAT3 m_PlayerSizes;
-		//AABB* m_AxisAlignedBoundBox;
-		//Object* m_Object;
-
-		DirectX::BoundingBox* m_boundingBoxes; //Temp behållare för bounding box. Ska simulera våra statiska objekt
-
 
 		int m_quadCap = 10;
 		float m_minX;
