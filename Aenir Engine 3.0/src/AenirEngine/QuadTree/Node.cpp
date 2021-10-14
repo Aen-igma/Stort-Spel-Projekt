@@ -171,7 +171,12 @@ bool Node::inside(DirectX::BoundingBox& playerBox)
 
 void Node::clear()
 {
-	//Delete function for objects
+	/*if (m_children[0])
+	{
+		for (int i = 0; i < 4; i++)
+			m_children[i]->clear();
+	}*/
+	
 }
 
 void Node::subdivide()

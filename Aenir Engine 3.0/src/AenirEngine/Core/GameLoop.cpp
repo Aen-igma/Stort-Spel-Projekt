@@ -40,24 +40,23 @@ namespace Aen {
 		DirectX::XMFLOAT3 tempWorldCenter = DirectX::XMFLOAT3(m_maxX/2, m_maxY/2, 0);
 		DirectX::XMFLOAT3 tempHalfExtent = DirectX::XMFLOAT3(m_maxX / 2, m_maxY / 2, m_maxY / 2);
 		m_WorldBox = DirectX::BoundingBox(tempWorldCenter, tempHalfExtent);
-		//m_AxisAlignedBoundBox = new AABB(this->m_minX, this->m_minY, this->m_maxX, this->m_maxY);
 		//QuadTree
 		m_Quadtree = new Quadtree(m_WorldBox, 0, 3, m_quadCap);
-		//m_Quadtree = new Quadtree(*m_AxisAlignedBoundBox, 0, 3, m_quadCap);
-		//List of all static objects in the world bellow
 
+		//List of all static objects in the world bellow
 		m_boundingBoxes = new DirectX::BoundingBox[10];
 		for (int i = 0; i < 10; i++)
 		{
-			m_boundingBoxes[i] = DirectX::BoundingBox(DirectX::XMFLOAT3(1.f + i*4, 1.f, 0.f), DirectX::XMFLOAT3(1.f, 1.f, 1.f));
+			m_boundingBoxes[i] = DirectX::BoundingBox(DirectX::XMFLOAT3(1.f + i*4, 1.f, 1.f + i*3), DirectX::XMFLOAT3(1.f, 1.f, 1.f));
 		}
 		//for-loop going through all static objects in the world and inserting them one by one
 		for (int i = 0; i < 10; i++)
 		{
 			m_Quadtree->insertNode(&m_boundingBoxes[i]);
 		}
-		DirectX::XMFLOAT3 playerCenter = DirectX::XMFLOAT3(10, 10, 0);
-		m_TempPlayer = DirectX::BoundingBox(playerCenter, DirectX::XMFLOAT3(1, 1, 1));
+		m_PlayerCenter = DirectX::XMFLOAT3(10, 10, 0);
+		m_PlayerSizes = DirectX::XMFLOAT3(1, 1, 1);
+		m_TempPlayer = DirectX::BoundingBox(m_PlayerCenter, m_PlayerSizes);
 
 
 		std::cout << std::endl;
@@ -78,10 +77,25 @@ namespace Aen {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
-				if(Input::KeyPress(Key::B))
+				if (GlobalSettings::GetMainCamera())
 				{
-					m_Quadtree->getRoot()->inside(m_TempPlayer);
+					if (Input::KeyDown(Key::B))
+					{
+						// when updating to never math library, replace this with .smvec
+						m_PlayerCenter = DirectX::XMFLOAT3(GlobalSettings::GetMainCamera()->GetPos().x, 
+							GlobalSettings::GetMainCamera()->GetPos().y, 
+							GlobalSettings::GetMainCamera()->GetPos().z);
+						m_TempPlayer = DirectX::BoundingBox(m_PlayerCenter, m_PlayerSizes);
+						m_Quadtree->getRoot()->inside(m_TempPlayer);
+					}
+					if (Input::KeyDown(Key::C))
+					{
+						std::cout << "Camera Position: " << GlobalSettings::GetMainCamera()->GetPos().x << ", " <<
+							GlobalSettings::GetMainCamera()->GetPos().y << ", " <<
+							GlobalSettings::GetMainCamera()->GetPos().z << std::endl;
+					}
 				}
+				
 				m_renderer->Render(); // VSync
 				
 			}
@@ -96,7 +110,11 @@ namespace Aen {
 
 		//Quadtree
 		//m_Quadtree->clear();
-		
+
+		//m_Quadtree->getRoot()->clear();
+
+		delete m_Quadtree;
+		delete[] m_boundingBoxes;
 
 		delete m_app;
 		delete m_renderer;

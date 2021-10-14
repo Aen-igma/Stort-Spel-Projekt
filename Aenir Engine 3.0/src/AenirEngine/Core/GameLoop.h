@@ -21,6 +21,8 @@ namespace Aen {
 		Quadtree* m_Quadtree;
 		DirectX::BoundingBox m_WorldBox;
 		DirectX::BoundingBox m_TempPlayer;
+		DirectX::XMFLOAT3 m_PlayerCenter;
+		DirectX::XMFLOAT3 m_PlayerSizes;
 		//AABB* m_AxisAlignedBoundBox;
 		//Object* m_Object;
 
