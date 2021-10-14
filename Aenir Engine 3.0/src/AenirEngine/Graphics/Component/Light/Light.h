@@ -43,6 +43,7 @@ namespace Aen {
 
 		friend class ComponentHandler;
 		friend class Renderer;
+
 	};
 
 	class AEN_DECLSPEC SpotLight : public Light {
@@ -58,6 +59,8 @@ namespace Aen {
 
 		friend class ComponentHandler;
 		friend class Renderer;
+		friend class ImGuiHandler;
+		//friend class LevelExporter;
 	};
 
 	class AEN_DECLSPEC PointLight : public Light {
@@ -74,6 +77,8 @@ namespace Aen {
 
 		friend class ComponentHandler;
 		friend class Renderer;
+		friend class ImGuiHandler;
+		//friend class LevelExporter;
 	};
 
 	class AEN_DECLSPEC DirectionalLight : public Light {
@@ -85,5 +90,7 @@ namespace Aen {
 
 		friend class ComponentHandler;
 		friend class Renderer;
+		friend class ImGuiHandler;
+		//friend class LevelExporter;
 	};
 }
