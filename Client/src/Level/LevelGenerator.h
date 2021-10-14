@@ -78,16 +78,16 @@ namespace Aen {
 
 
 	//Yes i know i need to do this a better way, i just haven't found out how yet
-	static std::vector<uint16_t> levelEntrances;
-	static std::vector<uint16_t> levelExit;
-	static std::vector<uint16_t> levelArena;
-	static std::vector<uint16_t> levelBoss;
-	static std::vector<uint16_t> levelItem;
+	//static std::vector<uint16_t> levelEntrances;
+	//static std::vector<uint16_t> levelExit;
+	//static std::vector<uint16_t> levelArena;
+	//static std::vector<uint16_t> levelBoss;
+	//static std::vector<uint16_t> levelItem;
 
-	static std::vector<uint16_t> straight;
-	static std::vector<uint16_t> bend;
-	static std::vector<uint16_t> threeway;
-	static std::vector<uint16_t> fourway;
+	//static std::vector<uint16_t> straight;
+	//static std::vector<uint16_t> bend;
+	//static std::vector<uint16_t> threeway;
+	//static std::vector<uint16_t> fourway;
 
 
 

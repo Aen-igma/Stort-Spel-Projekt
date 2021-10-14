@@ -294,10 +294,10 @@ namespace Aen
 		e.m_present = true;
 		e.m_roomSpecial = SpecialRoom::ENTRANCE;
 		e.m_roomTheme = m_mapTheme;
-		for (int x = 1; x < 1001; x *= 10) {
-			e.connectionDirections = x;
-			AddRoomToGeneration(&e);
-		}
+		e.connectionDirections = 1;
+		AddRoomToGeneration(&e);
+
+
 
 
 		for (int k = 0; k < 1; k++) {
@@ -361,45 +361,45 @@ namespace Aen
 		//room->m_roomIndex = roomMap[std::make_tuple(room->connectionDirections, (uint16_t)room->m_roomSpecial, (uint16_t)room->m_roomTheme)].size();
 		//roomMap[std::make_tuple(room->connectionDirections, (uint16_t)room->m_roomSpecial, (uint16_t)room->m_roomTheme)].push_back(*room);
 
-		switch (room->m_roomSpecial)
-		{
-		case SpecialRoom::NONE:
-			switch (room->connectionDirections)
-			{
-			case 101:
-				straight.push_back(room->m_roomIndex);
-				break;
-			case 11:
-				bend.push_back(room->m_roomIndex);
-				break;
-			case 1011:
-				threeway.push_back(room->m_roomIndex);
-				break;
-			case 1111:
-				fourway.push_back(room->m_roomIndex);
-				break;
-			default:
-				break;
-			}
-			break;
-		case SpecialRoom::ENTRANCE:
-			levelEntrances.push_back(room->m_roomIndex);
-			break;
-		case SpecialRoom::EXIT:
-			levelExit.push_back(room->m_roomIndex);
-			break;
-		case SpecialRoom::BOSS:
-			levelBoss.push_back(room->m_roomIndex);
-			break;
-		case SpecialRoom::ARENA:
-			levelArena.push_back(room->m_roomIndex);
-			break;
-		case SpecialRoom::ITEM:
-			levelItem.push_back(room->m_roomIndex);
-			break;
-		default:
-			break;
-		}
+		//switch (room->m_roomSpecial)
+		//{
+		//case SpecialRoom::NONE:
+		//	switch (room->connectionDirections)
+		//	{
+		//	case 101:
+		//		straight.push_back(room->m_roomIndex);
+		//		break;
+		//	case 11:
+		//		bend.push_back(room->m_roomIndex);
+		//		break;
+		//	case 1011:
+		//		threeway.push_back(room->m_roomIndex);
+		//		break;
+		//	case 1111:
+		//		fourway.push_back(room->m_roomIndex);
+		//		break;
+		//	default:
+		//		break;
+		//	}
+		//	break;
+		//case SpecialRoom::ENTRANCE:
+		//	levelEntrances.push_back(room->m_roomIndex);
+		//	break;
+		//case SpecialRoom::EXIT:
+		//	levelExit.push_back(room->m_roomIndex);
+		//	break;
+		//case SpecialRoom::BOSS:
+		//	levelBoss.push_back(room->m_roomIndex);
+		//	break;
+		//case SpecialRoom::ARENA:
+		//	levelArena.push_back(room->m_roomIndex);
+		//	break;
+		//case SpecialRoom::ITEM:
+		//	levelItem.push_back(room->m_roomIndex);
+		//	break;
+		//default:
+		//	break;
+		//}
 	}
 
 	const float& LevelGenerator::GetRoomDimension()
@@ -470,7 +470,5 @@ namespace Aen
 		m_dynamic2 = p.m_dynamic2;
 		m_dynamic3 = p.m_dynamic3;
 		m_dynamic4 = p.m_dynamic4;
-
 	}
-
 }
