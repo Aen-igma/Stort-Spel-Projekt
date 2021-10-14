@@ -24,7 +24,6 @@ namespace Aen {
 
 		AddModel(entity);
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
-
 	}
 
 	void ImGuiHandler::AddPointLight(AenIF::Light& input)
@@ -54,7 +53,6 @@ namespace Aen {
 		light->SetPos(input.translation[0], input.translation[1], input.translation[2]);
 		light->SetRot(input.rotation[0], input.rotation[1], input.rotation[2]);
 
-		//AddLight(light, "Spot light");
 		AddLight(light);
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 
@@ -69,7 +67,6 @@ namespace Aen {
 		light->GetComponent<Aen::DirectionalLight>().SetStrength(input.intensity);
 		light->SetRot(input.direction[0], input.direction[1], input.direction[2]);
 
-		//AddLight(light, "Directional light");
 		AddLight(light);
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 
@@ -109,22 +106,9 @@ namespace Aen {
 
 	void ImGuiHandler::StartUp()
 	{
-		std::chrono::time_point<std::chrono::system_clock> start, end;
-
-		start = std::chrono::system_clock::now();
-		cout << "Start " << start << endl;
-
 		ReadAllModelsFromHandler();
 		ReadAllFilesFromResourceFolder();
 		CreatePreviewTextureThumbnail();
-
-		end = std::chrono::system_clock::now();
-
-		std::chrono::duration<double> elapsed_seconds = end - start;
-		std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-
-		std::cout << "finished computation at " << std::ctime(&end_time)
-			<< "elapsed time: " << elapsed_seconds.count() << "s\n";
 	}
 
 	void ImGuiHandler::RenderAllWindows()
