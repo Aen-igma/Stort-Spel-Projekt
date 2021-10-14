@@ -211,6 +211,22 @@ namespace Aen {
 					string mesh = m_levelImporter.GetRoomVector()[0].GetModelVector()[i].mesh;
 					AddBase(name, mesh);
 				}
+
+				for (size_t i = 0; i < m_levelImporter.GetRoomVector()[0].GetLightVector().size(); i++)
+				{
+					if (m_levelImporter.GetRoomVector()[0].GetLightVector()[i].type == "Directional light")
+					{
+						AddDirectional(m_levelImporter.GetRoomVector()[0].GetLightVector()[i]);
+					}
+					else if (m_levelImporter.GetRoomVector()[0].GetLightVector()[i].type == "Spot light")
+					{
+						AddSpotLight(m_levelImporter.GetRoomVector()[0].GetLightVector()[i]);
+					}
+					else if (m_levelImporter.GetRoomVector()[0].GetLightVector()[i].type == "Point light")
+					{
+						AddPointLight(m_levelImporter.GetRoomVector()[0].GetLightVector()[i]);
+					}
+				}
 			}
 			m_fileDialog.ClearSelected();
 		}
@@ -815,8 +831,8 @@ namespace Aen {
 		string fileName = "";
 		string fileType = "";
 
-		//m_objFileName.reserve(10);
-		//m_objName.reserve(10);
+		m_objFileName.reserve(5);
+		m_objName.reserve(5);
 
 		for (const auto& entry : std::filesystem::directory_iterator(filePath))
 		{
