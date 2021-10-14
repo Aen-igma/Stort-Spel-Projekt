@@ -194,7 +194,6 @@ namespace Aen {
 		m_screenQuad.Draw();
 
 		// Present
-
 		RenderSystem::Present();
 		RenderSystem::ClearState();
 	}

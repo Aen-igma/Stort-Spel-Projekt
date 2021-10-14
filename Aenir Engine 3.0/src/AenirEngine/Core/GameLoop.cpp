@@ -26,10 +26,6 @@ namespace Aen {
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 
-		// imGui initialize
-		#ifdef _DEBUG
-		#endif	
-		
 		m_app->Start();
 	}
 
@@ -53,10 +49,8 @@ namespace Aen {
 		}
 
 		// Destroy imGui
-
-	#ifdef _DEBUG
 		delete Aen::GlobalSettings::GetImGuiHandler();
-	#endif
+
 		PhysXService::GetInstance()->ClosePhysics();
 		
 		Resource::Destroy();
