@@ -1,15 +1,17 @@
 #pragma once
 #include"AenirEngine.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
+#include "AenirEngine/ImGuiHandler.h"
 #include"Level/LevelGenerator.h"
 
 
 class levelBuilder : public Aen::LevelGenerator {
 	private:
 		//Generation storage
-		std::map<std::string, Aen::Mesh*> m_meshPtrMap;
+		std::unordered_map<std::string, Aen::Mesh*> m_meshPtrMap;
 		//------------------------//																																				
 		//Room* mptr_map;
+		void inline initLevelBuilder();
 	public:
 		//void setMapPointer(Room* ptr);
 

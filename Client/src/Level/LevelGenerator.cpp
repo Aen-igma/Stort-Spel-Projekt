@@ -196,21 +196,25 @@ namespace Aen
 								map[x][y - 1] = RNGRoom(0x001u, map[x][y].m_roomIndex);										//Insert random room (Pass along direction)
 								maxRooms--;																//reduce maxRooms
 								break;																	//Break to go generate off other rooms (Experimental)
+								//North
 							}
 							else if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
 								map[x + 1][y] = RNGRoom(0x00Au, map[x][y].m_roomIndex);
 								maxRooms--;
 								break;
+								//East
 							}
 							else if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
 								map[x][y + 1] = RNGRoom(0x064u, map[x][y].m_roomIndex);
 								maxRooms--;
 								break;
+								//South
 							}
 							else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
 								map[x - 1][y] = RNGRoom(0x3E8u, map[x][y].m_roomIndex);
 								maxRooms--;
 								break;
+								//West
 							}
 						}
 					}
@@ -249,53 +253,53 @@ namespace Aen
 	{
 		char cmap[mapSize * 3][mapSize * 3];
 
-		m_mapTheme = RoomTheme::PLACEHOLDER;
+		//m_mapTheme = RoomTheme::PLACEHOLDER;
 
-		//Straight corridors
-		Room a;
-		a.m_baseChance = 0xf;
-		a.connectionDirections = 101;
-		a.m_present = true;
-		a.m_roomTheme = m_mapTheme;
-		AddRoomToGeneration(&a);
-
-
-		//90 degree corners
-		Room b;
-		b.m_baseChance = 0xf;
-		b.m_present = true;
-		b.connectionDirections = 11;
-		b.m_roomTheme = m_mapTheme;
-		AddRoomToGeneration(&b);
+		////Straight corridors
+		//Room a;
+		//a.m_baseChance = 0xf;
+		//a.connectionDirections = 101;
+		//a.m_present = true;
+		//a.m_roomTheme = m_mapTheme;
+		//AddRoomToGeneration(&a);
 
 
-		//T junction
-		Room c;
-
-		c.m_baseChance = 0xf;
-		c.connectionDirections = 1011;
-		c.m_present = true;
-		c.m_roomTheme = m_mapTheme;
-		AddRoomToGeneration(&c);
-
-
-		//4-way junction
-		Room d;
-		d.m_baseChance = 0xf;
-		d.connectionDirections = 1111;
-		d.m_present = true;
-		d.m_roomTheme = m_mapTheme;
-		AddRoomToGeneration(&d);
+		////90 degree corners
+		//Room b;
+		//b.m_baseChance = 0xf;
+		//b.m_present = true;
+		//b.connectionDirections = 11;
+		//b.m_roomTheme = m_mapTheme;
+		//AddRoomToGeneration(&b);
 
 
-		//entrance
-		Room e;
-		e.m_baseChance = 0xf;
-		e.m_present = true;
-		e.m_roomSpecial = SpecialRoom::ENTRANCE;
-		e.m_roomTheme = m_mapTheme;
-		e.connectionDirections = 1;
-		AddRoomToGeneration(&e);
+		////T junction
+		//Room c;
+
+		//c.m_baseChance = 0xf;
+		//c.connectionDirections = 1011;
+		//c.m_present = true;
+		//c.m_roomTheme = m_mapTheme;
+		//AddRoomToGeneration(&c);
+
+
+		////4-way junction
+		//Room d;
+		//d.m_baseChance = 0xf;
+		//d.connectionDirections = 1111;
+		//d.m_present = true;
+		//d.m_roomTheme = m_mapTheme;
+		//AddRoomToGeneration(&d);
+
+
+		////entrance
+		//Room e;
+		//e.m_baseChance = 0xf;
+		//e.m_present = true;
+		//e.m_roomSpecial = SpecialRoom::ENTRANCE;
+		//e.m_roomTheme = m_mapTheme;
+		//e.connectionDirections = 1;
+		//AddRoomToGeneration(&e);
 
 
 
