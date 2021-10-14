@@ -33,15 +33,13 @@ namespace Aen {
 		vector<Aen::Entity*> m_entityList;
 		AenIMP::LevelImporter m_levelImporter;
 
-
-
 		size_t m_entityCount;
-
-
 
 	public:
 		ImGuiHandler();
 		~ImGuiHandler();
+
+		vector<Aen::Entity*> GetEntityList();
 
 		AenIF::Room GetRoom(size_t index);
 		void AddModel(Aen::Entity* entity);
@@ -53,5 +51,7 @@ namespace Aen {
 		void AddDirectional(AenIF::Light& input);
 
 		void ReadAllFilesFromResourceFolder();
+
+		void LoadLevel(int& index);
 	};
 }

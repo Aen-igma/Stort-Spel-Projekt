@@ -18,6 +18,35 @@ namespace Aen
 		}*/
 	}
 
+	vector<Aen::Entity*> ImGuiHandler::GetEntityList()
+	{
+		return m_entityList;
+	}
+
+	void ImGuiHandler::LoadLevel(int& index)
+	{
+		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetModelVector().size(); i++)
+		{
+			AddBase(m_levelImporter.GetRoomVector()[index].GetModelVector()[i]);
+		}
+
+		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetLightVector().size(); i++)
+		{
+			if (m_levelImporter.GetRoomVector()[index].GetLightVector()[i].type == "Directional light")
+			{
+				AddDirectional(m_levelImporter.GetRoomVector()[index].GetLightVector()[i]);
+			}
+			else if (m_levelImporter.GetRoomVector()[index].GetLightVector()[i].type == "Spot light")
+			{
+				AddSpotLight(m_levelImporter.GetRoomVector()[index].GetLightVector()[i]);
+			}
+			else if (m_levelImporter.GetRoomVector()[index].GetLightVector()[i].type == "Point light")
+			{
+				AddPointLight(m_levelImporter.GetRoomVector()[index].GetLightVector()[i]);
+			}
+		}
+	}
+
 	AenIF::Room ImGuiHandler::GetRoom(size_t index)
 	{
 		return m_levelImporter.GetRoomVector()[index].GetRoom();
@@ -73,7 +102,6 @@ namespace Aen
 		light->SetPos(input.translation[0], input.translation[1], input.translation[2]);
 		light->SetRot(input.rotation[0], input.rotation[1], input.rotation[2]);
 
-		//AddLight(light, "Spot light");
 		AddLight(light);
 	}
 
@@ -86,7 +114,6 @@ namespace Aen
 		light->GetComponent<Aen::DirectionalLight>().SetStrength(input.intensity);
 		light->SetRot(input.direction[0], input.direction[1], input.direction[2]);
 
-		//AddLight(light, "Directional light");
 		AddLight(light);
 	}
 
