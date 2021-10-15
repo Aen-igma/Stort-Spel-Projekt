@@ -245,6 +245,8 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\UAView.cpp" />
     <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp" />
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp" />
+    <ClCompile Include="src\AenirEngine\QuadTree\Node.cpp" />
+    <ClCompile Include="src\AenirEngine\QuadTree\Quadtree.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp" />
@@ -323,6 +325,8 @@
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Matrix.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Vector.h" />
     <ClInclude Include="src\AenirEngine\Math\Burito\Burito.h" />
+    <ClInclude Include="src\AenirEngine\QuadTree\Node.h" />
+    <ClInclude Include="src\AenirEngine\QuadTree\Quadtree.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h" />

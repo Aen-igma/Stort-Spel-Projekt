@@ -21,6 +21,25 @@ namespace Aen {
 		PhysXService::SetInstance(&m_PhysX);
 		PhysXService::GetInstance()->InitPhysics(100, 981);
 
+		// Setup First Quad in quadtree
+		m_WorldBox = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(25.f, 25.f, 25.f));
+		//Create Quadtree with new variables
+		m_Quadtree = new Quadtree(m_WorldBox, 0, 3, 4);
+		//for-loop going through all static objects in the world and inserting them one by one
+		for (int i = 0; i < 10; i++)
+		{
+			DirectX::BoundingBox* tempBox = new DirectX::BoundingBox(DirectX::XMFLOAT3(1.f + i * 4, 1.f, 0),
+				DirectX::XMFLOAT3(1.f, 1.f, 1.f));
+			m_Quadtree->insertObject(i, tempBox);
+		}
+		m_PlayerCenter = DirectX::XMFLOAT3(10, 10, 0);
+		m_PlayerSizes = DirectX::XMFLOAT3(1, 1, 1);
+		m_PlayerBox = DirectX::BoundingBox(m_PlayerCenter, m_PlayerSizes);
+
+		// float3 origin, float4 orientation, float rightslope, float leftslope, float topslope, float bottomslope, float near, float far
+		//m_CameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetProjecton().smMat);
+
+
 		GlobalSettings::Initialize(m_app->m_window);
 
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
@@ -43,6 +62,41 @@ namespace Aen {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
+
+				if (GlobalSettings::GetMainCamera())
+				{
+					m_CameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetProjecton().smMat);
+					m_Quadtree->getRoot()->intersectTest(m_CameraFrustrum, m_ObjectsToRender);
+					//if (Input::KeyDown(Key::B))
+					//{
+					//	// when updating to new math library, replace this with .smvec
+					///*	m_PlayerCenter = DirectX::XMFLOAT3(GlobalSettings::GetMainCamera()->GetPos().x,
+					//		GlobalSettings::GetMainCamera()->GetPos().y,
+					//		GlobalSettings::GetMainCamera()->GetPos().z);
+					//	m_PlayerBox = DirectX::BoundingBox(m_PlayerCenter, m_PlayerSizes);*/
+		
+					//	m_PlayerBox = DirectX::BoundingBox(Aen::GlobalSettings::GetMainCamera()->GetPos().smVec,
+					//		DirectX::XMFLOAT3(1.f, 1.f, 1.f));
+					//	m_Quadtree->getRoot()->inside(m_PlayerBox);
+					//}
+
+					if (Input::KeyDown(Key::V))
+					{
+						//m_Quadtree->getRoot()->intersectTest(m_CameraFrustrum, m_ObjectsToRender);
+						std::cout << "Objects to render: ";
+						for (auto& b : m_ObjectsToRender)
+							std::cout << b << ", \n";
+					}
+					//if (Input::KeyDown(Key::C))
+					//{
+					//	std::cout << "Camera Position: " << GlobalSettings::GetMainCamera()->GetPos().x << ", " <<
+					//		GlobalSettings::GetMainCamera()->GetPos().y << ", " <<
+					//		GlobalSettings::GetMainCamera()->GetPos().z << std::endl;
+					//}
+
+				}
+
+
 				PhysXService::GetInstance()->RunPhysics(m_deltaTime.count());
 				m_renderer->Render(); // VSync
 			}
