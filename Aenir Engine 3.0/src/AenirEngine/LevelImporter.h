@@ -5,15 +5,12 @@
 #include "RoomFormat.h"
 #include <iostream>
 #include <fstream>
-#include <map>
-#include <unordered_map>
 #include <vector>
 
 using std::string;
 using std::ifstream;
 using std::cout;
 using std::endl;
-using std::map;
 using std::vector;
 
 namespace AenIMP
@@ -132,9 +129,7 @@ namespace AenIMP
 	public:
 		LevelImporter();
 		~LevelImporter();
-
-		// Opens a binary file at input [filePath].
-		// Reads all data inside and stores it in a pre defined std::map, then closes the file.    
+  
 		void ReadFromFile(string filePath);
 
 		// Opens a binary file at input [filepath].

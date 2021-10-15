@@ -467,10 +467,10 @@
     <ClInclude Include="src\AenirEngine\RoomFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
+    <ClInclude Include="src\AenirEngine\LevelImporter.h">
       <Filter>Level</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\LevelImporter.h">
+    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
       <Filter>Level</Filter>
     </ClInclude>
   </ItemGroup>

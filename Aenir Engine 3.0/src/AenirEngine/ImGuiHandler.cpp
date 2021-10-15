@@ -11,6 +11,8 @@ namespace Aen {
 	void ImGuiHandler::AddLight(Aen::Entity* entity)
 	{
 		m_entityList.push_back(entity);
+		m_itemList.push_back("light " + std::to_string(m_entityCount));
+		m_entityCount++;
 	}
 
 	void ImGuiHandler::AddBase(AenIF::Model& model)
