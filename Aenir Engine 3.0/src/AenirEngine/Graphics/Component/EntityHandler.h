@@ -27,5 +27,6 @@ namespace Aen {
 		friend class Renderer;
 		friend class ImGuiHandler;
 		friend class MeshInstance;
+		friend class Quadtree;
 	};
 }

@@ -26,12 +26,6 @@ namespace Aen {
 		//Quadtree
 		Quadtree* m_Quadtree;
 		DirectX::BoundingBox m_WorldBox;
-		DirectX::BoundingBox m_PlayerBox;
-		DirectX::XMFLOAT3 m_PlayerCenter;
-		DirectX::XMFLOAT3 m_PlayerSizes;
-
-		//Camera frustrum for view frustrum culling
-		DirectX::BoundingFrustum m_CameraFrustrum;
 		std::vector<int> m_ObjectsToRender;
 
 		
