@@ -138,9 +138,9 @@ namespace Aen {
 		cout << roomStruct->probability << endl;
 	}
 
-	void LevelExporter::textureFunc(TextureStruct*& textureStruct, vector<string>& textureFileName, size_t& index)
+	void LevelExporter::textureFunc(TextureStruct*& textureStruct, string& textureFileName)
 	{
-		strcpy(textureStruct->name, textureFileName[index].c_str());
+		strcpy(textureStruct->name, textureFileName.c_str());
 		strcpy(textureStruct->textureType, "test");
 		m_TextureVector.push_back(*textureStruct);
 	}
@@ -175,7 +175,7 @@ namespace Aen {
 		outfile.write((const char*)&*whatToWrite, sizeof(T));
 	}
 
-	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, vector<string>& meshObjList, vector<string>& textureFileName, string array[], string& fileName)
+	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, vector<string>& meshObjList, unordered_map<unsigned int, MatTexContainer>& textureMap, string array[], string& fileName)
 	{
 		OpenFile(fileName);
 		//cout << "writeInto" << endl;
@@ -199,8 +199,10 @@ namespace Aen {
 		MaterialStruct* materialStruct = AEN_NEW(MaterialStruct);
 		ParticleStruct* particleStruct = AEN_NEW(ParticleStruct);
 
+		unordered_map <unsigned int, MatTexContainer>::iterator it;
+
 		m_ModelVector.reserve(meshObjList.size());
-		m_TextureVector.reserve(textureFileName.size());
+		m_TextureVector.reserve(textureMap.size());
 
 		int meshIndex = 0;
 
@@ -222,11 +224,12 @@ namespace Aen {
 		}
 
 		roomFunc(roomStruct, array);
-
-		for (size_t i = 0; i < m_TextureVector.size(); i++)
+		
+		for (it = textureMap.begin(); it != textureMap.end(); it++)
 		{
-			textureFunc(textureStruct, textureFileName, i);
+			textureFunc(textureStruct, it->second.m_textureName);
 		}
+
 
 		cout << endl << "start" << endl;
 		

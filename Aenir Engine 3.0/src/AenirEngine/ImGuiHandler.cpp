@@ -11,18 +11,31 @@ namespace Aen {
 	void ImGuiHandler::AddLight(Aen::Entity* entity)
 	{
 		m_entityList.push_back(entity);
-		m_itemList.push_back("light " + std::to_string(m_entityCount));
-		m_entityCount++;
+		m_itemList.push_back("light " + std::to_string(m_lightCount));
+		m_lightCount++;
 	}
 
-	void ImGuiHandler::AddBase(AenIF::Model& model)
+	void ImGuiHandler::AddBase(AenIF::Model& model, AenIF::Texture& texture)
 	{
+
+		string imageName = AEN_RESOURCE_DIR(texture.name);
+		string matName = "Material" + to_string(m_entityCount);
+		string texName = "Texture" + to_string(m_entityCount);
+
 		Aen::Entity* entity = AEN_NEW(Aen::Entity);
 		Aen::Mesh& mesh = Aen::Resource::CreateMesh(model.name + std::to_string(m_entityCount));
 		mesh.Load(AEN_RESOURCE_DIR(model.mesh));
 
+		Aen::Texture& matTexture = Aen::Resource::CreateTexture(texName);
+		matTexture.LoadTexture(imageName);
+		Aen::Material& mat = Aen::Resource::CreateMaterial(matName, true);
+		mat.SetDiffuseMap(matTexture);
+
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
+
+		size_t id = entity->getID();
+		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
 
 		AddModel(entity);
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
@@ -38,7 +51,7 @@ namespace Aen {
 		light->GetComponent<Aen::PointLight>().SetStrength(100);
 		light->SetPos(input.translation[0], input.translation[1], input.translation[2]);
 
-		AddLight(light);
+		AddLight(light, "Point light");
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 
 	}
@@ -55,7 +68,7 @@ namespace Aen {
 		light->SetPos(input.translation[0], input.translation[1], input.translation[2]);
 		light->SetRot(input.rotation[0], input.rotation[1], input.rotation[2]);
 
-		AddLight(light);
+		AddLight(light, "Spot light");
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 
 	}
@@ -69,7 +82,7 @@ namespace Aen {
 		light->GetComponent<Aen::DirectionalLight>().SetStrength(input.intensity);
 		light->SetRot(input.direction[0], input.direction[1], input.direction[2]);
 
-		AddLight(light);
+		AddLight(light, "Directional light");
 		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 
 	}
@@ -160,6 +173,8 @@ namespace Aen {
 	{
 		ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_MenuBar);
 
+		static string m_openOrSave = "";
+
 		if (ImGui::BeginMenuBar())
 		{
 			if (ImGui::BeginMenu("File"))
@@ -193,9 +208,7 @@ namespace Aen {
 				
 				for (size_t i = 0; i < m_levelImporter.GetRoomVector()[0].GetModelVector().size(); i++)
 				{
-					string name = m_levelImporter.GetRoomVector()[0].GetModelVector()[i].name;
-					string mesh = m_levelImporter.GetRoomVector()[0].GetModelVector()[i].mesh;
-					AddBase(name, mesh);
+					AddBase(m_levelImporter.GetRoomVector()[0].GetModelVector()[i], m_levelImporter.GetRoomVector()[0].GetTextureVector()[i]);
 				}
 
 				for (size_t i = 0; i < m_levelImporter.GetRoomVector()[0].GetLightVector().size(); i++)
@@ -527,7 +540,7 @@ namespace Aen {
 			if (ImGui::Button("Save"))
 			{
 				string temp = inputString;
-				m_levelExporter.WriteInto(m_entityList, m_itemList, m_meshObjList, m_textureFileName, m_roomProperty, temp);
+				m_levelExporter.WriteInto(m_entityList, m_itemList, m_meshObjList, m_textureModelsMap, m_roomProperty, temp);
 				
 				m_saveWindowActive = false;
 				std::memset(inputString, '\0', sizeof(char) * MESH_NAME_MAX_LENGTH);
@@ -546,8 +559,8 @@ namespace Aen {
 	void ImGuiHandler::AddLight(Aen::Entity* entity, string type)
 	{
 		m_entityList.push_back(entity);
-		m_itemList.push_back(type + std::to_string(m_entityCount));
-		m_entityCount++;
+		m_itemList.push_back(type + std::to_string(m_lightCount));
+		m_lightCount++;
 	}
 
 	void ImGuiHandler::ReadAllModelsFromHandler()
@@ -786,7 +799,7 @@ namespace Aen {
 		string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
 		string matName = "Material" + to_string(m_selectedEntity);
 		string texName = "Texture" + to_string(m_selectedEntity);
-		UpdateMap(m_selectedEntity, texName, matName);
+		UpdateMap(m_selectedEntity, texName, matName, m_itemList[m_selectedEntity], m_textureFileName[currentIndex]);
 
 		Aen::Texture& texture = Aen::Resource::CreateTexture(texName);
 		texture.LoadTexture(imageName);
@@ -797,16 +810,16 @@ namespace Aen {
 		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
 	}
 
-	void ImGuiHandler::UpdateMap(unsigned int key, string& texValue, string& matValue)
+	void ImGuiHandler::UpdateMap(unsigned int key, string& texValue, string& matValue, string& meshName, string& texName)
 	{
-		m_textureModelsMap.insert(std::make_pair(key, MatTexContainer(texValue, matValue)));
+		m_textureModelsMap.insert(std::make_pair(key, MatTexContainer(texValue, matValue, meshName, texName)));
 		unordered_map <unsigned int, MatTexContainer>::iterator it;
 
 		it = m_textureModelsMap.find(key);
 
 		if (it != m_textureModelsMap.end())
 		{
-			it->second = MatTexContainer(texValue, matValue);
+			it->second = MatTexContainer(texValue, matValue, meshName, texName);
 		}
 
 	}

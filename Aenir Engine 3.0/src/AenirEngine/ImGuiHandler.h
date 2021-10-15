@@ -23,17 +23,6 @@ using std::unordered_map;
 
 namespace Aen {
 
-	struct MatTexContainer 
-	{
-		string tex;
-		string mat;
-
-		MatTexContainer(string inTex,string inMat) {
-			this->tex = inTex;
-			this->mat = inMat;
-		}
-	};
-
 	class AEN_DECLSPEC ImGuiHandler {
 
 	private:
@@ -67,12 +56,12 @@ namespace Aen {
 		float m_xyzTranslation[3] = { 0,0,0 };
 		float m_xyzRotation[3] = { 0,0,0 };
 		float m_xyzScale[3] = { 1,1,1 };
+		
 		int m_entityCount = 0;
-
+		int m_lightCount = 0;
 		int m_modelNumber = 0;
 
 		ImGui::FileBrowser m_fileDialog;
-		string m_openOrSave;
 
 		// Level exporter info
 		LevelExporter m_levelExporter;
@@ -81,6 +70,7 @@ namespace Aen {
 
 		vector<string> m_MaterialNameList;
 
+		// Level importer info
 		AenIMP::LevelImporter m_levelImporter;
 
 		bool m_saveWindowActive = false;
@@ -90,7 +80,7 @@ namespace Aen {
 
 		void AddLight(Aen::Entity* entity);
 
-		void AddBase(AenIF::Model& model);
+		void AddBase(AenIF::Model& model, AenIF::Texture &texture);
 		void AddPointLight(AenIF::Light& input);
 		void AddSpotLight(AenIF::Light& input);
 		void AddDirectional(AenIF::Light& input);
@@ -140,7 +130,7 @@ namespace Aen {
 
 		void ChangeMaterial(int &currentIndex);
 
-		void UpdateMap(unsigned int key, string& texValue, string& matValue);
+		void UpdateMap(unsigned int key, string& texValue, string& matValue, string& meshName, string& texName);
 	};
 }
 
