@@ -1,5 +1,5 @@
 #pragma once
-#include"Graphics/Component/Mesh/Mesh.h"
+#include"Graphics/Component/Drawable/Mesh/Mesh.h"
 #include<iostream>
 #include<fstream>
 
@@ -125,33 +125,31 @@ namespace Aen {
 			Vec2f uv1 = mesh[i + 1u].uv;
 			Vec2f uv2 = mesh[i + 2u].uv;
 
-			Mat2f duv;
-			duv.x = uv1 - uv0;
-			duv.y = uv2 - uv0;
+			Vec2f duv1 = uv1 - uv0;
+			Vec2f duv2 = uv2 - uv0;
+			Vec3f de1 = pos1 - pos0;
+			Vec3f de2 = pos2 - pos0;
 
-			Mat2x3f de;
-			de.x = pos1 - pos0;
-			de.y = pos2 - pos0;
+			float f = 1.0f / (duv1.x * duv2.y - duv2.x * duv1.y);
 
-			Mat2x3f tb;
+			Vec3f t;
+			Vec3f bt;
 
-			float f = 1.f / duv.Determinant();
+			t.x = f * (duv2.y * de1.x - duv1.y * de2.x);
+			t.y = f * (duv2.y * de1.y - duv1.y * de2.y);
+			t.z = f * (duv2.y * de1.z - duv1.y * de2.z);
 
-			tb.x.x = f * (duv.a22 * de.a11 - duv.a12 * de.a21);
-			tb.x.y = f * (duv.a22 * de.a12 - duv.a12 * de.a22);
-			tb.x.z = f * (duv.a22 * de.a13 - duv.a12 * de.a23);
+			bt.x = f * (-duv2.x * de1.x + duv1.x * de2.x);
+			bt.y = f * (-duv2.x * de1.y + duv1.x * de2.y);
+			bt.z = f * (-duv2.x * de1.z + duv1.x * de2.z);
 
-			tb.y.x = f * (-duv.a21 * de.a11 + duv.a11 * de.a21);
-			tb.y.y = f * (-duv.a21 * de.a12 + duv.a11 * de.a22);
-			tb.y.z = f * (-duv.a21 * de.a13 + duv.a11 * de.a23);
+			mesh[i].tan = (t - mesh[i].norm * (mesh[i].norm * t)).Normalized();
+			mesh[i + 1u].tan = (t - mesh[i + 1u].norm * (mesh[i + 1u].norm * t)).Normalized();
+			mesh[i + 2u].tan = (t - mesh[i + 2u].norm * (mesh[i + 2u].norm * t)).Normalized();
 
-			mesh[i].tan = (tb.x - mesh[i].norm * (mesh[i].norm * tb.x)).Normalized();
-			mesh[i + 1u].tan = (tb.x - mesh[i + 1u].norm * (mesh[i + 1u].norm * tb.x)).Normalized();
-			mesh[i + 2u].tan = (tb.x - mesh[i + 2u].norm * (mesh[i + 2u].norm * tb.x)).Normalized();
-
-			mesh[i].bi = (tb.y - mesh[i].norm * (mesh[i].norm * tb.y));
-			mesh[i + 1u].bi = (tb.y - mesh[i + 1u].norm * (mesh[i + 1u].norm * tb.y)).Normalized();
-			mesh[i + 2u].bi = (tb.y - mesh[i + 2u].norm * (mesh[i + 2u].norm * tb.y)).Normalized();
+			mesh[i].bi = (bt - mesh[i].norm * (mesh[i].norm * bt));
+			mesh[i + 1u].bi = (bt - mesh[i + 1u].norm * (mesh[i + 1u].norm * bt)).Normalized();
+			mesh[i + 2u].bi = (bt - mesh[i + 2u].norm * (mesh[i + 2u].norm * bt)).Normalized();
 		}
 
 		// Create vertex buffer

@@ -19,7 +19,8 @@ namespace Aen {
 		LightType m_type;
 		Vec3f m_pad;
 
-		SB_Light() = default;
+		SB_Light():m_color(Color::Black), m_dist(), m_pos(), m_strength(0.f), m_dir(), m_angle(), m_type(LightType::SpotLight), m_pad(Vec3f::zero) {}
+
 		SB_Light(const Color& color, const Vec4f& dist, const Vec3f& pos, const float& strength, const Vec3f& dir, const float& angle, const LightType& type)
 			:m_color(color), m_dist(dist), m_pos(pos), m_strength(strength), m_dir(dir), m_angle(angle), m_type(type), m_pad(Vec3f::zero) {}
 
@@ -65,6 +66,8 @@ namespace Aen {
 		
 		void SetLightDist(const Vec4f& dist);
 		void SetLightDist(const float& attA, const float& attB, const float& attC, const float& dist);
+
+		const Vec4f GetDist();
 
 		private:
 		~PointLight() = default;

@@ -1,5 +1,5 @@
 #pragma once
-#include"..\AenMath.h"
+#include"..\BuritoMath.h"
 #include"WindowDesc.h"
 #include "ThirdParty\ImGui\imgui.h"
 #include "ThirdParty\ImGui\imgui_impl_win32.h"
@@ -25,7 +25,7 @@ namespace Aen {
 		HWND& GetWHND();
 
 		LRESULT CALLBACK WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
+		static LRESULT CALLBACK InputProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		private:
 
 		static LRESULT CALLBACK MsgRouter(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

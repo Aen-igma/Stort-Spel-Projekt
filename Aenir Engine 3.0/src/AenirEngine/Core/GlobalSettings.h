@@ -1,5 +1,6 @@
 #pragma once
 #include"Renderer.h"
+#include "../ImGuiHandler.h"
 #include<string>
 
 namespace Aen {
@@ -35,6 +36,12 @@ namespace Aen {
 		static const Color& GetBGColor() {
 			return m_BGColor;
 		}
+
+		static ImGuiHandler*& GetImGuiHandler() {
+			return mp_guiHandler;
+		}
+
+
 
 		friend class GameLoop;
 		friend class Renderer;
@@ -116,11 +123,17 @@ namespace Aen {
 			defaultMaterial["OuterEdgeColor"] = Aen::Color::Magenta;
 			defaultTexture.LoadTexture(AEN_RESOURCE_DIR("Missing_Textures.png"));
 			defaultMaterial.SetDiffuseMap(defaultTexture);
+
 		}
 
 		static ShaderModel* m_pDefaultShader;
 		static Window* m_pWindow;
 		static Entity* m_pMainCamera;
 		static Color m_BGColor;
+
+		static ImGuiHandler* mp_guiHandler;
+
 	};
+
+
 }

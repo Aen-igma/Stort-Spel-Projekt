@@ -1,8 +1,9 @@
 #pragma once
 #include"Tranform/Tranform.h"
 #include"Camera/Camera.h"
-#include"Mesh/Mesh.h"
+#include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
+#include"ThirdParty/PhysX/RigidBody.h"
 
 #include<unordered_map>
 #include<array>
@@ -242,16 +243,45 @@ namespace Aen {
 			return *pDLight;
 		}
 
+		// ----------- Rigid Body Component ----------- //
+
+		static const bool RigidExist(const uint32_t& id) {
+			return m_rigids.count(id) > 0;
+		}
+
+		static void CreateRigid(const uint32_t& id) {
+			m_rigids.emplace(id, AEN_NEW RigidBody());
+		}
+
+		static void RemoveRigid(const uint32_t& id) {
+			if (m_rigids.count(id) > 0) {
+				delete m_rigids.at(id);
+				m_rigids.at(id) = nullptr;
+				m_rigids.erase(id);
+			}
+		}
+
+		static RigidBody& GetRigid(const uint32_t& id) {
+			if (m_rigids.count(id) > 0)
+				return *m_rigids.at(id);
+			throw;
+		}
+
+		// -------------------------------------------- //
+
 		// ----------- Mesh Instance Layer ---------- //
 
 		static void SetRenderLayer(MeshInstance& mesh, const uint32_t id, const uint32_t& layer) {
 			m_meshLayer[layer].emplace(id, &mesh);
 		}
 
-		static std::unordered_map<uint32_t, MeshInstance*>& GetLayer(const uint32_t& layer) {
+		static std::unordered_map<uint32_t, Drawable*>& GetLayer(const uint32_t& layer) {
 			return m_meshLayer[layer];
 		}
 
+		static void RemoveMeshFromLayer(const uint32_t id, const uint32_t& layer) {
+			m_meshLayer[layer].erase(id);
+		}
 		// ------------------------------------------ //
 
 		static std::unordered_map<uint32_t, Camera*> m_cameras;
@@ -259,12 +289,16 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Translation*> m_translations;
 		static std::unordered_map<uint32_t, Rotation*> m_rotations;
 		static std::unordered_map<uint32_t, Scale*> m_scales;
+		static std::unordered_map<uint32_t, RigidBody*> m_rigids;
 		static std::multimap<uint32_t, Light*> m_lights;
 		
-		static std::array<std::unordered_map<uint32_t, MeshInstance*>, 7> m_meshLayer;
+		
+		static std::array<std::unordered_map<uint32_t, Drawable*>, 7> m_meshLayer;
 
 		friend class Entity;
+		friend class MeshInstance;
 		friend class Renderer;
+		friend class ImGuiHandler;
 	};
 
 }

@@ -100,12 +100,6 @@
     <Filter Include="Header Files\Importer">
       <UniqueIdentifier>{828903be-e8d7-40e3-b892-6c38532f4708}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Quadtree">
-      <UniqueIdentifier>{907fe65a-3d1a-47c7-becb-99a250cdca82}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Quadtree">
-      <UniqueIdentifier>{8063b997-fa71-4dbd-a73b-f60fe3f6c8bb}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\PCH\PCH.cpp">
@@ -195,13 +189,13 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Light\Light.cpp">
       <Filter>Source Files\Graphics\Component\Light</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Material.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Material.cpp">
       <Filter>Source Files\Graphics\Component\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Mesh.cpp">
       <Filter>Source Files\Graphics\Component\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Mesh\Texture.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.cpp">
       <Filter>Source Files\Graphics\Component\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp">
@@ -228,18 +222,39 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\QuadTree\Quadtree.cpp">
-      <Filter>Source Files\Quadtree</Filter>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\QuadTree\Node.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\UAView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\AenMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine.h">
@@ -350,33 +365,6 @@
     <ClInclude Include="src\AenirEngine\Window\WindowHandle.h">
       <Filter>Header Files\Window</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Circle.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Color.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\MathFunctions.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Matrix.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Quaternion.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Rect.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Simd.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Tracer.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Vector.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h">
       <Filter>Header Files\Graphics\Component</Filter>
     </ClInclude>
@@ -398,13 +386,13 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Light\Light.h">
       <Filter>Header Files\Graphics\Component\Light</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Material.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Material.h">
       <Filter>Header Files\Graphics\Component\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Mesh.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Mesh.h">
       <Filter>Header Files\Graphics\Component\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Mesh\Texture.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h">
       <Filter>Header Files\Graphics\Component\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.h">
@@ -440,10 +428,55 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\QuadTree\Quadtree.h">
-      <Filter>Header Files\Quadtree</Filter>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\QuadTree\Node.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Burito\Burito.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\BuritoMath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\MathFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\UAView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\CreateThumbnail.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelHeader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -481,6 +514,7 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderPS.hlsl">
       <Filter>Shader Files\CellShader</Filter>
     </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\LightCullCS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">
