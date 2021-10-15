@@ -80,6 +80,8 @@ namespace Aen {
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"RimLightColor"				);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"InnerEdgeColor"			);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"OuterEdgeColor"			);
+			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"GlowColor"					);
+			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"GlowStr"					);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"InnerEdgeThickness"		);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"OuterEdgeThickness"		);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"SpecularPower"				);
@@ -97,6 +99,8 @@ namespace Aen {
 			m_pDefaultShader->m_dbLayout["RimLightColor"]			= Color::White;
 			m_pDefaultShader->m_dbLayout["InnerEdgeColor"]			= Color::Black;
 			m_pDefaultShader->m_dbLayout["OuterEdgeColor"]			= Color::Black;
+			m_pDefaultShader->m_dbLayout["OuterEdgeColor"]			= Color::White;
+			m_pDefaultShader->m_dbLayout["InnerEdgeThickness"]		= 50.f;
 			m_pDefaultShader->m_dbLayout["InnerEdgeThickness"]		= 0.001f;
 			m_pDefaultShader->m_dbLayout["OuterEdgeThickness"]		= 0.001f;
 			m_pDefaultShader->m_dbLayout["SpecularPower"]			= 0.6f;

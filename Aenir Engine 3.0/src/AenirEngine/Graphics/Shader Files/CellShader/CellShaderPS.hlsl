@@ -6,6 +6,8 @@ cbuffer CB_CellShader {
 	float4 rimLightColor;
 	float4 innerEdgeColor;
 	float4 outerEdgeColor;
+	float4 glowColor;
+	float glowStr;
 	float innerEdgeThickness;
 	float outerEdgeThickness;
 	float specularPower;
