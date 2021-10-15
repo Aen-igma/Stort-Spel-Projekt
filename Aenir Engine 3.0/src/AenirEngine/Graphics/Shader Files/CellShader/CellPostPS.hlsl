@@ -54,10 +54,10 @@ static int vRow[9] = {
 };
 
 
-texture2D diffuseMap : DIFFUSEMAP: register(t0);
-texture2D posMap : POSMAP: register(t1);
-texture2D normalMap : NORMALMAP: register(t2);
-texture2D depthMap : DEPTHMAP: register(t3);
+Texture2D diffuseMap : DIFFUSEMAP: register(t0);
+Texture2D posMap : POSMAP: register(t1);
+Texture2D normalMap : NORMALMAP: register(t2);
+Texture2D depthMap : DEPTHMAP: register(t3);
 Texture2D glowMap : GLOWMAP : register(t4);
 
 SamplerState borderSampler : BSAMPLER;
@@ -96,6 +96,8 @@ float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_Target {
 	float3 outerEdge = finalDSobel * outerEdgeColor;
 
 	float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
+	
+	
 
 	return output + glow;
 }

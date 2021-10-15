@@ -90,8 +90,22 @@ void Client::Start() {
 	m_cube.SetPos(0.f, 8.f, 10.f);
 	m_cube.SetScale(20.f, 20.f, 1.f);
 
-	
+	// ----------------------------- Load EmissionCube -------------------------------- //
 
+	m_emiCube.AddComponent<Aen::MeshInstance>();
+	m_emiCube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	m_emiCube.SetPos(0.f, 3.f, -5.f);
+
+	Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
+	Aen::Texture& peng = Aen::Resource::CreateTexture("NekoTexture");
+	Aen::Material& emissionMtrl = Aen::Resource::CreateMaterial("EmiMtrl");
+	face.LoadTexture(AEN_RESOURCE_DIR("emmissionS.png"));
+	peng.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
+	emissionMtrl.SetEmissionMap(face);
+	emissionMtrl.SetDiffuseMap(peng);
+	emissionMtrl["GlowColor"] = Aen::Color::Green;
+
+	m_emiCube.GetComponent<Aen::MeshInstance>().SetMaterial(emissionMtrl);
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
