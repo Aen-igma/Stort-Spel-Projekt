@@ -15,7 +15,7 @@ ObjeStruct::ObjeStruct(int ID, DirectX::BoundingBox* boundingBox)
 
 ObjeStruct::~ObjeStruct()
 {
-	this->mp_boundBox = nullptr;
+	delete this->mp_boundBox;
 } 
 
 
