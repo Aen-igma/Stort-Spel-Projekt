@@ -314,6 +314,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
     <ClInclude Include="src\AenirEngine\ImGuiHandler.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
+    <ClInclude Include="src\AenirEngine\LevelHeader.h" />
     <ClInclude Include="src\AenirEngine\LevelImporter.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\MathFunctions.h" />

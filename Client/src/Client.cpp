@@ -32,23 +32,23 @@ void Client::Start() {
 
 	// --------------------------- Setup Spot Light ----------------------------- //
 
-	m_spotLight.AddComponent<Aen::SpotLight>();
-	m_spotLight.GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Red);
-	m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(1.f);
-	m_spotLight.GetComponent<Aen::SpotLight>().SetConeSize(40.f);
-	m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(500.f);
-	m_spotLight.GetComponent<Aen::SpotLight>().SetLightDist(1.f, 0.f, 0.f, 10.f);
-	m_spotLight.SetPos(0.f, 2.f, -5.f);
-	m_spotLight.SetRot(45.f, 0.f, 0.f);
+	//m_spotLight.AddComponent<Aen::SpotLight>();
+	//m_spotLight.GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Red);
+	//m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(1.f);
+	//m_spotLight.GetComponent<Aen::SpotLight>().SetConeSize(40.f);
+	//m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(500.f);
+	//m_spotLight.GetComponent<Aen::SpotLight>().SetLightDist(1.f, 0.f, 0.f, 10.f);
+	//m_spotLight.SetPos(0.f, 2.f, -5.f);
+	//m_spotLight.SetRot(45.f, 0.f, 0.f);
 
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
-	Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
+	//Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
 	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
-	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
+	//sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
 	// ----------------------------- Load Reimushes -------------------------------- //
 
@@ -67,8 +67,8 @@ void Client::Start() {
 	m_meshcube = &cube;
 	// -------------------------- Setup Entities -------------------------------- //
 
-	m_sphere.AddComponent<Aen::MeshInstance>();
-	m_sphere.GetComponent<Aen::MeshInstance>().SetMesh(sphere);
+	/*m_sphere.AddComponent<Aen::MeshInstance>();
+	m_sphere.GetComponent<Aen::MeshInstance>().SetMesh(sphere);*/
 
 	m_plane.AddComponent<Aen::MeshInstance>();
 	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
@@ -76,22 +76,17 @@ void Client::Start() {
 	m_plane.GetComponent<Aen::RigidBody>().CreateMaterial();
 	m_plane.GetComponent<Aen::RigidBody>().CreatePlane();
 
-	//m_plane.SetPos(0.f, -2.f, 0.f);
+	m_plane.SetPos(0.f, -30.f, 0.f);
 	m_plane.SetScale(40.f, 1.f, 40.f);
+	m_plane.SetRot(45, 0, 0);
 
-	/*m_plane1.AddComponent<Aen::MeshInstance>();
-	m_plane1.GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	m_plane1.SetPos(0.f, 8.f, -10.f);
-	m_plane1.SetScale(20.f, 1.f, 20.f);
-	m_plane1.SetRot(90.f, 0.f, 0.f);*/
-
-	m_cube.AddComponent<Aen::MeshInstance>();
-	m_cube.GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	m_cube.SetPos(0.f, 8.f, 10.f);
-	m_cube.SetScale(20.f, 20.f, 1.f);
-
+<<<<<<< Updated upstream
 	//Aen::GlobalSettings::GetImGuiHandler()->ReadAllFilesFromResourceFolder();
 	//Aen::GlobalSettings::GetImGuiHandler()->LoadLevel(0);
+=======
+	Aen::GlobalSettings::GetImGuiHandler()->ReadAllFilesFromResourceFolder();
+	Aen::GlobalSettings::GetImGuiHandler()->LoadLevel(0);
+>>>>>>> Stashed changes
 
 
 	// --------------------------- Setup Window --------------------------------- //
@@ -101,7 +96,7 @@ void Client::Start() {
 	// ------------------- Procedural generation testing staging grounds ------- //
 	
 	//LevelGenerator::GenerationTestingFunction();
-	srand((unsigned int)time(NULL));
+	/*srand((unsigned int)time(NULL));
 	SetLehmerConstSeed(100);
 	LehmerInt();
 	Aen::Room* map = Aen::LevelGenerator::GenerationTestingFunction();
@@ -126,7 +121,7 @@ void Client::Start() {
 				rooms[x + y * Aen::mapSize] = nullptr;
 			}
 		}
-	}
+	}*/
 
 	Aen::Input::ToggleRawMouse(false);
 

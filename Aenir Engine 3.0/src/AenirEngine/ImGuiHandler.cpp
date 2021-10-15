@@ -25,8 +25,12 @@ namespace Aen
 
 	void ImGuiHandler::LoadLevel(int index)
 	{
+		cout << "Tsdsadsadsadsad " << endl;
+
+		index = 0;
 		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetModelVector().size(); i++)
 		{
+			cout << "Model " << endl;
 			AddBase(m_levelImporter.GetRoomVector()[index].GetModelVector()[i]);
 		}
 
@@ -34,14 +38,20 @@ namespace Aen
 		{
 			if (m_levelImporter.GetRoomVector()[index].GetLightVector()[i].type == "Directional light")
 			{
+				cout << "d Light " << endl;
+
 				AddDirectional(m_levelImporter.GetRoomVector()[index].GetLightVector()[i]);
 			}
 			else if (m_levelImporter.GetRoomVector()[index].GetLightVector()[i].type == "Spot light")
 			{
+				cout << "s Light " << endl;
+
 				AddSpotLight(m_levelImporter.GetRoomVector()[index].GetLightVector()[i]);
 			}
 			else if (m_levelImporter.GetRoomVector()[index].GetLightVector()[i].type == "Point light")
 			{
+				cout << "p Light " << endl;
+
 				AddPointLight(m_levelImporter.GetRoomVector()[index].GetLightVector()[i]);
 			}
 		}
@@ -131,7 +141,7 @@ namespace Aen
 
 			if (fileType == "Level")
 			{
-				m_levelImporter.ReadFromFile(fileName);
+				m_levelImporter.ReadFromFile(filePath + fileName);
 			}
 		}
 	}

@@ -479,6 +479,9 @@
     <ClInclude Include="src\AenirEngine\LevelImporter.h">
       <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelHeader.h">
+      <Filter>Header Files\LevelEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessVS.hlsl">

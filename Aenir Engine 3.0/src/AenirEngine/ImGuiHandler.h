@@ -31,7 +31,7 @@ namespace Aen {
 
 		Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> m_entityList;
-		AenIMP::LevelImporter m_levelImporter;
+		Aen::LevelImporter m_levelImporter;
 
 		size_t m_entityCount;
 

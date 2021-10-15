@@ -174,7 +174,10 @@ namespace AenIMP {
 		cout << "D particleStruct" << endl;
 		delete particle;
 	}
+}
 
+namespace Aen 
+{
 	LevelImporter::LevelImporter()
 	{
 
@@ -198,7 +201,8 @@ namespace AenIMP {
 
 			if (sectionHeader.type == Aen::MODEL)
 			{
-				Model* model = new Model;
+
+				AenIMP::Model* model = new AenIMP::Model;
 				model->readFromFile(infile);
 				model->printModel();
 
@@ -207,7 +211,7 @@ namespace AenIMP {
 			}
 			else if (sectionHeader.type == Aen::TEXTURE)
 			{
-				Texture* texture = new Texture;
+				AenIMP::Texture* texture = new AenIMP::Texture;
 				texture->readFromFile(infile);
 				texture->printTexture();
 
@@ -216,7 +220,7 @@ namespace AenIMP {
 			}
 			else if (sectionHeader.type == Aen::MATERIAL)
 			{
-				Material* material = new Material;
+				AenIMP::Material* material = new AenIMP::Material;
 				material->readFromFile(infile);
 				material->printMaterial();
 
@@ -225,7 +229,7 @@ namespace AenIMP {
 			}
 			else if (sectionHeader.type == Aen::LIGHT)
 			{
-				Light* light = new Light;
+				AenIMP::Light* light = new AenIMP::Light;
 				light->readFromFile(infile);
 				light->printLight();
 
@@ -234,7 +238,7 @@ namespace AenIMP {
 			}
 			else if (sectionHeader.type == Aen::PARTICLE)
 			{
-				Particle* particle = new Particle;
+				AenIMP::Particle* particle = new AenIMP::Particle;
 				particle->readFromFile(infile);
 				particle->printParticle();
 
@@ -243,7 +247,7 @@ namespace AenIMP {
 			}
 			else if (sectionHeader.type == Aen::ROOM)
 			{
-				Room* room = new Room;
+				AenIMP::Room* room = new AenIMP::Room;
 				room->readFromFile(infile);
 				room->printRoom();
 
@@ -366,7 +370,7 @@ namespace AenIMP {
 
 
 
-	void CompleteRoom::addRoom(Room* input)
+	void CompleteRoom::addRoom(AenIMP::Room* input)
 	{
 		room.type = input->room->type;
 		room.special = input->room->special;
@@ -374,7 +378,7 @@ namespace AenIMP {
 		room.probability = input->room->probability;
 	}
 
-	void CompleteRoom::addModel(Model* input)
+	void CompleteRoom::addModel(AenIMP::Model* input)
 	{
 		AenIF::Model temp;
 		temp.name = input->model->name;
@@ -392,7 +396,7 @@ namespace AenIMP {
 		modelVector.push_back(temp);
 	}
 
-	void CompleteRoom::addTexture(Texture* input)
+	void CompleteRoom::addTexture(AenIMP::Texture* input)
 	{
 		AenIF::Texture temp;
 		temp.name = input->texture->name;
@@ -400,7 +404,7 @@ namespace AenIMP {
 		textureVector.push_back(temp);
 	}
 
-	void CompleteRoom::addMaterial(Material* input)
+	void CompleteRoom::addMaterial(AenIMP::Material* input)
 	{
 		AenIF::Material temp;
 		for (int i = 0; i < 3; i++)
@@ -414,7 +418,7 @@ namespace AenIMP {
 		materialVector.push_back(temp);
 	}
 
-	void CompleteRoom::addLight(Light* input)
+	void CompleteRoom::addLight(AenIMP::Light* input)
 	{
 		AenIF::Light temp;
 		temp.type = input->light->type;
@@ -433,7 +437,7 @@ namespace AenIMP {
 		lightVector.push_back(temp);
 	}
 
-	void CompleteRoom::addParticle(Particle* input)
+	void CompleteRoom::addParticle(AenIMP::Particle* input)
 	{
 		AenIF::Particle temp;
 		temp.type = input->particle->type;
@@ -474,4 +478,5 @@ namespace AenIMP {
 	{
 		return particleVector;
 	}
+
 }

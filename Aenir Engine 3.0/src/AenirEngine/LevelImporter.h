@@ -1,4 +1,5 @@
 #pragma once
+#include "AenDefines.h"
 #include "LevelHeader.h"
 #include "RoomFormat.h"
 #include <iostream>
@@ -16,7 +17,6 @@ using std::vector;
 
 namespace AenIMP
 {
-
 	struct Room
 	{
 		Aen::RoomHeader roomHeader;
@@ -89,7 +89,14 @@ namespace AenIMP
 		~Particle();
 	};
 
-	class CompleteRoom
+	
+
+	
+}
+
+namespace Aen 
+{
+	class AEN_DECLSPEC CompleteRoom
 	{
 	private:
 
@@ -106,14 +113,14 @@ namespace AenIMP
 
 		void print();
 
-		void addRoom(Room* input);
-		void addModel(Model* input);
-		void addTexture(Texture* input);
-		void addMaterial(Material* input);
-		void addLight(Light* input);
-		void addParticle(Particle* input);
+		void addRoom(AenIMP::Room* input);
+		void addModel(AenIMP::Model* input);
+		void addTexture(AenIMP::Texture* input);
+		void addMaterial(AenIMP::Material* input);
+		void addLight(AenIMP::Light* input);
+		void addParticle(AenIMP::Particle* input);
 
-		AenIF::Room & GetRoom();
+		AenIF::Room& GetRoom();
 		vector<AenIF::Model>& GetModelVector();
 		vector<AenIF::Texture>& GetTextureVector();
 		vector<AenIF::Material>& GetMaterialVector();
@@ -122,7 +129,7 @@ namespace AenIMP
 
 	};
 
-	class LevelImporter
+	class AEN_DECLSPEC LevelImporter
 	{
 	private:
 		ifstream infile;
