@@ -50,8 +50,8 @@ void Client::Start() {
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
 	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
-	/*Aen::Animation& aniTest = Aen::Resource::CreateAnimation("test");
-	aniTest.printTest();*/
+	Aen::Animation& aniTest = Aen::Resource::CreateAnimation("test");
+	aniTest.LoadAnimation("isNotTRUE");
 	
 
 	// ----------------------------- Load Reimushes -------------------------------- //
