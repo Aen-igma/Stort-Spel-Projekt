@@ -100,7 +100,7 @@ namespace Aen {
 			m_pDefaultShader->m_dbLayout["InnerEdgeColor"]			= Color::Black;
 			m_pDefaultShader->m_dbLayout["OuterEdgeColor"]			= Color::Black;
 			m_pDefaultShader->m_dbLayout["GlowColor"]				= Color::White;
-			m_pDefaultShader->m_dbLayout["GlowStr"]					= 10.f;
+			m_pDefaultShader->m_dbLayout["GlowStr"]					= 100.f;
 			m_pDefaultShader->m_dbLayout["InnerEdgeThickness"]		= 0.001f;
 			m_pDefaultShader->m_dbLayout["OuterEdgeThickness"]		= 0.001f;
 			m_pDefaultShader->m_dbLayout["SpecularPower"]			= 0.6f;

@@ -63,6 +63,7 @@ struct PS_Output {
 	float4 pos : SV_Target1;
 	float4 normal : SV_Target2;
 	float4 depth : SV_Target3;
+	float4 glow : SV_Target4;
 };
 
 texture2D Aen_DiffuseMap : DIFFUSEMAP;
@@ -95,10 +96,10 @@ PS_Output main(PS_Input input) : SV_Target0 {
 
 	finalPixel += ambient;
 
-	if (useEmission) {
-		float3 em = emissionM * glowColor * glowStr;
-		finalPixel += em;
-	}
+	//if (useEmission) {
+	//	float3 em = emissionM * glowColor.xyz * glowStr;
+	//	finalPixel += em;
+	//}
 
 	for(uint k = lightGrid.r; k < lightGrid.r + lightGrid.g != 0; k++) {
 		uint i = Aen_LightIndexList[k];
@@ -141,6 +142,8 @@ PS_Output main(PS_Input input) : SV_Target0 {
 	output.pos = float4(input.worldPos, 1.f);
 	output.normal = float4(normal, 1.f);
 	output.depth = float4(sqrt(input.pos.z / input.pos.w), 0.f, 0.f, 1.f);
+	//output.glow = float4(0.f, 0.f,0.f, 1.f);
+	output.glow = float4((emissionM * glowColor.xyz * glowStr), 0.f);
 
 	return output;
 }

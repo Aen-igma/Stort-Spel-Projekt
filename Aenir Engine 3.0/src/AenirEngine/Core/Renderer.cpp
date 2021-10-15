@@ -5,10 +5,11 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), m_postProcessBuffer(window), m_layerBuffer(window, 7u), 
+		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), m_postProcessBuffer(window), m_layerBuffer(window, 7u),
 		m_backBuffer(), m_viewPort(), m_clampSampler(SamplerType::CLAMP), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front), m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u) {}
+
 
 	void Renderer::Initialize() {
 
@@ -20,6 +21,10 @@ namespace Aen {
 		m_viewPort.Height = static_cast<float>(m_window.GetSize().y);
 		m_viewPort.MinDepth = 0.f;
 		m_viewPort.MaxDepth = 1.f;
+
+		if (!m_copyToBufferCS.Create(AEN_OUTPUT_DIR_WSTR(L"CopyToBufferCS.cso")))
+			if (!m_copyToBufferCS.Create(L"CopyToBufferCS.cso"))
+				throw;
 
 		if (!m_bloomCS.Create(AEN_OUTPUT_DIR_WSTR(L"BloomCS.cso")))
 			if (!m_bloomCS.Create(L"BloomCS.cso"))
@@ -57,6 +62,9 @@ namespace Aen {
 		m_lGrid.Create(m_dispatchInfo.GetData().numThreads);
 
 		m_backBufferUAV.Create(m_backBuffer);
+
+		InitBloomTexture();
+		
 	}
 
 	void Renderer::Render() {
@@ -67,6 +75,7 @@ namespace Aen {
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::ClearRenderTargetView(m_layerBuffer, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::ClearRenderTargetView(m_postProcessBuffer, Color(0.f, 0.f, 0.f, 0.f));
+		//m_gbufferCopy.CreateFromGBuffer(m_layerBuffer, m_window);
 
 		// Camera
 
@@ -78,17 +87,8 @@ namespace Aen {
 			Vec3f pos = pCam->GetPos();
 			Vec3f rot = pCam->GetRot();
 
-			//sm::Vector3 pos = pTempCam->getPosition();
-			//sm::Vector3 rot = pTempCam->getRotation();
-
-			
-
 			pCam->GetComponent<Camera>().UpdateView(pos, rot);
 			
-
-			//m_cbCamera.GetData().pos = pTempCam->getPosition();
-			//m_cbCamera.GetData().uDir = pTempCam->getUpV();
-			//m_cbCamera.GetData().fDir = pTempCam->getForwardV();
 			m_cbCamera.GetData().pos = { pos.x, pos.y, pos.z };
 			m_cbCamera.GetData().fDir = pCam->GetComponent<Camera>().GetForward();
 			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
@@ -97,11 +97,7 @@ namespace Aen {
 			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
 			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
 
-			//m_cbTransform.GetData().m_vMat = pTempCam->getView().Transpose();
-			//m_cbTransform.GetData().m_pMat = pTempCam->getProj().Transpose();
 		} else {
-			//m_cbTransform.GetData().m_pMat = sm::Matrix::Identity;
-			//m_cbTransform.GetData().m_vMat = sm::Matrix::Identity;
 			m_cbTransform.GetData().m_vMat = Mat4f::identity;
 			m_cbTransform.GetData().m_pMat = Mat4f::identity;
 		}
@@ -122,7 +118,7 @@ namespace Aen {
 
 		// Layered Rendering
 
-		for(uint32_t i = 0u; i < 7u; i++)
+		for(uint32_t i = 0u; i < m_layerBuffer.GetCount(); i++)
 			if(ComponentHandler::m_meshLayer[i].size() > 0) {
 
 				RenderSystem::UnBindRenderTargets(1u);
@@ -175,8 +171,11 @@ namespace Aen {
 
 		m_screenQuad.Draw();
 
+		
+
 		// Post Process pass
 
+		
 		RenderSystem::UnBindShaderResources<PShader>(0u, m_layerBuffer.GetCount());
 		RenderSystem::UnBindRenderTargets(m_postProcessBuffer.GetCount());
 
@@ -199,22 +198,38 @@ namespace Aen {
 
 		m_screenQuad.Draw();
 
-
-
-
+		// Bloom
 		static int im_dispatch[2] = { 32, 32 };
-
+		static int im_switcher = 5;
+		static float im_bloomStr = 1.f;
 		RenderSystem::BindRenderTargetView(m_nullrtv);
+
 		RenderSystem::BindShader<CShader>(m_bloomCS);
-		RenderSystem::BindUnOrderedAccessView(0, m_backBufferUAV);
+		m_switcher.BindBuffer<CShader>(0u);
+		RenderSystem::BindUnOrderedAccessView(0u, m_backBufferUAV);
+		RenderSystem::BindUnOrderedAccessView(1u, m_bloomUAV);
+		RenderSystem::BindShaderResourceView<CShader>(0u, m_layerBuffer);
+
+
+		m_switcher.GetData().x = im_switcher;
+		m_switcher.GetData().y = im_bloomStr;
+		m_switcher.GetData().z = 0;
+		m_switcher.GetData().w = 0;
+		m_switcher.UpdateBuffer();
+
 		RenderSystem::Dispatch(im_dispatch[0], im_dispatch[1], 1);
-		RenderSystem::UnBindUnOrderedAccessViews(0, 1);
+		RenderSystem::UnBindUnOrderedAccessViews(0, 2);
+
 		RenderSystem::BindRenderTargetView(m_backBuffer);
+
+		//m_gbufferCopy.CreateFromGBuffer(m_layerBuffer, m_window);
 
 #ifdef _DEBUG
 		Aen::GlobalSettings::mp_guiHandler->NewFrame();
-		ImGui::Begin("Dispatcher");
+		ImGui::Begin("Post Process CS");
 		ImGui::DragInt2("Disptach", im_dispatch, 1.f, 1, 100);
+		ImGui::SliderInt("Map", &im_switcher, 0, 6);
+		ImGui::SliderFloat("Bloom Strength", &im_bloomStr, 0.f, 1.f);
 		ImGui::End();
 		//Aen::GlobalSettings::mp_guiHandler->SceneListWindow();
 		//Aen::GlobalSettings::mp_guiHandler->AssetWindow();
@@ -227,5 +242,27 @@ namespace Aen {
 
 		RenderSystem::Present();
 		RenderSystem::ClearState();
+	}
+	void Renderer::InitBloomTexture()
+	{
+		ComTexture2D bloomTexture;
+
+		D3D11_TEXTURE2D_DESC tDesc;
+		ZeroMemory(&tDesc, sizeof(D3D11_TEXTURE2D_DESC));
+		tDesc.Width = m_window.GetSize().x;
+		tDesc.Height = m_window.GetSize().y;
+		tDesc.MipLevels = 1;
+		tDesc.ArraySize = 1;
+		tDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		tDesc.SampleDesc.Count = 1;
+		tDesc.SampleDesc.Quality = 0;
+		tDesc.Usage = D3D11_USAGE_DEFAULT;
+		tDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
+		tDesc.CPUAccessFlags = 0;
+		tDesc.MiscFlags = 0;
+
+		m_device->CreateTexture2D(&tDesc, NULL, bloomTexture.GetAddressOf());
+
+		m_device->CreateUnorderedAccessView(bloomTexture.Get(), NULL, m_bloomUAV.GetAddressOf());
 	}
 }

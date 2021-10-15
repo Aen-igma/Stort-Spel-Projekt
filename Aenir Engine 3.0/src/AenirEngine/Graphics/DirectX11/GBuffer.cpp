@@ -11,9 +11,14 @@ namespace Aen {
 		for(auto& i : m_srvs)
 			if(i)
 				i->Release();
+
+		//for (auto& i : m_texture)
+		//	if (i)
+		//		i->Release();
 	}
 
-	GBuffer::GBuffer(Window& window, const uint32_t& count) {
+	GBuffer::GBuffer(Window& window, const uint32_t& count)
+	:m_texture(count, nullptr) {
 
 		m_rtvs.resize(count);
 		m_srvs.resize(count);
@@ -47,16 +52,16 @@ namespace Aen {
 		sDesc.Texture2D.MostDetailedMip = 0;
 		sDesc.Texture2D.MipLevels = 1;
 
-		std::vector<ComTexture2D> texture(count, nullptr);
+		//std::vector<ComTexture2D> texture(count, nullptr);
 
 		for(UINT i = 0; i < count; i++) {
-			if(FAILED(m_device->CreateTexture2D(&tDesc, NULL, texture[i].ReleaseAndGetAddressOf())))
+			if(FAILED(m_device->CreateTexture2D(&tDesc, NULL, m_texture[i].GetAddressOf())))
 				throw;
 
-			if(FAILED(m_device->CreateShaderResourceView(texture[i].Get(), &sDesc, &m_srvs[i])))
+			if(FAILED(m_device->CreateShaderResourceView(m_texture[i].Get(), &sDesc, &m_srvs[i])))
 				throw;
 
-			if(FAILED(m_device->CreateRenderTargetView(texture[i].Get(), &rDesc, &m_rtvs[i])))
+			if(FAILED(m_device->CreateRenderTargetView(m_texture[i].Get(), &rDesc, &m_rtvs[i])))
 				throw;
 		}
 	}
@@ -79,7 +84,6 @@ namespace Aen {
 		tDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 		tDesc.CPUAccessFlags = 0;
 		tDesc.MiscFlags = 0;
-
 
 		D3D11_RENDER_TARGET_VIEW_DESC rDesc;
 		ZeroMemory(&rDesc, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
@@ -119,6 +123,27 @@ namespace Aen {
 
 	ComShaderResourceView GBuffer::GetSrv(const uint32_t& index) {
 		return ComShaderResourceView(m_srvs[index]);
+	}
+
+	GBufferTextures::~GBufferTextures()
+	{
+		for (int i = 0; i < m_srvs.size(); i++)
+			if(m_srvs[i]) m_srvs[i]->Release();
+	}
+
+
+
+	void GBufferTextures::CreateFromGBuffer(GBuffer& gbuffer, Window window)
+	{
+	}
+
+	void GBufferTextures::c()
+	{
+	}
+
+	ComShaderResourceView GBufferTextures::GetSrv(const uint32_t& index)
+	{
+		return ComShaderResourceView();
 	}
 
 }

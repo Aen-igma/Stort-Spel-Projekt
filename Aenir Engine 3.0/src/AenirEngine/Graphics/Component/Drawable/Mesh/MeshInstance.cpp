@@ -101,12 +101,27 @@ namespace Aen {
 					if(slots[8] != UINT_MAX) renderer.m_cbUseTexture.BindBuffer<PShader>(slots[8]);
 					if(slots[9] != UINT_MAX) renderer.m_sbLight.BindSRV<PShader>(slots[9]);
 
-					for(UINT k = 0; k < 4; k++)
-						if(pMaterial->m_textures[k] && slots[10 + k] != UINT_MAX) {
+
+					for (UINT k = 0; k < 4; k++)
+					{
+						if (pMaterial->m_textures[k] && slots[10 + k] != UINT_MAX) {
 							RenderSystem::BindShaderResourceView<PShader>(slots[10 + k], pMaterial->m_textures[k]->m_shaderResource);
 							renderer.m_cbUseTexture.GetData()[k] = (int)true;
-						} else
+						}
+						else
 							renderer.m_cbUseTexture.GetData()[k] = (int)false;
+						if (k == 3)
+						{
+							RenderSystem::BindShader<CShader>(renderer.m_copyToBufferCS);
+							//RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_textures[k]->m_shaderResource);
+							RenderSystem::BindUnOrderedAccessView(0u, renderer.m_bloomUAV);
+
+							RenderSystem::Dispatch(60, 33, 0);
+							//RenderSystem::UnBindUnOrderedAccessViews(0, 1);
+							RenderSystem::UnBindShader<CShader>();
+						}
+					}
+						
 
 						pMaterial->m_dBuffer.UpdateBuffer();
 						if(slots[14] != UINT_MAX) pMaterial->m_dBuffer.BindBuffer<PShader>(slots[14]);

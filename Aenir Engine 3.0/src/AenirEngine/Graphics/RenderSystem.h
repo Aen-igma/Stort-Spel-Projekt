@@ -162,6 +162,9 @@ namespace Aen {
         
         template<class T>
         static void BindShaderResourceView(const UINT& startSlot, GBuffer& gBuffer);
+
+        template<class T>
+        static void BindShaderResourceView(const UINT& startSlot, GBufferTextures& gBuffer);
         
         template<class T>
         static void BindShaderResourceView(const UINT& slot, ShaderResource& shaderResource);
@@ -190,6 +193,10 @@ namespace Aen {
 
         static void BindUnOrderedAccessView(const UINT& slot, RWTexture2D& tex2d) {
             m_dContext->CSSetUnorderedAccessViews(slot, 1, tex2d.m_uav.GetAddressOf(), NULL);
+        }
+
+        static void BindUnOrderedAccessView(const UINT& slot, ComUnorderedAccessView& uav) {
+            m_dContext->CSSetUnorderedAccessViews(slot, 1, uav.GetAddressOf(), NULL);
         }
 
         static void ClearRenderTargetView(BBuffer& backBuffer, const Color& color) {
@@ -274,6 +281,19 @@ namespace Aen {
 
     DEF_SHADER
     #undef X
+
+    
+
+    // --------------------------- BindShaderResourceView for GBufferTextures ------------------------------
+
+    #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& startSlot, GBufferTextures& gBuffer) {\
+        UINT size = (UINT)gBuffer.m_srvs.size();\
+        m_dContext->sName(startSlot, size, gBuffer.m_srvs.data());\
+    }
+
+    DEF_SHADER
+    #undef X
+
 
     // --------------------------- BindShaderResourceView for ShaderResource ------------------------------
 

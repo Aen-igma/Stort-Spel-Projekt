@@ -54,6 +54,7 @@ namespace Aen {
 		CBuffer<CB_Camera> m_cbCamera;
 		CBuffer<Vec4i> m_cbUseTexture;
 		SBuffer<SB_Light> m_sbLight;
+		CBuffer<Vec4f> m_switcher;
 
 		GBuffer m_postProcessBuffer;
 		GBuffer m_layerBuffer;
@@ -78,6 +79,9 @@ namespace Aen {
 
 		CShader m_bloomCS;
 		UAView m_backBufferUAV;
+		ComUnorderedAccessView m_bloomUAV;
+		CShader m_copyToBufferCS;
+		void InitBloomTexture();
 
 		ComRenderTargetView m_nullrtv = nullptr;
 
@@ -85,5 +89,7 @@ namespace Aen {
 		RWTexture2D m_lGrid;
 		Vec2i m_dispatchCall;
 		const uint32_t m_avarageLights;
+		
+
 	};
 }

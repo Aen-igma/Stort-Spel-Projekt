@@ -23,21 +23,21 @@ class Client : public Aen::App {
 	Aen::Entity m_dLight;
 	Aen::Entity m_spotLight;
 	Aen::Entity m_plane;
-	Aen::Entity m_plane1;
+	//Aen::Entity m_plane1;
 	Aen::Entity m_cube;
 
 	Aen::Entity m_emiCube;
 	
 	Aen::Mesh* m_meshcube;
-	Aen::Entity m_sphere;
+	//Aen::Entity m_sphere;
 
-	Aen::Entity* rooms[mapSize * mapSize];
+	//Aen::Entity* rooms[mapSize * mapSize];
 
-	std::unordered_map<int, Aen::Entity*> m_reimubes;
-	Aen::Mesh* m_reimubeMesh;
-	Aen::Material* m_ReimuMat;
-	Aen::Texture* m_ReimuTex;
-	int m_reimubeCount;
+	//std::unordered_map<int, Aen::Entity*> m_reimubes;
+	//Aen::Mesh* m_reimubeMesh;
+	//Aen::Material* m_ReimuMat;
+	//Aen::Texture* m_ReimuTex;
+	//int m_reimubeCount;
 
 	std::unordered_map<int, Aen::Entity*> m_pLights;
 	int ind;

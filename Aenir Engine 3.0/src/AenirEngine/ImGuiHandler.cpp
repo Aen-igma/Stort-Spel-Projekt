@@ -37,8 +37,8 @@ namespace Aen {
 
 	void ImGuiHandler::StartUp()
 	{
-		ReadAllModelsFromHandler();
-		ReadAllFilesFromResourceFolder();
+		//ReadAllModelsFromHandler();
+		//ReadAllFilesFromResourceFolder();
 		CreatePreviewTextureThumbnail();
 	}
 
