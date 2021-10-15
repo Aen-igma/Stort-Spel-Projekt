@@ -19,27 +19,25 @@ namespace Aen {
 		//Quadtree
 		Quadtree* m_Quadtree;
 		DirectX::BoundingBox m_WorldBox;
-		DirectX::BoundingBox m_TempPlayer;
+		DirectX::BoundingBox m_PlayerBox;
 		DirectX::XMFLOAT3 m_PlayerCenter;
 		DirectX::XMFLOAT3 m_PlayerSizes;
 
-		int m_quadCap = 10;
-		float m_minX;
-		float m_minY;
-		float m_maxX;
-		float m_maxY;
+		//Camera frustrum for view frustrum culling
+		DirectX::BoundingFrustum m_CameraFrustrum; 
+		std::vector<int> m_ObjectsToRender;
 
+
+		//Non Quadtree stuff
 		App* m_app;
 		private:
 		using ResClock = std::chrono::high_resolution_clock;
 		using TimePoint = std::chrono::high_resolution_clock::time_point;
 		using DurationLD = std::chrono::duration<long double>;
-		
 		TimePoint m_start;
 		TimePoint m_end;
 		DurationLD m_frameTime;
 		DurationLD m_deltaTime;
-
 		Renderer* m_renderer;
 	};
 }

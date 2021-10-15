@@ -30,30 +30,22 @@ namespace Aen {
 		ImGui_ImplWin32_Init(m_app->m_window.GetWHND());
 		ImGui::StyleColorsDark();
 
-		//top left corner and bottom right corner of entire game world
-		this->m_minX = 0.0f;
-		this->m_minY = 0.0f;
-		this->m_maxX = 50.0f;
-		this->m_maxY = 50.0f;
-		this->m_quadCap = 4;
-		//AABB
-		DirectX::XMFLOAT3 tempHalfExtent = DirectX::XMFLOAT3(m_maxX / 2, m_maxY / 2, m_maxY / 2);
-		m_WorldBox = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0), tempHalfExtent);
-		//QuadTree
-		m_Quadtree = new Quadtree(m_WorldBox, 0, 3, m_quadCap);
-
+		// Setup First Quad in quadtree
+		m_WorldBox = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(25.f, 25.f, 25.f));
+		//Create Quadtree with new variables
+		m_Quadtree = new Quadtree(m_WorldBox, 0, 3, 4);
 		//for-loop going through all static objects in the world and inserting them one by one
 		for (int i = 0; i < 10; i++)
 		{
 			DirectX::BoundingBox* tempBox = new DirectX::BoundingBox(DirectX::XMFLOAT3(1.f + i * 4, 1.f, 0), 
 				DirectX::XMFLOAT3(1.f, 1.f, 1.f));
-			//m_Quadtree->insertObject(tempBox); 
 			m_Quadtree->insertObject(i, tempBox);
-
 		}
 		m_PlayerCenter = DirectX::XMFLOAT3(10, 10, 0);
 		m_PlayerSizes = DirectX::XMFLOAT3(1, 1, 1);
-		m_TempPlayer = DirectX::BoundingBox(m_PlayerCenter, m_PlayerSizes);
+		m_PlayerBox = DirectX::BoundingBox(m_PlayerCenter, m_PlayerSizes);
+
+		// float3 origin, float4 orientation, float rightslope, float leftslope, float topslope, float bottomslope, float near, float far
 
 
 		std::cout << std::endl;
@@ -78,12 +70,19 @@ namespace Aen {
 				{
 					if (Input::KeyDown(Key::B))
 					{
-						// when updating to never math library, replace this with .smvec
+						// when updating to new math library, replace this with .smvec
 						m_PlayerCenter = DirectX::XMFLOAT3(GlobalSettings::GetMainCamera()->GetPos().x, 
 							GlobalSettings::GetMainCamera()->GetPos().y, 
 							GlobalSettings::GetMainCamera()->GetPos().z);
-						m_TempPlayer = DirectX::BoundingBox(m_PlayerCenter, m_PlayerSizes);
-						m_Quadtree->getRoot()->inside(m_TempPlayer);
+						m_PlayerBox = DirectX::BoundingBox(m_PlayerCenter, m_PlayerSizes);
+						m_Quadtree->getRoot()->inside(m_PlayerBox);
+					}
+					if (Input::KeyDown(Key::V))
+					{
+						m_Quadtree->getRoot()->intersectTest(m_CameraFrustrum, m_ObjectsToRender);
+						std::cout << "Objects to render: ";
+						for (auto& b : m_ObjectsToRender)
+							std::cout << b << ", \n";
 					}
 					if (Input::KeyDown(Key::C))
 					{
@@ -92,7 +91,6 @@ namespace Aen {
 							GlobalSettings::GetMainCamera()->GetPos().z << std::endl;
 					}
 				}
-				
 				m_renderer->Render(); // VSync
 				
 			}
