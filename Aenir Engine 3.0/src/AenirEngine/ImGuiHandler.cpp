@@ -25,13 +25,10 @@ namespace Aen
 
 	void ImGuiHandler::LoadLevel(int index)
 	{
-		cout << "Tsdsadsadsadsad " << endl;
-
-		index = 0;
 		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetModelVector().size(); i++)
 		{
 			cout << "Model " << endl;
-			AddBase(m_levelImporter.GetRoomVector()[index].GetModelVector()[i]);
+			AddBase(m_levelImporter.GetRoomVector()[index].GetModelVector()[i], m_levelImporter.GetRoomVector()[index].GetTextureVector()[i]);
 		}
 
 		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetLightVector().size(); i++)
@@ -73,14 +70,26 @@ namespace Aen
 		m_entityList.push_back(entity);
 	}
 
-	void ImGuiHandler::AddBase(AenIF::Model& model)
+	void ImGuiHandler::AddBase(AenIF::Model& model, AenIF::Texture& texture)
 	{
+		string imageName = AEN_RESOURCE_DIR(texture.name);
+		string matName = "Material" + to_string(m_entityCount);
+		string texName = "Texture" + to_string(m_entityCount);
+
 		Aen::Entity* entity = AEN_NEW(Aen::Entity);
 		Aen::Mesh& mesh = Aen::Resource::CreateMesh(model.name + std::to_string(m_entityCount));
 		mesh.Load(AEN_RESOURCE_DIR(model.mesh));
 
+		Aen::Texture& matTexture = Aen::Resource::CreateTexture(texName);
+		matTexture.LoadTexture(imageName);
+		Aen::Material& mat = Aen::Resource::CreateMaterial(matName, true);
+		mat.SetDiffuseMap(matTexture);
+
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
+
+		size_t id = entity->GetID();
+		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
 
 		AddModel(entity);
 	}

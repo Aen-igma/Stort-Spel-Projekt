@@ -88,10 +88,6 @@ namespace AenIMP
 		Particle();
 		~Particle();
 	};
-
-	
-
-	
 }
 
 namespace Aen 
@@ -106,6 +102,7 @@ namespace Aen
 		vector<AenIF::Material> materialVector;
 		vector<AenIF::Light> lightVector;
 		vector<AenIF::Particle> particleVector;
+
 	public:
 
 		CompleteRoom();

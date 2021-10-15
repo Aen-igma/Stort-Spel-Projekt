@@ -45,7 +45,7 @@ namespace Aen {
 		void AddModel(Aen::Entity* entity);
 		void AddLight(Aen::Entity* entity);
 
-		void AddBase(AenIF::Model& model);
+		void AddBase(AenIF::Model& model, AenIF::Texture& texture);
 		void AddPointLight(AenIF::Light& input);
 		void AddSpotLight(AenIF::Light& input);
 		void AddDirectional(AenIF::Light& input);

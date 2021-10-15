@@ -80,14 +80,8 @@ void Client::Start() {
 	m_plane.SetScale(40.f, 1.f, 40.f);
 	m_plane.SetRot(45, 0, 0);
 
-<<<<<<< Updated upstream
-	//Aen::GlobalSettings::GetImGuiHandler()->ReadAllFilesFromResourceFolder();
-	//Aen::GlobalSettings::GetImGuiHandler()->LoadLevel(0);
-=======
 	Aen::GlobalSettings::GetImGuiHandler()->ReadAllFilesFromResourceFolder();
 	Aen::GlobalSettings::GetImGuiHandler()->LoadLevel(0);
->>>>>>> Stashed changes
-
 
 	// --------------------------- Setup Window --------------------------------- //
 
