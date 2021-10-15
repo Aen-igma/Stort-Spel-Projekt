@@ -63,6 +63,7 @@ struct PS_Output {
 	float4 pos : SV_Target1;
 	float4 normal : SV_Target2;
 	float4 depth : SV_Target3;
+	float4 glow : SV_Target4;
 };
 
 texture2D Aen_DiffuseMap : DIFFUSEMAP;
@@ -87,6 +88,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 
 	float3 diffuseM = (useDiffuse) ? Aen_DiffuseMap.Sample(wrapSampler, input.uv) + shadowColor * 0.1f : baseColor;
 	float3 normalM = normalize(Aen_NormalMap.Sample(wrapSampler, input.uv).rgb * 2.f - 1.f);
+	float3 emissionM = Aen_EmissionMap.Sample(wrapSampler, input.uv);
 
 	float3 normal = (useNormal) ? float4(mul(normalM, input.tbn), 1.f) : float4(normalize(input.tbn._m20_m21_m22), 1.f);
 	float3 ambient = shadowColor;
@@ -134,6 +136,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 	output.pos = float4(input.worldPos, 1.f);
 	output.normal = float4(normal, 1.f);
 	output.depth = float4(sqrt(input.pos.z / input.pos.w), 0.f, 0.f, 1.f);
+	output.glow = (emissionM * glowColor.xyz * glowStr);
 
 	return output;
 }

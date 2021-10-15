@@ -37,6 +37,8 @@ class Client : public Aen::App {
 	Aen::Texture* m_ReimuTex;
 	int m_reimubeCount;
 
+	Aen::Entity m_emiCube;
+
 	std::unordered_map<int, Aen::Entity*> m_pLights;
 	int ind;
 };

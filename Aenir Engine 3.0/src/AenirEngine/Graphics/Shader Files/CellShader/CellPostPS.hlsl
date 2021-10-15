@@ -58,6 +58,7 @@ texture2D diffuseMap : DIFFUSEMAP: register(t0);
 texture2D posMap : POSMAP: register(t1);
 texture2D normalMap : NORMALMAP: register(t2);
 texture2D depthMap : DEPTHMAP: register(t3);
+Texture2D glowMap : GLOWMAP : register(t4);
 
 SamplerState borderSampler : BSAMPLER;
 
@@ -67,6 +68,7 @@ float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_Target {
 	float3 normal = normalMap.Sample(borderSampler, uv).rgb;
 	float3 worldPos = posMap.Sample(borderSampler, uv).rgb;
 	float4 depth = depthMap.Sample(borderSampler, uv);
+	float4 glow = glowMap.Sample(borderSampler, uv);
 
 	float2 sobelX = 0.f;
 	float2 sobelY = 0.f;
@@ -95,5 +97,5 @@ float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_Target {
 
 	float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
 
-	return output;
+	return output + glow;
 }
