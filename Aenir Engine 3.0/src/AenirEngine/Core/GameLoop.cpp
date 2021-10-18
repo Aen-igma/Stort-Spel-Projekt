@@ -54,6 +54,7 @@ namespace Aen {
 		PhysXService::GetInstance()->ClosePhysics();
 		
 		Resource::Destroy();
+		EntityHandler::Destroy();
 		GCore::Concealed::Release();
 		delete m_app;
 		delete m_renderer;

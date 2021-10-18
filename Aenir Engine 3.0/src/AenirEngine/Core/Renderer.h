@@ -1,6 +1,6 @@
 #pragma once
 #include"../Graphics/RenderSystem.h"
-#include"../Graphics/Component/Entity.h"
+#include"../Graphics/Component/EntityHandler.h"
 #include<thread>
 
 namespace Aen {
