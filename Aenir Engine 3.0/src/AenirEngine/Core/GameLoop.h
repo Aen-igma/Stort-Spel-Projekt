@@ -26,7 +26,7 @@ namespace Aen {
 		//Quadtree
 		Quadtree* m_Quadtree;
 		DirectX::BoundingBox m_WorldBox;
-		std::vector<int> m_ObjectsToRender;
+		std::vector<int> m_QuadObjectsToRender; 
 
 		
 		TimePoint m_start;

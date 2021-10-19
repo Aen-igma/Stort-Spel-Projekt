@@ -116,8 +116,8 @@ namespace Aen {
 
 		// Layered Rendering
 
-		for(uint32_t i = 0u; i < 7u; i++)
-			if(ComponentHandler::m_meshLayer[i].size() > 0) {
+		for(uint32_t i = 0u; i < 7u; i++) 
+			if(ComponentHandler::m_meshLayer[i].size() > 0) { //Sort all dynamic and static objects so that we only go through all the dynamic objects and only the static objects in view
 
 				RenderSystem::UnBindRenderTargets(1u);
 				RenderSystem::BindRenderTargetView(m_depthMap);
@@ -147,8 +147,7 @@ namespace Aen {
 				RenderSystem::UnBindShaderResources<CShader>(0u, 3u);
 
 				// Draw pass
-
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, k.first, i);
+				for (auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, k.first, i);
 
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}

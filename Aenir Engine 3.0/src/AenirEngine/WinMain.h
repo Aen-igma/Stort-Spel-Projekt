@@ -28,7 +28,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPInstance, _
 	RedirectIOToConsole();
 
 	Aen::GameLoop gameLoop;
-	gameLoop.m_app = Aen::CreateApp(); //    remove this
+	gameLoop.m_app = Aen::CreateApp(); //    remove this //Client skapas när denna körs
 	gameLoop.Initialize();
 	gameLoop.Run();
 	return 0;

@@ -33,13 +33,38 @@ namespace Aen
 	void Quadtree::Initialize()
 	{
 		//// Setup First Quad in quadtree
-		for (std::pair<uint32_t, Aen::Entity*> element : mp_entityHandlerPtr->m_entities)
+		//first = ID, second = component,
+		//for (std::pair<uint32_t, Aen::Entity*> element : mp_entityHandlerPtr->m_entities)
+		//{
+		//	if (Aen::ComponentHandler::MeshInstanceExist(element.first))
+		//	{
+		//		std::cout << "hello :)\n";
+		//		
+		//		ObjeStruct* tempObj = new ObjeStruct(element.first, element.second->GetComponent<MeshInstance>().GetDrawableAABB());
+		//		this->mp_root->Insert(tempObj);
+		//		this->m_boundingVolStructs.push_back(tempObj);
+		//	}
+		//}
+
+		bool valid;
+		// Setup First Quad in quadtree
+		//first = ID, second = component,
+		for(auto & i: ComponentHandler::m_mesheInstances)
 		{
-			if (Aen::ComponentHandler::MeshInstanceExist(element.first))
+			valid = true;
+			if (ComponentHandler::RigidExist(i.first))
 			{
-				std::cout << "hello :)\n";
-				
-				ObjeStruct* tempObj = new ObjeStruct(element.first, element.second->GetComponent<MeshInstance>().GetDrawableAABB());
+				//ComponentHandler::GetRigid(i.first).GetType() == dynamic;
+				//valid = false;
+			}
+			//if (ComponentHandler::CharacterExist(i.first)) 
+			//{
+			//	//valid = false;
+			//}
+			if (valid)
+			{
+				ObjeStruct* tempObj = AEN_NEW ObjeStruct(i.first, &i.second->GetMeshAABB());
+
 				this->mp_root->Insert(tempObj);
 				this->m_boundingVolStructs.push_back(tempObj);
 			}

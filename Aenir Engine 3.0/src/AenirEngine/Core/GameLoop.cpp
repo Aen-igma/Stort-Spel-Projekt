@@ -21,13 +21,11 @@ namespace Aen {
 		PhysXService::SetInstance(&m_PhysX);
 		PhysXService::GetInstance()->InitPhysics(100, 981);
 
-	
-
 		// Initialize Quadtree
 		m_WorldBox = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(25.f, 25.f, 25.f));
 		m_Quadtree = new Quadtree(m_WorldBox, 0, 3, 4);
 
-		m_Quadtree->Initialize();
+		m_Quadtree->Initialize(); 
 
 		
 		GlobalSettings::Initialize(m_app->m_window);
@@ -53,7 +51,7 @@ namespace Aen {
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
 
-				m_Quadtree->Update(m_ObjectsToRender);
+				m_Quadtree->Update(m_QuadObjectsToRender);
 
 				PhysXService::GetInstance()->RunPhysics(m_deltaTime.count());
 				m_renderer->Render(); // VSync

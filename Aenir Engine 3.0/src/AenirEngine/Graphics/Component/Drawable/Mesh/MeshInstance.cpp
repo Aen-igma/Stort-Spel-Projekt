@@ -10,13 +10,26 @@ namespace Aen {
 
 		m_pMaterials.clear();
 		m_pMesh = nullptr;
+		//delete m_pMeshAABB;
 	}
 
 	MeshInstance::MeshInstance()
-		:m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
+		:m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {
+
+		this->m_MeshAABB = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0),
+			DirectX::XMFLOAT3(1.f, 1.f, 1.f));
+		this->m_InQuadtree = true;
+	}
 
 	MeshInstance::MeshInstance(Mesh& mesh)
-		:m_pMesh(&mesh) {}
+		:m_pMesh(&mesh) {
+
+		this->m_MeshAABB = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0),
+			DirectX::XMFLOAT3(1.f, 1.f, 1.f));
+		this->m_InQuadtree = true;
+	}
+
+
 
 	void MeshInstance::RemoveMesh() {
 		for(auto& i : m_pMaterials)
@@ -57,9 +70,20 @@ namespace Aen {
 		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
 	}
 
+	DirectX::BoundingBox& MeshInstance::GetMeshAABB()
+	{
+		return this->m_MeshAABB;
+
+	}
+
+	void MeshInstance::SetInQuadtree(bool inQuad)
+	{
+		this->m_InQuadtree = inQuad;
+	}
+
 	void MeshInstance::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) {
 
-		if(m_pMesh) {
+		if(m_pMesh /* && m_InQuadtree*/) { // if true = only render objects from m_ObjectsToRender
 
 			// Transform
 
@@ -68,7 +92,6 @@ namespace Aen {
 			else
 				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
-
 			// Mesh and Material
 
 			for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
