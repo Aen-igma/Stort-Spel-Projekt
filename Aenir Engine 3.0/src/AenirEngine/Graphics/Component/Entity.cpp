@@ -1,9 +1,8 @@
 #include "PCH.h"
 #include "Entity.h"
+#include"EntityHandler.h"
 
 namespace Aen {
-
-	uint32_t Entity::m_iDs(0);
 
 	Entity::~Entity() {
 		ComponentHandler::RemoveCamera(m_id);
@@ -12,16 +11,31 @@ namespace Aen {
 		ComponentHandler::RemoveSpotLight(m_id);
 		ComponentHandler::RemovePointLight(m_id);
 		ComponentHandler::RemoveDirectionalLight(m_id);
+		ComponentHandler::RemoveRigid(m_id);
 
-		EntityHandler::RemoveEntity(m_id);
 		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
-
 	}
 
-	Entity::Entity()
-		:m_id(m_iDs), m_parentId(UINT_MAX), m_layer(0), m_hasParent(false) {
-		EntityHandler::m_entities.emplace(m_id, this);
-		m_iDs++;
+	Entity::Entity(const size_t& id)
+		:m_id(id), m_parentId(UINT_MAX), m_layer(0), m_hasParent(false), m_tag("NONE") {}
+
+	void Entity::SetTag(const std::string& tag) {
+
+		size_t cTag = std::stoi(m_tag);
+		if(m_tag == tag)
+			return;
+
+		if(EntityHandler::m_tagedEntities.count(cTag) > 0)
+			for(auto i = EntityHandler::m_tagedEntities.lower_bound(cTag); i != EntityHandler::m_tagedEntities.upper_bound(cTag); i++)
+				if(i->second->HasId(m_id)) {
+					EntityHandler::m_tagedEntities.erase(i);
+					break;
+				}
+
+		m_tag = tag;
+
+		if(m_tag != "NONE")
+			EntityHandler::m_tagedEntities.emplace(cTag, this);
 	}
 
 	void Entity::SetRenderLayer(const int& layer) {
@@ -52,11 +66,17 @@ namespace Aen {
 	}
 
 	void Entity::SetPos(const Vec3f& pos) {
-		ComponentHandler::GetTranslation(m_id).SetPos(pos);
+		if(ComponentHandler::RigidExist(m_id))
+			ComponentHandler::GetRigid(m_id).SetPos(pos);
+		else if(ComponentHandler::TranslationExist(m_id))
+			ComponentHandler::GetTranslation(m_id).SetPos(pos);
 	}
 
 	void Entity::SetPos(const float& x, const float& y, const float& z) {
-		ComponentHandler::GetTranslation(m_id).SetPos(x, y, z);
+		if(ComponentHandler::RigidExist(m_id))
+			ComponentHandler::GetRigid(m_id).SetPos(x, y, z);
+		else if(ComponentHandler::TranslationExist(m_id))
+			ComponentHandler::GetTranslation(m_id).SetPos(x, y, z);
 	}
 
 	void Entity::Move(const Vec3f& pos) {
@@ -76,11 +96,17 @@ namespace Aen {
 	}
 
 	void Entity::SetRot(const Vec3f& rot) {
-		ComponentHandler::GetRotation(m_id).SetRot(rot);
+		if(ComponentHandler::RigidExist(m_id))
+			ComponentHandler::GetRigid(m_id).SetRot(rot);
+		else if(ComponentHandler::RotationExist(m_id))
+			ComponentHandler::GetRotation(m_id).SetRot(rot);
 	}
 
 	void Entity::SetRot(const float& p, const float& y, const float& r) {
-		ComponentHandler::GetRotation(m_id).SetRot(p, y, r);
+		if(ComponentHandler::RigidExist(m_id))
+			ComponentHandler::GetRigid(m_id).SetRot(p, y, r);
+		else if(ComponentHandler::RotationExist(m_id))
+			ComponentHandler::GetRotation(m_id).SetRot(p, y, r);
 	}
 
 	void Entity::Rotate(const Vec3f& rot) {
@@ -111,9 +137,17 @@ namespace Aen {
 		return ComponentHandler::GetScale(m_id).GetScale();
 	}
 
-	const uint32_t& Entity::GetID()
-	{
+	const size_t& Entity::GetID() {
+
 		return m_id;
+	}
+
+	const std::string& Entity::GetTag() {
+		return m_tag;
+	}
+
+	const bool Entity::HasId(const size_t& id) {
+		return m_id == id;
 	}
 
 	const Mat4f Entity::GetTransformation() {
@@ -127,5 +161,35 @@ namespace Aen {
 			parentMatrix = EntityHandler::GetEntity(m_parentId).GetTransformation();
 
 		return scale * rot * pos * parentMatrix;
+	}
+
+	const Mat4f Entity::GetPosMat() {
+		Mat4f pos = (ComponentHandler::TranslationExist(m_id)) ? ComponentHandler::GetTranslation(m_id).GetTranform() : Mat4f::identity;
+
+		Mat4f parentMatrix;
+		if(m_hasParent)
+			parentMatrix = EntityHandler::GetEntity(m_parentId).GetPosMat();
+
+		return pos * parentMatrix;
+	}
+
+	const Mat4f Entity::GetRotMat() {
+		Mat4f rot = (ComponentHandler::RotationExist(m_id)) ? ComponentHandler::GetRotation(m_id).GetTranform() : Mat4f::identity;
+
+		Mat4f parentMatrix;
+		if(m_hasParent)
+			parentMatrix = EntityHandler::GetEntity(m_parentId).GetRotMat();
+
+		return rot * parentMatrix;
+	}
+
+	const Mat4f Entity::GetScaleMat() {
+		Mat4f scale = (ComponentHandler::ScaleExist(m_id)) ? ComponentHandler::GetScale(m_id).GetTranform() : Mat4f::identity;
+
+		Mat4f parentMatrix;
+		if(m_hasParent)
+			parentMatrix = EntityHandler::GetEntity(m_parentId).GetScaleMat();
+
+		return scale * parentMatrix;
 	}
 }

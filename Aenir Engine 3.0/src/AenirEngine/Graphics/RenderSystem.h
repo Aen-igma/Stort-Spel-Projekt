@@ -83,6 +83,18 @@ namespace Aen {
             m_dContext->ClearDepthStencilView(depth.m_dsView.Get(), flag, 1.f, 0u);
         }
 
+        static void ClearDepthStencilView(DepthMap& depthMap, const bool& clearDepth, const bool& clearStencil) {
+            UINT flag = 0;
+            if(clearDepth && clearStencil)
+                flag = D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL;
+            else if(clearDepth)
+                flag = D3D11_CLEAR_DEPTH;
+            else if(clearStencil)
+                flag = D3D11_CLEAR_STENCIL;
+
+            m_dContext->ClearDepthStencilView(depthMap.m_dsView.Get(), flag, 1.f, 0u);
+        }
+
         static void UnBindRenderTargets(const UINT& count) {
             std::vector<ID3D11RenderTargetView*> pRtv(count, nullptr);
             m_dContext->OMSetRenderTargets(count, pRtv.data(), NULL);
@@ -94,12 +106,27 @@ namespace Aen {
         template<class T>
         static void UnBindShader();
 
+        static void UnBindUnOrderedAccessViews(const UINT& slot, const UINT& count) {
+            std::vector<ID3D11UnorderedAccessView*> uav;
+            uav.reserve(count);
+            uav.resize(count, nullptr);
+            m_dContext->CSSetUnorderedAccessViews(slot, count, uav.data(), NULL);
+        }
+
         static void BindRenderTargetView(Depth& depth) {
             m_dContext->OMSetRenderTargets(0, NULL, depth.m_dsView.Get());
         }
 
+        static void BindRenderTargetView(DepthMap& depthMap) {
+            m_dContext->OMSetRenderTargets(0, NULL, depthMap.m_dsView.Get());
+        }
+
         static void BindRenderTargetView(BBuffer& backBuffer, Depth& depth) {
             m_dContext->OMSetRenderTargets(1, backBuffer.m_rtv.GetAddressOf(), depth.m_dsView.Get());
+        }
+
+        static void BindRenderTargetView(BBuffer& backBuffer, DepthMap& depthMap) {
+            m_dContext->OMSetRenderTargets(1, backBuffer.m_rtv.GetAddressOf(), depthMap.m_dsView.Get());
         }
 
         static void BindRenderTargetView(BBuffer& backBuffer) {
@@ -111,17 +138,26 @@ namespace Aen {
             m_dContext->OMSetRenderTargets(size, gBuffer.m_rtvs.data(), depth.m_dsView.Get());
         }
 
+        static void BindRenderTargetView(GBuffer& gBuffer, DepthMap& depthMap) {
+            UINT size = (UINT)gBuffer.m_rtvs.size();
+            m_dContext->OMSetRenderTargets(size, gBuffer.m_rtvs.data(), depthMap.m_dsView.Get());
+        }
+
         static void BindRenderTargetView(GBuffer& gBuffer) {
             UINT size = (UINT)gBuffer.m_rtvs.size();
             m_dContext->OMSetRenderTargets(size, gBuffer.m_rtvs.data(), NULL);
+        }
+        
+        static void BindRenderTargetView(ComRenderTargetView rtv) {
+            m_dContext->OMSetRenderTargets(1, rtv.GetAddressOf(), NULL);
         }
 
         static void BindRenderTargetView(ComRenderTargetView rtv, Depth& depth) {
             m_dContext->OMSetRenderTargets(1, rtv.GetAddressOf(), depth.m_dsView.Get());
         }
 
-        static void BindRenderTargetView(ComRenderTargetView rtv) {
-            m_dContext->OMSetRenderTargets(1, rtv.GetAddressOf(), NULL);
+        static void BindRenderTargetView(ComRenderTargetView rtv, DepthMap& depthMap) {
+            m_dContext->OMSetRenderTargets(1, rtv.GetAddressOf(), depthMap.m_dsView.Get());
         }
         
         template<class T>
@@ -137,10 +173,24 @@ namespace Aen {
         static void BindShaderResourceView(const UINT& slot, ComShaderResourceView srv);
 
         template<class T>
+        static void BindShaderResourceView(const UINT& slot, UAView& uAView);
+
+        template<class T>
+        static void BindShaderResourceView(const UINT& slot, RWTexture2D& tex2d);
+
+        template<class T>
         static void BindSamplers(const UINT& slot, Sampler& sampler);
 
         template<class T>
         static void BindShader(T& shader);
+        
+        static void BindUnOrderedAccessView(const UINT& slot, UAView& uAView) {
+            m_dContext->CSSetUnorderedAccessViews(slot, 1, uAView.m_uav.GetAddressOf(), NULL);
+        }
+
+        static void BindUnOrderedAccessView(const UINT& slot, RWTexture2D& tex2d) {
+            m_dContext->CSSetUnorderedAccessViews(slot, 1, tex2d.m_uav.GetAddressOf(), NULL);
+        }
 
         static void ClearRenderTargetView(BBuffer& backBuffer, const Color& color) {
             FLOAT fColor[4];
@@ -177,6 +227,22 @@ namespace Aen {
 
         static void Present() {
             m_sChain->Present(0, NULL);
+        }
+
+        static void Dispatch(const uint32_t& x, const uint32_t& y, const uint32_t& z) {
+            m_dContext->Dispatch(x, y, z);
+        } 
+        
+        static void Dispatch(const Vec2i& xy, const uint32_t& z) {
+            m_dContext->Dispatch(xy.x, xy.y, z);
+        }
+
+        static void Dispatch(const uint32_t& x, const Vec2i& xz) {
+            m_dContext->Dispatch(x, xz.x, xz.y);
+        }
+
+        static void Dispatch(const Vec3i& groups) {
+            m_dContext->Dispatch(groups.x, groups.y, groups.z);
         }
 	};
 
@@ -231,6 +297,24 @@ namespace Aen {
 
     #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& slot, ComShaderResourceView srv) {\
         m_dContext->sName(slot, 1, srv.GetAddressOf());\
+    }
+
+    DEF_SHADER
+    #undef X
+
+    // ---------------------------- BindShaderResourceView for UAView -------------------------------
+
+    #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& slot, UAView& uAView) {\
+    m_dContext->sName(slot, 1, uAView.m_srv.GetAddressOf());\
+    }
+
+    DEF_SHADER
+    #undef X
+
+    // -------------------------- BindShaderResourceView for RWTexture2D ----------------------------
+
+    #define X(sName, lName) template<> inline void RenderSystem::BindShaderResourceView<lName> (const UINT& slot, RWTexture2D& tex2d) {\
+    m_dContext->sName(slot, 1, tex2d.m_srv.GetAddressOf());\
     }
 
     DEF_SHADER
@@ -295,5 +379,4 @@ namespace Aen {
     #undef DS
     #undef GS
     #undef PS
-        
 }

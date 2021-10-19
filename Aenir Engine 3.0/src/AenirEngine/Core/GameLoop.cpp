@@ -17,16 +17,15 @@ namespace Aen {
 		if(!GCore::Concealed::Initialize(m_app->m_window))
 			exit(-1);
 
+		// Initialize physX
+		PhysXService::SetInstance(&m_PhysX);
+		PhysXService::GetInstance()->InitPhysics(100, 981);
+
 		GlobalSettings::Initialize(m_app->m_window);
 
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 
-		// imGui initialize
-		#ifdef _DEBUG
-			Aen::GlobalSettings::GetImGuiHandler()->Initialize(m_app->m_window.GetWHND(), GCore::m_device.Get(), GCore::m_dContext.Get());
-		#endif	
-		
 		m_app->Start();
 	}
 
@@ -44,20 +43,18 @@ namespace Aen {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
-
+				PhysXService::GetInstance()->RunPhysics(m_deltaTime.count());
 				m_renderer->Render(); // VSync
 			}
 		}
 
 		// Destroy imGui
-
-	#ifdef _DEBUG
-		Aen::GlobalSettings::GetImGuiHandler()->Release();
 		delete Aen::GlobalSettings::GetImGuiHandler();
-	#endif
 
+		PhysXService::GetInstance()->ClosePhysics();
 		
 		Resource::Destroy();
+		EntityHandler::Destroy();
 		GCore::Concealed::Release();
 		delete m_app;
 		delete m_renderer;
