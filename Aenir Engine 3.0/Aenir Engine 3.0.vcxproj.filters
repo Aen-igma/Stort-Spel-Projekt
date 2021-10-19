@@ -106,6 +106,12 @@
     <Filter Include="Header Files\LevelEditor">
       <UniqueIdentifier>{e4a6ed27-4c4a-4044-bf84-6c20558eee3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\LevelGeneration">
+      <UniqueIdentifier>{07001812-2da7-4a1b-a30d-48a2998c6115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\LevelGeneration">
+      <UniqueIdentifier>{44d54ac9-78ec-4a08-a1b0-b61ca5d566ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\PCH\PCH.cpp">
@@ -254,6 +260,12 @@
     </ClCompile>
     <ClCompile Include="src\AenirEngine\LevelImporter.cpp">
       <Filter>Source Files\LevelEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelGeneration\LevelGenerator.cpp">
+      <Filter>Source Files\LevelGeneration</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.cpp">
+      <Filter>Source Files\LevelGeneration</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -481,6 +493,12 @@
     </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Header Files\LevelEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelGeneration\LevelGenerator.h">
+      <Filter>Header Files\LevelGeneration</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.h">
+      <Filter>Header Files\LevelGeneration</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
