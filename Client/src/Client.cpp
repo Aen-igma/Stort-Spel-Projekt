@@ -2,12 +2,12 @@
 #include"Client.h"
 
 Client::~Client() {
-	for (UINT i = 0; i < mapSize * mapSize; i++) {
+	/*for (UINT i = 0; i < mapSize * mapSize; i++) {
 		if (rooms[i] != nullptr) {
 			delete rooms[i];
 			rooms[i] = nullptr;
 		}
-	}
+	}*/
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)

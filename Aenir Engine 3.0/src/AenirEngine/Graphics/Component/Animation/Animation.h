@@ -22,6 +22,7 @@ namespace Aen {
 	struct Bones {
 		int boneID, parentID;
 		std::string boneName;
+		Mat4f offsetMatrix;
 	};
 
 	class AEN_DECLSPEC Animation {

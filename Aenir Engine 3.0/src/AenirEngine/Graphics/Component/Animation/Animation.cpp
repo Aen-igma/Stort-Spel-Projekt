@@ -64,11 +64,15 @@ namespace Aen {
 				if (nodeArray[i]->mName == scene->mMeshes[0]->mBones[j]->mName) {
 					//boneArray.emplace_back(scene->mMeshes[0]->mBones[j]);
 					ai_node_bones.emplace_back(nodeArray[i]);
-					//OutputDebugString((nodeArray[i]->mName).C_Str());
-					//OutputDebugString("\n");
-					//OutputDebugString((ai_node_bones[i]->mName).C_Str());
+					OutputDebugString((nodeArray[i]->mName).C_Str());
+					OutputDebugString("\n");
+					/*OutputDebugString((ai_node_bones[i]->mName).C_Str());
+					OutputDebugString("\n");
+					OutputDebugString((ai_node_bones[i]->mParent->mName).C_Str());
+					OutputDebugString("\n");*/
 				}
 			}
+			
 		}
 	}
 
@@ -91,29 +95,44 @@ namespace Aen {
 		for (int i = 0; i < boneArray.size(); i++) {
 			bone.boneID = i;
 			bone.boneName = boneArray[i]->mName.data;
-			OutputDebugString("Num Weights");
-			OutputDebugString(std::to_string(boneArray[i]->mNumWeights).c_str());
-			OutputDebugString("\n");
 		}
 	}
 
-	void TransferNodeBoneData(std::vector<aiNode*>& nodeBoneArray, std::vector<Bones>& boneArray) {
+	void TransferNodeBoneData(std::vector<aiNode*>& nodeBoneArray, std::vector<Bones>& boneArray, aiMesh* mesh) {
 		Bones bone;
 		for (size_t i = 0; i < nodeBoneArray.size(); i++) {
 			bone.boneName = nodeBoneArray[i]->mName.data;
 			bone.boneID = i;
-			//bone.parentID = FindParentID(nodeBoneArray[i], nodeBoneArray);
-			//OutputDebugString((nodeBoneArray[i]->mParent->mName).C_Str());
+			for (size_t j = 0; j < nodeBoneArray.size(); j++) {
+				if (nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mName.data == nodeBoneArray[j]->mName.data)
+					bone.parentID = j;
+			}
+			if (bone.boneID == 0)
+				bone.parentID = -1;
+
+			bone.offsetMatrix.a11 = mesh->mBones[i]->mOffsetMatrix.a1; bone.offsetMatrix.a12 = mesh->mBones[i]->mOffsetMatrix.a2; 
+			bone.offsetMatrix.a13 = mesh->mBones[i]->mOffsetMatrix.a3; bone.offsetMatrix.a14 = mesh->mBones[i]->mOffsetMatrix.a4;
+
+			bone.offsetMatrix.a21 = mesh->mBones[i]->mOffsetMatrix.b1; bone.offsetMatrix.a22 = mesh->mBones[i]->mOffsetMatrix.b2;
+			bone.offsetMatrix.a23 = mesh->mBones[i]->mOffsetMatrix.b3; bone.offsetMatrix.a24 = mesh->mBones[i]->mOffsetMatrix.b4;
+
+			bone.offsetMatrix.a31 = mesh->mBones[i]->mOffsetMatrix.c1; bone.offsetMatrix.a32 = mesh->mBones[i]->mOffsetMatrix.c2;
+			bone.offsetMatrix.a33 = mesh->mBones[i]->mOffsetMatrix.c3; bone.offsetMatrix.a34 = mesh->mBones[i]->mOffsetMatrix.c4;
+
+			bone.offsetMatrix.a41 = mesh->mBones[i]->mOffsetMatrix.d1; bone.offsetMatrix.a42 = mesh->mBones[i]->mOffsetMatrix.d2;
+			bone.offsetMatrix.a43 = mesh->mBones[i]->mOffsetMatrix.d3; bone.offsetMatrix.a44 = mesh->mBones[i]->mOffsetMatrix.d4;
+
 			boneArray.emplace_back(bone);
 		}
-		/*for (int i = 0; i < boneArray.size(); i++) {
+		for (int i = 0; i < boneArray.size(); i++) {
+			OutputDebugString(" BONE NAME ");
 			OutputDebugString((boneArray[i].boneName).c_str());
-			OutputDebugString(" : ");
+			OutputDebugString(" BONE ID ");
 			OutputDebugString(std::to_string(boneArray[i].boneID).c_str());
-			OutputDebugString(" : ");
+			OutputDebugString(" PARENT ID ");
 			OutputDebugString(std::to_string(boneArray[i].parentID).c_str());
 			OutputDebugString("\n");
-		}*/
+		}
 	}
 
 	void AnimProcess() {
@@ -123,6 +142,8 @@ namespace Aen {
 			ai_nodes_anim.emplace_back(animation->mAnimations[0]->mChannels[i]);
 		}
 	}
+
+	//void GetBoneOffsetMatrix(const std::vector<aiBone*>& boneArray)
 
 	void Animation::LoadAnimation(const std::string& animationPath)
 	{
@@ -139,94 +160,10 @@ namespace Aen {
 
 		RecursiveNodeProcess(animation->mRootNode);
 		AnimProcess();
-		//AssignBones(animation, ai_nodes, m_boneArray);
-		//TransferNodeBoneData(ai_node_bones, m_boneArray);
+		AssignBones(animation, ai_nodes, m_boneArray);
+		TransferNodeBoneData(ai_node_bones, m_boneArray, animation->mMeshes[0]);
 		MeshBoneData(animation->mMeshes[0], ai_bone_data);
-		TransferBones(ai_bone_data, m_boneArray);
-
-		//for (int i = 1; i < ai_nodes.size(); i++) {
-		//	OutputDebugString((ai_nodes[i]->mParent->mName).C_Str());
-		//	OutputDebugString((LPCSTR)"  :  ");
-		//	OutputDebugString((ai_nodes[i]->mName).C_Str());
-		//	//OutputDebugString((LPCSTR)"  :  ");
-		//	//OutputDebugString((ai_nodes[i]->mChildren[i]->mName).C_Str());
-		//	OutputDebugString((LPCSTR)"\n");
-		//}
-		//for (int i = 0; i < ai_nodes_anim.size(); i++) {
-		//	OutputDebugString((ai_nodes_anim[i]->mNodeName).C_Str());
-		//	OutputDebugString((LPCSTR)"\n");
-		//}
-		//for (int i = 0; i < m_boneArray.size(); i++) {
-		//	OutputDebugString((m_boneArray[i].boneName).c_str());
-		//	OutputDebugString((LPCSTR)"\n");
-		//}
-		//for (int i = 0; i < ai_node_bones.size(); i++) {
-		//	/*OutputDebugString((ai_nodes[i]->mName).C_Str());
-		//	OutputDebugString("\n");*/
-		//	OutputDebugString((ai_node_bones[i]->mName).C_Str());
-		//	OutputDebugString("\n");
-		//}
-
-		//OutputDebugString("MESH NAME");
-		//OutputDebugString((animation->mMeshes[0]->mBones[0]->mName).C_Str());
-
-	/*	for (int i = 0; i < animation->mRootNode->mNumChildren; i++) {
-			OutputDebugString((animation->mRootNode->mChildren[i]->mName).C_Str());
-			OutputDebugString((LPCSTR)"\n");
-		}
-		for (int i = 0; i < animation->mRootNode->mChildren[1]->mNumChildren; i++) {
-			OutputDebugString((animation->mRootNode->mChildren[1]->mChildren[i]->mName).C_Str());
-			OutputDebugString((LPCSTR)"\n");
-		}*/
-
-
-		/*for (int i = 0; i < animation->mMeshes[0]->mNumBones; i++) {
-			Bones currentBone;
-			currentBone.boneID = i;
-			m_boneArray.emplace_back(currentBone);
-
-			OutputDebugString(std::to_string(m_boneArray[i].boneID).c_str());
-		}*/
-
-
-
-		/*for (int i = 0; i < m_boneArray.size(); i++) {
-			OutputDebugString(std::to_string(m_boneArray[i].boneID).c_str());
-			OutputDebugString((LPCSTR)"\n");
-		}*/
-
-		//LoadingBones(rootBone, animation->mRootNode->mChildren[1], m_boneArray);
-		//LoadingBones(rootBone, animation->mMeshes[0]->mBones[0], m_boneArray);
-
-		//animation->mMeshes[0]->mBones[0]->
-		//for (int i = 0; i < animation->mMeshes[0]->mNumBones; i++) {
-		//	//OutputDebugString(animation->mMeshes[0]->mBones[i]->mName.C_Str());
-		//	//OutputDebugString((LPCSTR)"\n");
-		//	OutputDebugString(animation->mMeshes[0]->mBones[2]->mName.C_Str());
-		//	OutputDebugString((LPCSTR)"\n");
-		//}
-
-		/*for (size_t i = 0; i < m_boneArray.size(); i++) {
-			OutputDebugString(std::to_string(m_boneArray[i].boneID).c_str());
-			OutputDebugString((LPCSTR)"\n");
-		}*/
-
-		/*OutputDebugString((animation->mRootNode->mChildren[1]->mName).C_Str());
-		OutputDebugString((LPCSTR)"\n");
-		OutputDebugString(std::to_string(animation->mMeshes[0]->mNumBones).c_str());
-		OutputDebugString((LPCSTR)"\n");
-
-
-		for (size_t i = 0; i < m_boneArray.size(); i++) {
-			AEN_PRINT("Bone ID: ");
-			AEN_PRINT(m_boneArray[i].boneID);
-			AEN_PRINT("	Parent ID: ");
-			AEN_PRINT(m_boneArray[i].parentID);
-			AEN_ENDL;
-			OutputDebugString((LPCSTR)"Bone ID: ");
-			OutputDebugString(std::to_string(m_boneArray[i].boneID).c_str());
-			OutputDebugString((LPCSTR)"\n");
-		}*/
+		//TransferBones(ai_bone_data, m_boneArray);
 	}
 
 	Animation::~Animation()
