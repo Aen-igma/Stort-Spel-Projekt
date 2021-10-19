@@ -29,8 +29,23 @@ namespace Aen {
 	}
 
 	void Mesh::Load(const std::string& dir) {
-		std::thread worker(ImportObj, std::ref(m_vertices), dir, std::ref(m_partitions), std::ref(m_meshMaterialName));
-		worker.join();
+
+		size_t off = dir.find_last_of('.');
+		std::string format = dir.substr(off + 1);
+		if (format == "fbx") {
+			throw;
+			printf("Format not supported!");
+		}
+		else if (format == "obj") {
+			std::thread worker(ImportObj, std::ref(m_vertices), dir, std::ref(m_partitions), std::ref(m_meshMaterialName));
+			worker.join();
+		}
+		else {
+			throw;
+			printf("Format not supported!");
+		}
+		
+
 	}
 
 	Mesh::~Mesh() {}

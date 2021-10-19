@@ -47,32 +47,32 @@ void Client::Start() {
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
-	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
-	Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
+	//Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
+	//Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
 	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
-	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
-	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
+	//cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
+	//sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
 	// ----------------------------- Load Reimushes -------------------------------- //
 
-	m_ReimuTex = &Aen::Resource::CreateTexture("ReimuTex");
-	m_ReimuMat = &Aen::Resource::CreateMaterial("ReimuMat");
-	m_reimubeMesh = &Aen::Resource::CreateMesh("Cube");
-	m_reimubeMesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
-	m_ReimuTex->LoadTexture(AEN_RESOURCE_DIR("Reimu.png"));
-	m_ReimuMat->SetDiffuseMap(*m_ReimuTex);
+	//m_ReimuTex = &Aen::Resource::CreateTexture("ReimuTex");
+	//m_ReimuMat = &Aen::Resource::CreateMaterial("ReimuMat");
+	//m_reimubeMesh = &Aen::Resource::CreateMesh("Cube");
+	//m_reimubeMesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
+	//m_ReimuTex->LoadTexture(AEN_RESOURCE_DIR("Reimu.png"));
+	//m_ReimuMat->SetDiffuseMap(*m_ReimuTex);
 
-	(*m_ReimuMat)["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
-	(*m_ReimuMat)["InnerEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
-	(*m_ReimuMat)["OuterEdgeThickness"] = 0.003f;
-	(*m_ReimuMat)["InnerEdgeThickness"] = 0.003f;
+	//(*m_ReimuMat)["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
+	//(*m_ReimuMat)["InnerEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
+	//(*m_ReimuMat)["OuterEdgeThickness"] = 0.003f;
+	//(*m_ReimuMat)["InnerEdgeThickness"] = 0.003f;
 
-	m_meshcube = &cube;
+	//m_meshcube = &cube;
 	// -------------------------- Setup Entities -------------------------------- //
 
-	m_sphere = &Aen::EntityHandler::CreateEntity();
-	m_sphere->AddComponent<Aen::MeshInstance>();
-	m_sphere->GetComponent<Aen::MeshInstance>().SetMesh(sphere);
+	//m_sphere = &Aen::EntityHandler::CreateEntity();
+	//m_sphere->AddComponent<Aen::MeshInstance>();
+	//m_sphere->GetComponent<Aen::MeshInstance>().SetMesh(sphere);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::MeshInstance>();
@@ -90,29 +90,29 @@ void Client::Start() {
 	m_plane1.SetScale(20.f, 1.f, 20.f);
 	m_plane1.SetRot(90.f, 0.f, 0.f);*/
 
-	m_cube = &Aen::EntityHandler::CreateEntity();
-	m_cube->AddComponent<Aen::MeshInstance>();
-	m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	m_cube->SetPos(0.f, 8.f, 10.f);
-	m_cube->SetScale(20.f, 20.f, 1.f);
+	//m_cube = &Aen::EntityHandler::CreateEntity();
+	//m_cube->AddComponent<Aen::MeshInstance>();
+	//m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	//m_cube->SetPos(0.f, 8.f, 10.f);
+	//m_cube->SetScale(20.f, 20.f, 1.f);
 
 	// ----------------------------- Load EmissionCube -------------------------------- //
 
-	m_emiCube = &Aen::EntityHandler::CreateEntity();
-	m_emiCube->AddComponent<Aen::MeshInstance>();
-	m_emiCube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	m_emiCube->SetPos(0.f, 3.f, -5.f);
+	//m_emiCube = &Aen::EntityHandler::CreateEntity();
+	//m_emiCube->AddComponent<Aen::MeshInstance>();
+	//m_emiCube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	//m_emiCube->SetPos(0.f, 3.f, -5.f);
 
-	Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
-	Aen::Texture& peng = Aen::Resource::CreateTexture("NekoTexture");
-	Aen::Material& emissionMtrl = Aen::Resource::CreateMaterial("EmiMtrl");
-	face.LoadTexture(AEN_RESOURCE_DIR("emmissionS.png"));
-	peng.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
-	emissionMtrl.SetEmissionMap(face);
-	emissionMtrl.SetDiffuseMap(peng);
-	emissionMtrl["GlowColor"] = Aen::Color::Green;
+	//Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
+	//Aen::Texture& peng = Aen::Resource::CreateTexture("NekoTexture");
+	//Aen::Material& emissionMtrl = Aen::Resource::CreateMaterial("EmiMtrl");
+	//face.LoadTexture(AEN_RESOURCE_DIR("emmissionS.png"));
+	//peng.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
+	//emissionMtrl.SetEmissionMap(face);
+	//emissionMtrl.SetDiffuseMap(peng);
+	//emissionMtrl["GlowColor"] = Aen::Color::Green;
 
-	m_emiCube->GetComponent<Aen::MeshInstance>().SetMaterial(emissionMtrl);
+	//m_emiCube->GetComponent<Aen::MeshInstance>().SetMaterial(emissionMtrl);
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
@@ -288,24 +288,24 @@ void Client::Update(const float& deltaTime) {
 
 	// ------------------------------------- Reimubes -------------------------------------- //
 
-	if (Aen::Input::KeyPress(Aen::Key::J)) {
-		Aen::Entity& e = Aen::EntityHandler::CreateEntity();
-		e.AddComponent<Aen::RigidBody>();
-		e.AddComponent<Aen::MeshInstance>();
+	//if (Aen::Input::KeyPress(Aen::Key::J)) {
+	//	Aen::Entity& e = Aen::EntityHandler::CreateEntity();
+	//	e.AddComponent<Aen::RigidBody>();
+	//	e.AddComponent<Aen::MeshInstance>();
 
-		e.GetComponent<Aen::MeshInstance>().SetMesh(*m_reimubeMesh);
-		e.GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
-		e.GetComponent<Aen::RigidBody>().CreateMaterial();
-		e.GetComponent<Aen::RigidBody>().CreateCube();
-		e.SetPos(0.f, 10.f, 0.f);
+	//	e.GetComponent<Aen::MeshInstance>().SetMesh(*m_reimubeMesh);
+	//	e.GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
+	//	e.GetComponent<Aen::RigidBody>().CreateMaterial();
+	//	e.GetComponent<Aen::RigidBody>().CreateCube();
+	//	e.SetPos(0.f, 10.f, 0.f);
 
-		m_reimubes.push(&e);
-	}
+	//	m_reimubes.push(&e);
+	//}
 
-	if (Aen::Input::KeyPress(Aen::Key::K)) {
-		if(!m_reimubes.empty()) {
-			Aen::EntityHandler::RemoveEntity(*m_reimubes.top());
-			m_reimubes.pop();
-		}
-	}
+	//if (Aen::Input::KeyPress(Aen::Key::K)) {
+	//	if(!m_reimubes.empty()) {
+	//		Aen::EntityHandler::RemoveEntity(*m_reimubes.top());
+	//		m_reimubes.pop();
+	//	}
+	//}
 }
