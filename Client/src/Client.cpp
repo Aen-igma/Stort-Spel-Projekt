@@ -8,6 +8,7 @@ Client::~Client() {
 			rooms[i] = nullptr;
 		}
 	}
+	delete m_buildLevel;
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
@@ -43,6 +44,7 @@ void Client::Start() {
 
 	// ----------------------------- Load Meshes -------------------------------- //
 
+	m_buildLevel = new levelBuilder();
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
 	//Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
@@ -89,8 +91,8 @@ void Client::Start() {
 
 	// ------------------- Procedural generation testing staging grounds ------- //
 	
-	//LevelGenerator::GenerationTestingFunction();
-	/*srand((unsigned int)time(NULL));
+
+	srand((unsigned int)time(NULL));
 	SetLehmerConstSeed(100);
 	LehmerInt();
 	Aen::Room* map = Aen::LevelGenerator::GenerationTestingFunction();
@@ -103,19 +105,14 @@ void Client::Start() {
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			if (map[x + y * Aen::mapSize].m_present) {
-				m_buildLevel.CreateRooms(rooms, x, y);
+				//m_buildLevel->CreateRooms(rooms, x, y);
 				//rooms[x + y * Aen::mapSize] = new Aen::Entity();
 				//rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
 				//rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
 				//rooms[x + y * Aen::mapSize]->SetPos(x * 2, 0.f, y * 2);
 			}
-			else {
-				if (rooms[x + y * Aen::mapSize] != nullptr)
-					delete rooms[x + y * Aen::mapSize];
-				rooms[x + y * Aen::mapSize] = nullptr;
-			}
 		}
-	}*/
+	}
 
 	Aen::Input::ToggleRawMouse(false);
 
@@ -162,19 +159,20 @@ void Client::Update(const float& deltaTime) {
 		for (UINT y = 0; y < Aen::mapSize; y++) {
 			for (UINT x = 0; x < Aen::mapSize; x++) {
 				if (map[x + y * Aen::mapSize].m_present) {
-					if (rooms[x + y * Aen::mapSize] == nullptr) {
-						rooms[x + y * Aen::mapSize] = new Aen::Entity();
-						rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
-						rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-						rooms[x + y * Aen::mapSize]->SetPos(x * 2, 0.f, y * 2);
-					}
+					m_buildLevel->CreateRooms(rooms, x, y);
+					//if (rooms[x + y * Aen::mapSize] == nullptr) {
+					//	rooms[x + y * Aen::mapSize] = new Aen::Entity();
+					//	rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
+					//	rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+					//	rooms[x + y * Aen::mapSize]->SetPos(x * 2, 0.f, y * 2);
+					//}
 				}
-				else {
-					if (rooms[x + y * Aen::mapSize] != nullptr){
-						delete rooms[x + y * Aen::mapSize];
-						rooms[x + y * Aen::mapSize] = nullptr;
-					}
-				}
+				//else {
+				//	if (rooms[x + y * Aen::mapSize] != nullptr){
+				//		delete rooms[x + y * Aen::mapSize];
+				//		rooms[x + y * Aen::mapSize] = nullptr;
+				//	}
+				//}
 			}
 		}
 	}
@@ -306,11 +304,10 @@ bool levelBuilder::CreateRooms(Aen::Entity** storage, uint8_t x, uint8_t y)
 		storage[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
 		storage[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh((Aen::Mesh&)map_ptr[x + y * Aen::mapSize].mptr_mesh);
 	}
-	else {
-		storage[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*((Aen::Mesh*)map_ptr[x + y * Aen::mapSize].mptr_mesh));
-	}
-	storage[x + y * Aen::mapSize]->SetPos(x * Aen::roomDimension, 0.f, y * Aen::roomDimension);
-
+	//else {
+	//	storage[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*((Aen::Mesh*)map_ptr[x + y * Aen::mapSize].mptr_mesh));
+	//}
+	storage[x + y * Aen::mapSize]->SetPos(x * Aen::roomDimension, 0.f, y * Aen::roomDimension); 
 
 	return true;
 }
@@ -321,8 +318,9 @@ levelBuilder::levelBuilder()
 
 	//Straight corridors
 	Aen::Room a;
-	a.mptr_mesh = &Aen::Resource::CreateMesh("corridorPlaceholder");
-	((Aen::Mesh*)a.mptr_mesh)->Load("corridorPlaceholder.obj");
+	a.mptr_mesh = Aen::Resource::CreateMesh("corridorPlaceholder");
+	//a.mptr_mesh->Load(AEN_RESOURCE_DIR("corridorPlaceholder.obj"));
+	a.mptr_mesh.Load(AEN_RESOURCE_DIR("Cube.obj"));
 	a.m_baseChance = 0xf;
 	a.connectionDirections = 101;
 	a.m_present = true;
@@ -332,8 +330,9 @@ levelBuilder::levelBuilder()
 
 	//90 degree corners
 	Aen::Room b;
-	b.mptr_mesh = &Aen::Resource::CreateMesh("bendPlaceholder");
-	((Aen::Mesh*)b.mptr_mesh)->Load("bendPlaceholder.obj");
+	b.mptr_mesh = Aen::Resource::CreateMesh("bendPlaceholder");
+	//b.mptr_mesh->Load(AEN_RESOURCE_DIR("bendPlaceholder.obj"));
+	b.mptr_mesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
 	b.m_baseChance = 0xf;
 	b.m_present = true;
 	b.connectionDirections = 11;
@@ -344,8 +343,9 @@ levelBuilder::levelBuilder()
 	//T junction
 	Aen::Room c;
 
-	c.mptr_mesh = &Aen::Resource::CreateMesh("twayPlaceholder");
-	((Aen::Mesh*)c.mptr_mesh)->Load("twayPlaceholder.obj");
+	c.mptr_mesh = Aen::Resource::CreateMesh("twayPlaceholder");
+	//c.mptr_mesh->Load(AEN_RESOURCE_DIR("twayPlaceholder.obj"));
+	c.mptr_mesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
 	c.m_baseChance = 0xf;
 	c.connectionDirections = 1011;
 	c.m_present = true;
@@ -355,8 +355,9 @@ levelBuilder::levelBuilder()
 
 	//4-way junction
 	Aen::Room d;
-	d.mptr_mesh = &Aen::Resource::CreateMesh("fourwayPlaceholder");
-	((Aen::Mesh*)d.mptr_mesh)->Load("fourwayPlaceholder.obj");
+	d.mptr_mesh = Aen::Resource::CreateMesh("fourwayPlaceholder");
+	//d.mptr_mesh->Load(AEN_RESOURCE_DIR("fourwayPlaceholder.obj"));
+	d.mptr_mesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
 	d.m_baseChance = 0xf;
 	d.connectionDirections = 1111;
 	d.m_present = true;
@@ -366,8 +367,9 @@ levelBuilder::levelBuilder()
 
 	//entrance
 	Aen::Room e;
-	e.mptr_mesh = &Aen::Resource::CreateMesh("entrancePlaceholder");
-	((Aen::Mesh*)e.mptr_mesh)->Load("entrancePlaceholder.obj");
+	e.mptr_mesh = Aen::Resource::CreateMesh("entrancePlaceholder");
+	//e.mptr_mesh->Load(AEN_RESOURCE_DIR("entrancePlaceholder.obj"));
+	e.mptr_mesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
 	e.m_baseChance = 0xf;
 	e.m_present = true;
 	e.m_roomSpecial = Aen::SpecialRoom::ENTRANCE;

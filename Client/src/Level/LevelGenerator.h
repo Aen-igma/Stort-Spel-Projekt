@@ -22,12 +22,15 @@ namespace Aen {
 	|//  s  //|
 	|/////////|
 	*/
+
+	class Mesh;
+
 	struct Room {
 	public:
 		bool m_enclosed = false; //Var used in level generation, true when room is surrounded
 		bool m_present = false;
 
-		void* mptr_mesh;
+		Mesh* mptr_mesh;
 
 		SpecialRoom m_roomSpecial = SpecialRoom::NONE;
 		RoomTheme m_roomTheme = RoomTheme::GENERIC;

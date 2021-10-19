@@ -1,7 +1,7 @@
 #pragma once
 #include"AenirEngine.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
-#include "AenirEngine/ImGuiHandler.h"
+#include"AenirEngine/ImGuiHandler.h"
 #include"Level/LevelGenerator.h"
 
 
@@ -46,7 +46,7 @@ class Client : public Aen::App {
 	Aen::Mesh* m_meshcube;
 
 	//Generation storage
-	levelBuilder m_buildLevel; //Var name suggestions open
+	levelBuilder* m_buildLevel; //Var name suggestions open
 	Aen::Entity* rooms[Aen::mapSize * Aen::mapSize]; //Static array
 	//std::vector<Aen::Mesh> roomMeshes;
 
