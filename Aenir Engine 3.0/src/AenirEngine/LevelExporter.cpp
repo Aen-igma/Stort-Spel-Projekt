@@ -5,7 +5,7 @@ namespace Aen {
 	void LevelExporter::lightFunc(LightStruct*& lightStruct, 
 		vector<LightStruct>& m_LightVector, Entity*& entity)
 	{
-		uint32_t id = entity->getID();
+		uint32_t id = entity->GetID();
 		LIGHTTYPES type = Type(entity);
 
 
@@ -100,29 +100,34 @@ namespace Aen {
 		m_LightVector.push_back(*lightStruct);
 	}
 
-	void LevelExporter::modelFunc(ModelStruct*& modelStruct,
-		vector<Aen::Entity*>& entityList,
-		vector<string>& itemList, vector<string>& meshObjList, size_t& index, int meshIndex)
+	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<uint32_t, ModelContainer>& modelMap, size_t& index)
 	{
-		strcpy(modelStruct->name, itemList[index].c_str());
-		strcpy(modelStruct->mesh, meshObjList[meshIndex].c_str());
+		uint32_t id = entityList[index]->GetID();
 
-		modelStruct->translation[0] = entityList[index]->GetPos().x;
-		modelStruct->translation[1] = entityList[index]->GetPos().y;
-		modelStruct->translation[2] = entityList[index]->GetPos().z;
+		unordered_map<uint32_t, ModelContainer>::iterator it = modelMap.find(id);
 
-		modelStruct->rotation[0] = entityList[index]->GetRot().x;
-		modelStruct->rotation[1] = entityList[index]->GetRot().y;
-		modelStruct->rotation[2] = entityList[index]->GetRot().z;
+		if (modelMap.find(id) != modelMap.end())
+		{
+			strcpy(modelStruct->name, it->second.m_model.m_name.c_str());
+			strcpy(modelStruct->mesh, it->second.m_model.m_meshName.c_str());
 
-		modelStruct->scale[0] = entityList[index]->GetScale().x;
-		modelStruct->scale[1] = entityList[index]->GetScale().y;
-		modelStruct->scale[2] = entityList[index]->GetScale().z;
+			modelStruct->translation[0] = entityList[index]->GetPos().x;
+			modelStruct->translation[1] = entityList[index]->GetPos().y;
+			modelStruct->translation[2] = entityList[index]->GetPos().z;
 
-		strcpy(modelStruct->type, "type");
-		strcpy(modelStruct->sound, "sound");
+			modelStruct->rotation[0] = entityList[index]->GetRot().x;
+			modelStruct->rotation[1] = entityList[index]->GetRot().y;
+			modelStruct->rotation[2] = entityList[index]->GetRot().z;
 
-		m_ModelVector.push_back(*modelStruct);
+			modelStruct->scale[0] = entityList[index]->GetScale().x;
+			modelStruct->scale[1] = entityList[index]->GetScale().y;
+			modelStruct->scale[2] = entityList[index]->GetScale().z;
+
+			strcpy(modelStruct->type, it->second.m_type.c_str());
+			strcpy(modelStruct->sound, it->second.m_sound.c_str());
+
+			m_ModelVector.push_back(*modelStruct);
+		}
 	}
 
 	void LevelExporter::roomFunc(RoomStruct*& roomStruct, string array[])
@@ -175,7 +180,7 @@ namespace Aen {
 		outfile.write((const char*)&*whatToWrite, sizeof(T));
 	}
 
-	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, vector<string>& meshObjList, unordered_map<unsigned int, MatTexContainer>& textureMap, string array[], string& fileName)
+	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, unordered_map< uint32_t, ModelContainer>& modelMap, string array[], string& fileName)
 	{
 		OpenFile(fileName);
 		//cout << "writeInto" << endl;
@@ -199,22 +204,18 @@ namespace Aen {
 		MaterialStruct* materialStruct = AEN_NEW(MaterialStruct);
 		ParticleStruct* particleStruct = AEN_NEW(ParticleStruct);
 
-		unordered_map <unsigned int, MatTexContainer>::iterator it;
+		unordered_map <uint32_t, ModelContainer>::iterator it;
 
-		m_ModelVector.reserve(meshObjList.size());
-		m_TextureVector.reserve(textureMap.size());
-
-		int meshIndex = 0;
-
+		m_ModelVector.reserve(modelMap.size());
+		m_TextureVector.reserve(modelMap.size());
 
 		for (size_t i = 0; i < entityList.size(); i++)
 		{
-			uint32_t id = entityList[i]->getID();
+			uint32_t id = entityList[i]->GetID();
 
 			if (Aen::ComponentHandler::MeshInstanceExist(id))
 			{
-				modelFunc(modelStruct, entityList, itemList, meshObjList, i, meshIndex);
-				meshIndex++;
+				modelFunc(modelStruct, entityList, modelMap, i);
 			}
 			else if ((Aen::ComponentHandler::DirectionalLightExist(id) || Aen::ComponentHandler::SpotLightExist(id) || Aen::ComponentHandler::PointLightExist(id)))
 			{
@@ -225,9 +226,9 @@ namespace Aen {
 
 		roomFunc(roomStruct, array);
 		
-		for (it = textureMap.begin(); it != textureMap.end(); it++)
+		for (it = modelMap.begin(); it != modelMap.end(); it++)
 		{
-			textureFunc(textureStruct, it->second.m_textureName);
+			textureFunc(textureStruct, it->second.m_texture.m_textureName);
 		}
 
 
@@ -309,7 +310,7 @@ namespace Aen {
 
 	LIGHTTYPES LevelExporter::Type(Aen::Entity* entity)
 	{
-		uint32_t id = entity->getID();
+		uint32_t id = entity->GetID();
 
 		LIGHTTYPES type;
 		

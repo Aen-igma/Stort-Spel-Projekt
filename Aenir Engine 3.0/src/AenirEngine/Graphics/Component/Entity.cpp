@@ -111,7 +111,7 @@ namespace Aen {
 		return ComponentHandler::GetScale(m_id).GetScale();
 	}
 
-	const uint32_t& Entity::getID()
+	const uint32_t& Entity::GetID()
 	{
 		return m_id;
 	}

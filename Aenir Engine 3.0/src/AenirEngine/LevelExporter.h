@@ -28,19 +28,77 @@ namespace Aen {
 		POINT
 	};
 
-	struct MatTexContainer
+	struct ModelInfo
 	{
-		string tex;
-		string mat;
-		string m_meshName;
+		string m_name = ""; // Editor name
+		string m_meshName = ""; // Obj name
+
+	};
+
+	struct MaterialInfo 
+	{
+		string m_materialTextureName;
+		string m_materialName;
+	};
+
+	struct AnimationInfo 
+	{
+		string m_animationName;
+	};
+
+	struct TextureInfo 
+	{
 		string m_textureName;
+		//string m_textureType;
+	};
 
-		MatTexContainer(string inTex, string inMat, string m_meshName, string m_textureName) {
-			this->tex = inTex;
-			this->mat = inMat;
-			this->m_meshName = m_meshName;
-			this->m_textureName = m_textureName;
+	struct ModelContainer
+	{
+		ModelInfo m_model;
+		string m_type = "";
+		MaterialInfo m_material;
+		TextureInfo m_texture;
+		AnimationInfo m_animation;
+		string m_sound = "Sound";
 
+		ModelContainer(string materialTextureName, string materialName, string textureName, string modelName, string meshName) {
+			this->m_material.m_materialTextureName = materialTextureName;
+			this->m_material.m_materialName = materialName;
+			this->m_texture.m_textureName = textureName;
+			this->m_model.m_name = modelName;
+			this->m_model.m_meshName = meshName;
+
+			cout << "MeshName " << this->m_model.m_meshName << endl;
+			cout << "name " << this->m_model.m_name << endl;
+
+
+		}
+
+		void update(string &materialTextureName, string &materialName, string &textureName, string &modelName)
+		{
+
+			if (materialTextureName  != "")
+			{
+				this->m_material.m_materialTextureName = materialTextureName;
+			}
+			
+			if (materialName != "")
+			{
+				this->m_material.m_materialName = materialName;
+			}
+
+			if (textureName != "")
+			{
+				this->m_texture.m_textureName = textureName;
+			}
+						
+			if (modelName != "")
+			{
+				this->m_model.m_name = modelName;
+			}
+
+			cout << "MeshName " << this->m_model.m_meshName << endl;
+			cout << "name " << this->m_model.m_name << endl;
 		}
 	};
 
@@ -59,7 +117,7 @@ namespace Aen {
 		vector<ParticleStruct> m_ParticleVector;
 
 		void lightFunc(LightStruct *&lightStruct, vector<LightStruct> &m_LightVector, Entity*& entity);
-		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, vector<string>& itemList, vector<string>& meshObjList,size_t& index, int meshIndex);
+		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<uint32_t, ModelContainer>& modelMap,size_t& index);
 		void roomFunc(RoomStruct*& roomStruct, string array[]);
 		void textureFunc(TextureStruct*& textureStruct, string& textureFileName);
 
@@ -75,7 +133,7 @@ namespace Aen {
 		template<class T>
 		void WriteToFile(T* whatToWrite, std::ofstream& outfile);
 
-		void WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList,vector<string>& meshObjList, unordered_map<unsigned int, MatTexContainer> &textureMap, string array[], string &fileName);
+		void WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, unordered_map<uint32_t, ModelContainer> &modelMap, string array[], string &fileName);
 		LIGHTTYPES Type(Aen::Entity* entity);
 
 

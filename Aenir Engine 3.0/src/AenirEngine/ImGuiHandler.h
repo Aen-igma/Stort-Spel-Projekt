@@ -23,6 +23,16 @@ using std::unordered_map;
 
 namespace Aen {
 
+	struct Enemy 
+	{
+		string m_mesh;
+		float m_translation[3];
+		float m_scale[3];
+		float m_rotation[3];
+		string m_type;
+	};
+
+
 	class AEN_DECLSPEC ImGuiHandler {
 
 	private:
@@ -49,7 +59,7 @@ namespace Aen {
 		vector<string> m_textureFileName;
 		vector<string> m_textureName;
 
-		unordered_map<unsigned int, MatTexContainer> m_textureModelsMap;
+		unordered_map< uint32_t, ModelContainer> m_modelMap;
 
 
 		int m_selectedEntity = 0;
@@ -57,34 +67,66 @@ namespace Aen {
 		float m_xyzRotation[3] = { 0,0,0 };
 		float m_xyzScale[3] = { 1,1,1 };
 		
-		int m_entityCount = 0;
-		int m_lightCount = 0;
-		int m_modelNumber = 0;
+
 
 		ImGui::FileBrowser m_fileDialog;
 
 		// Level exporter info
 		LevelExporter m_levelExporter;
-		vector<string> m_meshObjList;
-		vector<string> m_textureFileList;
-
-		vector<string> m_MaterialNameList;
 
 		// Level importer info
 		AenIMP::LevelImporter m_levelImporter;
 
 		bool m_saveWindowActive = false;
+		bool m_createEnemyWindowActive = false;
+
+		// Counters
+		unsigned int m_enemyCount = 0;
+		int m_entityCount = 0;
+		int m_lightCount = 0;
 
 	public:
-		AenIF::Room GetRoom(size_t index);
+		// All Add func here
 
 		void AddLight(Aen::Entity* entity);
+		void AddLight(Aen::Entity* entity, string type);
 
 		void AddBase(AenIF::Model& model, AenIF::Texture &texture);
-		void AddPointLight(AenIF::Light& input);
-		void AddSpotLight(AenIF::Light& input);
-		void AddDirectional(AenIF::Light& input);
+		void AddBase(const string& meshName, const string& objName);
 
+		void AddPointLight(AenIF::Light& input);
+		void AddPointLight();
+
+		void AddSpotLight(AenIF::Light& input);
+		void AddSpotLight();
+
+		void AddDirectional(AenIF::Light& input);
+		void AddDirectional();
+
+		void AddEnemy();
+		void AddModel(Aen::Entity* entity, string name);
+
+		void AddModel(Aen::Entity* entity);
+		bool AddButton(const string& name);
+		void AddEnemyButton();
+
+	public:
+		// All Set and Get here
+		AenIF::Room GetRoom(size_t index);
+
+		void SetValues();
+		void SetDefaultValue();
+		void ZeroValue();
+
+	public: 
+		// All window func here
+		void SceneListWindow();
+		void AssetWindow();
+		void ColorWheel();
+		void PropertyWindow();
+		void ToolWindow();
+		void SaveWindow();
+		void EnemyCreateWindow();
 
 	public:
 		ImGuiHandler();
@@ -97,41 +139,30 @@ namespace Aen {
 		void NewFrame();
 		void Render();
 		void Release();
-		void SceneListWindow();
-		void AssetWindow();
-		void ColorWheel();
-		void PropertyWindow();
-		void ToolWindow();
-		void SaveWindow();
 
-		void AddModel(Aen::Entity* entity);
-		void AddLight(Aen::Entity* entity, string type);
+
 		void ReadAllModelsFromHandler();
 		void CreatePreviewTextureThumbnail();
 
-		void SetValues();
-		void SetDefaultValue();
-		void ZeroValue();
-		void SetMaterialValues();
-
-		void AddBase(const string &meshName, const string &objName);
-		void AddPointLight();
-		void AddSpotLight();
-		void AddDirectional();
 		void RemoveObject();
 
 		void ReadAllFilesFromResourceFolder();
-		bool AddButton(const string& name);
-		void ModelButtons();
-		void LightButtons();
-		const string CheckType(Aen::Entity* entity);
 
-		void CustomCombo(vector<string>& list,string name, string type);
 
-		void ChangeMaterial(int &currentIndex);
+		void UpdateMap(uint32_t key, string& texValue, string& matValue, string& meshName, string& texName);
+	
+		private:
+			void ModelButtons();
+			void LightButtons();
+			const string CheckType(Aen::Entity* entity);
 
-		void UpdateMap(unsigned int key, string& texValue, string& matValue, string& meshName, string& texName);
-	};
+			void CustomCombo(vector<string>& list, string name, string type);
+
+			string CustomCombo(vector<string>& list, string name);
+
+			void ChangeMaterial(int& currentIndex);
+
+};
 }
 
 

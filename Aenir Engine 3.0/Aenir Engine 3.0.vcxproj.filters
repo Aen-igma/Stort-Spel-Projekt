@@ -240,9 +240,6 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
       <Filter>Source Files\Level\LevelExporter</Filter>
     </ClCompile>
@@ -250,6 +247,9 @@
       <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\LevelImporter.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp">
       <Filter>Source Files\Level</Filter>
     </ClCompile>
   </ItemGroup>
@@ -434,25 +434,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\Burito\Burito.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\BuritoMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\BuritoMath\MathFunctions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\CreateThumbnail.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imfilebrowser.h">
@@ -464,13 +446,31 @@
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Level\LevelExporter</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\RoomFormat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelImporter.h">
       <Filter>Level</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\RoomFormat.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\BuritoMath.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\Burito\Burito.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Vector.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\Matrix.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Math\BuritoMath\MathFunctions.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\CreateThumbnail.h">
       <Filter>Level</Filter>
     </ClInclude>
   </ItemGroup>
