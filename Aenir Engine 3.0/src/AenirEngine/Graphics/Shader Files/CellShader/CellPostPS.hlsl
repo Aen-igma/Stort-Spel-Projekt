@@ -97,5 +97,10 @@ float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_Target {
 
 	float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
 	
+	float glowSum = glow.x + glow.y + glow.z;
+	//if (glowSum == 0.f)
+	//	return output;
+	//else
+	//	return glow;
 	return output + glow;
 }

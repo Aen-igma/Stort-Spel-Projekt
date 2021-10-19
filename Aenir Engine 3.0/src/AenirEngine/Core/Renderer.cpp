@@ -202,6 +202,7 @@ namespace Aen {
 		static int im_dispatch[2] = { 32, 32 };
 		static int im_switcher = 5;
 		static float im_bloomStr = 1.f;
+		static bool im_useBloom = true;
 		RenderSystem::BindRenderTargetView(m_nullrtv);
 
 		RenderSystem::BindShader<CShader>(m_bloomCS);
@@ -214,11 +215,13 @@ namespace Aen {
 		m_switcher.GetData().x = im_switcher;
 		m_switcher.GetData().y = im_bloomStr;
 		m_switcher.GetData().z = 0;
-		m_switcher.GetData().w = 0;
+		m_switcher.GetData().w = (float)im_useBloom;
 		m_switcher.UpdateBuffer();
 
 		RenderSystem::Dispatch(im_dispatch[0], im_dispatch[1], 1);
 		RenderSystem::UnBindUnOrderedAccessViews(0, 2);
+
+
 
 		RenderSystem::BindRenderTargetView(m_backBuffer);
 
@@ -227,6 +230,7 @@ namespace Aen {
 #ifdef _DEBUG
 		Aen::GlobalSettings::mp_guiHandler->NewFrame();
 		ImGui::Begin("Post Process CS");
+		ImGui::Checkbox("Bloom", &im_useBloom);
 		ImGui::DragInt2("Disptach", im_dispatch, 1.f, 1, 100);
 		ImGui::SliderInt("Map", &im_switcher, 0, 6);
 		ImGui::SliderFloat("Bloom Strength", &im_bloomStr, 0.f, 1.f);

@@ -112,13 +112,13 @@ namespace Aen {
 							renderer.m_cbUseTexture.GetData()[k] = (int)false;
 						if (k == 3)
 						{
-							RenderSystem::BindShader<CShader>(renderer.m_copyToBufferCS);
-							//RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_textures[k]->m_shaderResource);
-							RenderSystem::BindUnOrderedAccessView(0u, renderer.m_bloomUAV);
+							//RenderSystem::BindShader<CShader>(renderer.m_copyToBufferCS);
+							////RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_textures[k]->m_shaderResource);
+							//RenderSystem::BindUnOrderedAccessView(0u, renderer.m_bloomUAV);
 
-							RenderSystem::Dispatch(60, 33, 0);
+							//RenderSystem::Dispatch(60, 33, 0);
 							//RenderSystem::UnBindUnOrderedAccessViews(0, 1);
-							RenderSystem::UnBindShader<CShader>();
+							//RenderSystem::UnBindShader<CShader>();
 						}
 					}
 						

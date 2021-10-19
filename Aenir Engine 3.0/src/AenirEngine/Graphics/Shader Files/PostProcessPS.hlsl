@@ -27,7 +27,7 @@ static int vRow[9] = {
 	-1, -2, -1
 };
 
-texture2D diffuseMap : DIFFUSEMAP: register(t0);
+Texture2D diffuseMap : DIFFUSEMAP: register(t0);
 SamplerState clampSampler : CSAMPLER: register(s0);
 
 float Luminosity(in float3 clr) {
@@ -35,7 +35,7 @@ float Luminosity(in float3 clr) {
 }
 
 // temp---
-texture2D<uint2> CullMap : CULLMAP: register(t4);
+Texture2D<uint2> CullMap : CULLMAP: register(t4);
 // -------
 
 float4 main(float4 pos : SV_Position, float2 uv : UV) : SV_TARGET {
