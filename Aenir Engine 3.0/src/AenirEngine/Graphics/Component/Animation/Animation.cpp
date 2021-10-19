@@ -10,7 +10,7 @@
 
 namespace Aen {
 	Assimp::Importer importer;
-	const aiScene* animation = importer.ReadFile("../Resource/ThanosLastest.fbx", aiProcess_Triangulate);
+	const aiScene* animation = importer.ReadFile("../Resource/AnimTimDab.fbx", aiProcess_Triangulate);
 
 	void LoadingBones(Bones& bones, const aiNode* fromFile, std::vector<Bones>& boneArray) {
 		Bones currentBone;
@@ -30,7 +30,7 @@ namespace Aen {
 	Animation::Animation(const std::string& animationPath)
 	{
 		Assimp::Importer importer;
-		const aiScene* animTest = importer.ReadFile("../Resource/ThanosLastest.fbx", aiProcess_Triangulate);
+		const aiScene* animTest = importer.ReadFile("../Resource/AnimTimDab.fbx", aiProcess_Triangulate);
 		assert(animTest && animTest->mRootNode);
 		m_Duration = animTest->mAnimations[0]->mDuration;
 		m_TicksPerSecond = animTest->mAnimations[0]->mTicksPerSecond;
@@ -64,8 +64,8 @@ namespace Aen {
 				if (nodeArray[i]->mName == scene->mMeshes[0]->mBones[j]->mName) {
 					//boneArray.emplace_back(scene->mMeshes[0]->mBones[j]);
 					ai_node_bones.emplace_back(nodeArray[i]);
-					OutputDebugString((nodeArray[i]->mName).C_Str());
-					OutputDebugString("\n");
+					/*OutputDebugString((nodeArray[i]->mName).C_Str());
+					OutputDebugString("\n");*/
 					/*OutputDebugString((ai_node_bones[i]->mName).C_Str());
 					OutputDebugString("\n");
 					OutputDebugString((ai_node_bones[i]->mParent->mName).C_Str());
@@ -104,11 +104,12 @@ namespace Aen {
 			bone.boneName = nodeBoneArray[i]->mName.data;
 			bone.boneID = i;
 			for (size_t j = 0; j < nodeBoneArray.size(); j++) {
-				if (nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mName.data == nodeBoneArray[j]->mName.data)
+				if (nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mParent[0].mParent[0].mName.data == nodeBoneArray[j]->mName.data)
 					bone.parentID = j;
 			}
-			if (bone.boneID == 0)
-				bone.parentID = -1;
+			//OutputDebugString((nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mParent[0].mParent[0].mName).C_Str());
+			/*if (bone.boneID == 0)
+				bone.parentID = -1;*/
 
 			bone.offsetMatrix.a11 = mesh->mBones[i]->mOffsetMatrix.a1; bone.offsetMatrix.a12 = mesh->mBones[i]->mOffsetMatrix.a2; 
 			bone.offsetMatrix.a13 = mesh->mBones[i]->mOffsetMatrix.a3; bone.offsetMatrix.a14 = mesh->mBones[i]->mOffsetMatrix.a4;
@@ -136,10 +137,27 @@ namespace Aen {
 	}
 
 	void AnimProcess() {
-		if (animation->mNumAnimations == 0)
+		if (animation->mNumAnimations == 0) {
+			OutputDebugString("No Animations!");
 			return;
+		}
 		for (int i = 0; i < animation->mAnimations[0]->mNumChannels; i++) {
 			ai_nodes_anim.emplace_back(animation->mAnimations[0]->mChannels[i]);
+			Vec4f test;
+			aiQuaternion orient;															// Try to find out if this is the correct way of getting rotaions from the animation keyframes
+																							// Also, try to find out how to use quaternions or conversion
+			test.x = animation->mAnimations[0]->mChannels[i]->mPositionKeys[11].mValue.x;
+			test.y = animation->mAnimations[0]->mChannels[i]->mPositionKeys[11].mValue.y;
+			test.z = animation->mAnimations[0]->mChannels[i]->mPositionKeys[11].mValue.z;
+			//orient.w = animation->mAnimations[0]->mChannels[i]->mPositionKeys[20].mValue.w;
+			OutputDebugString(std::to_string(test.x).c_str());
+			OutputDebugString(" : ");		
+			OutputDebugString(std::to_string(test.y).c_str());
+			OutputDebugString(" : ");		
+			OutputDebugString(std::to_string(test.z).c_str());
+			/*OutputDebugString(" : ");		
+			OutputDebugString(std::to_string(orient.w).c_str());*/
+			OutputDebugString("\n");
 		}
 	}
 

@@ -25,6 +25,11 @@ namespace Aen {
 		Mat4f offsetMatrix;
 	};
 
+	struct KeyFrameData {
+		Vec3f position, rotation;
+		float timeStamp;
+	};
+
 	class AEN_DECLSPEC Animation {
 	private:
 		float m_Duration;
@@ -33,6 +38,7 @@ namespace Aen {
 		AssimpData m_RootNode;
 		//std::map<std::string, BoneInfo> m_BoneInfoMap;
 		std::vector<Bones> m_boneArray;
+		KeyFrameData m_keyFrames;
 	public:
 		Animation();
 		Animation(const std::string& animationPath);
