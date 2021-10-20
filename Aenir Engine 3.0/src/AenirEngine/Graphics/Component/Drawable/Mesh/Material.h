@@ -31,7 +31,7 @@ namespace Aen {
 		Reflection m_PSReflect;
 		Reflection m_CSReflect;
 		PSampler m_samplerData;
-		uint32_t m_slots[18];
+		uint32_t m_slots[19];
 
 		Window& m_window;
 

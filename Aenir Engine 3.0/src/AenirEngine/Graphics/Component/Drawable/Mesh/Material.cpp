@@ -69,6 +69,7 @@ namespace Aen {
         std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescLightGrid      = m_PSReflect.GetBindDescByName(    "Aen_LightGrid"         );
         std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescLightIndexList = m_PSReflect.GetBindDescByName(    "Aen_LightIndexList"    );
         std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescDBuffer        = m_PSReflect.GetBindDescByName(    m_bufferName            );
+        std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescBackGround     = m_CSReflect.GetBindDescByName(    "Aen_BackGround"        );
 
         m_slots[0] = (bDescDiffuseMap)          ? bDescDiffuseMap.value().BindPoint         : UINT_MAX;
         m_slots[1] = (bDescNormalMap)           ? bDescNormalMap.value().BindPoint          : UINT_MAX;
@@ -98,6 +99,7 @@ namespace Aen {
         m_slots[15] = (bDescUseTexture)          ? bDescUseTexture.value().BindPoint         : UINT_MAX;
         m_slots[16] = (bDescLight)               ? bDescLight.value().BindPoint              : UINT_MAX;
         m_slots[17] = (bDescDBuffer)             ? bDescDBuffer.value().BindPoint            : UINT_MAX;
+        m_slots[18] = (bDescBackGround)          ? bDescBackGround.value().BindPoint         : UINT_MAX;
 
         return true;
     }

@@ -129,6 +129,7 @@ namespace Aen {
 					if(slots[15] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<CShader>(		slots[15]	);
 					if(slots[16] != UINT_MAX)	renderer.m_sbLight.BindSRV<CShader>(				slots[16]	);
 					if(slots[17] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<CShader>(			slots[17]	);
+					if(slots[18] != UINT_MAX)	renderer.m_cbBGColor.BindBuffer<CShader>(			slots[18]	);
 
 					RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer);
 					RenderSystem::BindUnOrderedAccessView(0u, renderer.m_UAVBackBuffer);

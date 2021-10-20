@@ -56,6 +56,11 @@ namespace Aen {
 		RenderSystem::SetRasteriserState(m_rasterizerState);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.f, 0.f, 0.f, 0.f));
 
+		// BackGround
+
+		m_cbBGColor.GetData() = GlobalSettings::GetBGColor();
+		m_cbBGColor.UpdateBuffer();
+
 		// Camera
 
 		if(GlobalSettings::m_pMainCamera) {
