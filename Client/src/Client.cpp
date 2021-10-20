@@ -64,8 +64,8 @@ void Client::Start() {
 
 	(*m_ReimuMat)["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
 	(*m_ReimuMat)["InnerEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
-	(*m_ReimuMat)["OuterEdgeThickness"] = 0.003f;
-	(*m_ReimuMat)["InnerEdgeThickness"] = 0.003f;
+	(*m_ReimuMat)["OuterEdgeThickness"] = 3;
+	(*m_ReimuMat)["InnerEdgeThickness"] = 3;
 
 	m_meshcube = &cube;
 	// -------------------------- Setup Entities -------------------------------- //
@@ -112,6 +112,10 @@ void Client::Start() {
 	emissionMtrl.SetEmissionMap(face);
 	emissionMtrl.SetDiffuseMap(peng);
 	emissionMtrl["GlowColor"] = Aen::Color::Green;
+	emissionMtrl["OuterEdgeThickness"] = 2;
+	emissionMtrl["InnerEdgeThickness"] = 2;
+	emissionMtrl["OuterEdgeColor"] = Aen::Color::Green;
+	emissionMtrl["InnerEdgeColor"] = Aen::Color::Green;
 
 	m_emiCube->GetComponent<Aen::MeshInstance>().SetMaterial(emissionMtrl);
 	// --------------------------- Setup Window --------------------------------- //
