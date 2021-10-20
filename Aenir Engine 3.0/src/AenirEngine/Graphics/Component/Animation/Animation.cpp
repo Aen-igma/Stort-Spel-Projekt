@@ -44,7 +44,6 @@ namespace Aen {
 
 	void FindRootBone(Bones& bones, const aiScene* scene, std::vector<Bones>& boneArray) {
 		aiBone* rootBone = scene->mMeshes[0]->mBones[0];
-		
 	}
 
 	std::vector<aiNode*> ai_nodes;
@@ -64,15 +63,8 @@ namespace Aen {
 				if (nodeArray[i]->mName == scene->mMeshes[0]->mBones[j]->mName) {
 					//boneArray.emplace_back(scene->mMeshes[0]->mBones[j]);
 					ai_node_bones.emplace_back(nodeArray[i]);
-					/*OutputDebugString((nodeArray[i]->mName).C_Str());
-					OutputDebugString("\n");*/
-					/*OutputDebugString((ai_node_bones[i]->mName).C_Str());
-					OutputDebugString("\n");
-					OutputDebugString((ai_node_bones[i]->mParent->mName).C_Str());
-					OutputDebugString("\n");*/
 				}
 			}
-			
 		}
 	}
 
@@ -108,7 +100,6 @@ namespace Aen {
 					bone.parentID = j;
 					//bone.transformRelParent = nodeBoneArray[i]->mTransformation;					// Do we need this? If so, how do we get the transform..
 				}
-					
 			}
 			//OutputDebugString((nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mParent[0].mParent[0].mName).C_Str());
 			if (bone.boneID == 0)
@@ -148,7 +139,7 @@ namespace Aen {
 		for (int i = 0; i < animation->mAnimations[0]->mNumChannels; i++) {
 			//ai_nodes_anim.emplace_back(animation->mAnimations[0]->mChannels[i]);
 
-			for (int j = 0; j < animation->mAnimations[0]->mChannels[i]->mNumRotationKeys; j++) {
+			for (int j = 0; j < animation->mAnimations[0]->mChannels[i]->mNumRotationKeys; j++) {			// have a "vector" of each key - posiiton timestamps and mValue, same with rotation
 				float timeS = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime;
 				Mat4f rotation;
 				Vec3f translation;
@@ -164,7 +155,7 @@ namespace Aen {
 				data.timeStamp = timeS;
 				
 				keyFrameData.emplace_back(data);
-			}
+			}																							// think about how to access the info, save for each channel name?
 			
 			OutputDebugString((animation->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
 			
@@ -205,24 +196,26 @@ namespace Aen {
 			OutputDebugString(std::to_string(keyFrameData[u].rotation.a44).c_str());
 			OutputDebugString("\n");
 		}
-		//for (int u = 0; u < keyFrameData.size(); u++) {
-		//	/*OutputDebugString(" : ");
-		//	OutputDebugString(std::to_string(keyFrameData[1].timeStamp).c_str());*/
-		//	/*OutputDebugString(" : ");
-		//	OutputDebugString(std::to_string(keyFrameData[2].timeStamp).c_str());*/
-		//	/*OutputDebugString(" : ");
-		//	OutputDebugString(std::to_string(keyFrameData[3].timeStamp).c_str());*/
-		//	/*OutputDebugString(" : ");
-		//	OutputDebugString(std::to_string(orient.w).c_str());*/
-		//	OutputDebugString("\n");
-
-		//}
 	}
 
 	//void GetBoneOffsetMatrix(const std::vector<aiBone*>& boneArray)
 
+	Vec2f Animation::GetTimeFraction(std::vector<float>& times, float& dt)
+	{
+		UINT segment = 0;
+		float start, end, fraction;
+		while (dt > times[segment])
+			segment++;
+		start = times[segment - 1];
+		end = times[segment];
+		fraction = (dt - start) / (end - start);
+
+		return Vec2f(segment, fraction);
+	}
+
 	void Animation::LoadAnimation(const std::string& animationPath)
 	{
+		//----------------------BONE DATA--------------------------//
 		Bones rootBone;
 		rootBone.boneID = 0;
 		rootBone.parentID = -1;
@@ -232,7 +225,21 @@ namespace Aen {
 		auto rootBoneNode = animation->mMeshes[0]->mBones[0];
 		m_boneArray.emplace_back(rootBone);
 		FindRootBone(rootBone, animation, m_boneArray);
+		
+		globalInverseTransformMatrix.a11 = animation->mRootNode->mTransformation.a1; globalInverseTransformMatrix.a12 = animation->mRootNode->mTransformation.a2;
+		globalInverseTransformMatrix.a13 = animation->mRootNode->mTransformation.a3; globalInverseTransformMatrix.a14 = animation->mRootNode->mTransformation.a4;
 
+		globalInverseTransformMatrix.a21 = animation->mRootNode->mTransformation.b1; globalInverseTransformMatrix.a22 = animation->mRootNode->mTransformation.b2;
+		globalInverseTransformMatrix.a23 = animation->mRootNode->mTransformation.b3; globalInverseTransformMatrix.a24 = animation->mRootNode->mTransformation.b4;
+
+		globalInverseTransformMatrix.a31 = animation->mRootNode->mTransformation.c1; globalInverseTransformMatrix.a32 = animation->mRootNode->mTransformation.c2;
+		globalInverseTransformMatrix.a33 = animation->mRootNode->mTransformation.c3; globalInverseTransformMatrix.a34 = animation->mRootNode->mTransformation.c4;
+
+		globalInverseTransformMatrix.a41 = animation->mRootNode->mTransformation.d1; globalInverseTransformMatrix.a42 = animation->mRootNode->mTransformation.d2;
+		globalInverseTransformMatrix.a43 = animation->mRootNode->mTransformation.d3; globalInverseTransformMatrix.a44 = animation->mRootNode->mTransformation.d4;
+
+		globalInverseTransformMatrix.Inverse();
+		boneCount = animation->mMeshes[0]->mNumBones;
 
 		RecursiveNodeProcess(animation->mRootNode);
 		AnimProcess(m_keyFrames);
@@ -240,6 +247,17 @@ namespace Aen {
 		TransferNodeBoneData(ai_node_bones, m_boneArray, animation->mMeshes[0]);
 		MeshBoneData(animation->mMeshes[0], ai_bone_data);
 		//TransferBones(ai_bone_data, m_boneArray);
+
+		//----------------------ANIMATION DATA--------------------------//
+		aiAnimation* ani = animation->mAnimations[0];
+
+		if (ani->mTicksPerSecond != 0.0f)
+			m_TicksPerSecond = ani->mTicksPerSecond;
+		else
+			m_TicksPerSecond = 1;
+
+		m_Duration = ani->mDuration * ani->mTicksPerSecond;
+
 	}
 
 	Animation::~Animation()

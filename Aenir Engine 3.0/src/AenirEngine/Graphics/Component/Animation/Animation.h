@@ -40,6 +40,8 @@ namespace Aen {
 		//std::map<std::string, BoneInfo> m_BoneInfoMap;
 		std::vector<Bones> m_boneArray;
 		std::vector<KeyFrameData> m_keyFrames;
+		Mat4f globalInverseTransformMatrix;
+		UINT boneCount;
 	public:
 		Animation();
 		Animation(const std::string& animationPath);
@@ -49,6 +51,7 @@ namespace Aen {
 		inline float GetDuration() { return m_Duration; }
 		inline const AssimpData& GetRootNode() { return m_RootNode; }
 		//inline const std::map<std::string, BondInfo>& GetBoneIDMap() { return m_BoneInfoMap; }
+		Vec2f GetTimeFraction(std::vector<float>& times, float& dt);
 		void LoadAnimation(const std::string& animationPath);
 
 	private:
