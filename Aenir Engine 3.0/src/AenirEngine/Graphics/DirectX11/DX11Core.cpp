@@ -6,6 +6,8 @@ namespace Aen {
     ComDevice GCore::m_device{nullptr};
     ComDeviceContext GCore::m_dContext{nullptr};
     ComSwapChain GCore::m_sChain{nullptr};
+    Com2DFactory GCore::m_factory{ nullptr };
+    Com2DTarget GCore::m_target2D{ nullptr };
 
 	bool GCore::Concealed::Initialize(const Window& window) {
     
@@ -80,6 +82,20 @@ namespace Aen {
         pAdapter.Reset();
         pFactory2.Reset();
         pFactory6.Reset();
+
+
+        //----------------------------------    Direct 2D   ---------------------------------//
+        ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_factory.GetAddressOf()));
+
+        IDXGISurface* IXSurface;
+        if (SUCCEEDED(m_sChain->GetBuffer(0, IID_PPV_ARGS(&IXSurface)))) //hämta swapchain
+        {
+            Vec2f dpi;
+            dpi = static_cast<FLOAT>(GetDpiForWindow(window.m_hwnd));
+            D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), dpi.x, dpi.y);
+
+            ASSERT_HR(m_factory.Get()->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D));
+        }
 
         return SUCCEEDED(hr);
 	}

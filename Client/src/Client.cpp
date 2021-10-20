@@ -6,7 +6,7 @@ Client::~Client() {
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
-	:Aen::App(desc, windowName, className), mp_state(nullptr), m_typeState(States::None)
+	:Aen::App(desc, windowName, className), mp_state(nullptr), m_typeState(States::None), mp_gameplay(nullptr)
 {}
 
 void Client::Start()
@@ -26,8 +26,8 @@ void Client::Update(const float& deltaTime)
 
 	if (mp_gameplay->GetLoaded())
 	{
-		m_thread = std::thread(&Gameplay::Initialize, mp_gameplay); //Initialize Gameplay
-		m_thread.detach();
+		std::thread work(&Gameplay::Initialize, mp_gameplay); //Initialize Gameplay
+		work.detach();
 	}
 }
 
