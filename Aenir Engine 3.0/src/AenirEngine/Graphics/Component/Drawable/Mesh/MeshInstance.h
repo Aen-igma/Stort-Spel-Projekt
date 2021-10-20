@@ -18,7 +18,7 @@ namespace Aen {
 		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
 
 		DirectX::BoundingBox& GetMeshAABB();
-		void SetInQuadtree(bool inQuad); //Put into quad
+		//void SetInQuadtree(bool inQuad); //Put into quad
 
 		
 		private:

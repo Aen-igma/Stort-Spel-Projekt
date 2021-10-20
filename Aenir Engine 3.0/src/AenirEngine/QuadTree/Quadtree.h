@@ -18,13 +18,15 @@ namespace Aen
 		Node* GetRoot();
 
 		void Initialize();
-		void Update(std::vector<int>& output);
+		void Update();
+		//void Update(std::vector<int>& output);
 
 	private:
 		Node* mp_root;
-		std::vector<ObjeStruct*> m_boundingVolStructs;
+		std::vector<NodeStruct*> m_boundingVolStructs;
 		Aen::EntityHandler* mp_entityHandlerPtr;
 		DirectX::BoundingFrustum m_cameraFrustrum;
+		std::vector<QuadStruct*> m_QuadObjectsToRender;
 
 	};
 }

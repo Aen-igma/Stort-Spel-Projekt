@@ -63,8 +63,7 @@ namespace Aen
 			//}
 			if (valid)
 			{
-				ObjeStruct* tempObj = AEN_NEW ObjeStruct(i.first, &i.second->GetMeshAABB());
-
+				NodeStruct* tempObj = AEN_NEW NodeStruct(i.first, EntityHandler::GetEntity(i.first).GetLayer(), &i.second->GetMeshAABB());
 				this->mp_root->Insert(tempObj);
 				this->m_boundingVolStructs.push_back(tempObj);
 			}
@@ -72,12 +71,33 @@ namespace Aen
 
 	}
 
-	void Quadtree::Update(std::vector<int>& output)
+	void Quadtree::Update()
 	{
 		if (GlobalSettings::GetMainCamera())
 		{
+			bool addToLayer = true;
+
 			m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetProjecton().smMat);
-			this->mp_root->IntersectTest(m_cameraFrustrum, output);
+			this->mp_root->IntersectTest(m_cameraFrustrum, m_QuadObjectsToRender);
+
+			/*
+			for (auto& i : m_QuadObjectsToRender) // For every object seen
+			{
+				for (auto& j : ComponentHandler::m_meshLayer[i->m_RenderLayer]) // On the layer the object is on
+				{
+					if (false) // Check if the object is already in m_meshLayer
+					{
+						addToLayer = false;
+					}
+				}
+				if (addToLayer) // If object isn't in m_meshLayer
+				{
+					//ComponentHandler::m_meshLayer[i->m_RenderLayer].insert(i->m_ID, ); 
+					ComponentHandler::SetRenderLayer(EntityHandler::GetEntity(i->m_ID), i->m_ID, i->m_RenderLayer); // Add it
+				}
+			}
+			*/
+
 
 		/*	if (Input::KeyDown(Key::V))
 			{
@@ -87,6 +107,8 @@ namespace Aen
 			}*/
 		}
 	}
+
+	
 
 }
 

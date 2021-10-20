@@ -128,6 +128,11 @@ namespace Aen {
 		return m_id;
 	}
 
+	const uint32_t& Entity::GetLayer()
+	{
+		return m_layer;
+	}
+
 
 
 	const Mat4f Entity::GetTransformation() {

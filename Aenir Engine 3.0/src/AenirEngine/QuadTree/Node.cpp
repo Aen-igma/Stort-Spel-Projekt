@@ -1,22 +1,41 @@
 #include"PCH.h"
 #include"Node.h"
 
-ObjeStruct::ObjeStruct()
+NodeStruct::NodeStruct()
 {
 	this->m_ID = 0;
 	this->mp_boundBox = nullptr;
 }
 
-ObjeStruct::ObjeStruct(int ID, DirectX::BoundingBox* boundingBox)
+NodeStruct::NodeStruct(int ID, int RenderLayer, DirectX::BoundingBox* boundingBox)
 {
 	this->m_ID = ID;
+	this->m_RenderLayer = RenderLayer;
 	this->mp_boundBox = boundingBox;
 }
 
-ObjeStruct::~ObjeStruct()
+NodeStruct::~NodeStruct()
 {
 	delete this->mp_boundBox;
 } 
+
+QuadStruct::QuadStruct()
+{
+	m_ID = 0;
+	m_RenderLayer = 0;
+}
+
+QuadStruct::QuadStruct(int ID, int Layer)
+{
+	m_ID = ID;
+	m_RenderLayer = Layer;
+}
+
+QuadStruct::~QuadStruct()
+{
+
+}
+
 
 Node::Node()
 {
@@ -47,7 +66,7 @@ Node::~Node()
 	}
 }
 
-void Node::Insert(ObjeStruct* obj)
+void Node::Insert(NodeStruct* obj)
 {
 	if(!mp_children[0]) //If nullptr then this is a leaf 
 	{
@@ -106,8 +125,8 @@ bool Node::Inside(DirectX::BoundingBox& playerBox)
 
 	return false;
 }
-
-void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<int>& output)
+//NodeStruct* tempObj = AEN_NEW NodeStruct(i.first, EntityHandler::GetEntity(i.first).GetLayer(), &i.second->GetMeshAABB());
+void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<QuadStruct*>& output) //View frustrum culling
 {
 	if (!mp_children[0])
 	{
@@ -115,7 +134,9 @@ void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<int>
 		{
 				if(other.Intersects(*obj->mp_boundBox))
 				{
-					output.push_back(obj->m_ID); //Läger till ID av objekt
+					QuadStruct* tempQuadObj = AEN_NEW QuadStruct(obj->m_ID, obj->m_RenderLayer); // Kan skapa minnes läkor
+					output.push_back(tempQuadObj);
+					//output.push_back(obj->m_ID); //Läger till ID av objekt
 				}
 		}
 	}
@@ -126,9 +147,9 @@ void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<int>
 	}
 }
 
-void Node::SmartPointer(std::shared_ptr<ObjeStruct> ptr)
+void Node::SmartPointer(std::shared_ptr<NodeStruct> ptr)
 {
-	std::shared_ptr<ObjeStruct> localPtr = ptr;
+	std::shared_ptr<NodeStruct> localPtr = ptr;
 	static std::mutex io_mutex; //used to protect shared data from being simultaneously accessed by multiple threads.
 	std::cout << "localPtr in thread:" << "localPtr.get()" << localPtr.get() << std::endl;
 	std::cout << "localPtr in thread:" << "localPtr.usecount()" << localPtr.use_count() << "\n" << std::endl;

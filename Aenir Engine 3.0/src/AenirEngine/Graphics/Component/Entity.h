@@ -40,6 +40,7 @@ namespace Aen {
 		const Vec3f& GetScale();
 
 		const uint32_t& GetID();
+		const uint32_t& GetLayer();
 
 		private:
 		const Mat4f GetTransformation();

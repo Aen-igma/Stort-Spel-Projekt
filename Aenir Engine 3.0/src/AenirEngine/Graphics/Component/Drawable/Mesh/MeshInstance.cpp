@@ -76,14 +76,14 @@ namespace Aen {
 
 	}
 
-	void MeshInstance::SetInQuadtree(bool inQuad)
+	/*void MeshInstance::SetInQuadtree(bool inQuad)
 	{
 		this->m_InQuadtree = inQuad;
-	}
+	}*/
 
 	void MeshInstance::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) {
 
-		if(m_pMesh /* && m_InQuadtree*/) { // if true = only render objects from m_ObjectsToRender
+		if(m_pMesh) { 
 
 			// Transform
 

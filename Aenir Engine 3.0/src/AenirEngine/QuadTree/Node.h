@@ -9,16 +9,29 @@
 #include <memory>
 #include <mutex>
 
-struct ObjeStruct
+struct NodeStruct
 {
 	int m_ID;
+	int m_RenderLayer;
 	DirectX::BoundingBox* mp_boundBox;
 
-	ObjeStruct();
-	ObjeStruct(int ID, DirectX::BoundingBox* boundingBox);
-	~ObjeStruct();
+
+	NodeStruct();
+	NodeStruct(int ID, int RenderLayer, DirectX::BoundingBox* boundingBox);
+	~NodeStruct();
 
 };
+
+struct QuadStruct
+{
+	int m_ID;
+	int m_RenderLayer;
+
+	QuadStruct();
+	QuadStruct(int ID, int Layer);
+	~QuadStruct();
+};
+
 
 class Node
 {
@@ -27,17 +40,16 @@ public:
 	Node(DirectX::BoundingBox& quad, const unsigned& level = 0,
 		const unsigned& max_level = 1, const unsigned& capacity = 3);
 	~Node();
-	void Insert(ObjeStruct* obj);
+	void Insert(NodeStruct* obj);
 	bool Inside(DirectX::BoundingBox& playerBox); //not needed
-	void IntersectTest(const DirectX::BoundingFrustum &other, std::vector<int>& output); //Output = Id for objects
+	void IntersectTest(const DirectX::BoundingFrustum &other, std::vector<QuadStruct*>& output); //Output = Id for objects
 	//Problem kan vara att flera noder kan uppstå, behövs fixas senare.
 
-	void SmartPointer(std::shared_ptr<ObjeStruct> ptr);
+	void SmartPointer(std::shared_ptr<NodeStruct> ptr);
 private:
 	Node* mp_children[4] = { nullptr };
 	DirectX::BoundingBox m_DirectXAABB;
-	std::vector<ObjeStruct*> m_Objs;
-	//std::vector<DirectX::BoundingBox*> m_Objects;
+	std::vector<NodeStruct*> m_Objs;
 
 	unsigned m_level;
 	unsigned m_maxLevel;
