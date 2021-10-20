@@ -253,57 +253,6 @@ namespace Aen
 	{
 		char cmap[mapSize * 3][mapSize * 3];
 
-		//m_mapTheme = RoomTheme::PLACEHOLDER;
-
-		////Straight corridors
-		//Room a;
-		//a.m_baseChance = 0xf;
-		//a.connectionDirections = 101;
-		//a.m_present = true;
-		//a.m_roomTheme = m_mapTheme;
-		//AddRoomToGeneration(&a);
-
-
-		////90 degree corners
-		//Room b;
-		//b.m_baseChance = 0xf;
-		//b.m_present = true;
-		//b.connectionDirections = 11;
-		//b.m_roomTheme = m_mapTheme;
-		//AddRoomToGeneration(&b);
-
-
-		////T junction
-		//Room c;
-
-		//c.m_baseChance = 0xf;
-		//c.connectionDirections = 1011;
-		//c.m_present = true;
-		//c.m_roomTheme = m_mapTheme;
-		//AddRoomToGeneration(&c);
-
-
-		////4-way junction
-		//Room d;
-		//d.m_baseChance = 0xf;
-		//d.connectionDirections = 1111;
-		//d.m_present = true;
-		//d.m_roomTheme = m_mapTheme;
-		//AddRoomToGeneration(&d);
-
-
-		////entrance
-		//Room e;
-		//e.m_baseChance = 0xf;
-		//e.m_present = true;
-		//e.m_roomSpecial = SpecialRoom::ENTRANCE;
-		//e.m_roomTheme = m_mapTheme;
-		//e.connectionDirections = 1;
-		//AddRoomToGeneration(&e);
-
-
-
-
 		for (int k = 0; k < 1; k++) {
 			LevelGenerator::GenerateLevel();
 
@@ -354,7 +303,6 @@ namespace Aen
 
 	void LevelGenerator::AddRoomToGeneration(Room* room)
 	{
-		//connectionDir = room->m_north + room->m_east *10 + room->m_south *100 + room->m_west *1000;
 
 		room->m_roomIndex = levelRoom.size();
 
@@ -362,48 +310,6 @@ namespace Aen
 
 		masterRoomMap[room->m_roomTheme][room->m_roomSpecial][room->connectionDirections].push_back(room->m_roomIndex);
 
-		//room->m_roomIndex = roomMap[std::make_tuple(room->connectionDirections, (uint16_t)room->m_roomSpecial, (uint16_t)room->m_roomTheme)].size();
-		//roomMap[std::make_tuple(room->connectionDirections, (uint16_t)room->m_roomSpecial, (uint16_t)room->m_roomTheme)].push_back(*room);
-
-		//switch (room->m_roomSpecial)
-		//{
-		//case SpecialRoom::NONE:
-		//	switch (room->connectionDirections)
-		//	{
-		//	case 101:
-		//		straight.push_back(room->m_roomIndex);
-		//		break;
-		//	case 11:
-		//		bend.push_back(room->m_roomIndex);
-		//		break;
-		//	case 1011:
-		//		threeway.push_back(room->m_roomIndex);
-		//		break;
-		//	case 1111:
-		//		fourway.push_back(room->m_roomIndex);
-		//		break;
-		//	default:
-		//		break;
-		//	}
-		//	break;
-		//case SpecialRoom::ENTRANCE:
-		//	levelEntrances.push_back(room->m_roomIndex);
-		//	break;
-		//case SpecialRoom::EXIT:
-		//	levelExit.push_back(room->m_roomIndex);
-		//	break;
-		//case SpecialRoom::BOSS:
-		//	levelBoss.push_back(room->m_roomIndex);
-		//	break;
-		//case SpecialRoom::ARENA:
-		//	levelArena.push_back(room->m_roomIndex);
-		//	break;
-		//case SpecialRoom::ITEM:
-		//	levelItem.push_back(room->m_roomIndex);
-		//	break;
-		//default:
-		//	break;
-		//}
 	}
 
 	const float& LevelGenerator::GetRoomDimension()

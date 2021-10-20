@@ -9,21 +9,34 @@
 #include <vector>
 #include <cstdint>
 #include <unordered_map>
-#include <tuple>
 #include "RandomNumberGenerator.h"
+
 #include "Graphics/Component/Entity.h"
 #include "Graphics/Component/EntityHandler.h"
+
+
+
+#define NORTH 1
+#define EAST 10
+#define SOUTH 100
+#define WEST 1000
+
+#define STRAIGHTHROU NORTH+SOUTH
+#define CORNERBEND NORTH+EAST
+#define THREEWAY NORTH+EAST+WEST
+#define FOURWAY NORTH+EAST+SOUTH+WEST
 
 namespace Aen {
 	enum class SpecialRoom { NONE, ENTRANCE, EXIT, BOSS, ARENA, ITEM };
 	enum class RoomTheme { GENERIC, BONES, VAMP, JUNGLE, PLACEHOLDER };
+
 	/*
 	|/////////|
 	|//  n  //|
 	|//w + e//| Compass lol
 	|//  s  //|
 	|/////////|
-	*/
+			 */
 
 	struct Room {
 	public:
@@ -79,27 +92,11 @@ namespace Aen {
 
 	static std::vector<Room> levelRoom;
 
-
-	//Yes i know i need to do this a better way, i just haven't found out how yet
-	//static std::vector<uint16_t> levelEntrances;
-	//static std::vector<uint16_t> levelExit;
-	//static std::vector<uint16_t> levelArena;
-	//static std::vector<uint16_t> levelBoss;
-	//static std::vector<uint16_t> levelItem;
-
-	//static std::vector<uint16_t> straight;
-	//static std::vector<uint16_t> bend;
-	//static std::vector<uint16_t> threeway;
-	//static std::vector<uint16_t> fourway;
-
-
-
 	static std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< std::uint16_t, std::vector<uint16_t> > > > masterRoomMap;
 
 
-
 	static const int mapSize = 8;
-	static float roomDimension = 1;
+	static float roomDimension = 3;
 	static Room map[mapSize][mapSize];
 
 	static RoomTheme m_mapTheme = RoomTheme::PLACEHOLDER;

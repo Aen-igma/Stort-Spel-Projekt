@@ -25,6 +25,8 @@ namespace Aen
 
 	void ImGuiHandler::LoadLevel(int index)
 	{
+		if(index >= m_levelImporter.GetRoomVector().size())
+			return;
 		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetModelVector().size(); i++)
 		{
 			cout << "Model " << endl;

@@ -2,23 +2,6 @@
 #include"AenirEngine.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
 #include"AenirEngine/ImGuiHandler.h"
-//#include"Level/LevelGenerator.h"
-
-
-//class levelBuilder : public Aen::LevelGenerator {
-//	private:
-//		//Generation storage
-//		std::unordered_map<std::string, Aen::Mesh*> m_meshPtrMap;
-//		//------------------------//																																				
-//		//Room* mptr_map;
-//		void inline initLevelBuilder();
-//	public:
-//		//void setMapPointer(Room* ptr);
-//
-//		
-//		bool CreateRooms(Aen::Entity** storage, uint8_t x, uint8_t y);
-//		levelBuilder();
-//};
 
 
 class Client : public Aen::App {
