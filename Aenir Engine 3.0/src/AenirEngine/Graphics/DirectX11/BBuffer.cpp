@@ -9,7 +9,7 @@ namespace Aen {
     }
 
     BBuffer::BBuffer()
-        :m_rtv(NULL) {
+        :m_rtv(NULL), m_bbTexture(NULL) {
 
         if(FAILED(m_sChain->GetBuffer(0, IID_ID3D11Resource, reinterpret_cast<void**>(m_bbTexture.GetAddressOf()))))
             throw;
