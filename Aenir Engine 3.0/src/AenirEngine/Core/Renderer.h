@@ -59,14 +59,16 @@ namespace Aen {
 		GBuffer m_layerBuffer;
 		BBuffer m_backBuffer;
 		
+		Vec2i m_dispatchGroups;
 		VShader m_opaqueVS;
-		UAView m_output;
+		UAView m_UAVBackBuffer;
 
 		VShader m_postProcessVS;
 		PShader m_postProcessPS;
 		PShader m_combineLayersPS;
 		Sampler m_clampSampler;
 		ILayout m_postLayout;
+		ILayout m_opaqueLayout;
 
 		D3D11_VIEWPORT m_viewPort;
 		DepthMap m_depthMap;

@@ -5,6 +5,14 @@ cbuffer Aen_CB_Transform {
 	float4x4 mdlMat;
 }
 
+cbuffer Aen_DispatchInfo {
+	int2 threadGroups;
+	int2 numThreads;
+	int2 windowSize;
+	uint avarageLights;
+	uint pad;
+};
+
 cbuffer CB_CellShader {
 	float4 baseColor;
 	float4 shadowColor;
@@ -28,11 +36,11 @@ cbuffer CB_CellShader {
 
 cbuffer Aen_CB_Camera {
 	float3 camPos;
-	float pad;
-	float3 camfDir;
 	float pad1;
-	float3 camuDir;
+	float3 camfDir;
 	float pad2;
+	float3 camuDir;
+	float pad3;
 }
 
 static float2 sPoint[9] = {
@@ -59,16 +67,24 @@ Texture2D normalMap		: NORMALMAP		: register(t2);
 Texture2D depthMap		: DEPTHMAP		: register(t3);
 Texture2D glowMap		: GLOWMAP		: register(t4);
 
-RWTexture2D<float4> outputMap : register(u0);
+RWStructuredBuffer<unorm float4> outputMap : register(u0);
 
-[numthreads(1, 1, 1)]
-void main(uint3 DTid : SV_DispatchThreadID) {
+struct CS_Input {
+	uint3 gId : SV_GroupID;
+	uint3 gtId : SV_GroupThreadID;
+	uint3 dtId : SV_DispatchThreadID;
+	uint gIndex : SV_GroupIndex;
+};
 
-	float4 diffuse = diffuseMap.Sample(borderSampler, uv);
-	float3 normal = normalMap.Sample(borderSampler, uv).rgb;
-	float3 worldPos = posMap.Sample(borderSampler, uv).rgb;
-	float4 depth = depthMap.Sample(borderSampler, uv);
-	float4 glow = glowMap.Sample(borderSampler, uv);
+[numthreads(32, 32, 1)]
+void main(CS_Input input) {
+
+	uint2 uv = input.dtId.xy;
+	float4 diffuse =	diffuseMap[uv];
+	float3 normal =		normalMap[uv];
+	float3 worldPos =	posMap[uv];
+	float4 depth =		depthMap[uv];
+	float4 glow =		glowMap[uv];
 
 	float2 sobelX = 0.f;
 	float2 sobelY = 0.f;
@@ -79,10 +95,10 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	float3 dotNP = dot(normal, cToP);
 
 	for(uint i = 0; i < 9; i++) {
-		float2 points = sPoint[i] * depth.x * (1.f - abs(dotNP));
-		float3 sn = normalMap.Sample(borderSampler, uv + points * innerEdgeThickness).xyz * 2.f - 1.f;
+		float2 points = sPoint[i] * depth.r * (1.f - abs(dotNP));
+		float3 sn = normalMap[uv + points * innerEdgeThickness].xyz * 2.f - 1.f;
 		sn = normalize(mul(sn, (float3x3)vMat)).xyz;
-		float sd = depthMap.Sample(borderSampler, uv + points * outerEdgeThickness).x;
+		float sd = depthMap[uv + points * outerEdgeThickness].x;
 		float2 kernel = float2(hRow[i], vRow[i]);
 		sobelX += sn.x * kernel;
 		sobelY += sn.y * kernel;
@@ -97,5 +113,5 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 
 	float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
 
-	outputMap;
+	outputMap[uv.x + windowSize.x * uv.y] = output;
 }

@@ -41,7 +41,9 @@ namespace Aen {
 			if(!m_lightCullCS.Create(L"LightCullCS.cso"))
 				throw;
 
+		m_UAVBackBuffer.Create(m_backBuffer);
 		m_postLayout.Create(m_postProcessVS);
+		m_opaqueLayout.Create(m_opaqueVS);
 
 		m_dispatchInfo.GetData().windowSize.x = m_window.GetSize().x;
 		m_dispatchInfo.GetData().windowSize.y = m_window.GetSize().y;
@@ -51,6 +53,9 @@ namespace Aen {
 		m_dispatchInfo.GetData().threadGroups.y = (int)std::ceil((float)m_window.GetSize().y / 16.f);
 		m_dispatchInfo.GetData().avarageLights = m_avarageLights;
 		m_dispatchInfo.UpdateBuffer();
+
+		m_dispatchGroups.x = (int)std::ceil((float)m_window.GetSize().x / 32.f);
+		m_dispatchGroups.y = (int)std::ceil((float)m_window.GetSize().y / 32.f);
 
 		uint32_t size = m_dispatchInfo.GetData().numThreads.x * m_dispatchInfo.GetData().numThreads.y;
 		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
@@ -144,7 +149,7 @@ namespace Aen {
 
 		// Combine Layers Pass
 
-		RenderSystem::SetInputLayout(m_postLayout);
+		/*RenderSystem::SetInputLayout(m_postLayout);
 		RenderSystem::UnBindRenderTargets(1u);
 
 		m_cbBGColor.GetData() = GlobalSettings::GetBGColor();
@@ -156,11 +161,11 @@ namespace Aen {
 		RenderSystem::BindSamplers<PShader>(0u, m_clampSampler);
 		RenderSystem::BindShaderResourceView<PShader>(0u, m_layerBuffer);
 
-		m_screenQuad.Draw();
+		m_screenQuad.Draw();*/
 
 		// Post Process pass
 
-		RenderSystem::UnBindShaderResources<PShader>(0u, m_layerBuffer.GetCount());
+		/*RenderSystem::UnBindShaderResources<PShader>(0u, m_layerBuffer.GetCount());
 		RenderSystem::UnBindRenderTargets(m_postProcessBuffer.GetCount());
 
 		RenderSystem::BindRenderTargetView(m_backBuffer);
@@ -180,7 +185,7 @@ namespace Aen {
 		m_cbTransform.BindBuffer<CShader>(1u);
 		#endif
 
-		m_screenQuad.Draw();
+		m_screenQuad.Draw();*/
 
 		// Present
 		RenderSystem::Present();

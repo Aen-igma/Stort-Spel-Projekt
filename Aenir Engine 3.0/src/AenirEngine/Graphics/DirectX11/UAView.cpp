@@ -92,5 +92,4 @@ namespace Aen {
 		if(FAILED(m_device->CreateUnorderedAccessView(bBuffer.m_bbTexture.Get(), NULL, m_uav.GetAddressOf())))
 			throw;
 	}
-
 }
