@@ -26,7 +26,8 @@ namespace Aen {
 	};
 
 	struct KeyFrameData {
-		Vec3f position, rotation;
+		Mat4f position;
+		Mat4f rotation;
 		float timeStamp;
 	};
 
@@ -38,7 +39,7 @@ namespace Aen {
 		AssimpData m_RootNode;
 		//std::map<std::string, BoneInfo> m_BoneInfoMap;
 		std::vector<Bones> m_boneArray;
-		KeyFrameData m_keyFrames;
+		std::vector<KeyFrameData> m_keyFrames;
 	public:
 		Animation();
 		Animation(const std::string& animationPath);

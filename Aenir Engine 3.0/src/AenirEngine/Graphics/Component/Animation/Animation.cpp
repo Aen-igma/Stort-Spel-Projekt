@@ -108,8 +108,8 @@ namespace Aen {
 					bone.parentID = j;
 			}
 			//OutputDebugString((nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mParent[0].mParent[0].mName).C_Str());
-			/*if (bone.boneID == 0)
-				bone.parentID = -1;*/
+			if (bone.boneID == 0)
+				bone.parentID = -1;
 
 			bone.offsetMatrix.a11 = mesh->mBones[i]->mOffsetMatrix.a1; bone.offsetMatrix.a12 = mesh->mBones[i]->mOffsetMatrix.a2; 
 			bone.offsetMatrix.a13 = mesh->mBones[i]->mOffsetMatrix.a3; bone.offsetMatrix.a14 = mesh->mBones[i]->mOffsetMatrix.a4;
@@ -136,29 +136,84 @@ namespace Aen {
 		}
 	}
 
-	void AnimProcess() {
+	void AnimProcess(std::vector<KeyFrameData>& keyFrameData) {
 		if (animation->mNumAnimations == 0) {
 			OutputDebugString("No Animations!");
 			return;
 		}
+		KeyFrameData data;
 		for (int i = 0; i < animation->mAnimations[0]->mNumChannels; i++) {
-			ai_nodes_anim.emplace_back(animation->mAnimations[0]->mChannels[i]);
-			Vec4f test;
-			aiQuaternion orient;															// Try to find out if this is the correct way of getting rotaions from the animation keyframes
-																							// Also, try to find out how to use quaternions or conversion
-			test.x = animation->mAnimations[0]->mChannels[i]->mPositionKeys[11].mValue.x;
-			test.y = animation->mAnimations[0]->mChannels[i]->mPositionKeys[11].mValue.y;
-			test.z = animation->mAnimations[0]->mChannels[i]->mPositionKeys[11].mValue.z;
-			//orient.w = animation->mAnimations[0]->mChannels[i]->mPositionKeys[20].mValue.w;
-			OutputDebugString(std::to_string(test.x).c_str());
-			OutputDebugString(" : ");		
-			OutputDebugString(std::to_string(test.y).c_str());
-			OutputDebugString(" : ");		
-			OutputDebugString(std::to_string(test.z).c_str());
-			/*OutputDebugString(" : ");		
-			OutputDebugString(std::to_string(orient.w).c_str());*/
+			//ai_nodes_anim.emplace_back(animation->mAnimations[0]->mChannels[i]);
+
+			for (int j = 0; j < animation->mAnimations[0]->mChannels[i]->mNumRotationKeys; j++) {
+				float timeS = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime;
+				Mat4f rotation;
+				Vec3f translation;
+				aiQuaternion orient;
+				orient = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mValue;
+				rotation = MatQuaternion(orient.x, orient.y, orient.z, orient.w);
+				translation.x = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.x;
+				translation.y = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.y;
+				translation.z = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.z;
+
+				data.rotation = rotation;
+				data.position = translation;
+				data.timeStamp = timeS;
+				
+				keyFrameData.emplace_back(data);
+			}
+			
+			OutputDebugString((animation->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
+			
+		}
+		for (int u = 0; u < 21; u++){
+			OutputDebugString(std::to_string(keyFrameData[u].timeStamp).c_str());
+			OutputDebugString("\n");					  
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a11).c_str());
+			OutputDebugString(" : ");					  
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a12).c_str());
+			OutputDebugString(" : ");					  
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a13).c_str());
+			OutputDebugString(" : ");					  
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a14).c_str());
+			OutputDebugString("\n");
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a21).c_str());
+			OutputDebugString(" : ");								   
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a22).c_str());
+			OutputDebugString(" : ");								   
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a23).c_str());
+			OutputDebugString(" : ");								   
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a24).c_str());
+			OutputDebugString("\n");
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a31).c_str());
+			OutputDebugString(" : ");								   
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a32).c_str());
+			OutputDebugString(" : ");								   
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a33).c_str());
+			OutputDebugString(" : ");								   
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a34).c_str());
+			OutputDebugString("\n");
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a41).c_str());
+			OutputDebugString(" : ");								   
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a42).c_str());
+			OutputDebugString(" : ");								   
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a43).c_str());
+			OutputDebugString(" : ");								   
+			OutputDebugString(std::to_string(keyFrameData[u].rotation.a44).c_str());
 			OutputDebugString("\n");
 		}
+		//for (int u = 0; u < keyFrameData.size(); u++) {
+		//	/*OutputDebugString(" : ");
+		//	OutputDebugString(std::to_string(keyFrameData[1].timeStamp).c_str());*/
+		//	/*OutputDebugString(" : ");
+		//	OutputDebugString(std::to_string(keyFrameData[2].timeStamp).c_str());*/
+		//	/*OutputDebugString(" : ");
+		//	OutputDebugString(std::to_string(keyFrameData[3].timeStamp).c_str());*/
+		//	/*OutputDebugString(" : ");
+		//	OutputDebugString(std::to_string(orient.w).c_str());*/
+		//	OutputDebugString("\n");
+
+		//}
 	}
 
 	//void GetBoneOffsetMatrix(const std::vector<aiBone*>& boneArray)
@@ -177,7 +232,7 @@ namespace Aen {
 
 
 		RecursiveNodeProcess(animation->mRootNode);
-		AnimProcess();
+		AnimProcess(m_keyFrames);
 		AssignBones(animation, ai_nodes, m_boneArray);
 		TransferNodeBoneData(ai_node_bones, m_boneArray, animation->mMeshes[0]);
 		MeshBoneData(animation->mMeshes[0], ai_bone_data);
