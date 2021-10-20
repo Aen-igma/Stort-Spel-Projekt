@@ -5,12 +5,9 @@
 namespace Aen {
 
 	struct ShaderModelDesc {
-		std::wstring PSDirPass1;
-		std::wstring PSDirPass2;
-		std::wstring VSDirPass1;
-		std::wstring VSDirPass2;
-		SamplerType samplerTypePass1 = SamplerType::NONE;
-		SamplerType samplerTypePass2 = SamplerType::NONE;
+		std::wstring PSDir;
+		std::wstring CSDir;
+		SamplerType samplerType = SamplerType::NONE;
 		std::string bufferName;
 	};
 
@@ -27,24 +24,15 @@ namespace Aen {
 
 		private:
 		std::string m_bufferName;
-
-		VShader m_VShaderPass1;
-		PShader m_PShaderPass1;
-		ILayout m_iLayoutPass1;
-		Reflection m_VSReflectPass1;
-		Reflection m_PSReflectPass1;
-		PSampler m_samplerDataPass1;
-		uint32_t m_slotsPass1[18];
-
-		VShader m_VShaderPass2;
-		PShader m_PShaderPass2;
-		ILayout m_iLayoutPass2;
-		Reflection m_VSReflectPass2;
-		Reflection m_PSReflectPass2;
-		PSampler m_samplerDataPass2;
-		uint32_t m_slotsPass2[18];
-
+		
+		PShader m_PShader;
+		CShader m_CShader;
 		GBuffer m_gBuffer;
+		Reflection m_PSReflect;
+		Reflection m_CSReflect;
+		PSampler m_samplerData;
+		uint32_t m_slots[17];
+
 		Window& m_window;
 
 		~ShaderModel() = default;

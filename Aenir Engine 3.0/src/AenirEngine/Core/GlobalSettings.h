@@ -35,9 +35,7 @@ namespace Aen {
 		static ImGuiHandler*& GetImGuiHandler() {
 			return mp_guiHandler;
 		}
-
-
-
+		
 		friend class GameLoop;
 		friend class Renderer;
 
@@ -53,21 +51,16 @@ namespace Aen {
 			m_pDefaultShader = &Resource::CreateShader("CellShader", window);
 
 			ShaderModelDesc SMDesc;
-			SMDesc.VSDirPass1 = AEN_OUTPUT_DIR_WSTR(L"CellShaderVS.cso");
-			SMDesc.PSDirPass1 = AEN_OUTPUT_DIR_WSTR(L"CellShaderPS.cso");
-			SMDesc.samplerTypePass1 = SamplerType::WRAP;
-			SMDesc.VSDirPass2 = AEN_OUTPUT_DIR_WSTR(L"CellPostVS.cso");
-			SMDesc.PSDirPass2 = AEN_OUTPUT_DIR_WSTR(L"CellPostPS.cso");
-			SMDesc.samplerTypePass2 = SamplerType::CLAMP;
+			SMDesc.PSDir = AEN_OUTPUT_DIR_WSTR(L"CellShaderPS.cso");
+			SMDesc.CSDir = AEN_OUTPUT_DIR_WSTR(L"CellShaderCS.cso");
+			SMDesc.samplerType = SamplerType::CLAMP;
 			SMDesc.bufferName = "CB_CellShader";
 
 			if(!m_pDefaultShader->Create(SMDesc)) {
-				SMDesc.VSDirPass1 = L"CellShaderVS.cso";
-				SMDesc.PSDirPass1 = L"CellShaderPS.cso";
-				SMDesc.samplerTypePass1 = SamplerType::WRAP;
-				SMDesc.VSDirPass2 = L"CellPostVS.cso";
-				SMDesc.PSDirPass2 = L"CellPostPS.cso";
-				SMDesc.samplerTypePass2 = SamplerType::CLAMP;
+				SMDesc.PSDir = L"CellShaderPS.cso";
+				SMDesc.CSDir = L"CellShaderCS.cso";
+				SMDesc.samplerType = SamplerType::CLAMP;
+				SMDesc.bufferName = "CB_CellShader";
 				SMDesc.bufferName = "CB_CellShader";
 
 				if(!m_pDefaultShader->Create(SMDesc))

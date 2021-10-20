@@ -59,6 +59,9 @@ namespace Aen {
 		GBuffer m_layerBuffer;
 		BBuffer m_backBuffer;
 		
+		VShader m_opaqueVS;
+		UAView m_output;
+
 		VShader m_postProcessVS;
 		PShader m_postProcessPS;
 		PShader m_combineLayersPS;
