@@ -94,7 +94,7 @@ namespace Aen {
             dpi = static_cast<FLOAT>(GetDpiForWindow(window.m_hwnd));
             D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), dpi.x, dpi.y);
 
-            ASSERT_HR(m_factory.Get()->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D));
+            //ASSERT_HR(m_factory.Get()->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D));
         }
 
         return SUCCEEDED(hr);
