@@ -104,8 +104,11 @@ namespace Aen {
 			bone.boneName = nodeBoneArray[i]->mName.data;
 			bone.boneID = i;
 			for (size_t j = 0; j < nodeBoneArray.size(); j++) {
-				if (nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mParent[0].mParent[0].mName.data == nodeBoneArray[j]->mName.data)
+				if (nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mParent[0].mParent[0].mName.data == nodeBoneArray[j]->mName.data) {
 					bone.parentID = j;
+					//bone.transformRelParent = nodeBoneArray[i]->mTransformation;					// Do we need this? If so, how do we get the transform..
+				}
+					
 			}
 			//OutputDebugString((nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mParent[0].mParent[0].mName).C_Str());
 			if (bone.boneID == 0)

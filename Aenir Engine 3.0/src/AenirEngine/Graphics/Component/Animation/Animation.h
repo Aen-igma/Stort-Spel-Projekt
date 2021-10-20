@@ -22,11 +22,12 @@ namespace Aen {
 	struct Bones {
 		int boneID, parentID;
 		std::string boneName;
-		Mat4f offsetMatrix;
+		Mat4f offsetMatrix;			// Inverse bind pose
+		//Mat4f transformRelParent;
 	};
 
 	struct KeyFrameData {
-		Mat4f position;
+		Vec3f position;
 		Mat4f rotation;
 		float timeStamp;
 	};
@@ -35,7 +36,6 @@ namespace Aen {
 	private:
 		float m_Duration;
 		int m_TicksPerSecond;
-		//std::vector<Bone> m_Bones;
 		AssimpData m_RootNode;
 		//std::map<std::string, BoneInfo> m_BoneInfoMap;
 		std::vector<Bones> m_boneArray;
