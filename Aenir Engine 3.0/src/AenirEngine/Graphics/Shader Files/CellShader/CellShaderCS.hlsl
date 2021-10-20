@@ -5,14 +5,6 @@ cbuffer Aen_CB_Transform {
 	float4x4 mdlMat;
 }
 
-cbuffer Aen_DispatchInfo {
-	int2 threadGroups;
-	int2 numThreads;
-	int2 windowSize;
-	uint avarageLights;
-	uint pad;
-};
-
 cbuffer CB_CellShader {
 	float4 baseColor;
 	float4 shadowColor;
@@ -36,11 +28,11 @@ cbuffer CB_CellShader {
 
 cbuffer Aen_CB_Camera {
 	float3 camPos;
-	float pad1;
+	float pad0;
 	float3 camfDir;
-	float pad2;
+	float pad1;
 	float3 camuDir;
-	float pad3;
+	float pad2;
 }
 
 static float2 sPoint[9] = {
@@ -67,7 +59,7 @@ Texture2D normalMap		: NORMALMAP		: register(t2);
 Texture2D depthMap		: DEPTHMAP		: register(t3);
 Texture2D glowMap		: GLOWMAP		: register(t4);
 
-RWStructuredBuffer<unorm float4> outputMap : register(u0);
+RWTexture2D<unorm float4> outputMap;
 
 struct CS_Input {
 	uint3 gId : SV_GroupID;
@@ -85,6 +77,9 @@ void main(CS_Input input) {
 	float3 worldPos =	posMap[uv];
 	float4 depth =		depthMap[uv];
 	float4 glow =		glowMap[uv];
+
+	if(length(diffuse.xyz) <= 0.f)
+		return;
 
 	float2 sobelX = 0.f;
 	float2 sobelY = 0.f;
@@ -113,5 +108,5 @@ void main(CS_Input input) {
 
 	float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
 
-	outputMap[uv.x + windowSize.x * uv.y] = output;
+	outputMap[uv] = output;
 }

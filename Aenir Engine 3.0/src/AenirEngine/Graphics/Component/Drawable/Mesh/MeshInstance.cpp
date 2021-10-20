@@ -80,8 +80,7 @@ namespace Aen {
 				uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
 				Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
 				if(pMaterial) {
-
-					RenderSystem::UnBindShaderResources<PShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
+					
 					RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 
 					RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
@@ -91,6 +90,7 @@ namespace Aen {
 
 					for(UINT k = 0; k < 4; k++)
 						if(pMaterial->m_textures[k] && slots[k] != UINT_MAX) {
+							RenderSystem::UnBindShaderResources<PShader>(slots[k], 1u);
 							RenderSystem::BindShaderResourceView<PShader>(slots[k], pMaterial->m_textures[k]->m_shaderResource);
 							renderer.m_cbUseTexture.GetData()[k] = (int)true;
 						} else
@@ -110,7 +110,6 @@ namespace Aen {
 
 					RenderSystem::BindSamplers<PShader>(pMaterial->m_pShaderModel->m_samplerData.first, pMaterial->m_pShaderModel->m_samplerData.second);
 
-					RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
 					RenderSystem::ClearRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, Color(0.f, 0.f, 0.f, 0.f));
 					RenderSystem::BindRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, renderer.m_depthMap);
 
@@ -121,12 +120,15 @@ namespace Aen {
 
 					// Per Object Post Process Pass
 
+					RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
+					RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
+					RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
 					if(slots[12] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<CShader>(			slots[12]	);
 					if(slots[13] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<CShader>(		slots[13]	);
 					if(slots[14] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<CShader>(			slots[14]	);
 					if(slots[15] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<CShader>(		slots[15]	);
 					if(slots[16] != UINT_MAX)	renderer.m_sbLight.BindSRV<CShader>(				slots[16]	);
-					if(slots[17] != UINT_MAX)	renderer.m_dispatchInfo.BindBuffer<CShader>(		slots[17]	);
+					if(slots[17] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<CShader>(			slots[17]	);
 
 					RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer);
 					RenderSystem::BindUnOrderedAccessView(0u, renderer.m_UAVBackBuffer);
@@ -136,52 +138,8 @@ namespace Aen {
 
 					RenderSystem::UnBindShader<CShader>();
 					RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
-					RenderSystem::UnBindShaderResources<CShader>(0u, 3u);
+					RenderSystem::UnBindShaderResources<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
 				}
-
-
-
-				/*if(pMaterial) {
-
-					RenderSystem::BindShader<VShader>(pMaterial->m_pShaderModel->m_VShaderPass2);
-					RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShaderPass2);
-
-					std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescShaderModelVS = pMaterial->m_pShaderModel->m_VSReflectPass2.GetBindDescByName(pMaterial->m_pShaderModel->m_bufferName);
-					std::optional<D3D11_SHADER_INPUT_BIND_DESC> bDescShaderModelPS = pMaterial->m_pShaderModel->m_PSReflectPass2.GetBindDescByName(pMaterial->m_pShaderModel->m_bufferName);
-
-					if(bDescShaderModelVS) pMaterial->m_dBuffer.BindBuffer<PShader>(bDescShaderModelVS.value().BindPoint);
-					if(bDescShaderModelPS) pMaterial->m_dBuffer.BindBuffer<PShader>(bDescShaderModelPS.value().BindPoint);
-
-					uint32_t* slots = pMaterial->m_pShaderModel->m_slotsPass2;
-
-					if(slots[0] != UINT_MAX) renderer.m_cbTransform.BindBuffer<VShader>(slots[0]);
-					if(slots[1] != UINT_MAX) renderer.m_cbLightCount.BindBuffer<VShader>(slots[1]);
-					if(slots[2] != UINT_MAX) renderer.m_cbCamera.BindBuffer<VShader>(slots[2]);
-					if(slots[3] != UINT_MAX) renderer.m_cbUseTexture.BindBuffer<VShader>(slots[3]);
-					if(slots[4] != UINT_MAX) renderer.m_sbLight.BindSRV<VShader>(slots[4]);
-
-					if(slots[5] != UINT_MAX) renderer.m_cbTransform.BindBuffer<PShader>(slots[5]);
-					if(slots[6] != UINT_MAX) renderer.m_cbLightCount.BindBuffer<PShader>(slots[6]);
-					if(slots[7] != UINT_MAX) renderer.m_cbCamera.BindBuffer<PShader>(slots[7]);
-					if(slots[8] != UINT_MAX) renderer.m_cbUseTexture.BindBuffer<PShader>(slots[8]);
-					if(slots[9] != UINT_MAX) renderer.m_sbLight.BindSRV<PShader>(slots[9]);
-
-					if(slots[14] != UINT_MAX) pMaterial->m_dBuffer.BindBuffer<PShader>(slots[14]);
-					if(slots[15] != UINT_MAX) pMaterial->m_dBuffer.BindBuffer<PShader>(slots[15]);
-
-					RenderSystem::BindSamplers<PShader>(pMaterial->m_pShaderModel->m_samplerDataPass2.first, pMaterial->m_pShaderModel->m_samplerDataPass2.second);
-					RenderSystem::SetInputLayout(pMaterial->m_pShaderModel->m_iLayoutPass2);
-					RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
-					RenderSystem::BindShaderResourceView<PShader>(0, pMaterial->m_pShaderModel->m_gBuffer);
-
-					if(slots[16] != UINT_MAX) RenderSystem::BindShaderResourceView<PShader>(slots[16], renderer.m_lGrid);
-					if(slots[17] != UINT_MAX) RenderSystem::BindShaderResourceView<PShader>(slots[17], renderer.m_lIndex);
-				}
-
-				RenderSystem::BindRenderTargetView(renderer.m_layerBuffer.GetRtv(layer), renderer.m_depthMap);
-				RenderSystem::SetDepthStencilState(renderer.m_maskStencil, 0xFF);
-
-				renderer.m_screenQuad.Draw();*/
 			}
 		}
 	}

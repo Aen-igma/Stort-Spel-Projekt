@@ -95,6 +95,7 @@ void Client::Start() {
 	m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
 	m_cube->SetPos(0.f, 8.f, 10.f);
 	m_cube->SetScale(20.f, 20.f, 1.f);
+	m_cube->SetRenderLayer(-1);
 
 	// ----------------------------- Load EmissionCube -------------------------------- //
 
