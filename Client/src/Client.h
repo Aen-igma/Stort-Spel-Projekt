@@ -24,8 +24,7 @@ class Client : public Aen::App {
 	Aen::Entity m_dLight;
 	Aen::Entity m_spotLight;
 	Aen::Entity m_plane;
-
-	
+		
 	Aen::Mesh* m_meshcube;
 
 	//Generation storage

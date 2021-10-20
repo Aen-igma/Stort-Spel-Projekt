@@ -9,8 +9,9 @@
 #include <vector>
 #include <cstdint>
 #include <unordered_map>
+#include "Core/GlobalSettings.h"
+#include "AenDefines.h"
 #include "RandomNumberGenerator.h"
-
 #include "Graphics/Component/Entity.h"
 #include "Graphics/Component/EntityHandler.h"
 
@@ -101,29 +102,29 @@ namespace Aen {
 
 	static RoomTheme m_mapTheme = RoomTheme::PLACEHOLDER;
 
-
 	
-	class LevelGenerator {
+	class AEN_DECLSPEC LevelGenerator {
 	private:
-		static Room RNGRoomFromVector(std::vector<uint16_t>* roomVec);
-		static Room RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex);
-		static void AlignRoom(Room* room, const uint16_t& connectionDir, unsigned char& type);
+		Room RNGRoomFromVector(std::vector<uint16_t>* roomVec);
+		Room RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex);
+		void AlignRoom(Room* room, const uint16_t& connectionDir, unsigned char& type);
 
 	protected:
-		static std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
+		std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
 	public:
-		static Room* GenerateLevel();
+		Room* GenerateLevel();
 
-		static Room* GenerationTestingFunction();
+		Room* GenerationTestingFunction();
 
-		static void AddRoomToGeneration(Room* room);
+		void AddRoomToGeneration(Room* room);
 
-		static const float& GetRoomDimension();
-		static void SetRoomDimension(float dimension);
+		void SetRoomDimension(float dimension);
 
-		static void GetRoomPos(const uint16_t& x, const uint16_t& y, float* xf, float* yf);
-		static uint16_t GetClosestRoomIndex(const float& xf, const float& yf);
+		const float& GetRoomDimension();
+		void GetRoomPos(const uint16_t& x, const uint16_t& y, float* xf, float* yf);
 
-		static const Room* GetMapPointer();
+		uint16_t GetClosestRoomIndex(const float& xf, const float& yf);
+
+		const Room* GetMapPointer();
 	};
 }

@@ -44,7 +44,6 @@ void Client::Start() {
 
 	// ----------------------------- Load Meshes -------------------------------- //
 
-	//m_buildLevel = new levelBuilder();
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
 	//Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
