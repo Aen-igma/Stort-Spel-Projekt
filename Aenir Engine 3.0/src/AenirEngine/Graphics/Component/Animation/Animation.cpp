@@ -130,7 +130,7 @@ namespace Aen {
 		}
 	}
 
-	void AnimProcess(std::vector<KeyFrameData>& keyFrameData) {
+	void AnimProcess(std::unordered_map<std::string, KeyFrameData>& keyFrameData) {
 		if (animation->mNumAnimations == 0) {
 			OutputDebugString("No Animations!");
 			return;
@@ -139,8 +139,23 @@ namespace Aen {
 		for (int i = 0; i < animation->mAnimations[0]->mNumChannels; i++) {
 			//ai_nodes_anim.emplace_back(animation->mAnimations[0]->mChannels[i]);
 
+			// Position key data
+			for (int j = 0; j < animation->mAnimations[0]->mChannels[i]->mNumPositionKeys; j++) {
+				data.timeStampPos.emplace_back(animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mTime);
+				Vec3f posValues;
+				posValues.x = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.x;
+				posValues.y = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.y;
+				posValues.z = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.z;
+				data.position.emplace_back(posValues);
+			}
+			
+			// Rotation key data
 			for (int j = 0; j < animation->mAnimations[0]->mChannels[i]->mNumRotationKeys; j++) {			// have a "vector" of each key - posiiton timestamps and mValue, same with rotation
-				float timeS = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime;
+				data.timeStampRot.emplace_back(animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime);
+				aiQuaternion orient;
+				orient = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mValue;
+				data.rotation.emplace_back(MatQuaternion(orient.x, orient.y, orient.z, orient.w));
+				/*float timeS = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime;
 				Mat4f rotation;
 				Vec3f translation;
 				aiQuaternion orient;
@@ -154,13 +169,15 @@ namespace Aen {
 				data.position = translation;
 				data.timeStamp = timeS;
 				
-				keyFrameData.emplace_back(data);
+				keyFrameData.emplace_back(data);*/
 			}																							// think about how to access the info, save for each channel name?
 			
-			OutputDebugString((animation->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
+			keyFrameData[animation->mAnimations[0]->mChannels[i]->mNodeName.C_Str()] = data;
+
+			//OutputDebugString((animation->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
 			
 		}
-		for (int u = 0; u < 21; u++){
+		/*for (int u = 0; u < keyFrameData.size(); u++){
 			OutputDebugString(std::to_string(keyFrameData[u].timeStamp).c_str());
 			OutputDebugString("\n");					  
 			OutputDebugString(std::to_string(keyFrameData[u].rotation.a11).c_str());
@@ -195,7 +212,7 @@ namespace Aen {
 			OutputDebugString(" : ");								   
 			OutputDebugString(std::to_string(keyFrameData[u].rotation.a44).c_str());
 			OutputDebugString("\n");
-		}
+		}*/
 	}
 
 	//void GetBoneOffsetMatrix(const std::vector<aiBone*>& boneArray)

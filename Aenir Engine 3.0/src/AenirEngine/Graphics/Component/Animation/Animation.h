@@ -27,9 +27,11 @@ namespace Aen {
 	};
 
 	struct KeyFrameData {
-		Vec3f position;
-		Mat4f rotation;
-		float timeStamp;
+		std::vector<float> timeStampPos;
+		std::vector<float> timeStampRot;
+
+		std::vector<Vec3f> position;
+		std::vector<Mat4f> rotation;
 	};
 
 	class AEN_DECLSPEC Animation {
@@ -39,7 +41,7 @@ namespace Aen {
 		AssimpData m_RootNode;
 		//std::map<std::string, BoneInfo> m_BoneInfoMap;
 		std::vector<Bones> m_boneArray;
-		std::vector<KeyFrameData> m_keyFrames;
+		std::unordered_map<std::string, KeyFrameData> m_keyFrames;
 		Mat4f globalInverseTransformMatrix;
 		UINT boneCount;
 	public:
