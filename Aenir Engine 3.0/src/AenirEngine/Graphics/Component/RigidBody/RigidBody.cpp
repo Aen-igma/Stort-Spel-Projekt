@@ -222,10 +222,10 @@ namespace Aen {
 
 		px::PxTransform t;
 		ZeroMemory(&t, sizeof(px::PxTransform));
-		if(m_rigidType == RigidType::DYNAMIC) {
+		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody) {
 			t = mp_DynamicBody->getGlobalPose();
 			return MatQuaternion(t.q.x, t.q.y, t.q.z, t.q.w) * MatTranslate(t.p.x, t.p.y, t.p.z);
-		} else {
+		} else if(mp_StaticBody) {
 			t = mp_StaticBody->getGlobalPose();
 			return MatTranslate(t.p.x, t.p.y, t.p.z);
 		}
@@ -236,9 +236,9 @@ namespace Aen {
 
 		px::PxTransform t(pos.x, pos.y, pos. z);
 
-		if(m_rigidType == RigidType::DYNAMIC)
+		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody)
 			mp_DynamicBody->setGlobalPose(t);
-		else
+		else if(mp_StaticBody)
 			mp_StaticBody->setGlobalPose(t);
 	}
 
@@ -246,9 +246,9 @@ namespace Aen {
 
 		px::PxTransform t(px::PxVec3(x, y, z));
 
-		if(m_rigidType == RigidType::DYNAMIC)
+		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody)
 			mp_DynamicBody->setGlobalPose(t);
-		else
+		else if(mp_StaticBody)
 			mp_StaticBody->setGlobalPose(t);
 	}
 
