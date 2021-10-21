@@ -207,11 +207,14 @@ void Gameplay::Update(const float& deltaTime)
 	}
 
 	// ------------------------------------- States -------------------------------------- //
-	if (Aen::Input::KeyDown(Aen::Key::NUMPAD0))
+	if (Aen::Input::KeyDown(Aen::Key::ENTER))
 	{
 		State::SetState(States::Main_Menu);
 	}
-	cout << "gameplay\n";
+
+	cout << "Press Enter to Change to Main Menu\n";
+
+	//cout << m_camera.GetRot().y << endl;
 }
 
 void Gameplay::Initialize()
@@ -223,7 +226,7 @@ void Gameplay::Initialize()
 	printf("Loading: ", q);
 	m_camera.AddComponent<Aen::Camera>();
 	m_camera.GetComponent<Aen::Camera>().SetCameraPerspective(70.f, m_Window.GetAspectRatio(), 0.01f, 100.f);
-	m_camera.SetPos(0.f, 0.f, -2.f);
+	m_camera.SetPos(0.f, 2.f, 0.f);
 
 	Aen::GlobalSettings::SetMainCamera(m_camera);
 
@@ -327,6 +330,6 @@ void Gameplay::Initialize()
 	}
 
 	Aen::Input::ToggleRawMouse(false);
-	cout << "Press To Continue\n";
+	cout << "Press Enter To Continue\n";
 }
 

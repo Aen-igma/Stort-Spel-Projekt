@@ -11,7 +11,7 @@ Loadscreen::~Loadscreen()
 
 void Loadscreen::Update(const float& deltaTime)
 {
-	if (Aen::Input::KeyDown(Aen::Key::NUMPAD0))
+	if (Aen::Input::KeyDown(Aen::Key::ENTER))
 	{
 		State::SetState(States::Gameplay);
 	}
