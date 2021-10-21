@@ -61,11 +61,11 @@ namespace Aen {
 
 		// Destroy imGui
 		delete Aen::GlobalSettings::GetImGuiHandler();
-
-		PhysXService::GetInstance()->ClosePhysics();
 		
 		Resource::Destroy();
+		EntityHandler::Destroy();
 		GCore::Concealed::Release();
+		PhysXService::GetInstance()->ClosePhysics();
 		delete m_app;
 		delete m_renderer;
 	}
