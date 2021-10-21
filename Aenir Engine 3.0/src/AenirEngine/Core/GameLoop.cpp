@@ -18,8 +18,9 @@ namespace Aen {
 			exit(-1);
 
 		// Initialize physX
-		PhysXService::SetInstance(&m_PhysX);
-		PhysXService::GetInstance()->InitPhysics(100, 981);
+		//PhysXService::SetInstance(&m_PhysX);
+		//PhysXService::GetInstance()->InitPhysics(100, 981);
+		PhysicsHandler::Initialize(100, 981);
 
 		GlobalSettings::Initialize(m_app->m_window);
 
@@ -43,7 +44,8 @@ namespace Aen {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
-				PhysXService::GetInstance()->RunPhysics(m_deltaTime.count());
+
+				PhysicsHandler::Update(m_deltaTime.count());
 				m_renderer->Render(); // VSync
 			}
 		}
@@ -54,7 +56,7 @@ namespace Aen {
 		Resource::Destroy();
 		EntityHandler::Destroy();
 		GCore::Concealed::Release();
-		PhysXService::GetInstance()->ClosePhysics();
+		PhysicsHandler::Destroy;
 		delete m_app;
 		delete m_renderer;
 	}

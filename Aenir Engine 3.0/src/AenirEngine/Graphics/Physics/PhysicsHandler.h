@@ -27,6 +27,10 @@ namespace Aen {
             mp_PhysXService->InitPhysics(toleranceLength, toleranceSpeed);
         };
 
+        static void Update(const float& deltaTime) {
+            mp_PhysXService->RunPhysics(deltaTime);
+        }
+
         static void Destroy() {
             if(mp_PhysXService) {
                 delete mp_PhysXService;

@@ -27,7 +27,7 @@ namespace Aen {
     }
 
     const Vec3f Camera::GetRight() {
-        return m_upVec % m_forwardVec;
+        return (m_upVec % m_forwardVec).Normalized();
     }
 
     const Mat4f Camera::GetVPMatrix() const {
