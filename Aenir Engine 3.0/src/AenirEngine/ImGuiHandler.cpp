@@ -78,7 +78,7 @@ namespace Aen
 		string matName = "Material" + to_string(m_entityCount);
 		string texName = "Texture" + to_string(m_entityCount);
 
-		Aen::Entity* entity = AEN_NEW(Aen::Entity);
+		Aen::Entity* entity = &mp_entityHandlerPtr->CreateEntity();
 		Aen::Mesh& mesh = Aen::Resource::CreateMesh(model.name + std::to_string(m_entityCount));
 		mesh.Load(AEN_RESOURCE_DIR(model.mesh));
 
@@ -93,13 +93,17 @@ namespace Aen
 		size_t id = entity->GetID();
 		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
 
+		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);         
+		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);         
+		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
+
 		AddModel(entity);
 	}
 
 
 	void ImGuiHandler::AddPointLight(AenIF::Light& input)
 	{
-		Aen::Entity* light = AEN_NEW(Aen::Entity);
+		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
 		light->AddComponent<Aen::PointLight>();
 		light->GetComponent<Aen::PointLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
@@ -113,7 +117,7 @@ namespace Aen
 
 	void ImGuiHandler::AddSpotLight(AenIF::Light& input)
 	{
-		Aen::Entity* light = AEN_NEW(Aen::Entity);
+		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
 		light->AddComponent<Aen::SpotLight>();
 		light->GetComponent<Aen::SpotLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
@@ -128,7 +132,7 @@ namespace Aen
 
 	void ImGuiHandler::AddDirectional(AenIF::Light& input)
 	{
-		Aen::Entity* light = AEN_NEW(Aen::Entity);
+		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
 		light->AddComponent<Aen::DirectionalLight>();
 		light->GetComponent<Aen::DirectionalLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);

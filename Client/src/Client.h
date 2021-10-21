@@ -1,7 +1,7 @@
 #pragma once
 #include"AenirEngine.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
-#include"Level/LevelGenerator.h"
+#include"AenirEngine/LevelGeneration/LevelGenerator.h"
 
 #include<stack>
 
@@ -31,7 +31,6 @@ class Client : public Aen::App {
 	Aen::Mesh* m_meshcube;
 	Aen::Entity* m_sphere;
 
-	Aen::Entity* rooms[mapSize * mapSize];
 
 	Aen::Mesh* m_reimubeMesh;
 	Aen::Material* m_ReimuMat;
@@ -57,10 +56,3 @@ Aen::App* Aen::CreateApp() {
 	return new Client(wDesc, L"Aenir Engine", L"Main_Window");
 }
 
-
-class levelBuilder : public LevelGenerator {
-
-	static bool CreateRooms(std::vector<Aen::Entity>* storage, uint8_t x, uint8_t y);
-
-	public:
-};

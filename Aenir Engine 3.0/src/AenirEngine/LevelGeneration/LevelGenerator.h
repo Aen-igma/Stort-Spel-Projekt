@@ -9,12 +9,12 @@
 #include <vector>
 #include <cstdint>
 #include <unordered_map>
-#include "Core/GlobalSettings.h"
-#include "AenDefines.h"
 #include "RandomNumberGenerator.h"
-#include "Graphics/Component/Entity.h"
-#include "Graphics/Component/EntityHandler.h"
 
+
+#include "../Graphics/Component/Entity.h"
+#include "../Graphics/Component/EntityHandler.h"
+#include "../AenDefines.h"
 
 
 #define NORTH 1
@@ -39,7 +39,7 @@ namespace Aen {
 	|/////////|
 			 */
 
-	struct Room {
+	struct AEN_DECLSPEC Room {
 	public:
 		bool m_enclosed = false; //Var used in level generation, true when room is surrounded
 		bool m_present = false;

@@ -7,6 +7,7 @@
 
 #include <filesystem>
 #include "LevelImporter.h"
+#include "Graphics/Component/EntityHandler.h"
 
 #include "ThirdParty/ImGui/imgui.h"
 #include "ThirdParty/ImGui/imfilebrowser.h"
@@ -29,7 +30,7 @@ namespace Aen {
 
 	private:
 
-		//Aen::EntityHandler* mp_entityHandlerPtr;
+		Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> m_entityList;
 		Aen::LevelImporter m_levelImporter;
 

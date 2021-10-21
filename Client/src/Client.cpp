@@ -125,26 +125,26 @@ void Client::Start() {
 	// ------------------- Procedural generation testing staging grounds ------- //
 	
 	//LevelGenerator::GenerationTestingFunction();
-	/*srand((unsigned int)time(NULL));
-	SetLehmerConstSeed(100);
-	LehmerInt();
-	Room* map = LevelGenerator::GenerationTestingFunction();*/
-	
-	/*for (UINT y = 0; y < mapSize; y++) {
-		for (UINT x = 0; x < mapSize; x++) {
-			if (map[x + y * mapSize].m_present) {
-				rooms[x + y * mapSize] = new Aen::Entity();
-				rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
-				rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-				rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
-			}
-			else {
-				if (rooms[x + y * mapSize] != nullptr)
-					delete rooms[x + y * mapSize];
-				rooms[x + y * mapSize] = nullptr;
-			}
-		}
-	}*/
+	//srand((unsigned int)time(NULL));
+	//SetLehmerConstSeed(100);
+	//LehmerInt();
+	//Room* map = Aen::LevelGenerator().GenerationTestingFunction();
+	//
+	//for (UINT y = 0; y < mapSize; y++) {
+	//	for (UINT x = 0; x < mapSize; x++) {
+	//		if (map[x + y * mapSize].m_present) {
+	//			rooms[x + y * mapSize] = new Aen::Entity();
+	//			rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
+	//			rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+	//			rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
+	//		}
+	//		else {
+	//			if (rooms[x + y * mapSize] != nullptr)
+	//				delete rooms[x + y * mapSize];
+	//			rooms[x + y * mapSize] = nullptr;
+	//		}
+	//	}
+	//}
 
 	Aen::Input::ToggleRawMouse(false);
 
