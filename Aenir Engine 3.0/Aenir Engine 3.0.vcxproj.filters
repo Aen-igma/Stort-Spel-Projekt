@@ -502,40 +502,14 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessVS.hlsl">
-      <Filter>Shader Files</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessPS.hlsl">
-      <Filter>Shader Files</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CombineLayersPS.hlsl">
-      <Filter>Shader Files</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairShaderVS.hlsl">
-      <Filter>Shader Files\HairShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairPostPS.hlsl">
-      <Filter>Shader Files\HairShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairPostVS.hlsl">
-      <Filter>Shader Files\HairShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairShaderPS.hlsl">
-      <Filter>Shader Files\HairShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderVS.hlsl">
-      <Filter>Shader Files\CellShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellPostPS.hlsl">
-      <Filter>Shader Files\CellShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellPostVS.hlsl">
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\OpaqueVS.hlsl">
       <Filter>Shader Files\CellShader</Filter>
     </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderPS.hlsl">
       <Filter>Shader Files\CellShader</Filter>
     </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\LightCullCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderCS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">

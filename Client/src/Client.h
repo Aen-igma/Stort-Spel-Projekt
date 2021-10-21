@@ -1,8 +1,9 @@
 #pragma once
 #include"AenirEngine.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
-#include"AenirEngine/ImGuiHandler.h"
+#include"Level/LevelGenerator.h"
 
+#include<stack>
 
 class Client : public Aen::App {
 	public:
@@ -20,27 +21,26 @@ class Client : public Aen::App {
 	float m_mouseSense;
 	bool m_toggleFullScreen;
 
-	Aen::Entity m_camera;
-	Aen::Entity m_dLight;
-	Aen::Entity m_spotLight;
-	Aen::Entity m_plane;
-		
+	Aen::Entity* m_camera;
+	Aen::Entity* m_dLight;
+	Aen::Entity* m_spotLight;
+	Aen::Entity* m_plane;
+	Aen::Entity* m_plane1;
+	Aen::Entity* m_cube;
+	
 	Aen::Mesh* m_meshcube;
+	Aen::Entity* m_sphere;
 
-	//Generation storage
-	//levelBuilder* m_buildLevel; //Var name suggestions open
-	//Aen::Entity* rooms[Aen::mapSize * Aen::mapSize]; //Static array
-	//std::vector<Aen::Mesh> roomMeshes;
+	Aen::Entity* rooms[mapSize * mapSize];
 
-	//-----//
-	std::unordered_map<int, Aen::Entity*> m_reimubes;
 	Aen::Mesh* m_reimubeMesh;
 	Aen::Material* m_ReimuMat;
 	Aen::Texture* m_ReimuTex;
-	int m_reimubeCount;
 
-	std::unordered_map<int, Aen::Entity*> m_pLights;
-	int ind;
+	Aen::Entity* m_emiCube;
+
+	std::stack<Aen::Entity*> m_reimubes;
+	std::stack<Aen::Entity*> m_pLights;
 };
 
 
@@ -57,3 +57,10 @@ Aen::App* Aen::CreateApp() {
 	return new Client(wDesc, L"Aenir Engine", L"Main_Window");
 }
 
+
+class levelBuilder : public LevelGenerator {
+
+	static bool CreateRooms(std::vector<Aen::Entity>* storage, uint8_t x, uint8_t y);
+
+	public:
+};

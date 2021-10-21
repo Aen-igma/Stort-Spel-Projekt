@@ -2,13 +2,12 @@
 #include"Client.h"
 
 Client::~Client() {
-	//for (UINT i = 0; i < Aen::mapSize * Aen::mapSize; i++) {
-	//	if (rooms[i] != nullptr) {
-	//		delete rooms[i];
-	//		rooms[i] = nullptr;
-	//	}
-	//}
-	//delete m_buildLevel;
+	/*for (UINT i = 0; i < mapSize * mapSize; i++) {
+		if (rooms[i] != nullptr) {
+			delete rooms[i];
+			rooms[i] = nullptr;
+		}
+	}*/
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
@@ -18,38 +17,41 @@ void Client::Start() {
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
-	m_camera.AddComponent<Aen::Camera>();
-	m_camera.GetComponent<Aen::Camera>().SetCameraPerspective(70.f, m_window.GetAspectRatio(), 0.01f, 100.f);
-	m_camera.SetPos(0.f, 0.f, -2.f);
+	m_camera = &Aen::EntityHandler::CreateEntity();
+	m_camera->AddComponent<Aen::Camera>();
+	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, m_window.GetAspectRatio(), 0.01f, 100.f);
+	m_camera->SetPos(0.f, 2.f, -2.f);
 
-	Aen::GlobalSettings::SetMainCamera(m_camera);
+	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
 	// ------------------------ Setup Directional Light ------------------------- //
-
-	m_dLight.AddComponent<Aen::DirectionalLight>();
-	m_dLight.GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
-	m_dLight.GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
-	m_dLight.SetRot(45.f, -135.f, 0.f);
+	
+	m_dLight = &Aen::EntityHandler::CreateEntity();
+	m_dLight->AddComponent<Aen::DirectionalLight>();
+	m_dLight->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
+	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
+	m_dLight->SetRot(45.f, -135.f, 0.f);
 
 	// --------------------------- Setup Spot Light ----------------------------- //
 
-	//m_spotLight.AddComponent<Aen::SpotLight>();
-	//m_spotLight.GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Red);
-	//m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(1.f);
-	//m_spotLight.GetComponent<Aen::SpotLight>().SetConeSize(40.f);
-	//m_spotLight.GetComponent<Aen::SpotLight>().SetStrength(500.f);
-	//m_spotLight.GetComponent<Aen::SpotLight>().SetLightDist(1.f, 0.f, 0.f, 10.f);
-	//m_spotLight.SetPos(0.f, 2.f, -5.f);
-	//m_spotLight.SetRot(45.f, 0.f, 0.f);
+	m_spotLight = &Aen::EntityHandler::CreateEntity();
+	m_spotLight->AddComponent<Aen::SpotLight>();
+	m_spotLight->GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Red);
+	m_spotLight->GetComponent<Aen::SpotLight>().SetStrength(1.f);
+	m_spotLight->GetComponent<Aen::SpotLight>().SetConeSize(40.f);
+	m_spotLight->GetComponent<Aen::SpotLight>().SetStrength(500.f);
+	m_spotLight->GetComponent<Aen::SpotLight>().SetLightDist(1.f, 0.f, 0.f, 10.f);
+	m_spotLight->SetPos(0.f, 2.f, -5.f);
+	m_spotLight->SetRot(45.f, 0.f, 0.f);
 
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
-	//Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
+	Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
 	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
-	//sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
+	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
 	// ----------------------------- Load Reimushes -------------------------------- //
 
@@ -62,56 +64,87 @@ void Client::Start() {
 
 	(*m_ReimuMat)["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
 	(*m_ReimuMat)["InnerEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
-	(*m_ReimuMat)["OuterEdgeThickness"] = 0.003f;
-	(*m_ReimuMat)["InnerEdgeThickness"] = 0.003f;
+	(*m_ReimuMat)["OuterEdgeThickness"] = 3;
+	(*m_ReimuMat)["InnerEdgeThickness"] = 3;
 
 	m_meshcube = &cube;
 	// -------------------------- Setup Entities -------------------------------- //
 
-	/*m_sphere.AddComponent<Aen::MeshInstance>();
-	m_sphere.GetComponent<Aen::MeshInstance>().SetMesh(sphere);*/
+	m_sphere = &Aen::EntityHandler::CreateEntity();
+	m_sphere->AddComponent<Aen::MeshInstance>();
+	m_sphere->GetComponent<Aen::MeshInstance>().SetMesh(sphere);
 
-	m_plane.AddComponent<Aen::MeshInstance>();
-	m_plane.GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	m_plane.AddComponent<Aen::RigidBody>();
-	m_plane.GetComponent<Aen::RigidBody>().CreateMaterial();
-	m_plane.GetComponent<Aen::RigidBody>().CreatePlane();
+	m_plane = &Aen::EntityHandler::CreateEntity();
+	m_plane->AddComponent<Aen::MeshInstance>();
+	m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	m_plane->AddComponent<Aen::RigidBody>();
+	m_plane->GetComponent<Aen::RigidBody>().CreateMaterial();
+	m_plane->GetComponent<Aen::RigidBody>().CreatePlane();
 
-	m_plane.SetPos(0.f, -30.f, 0.f);
-	m_plane.SetScale(40.f, 1.f, 40.f);
-	m_plane.SetRot(45, 0, 0);
+	//m_plane.SetPos(0.f, -2.f, 0.f);
+	m_plane->SetScale(40.f, 1.f, 40.f);
 
-	Aen::GlobalSettings::GetImGuiHandler()->ReadAllFilesFromResourceFolder();
-	Aen::GlobalSettings::GetImGuiHandler()->LoadLevel(0);
+	/*m_plane1.AddComponent<Aen::MeshInstance>();
+	m_plane1.GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	m_plane1.SetPos(0.f, 8.f, -10.f);
+	m_plane1.SetScale(20.f, 1.f, 20.f);
+	m_plane1.SetRot(90.f, 0.f, 0.f);*/
 
+	m_cube = &Aen::EntityHandler::CreateEntity();
+	m_cube->AddComponent<Aen::MeshInstance>();
+	m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	m_cube->SetPos(0.f, 8.f, 10.f);
+	m_cube->SetScale(20.f, 20.f, 1.f);
+	//m_cube->SetRenderLayer(-1);
+
+	// ----------------------------- Load EmissionCube -------------------------------- //
+
+	m_emiCube = &Aen::EntityHandler::CreateEntity();
+	m_emiCube->AddComponent<Aen::MeshInstance>();
+	m_emiCube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	m_emiCube->SetPos(0.f, 3.f, -5.f);
+
+	Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
+	Aen::Texture& peng = Aen::Resource::CreateTexture("NekoTexture");
+	Aen::Material& emissionMtrl = Aen::Resource::CreateMaterial("EmiMtrl");
+	face.LoadTexture(AEN_RESOURCE_DIR("emmissionS.png"));
+	peng.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
+	emissionMtrl.SetEmissionMap(face);
+	emissionMtrl.SetDiffuseMap(peng);
+	emissionMtrl["GlowColor"] = Aen::Color::Green;
+	emissionMtrl["OuterEdgeThickness"] = 2;
+	emissionMtrl["InnerEdgeThickness"] = 2;
+	emissionMtrl["OuterEdgeColor"] = Aen::Color::Green;
+	emissionMtrl["InnerEdgeColor"] = Aen::Color::Green;
+
+	m_emiCube->GetComponent<Aen::MeshInstance>().SetMaterial(emissionMtrl);
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
 
 	// ------------------- Procedural generation testing staging grounds ------- //
 	
-
-	srand((unsigned int)time(NULL));
-	//SetLehmerConstSeed(100);
-	//LehmerInt();
-	//Aen::Room* map = Aen::LevelGenerator::GenerationTestingFunction();
-
-	//for (UINT y = 0; y < Aen::mapSize; y++) {
-	//	for (UINT x = 0; x < Aen::mapSize; x++) {
-	//		rooms[x + y * Aen::mapSize] = nullptr;
-	//	}
-	//}
-	//for (UINT y = 0; y < Aen::mapSize; y++) {
-	//	for (UINT x = 0; x < Aen::mapSize; x++) {
-	//		if (map[x + y * Aen::mapSize].m_present) {
-	//			//m_buildLevel->CreateRooms(rooms, x, y);
-	//			//rooms[x + y * Aen::mapSize] = new Aen::Entity();
-	//			//rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
-	//			//rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-	//			//rooms[x + y * Aen::mapSize]->SetPos(x * 2, 0.f, y * 2);
-	//		}
-	//	}
-	//}
+	//LevelGenerator::GenerationTestingFunction();
+	/*srand((unsigned int)time(NULL));
+	SetLehmerConstSeed(100);
+	LehmerInt();
+	Room* map = LevelGenerator::GenerationTestingFunction();*/
+	
+	/*for (UINT y = 0; y < mapSize; y++) {
+		for (UINT x = 0; x < mapSize; x++) {
+			if (map[x + y * mapSize].m_present) {
+				rooms[x + y * mapSize] = new Aen::Entity();
+				rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
+				rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+				rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
+			}
+			else {
+				if (rooms[x + y * mapSize] != nullptr)
+					delete rooms[x + y * mapSize];
+				rooms[x + y * mapSize] = nullptr;
+			}
+		}
+	}*/
 
 	Aen::Input::ToggleRawMouse(false);
 
@@ -127,7 +160,7 @@ void Client::Update(const float& deltaTime) {
 
 		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
 		{
-			m_camera.Rotate(
+			m_camera->Rotate(
 				-(float)me.GetPos().y * m_mouseSense * deltaTime,
 				-(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
 		}
@@ -150,35 +183,35 @@ void Client::Update(const float& deltaTime) {
 	
 	static Aen::Vec2i mouseAxis;
 
-	if (Aen::Input::KeyDown(Aen::Key::L)) {
+	/*if (Aen::Input::KeyDown(Aen::Key::L)) {
 		
-		//SetLehmerConstSeed(LehmerInt());
-		//Aen::Room* map = Aen::LevelGenerator::GenerationTestingFunction();
-		// 
-		//for (UINT y = 0; y < Aen::mapSize; y++) {
-		//	for (UINT x = 0; x < Aen::mapSize; x++) {
-		//		if (map[x + y * Aen::mapSize].m_present) {
-		//			m_buildLevel->CreateRooms(rooms, x, y);
-		//			//if (rooms[x + y * Aen::mapSize] == nullptr) {
-		//			//	rooms[x + y * Aen::mapSize] = new Aen::Entity();
-		//			//	rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
-		//			//	rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-		//			//	rooms[x + y * Aen::mapSize]->SetPos(x * 2, 0.f, y * 2);
-		//			//}
-		//		}
-		//		//else {
-		//		//	if (rooms[x + y * Aen::mapSize] != nullptr){
-		//		//		delete rooms[x + y * Aen::mapSize];
-		//		//		rooms[x + y * Aen::mapSize] = nullptr;
-		//		//	}
-		//		//}
-		//	}
-		//}
-	}
+		SetLehmerConstSeed(LehmerInt());
+		Room* map = LevelGenerator::GenerationTestingFunction();
+		 
+		for (UINT y = 0; y < mapSize; y++) {
+			for (UINT x = 0; x < mapSize; x++) {
+				if (map[x + y * mapSize].m_present) {
+					if (rooms[x + y * mapSize] == nullptr) {
+						rooms[x + y * mapSize] = new Aen::Entity();
+						rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
+						rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+						rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
+					}
+				}
+				else {
+					if (rooms[x + y * mapSize] != nullptr){
+						delete rooms[x + y * mapSize];
+						rooms[x + y * mapSize] = nullptr;
+					}
+				}
+			}
+		}
+	}*/
+
 	if (Aen::Input::KeyPress(Aen::Key::RMOUSE)) {
 		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;
-		m_camera.MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
-		m_camera.Move(0.f, axis.y * deltaTime * m_speed * focus, 0.f);
+		m_camera->MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
+		m_camera->Move(0.f, axis.y * deltaTime * m_speed * focus, 0.f);
 
 		if(m_toggleFullScreen)
 			Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -224,7 +257,7 @@ void Client::Update(const float& deltaTime) {
 	// ---------------------------------------------------------------------------------- //
 
 	if(Aen::Input::KeyDown(Aen::Key::G)) {
-		Aen::Entity* e = AEN_NEW Aen::Entity;
+		Aen::Entity& e = Aen::EntityHandler::CreateEntity();
 
 		int r = rand() % 6;
 		Aen::Color clr;
@@ -243,138 +276,41 @@ void Client::Update(const float& deltaTime) {
 			break;
 		}
 
-		e->AddComponent<Aen::PointLight>();
-		e->GetComponent<Aen::PointLight>().SetColor(clr);
-		e->GetComponent<Aen::PointLight>().SetLightDist(1.f, 1.f, 1.f, 5.f);
-		e->GetComponent<Aen::PointLight>().SetStrength(100.f);
-		e->SetPos(rand() % 20 - 10, 1.f / (rand() % 100) + 0.5f, rand() % 20 - 20);
-		m_pLights.emplace(ind++, e);
-		e = nullptr;
+		e.AddComponent<Aen::PointLight>();
+		e.GetComponent<Aen::PointLight>().SetColor(clr);
+		e.GetComponent<Aen::PointLight>().SetLightDist(1.f, 1.f, 1.f, 5.f);
+		e.GetComponent<Aen::PointLight>().SetStrength(100.f);
+		e.SetPos(rand() % 20 - 10, 1.f / (rand() % 100) + 0.5f, rand() % 20 - 20);
+		m_pLights.push(&e);
 	}
 
 	if(Aen::Input::KeyPress(Aen::Key::H)) {
-		for(auto i : m_pLights) {
-			int index = i.first;
-			delete i.second;
-			i.second = nullptr;
-			m_pLights.erase(index);
-			break;
+		if(!m_pLights.empty()) {
+			Aen::EntityHandler::RemoveEntity(*m_pLights.top());
+			m_pLights.pop();
 		}
 	}
 
 	// ------------------------------------- Reimubes -------------------------------------- //
 
 	if (Aen::Input::KeyPress(Aen::Key::J)) {
-		Aen::Entity* e = AEN_NEW Aen::Entity();
-		e->AddComponent<Aen::RigidBody>();
-		e->AddComponent<Aen::MeshInstance>();
+		Aen::Entity& e = Aen::EntityHandler::CreateEntity();
+		e.AddComponent<Aen::RigidBody>();
+		e.AddComponent<Aen::MeshInstance>();
 
-		e->GetComponent<Aen::MeshInstance>().SetMesh(*m_reimubeMesh);
-		e->GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
-		e->GetComponent<Aen::RigidBody>().CreateMaterial();
-		e->GetComponent<Aen::RigidBody>().CreateCube();
-		e->SetPos(0.f, 10.f, 0.f);
+		e.GetComponent<Aen::MeshInstance>().SetMesh(*m_reimubeMesh);
+		e.GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
+		e.GetComponent<Aen::RigidBody>().CreateMaterial();
+		e.GetComponent<Aen::RigidBody>().CreateCube();
+		e.SetPos(0.f, 10.f, 0.f);
 
-		m_reimubes.emplace(m_reimubeCount++, e);
-		e = nullptr;
+		m_reimubes.push(&e);
 	}
 
 	if (Aen::Input::KeyPress(Aen::Key::K)) {
-		for (auto& i : m_reimubes) {
-			delete i.second;
-			i.second = nullptr;
-			m_reimubes.erase(i.first);
-			break;
+		if(!m_reimubes.empty()) {
+			Aen::EntityHandler::RemoveEntity(*m_reimubes.top());
+			m_reimubes.pop();
 		}
 	}
 }
-
-
-//void inline levelBuilder::initLevelBuilder()
-//{
-//}
-//
-//bool levelBuilder::CreateRooms(Aen::Entity** storage, uint8_t x, uint8_t y)
-//{
-//	static const Aen::Room* map_ptr = Aen::LevelGenerator::GetMapPointer();
-//
-//	if (storage[x + y * Aen::mapSize] == nullptr) {
-//		storage[x + y * Aen::mapSize] = new Aen::Entity();
-//		storage[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
-//		storage[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh((Aen::Mesh&)map_ptr[x + y * Aen::mapSize].mptr_mesh);
-//	}
-//	//else {
-//	//	storage[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*((Aen::Mesh*)map_ptr[x + y * Aen::mapSize].mptr_mesh));
-//	//}
-//	storage[x + y * Aen::mapSize]->SetPos(x * Aen::roomDimension, 0.f, y * Aen::roomDimension); 
-//
-//	return true;
-//}
-//
-//levelBuilder::levelBuilder()
-//{
-//	Aen::m_mapTheme = Aen::RoomTheme::PLACEHOLDER;
-//
-//	//Straight corridors
-//	Aen::Room a;
-//	a.mptr_mesh = Aen::Resource::CreateMesh("corridorPlaceholder");
-//	//a.mptr_mesh->Load(AEN_RESOURCE_DIR("corridorPlaceholder.obj"));
-//	a.mptr_mesh.Load(AEN_RESOURCE_DIR("Cube.obj"));
-//	a.m_baseChance = 0xf;
-//	a.connectionDirections = 101;
-//	a.m_present = true;
-//	a.m_roomTheme = Aen::m_mapTheme;
-//	AddRoomToGeneration(&a);
-//
-//
-//	//90 degree corners
-//	Aen::Room b;
-//	b.mptr_mesh = Aen::Resource::CreateMesh("bendPlaceholder");
-//	//b.mptr_mesh->Load(AEN_RESOURCE_DIR("bendPlaceholder.obj"));
-//	b.mptr_mesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
-//	b.m_baseChance = 0xf;
-//	b.m_present = true;
-//	b.connectionDirections = 11;
-//	b.m_roomTheme = Aen::m_mapTheme;
-//	AddRoomToGeneration(&b);
-//
-//
-//	//T junction
-//	Aen::Room c;
-//
-//	c.mptr_mesh = Aen::Resource::CreateMesh("twayPlaceholder");
-//	//c.mptr_mesh->Load(AEN_RESOURCE_DIR("twayPlaceholder.obj"));
-//	c.mptr_mesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
-//	c.m_baseChance = 0xf;
-//	c.connectionDirections = 1011;
-//	c.m_present = true;
-//	c.m_roomTheme = Aen::m_mapTheme;
-//	AddRoomToGeneration(&c);
-//
-//
-//	//4-way junction
-//	Aen::Room d;
-//	d.mptr_mesh = Aen::Resource::CreateMesh("fourwayPlaceholder");
-//	//d.mptr_mesh->Load(AEN_RESOURCE_DIR("fourwayPlaceholder.obj"));
-//	d.mptr_mesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
-//	d.m_baseChance = 0xf;
-//	d.connectionDirections = 1111;
-//	d.m_present = true;
-//	d.m_roomTheme = Aen::m_mapTheme;
-//	AddRoomToGeneration(&d);
-//
-//
-//	//entrance
-//	Aen::Room e;
-//	e.mptr_mesh = Aen::Resource::CreateMesh("entrancePlaceholder");
-//	//e.mptr_mesh->Load(AEN_RESOURCE_DIR("entrancePlaceholder.obj"));
-//	e.mptr_mesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
-//	e.m_baseChance = 0xf;
-//	e.m_present = true;
-//	e.m_roomSpecial = Aen::SpecialRoom::ENTRANCE;
-//	e.m_roomTheme = Aen::m_mapTheme;
-//	e.connectionDirections = 1;
-//	AddRoomToGeneration(&e);
-//
-//	this->initLevelBuilder();
-//}
