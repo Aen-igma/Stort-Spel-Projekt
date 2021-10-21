@@ -69,8 +69,8 @@ void Client::Start() {
 
 	(*m_ReimuMat)["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
 	(*m_ReimuMat)["InnerEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
-	(*m_ReimuMat)["OuterEdgeThickness"] = 0.003f;
-	(*m_ReimuMat)["InnerEdgeThickness"] = 0.003f;
+	(*m_ReimuMat)["OuterEdgeThickness"] = 3;
+	(*m_ReimuMat)["InnerEdgeThickness"] = 3;
 
 	m_meshcube = &cube;
 
@@ -106,21 +106,12 @@ void Client::Start() {
 	m_plane1.SetScale(20.f, 1.f, 20.f);
 	m_plane1.SetRot(90.f, 0.f, 0.f);*/
 
-	m_skele = &Aen::EntityHandler::CreateEntity();
-	m_skele->AddComponent<Aen::MeshInstance>();
-	m_skele->GetComponent<Aen::MeshInstance>().SetMesh(skele);
-	m_skele->GetComponent<Aen::MeshInstance>().SetMaterial(pengMtrl);
-
-	m_skele->SetPos(0.f, 5.f, 0);
-
-	m_goblin = &Aen::EntityHandler::CreateEntity();
-	m_goblin->AddComponent<Aen::MeshInstance>();
-	m_goblin->GetComponent<Aen::MeshInstance>().SetMesh(gob);
-	m_goblin->GetComponent<Aen::MeshInstance>().SetMaterial(gobMtrl);
-	m_goblin->SetPos(4.f, 10.f, 4.f);
-	m_goblin->SetRot(0.f, 180.f, 0.f);
-
-
+	m_cube = &Aen::EntityHandler::CreateEntity();
+	m_cube->AddComponent<Aen::MeshInstance>();
+	m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	m_cube->SetPos(0.f, 8.f, 10.f);
+	m_cube->SetScale(20.f, 20.f, 1.f);
+	//m_cube->SetRenderLayer(-1);
 
 	//m_cube = &Aen::EntityHandler::CreateEntity();
 	//m_cube->AddComponent<Aen::MeshInstance>();
@@ -140,12 +131,18 @@ void Client::Start() {
 
 
 
-	//Aen::Material& emissionMtrl = Aen::Resource::CreateMaterial("EmiMtrl");
-	//face.LoadTexture(AEN_RESOURCE_DIR("emmissionS.png"));
-	//peng.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
-	//emissionMtrl.SetEmissionMap(face);
-	//emissionMtrl.SetDiffuseMap(peng);
-	//emissionMtrl["GlowColor"] = Aen::Color::Green;
+	Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
+	Aen::Texture& peng = Aen::Resource::CreateTexture("NekoTexture");
+	Aen::Material& emissionMtrl = Aen::Resource::CreateMaterial("EmiMtrl");
+	face.LoadTexture(AEN_RESOURCE_DIR("emmissionS.png"));
+	peng.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
+	emissionMtrl.SetEmissionMap(face);
+	emissionMtrl.SetDiffuseMap(peng);
+	emissionMtrl["GlowColor"] = Aen::Color::Green;
+	emissionMtrl["OuterEdgeThickness"] = 2;
+	emissionMtrl["InnerEdgeThickness"] = 2;
+	emissionMtrl["OuterEdgeColor"] = Aen::Color::Green;
+	emissionMtrl["InnerEdgeColor"] = Aen::Color::Green;
 
 	//m_emiCube->GetComponent<Aen::MeshInstance>().SetMaterial(emissionMtrl);
 	// --------------------------- Setup Window --------------------------------- //
