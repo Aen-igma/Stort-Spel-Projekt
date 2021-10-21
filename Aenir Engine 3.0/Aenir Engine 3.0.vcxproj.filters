@@ -252,10 +252,7 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animator.cpp">
-      <Filter>Source Files\Graphics\Component\Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\assimp\AssimpIncludes.cpp">
+    <ClCompile Include="src\AenirEngine\Importer\AssimpImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -485,13 +482,7 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animator.h">
-      <Filter>Header Files\Graphics\Component\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\assimp\AssimpIncludes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Bones.h">
+    <ClInclude Include="src\AenirEngine\Importer\AssimpImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

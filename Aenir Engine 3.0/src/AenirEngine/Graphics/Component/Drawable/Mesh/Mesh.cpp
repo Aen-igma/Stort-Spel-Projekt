@@ -2,6 +2,7 @@
 #include"Mesh.h"
 #include"Core/GlobalSettings.h"
 #include"Importer/ObjImporter.h"
+#include"Importer/AssimpImporter.h"
 #include<thread>
 
 
@@ -33,8 +34,22 @@ namespace Aen {
 	}
 
 	void Mesh::Load(const std::string& dir) {
-		std::thread worker(ImportObj, std::ref(m_vertices), dir, std::ref(m_partitions), std::ref(m_meshMaterialName));
-		worker.join();
+
+		size_t off = dir.find_last_of('.');
+		std::string format = dir.substr(off + 1);
+		if (format == "fbx") {
+			AssimpImport::LoadFbx(m_vertices, dir, m_partitions, m_meshMaterialName);
+		}
+		else if (format == "obj") {
+			std::thread worker(ImportObj, std::ref(m_vertices), dir, std::ref(m_partitions), std::ref(m_meshMaterialName));
+			worker.join();
+		}
+		else {
+			throw;
+			printf("Format not supported!");
+		}
+		
+
 	}
 
 	Mesh::~Mesh() {}
