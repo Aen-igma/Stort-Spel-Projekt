@@ -1,9 +1,8 @@
 #include "PCH.h"
 #include "Entity.h"
+#include"EntityHandler.h"
 
 namespace Aen {
-
-	uint32_t Entity::m_iDs(0);
 
 	Entity::~Entity() {
 		ComponentHandler::RemoveCamera(m_id);
@@ -15,14 +14,29 @@ namespace Aen {
 		ComponentHandler::RemoveRigid(m_id);
 		ComponentHandler::RemoveAnimators(m_id);
 
-		EntityHandler::RemoveEntity(m_id);
 		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
 	}
 
-	Entity::Entity()
-		:m_id(m_iDs), m_parentId(UINT_MAX), m_layer(0), m_hasParent(false) {
-		EntityHandler::m_entities.emplace(m_id, this);
-		m_iDs++;
+	Entity::Entity(const size_t& id)
+		:m_id(id), m_parentId(UINT_MAX), m_layer(0), m_hasParent(false), m_tag("NONE") {}
+
+	void Entity::SetTag(const std::string& tag) {
+
+		size_t cTag = std::stoi(m_tag);
+		if(m_tag == tag)
+			return;
+
+		if(EntityHandler::m_tagedEntities.count(cTag) > 0)
+			for(auto i = EntityHandler::m_tagedEntities.lower_bound(cTag); i != EntityHandler::m_tagedEntities.upper_bound(cTag); i++)
+				if(i->second->HasId(m_id)) {
+					EntityHandler::m_tagedEntities.erase(i);
+					break;
+				}
+
+		m_tag = tag;
+
+		if(m_tag != "NONE")
+			EntityHandler::m_tagedEntities.emplace(cTag, this);
 	}
 
 	void Entity::SetRenderLayer(const int& layer) {
@@ -124,12 +138,17 @@ namespace Aen {
 		return ComponentHandler::GetScale(m_id).GetScale();
 	}
 
-	const uint32_t& Entity::GetID()
-	{
+	const size_t& Entity::GetID() {
 		return m_id;
 	}
 
+	const std::string& Entity::GetTag() {
+		return m_tag;
+	}
 
+	const bool Entity::HasId(const size_t& id) {
+		return m_id == id;
+	}
 
 	const Mat4f Entity::GetTransformation() {
 

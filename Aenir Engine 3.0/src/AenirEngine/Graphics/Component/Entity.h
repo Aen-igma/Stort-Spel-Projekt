@@ -1,21 +1,18 @@
 #pragma once
 #include"ComponentHandler.h"
 #include"Resource.h"
-#include"EntityHandler.h"
 
 namespace Aen {
 
 	class AEN_DECLSPEC Entity {
 		public:
-		~Entity();
-		Entity();
-
 		template<class T> 
 		void AddComponent();
 
 		template<class T>
 		T& GetComponent();
 
+		void SetTag(const std::string& tag);
 		void SetRenderLayer(const int& layer);
 		void SetParent(Entity& parent);
 		void RemoveParent();
@@ -38,24 +35,28 @@ namespace Aen {
 		const Vec3f& GetPos();
 		const Vec3f& GetRot();
 		const Vec3f& GetScale();
-
-		const uint32_t& GetID();
+		const size_t& GetID();
+		const std::string& GetTag();
 
 		private:
+		Entity(const size_t& id);
+		~Entity();
+
+		const bool HasId(const size_t& id);
 		const Mat4f GetTransformation();
 		const Mat4f GetPosMat();
 		const Mat4f GetRotMat();
 		const Mat4f GetScaleMat();
 
-		static uint32_t m_iDs;
-
-		uint32_t m_id;
-		uint32_t m_parentId;
-		uint32_t m_layer;
+		const size_t m_id;
+		size_t m_parentId;
+		size_t m_layer;
 		bool m_hasParent;
+		std::string m_tag;
 
 		friend class Renderer;
 		friend class MeshInstance;
+		friend class EntityHandler;
 	};
 
 	// --------------------- AddComponent ---------------------------

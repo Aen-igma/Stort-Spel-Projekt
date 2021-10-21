@@ -35,9 +35,7 @@ namespace Aen {
 		static ImGuiHandler*& GetImGuiHandler() {
 			return mp_guiHandler;
 		}
-
-
-
+		
 		friend class GameLoop;
 		friend class Renderer;
 
@@ -53,21 +51,16 @@ namespace Aen {
 			m_pDefaultShader = &Resource::CreateShader("CellShader", window);
 
 			ShaderModelDesc SMDesc;
-			SMDesc.VSDirPass1 = AEN_OUTPUT_DIR_WSTR(L"CellShaderVS.cso");
-			SMDesc.PSDirPass1 = AEN_OUTPUT_DIR_WSTR(L"CellShaderPS.cso");
-			SMDesc.samplerTypePass1 = SamplerType::WRAP;
-			SMDesc.VSDirPass2 = AEN_OUTPUT_DIR_WSTR(L"CellPostVS.cso");
-			SMDesc.PSDirPass2 = AEN_OUTPUT_DIR_WSTR(L"CellPostPS.cso");
-			SMDesc.samplerTypePass2 = SamplerType::CLAMP;
+			SMDesc.PSDir = AEN_OUTPUT_DIR_WSTR(L"CellShaderPS.cso");
+			SMDesc.CSDir = AEN_OUTPUT_DIR_WSTR(L"CellShaderCS.cso");
+			SMDesc.samplerType = SamplerType::CLAMP;
 			SMDesc.bufferName = "CB_CellShader";
 
 			if(!m_pDefaultShader->Create(SMDesc)) {
-				SMDesc.VSDirPass1 = L"CellShaderVS.cso";
-				SMDesc.PSDirPass1 = L"CellShaderPS.cso";
-				SMDesc.samplerTypePass1 = SamplerType::WRAP;
-				SMDesc.VSDirPass2 = L"CellPostVS.cso";
-				SMDesc.PSDirPass2 = L"CellPostPS.cso";
-				SMDesc.samplerTypePass2 = SamplerType::CLAMP;
+				SMDesc.PSDir = L"CellShaderPS.cso";
+				SMDesc.CSDir = L"CellShaderCS.cso";
+				SMDesc.samplerType = SamplerType::CLAMP;
+				SMDesc.bufferName = "CB_CellShader";
 				SMDesc.bufferName = "CB_CellShader";
 
 				if(!m_pDefaultShader->Create(SMDesc))
@@ -80,8 +73,10 @@ namespace Aen {
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"RimLightColor"				);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"InnerEdgeColor"			);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"OuterEdgeColor"			);
-			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"InnerEdgeThickness"		);
-			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"OuterEdgeThickness"		);
+			m_pDefaultShader->m_dbLayout.Add<DBType::Float4>(		"GlowColor"					);
+			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"GlowStr"					);
+			m_pDefaultShader->m_dbLayout.Add<DBType::Int>(			"InnerEdgeThickness"		);
+			m_pDefaultShader->m_dbLayout.Add<DBType::Int>(			"OuterEdgeThickness"		);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"SpecularPower"				);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"SpecularStrength"			);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"Roughness"					);
@@ -97,8 +92,10 @@ namespace Aen {
 			m_pDefaultShader->m_dbLayout["RimLightColor"]			= Color::White;
 			m_pDefaultShader->m_dbLayout["InnerEdgeColor"]			= Color::Black;
 			m_pDefaultShader->m_dbLayout["OuterEdgeColor"]			= Color::Black;
-			m_pDefaultShader->m_dbLayout["InnerEdgeThickness"]		= 0.001f;
-			m_pDefaultShader->m_dbLayout["OuterEdgeThickness"]		= 0.001f;
+			m_pDefaultShader->m_dbLayout["GlowColor"]				= Color::White;
+			m_pDefaultShader->m_dbLayout["GlowStr"]					= 100.f;
+			m_pDefaultShader->m_dbLayout["InnerEdgeThickness"]		= 2;
+			m_pDefaultShader->m_dbLayout["OuterEdgeThickness"]		= 2;
 			m_pDefaultShader->m_dbLayout["SpecularPower"]			= 0.6f;
 			m_pDefaultShader->m_dbLayout["SpecularStrength"]		= 1.f;
 			m_pDefaultShader->m_dbLayout["Roughness"]				= 0.5f;
@@ -112,8 +109,8 @@ namespace Aen {
 
 			Aen::Material& defaultMaterial = Resource::CreateMaterial("DefaultMaterial");
 			Aen::Texture& defaultTexture = Resource::CreateTexture("DefaultTexture");
-			defaultMaterial["InnerEdgeThickness"] = 0.0006f;
-			defaultMaterial["OuterEdgeThickness"] = 0.0006f;
+			defaultMaterial["InnerEdgeThickness"] = 3;
+			defaultMaterial["OuterEdgeThickness"] = 3;
 			defaultMaterial["InnerEdgeColor"] = Aen::Color::Magenta;
 			defaultMaterial["OuterEdgeColor"] = Aen::Color::Magenta;
 			defaultTexture.LoadTexture(AEN_RESOURCE_DIR("Missing_Textures.png"));
