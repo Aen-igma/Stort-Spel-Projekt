@@ -93,7 +93,7 @@ void main(CS_Input input) {
 		float3 dotNP = dot(normal, cToP);
 
 		for(uint i = 0; i < 9; i++) {
-			float2 points = sPoint[i] * depth.r * (1.f - abs(dotNP));
+			float2 points = sPoint[i];
 			float3 sn = normalMap[uv + points * innerEdgeThickness].xyz * 2.f - 1.f;
 			sn = normalize(mul(sn, (float3x3)vMat)).xyz;
 			float sd = depthMap[uv + points * outerEdgeThickness].x;
