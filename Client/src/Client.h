@@ -4,6 +4,8 @@
 #include "States\Loadscreen.h"
 #include "AenirEngine.h"
 
+#include<stack>
+
 class Client : public Aen::App {
 	public:
 	~Client() override;
