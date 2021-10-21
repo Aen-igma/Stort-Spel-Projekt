@@ -50,13 +50,13 @@ void Client::Start() {
 	Aen::Mesh& skele = Aen::Resource::CreateMesh("Cylinder");
 	Aen::Mesh& gob = Aen::Resource::CreateMesh("Goblin");
 	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
-	//Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
+	Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
 	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
 	skele.Load(AEN_RESOURCE_DIR("combinedShapes.fbx"));
 	gob.Load(AEN_RESOURCE_DIR("GobTriMtrl.fbx"));
 	//skele.PrintMaterialSlots();
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
-	//sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
+	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
 	// ----------------------------- Load Reimushes -------------------------------- //
 
@@ -86,9 +86,9 @@ void Client::Start() {
 	gobMtrl.SetDiffuseMap(gobDiff);
 	// -------------------------- Setup Entities -------------------------------- //
 
-	//m_sphere = &Aen::EntityHandler::CreateEntity();
-	//m_sphere->AddComponent<Aen::MeshInstance>();
-	//m_sphere->GetComponent<Aen::MeshInstance>().SetMesh(sphere);
+	m_sphere = &Aen::EntityHandler::CreateEntity();
+	m_sphere->AddComponent<Aen::MeshInstance>();
+	m_sphere->GetComponent<Aen::MeshInstance>().SetMesh(sphere);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::MeshInstance>();
@@ -111,24 +111,27 @@ void Client::Start() {
 	m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
 	m_cube->SetPos(0.f, 8.f, 10.f);
 	m_cube->SetScale(20.f, 20.f, 1.f);
-	//m_cube->SetRenderLayer(-1);
+	m_cube->SetRenderLayer(-1);
 
-	//m_cube = &Aen::EntityHandler::CreateEntity();
-	//m_cube->AddComponent<Aen::MeshInstance>();
-	//m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	//m_cube->SetPos(0.f, 8.f, 10.f);
-	//m_cube->SetScale(20.f, 20.f, 1.f);
+	m_cube = &Aen::EntityHandler::CreateEntity();
+	m_cube->AddComponent<Aen::MeshInstance>();
+	m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	m_cube->SetPos(0.f, 8.f, 10.f);
+	m_cube->SetScale(20.f, 20.f, 1.f);
 
-	// ----------------------------- Load EmissionCube -------------------------------- //
+	m_goblin = &Aen::EntityHandler::CreateEntity();
+	m_goblin->AddComponent<Aen::MeshInstance>();
+	m_goblin->GetComponent<Aen::MeshInstance>().SetMesh(gob);
+	m_goblin->GetComponent<Aen::MeshInstance>().SetMaterial(gobMtrl);
 
-	//m_emiCube = &Aen::EntityHandler::CreateEntity();
-	//m_emiCube->AddComponent<Aen::MeshInstance>();
-	//m_emiCube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	//m_emiCube->SetPos(0.f, 3.f, -5.f);
+	m_goblin->SetPos(0.f, 2.f, 4.f);
 
-	//Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
+	/* ----------------------------- Load EmissionCube -------------------------------- */
 
-
+	m_emiCube = &Aen::EntityHandler::CreateEntity();
+	m_emiCube->AddComponent<Aen::MeshInstance>();
+	m_emiCube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
+	m_emiCube->SetPos(0.f, 3.f, -5.f);
 
 
 	Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
@@ -144,7 +147,7 @@ void Client::Start() {
 	emissionMtrl["OuterEdgeColor"] = Aen::Color::Green;
 	emissionMtrl["InnerEdgeColor"] = Aen::Color::Green;
 
-	//m_emiCube->GetComponent<Aen::MeshInstance>().SetMaterial(emissionMtrl);
+	m_emiCube->GetComponent<Aen::MeshInstance>().SetMaterial(emissionMtrl);
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
