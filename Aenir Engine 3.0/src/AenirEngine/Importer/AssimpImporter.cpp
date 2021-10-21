@@ -13,7 +13,7 @@ void Aen::AssimpImport::LoadFbx(VBuffer<Vertex>& vBuffer, const std::string path
 	std::vector<Vertex> mesh;
 	Assimp::Importer importer;
 
-	const aiScene* pScene = importer.ReadFile(path, aiProcess_Triangulate);
+	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace);
 
 	
 
@@ -38,13 +38,13 @@ void Aen::AssimpImport::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::vec
 	for (UINT i = 0; i < numMats; i++)
 	{
 		material = scene->mMaterials[mesh->mMaterialIndex];
-		meshMaterial.emplace(material->GetName().C_Str(), mesh->mMaterialIndex);
+		//meshMaterial.emplace(material->GetName().C_Str(), mesh->mMaterialIndex);
 	}
 	verts.resize(numVerts);
 	Aen::PartitionData data;
 	data.materialIndex = mesh->mMaterialIndex;
 	data.size = numVerts;
-	data.offset = 0;
+	data.offset = numVerts;
 	partsData.emplace_back(data);
 	for (UINT i = 0; i < numVerts; i++)
 	{
@@ -60,9 +60,9 @@ void Aen::AssimpImport::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::vec
 		}
 		if (mesh->HasNormals())
 		{
-			vertex.norm.x = (float)mesh->mNormals->x;
-			vertex.norm.y = (float)mesh->mNormals->y;
-			vertex.norm.z = (float)mesh->mNormals->z;
+			vertex.norm.x = (float)mesh->mNormals[i].x;
+			vertex.norm.y = (float)mesh->mNormals[i].y;
+			vertex.norm.z = (float)mesh->mNormals[i].z;
 		}
 		if (mesh->HasTangentsAndBitangents())
 		{
