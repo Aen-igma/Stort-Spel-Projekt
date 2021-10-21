@@ -135,7 +135,8 @@ void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<Quad
 				if(other.Intersects(obj->mp_boundBox))
 				{
 					QuadOutput* tempQuadObj = AEN_NEW QuadOutput(obj->m_ID, obj->m_RenderLayer); // Kan skapa minnes läkor
-					output.push_back(tempQuadObj);
+					//output.push_back(tempQuadObj);
+					output.emplace_back(tempQuadObj);
 					//output.push_back(obj->m_ID); //Läger till ID av objekt
 				}
 		}

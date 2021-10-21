@@ -52,7 +52,6 @@ namespace Aen {
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
 
-				//m_Quadtree->Update(m_QuadObjectsToRender);
 				m_Quadtree->Update();
 
 				PhysXService::GetInstance()->RunPhysics(m_deltaTime.count());

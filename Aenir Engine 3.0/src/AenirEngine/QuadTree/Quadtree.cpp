@@ -83,7 +83,6 @@ namespace Aen
 	{
 		if (GlobalSettings::GetMainCamera())
 		{
-			bool addToLayer = true;
 
 			m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetProjecton().smMat);
 			this->mp_root->IntersectTest(m_cameraFrustrum, m_QuadObjectsToRender);
