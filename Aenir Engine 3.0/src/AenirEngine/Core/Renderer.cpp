@@ -5,8 +5,8 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), m_postProcessBuffer(window), m_layerBuffer(window, 7u), 
-		m_backBuffer(), m_viewPort(), m_clampSampler(SamplerType::CLAMP), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
+		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
+		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front), m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u) {}
 
@@ -21,23 +21,16 @@ namespace Aen {
 		m_viewPort.MinDepth = 0.f;
 		m_viewPort.MaxDepth = 1.f;
 
-		if(!m_postProcessVS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessVS.cso")))
-			if(!m_postProcessVS.Create(L"PostProcessVS.cso"))
-				throw;
-
-		if(!m_postProcessPS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessPS.cso")))
-			if(!m_postProcessPS.Create(L"PostProcessPS.cso"))
-				throw;
-
-		if(!m_combineLayersPS.Create(AEN_OUTPUT_DIR_WSTR(L"CombineLayersPS.cso")))
-			if(!m_combineLayersPS.Create(L"CombineLayersPS.cso"))
+		if(!m_opaqueVS.Create(AEN_OUTPUT_DIR_WSTR(L"OpaqueVS.cso")))
+			if(!m_opaqueVS.Create(L"OpaqueVS.cso"))
 				throw;
 
 		if(!m_lightCullCS.Create(AEN_OUTPUT_DIR_WSTR(L"LightCullCS.cso")))
 			if(!m_lightCullCS.Create(L"LightCullCS.cso"))
 				throw;
 
-		m_postLayout.Create(m_postProcessVS);
+		m_UAVBackBuffer.Create(m_backBuffer);
+		m_opaqueLayout.Create(m_opaqueVS);
 
 		m_dispatchInfo.GetData().windowSize.x = m_window.GetSize().x;
 		m_dispatchInfo.GetData().windowSize.y = m_window.GetSize().y;
@@ -47,6 +40,9 @@ namespace Aen {
 		m_dispatchInfo.GetData().threadGroups.y = (int)std::ceil((float)m_window.GetSize().y / 16.f);
 		m_dispatchInfo.GetData().avarageLights = m_avarageLights;
 		m_dispatchInfo.UpdateBuffer();
+
+		m_dispatchGroups.x = (int)std::ceil((float)m_window.GetSize().x / 32.f);
+		m_dispatchGroups.y = (int)std::ceil((float)m_window.GetSize().y / 32.f);
 
 		uint32_t size = m_dispatchInfo.GetData().numThreads.x * m_dispatchInfo.GetData().numThreads.y;
 		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
@@ -59,8 +55,11 @@ namespace Aen {
 		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 		RenderSystem::SetRasteriserState(m_rasterizerState);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.f, 0.f, 0.f, 0.f));
-		RenderSystem::ClearRenderTargetView(m_layerBuffer, Color(0.f, 0.f, 0.f, 0.f));
-		RenderSystem::ClearRenderTargetView(m_postProcessBuffer, Color(0.f, 0.f, 0.f, 0.f));
+
+		// BackGround
+
+		m_cbBGColor.GetData() = GlobalSettings::GetBGColor();
+		m_cbBGColor.UpdateBuffer();
 
 		// Camera
 
@@ -72,7 +71,7 @@ namespace Aen {
 			Vec3f rot = pCam->GetRot();
 
 			pCam->GetComponent<Camera>().UpdateView(pos, rot);
-			
+
 			m_cbCamera.GetData().pos = { pos.x, pos.y, pos.z };
 			m_cbCamera.GetData().fDir = pCam->GetComponent<Camera>().GetForward();
 			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
@@ -138,57 +137,7 @@ namespace Aen {
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}
 
-		// Combine Layers Pass
-
-		RenderSystem::SetInputLayout(m_postLayout);
-		RenderSystem::UnBindRenderTargets(1u);
-
-		m_cbBGColor.GetData() = GlobalSettings::GetBGColor();
-		m_cbBGColor.UpdateBuffer();
-		m_cbBGColor.BindBuffer<PShader>(0u);
-		RenderSystem::BindRenderTargetView(m_postProcessBuffer);
-		RenderSystem::BindShader<VShader>(m_postProcessVS);
-		RenderSystem::BindShader<PShader>(m_combineLayersPS);
-		RenderSystem::BindSamplers<PShader>(0u, m_clampSampler);
-		RenderSystem::BindShaderResourceView<PShader>(0u, m_layerBuffer);
-
-		m_screenQuad.Draw();
-
-		// Post Process pass
-
-		RenderSystem::UnBindShaderResources<PShader>(0u, m_layerBuffer.GetCount());
-		RenderSystem::UnBindRenderTargets(m_postProcessBuffer.GetCount());
-
-		RenderSystem::BindRenderTargetView(m_backBuffer);
-		RenderSystem::BindShader<VShader>(m_postProcessVS);
-		RenderSystem::BindShader<PShader>(m_postProcessPS);
-		RenderSystem::BindShaderResourceView<PShader>(0u, m_postProcessBuffer);
-
-		#ifdef _DEBUG
-		RenderSystem::BindShaderResourceView<PShader>(4, m_lGrid);
-
-		static bool toggle = false;
-		toggle = (Input::KeyDown(Key::NUM1)) ? !toggle : toggle;
-		m_heatMap.GetData() = toggle;
-		m_heatMap.UpdateBuffer();
-		m_heatMap.BindBuffer<PShader>(0u);
-
-		m_cbTransform.BindBuffer<CShader>(1u);
-		#endif
-
-		m_screenQuad.Draw();
-
-#ifdef _DEBUG
-		Aen::GlobalSettings::mp_guiHandler->NewFrame();
-		Aen::GlobalSettings::mp_guiHandler->SceneListWindow();
-		Aen::GlobalSettings::mp_guiHandler->AssetWindow();
-		Aen::GlobalSettings::mp_guiHandler->PropertyWindow();
-		Aen::GlobalSettings::mp_guiHandler->ToolWindow();
-		Aen::GlobalSettings::mp_guiHandler->MaterialWindow();
-		Aen::GlobalSettings::mp_guiHandler->Render();
-#endif
 		// Present
-
 		RenderSystem::Present();
 		RenderSystem::ClearState();
 	}
