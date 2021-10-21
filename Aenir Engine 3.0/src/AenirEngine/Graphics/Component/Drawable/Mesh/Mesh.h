@@ -10,6 +10,8 @@ namespace Aen {
 		Vec3f tan;
 		Vec3f bi;
 		Vec2f uv;
+		Vec4i boneId;
+		Vec4f boneWeights;
 	};
 
 	struct PartitionData {

@@ -11,6 +11,8 @@ struct VS_Input {
 	float3 tangent : TANGENT;
 	float3 biTangent : BITANGENT;
 	float2 uv : UV;
+	int4 boneId : BONEID;
+	float4 boneWeights : BONEWEIGHTS;
 };
 
 struct VS_Output {
