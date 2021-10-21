@@ -62,7 +62,7 @@ namespace Aen {
 
         UINT flags = 0;
         #ifdef _DEBUG
-        flags = D3D11_CREATE_DEVICE_DEBUG;
+        flags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
         #endif
 
         HRESULT hr = D3D11CreateDeviceAndSwapChain(
@@ -88,13 +88,13 @@ namespace Aen {
         ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_factory.GetAddressOf()));
 
         IDXGISurface* IXSurface;
-        if (SUCCEEDED(m_sChain->GetBuffer(0, IID_PPV_ARGS(&IXSurface)))) //hämta swapchain
+        if (SUCCEEDED(m_sChain->GetBuffer(0, IID_PPV_ARGS(&IXSurface))))
         {
             Vec2f dpi;
             dpi = static_cast<FLOAT>(GetDpiForWindow(window.m_hwnd));
             D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), dpi.x, dpi.y);
 
-            //ASSERT_HR(m_factory.Get()->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D));
+            ASSERT_HR(m_factory->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D.GetAddressOf()));
         }
 
         return SUCCEEDED(hr);
@@ -104,5 +104,7 @@ namespace Aen {
         m_device.Reset();
         m_dContext.Reset();
         m_sChain.Reset();
+        m_target2D.Reset();
+        m_factory.Reset();
     }
 }
