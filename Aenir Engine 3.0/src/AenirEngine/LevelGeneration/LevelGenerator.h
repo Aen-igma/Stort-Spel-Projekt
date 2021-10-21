@@ -91,14 +91,10 @@ namespace Aen {
 		Room(const Room& p);
 	};
 
-	static std::vector<Room> levelRoom;
-
-	static std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< std::uint16_t, std::vector<uint16_t> > > > masterRoomMap;
 
 
 	static const int mapSize = 8;
 	static float roomDimension = 3;
-	static Room map[mapSize][mapSize];
 
 	static RoomTheme m_mapTheme = RoomTheme::PLACEHOLDER;
 
@@ -107,7 +103,12 @@ namespace Aen {
 	private:
 		Room RNGRoomFromVector(std::vector<uint16_t>* roomVec);
 		Room RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex);
-		void AlignRoom(Room* room, const uint16_t& connectionDir, unsigned char& type);
+		static void AlignRoom(Room* room, const uint16_t& connectionDir, unsigned char& type);
+
+		Room map[mapSize][mapSize];
+		std::vector<Room> levelRoom;
+
+		std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< std::uint16_t, std::vector<uint16_t> > > > masterRoomMap;
 
 	protected:
 		std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
@@ -116,15 +117,17 @@ namespace Aen {
 
 		Room* GenerationTestingFunction();
 
-		void AddRoomToGeneration(Room* room);
+		void AddRoomToGeneration(Room room);
 
-		void SetRoomDimension(float dimension);
+		static void SetRoomDimension(float dimension);
 
-		const float& GetRoomDimension();
-		void GetRoomPos(const uint16_t& x, const uint16_t& y, float* xf, float* yf);
+		static const float& GetRoomDimension();
+		static void GetRoomPos(const uint16_t& x, const uint16_t& y, float* xf, float* yf);
 
-		uint16_t GetClosestRoomIndex(const float& xf, const float& yf);
+		static uint16_t GetClosestRoomIndex(const float& xf, const float& yf);
 
 		const Room* GetMapPointer();
+
+		void InitPlaceholderRooms();
 	};
 }

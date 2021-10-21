@@ -2,12 +2,12 @@
 #include"Client.h"
 
 Client::~Client() {
-	/*for (UINT i = 0; i < mapSize * mapSize; i++) {
-		if (rooms[i] != nullptr) {
-			delete rooms[i];
-			rooms[i] = nullptr;
-		}
-	}*/
+	//for (UINT i = 0; i < mapSize * mapSize; i++) {
+	//	if (rooms[i] != nullptr) {
+	//		delete rooms[i];
+	//		rooms[i] = nullptr;
+	//	}
+	//}
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
@@ -93,7 +93,7 @@ void Client::Start() {
 	m_cube = &Aen::EntityHandler::CreateEntity();
 	m_cube->AddComponent<Aen::MeshInstance>();
 	m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	m_cube->SetPos(0.f, 8.f, 10.f);
+	m_cube->SetPos(0.f, 10.f, 22.f);
 	m_cube->SetScale(20.f, 20.f, 1.f);
 	//m_cube->SetRenderLayer(-1);
 
@@ -102,7 +102,7 @@ void Client::Start() {
 	m_emiCube = &Aen::EntityHandler::CreateEntity();
 	m_emiCube->AddComponent<Aen::MeshInstance>();
 	m_emiCube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	m_emiCube->SetPos(0.f, 3.f, -5.f);
+	m_emiCube->SetPos(0.f, 3.f, -7.f);
 
 	Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
 	Aen::Texture& peng = Aen::Resource::CreateTexture("NekoTexture");
@@ -123,28 +123,24 @@ void Client::Start() {
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
 
 	// ------------------- Procedural generation testing staging grounds ------- //
+	m_levelGenerator.InitPlaceholderRooms();
+	mptr_map = m_levelGenerator.GenerateLevel();;
 	
-	//LevelGenerator::GenerationTestingFunction();
-	//srand((unsigned int)time(NULL));
-	//SetLehmerConstSeed(100);
-	//LehmerInt();
-	//Room* map = Aen::LevelGenerator().GenerationTestingFunction();
-	//
-	//for (UINT y = 0; y < mapSize; y++) {
-	//	for (UINT x = 0; x < mapSize; x++) {
-	//		if (map[x + y * mapSize].m_present) {
-	//			rooms[x + y * mapSize] = new Aen::Entity();
-	//			rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
-	//			rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-	//			rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
-	//		}
-	//		else {
-	//			if (rooms[x + y * mapSize] != nullptr)
-	//				delete rooms[x + y * mapSize];
-	//			rooms[x + y * mapSize] = nullptr;
-	//		}
-	//	}
-	//}
+	for (UINT y = 0; y < Aen::mapSize; y++) {
+		for (UINT x = 0; x < Aen::mapSize; x++) {
+			if (mptr_map[x + y * Aen::mapSize].m_present) {
+				rooms[x + y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
+				rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
+				rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+				rooms[x + y * Aen::mapSize]->SetPos(x * 2, 1.f, y * 2);
+			}
+			else {
+				if (rooms[x + y * Aen::mapSize] != nullptr)
+					Aen::EntityHandler::RemoveEntity(*rooms[x + y * Aen::mapSize]);
+				rooms[x + y * Aen::mapSize] = nullptr;
+			}
+		}
+	}
 
 	Aen::Input::ToggleRawMouse(false);
 
@@ -183,30 +179,29 @@ void Client::Update(const float& deltaTime) {
 	
 	static Aen::Vec2i mouseAxis;
 
-	/*if (Aen::Input::KeyDown(Aen::Key::L)) {
+	if (Aen::Input::KeyDown(Aen::Key::L)) {
 		
-		SetLehmerConstSeed(LehmerInt());
-		Room* map = LevelGenerator::GenerationTestingFunction();
+		m_levelGenerator.GenerateLevel();
 		 
-		for (UINT y = 0; y < mapSize; y++) {
-			for (UINT x = 0; x < mapSize; x++) {
-				if (map[x + y * mapSize].m_present) {
-					if (rooms[x + y * mapSize] == nullptr) {
-						rooms[x + y * mapSize] = new Aen::Entity();
-						rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
-						rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-						rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
+		for (UINT y = 0; y < Aen::mapSize; y++) {
+			for (UINT x = 0; x < Aen::mapSize; x++) {
+				if (mptr_map[x + y * Aen::mapSize].m_present) {
+					if (rooms[x + y * Aen::mapSize] == nullptr) {
+						rooms[x + y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
+						rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
+						rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+						rooms[x + y * Aen::mapSize]->SetPos(x * 2, 1.f, y * 2);
 					}
 				}
 				else {
-					if (rooms[x + y * mapSize] != nullptr){
-						delete rooms[x + y * mapSize];
-						rooms[x + y * mapSize] = nullptr;
+					if (rooms[x + y * Aen::mapSize] != nullptr){
+						Aen::EntityHandler::RemoveEntity(*rooms[x + y * Aen::mapSize]);
+						rooms[x + y * Aen::mapSize] = nullptr;
 					}
 				}
 			}
 		}
-	}*/
+	}
 
 	if (Aen::Input::KeyPress(Aen::Key::RMOUSE)) {
 		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;

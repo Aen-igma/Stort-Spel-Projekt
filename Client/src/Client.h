@@ -31,6 +31,10 @@ class Client : public Aen::App {
 	Aen::Mesh* m_meshcube;
 	Aen::Entity* m_sphere;
 
+	//For accessing level generation functions
+	Aen::LevelGenerator m_levelGenerator;
+	Aen::Room* mptr_map;
+	Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
 
 	Aen::Mesh* m_reimubeMesh;
 	Aen::Material* m_ReimuMat;

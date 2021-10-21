@@ -301,14 +301,14 @@ namespace Aen
 		return *map;
 	}
 
-	void LevelGenerator::AddRoomToGeneration(Room* room)
+	void LevelGenerator::AddRoomToGeneration(Room room)
 	{
 
-		room->m_roomIndex = levelRoom.size();
+		room.m_roomIndex = levelRoom.size();
 
-		levelRoom.push_back(*room);
+		levelRoom.push_back(Room(room));
 
-		masterRoomMap[room->m_roomTheme][room->m_roomSpecial][room->connectionDirections].push_back(room->m_roomIndex);
+		masterRoomMap[room.m_roomTheme][room.m_roomSpecial][room.connectionDirections].push_back(room.m_roomIndex);
 
 	}
 
@@ -341,12 +341,38 @@ namespace Aen
 		return *map;
 	}
 
+	void LevelGenerator::InitPlaceholderRooms()
+	{
+		m_mapTheme = RoomTheme::PLACEHOLDER;
+		uint16_t direction[5]{101, 11, 111, 1111};
+		Room temp;
+		temp.m_baseChance = 15;
+		temp.m_present = true;
+		temp.m_roomSpecial = SpecialRoom::NONE;
+		temp.m_roomTheme = RoomTheme::PLACEHOLDER;
+		temp.connectionDirections = 101;
+		AddRoomToGeneration(temp);
+		temp.connectionDirections = 11;
+		AddRoomToGeneration(temp);
+		temp.connectionDirections = 1011;
+		AddRoomToGeneration(temp);
+		temp.connectionDirections = 1111;
+		AddRoomToGeneration(temp);
+
+
+		temp.connectionDirections = 1;
+		temp.m_roomSpecial = SpecialRoom::ENTRANCE;
+		AddRoomToGeneration(temp);
+
+	}
+
 
 	Room::Room()
 	{
 		m_enclosed = false; //Var used in level generation, true when room is surrounded
 		m_present = false;
 		m_roomSpecial = SpecialRoom::NONE;
+		m_roomIndex = MAXUINT16;
 
 		mptr_mesh = nullptr;
 
