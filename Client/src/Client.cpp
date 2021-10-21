@@ -47,9 +47,12 @@ void Client::Start() {
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
+	Aen::Mesh& skele = Aen::Resource::CreateMesh("Cylinder");
 	//Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
 	//Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
 	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
+	skele.Load(AEN_RESOURCE_DIR("PlaceHolderMeshPlayer.fbx"));
+	skele.PrintMaterialSlots();
 	//cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
 	//sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
@@ -68,6 +71,12 @@ void Client::Start() {
 	//(*m_ReimuMat)["InnerEdgeThickness"] = 0.003f;
 
 	//m_meshcube = &cube;
+
+	// ASSIMP
+	Aen::Texture& pengDiff = Aen::Resource::CreateTexture("PengTexture");
+	Aen::Material& pengMtrl = Aen::Resource::CreateMaterial("PengMtrl");
+	pengDiff.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
+	pengMtrl.SetDiffuseMap(pengDiff);
 	// -------------------------- Setup Entities -------------------------------- //
 
 	//m_sphere = &Aen::EntityHandler::CreateEntity();
@@ -90,6 +99,15 @@ void Client::Start() {
 	m_plane1.SetScale(20.f, 1.f, 20.f);
 	m_plane1.SetRot(90.f, 0.f, 0.f);*/
 
+	m_skele = &Aen::EntityHandler::CreateEntity();
+	m_skele->AddComponent<Aen::MeshInstance>();
+	m_skele->GetComponent<Aen::MeshInstance>().SetMesh(skele);
+	m_skele->GetComponent<Aen::MeshInstance>().SetMaterial(pengMtrl);
+
+	m_skele->SetPos(0.f, 5.f, 0);
+
+
+
 	//m_cube = &Aen::EntityHandler::CreateEntity();
 	//m_cube->AddComponent<Aen::MeshInstance>();
 	//m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
@@ -104,7 +122,10 @@ void Client::Start() {
 	//m_emiCube->SetPos(0.f, 3.f, -5.f);
 
 	//Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
-	//Aen::Texture& peng = Aen::Resource::CreateTexture("NekoTexture");
+
+
+
+
 	//Aen::Material& emissionMtrl = Aen::Resource::CreateMaterial("EmiMtrl");
 	//face.LoadTexture(AEN_RESOURCE_DIR("emmissionS.png"));
 	//peng.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
