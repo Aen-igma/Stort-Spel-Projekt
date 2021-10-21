@@ -22,7 +22,7 @@ namespace Aen {
 		PhysXService::GetInstance()->InitPhysics(100, 981);
 
 		// Initialize Quadtree
-		m_WorldBox = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(25.f, 25.f, 25.f));
+		m_WorldBox = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(100.f, 100.f, 100.f));
 		m_Quadtree = new Quadtree(m_WorldBox, 0, 3, 4);
 
 		m_Quadtree->Initialize(); 
