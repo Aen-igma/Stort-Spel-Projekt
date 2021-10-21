@@ -13,11 +13,11 @@ namespace Aen {
 		ComponentHandler::RemoveDirectionalLight(m_id);
 		ComponentHandler::RemoveRigid(m_id);
 
-		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
+		//ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
 	}
 
 	Entity::Entity(const size_t& id)
-		:m_id(id), m_parentId(UINT_MAX), m_layer(0), m_hasParent(false), m_tag("NONE") {}
+		:m_id(id), m_parentId(UINT_MAX), /*m_layer(0),*/ m_hasParent(false), m_tag("NONE") {}
 
 	void Entity::SetTag(const std::string& tag) {
 
@@ -38,19 +38,19 @@ namespace Aen {
 			EntityHandler::m_tagedEntities.emplace(cTag, this);
 	}
 
-	void Entity::SetRenderLayer(const int& layer) {
-		if(m_layer == layer) return;
+	//void Entity::SetRenderLayer(const int& layer) {
+	//	if(m_layer == layer) return;
 
-		if(ComponentHandler::MeshInstanceExist(m_id)) {
-			int l = layer;
-			Clamp(l, -3, 3);
-			ComponentHandler::GetLayer(m_layer + 3).at(m_id) = nullptr;
-			ComponentHandler::GetLayer(m_layer + 3).erase(m_id);
-			ComponentHandler::SetRenderLayer(ComponentHandler::GetMeshInstance(m_id), m_id, l + 3);
-		}
+	//	if(ComponentHandler::MeshInstanceExist(m_id)) {
+	//		int l = layer;
+	//		Clamp(l, -3, 3);
+	//		ComponentHandler::GetLayer(m_layer + 3).at(m_id) = nullptr;
+	//		ComponentHandler::GetLayer(m_layer + 3).erase(m_id);
+	//		ComponentHandler::SetRenderLayer(ComponentHandler::GetMeshInstance(m_id), m_id, l + 3);
+	//	}
 
-		m_layer = layer;
-	}
+	//	m_layer = layer;
+	//}
 
 	void Entity::SetParent(Entity& parent) {
 		if(parent.m_parentId != m_id) {

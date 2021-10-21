@@ -47,9 +47,11 @@ namespace Aen {
 			return m_mesheInstances.count(id) > 0;
 		}
 
-		static void CreateMeshInstance(const uint32_t& id, const uint32_t& layer) {
-			m_mesheInstances.emplace(id, AEN_NEW MeshInstance());
-			m_meshLayer[layer].emplace(id, m_mesheInstances.at(id));
+		static void CreateMeshInstance(const uint32_t& id) {
+			MeshInstance* m = AEN_NEW MeshInstance();
+			m_mesheInstances.emplace(id, m);
+			m_drawables.emplace(id, m);
+			m = nullptr;
 		}
 
 		static void RemoveMeshInstance(const uint32_t& id) {
@@ -57,6 +59,7 @@ namespace Aen {
 				delete m_mesheInstances.at(id);
 				m_mesheInstances.at(id) = nullptr;
 				m_mesheInstances.erase(id);
+				m_drawables.erase(id);
 			}
 		}
 
@@ -290,6 +293,7 @@ namespace Aen {
 		static std::unordered_map<uint32_t, Rotation*> m_rotations;
 		static std::unordered_map<uint32_t, Scale*> m_scales;
 		static std::unordered_map<uint32_t, RigidBody*> m_rigids;
+		static std::unordered_map<uint32_t, Drawable*> m_drawables;
 		static std::multimap<uint32_t, Light*> m_lights;
 		
 		

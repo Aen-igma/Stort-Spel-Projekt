@@ -4,10 +4,10 @@
 NodeStruct::NodeStruct()
 {
 	this->m_ID = 0;
-	this->mp_boundBox = nullptr;
+	this->m_RenderLayer = 0;
 }
 
-NodeStruct::NodeStruct(int ID, int RenderLayer, DirectX::BoundingBox* boundingBox)
+NodeStruct::NodeStruct(int ID, int RenderLayer, DirectX::BoundingBox boundingBox)
 {
 	this->m_ID = ID;
 	this->m_RenderLayer = RenderLayer;
@@ -16,22 +16,22 @@ NodeStruct::NodeStruct(int ID, int RenderLayer, DirectX::BoundingBox* boundingBo
 
 NodeStruct::~NodeStruct()
 {
-	delete this->mp_boundBox;
+	//delete this->mp_boundBox;
 } 
 
-QuadStruct::QuadStruct()
+QuadOutput::QuadOutput()
 {
 	m_ID = 0;
 	m_RenderLayer = 0;
 }
 
-QuadStruct::QuadStruct(int ID, int Layer)
+QuadOutput::QuadOutput(int ID, uint32_t Layer)
 {
 	m_ID = ID;
 	m_RenderLayer = Layer;
 }
 
-QuadStruct::~QuadStruct()
+QuadOutput::~QuadOutput()
 {
 
 }
@@ -87,7 +87,7 @@ void Node::Insert(NodeStruct* obj)
 	{
 		for (int i = 0; i < 4; i++)//Kollar igenom alla children
 		{
-			if (mp_children[i]->m_DirectXAABB.Intersects(*obj->mp_boundBox))
+			if (mp_children[i]->m_DirectXAABB.Intersects(obj->mp_boundBox))
 			{
 				mp_children[i]->Insert(obj);
 			}
@@ -126,15 +126,15 @@ bool Node::Inside(DirectX::BoundingBox& playerBox)
 	return false;
 }
 //NodeStruct* tempObj = AEN_NEW NodeStruct(i.first, EntityHandler::GetEntity(i.first).GetLayer(), &i.second->GetMeshAABB());
-void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<QuadStruct*>& output) //View frustrum culling
+void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<QuadOutput*>& output) //View frustrum culling
 {
 	if (!mp_children[0])
 	{
 		for (auto & obj : m_Objs)
 		{
-				if(other.Intersects(*obj->mp_boundBox))
+				if(other.Intersects(obj->mp_boundBox))
 				{
-					QuadStruct* tempQuadObj = AEN_NEW QuadStruct(obj->m_ID, obj->m_RenderLayer); // Kan skapa minnes läkor
+					QuadOutput* tempQuadObj = AEN_NEW QuadOutput(obj->m_ID, obj->m_RenderLayer); // Kan skapa minnes läkor
 					output.push_back(tempQuadObj);
 					//output.push_back(obj->m_ID); //Läger till ID av objekt
 				}
@@ -182,13 +182,13 @@ void Node::Subdivide()
 	//------------- Check which objects is in which quad ---------------//
 	for (auto&& box : m_Objs)
 	{
-		if (mp_children[0]->m_DirectXAABB.Intersects(*box->mp_boundBox))
+		if (mp_children[0]->m_DirectXAABB.Intersects(box->mp_boundBox))
 			mp_children[0]->Insert(box);
-		if (mp_children[1]->m_DirectXAABB.Intersects(*box->mp_boundBox))
+		if (mp_children[1]->m_DirectXAABB.Intersects(box->mp_boundBox))
 			mp_children[1]->Insert(box);
-		if (mp_children[2]->m_DirectXAABB.Intersects(*box->mp_boundBox))
+		if (mp_children[2]->m_DirectXAABB.Intersects(box->mp_boundBox))
 			mp_children[2]->Insert(box);
-		if (mp_children[3]->m_DirectXAABB.Intersects(*box->mp_boundBox))
+		if (mp_children[3]->m_DirectXAABB.Intersects(box->mp_boundBox))
 			mp_children[3]->Insert(box);
 	}
 	

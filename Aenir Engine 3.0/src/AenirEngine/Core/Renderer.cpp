@@ -20,7 +20,7 @@ namespace Aen {
 		m_viewPort.Height = static_cast<float>(m_window.GetSize().y);
 		m_viewPort.MinDepth = 0.f;
 		m_viewPort.MaxDepth = 1.f;
-
+		
 		if(!m_opaqueVS.Create(AEN_OUTPUT_DIR_WSTR(L"OpaqueVS.cso")))
 			if(!m_opaqueVS.Create(L"OpaqueVS.cso"))
 				throw;

@@ -13,23 +13,23 @@ struct NodeStruct
 {
 	int m_ID;
 	int m_RenderLayer;
-	DirectX::BoundingBox* mp_boundBox;
+	DirectX::BoundingBox mp_boundBox;
 
 
 	NodeStruct();
-	NodeStruct(int ID, int RenderLayer, DirectX::BoundingBox* boundingBox);
+	NodeStruct(int ID, int RenderLayer, DirectX::BoundingBox boundingBox);
 	~NodeStruct();
 
 };
 
-struct QuadStruct
+struct QuadOutput
 {
 	int m_ID;
-	int m_RenderLayer;
+	uint32_t m_RenderLayer;
 
-	QuadStruct();
-	QuadStruct(int ID, int Layer);
-	~QuadStruct();
+	QuadOutput();
+	QuadOutput(int ID, uint32_t Layer);
+	~QuadOutput();
 };
 
 
@@ -42,7 +42,7 @@ public:
 	~Node();
 	void Insert(NodeStruct* obj);
 	bool Inside(DirectX::BoundingBox& playerBox); //not needed
-	void IntersectTest(const DirectX::BoundingFrustum &other, std::vector<QuadStruct*>& output); //Output = Id for objects
+	void IntersectTest(const DirectX::BoundingFrustum &other, std::vector<QuadOutput*>& output); //Output = Id for objects
 	//Problem kan vara att flera noder kan uppstå, behövs fixas senare.
 
 	void SmartPointer(std::shared_ptr<NodeStruct> ptr);

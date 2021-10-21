@@ -26,7 +26,7 @@ namespace Aen
 		std::vector<NodeStruct*> m_boundingVolStructs;
 		Aen::EntityHandler* mp_entityHandlerPtr;
 		DirectX::BoundingFrustum m_cameraFrustrum;
-		std::vector<QuadStruct*> m_QuadObjectsToRender;
+		std::vector<QuadOutput*> m_QuadObjectsToRender;
 
 	};
 }

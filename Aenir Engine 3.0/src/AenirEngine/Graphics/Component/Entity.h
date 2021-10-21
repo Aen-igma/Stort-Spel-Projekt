@@ -13,7 +13,7 @@ namespace Aen {
 		T& GetComponent();
 
 		void SetTag(const std::string& tag);
-		void SetRenderLayer(const int& layer);
+		//void SetRenderLayer(const int& layer);
 		void SetParent(Entity& parent);
 		void RemoveParent();
 
@@ -50,7 +50,7 @@ namespace Aen {
 
 		const size_t m_id;
 		size_t m_parentId;
-		size_t m_layer;
+		//size_t m_layer;
 		bool m_hasParent;
 		std::string m_tag;
 
@@ -91,7 +91,7 @@ namespace Aen {
 	template<>
 	inline void Entity::AddComponent<MeshInstance>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
-			ComponentHandler::CreateMeshInstance(m_id, m_layer + 3);
+			ComponentHandler::CreateMeshInstance(m_id);
 
 		AddComponent<Translation>();
 		AddComponent<Rotation>();
@@ -101,7 +101,7 @@ namespace Aen {
 	template<>
 	inline void Entity::AddComponent<Mesh>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
-			ComponentHandler::CreateMeshInstance(m_id, m_layer + 3);
+			ComponentHandler::CreateMeshInstance(m_id);
 
 		AddComponent<Translation>();
 		AddComponent<Rotation>();

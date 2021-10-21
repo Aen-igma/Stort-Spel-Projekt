@@ -47,9 +47,11 @@ namespace Aen
 		//}
 
 		bool valid;
+		uint32_t layer;
+		DirectX::BoundingBox box;
 		// Setup First Quad in quadtree
 		//first = ID, second = component,
-		for(auto & i: ComponentHandler::m_mesheInstances)
+		for(auto & i: ComponentHandler::m_drawables)
 		{
 			valid = true;
 			if (ComponentHandler::RigidExist(i.first))
@@ -63,7 +65,13 @@ namespace Aen
 			//}
 			if (valid)
 			{
-				NodeStruct* tempObj = AEN_NEW NodeStruct(i.first, EntityHandler::GetEntity(i.first).GetLayer(), &i.second->GetMeshAABB());
+				layer = i.second->GetLayer() + 3;
+				box = i.second->GetAABB();
+
+				box.Extents = i.second->GetAABB().Extents * ComponentHandler::GetScale(i.first).GetScale().smVec;
+				box.Center = ComponentHandler::GetTranslation(i.first).GetPos().smVec;
+
+				NodeStruct* tempObj = AEN_NEW NodeStruct(i.first, layer, box);
 				this->mp_root->Insert(tempObj);
 				this->m_boundingVolStructs.push_back(tempObj);
 			}
@@ -79,6 +87,16 @@ namespace Aen
 
 			m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetProjecton().smMat);
 			this->mp_root->IntersectTest(m_cameraFrustrum, m_QuadObjectsToRender);
+
+
+			for (auto& i : ComponentHandler::m_meshLayer)
+				i.clear();
+
+			for(auto& i : m_QuadObjectsToRender){
+				ComponentHandler::m_meshLayer[i->m_RenderLayer].emplace(i->m_ID, ComponentHandler::m_mesheInstances.at(i->m_ID));
+			}
+
+
 
 			/*
 			for (auto& i : m_QuadObjectsToRender) // For every object seen

@@ -14,22 +14,10 @@ namespace Aen {
 	}
 
 	MeshInstance::MeshInstance()
-		:m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {
-
-		this->m_MeshAABB = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0),
-			DirectX::XMFLOAT3(1.f, 1.f, 1.f));
-		this->m_InQuadtree = true;
-	}
+		:m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
 
 	MeshInstance::MeshInstance(Mesh& mesh)
-		:m_pMesh(&mesh) {
-
-		this->m_MeshAABB = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0),
-			DirectX::XMFLOAT3(1.f, 1.f, 1.f));
-		this->m_InQuadtree = true;
-	}
-
-
+		:m_pMesh(&mesh) {}
 
 	void MeshInstance::RemoveMesh() {
 		for(auto& i : m_pMaterials)
@@ -68,12 +56,6 @@ namespace Aen {
 		if(m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
 		if(!Resource::MaterialExist(materialName)) throw;
 		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
-	}
-
-	DirectX::BoundingBox& MeshInstance::GetMeshAABB()
-	{
-		return this->m_MeshAABB;
-
 	}
 
 	/*void MeshInstance::SetInQuadtree(bool inQuad)

@@ -25,7 +25,6 @@ namespace Aen {
 		m_WorldBox = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(100.f, 100.f, 100.f));
 		m_Quadtree = new Quadtree(m_WorldBox, 0, 3, 4);
 
-		m_Quadtree->Initialize(); 
 
 		
 		GlobalSettings::Initialize(m_app->m_window);
@@ -34,6 +33,8 @@ namespace Aen {
 		m_renderer->Initialize();
 
 		m_app->Start();
+
+		m_Quadtree->Initialize(); 
 	}
 
 	void GameLoop::Run() {
