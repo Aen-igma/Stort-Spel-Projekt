@@ -2,6 +2,7 @@
 #include "States.h"
 #include "../Level/LevelGenerator.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
+#include "AenirEngine\Graphics\Component\EntityHandler.h"
 #include <stack>
 
 class Gameplay : public State
