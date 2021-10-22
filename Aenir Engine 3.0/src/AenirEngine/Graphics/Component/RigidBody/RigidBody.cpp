@@ -229,7 +229,6 @@ namespace Aen {
 			t = mp_StaticBody->getGlobalPose();
 			return MatTranslate(t.p.x, t.p.y, t.p.z);
 		}
-
 	}
 
 	void RigidBody::SetPos(const Vec3f& pos) {
@@ -255,4 +254,19 @@ namespace Aen {
 	void RigidBody::SetRot(const Vec3f& rot) {}
 
 	void RigidBody::SetRot(const float& p, const float& y, const float& r) {}
+
+	const Vec3f RigidBody::GetPos() {
+		px::PxTransform t;
+		ZeroMemory(&t, sizeof(px::PxTransform));
+		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody)
+			t = mp_DynamicBody->getGlobalPose();
+		else if(mp_StaticBody) 
+			t = mp_StaticBody->getGlobalPose();
+
+		return Vec3f(t.p.x, t.p.y, t.p.z);
+	}
+
+	const Vec3f RigidBody::GetRot() {
+		return Vec3f();
+	}
 }

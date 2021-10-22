@@ -70,7 +70,6 @@ namespace Aen {
 			Vec3f pos = pCam->GetPos();
 			Vec3f rot = pCam->GetRot();
 
-			pCam->GetComponent<Camera>().LookTowards(Transform(pCam->GetRotMat(), Vec3f(0.f, 0.f, -1.f)));
 			pCam->GetComponent<Camera>().UpdateView(pos, rot);
 
 			m_cbCamera.GetData().pos = { pos.x, pos.y, pos.z };

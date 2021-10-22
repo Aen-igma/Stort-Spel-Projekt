@@ -1,5 +1,6 @@
 #pragma once
 
+#include"AenDefines.h"
 #include"../../ThirdParty/SimpleMath/SimpleMath.h"
 #include<DirectXMath.h>
 #include<type_traits>

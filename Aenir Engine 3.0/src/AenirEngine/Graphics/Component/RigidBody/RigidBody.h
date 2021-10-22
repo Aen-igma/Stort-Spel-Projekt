@@ -65,9 +65,11 @@ namespace Aen {
 	const Mat4f GetTransform();
 	void SetPos(const Vec3f& pos);
 	void SetPos(const float& x, const float& y, const float& z);
-
 	void SetRot(const Vec3f& rot);
 	void SetRot(const float& p, const float& y, const float& r);
+
+	const Vec3f GetPos();
+	const Vec3f GetRot();
 
 	float m_mass;
 	float m_sleep;

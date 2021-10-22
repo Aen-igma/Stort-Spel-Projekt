@@ -5,35 +5,7 @@ Gameplay::Gameplay(Aen::Window& window)
 {
 }
 
-Gameplay::~Gameplay()
-{
-	//Aen::GlobalSettings::RemoveMainCamera();
-	//for (UINT i = 0; i < mapSize * mapSize; i++) {
-	//	if (rooms[i] != nullptr) {
-	//		delete rooms[i];
-	//		rooms[i] = nullptr;
-	//	}
-	//}
-
-	//for (int i = 0; i < m_reimubes.size(); i++)
-	//{
-	//	m_reimubes[i] = nullptr;
-	//	delete m_reimubes[i];
-	//}
-	//m_reimubes.clear();
-
-	//for (int i = 0; i < m_pLights.size(); i++)
-	//{
-	//	m_pLights[i] = nullptr;
-	//	delete m_pLights[i];
-	//}
-	//m_pLights.clear();
-
-	m_meshcube = nullptr;
-	m_reimubeMesh = nullptr;
-	m_ReimuMat = nullptr;
-	m_ReimuTex = nullptr;
-}
+Gameplay::~Gameplay() {}
 
 void Gameplay::Initialize()
 {
@@ -56,147 +28,40 @@ void Gameplay::Initialize()
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
 	m_dLight->SetRot(45.f, -135.f, 0.f);
 
-	// --------------------------- Setup Spot Light ----------------------------- //
-
-	m_spotLight = &Aen::EntityHandler::CreateEntity();
-	m_spotLight->AddComponent<Aen::SpotLight>();
-	m_spotLight->GetComponent<Aen::SpotLight>().SetColor(Aen::Color::Red);
-	m_spotLight->GetComponent<Aen::SpotLight>().SetStrength(1.f);
-	m_spotLight->GetComponent<Aen::SpotLight>().SetConeSize(40.f);
-	m_spotLight->GetComponent<Aen::SpotLight>().SetStrength(500.f);
-	m_spotLight->GetComponent<Aen::SpotLight>().SetLightDist(1.f, 0.f, 0.f, 10.f);
-	m_spotLight->SetPos(0.f, 2.f, -5.f);
-	m_spotLight->SetRot(45.f, 0.f, 0.f);
-
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
-	Aen::Mesh& skele = Aen::Resource::CreateMesh("Cylinder");
-	Aen::Mesh& gob = Aen::Resource::CreateMesh("Goblin");
-	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
-	Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
-	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
-	skele.Load(AEN_RESOURCE_DIR("combinedShapes.fbx"));
-	gob.Load(AEN_RESOURCE_DIR("GobTriMtrl.fbx"));
-	//skele.PrintMaterialSlots();
-	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
-	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
+	plane.Load(AEN_RESOURCE_DIR("Plane.fbx"));
+	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
+	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
 
-	// ----------------------------- Load Reimushes -------------------------------- //
+	// -------------------------- Setup Material -------------------------------- //
 
-	m_ReimuTex = &Aen::Resource::CreateTexture("ReimuTex");
-	m_ReimuMat = &Aen::Resource::CreateMaterial("ReimuMat");
-	m_reimubeMesh = &Aen::Resource::CreateMesh("Cube");
-	m_reimubeMesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
-	m_ReimuTex->LoadTexture(AEN_RESOURCE_DIR("Reimu.png"));
-	m_ReimuMat->SetDiffuseMap(*m_ReimuTex);
+	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
+	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 
-	(*m_ReimuMat)["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
-	(*m_ReimuMat)["InnerEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
-	(*m_ReimuMat)["OuterEdgeThickness"] = 3;
-	(*m_ReimuMat)["InnerEdgeThickness"] = 3;
+	planeMat["BaseColor"] = Aen::Color::White;
+	playerMat["BaseColor"] = Aen::Color::White;
 
-	m_meshcube = &cube;
-
-	// ASSIMP
-	Aen::Texture& pengDiff = Aen::Resource::CreateTexture("PengTexture");
-	Aen::Material& pengMtrl = Aen::Resource::CreateMaterial("PengMtrl");
-	pengDiff.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
-	pengMtrl.SetDiffuseMap(pengDiff);
-
-	Aen::Texture& gobDiff = Aen::Resource::CreateTexture("GobTexture");
-	Aen::Material& gobMtrl = Aen::Resource::CreateMaterial("GobMtrl");
-	gobDiff.LoadTexture(AEN_RESOURCE_DIR("body_diffuse.png"));
-	gobMtrl.SetDiffuseMap(gobDiff);
 	// -------------------------- Setup Entities -------------------------------- //
-
-	m_sphere = &Aen::EntityHandler::CreateEntity();
-	m_sphere->AddComponent<Aen::MeshInstance>();
-	m_sphere->GetComponent<Aen::MeshInstance>().SetMesh(sphere);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::RigidBody>();
 	m_plane->AddComponent<Aen::MeshInstance>();
 	m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
+	m_plane->SetScale(0.5f, 0.5f, 0.5f);
 
-	//m_plane.SetPos(0.f, -2.f, 0.f);
-	m_plane->SetScale(40.f, 1.f, 40.f);
+	m_player = &Aen::EntityHandler::CreateEntity();
+	m_player->AddComponent<Aen::CharacterController>();
+	m_player->AddComponent<Aen::MeshInstance>();
+	m_player->GetComponent<Aen::MeshInstance>().SetMesh(capsule);
+	m_player->GetComponent<Aen::MeshInstance>().SetMaterial(playerMat);
+	m_player->SetPos(0.f, 1.f, 0.f);
 
-	/*m_plane1.AddComponent<Aen::MeshInstance>();
-	m_plane1.GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	m_plane1.SetPos(0.f, 8.f, -10.f);
-	m_plane1.SetScale(20.f, 1.f, 20.f);
-	m_plane1.SetRot(90.f, 0.f, 0.f);*/
-
-	m_cube = &Aen::EntityHandler::CreateEntity();
-	m_cube->AddComponent<Aen::MeshInstance>();
-	m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	m_cube->SetPos(0.f, 8.f, 10.f);
-	m_cube->SetScale(20.f, 20.f, 1.f);
-	m_cube->SetRenderLayer(-1);
-
-	m_cube = &Aen::EntityHandler::CreateEntity();
-	m_cube->AddComponent<Aen::MeshInstance>();
-	m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	m_cube->SetPos(0.f, 8.f, 10.f);
-	m_cube->SetScale(20.f, 20.f, 1.f);
-
-	m_goblin = &Aen::EntityHandler::CreateEntity();
-	m_goblin->AddComponent<Aen::MeshInstance>();
-	m_goblin->GetComponent<Aen::MeshInstance>().SetMesh(gob);
-	m_goblin->GetComponent<Aen::MeshInstance>().SetMaterial(gobMtrl);
-
-	m_goblin->SetPos(0.f, 2.f, 4.f);
-
-	/* ----------------------------- Load EmissionCube -------------------------------- */
-
-	m_emiCube = &Aen::EntityHandler::CreateEntity();
-	m_emiCube->AddComponent<Aen::MeshInstance>();
-	m_emiCube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
-	m_emiCube->SetPos(0.f, 3.f, -5.f);
-
-
-	Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
-	Aen::Texture& peng = Aen::Resource::CreateTexture("NekoTexture");
-	Aen::Material& emissionMtrl = Aen::Resource::CreateMaterial("EmiMtrl");
-	face.LoadTexture(AEN_RESOURCE_DIR("emmissionS.png"));
-	peng.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
-	emissionMtrl.SetEmissionMap(face);
-	emissionMtrl.SetDiffuseMap(peng);
-	emissionMtrl["GlowColor"] = Aen::Color::Green;
-	emissionMtrl["OuterEdgeThickness"] = 2;
-	emissionMtrl["InnerEdgeThickness"] = 2;
-	emissionMtrl["OuterEdgeColor"] = Aen::Color::Green;
-	emissionMtrl["InnerEdgeColor"] = Aen::Color::Green;
-
-	m_emiCube->GetComponent<Aen::MeshInstance>().SetMaterial(emissionMtrl);
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
-
-	// ------------------- Procedural generation testing staging grounds ------- //
-
-	//LevelGenerator::GenerationTestingFunction();
-	/*srand((unsigned int)time(NULL));
-	SetLehmerConstSeed(100);
-	LehmerInt();
-	Room* map = LevelGenerator::GenerationTestingFunction();*/
-
-	/*for (UINT y = 0; y < mapSize; y++) {
-		for (UINT x = 0; x < mapSize; x++) {
-			if (map[x + y * mapSize].m_present) {
-				rooms[x + y * mapSize] = new Aen::Entity();
-				rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
-				rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-				rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
-			}
-			else {
-				if (rooms[x + y * mapSize] != nullptr)
-					delete rooms[x + y * mapSize];
-				rooms[x + y * mapSize] = nullptr;
-			}
-		}
-	}*/
 
 	Aen::Input::ToggleRawMouse(false);
 	cout << "Press Enter To Continue\n";
@@ -235,31 +100,6 @@ void Gameplay::Update(const float& deltaTime)
 
 	static Aen::Vec2i mouseAxis;
 
-	/*if (Aen::Input::KeyDown(Aen::Key::L)) {
-
-		SetLehmerConstSeed(LehmerInt());
-		Room* map = LevelGenerator::GenerationTestingFunction();
-
-		for (UINT y = 0; y < mapSize; y++) {
-			for (UINT x = 0; x < mapSize; x++) {
-				if (map[x + y * mapSize].m_present) {
-					if (rooms[x + y * mapSize] == nullptr) {
-						rooms[x + y * mapSize] = new Aen::Entity();
-						rooms[x + y * mapSize]->AddComponent<Aen::MeshInstance>();
-						rooms[x + y * mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-						rooms[x + y * mapSize]->SetPos(x * 2, 0.f, y * 2);
-					}
-				}
-				else {
-					if (rooms[x + y * mapSize] != nullptr){
-						delete rooms[x + y * mapSize];
-						rooms[x + y * mapSize] = nullptr;
-					}
-				}
-			}
-		}
-	}*/
-
 	if (Aen::Input::KeyPress(Aen::Key::RMOUSE)) {
 		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;
 		m_camera->MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
@@ -279,6 +119,10 @@ void Gameplay::Update(const float& deltaTime)
 		Aen::Input::SetMouseVisible(true);
 		Aen::Input::ToggleRawMouse(false);
 	}
+
+	m_player->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(0.f, -1.f, 0.f), deltaTime);
+	Aen::Vec3f look(0.f, 0.f, -1.f);
+	m_camera->GetComponent<Aen::Camera>().LookTowards(look);
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
@@ -307,66 +151,6 @@ void Gameplay::Update(const float& deltaTime)
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		m_Window.Exit();
 
-	// ---------------------------------------------------------------------------------- //
-
-	if (Aen::Input::KeyDown(Aen::Key::G)) {
-		Aen::Entity& e = Aen::EntityHandler::CreateEntity();
-
-		int r = rand() % 6;
-		Aen::Color clr;
-		switch (r) {
-		case 0: clr = Aen::Color::Red;
-			break;
-		case 1: clr = Aen::Color::Green;
-			break;
-		case 2: clr = Aen::Color::Blue;
-			break;
-		case 3: clr = Aen::Color::Magenta;
-			break;
-		case 4: clr = Aen::Color::Yellow;
-			break;
-		case 5: clr = Aen::Color::Cyan;
-			break;
-		}
-
-		e.AddComponent<Aen::PointLight>();
-		e.GetComponent<Aen::PointLight>().SetColor(clr);
-		e.GetComponent<Aen::PointLight>().SetLightDist(1.f, 1.f, 1.f, 5.f);
-		e.GetComponent<Aen::PointLight>().SetStrength(100.f);
-		e.SetPos(rand() % 20 - 10, 1.f / (rand() % 100) + 0.5f, rand() % 20 - 20);
-		m_pLights.push(&e);
-	}
-
-	if (Aen::Input::KeyPress(Aen::Key::H)) {
-		if (!m_pLights.empty()) {
-			Aen::EntityHandler::RemoveEntity(*m_pLights.top());
-			m_pLights.pop();
-		}
-	}
-
-	// ------------------------------------- Reimubes -------------------------------------- //
-
-	if (Aen::Input::KeyPress(Aen::Key::J)) {
-		Aen::Entity& e = Aen::EntityHandler::CreateEntity();
-		e.AddComponent<Aen::RigidBody>();
-		e.AddComponent<Aen::MeshInstance>();
-
-		e.GetComponent<Aen::MeshInstance>().SetMesh(*m_reimubeMesh);
-		e.GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
-		e.GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE);
-		e.GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::DYNAMIC);
-		e.SetPos(0.f, 10.f, 0.f);
-
-		m_reimubes.push(&e);
-	}
-
-	if (Aen::Input::KeyPress(Aen::Key::K)) {
-		if (!m_reimubes.empty()) {
-			Aen::EntityHandler::RemoveEntity(*m_reimubes.top());
-			m_reimubes.pop();
-		}
-	}
-
 	// ------------------------------------- States -------------------------------------- //
 	if (Aen::Input::KeyDown(Aen::Key::ENTER))
 	{
@@ -374,6 +158,4 @@ void Gameplay::Update(const float& deltaTime)
 	}
 
 	cout << "Press Enter to Change to Main Menu\n";
-
-	//cout << m_camera.GetRot().y << endl;
 }

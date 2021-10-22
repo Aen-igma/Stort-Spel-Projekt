@@ -11,10 +11,10 @@ namespace Aen {
 		desc.climbingMode = px::PxCapsuleClimbingMode::eCONSTRAINED;
 		desc.nonWalkableMode = px::PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
 		desc.radius = 0.5f;
-		desc.height = 1.3f;
+		desc.height = 0.99f;
 		desc.slopeLimit = 45.f;
 		desc.stepOffset = 0.25f;
-		desc.contactOffset = 0.1f;
+		desc.contactOffset = 0.01f;
 		desc.upDirection = px::PxVec3(0.f, 1.f, 0.f);
 		desc.material = m_physics->createMaterial(0.f, 0.f, 0.f);
 		if(!desc.isValid())

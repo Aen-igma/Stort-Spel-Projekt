@@ -142,15 +142,30 @@ namespace Aen {
 		ComponentHandler::GetScale(m_id).SetScale(x, y, z);
 	}
 
-	const Vec3f& Entity::GetPos() {
-		return ComponentHandler::GetTranslation(m_id).GetPos();
+	const Vec3f Entity::GetPos() {
+
+		Vec3f pos;
+		if(ComponentHandler::RigidExist(m_id))
+			pos = ComponentHandler::GetRigid(m_id).GetPos();
+		else if(ComponentHandler::CharacterControllerExist(m_id))
+			pos = ComponentHandler::GetCharacterController(m_id).GetPos();
+		else
+			pos = ComponentHandler::GetTranslation(m_id).GetPos();
+
+		return pos;
 	}
 
-	const Vec3f& Entity::GetRot() {
-		return ComponentHandler::GetRotation(m_id).GetRot();
+	const Vec3f Entity::GetRot() {
+		Vec3f rot;
+		if(ComponentHandler::RigidExist(m_id))
+			rot = ComponentHandler::GetRigid(m_id).GetRot();
+		else
+			rot = ComponentHandler::GetRotation(m_id).GetRot();
+
+		return rot;
 	}
 
-	const Vec3f& Entity::GetScale() {
+	const Vec3f Entity::GetScale() {
 		return ComponentHandler::GetScale(m_id).GetScale();
 	}
 
