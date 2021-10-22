@@ -14,6 +14,7 @@ namespace Aen {
 		void SetMaterial(Material& material);
 		void SetMaterial(const std::string& materialSlotName, Material& material);
 		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
+		void SetMaterial(const UINT& index, Material& material);
 
 		private:
 		~MeshInstance();
