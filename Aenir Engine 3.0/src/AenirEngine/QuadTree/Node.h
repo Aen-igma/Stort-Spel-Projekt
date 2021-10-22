@@ -50,6 +50,7 @@ private:
 	Node* mp_children[4] = { nullptr };
 	DirectX::BoundingBox m_DirectXAABB;
 	std::vector<NodeStruct*> m_Objs;
+	QuadOutput m_TempQuadObj;
 
 	unsigned m_level;
 	unsigned m_maxLevel;

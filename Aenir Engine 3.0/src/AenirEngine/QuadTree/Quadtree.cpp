@@ -84,7 +84,9 @@ namespace Aen
 		if (GlobalSettings::GetMainCamera())
 		{
 
-			m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetProjecton().smMat);
+			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetProjecton().smMat);
+			m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetView().smMat);
+			
 			this->mp_root->IntersectTest(m_cameraFrustrum, m_QuadObjectsToRender);
 
 
@@ -116,12 +118,18 @@ namespace Aen
 			*/
 
 
-		/*	if (Input::KeyDown(Key::V))
+			//if (Input::KeyDown(Key::V))
+			//{
+			/*std::string tempString;
+			std::cout << "Objects to render: ";
+			for (auto& b : m_QuadObjectsToRender)
 			{
-				std::cout << "Objects to render: ";
-				for (auto& b : output)
-					std::cout << b << ", \n";
-			}*/
+				tempString = std::to_string(b->m_ID);
+				OutputDebugString(tempString.c_str());
+			}
+			OutputDebugString("\n");*/
+	
+			//}
 		}
 	}
 
