@@ -46,18 +46,18 @@ namespace Aen
 		//	}
 		//}
 
-		bool valid;
+		bool valid = true;
 		uint32_t layer;
 		DirectX::BoundingBox box;
 		// Setup First Quad in quadtree
 		//first = ID, second = component,
 		for(auto & i: ComponentHandler::m_drawables)
 		{
-			valid = true;
+			//valid = true;
 			if (ComponentHandler::RigidExist(i.first))
 			{
 				//ComponentHandler::GetRigid(i.first).GetType() == dynamic;
-				//valid = false;
+				valid = false;
 			}
 			//if (ComponentHandler::CharacterExist(i.first)) 
 			//{
@@ -85,13 +85,18 @@ namespace Aen
 		{
 
 			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetProjecton().smMat);
-			m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetView().smMat);
-			
-			this->mp_root->IntersectTest(m_cameraFrustrum, m_QuadObjectsToRender);
-
-
+			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetView().smMat);
+			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetVPMatrix().Transposed().smMat);
+			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetVPMatrix().smMat);
 			for (auto& i : ComponentHandler::m_meshLayer)
+			{
 				i.clear();
+			}
+
+			m_QuadObjectsToRender.clear();
+			
+			DirectX::BoundingFrustum::CreateFromMatrix(m_cameraFrustrum, GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetVPMatrix().smMat);
+			this->mp_root->IntersectTest(m_cameraFrustrum, m_QuadObjectsToRender);
 
 			for(auto& i : m_QuadObjectsToRender){
 				ComponentHandler::m_meshLayer[i->m_RenderLayer].emplace(i->m_ID, ComponentHandler::m_mesheInstances.at(i->m_ID));
@@ -120,14 +125,14 @@ namespace Aen
 
 			//if (Input::KeyDown(Key::V))
 			//{
-			/*std::string tempString;
+			std::string tempString;
 			std::cout << "Objects to render: ";
 			for (auto& b : m_QuadObjectsToRender)
 			{
-				tempString = std::to_string(b->m_ID);
+				tempString = "(" + std::to_string(b->m_ID) + ", " + std::to_string(b->m_RenderLayer) + ")";
 				OutputDebugString(tempString.c_str());
 			}
-			OutputDebugString("\n");*/
+			OutputDebugString("\n");
 	
 			//}
 		}
