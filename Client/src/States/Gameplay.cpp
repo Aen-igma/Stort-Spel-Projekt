@@ -33,14 +33,14 @@ void Gameplay::Initialize()
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	plane.Load(AEN_RESOURCE_DIR("Plane.fbx"));
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
+	capsule.Load(AEN_RESOURCE_DIR("Capsule.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 
-	planeMat["BaseColor"] = Aen::Color::White;
+	planeMat["BaseColor"] = Aen::Color(.4f, .4f, .4f, 1.f);
 	playerMat["BaseColor"] = Aen::Color::White;
 
 	// -------------------------- Setup Entities -------------------------------- //
