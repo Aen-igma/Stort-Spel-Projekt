@@ -255,6 +255,9 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\CharacterController\CharacterController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\Importer\AssimpImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -263,7 +266,7 @@
     <ClInclude Include="src\AenirEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\WinMain.h">
+    <ClInclude Include="src\AenirEngine\WinMain.cpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\AenDefines.h">
@@ -486,6 +489,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\CharacterController\CharacterController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Importer\AssimpImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
