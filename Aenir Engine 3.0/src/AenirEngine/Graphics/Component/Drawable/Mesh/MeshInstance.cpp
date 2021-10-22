@@ -46,6 +46,10 @@ namespace Aen {
 		m_pMaterials[0] = &material;
 	}
 
+	void MeshInstance::SetMaterial(const UINT& index, Material& material) {
+		m_pMaterials[index] = &material;
+	}
+
 	void MeshInstance::SetMaterial(const std::string& materialSlotName, Material& material) {
 		if(m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
 		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &material;

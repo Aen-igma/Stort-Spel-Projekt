@@ -19,6 +19,7 @@ private:
     Aen::Entity* m_plane;
     Aen::Entity* m_plane1;
     Aen::Entity* m_cube;
+    Aen::Entity* m_2mat;
 
     //Aen::Entity* m_skele;
     Aen::Entity* m_goblin;

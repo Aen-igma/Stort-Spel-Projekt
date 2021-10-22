@@ -76,9 +76,10 @@ void Gameplay::Initialize()
 	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
 	Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
 	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
-	skele.Load(AEN_RESOURCE_DIR("combinedShapes.fbx"));
+	skele.Load(AEN_RESOURCE_DIR("Cube2MatT.fbx"));
+	skele.PrintMaterialSlots();
 	gob.Load(AEN_RESOURCE_DIR("GobTriMtrl.fbx"));
-	//skele.PrintMaterialSlots();
+	skele.PrintMaterialSlots();
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
 	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
@@ -100,9 +101,13 @@ void Gameplay::Initialize()
 
 	// ASSIMP
 	Aen::Texture& pengDiff = Aen::Resource::CreateTexture("PengTexture");
+	Aen::Texture& pengDiff2 = Aen::Resource::CreateTexture("PengTexture2");
 	Aen::Material& pengMtrl = Aen::Resource::CreateMaterial("PengMtrl");
+	Aen::Material& pengMtrl2 = Aen::Resource::CreateMaterial("PengMtrl2");
 	pengDiff.LoadTexture(AEN_RESOURCE_DIR("gunter2.png"));
+	pengDiff2.LoadTexture(AEN_RESOURCE_DIR("greenMage.png"));
 	pengMtrl.SetDiffuseMap(pengDiff);
+	pengMtrl2.SetDiffuseMap(pengDiff2);
 
 	Aen::Texture& gobDiff = Aen::Resource::CreateTexture("GobTexture");
 	Aen::Material& gobMtrl = Aen::Resource::CreateMaterial("GobMtrl");
@@ -147,6 +152,14 @@ void Gameplay::Initialize()
 	m_goblin->GetComponent<Aen::MeshInstance>().SetMaterial(gobMtrl);
 
 	m_goblin->SetPos(0.f, 2.f, 4.f);
+
+	m_2mat = &Aen::EntityHandler::CreateEntity();
+	m_2mat->AddComponent<Aen::MeshInstance>();
+	m_2mat->GetComponent<Aen::MeshInstance>().SetMesh(skele);
+	m_2mat->GetComponent<Aen::MeshInstance>().SetMaterial(pengMtrl);
+	m_2mat->GetComponent<Aen::MeshInstance>().SetMaterial("lambert3", pengMtrl2);
+
+	m_2mat->SetPos(0.f, 4.f, 0.f);
 
 	/* ----------------------------- Load EmissionCube -------------------------------- */
 
