@@ -4,7 +4,7 @@
 namespace Aen {
 
     Camera::Camera()
-        :m_view(Mat4f::identity), m_projection(Mat4f::identity) {}
+        :m_view(Mat4f::identity), m_projection(Mat4f::identity), m_forwardVec(0.f, 0.f, -1.f), m_upVec(0.f, 1.f, 0.f) {}
 
     void Camera::SetCameraPerspective(const float& fov, const float& aRatio, const float& minZ, const float& maxZ) {
         m_projection = MatPerspective<float>(fov, aRatio, minZ, maxZ);
@@ -12,6 +12,10 @@ namespace Aen {
 
     void Camera::SetCameraOrthographic(const float& width, const float& height, const float& minZ, const float& maxZ) {
         m_projection = MatOrthographic<float>(-width * 0.5f, width * 0.5f, height * 0.5f, -height * 0.5f, minZ, maxZ);
+    }
+
+    void Camera::LookTowards(const Vec3f& dir) {
+        m_forwardVec = dir.Normalized();
     }
 
     const Vec3f Camera::GetForward() {
@@ -23,7 +27,7 @@ namespace Aen {
     }
 
     const Vec3f Camera::GetRight() {
-        return m_upVec % m_forwardVec;
+        return (m_upVec % m_forwardVec).Normalized();
     }
 
     const Mat4f Camera::GetVPMatrix() const {
@@ -39,7 +43,6 @@ namespace Aen {
     }
 
     void Camera::UpdateView(const Vec3f& pos, const Vec3f& rot) {
-        m_forwardVec = Transform(MatRotate(rot), Vec3f(0.f, 0.f, -1.f)).Normalized();
         Vec3f camTarget = m_forwardVec + pos;
         m_upVec = Transform(MatRotate(rot), Vec3f(0.f, 1.f, 0.f)).Normalized();
         m_view = MatViewRH(pos, camTarget, m_upVec);

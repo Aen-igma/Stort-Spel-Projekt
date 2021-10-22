@@ -3,7 +3,7 @@
 
 namespace Aen {
 
-	class Translation {
+	class AEN_DECLSPEC Translation {
 		public:
 		Translation() = default;
 
@@ -23,7 +23,7 @@ namespace Aen {
 		friend class ComponentHandler;
 	};
 
-	class Rotation {
+	class AEN_DECLSPEC Rotation {
 		public:
 		Rotation() = default;
 
@@ -43,7 +43,7 @@ namespace Aen {
 		friend class ComponentHandler;
 	};
 
-	class Scale {
+	class AEN_DECLSPEC Scale {
 		public:
 		Scale();
 

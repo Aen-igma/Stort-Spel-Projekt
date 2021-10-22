@@ -1,5 +1,6 @@
 #pragma once
 
+#include"AenDefines.h"
 #include"../../ThirdParty/SimpleMath/SimpleMath.h"
 #include<DirectXMath.h>
 #include<type_traits>
@@ -68,7 +69,7 @@ namespace Aen {
 	}
 
 	template<class T> 
-	inline const T Clamp(const T& value, const T& min, const T& max) noexcept {
+	inline const float Clamp(T& value, const T& min, const T& max) noexcept {
 		return (value < min) ? min : (value > max) ? max : value;
 	}
 
@@ -265,6 +266,7 @@ namespace Aen {
 			y = std::atan2f(-mat.a31, sy);
 			r = 0;
 		}
+
 		return Concealed::TVec<T, 3>(Aen::RadToDeg(p), Aen::RadToDeg(y), Aen::RadToDeg(r));
 	}
 	
