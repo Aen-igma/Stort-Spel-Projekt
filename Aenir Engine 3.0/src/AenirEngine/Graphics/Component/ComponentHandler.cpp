@@ -9,6 +9,7 @@ namespace Aen {
 	std::unordered_map<size_t, Rotation*>	ComponentHandler::m_rotations;
 	std::unordered_map<size_t, Scale*> ComponentHandler::m_scales;
 	std::unordered_map<size_t, RigidBody*> ComponentHandler::m_rigids;
+	std::unordered_map<size_t, Drawable*> ComponentHandler::m_drawables;
 	std::unordered_map<size_t, CharacterController*> ComponentHandler::m_characterControllers;
 	std::multimap<size_t, Light*> ComponentHandler::m_lights;
 

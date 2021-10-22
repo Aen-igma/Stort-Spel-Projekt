@@ -57,6 +57,7 @@ namespace Aen
 			if (ComponentHandler::RigidExist(i.first))
 			{
 				//ComponentHandler::GetRigid(i.first).GetType() == dynamic;
+				ComponentHandler::GetRigid(i.first)
 				valid = false;
 			}
 			//if (ComponentHandler::CharacterExist(i.first)) 

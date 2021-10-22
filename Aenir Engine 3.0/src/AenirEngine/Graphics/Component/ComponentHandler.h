@@ -315,6 +315,7 @@ namespace Aen {
 		static std::unordered_map<size_t, Rotation*> m_rotations;
 		static std::unordered_map<size_t, Scale*> m_scales;
 		static std::unordered_map<size_t, RigidBody*> m_rigids;
+		static std::unordered_map<size_t, Drawable*> m_drawables;
 		static std::unordered_map<size_t, CharacterController*> m_characterControllers;
 		static std::multimap<size_t, Light*> m_lights;
 		
@@ -325,6 +326,7 @@ namespace Aen {
 		friend class MeshInstance;
 		friend class Renderer;
 		friend class ImGuiHandler;
+		friend class Quadtree;
 	};
 
 }
