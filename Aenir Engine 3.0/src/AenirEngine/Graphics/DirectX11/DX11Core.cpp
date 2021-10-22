@@ -25,7 +25,7 @@ namespace Aen {
         sChainDesc.SampleDesc.Count = 1;
         sChainDesc.SampleDesc.Quality = 0;
         
-        sChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        sChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_UNORDERED_ACCESS;
         sChainDesc.BufferCount = 1;
         sChainDesc.OutputWindow = window.m_hwnd;
         sChainDesc.Windowed = true;

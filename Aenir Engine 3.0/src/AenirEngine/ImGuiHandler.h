@@ -31,7 +31,7 @@ namespace Aen {
 
 	private:
 
-		Aen::EntityHandler* mp_entityHandlerPtr;
+		//Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> m_entityList;
 
 		// Display in scene list
