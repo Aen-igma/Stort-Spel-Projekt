@@ -1,11 +1,11 @@
 #pragma once
-#include"../../Graphics.h"
+#include"../Component.h"
 
 namespace Aen {
 
-	class AEN_DECLSPEC Camera {
+	class AEN_DECLSPEC Camera : public Component {
 		public:
-		Camera();
+		Camera(const size_t& id);
 
 		void SetCameraPerspective(const float& fov, const float& aRatio, const float& minZ, const float& maxZ);
 		void SetCameraOrthographic(const float& width, const float& height, const float& minZ, const float& maxZ);

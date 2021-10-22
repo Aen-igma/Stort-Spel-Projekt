@@ -1,26 +1,18 @@
 #include "PCH.h"
 #include "UIComponent.h"
 
-Aen::UIComponent::UIComponent()
-{
-}
+namespace Aen {
 
-Aen::UIComponent::~UIComponent()
-{
-}
+	UIComponent::UIComponent(const size_t& id) 
+		:Drawable(id) {}
 
-void Aen::UIComponent::AddButton()
-{
-}
+	UIComponent::~UIComponent() {}
 
-void Aen::UIComponent::AddText()
-{
-}
+	void UIComponent::AddButton() {}
 
-void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
-{
-}
+	void UIComponent::AddText() {}
 
-void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
-{
+	void UIComponent::Draw(Renderer& renderer, const uint32_t& layer) {}
+
+	void UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer) {}
 }

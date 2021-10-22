@@ -3,7 +3,8 @@
 
 namespace Aen {
 
-	CharacterController::CharacterController() :m_pScene(PhysicsHandler::GetInstance()->GetScene()), m_physics(PhysicsHandler::GetInstance()->GetPxPhysics()),
+	CharacterController::CharacterController(const size_t& id) 
+		:Component(id), m_pScene(PhysicsHandler::GetInstance()->GetScene()), m_physics(PhysicsHandler::GetInstance()->GetPxPhysics()),
 		m_cManager(nullptr), m_controller(nullptr) {
 		m_cManager = PxCreateControllerManager(*m_pScene, false);
 

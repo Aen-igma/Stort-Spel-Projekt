@@ -3,8 +3,8 @@
 
 namespace Aen {
 
-    Camera::Camera()
-        :m_view(Mat4f::identity), m_projection(Mat4f::identity), m_forwardVec(0.f, 0.f, -1.f), m_upVec(0.f, 1.f, 0.f) {}
+    Camera::Camera(const size_t& id)
+        :Component(id), m_view(Mat4f::identity), m_projection(Mat4f::identity), m_forwardVec(0.f, 0.f, -1.f), m_upVec(0.f, 1.f, 0.f) {}
 
     void Camera::SetCameraPerspective(const float& fov, const float& aRatio, const float& minZ, const float& maxZ) {
         m_projection = MatPerspective<float>(fov, aRatio, minZ, maxZ);

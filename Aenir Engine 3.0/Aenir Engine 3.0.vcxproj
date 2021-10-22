@@ -217,6 +217,7 @@
     <ClCompile Include="src\AenirEngine\Core\Renderer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Camera\Camera.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\CharacterController\CharacterController.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Component.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\ComponentHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.cpp" />
@@ -288,6 +289,7 @@
     <ClInclude Include="src\AenirEngine\Core\Renderer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\Camera.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\CharacterController\CharacterController.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Component.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.h" />

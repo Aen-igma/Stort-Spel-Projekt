@@ -24,7 +24,7 @@ namespace Aen {
 		}
 
 		static void CreateCamera(const size_t& id) {
-			m_cameras.emplace(id, AEN_NEW Camera());
+			m_cameras.emplace(id, AEN_NEW Camera(id));
 		}
 
 		static void RemoveCamera(const size_t& id) {
@@ -49,7 +49,7 @@ namespace Aen {
 		}
 
 		static void CreateMeshInstance(const size_t& id, const size_t& layer) {
-			m_mesheInstances.emplace(id, AEN_NEW MeshInstance());
+			m_mesheInstances.emplace(id, AEN_NEW MeshInstance(id));
 			m_meshLayer[layer].emplace(id, m_mesheInstances.at(id));
 		}
 
@@ -81,15 +81,15 @@ namespace Aen {
 		}
 
 		static void CreateTranslation(const size_t& id) {
-			m_translations.emplace(id, AEN_NEW Translation());
+			m_translations.emplace(id, AEN_NEW Translation(id));
 		}
 
 		static void CreateRotation(const size_t& id) {
-			m_rotations.emplace(id, AEN_NEW Rotation());
+			m_rotations.emplace(id, AEN_NEW Rotation(id));
 		}
 
 		static void CreateScale(const size_t& id) {
-			m_scales.emplace(id, AEN_NEW Scale());
+			m_scales.emplace(id, AEN_NEW Scale(id));
 		}
 
 		static void RemoveTranform(const size_t& id) {
@@ -145,7 +145,7 @@ namespace Aen {
 		}
 
 		static void CreateSpotLight(const size_t& id) {
-			m_lights.emplace(id, AEN_NEW SpotLight());
+			m_lights.emplace(id, AEN_NEW SpotLight(id));
 		}
 
 		static void RemoveSpotLight(const size_t& id) {
@@ -182,7 +182,7 @@ namespace Aen {
 		}
 
 		static void CreatePointLight(const size_t& id) {
-			m_lights.emplace(id, AEN_NEW PointLight());
+			m_lights.emplace(id, AEN_NEW PointLight(id));
 		}
 
 		static void RemovePointLight(const size_t& id) {
@@ -219,7 +219,7 @@ namespace Aen {
 		}
 
 		static void CreateDirectionalLight(const size_t& id) {
-			m_lights.emplace(id, AEN_NEW DirectionalLight());
+			m_lights.emplace(id, AEN_NEW DirectionalLight(id));
 		}
 
 		static void RemoveDirectionalLight(const size_t& id) {
@@ -251,7 +251,7 @@ namespace Aen {
 		}
 
 		static void CreateRigid(const size_t& id) {
-			m_rigids.emplace(id, AEN_NEW RigidBody());
+			m_rigids.emplace(id, AEN_NEW RigidBody(id));
 		}
 
 		static void RemoveRigid(const size_t& id) {
@@ -275,7 +275,7 @@ namespace Aen {
 		}
 
 		static void CreateCharacterController(const size_t& id) {
-			m_characterControllers.emplace(id, AEN_NEW CharacterController());
+			m_characterControllers.emplace(id, AEN_NEW CharacterController(id));
 		}
 
 		static void RemoveCharacterController(const size_t& id) {

@@ -6,8 +6,7 @@ namespace Aen {
 
 	class AEN_DECLSPEC MeshInstance : public Drawable{
 		public:
-		MeshInstance();
-		MeshInstance(Mesh& mesh);
+		MeshInstance(const size_t& id);
 
 		void RemoveMesh();
 		void SetMesh(Mesh& mesh);
@@ -26,8 +25,8 @@ namespace Aen {
 		friend class Renderer;
 		friend class Entity;
 
-		virtual void Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) override;
-		virtual void DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) override;
+		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
+		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
 	};
 
 }

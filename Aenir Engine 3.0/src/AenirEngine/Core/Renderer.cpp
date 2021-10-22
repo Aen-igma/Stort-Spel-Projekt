@@ -20,7 +20,7 @@ namespace Aen {
 		m_viewPort.Height = static_cast<float>(m_window.GetSize().y);
 		m_viewPort.MinDepth = 0.f;
 		m_viewPort.MaxDepth = 1.f;
-		
+
 		if(!m_opaqueVS.Create(AEN_OUTPUT_DIR_WSTR(L"OpaqueVS.cso")))
 			if(!m_opaqueVS.Create(L"OpaqueVS.cso"))
 				throw;
@@ -100,8 +100,8 @@ namespace Aen {
 
 		// Layered Rendering
 
-		for(uint32_t i = 0u; i < 7u; i++) 
-			if(ComponentHandler::m_meshLayer[i].size() > 0) { 
+		for(uint32_t i = 0u; i < 7u; i++)
+			if(ComponentHandler::m_meshLayer[i].size() > 0) {
 
 				RenderSystem::UnBindRenderTargets(1u);
 				RenderSystem::BindRenderTargetView(m_depthMap);
@@ -109,7 +109,7 @@ namespace Aen {
 				
 				// Pre Depth Pass
 
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, k.first, i);
+				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, i);
 
 				// Light Cull Pass
 
@@ -131,7 +131,8 @@ namespace Aen {
 				RenderSystem::UnBindShaderResources<CShader>(0u, 3u);
 
 				// Draw pass
-				for (auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, k.first, i);
+
+				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, i);
 
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}

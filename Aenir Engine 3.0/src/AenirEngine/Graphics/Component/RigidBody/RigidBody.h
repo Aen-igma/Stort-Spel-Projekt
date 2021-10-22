@@ -1,5 +1,5 @@
 #pragma once
-#include"../../Graphics.h"
+#include"../Component.h"
 #include"../../Physics/PhysicsHandler.h"
 
 namespace Aen {
@@ -36,9 +36,9 @@ namespace Aen {
 		ACCELERATION	
 	};
 
-	class AEN_DECLSPEC RigidBody {
+	class AEN_DECLSPEC RigidBody : public Component {
 	public:
-		RigidBody();
+		RigidBody(const size_t& id);
 
 		void SetStaticFriction(const float& value);
 		void SetDynamicFriction(const float& value);

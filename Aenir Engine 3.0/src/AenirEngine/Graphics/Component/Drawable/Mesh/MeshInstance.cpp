@@ -10,14 +10,10 @@ namespace Aen {
 
 		m_pMaterials.clear();
 		m_pMesh = nullptr;
-		//delete m_pMeshAABB;
 	}
 
-	MeshInstance::MeshInstance()
-		:m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
-
-	MeshInstance::MeshInstance(Mesh& mesh)
-		:m_pMesh(&mesh) {}
+	MeshInstance::MeshInstance(const size_t& m_id)
+		:Drawable(m_id), m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
 
 	void MeshInstance::RemoveMesh() {
 		for(auto& i : m_pMaterials)
@@ -58,26 +54,22 @@ namespace Aen {
 		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
 	}
 
-	/*void MeshInstance::SetInQuadtree(bool inQuad)
-	{
-		this->m_InQuadtree = inQuad;
-	}*/
+	void MeshInstance::Draw(Renderer& renderer, const uint32_t& layer) {
 
-	void MeshInstance::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) {
-
-		if(m_pMesh) { 
+		if(m_pMesh) {
 
 			// Transform
 
-			if(ComponentHandler::RigidExist(id))
-				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(id).GetScaleMat() * ComponentHandler::GetRigid(id).GetTransform()).Transposed();
+			if(ComponentHandler::RigidExist(m_id))
+				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(m_id).GetScaleMat() * ComponentHandler::GetRigid(m_id).GetTransform()).Transposed();
 			else {
-				if(ComponentHandler::CharacterControllerExist(id))
-					ComponentHandler::GetTranslation(id).SetPos(ComponentHandler::GetCharacterController(id).GetPos());
+				if(ComponentHandler::CharacterControllerExist(m_id))
+					ComponentHandler::GetTranslation(m_id).SetPos(ComponentHandler::GetCharacterController(m_id).GetPos());
 
-				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
+				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation().Transposed();
 			}
 			renderer.m_cbTransform.UpdateBuffer();
+
 			// Mesh and Material
 
 			for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
@@ -154,16 +146,16 @@ namespace Aen {
 		}
 	}
 
-	void MeshInstance::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) {
+	void MeshInstance::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 
 		if(m_pMesh) {
 
-			if(ComponentHandler::RigidExist(id))
-				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(id).GetScaleMat() * ComponentHandler::GetRigid(id).GetTransform()).Transposed();
-			else if(ComponentHandler::CharacterControllerExist(id))
-				renderer.m_cbTransform.GetData().m_mdlMat = (ComponentHandler::GetScale(id).GetTranform() * ComponentHandler::GetRotation(id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(id).GetPos())).Transposed();
+			if(ComponentHandler::RigidExist(m_id))
+				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(m_id).GetScaleMat() * ComponentHandler::GetRigid(m_id).GetTransform()).Transposed();
+			else if(ComponentHandler::CharacterControllerExist(m_id))
+				renderer.m_cbTransform.GetData().m_mdlMat = (ComponentHandler::GetScale(m_id).GetTranform() * ComponentHandler::GetRotation(m_id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(m_id).GetPos())).Transposed();
 			else
-				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(id).GetTransformation().Transposed();
+				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation().Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
 			Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
