@@ -12,11 +12,8 @@ namespace Aen {
 		m_pMesh = nullptr;
 	}
 
-	MeshInstance::MeshInstance()
-		:m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
-
-	MeshInstance::MeshInstance(Mesh& mesh)
-		:m_pMesh(&mesh) {}
+	MeshInstance::MeshInstance(const size_t& id)
+		:Drawable(id), m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
 
 	void MeshInstance::RemoveMesh() {
 		for(auto& i : m_pMaterials)

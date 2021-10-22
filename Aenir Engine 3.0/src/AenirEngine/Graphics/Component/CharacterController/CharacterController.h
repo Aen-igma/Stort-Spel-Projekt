@@ -1,12 +1,12 @@
 #pragma once
-#include"../../Graphics.h"
+#include"../Component.h"
 #include"../../Physics/PhysicsHandler.h"
 
 namespace Aen {
 
-	class AEN_DECLSPEC CharacterController {
+	class AEN_DECLSPEC CharacterController : public Component {
 		public:
-		CharacterController();
+		CharacterController(const size_t& id);
 
 		void SetHeight(const float& height);
 		void SetSlopeLimit(const float& ang);

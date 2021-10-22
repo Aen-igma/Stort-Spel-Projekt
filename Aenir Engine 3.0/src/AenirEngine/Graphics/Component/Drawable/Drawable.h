@@ -1,12 +1,13 @@
 #pragma once
+#include"../Component.h"
 
 namespace Aen {
 
 	class Renderer;
 
-	class Drawable {
+	class Drawable : public Component {
 		public:
-		Drawable();
+		Drawable(const size_t& id);
 		~Drawable();
 
 		private:

@@ -6,8 +6,7 @@ namespace Aen {
 
 	class AEN_DECLSPEC MeshInstance : public Drawable{
 		public:
-		MeshInstance();
-		MeshInstance(Mesh& mesh);
+		MeshInstance(const size_t& id);
 
 		void RemoveMesh();
 		void SetMesh(Mesh& mesh);

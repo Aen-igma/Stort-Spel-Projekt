@@ -2,8 +2,8 @@
 #include"RigidBody.h"
 
 namespace Aen {
-	RigidBody::RigidBody()
-		:m_mass(25.f), m_density(50.f), m_sleep(1.f), m_aDamp(0.5f), m_gType(GeometryType::PLANE), m_rigidType(RigidType::STATIC), mp_Material(nullptr), 
+	RigidBody::RigidBody(const size_t& id)
+		:Component(id), m_mass(25.f), m_density(50.f), m_sleep(1.f), m_aDamp(0.5f), m_gType(GeometryType::PLANE), m_rigidType(RigidType::STATIC), mp_Material(nullptr), 
 		mp_LocalPhysics(PhysicsHandler::GetInstance()->GetPxPhysics()), mp_StaticBody(nullptr), mp_DynamicBody(nullptr) {
 		mp_Material = mp_LocalPhysics->createMaterial(1.f, 1.f, 0.2f);
 		mp_Material->setFrictionCombineMode(px::PxCombineMode::eAVERAGE);

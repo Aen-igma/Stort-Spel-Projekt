@@ -1,10 +1,14 @@
 #pragma once
-#include"../../Graphics.h"
+#include"../Component.h"
 
-namespace Aem {
+namespace Aen {
 
-	class Animation {
-	
+	class Animation : public Component {
+		public:
+		Animation(const size_t& id);
+
+		private:
+
 	};
 
 }

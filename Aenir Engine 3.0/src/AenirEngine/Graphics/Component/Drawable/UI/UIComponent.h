@@ -10,7 +10,7 @@ namespace Aen {
 	private:
 
 	public:
-		UIComponent();
+		UIComponent(const size_t& id);
 		~UIComponent();
 
 		void AddButton();
