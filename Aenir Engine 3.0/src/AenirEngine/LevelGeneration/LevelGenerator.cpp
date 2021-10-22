@@ -370,7 +370,7 @@ namespace Aen
 	}
 
 	//Floors each coordinates and calculate index for the room most closely matched
-	uint16_t LevelGenerator::GetClosestRoomIndex(const float& xf, const float& yf)
+	const uint16_t LevelGenerator::GetClosestRoomIndex(const float& xf, const float& yf)
 	{
 		uint16_t x = std::floorf(xf * (1.f / roomDimension));
 		uint16_t y = std::floorf(yf * (1.f / roomDimension));
@@ -418,6 +418,32 @@ namespace Aen
 			container[pos.x + pos.y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
 			container[pos.x + pos.y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*map[pos.x][pos.y].mptr_mesh);
 			container[pos.x + pos.y * Aen::mapSize]->SetPos(pos.x * 2, 1.f, pos.y * 2);
+		}
+	}
+
+	void LevelGenerator::LoadRoomFiles(string filePath)
+	{
+		m_importer.ReadFromFile(filePath);
+	}
+
+	inline void LevelGenerator::LoadMutipleRoomFiles(std::vector<string> filePaths)
+	{
+		for (string path : filePaths) {
+			LoadRoomFiles(path);
+		}
+	}
+
+	void LevelGenerator::AddLoadedToGeneration()
+	{
+		Room temp;
+		for (auto strRoom : m_importer.GetRoomVector()) {
+
+			temp.connectionDirections	=	atoi( strRoom.GetRoom().type.c_str());
+			temp.m_roomSpecial	=	(SpecialRoom)atoi(strRoom.GetRoom().special.c_str());
+			temp.m_roomTheme	=	(RoomTheme)atoi(strRoom.GetRoom().theme.c_str());
+			temp.m_baseChance	=	strRoom.GetRoom().probability;
+
+			this->AddRoomToGeneration(temp);
 		}
 	}
 

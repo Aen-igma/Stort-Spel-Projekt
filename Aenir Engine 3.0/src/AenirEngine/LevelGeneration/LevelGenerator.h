@@ -15,6 +15,7 @@
 #include "../Graphics/Component/Entity.h"
 #include "../Graphics/Component/EntityHandler.h"
 #include "../AenDefines.h"
+#include "../LevelImporter.h"
 
 
 #define NORTH 1
@@ -50,11 +51,12 @@ namespace Aen {
 		RoomTheme m_roomTheme = RoomTheme::GENERIC;
 
 		////connection location
-		//m_north		=    0;		|//|	___0 - ___9		|//|	Straight	: 0101	: _S_N
-		//m_east		=   00;		|//|	__0_ - __9_		|//|	Bend		: 0011	: __EN
+		//m_north		=    0;		|//|	___0 - ___9		|//|	Straight	:  101	: _S_N
+		//m_east		=   00;		|//|	__0_ - __9_		|//|	Bend		:   11	: __EN
 		//m_south		=  000;		|//|	_0__ - _9__		|//|	T junction	: 1011	: W_EN
 		//m_west		= 0000;		|//|	0___ - 9___		|//|	Four way	: 1111	: NESW
 		uint16_t connectionDirections = 0000;
+
 		//Read only, internal use
 		uint16_t m_roomIndex;
 
@@ -108,6 +110,8 @@ namespace Aen {
 		Room map[mapSize][mapSize];
 		std::vector<Room> levelRoom;
 
+		LevelImporter m_importer;
+
 		std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< std::uint16_t, std::vector<uint16_t> > > > masterRoomMap;
 
 	protected:
@@ -124,13 +128,17 @@ namespace Aen {
 		static const float& GetRoomDimension();
 		static void GetRoomPos(const uint16_t& x, const uint16_t& y, float* xf, float* yf);
 
-		static uint16_t GetClosestRoomIndex(const float& xf, const float& yf);
+		static const uint16_t GetClosestRoomIndex(const float& xf, const float& yf);
 
 		const Room* GetMapPointer();
 
 		void InitPlaceholderRooms();
 
-		void SpawnRoom(Entity** container, Vec2i pos);
+		void SpawnRoom(Entity** container,const Vec2i pos);
 
+		void LoadRoomFiles(const string filePath);
+		inline void LoadMutipleRoomFiles( const std::vector<string> filePaths);
+
+		void AddLoadedToGeneration();
 	};
 }
