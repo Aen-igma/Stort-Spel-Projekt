@@ -121,8 +121,7 @@ void Gameplay::Update(const float& deltaTime)
 	}
 
 	m_player->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(0.f, -1.f, 0.f), deltaTime);
-	Aen::Vec3f look(0.f, 0.f, -1.f);
-	m_camera->GetComponent<Aen::Camera>().LookTowards(look);
+	m_camera->GetComponent<Aen::Camera>().LookTowards(Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), Aen::Vec3f(0.f, 0.f, -1.f)));
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
