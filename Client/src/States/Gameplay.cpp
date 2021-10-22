@@ -115,11 +115,9 @@ void Gameplay::Initialize()
 	m_sphere->GetComponent<Aen::MeshInstance>().SetMesh(sphere);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
+	m_plane->AddComponent<Aen::RigidBody>();
 	m_plane->AddComponent<Aen::MeshInstance>();
 	m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	m_plane->AddComponent<Aen::RigidBody>();
-	m_plane->GetComponent<Aen::RigidBody>().CreateMaterial();
-	m_plane->GetComponent<Aen::RigidBody>().CreatePlane();
 
 	//m_plane.SetPos(0.f, -2.f, 0.f);
 	m_plane->SetScale(40.f, 1.f, 40.f);
@@ -355,8 +353,8 @@ void Gameplay::Update(const float& deltaTime)
 
 		e.GetComponent<Aen::MeshInstance>().SetMesh(*m_reimubeMesh);
 		e.GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
-		e.GetComponent<Aen::RigidBody>().CreateMaterial();
-		e.GetComponent<Aen::RigidBody>().CreateCube();
+		e.GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE);
+		e.GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::DYNAMIC);
 		e.SetPos(0.f, 10.f, 0.f);
 
 		m_reimubes.push(&e);

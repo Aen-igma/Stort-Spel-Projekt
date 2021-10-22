@@ -137,6 +137,20 @@ namespace Aen {
 	inline void Entity::AddComponent<RigidBody>() {
 		if (!ComponentHandler::RigidExist(m_id))
 			ComponentHandler::CreateRigid(m_id);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
+	}
+
+	template<>
+	inline void Entity::AddComponent<CharacterController>() {
+		if (!ComponentHandler::CharacterControllerExist(m_id))
+			ComponentHandler::CreateCharacterController(m_id);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
 	}
 
 	// --------------- GetComponent -----------------
@@ -184,5 +198,10 @@ namespace Aen {
 	template<>
 	inline RigidBody& Entity::GetComponent() {
 		return ComponentHandler::GetRigid(m_id);
+	}
+
+	template<>
+	inline CharacterController& Entity::GetComponent() {
+		return ComponentHandler::GetCharacterController(m_id);
 	}
 }
