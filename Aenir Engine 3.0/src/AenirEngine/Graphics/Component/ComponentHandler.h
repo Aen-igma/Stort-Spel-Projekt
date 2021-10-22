@@ -300,7 +300,6 @@ namespace Aen {
 		friend class MeshInstance;
 		friend class Renderer;
 		friend class ImGuiHandler;
-
 		friend class LevelExporter;
 
 	};

@@ -26,6 +26,9 @@ namespace Aen {
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 
+		// imGui initialize
+		Aen::GlobalSettings::GetImGuiHandler()->Initialize(m_app->m_window.GetWHND(), GCore::m_device.Get(), GCore::m_dContext.Get());
+
 		m_app->Start();
 	}
 
@@ -49,6 +52,7 @@ namespace Aen {
 		}
 
 		// Destroy imGui
+		Aen::GlobalSettings::GetImGuiHandler()->Release();
 		delete Aen::GlobalSettings::GetImGuiHandler();
 
 		PhysXService::GetInstance()->ClosePhysics();

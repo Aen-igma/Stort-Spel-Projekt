@@ -2,6 +2,7 @@
 #include "LevelHeader.h"
 #include "Graphics/Component/Entity.h"
 #include "Graphics/Component/ComponentHandler.h"
+#include "Graphics/Component/EntityHandler.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -70,8 +71,6 @@ namespace Aen {
 
 			cout << "MeshName " << this->m_model.m_meshName << endl;
 			cout << "name " << this->m_model.m_name << endl;
-
-
 		}
 
 		void update(string &materialTextureName, string &materialName, string &textureName, string &modelName)
@@ -116,8 +115,8 @@ namespace Aen {
 		vector<LightStruct> m_LightVector;
 		vector<ParticleStruct> m_ParticleVector;
 
-		void lightFunc(LightStruct *&lightStruct, vector<LightStruct> &m_LightVector, Entity*& entity);
-		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<uint32_t, ModelContainer>& modelMap,size_t& index);
+		void lightFunc(LightStruct *&lightStruct, vector<LightStruct> &m_LightVector, Entity*& entity, unordered_map<size_t, Aen::Entity*>& lightMap);
+		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, ModelContainer>& modelMap,size_t& index);
 		void roomFunc(RoomStruct*& roomStruct, string array[]);
 		void textureFunc(TextureStruct*& textureStruct, string& textureFileName);
 
@@ -133,7 +132,7 @@ namespace Aen {
 		template<class T>
 		void WriteToFile(T* whatToWrite, std::ofstream& outfile);
 
-		void WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, unordered_map<uint32_t, ModelContainer> &modelMap, string array[], string &fileName);
+		void WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, unordered_map<size_t, ModelContainer> &modelMap,  unordered_map<size_t, Aen::Entity*> & lightMap, string array[], string &fileName);
 		LIGHTTYPES Type(Aen::Entity* entity);
 
 

@@ -179,17 +179,13 @@ namespace Aen {
 		RenderSystem::BindShader<PShader>(m_postProcessPS);
 		RenderSystem::BindShaderResourceView<PShader>(0u, m_postProcessBuffer);
 
-		Aen::GlobalSettings::mp_guiHandler->NewFrame();
-		Aen::GlobalSettings::mp_guiHandler->RenderAllWindows();
-		Aen::GlobalSettings::mp_guiHandler->Render();
+		
 
 		#ifdef _DEBUG
 		RenderSystem::BindShaderResourceView<PShader>(4, m_lGrid);
 
-		
-		
 		static bool toggle = false;
-		toggle = (Input::KeyDown(Key::NUM1)) ? !toggle : toggle;
+		toggle = (Input::KeyDown(Key::P)) ? !toggle : toggle;
 		m_heatMap.GetData() = toggle;
 		m_heatMap.UpdateBuffer();
 		m_heatMap.BindBuffer<PShader>(0u);
@@ -198,6 +194,11 @@ namespace Aen {
 		#endif
 
 		m_screenQuad.Draw();
+
+
+		Aen::GlobalSettings::mp_guiHandler->NewFrame();
+		Aen::GlobalSettings::mp_guiHandler->RenderAllWindows();
+		Aen::GlobalSettings::mp_guiHandler->Render();
 
 		// Present
 		RenderSystem::Present();

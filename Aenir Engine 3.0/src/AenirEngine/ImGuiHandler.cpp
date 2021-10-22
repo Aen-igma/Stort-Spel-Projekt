@@ -21,8 +21,9 @@ namespace Aen {
 		string materialName = "Material" + to_string(m_entityCount);
 		string textureName = "Texture" + to_string(m_entityCount);
 
-		Aen::Entity* entity = AEN_NEW(Aen::Entity);
-		Aen::Mesh& mesh = Aen::Resource::CreateMesh(model.name + std::to_string(m_entityCount));
+		Aen::Entity* entity = &mp_entityHandlerPtr->CreateEntity();
+
+		Aen::Mesh& mesh = Aen::Resource::CreateMesh(model.name);
 		mesh.Load(AEN_RESOURCE_DIR(model.mesh));
 
 		Aen::Texture& materialTexture = Aen::Resource::CreateTexture(textureName);
@@ -33,18 +34,21 @@ namespace Aen {
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
 
+		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);
+		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);
+		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
+
 		size_t id = entity->GetID();
-		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(material);
+		Aen::ComponentHandler::GetMeshInstance(static_cast<size_t>(id)).SetMaterial(material);
 
-		AddModel(entity);
-
+		AddModel(entity, model.name);
 		m_modelMap.insert(std::make_pair(entity->GetID(), ModelContainer(textureName, materialName, texture.name, model.name, model.mesh )));
-		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 	}
 
 	void ImGuiHandler::AddPointLight(AenIF::Light& input)
 	{
-		Aen::Entity* light = AEN_NEW(Aen::Entity);
+		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
+
 
 		light->AddComponent<Aen::PointLight>();
 		light->GetComponent<Aen::PointLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
@@ -53,12 +57,11 @@ namespace Aen {
 		light->SetPos(input.translation[0], input.translation[1], input.translation[2]);
 
 		AddLight(light, "Point light");
-		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 	}
 
 	void ImGuiHandler::AddSpotLight(AenIF::Light& input)
 	{
-		Aen::Entity* light = AEN_NEW(Aen::Entity);
+		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
 		light->AddComponent<Aen::SpotLight>();
 		light->GetComponent<Aen::SpotLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
@@ -69,13 +72,11 @@ namespace Aen {
 		light->SetRot(input.rotation[0], input.rotation[1], input.rotation[2]);
 
 		AddLight(light, "Spot light");
-		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
-
 	}
 
 	void ImGuiHandler::AddDirectional(AenIF::Light& input)
 	{
-		Aen::Entity* light = AEN_NEW(Aen::Entity);
+		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
 		light->AddComponent<Aen::DirectionalLight>();
 		light->GetComponent<Aen::DirectionalLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
@@ -83,8 +84,6 @@ namespace Aen {
 		light->SetRot(input.direction[0], input.direction[1], input.direction[2]);
 
 		AddLight(light, "Directional light");
-		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
-
 	}
 
 	void ImGuiHandler::AddEnemy()
@@ -99,14 +98,6 @@ namespace Aen {
 
 	ImGuiHandler::~ImGuiHandler()
 	{
-
-		if (m_deleteList.size() > 0)
-		{
-			for (size_t i = 0; i < m_deleteList.size(); i++)
-			{
-				delete m_entityList[m_deleteList[i] - static_cast<size_t>(1)];
-			}
-		}
 	}
 
 	void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
@@ -134,6 +125,7 @@ namespace Aen {
 	void ImGuiHandler::RenderAllWindows()
 	{
 		SceneListWindow();
+		update();
 		AssetWindow();
 		PropertyWindow();
 		ToolWindow();
@@ -196,6 +188,10 @@ namespace Aen {
 					m_saveWindowActive = true;
 				}
 
+				if (ImGui::MenuItem("Copy.."))
+				{
+				}
+
 				ImGui::EndMenu();
 			}
 
@@ -208,7 +204,6 @@ namespace Aen {
 		{
 			if (m_openOrSave == "Open")
 			{
-				std::cout << "Selected filename " << m_fileDialog.GetSelected().string() << std::endl;
 				m_levelImporter.ReadFromFile(m_fileDialog.GetSelected().string());
 				
 				for (size_t i = 0; i < m_levelImporter.GetRoomVector()[0].GetModelVector().size(); i++)
@@ -267,11 +262,11 @@ namespace Aen {
 	void ImGuiHandler::AssetWindow()
 	{
 		ImGui::Begin("Assets", nullptr);
-		ImGui::Separator();
 		if (ImGui::BeginTabBar("#AssetTab", ImGuiTabBarFlags_None))
 		{
 			if (ImGui::BeginTabItem("Model"))
 			{
+			
 				ModelButtons();
 
 				if (AddButton("Delete"))
@@ -279,6 +274,7 @@ namespace Aen {
 					RemoveObject();
 				}
 
+				ImGui::Columns(1);
 				ImGui::EndTabItem();
 			}
 
@@ -378,7 +374,7 @@ namespace Aen {
 
 					if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 					{
-						uint32_t id = m_entityList[m_selectedEntity]->GetID();
+						size_t id = m_entityList[m_selectedEntity]->GetID();
 
 						if (Aen::ComponentHandler::MeshInstanceExist(id))
 						{
@@ -418,7 +414,7 @@ namespace Aen {
 
 			if (ImGui::BeginTabItem("Light"))
 			{
-				uint32_t id = m_entityList[m_selectedEntity]->GetID();
+				size_t id = m_entityList[m_selectedEntity]->GetID();
 				static float color[4];
 				static float attenuation[3];
 				static float intensity;
@@ -551,8 +547,8 @@ namespace Aen {
 
 			if (ImGui::Button("Save"))
 			{
-				string temp = inputString;
-				m_levelExporter.WriteInto(m_entityList, m_itemList, m_modelMap, m_roomProperty, temp);
+				string input = inputString;
+				m_levelExporter.WriteInto(m_entityList, m_itemList, m_modelMap, m_lightMap, m_roomProperty, input);
 				
 				m_saveWindowActive = false;
 				std::memset(inputString, '\0', sizeof(char) * MESH_NAME_MAX_LENGTH);
@@ -607,6 +603,7 @@ namespace Aen {
 
 	void ImGuiHandler::AddLight(Aen::Entity* entity, string type)
 	{
+		m_lightMap.insert(std::make_pair(entity->GetID(), entity));
 		m_entityList.push_back(entity);
 		m_itemList.push_back(type + std::to_string(m_lightCount));
 		m_lightCount++;
@@ -616,10 +613,11 @@ namespace Aen {
 	{
 		if (m_entityList.size() < mp_entityHandlerPtr->m_entities.size())
 		{
-			for (std::pair<uint32_t, Aen::Entity*> element : mp_entityHandlerPtr->m_entities)
+			for (std::pair<size_t, Aen::Entity*> element : mp_entityHandlerPtr->m_entities)
 			{
 				m_entityList.push_back(element.second);
 				m_itemList.push_back(CheckType(element.second));
+				m_OriginalCount++;
 			}
 		}
 	}
@@ -642,8 +640,6 @@ namespace Aen {
 
 		if (std::filesystem::is_empty(filePathDestination))
 		{
-			cout << "is empty" << endl;
-
 			for (int i = 0; i < m_textureFileName.size(); i++)
 			{
 				SaveThumbnail(destinationPath, filePathDestination,
@@ -680,7 +676,7 @@ namespace Aen {
 	{
 		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
-			uint32_t id = m_entityList[m_selectedEntity]->GetID();
+			size_t id = m_entityList[m_selectedEntity]->GetID();
 
 			if (Aen::ComponentHandler::TranslationExist(id))
 			{
@@ -741,7 +737,7 @@ namespace Aen {
 	{
 		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
-			uint32_t id = m_entityList[m_selectedEntity]->GetID();
+			size_t id = m_entityList[m_selectedEntity]->GetID();
 
 			if (Aen::ComponentHandler::TranslationExist(id))
 			{
@@ -751,7 +747,7 @@ namespace Aen {
 
 			if (Aen::ComponentHandler::RotationExist(id))
 			{
-				ImGui::DragFloat3("Rotate", m_xyzRotation, 0.02f);
+				ImGui::DragFloat3("Rotate", m_xyzRotation, 0.5f);
 				m_entityList[m_selectedEntity]->SetRot(m_xyzRotation[0], m_xyzRotation[1], m_xyzRotation[2]);
 			}
 
@@ -787,7 +783,7 @@ namespace Aen {
 		string textureName = "Texture" + to_string(m_entityCount);
 
 
-		Aen::Entity* entity = AEN_NEW(Aen::Entity);
+		Aen::Entity* entity = &mp_entityHandlerPtr->CreateEntity();
 		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName + std::to_string(m_entityCount));
 		mesh.Load(AEN_RESOURCE_DIR(objName));
 
@@ -795,16 +791,15 @@ namespace Aen {
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
 
 
-		AddModel(entity);
+		AddModel(entity, objName);
 		m_modelMap.insert(std::make_pair(entity->GetID(), ModelContainer(textureName, materialName, imageName, meshName, objName)));
 
-		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 	}
 
 	
 	void ImGuiHandler::AddPointLight()
 	{
-		Aen::Entity* light = AEN_NEW(Aen::Entity);
+		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
 		light->AddComponent<Aen::PointLight>();
 		light->GetComponent<Aen::PointLight>().SetColor(Aen::Color::White);
@@ -813,12 +808,11 @@ namespace Aen {
 		light->SetPos(0.0f, 0.0f, 0.0f);
 
 		AddLight(light, "Point light");			
-		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 	}
 
 	void ImGuiHandler::AddSpotLight()
 	{
-		Aen::Entity* light = AEN_NEW(Aen::Entity);
+		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
 		light->AddComponent<Aen::SpotLight>();
 		light->GetComponent<Aen::SpotLight>().SetColor(Aen::Color::White);
@@ -829,12 +823,11 @@ namespace Aen {
 		light->SetRot(0.0f, 0.0f, 0.0f);
 
 		AddLight(light, "Spot light");
-		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 	}
 
 	void ImGuiHandler::AddDirectional()
 	{
-		Aen::Entity* light = AEN_NEW(Aen::Entity);
+		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
 		light->AddComponent<Aen::DirectionalLight>();
 		light->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
@@ -842,12 +835,11 @@ namespace Aen {
 		light->SetRot(0.0f, 0.0f, 0.0f);
 
 		AddLight(light, "Directional light");
-		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
 	}
 
 	void ImGuiHandler::ChangeMaterial(int& currentIndex)
 	{
-		uint32_t id = m_entityList[m_selectedEntity]->GetID();
+		size_t id = m_entityList[m_selectedEntity]->GetID();
 
 		string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
 		string materialName = "Material" + to_string(m_selectedEntity);
@@ -862,9 +854,51 @@ namespace Aen {
 		Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
 	}
 
-	void ImGuiHandler::UpdateMap(uint32_t key, string& texValue, string& matValue, string& meshName, string& texName)
+	void ImGuiHandler::update()
 	{
-		unordered_map<uint32_t, ModelContainer>::iterator it;
+		/*unordered_map <size_t, Aen::Entity*>::iterator it;
+
+		if (m_OriginalCount < mp_entityHandlerPtr->m_entities.size())
+		{
+			for (size_t i = m_OriginalCount; i < mp_entityHandlerPtr->m_entities.size(); i++)
+			{
+				it = mp_entityHandlerPtr->m_entities.begin();
+				std::advance(it, i);
+				m_entityList.push_back(it->second);
+				m_itemList.push_back(CheckType(it->second));
+				m_OriginalCount++;
+			}
+		}*/
+	}
+
+	void ImGuiHandler::DuplicateWindow(bool &active)
+	{
+		if (active == true)
+		{
+			static float translation[3] = { 0 };
+			static float rotation[3] = { 0 };
+			static float scale[3] = { 0 };
+			static int copies = 0;
+
+			ImGui::Begin("Copy", nullptr);
+
+			ImGui::DragFloat3("Translate", m_xyzTranslation, 0.02f);
+			ImGui::DragFloat3("Rotate", m_xyzTranslation, 0.02f);
+			ImGui::DragFloat3("Scale", m_xyzTranslation, 0.02f);
+			ImGui::SliderInt("Number of copies", &copies, 0, 10);
+
+
+			if (ImGui::Button("Create"))
+			{
+				active = false;
+			}
+			ImGui::End();
+		}
+	}
+
+	void ImGuiHandler::UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName)
+	{
+		unordered_map<size_t, ModelContainer>::iterator it;
 
 		it = m_modelMap.find(key);
 
@@ -895,7 +929,6 @@ namespace Aen {
 			{
 				m_objFileName.push_back(fileName);
 				m_objName.push_back(fileName.substr(0, fileName.length() - 4));
-				cout << fileName.substr(0, fileName.length() - 4) << endl;
 			} 
 			else if(fileType == "fbx")
 			{
@@ -905,7 +938,6 @@ namespace Aen {
 			{
 				m_textureFileName.push_back(fileName);
 				m_textureName.push_back(fileName.substr(0, fileName.length() - 4));
-				cout << fileName.substr(0, fileName.length() - 4) << endl;
 			}
 		}
 	}
@@ -927,10 +959,12 @@ namespace Aen {
 	{
 		for (size_t i = 0; i < m_objFileName.size(); i++)
 		{
+			ImGui::Columns(4, nullptr);
 			if (AddButton(m_objName[i]))
 			{
 				AddBase(m_objName[i], m_objFileName[i]);
 			}
+			ImGui::NextColumn();
 		}
 	}
 
@@ -952,12 +986,10 @@ namespace Aen {
 		}
 	}
 
-
-
 	const string ImGuiHandler::CheckType(Aen::Entity* entity)
 	{
 		string type = "";
-		uint32_t id = entity->GetID();
+		size_t id = entity->GetID();
 
 		if (Aen::ComponentHandler::MeshInstanceExist(id))
 		{
@@ -1047,18 +1079,23 @@ namespace Aen {
 
 	void ImGuiHandler::RemoveObject()
 	{
-		for (int i = 0; i < m_deleteList.size(); i++)
+		size_t id = m_entityList[m_selectedEntity]->GetID();
+		if (!Aen::ComponentHandler::CameraExist(id))
 		{
-			if (m_selectedEntity == m_deleteList[i] - 1)
+			if (m_modelMap.find(id) != m_modelMap.end())
 			{
-				m_modelMap.erase(m_selectedEntity);
-				delete m_entityList[m_selectedEntity];
-				m_entityList.erase(m_entityList.begin() + m_selectedEntity);
-				m_itemList.erase(m_itemList.begin() + m_selectedEntity);
-				m_deleteList.erase(m_deleteList.begin() + i);
-				m_entityCount--;
+				m_modelMap.erase(id);
 			}
+
+			if (m_lightMap.find(id) != m_lightMap.end())
+			{
+				m_lightMap.erase(id);
+			}
+
+			mp_entityHandlerPtr->RemoveEntity(*m_entityList[m_selectedEntity]);
+			m_entityList.erase(m_entityList.begin() + m_selectedEntity);
+			m_itemList.erase(m_itemList.begin() + m_selectedEntity);
+			m_selectedEntity--;
 		}
 	}
 }
-

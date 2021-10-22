@@ -3,108 +3,110 @@
 
 namespace Aen {
 	void LevelExporter::lightFunc(LightStruct*& lightStruct, 
-		vector<LightStruct>& m_LightVector, Entity*& entity)
+		vector<LightStruct>& m_LightVector, Entity*& entity, unordered_map<size_t, Aen::Entity*>& lightMap)
 	{
-		uint32_t id = entity->GetID();
+		size_t id = entity->GetID();
 		LIGHTTYPES type = Type(entity);
 
-
-		if (type == LIGHTTYPES::DIRECTIONAL)
+		if (lightMap.find(id) != lightMap.end())
 		{
-			strcpy(lightStruct->type, "Directional light");
+			if (type == LIGHTTYPES::DIRECTIONAL)
+			{
+				strcpy(lightStruct->type, "Directional light");
 
-			lightStruct->translation[0] = 0;
-			lightStruct->translation[1] = 0;
-			lightStruct->translation[2] = 0;
+				lightStruct->translation[0] = 0;
+				lightStruct->translation[1] = 0;
+				lightStruct->translation[2] = 0;
 
-			lightStruct->rotation[0] = entity->GetRot().x;
-			lightStruct->rotation[1] = entity->GetRot().y;
-			lightStruct->rotation[2] = entity->GetRot().z;
+				lightStruct->rotation[0] = entity->GetRot().x;
+				lightStruct->rotation[1] = entity->GetRot().y;
+				lightStruct->rotation[2] = entity->GetRot().z;
 
-			lightStruct->direction[0] = entity->GetRot().x;
-			lightStruct->direction[1] = entity->GetRot().y;
-			lightStruct->direction[2] = entity->GetRot().z;
+				lightStruct->direction[0] = entity->GetRot().x;
+				lightStruct->direction[1] = entity->GetRot().y;
+				lightStruct->direction[2] = entity->GetRot().z;
 
-			lightStruct->intensity = Aen::ComponentHandler::GetDirectionalLight(id).m_light.m_strength;
+				lightStruct->intensity = Aen::ComponentHandler::GetDirectionalLight(id).m_light.m_strength;
 
-			lightStruct->color[0] = Aen::ComponentHandler::GetDirectionalLight(id).m_light.m_color.r;
-			lightStruct->color[1] = Aen::ComponentHandler::GetDirectionalLight(id).m_light.m_color.g;
-			lightStruct->color[2] = Aen::ComponentHandler::GetDirectionalLight(id).m_light.m_color.b;
+				lightStruct->color[0] = Aen::ComponentHandler::GetDirectionalLight(id).m_light.m_color.r;
+				lightStruct->color[1] = Aen::ComponentHandler::GetDirectionalLight(id).m_light.m_color.g;
+				lightStruct->color[2] = Aen::ComponentHandler::GetDirectionalLight(id).m_light.m_color.b;
 
-			lightStruct->attenuation[0] = 0;
-			lightStruct->attenuation[1] = 0;
-			lightStruct->attenuation[2] = 0;
-			lightStruct->range = 0;
-			lightStruct->angle = 0;
+				lightStruct->attenuation[0] = 0;
+				lightStruct->attenuation[1] = 0;
+				lightStruct->attenuation[2] = 0;
+				lightStruct->range = 0;
+				lightStruct->angle = 0;
+			}
+
+			if (type == LIGHTTYPES::POINT)
+			{
+				strcpy(lightStruct->type, "Point light");
+
+				lightStruct->translation[0] = entity->GetPos().x;
+				lightStruct->translation[1] = entity->GetPos().y;
+				lightStruct->translation[2] = entity->GetPos().z;
+
+				lightStruct->rotation[0] = 0;
+				lightStruct->rotation[1] = 0;
+				lightStruct->rotation[2] = 0;
+
+				lightStruct->direction[0] = 0;
+				lightStruct->direction[1] = 0;
+				lightStruct->direction[2] = 0;
+
+				lightStruct->intensity = Aen::ComponentHandler::GetPointLight(id).m_light.m_strength;
+
+				lightStruct->color[0] = Aen::ComponentHandler::GetPointLight(id).m_light.m_color.r;
+				lightStruct->color[1] = Aen::ComponentHandler::GetPointLight(id).m_light.m_color.g;
+				lightStruct->color[2] = Aen::ComponentHandler::GetPointLight(id).m_light.m_color.b;
+
+				lightStruct->attenuation[0] = Aen::ComponentHandler::GetPointLight(id).m_light.m_dist.x;
+				lightStruct->attenuation[1] = Aen::ComponentHandler::GetPointLight(id).m_light.m_dist.y;
+				lightStruct->attenuation[2] = Aen::ComponentHandler::GetPointLight(id).m_light.m_dist.z;
+
+				lightStruct->range = Aen::ComponentHandler::GetPointLight(id).m_light.m_dist.w;
+				lightStruct->angle = 0;
+			}
+
+			if (type == LIGHTTYPES::SPOT)
+			{
+				strcpy(lightStruct->type, "Spot light");
+				lightStruct->translation[0] = entity->GetPos().x;
+				lightStruct->translation[1] = entity->GetPos().y;
+				lightStruct->translation[2] = entity->GetPos().z;
+
+				lightStruct->rotation[0] = entity->GetRot().x;
+				lightStruct->rotation[1] = entity->GetRot().y;
+				lightStruct->rotation[2] = entity->GetRot().z;
+
+				lightStruct->direction[0] = 0;
+				lightStruct->direction[1] = 0;
+				lightStruct->direction[2] = 0;
+
+				lightStruct->intensity = Aen::ComponentHandler::GetSpotLight(id).m_light.m_strength;
+
+				lightStruct->color[0] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_color.r;
+				lightStruct->color[1] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_color.g;
+				lightStruct->color[2] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_color.b;
+
+				lightStruct->range = Aen::ComponentHandler::GetSpotLight(id).m_light.m_dist.w;
+
+				lightStruct->attenuation[0] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_dist.x;
+				lightStruct->attenuation[1] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_dist.y;
+				lightStruct->attenuation[2] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_dist.z;
+
+				lightStruct->angle = Aen::ComponentHandler::GetSpotLight(id).m_light.m_angle;
+			}
+			m_LightVector.push_back(*lightStruct);
 		}
-
-		if (type == LIGHTTYPES::POINT)
-		{
-			strcpy(lightStruct->type, "Point light");
-
-			lightStruct->translation[0] = entity->GetPos().x;
-			lightStruct->translation[1] = entity->GetPos().y;
-			lightStruct->translation[2] = entity->GetPos().z;
-
-			lightStruct->rotation[0] = 0;
-			lightStruct->rotation[1] = 0;
-			lightStruct->rotation[2] = 0;
-
-			lightStruct->direction[0] = 0;
-			lightStruct->direction[1] = 0;
-			lightStruct->direction[2] = 0;
-
-			lightStruct->intensity = Aen::ComponentHandler::GetPointLight(id).m_light.m_strength;
-
-			lightStruct->color[0] = Aen::ComponentHandler::GetPointLight(id).m_light.m_color.r;
-			lightStruct->color[1] = Aen::ComponentHandler::GetPointLight(id).m_light.m_color.g;
-			lightStruct->color[2] = Aen::ComponentHandler::GetPointLight(id).m_light.m_color.b;
-
-			lightStruct->attenuation[0] = Aen::ComponentHandler::GetPointLight(id).m_light.m_dist.x;
-			lightStruct->attenuation[1] = Aen::ComponentHandler::GetPointLight(id).m_light.m_dist.y;
-			lightStruct->attenuation[2] = Aen::ComponentHandler::GetPointLight(id).m_light.m_dist.z;
-
-			lightStruct->range = Aen::ComponentHandler::GetPointLight(id).m_light.m_dist.w;
-			lightStruct->angle = 0;
-		}
-
-		if (type == LIGHTTYPES::SPOT)
-		{
-			strcpy(lightStruct->type, "Spot light");
-			lightStruct->translation[0] = entity->GetPos().x;
-			lightStruct->translation[1] = entity->GetPos().y;
-			lightStruct->translation[2] = entity->GetPos().z;
-
-			lightStruct->rotation[0] = entity->GetRot().x;
-			lightStruct->rotation[1] = entity->GetRot().y;
-			lightStruct->rotation[2] = entity->GetRot().z;
-
-			lightStruct->direction[0] = 0;
-			lightStruct->direction[1] = 0;
-			lightStruct->direction[2] = 0;
-
-			lightStruct->intensity = Aen::ComponentHandler::GetSpotLight(id).m_light.m_strength;
-
-			lightStruct->color[0] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_color.r;
-			lightStruct->color[1] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_color.g;
-			lightStruct->color[2] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_color.b;
-
-			lightStruct->range = Aen::ComponentHandler::GetSpotLight(id).m_light.m_dist.w;
-
-			lightStruct->attenuation[0] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_dist.x;
-			lightStruct->attenuation[1] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_dist.y;
-			lightStruct->attenuation[2] = Aen::ComponentHandler::GetSpotLight(id).m_light.m_dist.z;
-
-			lightStruct->angle = Aen::ComponentHandler::GetSpotLight(id).m_light.m_angle;
-		}
-		m_LightVector.push_back(*lightStruct);
 	}
 
-	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<uint32_t, ModelContainer>& modelMap, size_t& index)
+	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, ModelContainer>& modelMap, size_t& index)
 	{
-		uint32_t id = entityList[index]->GetID();
+		size_t id = entityList[index]->GetID();
 
-		unordered_map<uint32_t, ModelContainer>::iterator it = modelMap.find(id);
+		unordered_map<size_t, ModelContainer>::iterator it = modelMap.find(id);
 
 		if (modelMap.find(id) != modelMap.end())
 		{
@@ -180,7 +182,7 @@ namespace Aen {
 		outfile.write((const char*)&*whatToWrite, sizeof(T));
 	}
 
-	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, unordered_map< uint32_t, ModelContainer>& modelMap, string array[], string& fileName)
+	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, unordered_map<size_t, ModelContainer>& modelMap, unordered_map<size_t, Aen::Entity*>& lightMap, string array[], string& fileName)
 	{
 		OpenFile(fileName);
 		//cout << "writeInto" << endl;
@@ -204,14 +206,15 @@ namespace Aen {
 		MaterialStruct* materialStruct = AEN_NEW(MaterialStruct);
 		ParticleStruct* particleStruct = AEN_NEW(ParticleStruct);
 
-		unordered_map <uint32_t, ModelContainer>::iterator it;
+		unordered_map <size_t, ModelContainer>::iterator it;
 
 		m_ModelVector.reserve(modelMap.size());
 		m_TextureVector.reserve(modelMap.size());
+		m_LightVector.reserve(lightMap.size());
 
 		for (size_t i = 0; i < entityList.size(); i++)
 		{
-			uint32_t id = entityList[i]->GetID();
+			size_t id = entityList[i]->GetID();
 
 			if (Aen::ComponentHandler::MeshInstanceExist(id))
 			{
@@ -219,7 +222,7 @@ namespace Aen {
 			}
 			else if ((Aen::ComponentHandler::DirectionalLightExist(id) || Aen::ComponentHandler::SpotLightExist(id) || Aen::ComponentHandler::PointLightExist(id)))
 			{
-				lightFunc(lightStruct, m_LightVector, entityList[i]);
+				lightFunc(lightStruct, m_LightVector, entityList[i],lightMap);
 			}
 			cout << endl;
 		}
@@ -310,7 +313,7 @@ namespace Aen {
 
 	LIGHTTYPES LevelExporter::Type(Aen::Entity* entity)
 	{
-		uint32_t id = entity->GetID();
+		size_t id = entity->GetID();
 
 		LIGHTTYPES type;
 		

@@ -44,6 +44,7 @@ namespace Aen {
 
 		string m_roomProperty[4] = {"","","",""};
 
+		
 		Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> m_entityList;
 
@@ -51,15 +52,14 @@ namespace Aen {
 		vector<string> m_itemList;
 		//vector<bool> m_hitBoxList;
 
-		vector<int> m_deleteList;
-
 		vector<string> m_objFileName;
 		vector<string> m_objName;
 
 		vector<string> m_textureFileName;
 		vector<string> m_textureName;
 
-		unordered_map< uint32_t, ModelContainer> m_modelMap;
+		unordered_map< size_t, ModelContainer> m_modelMap;
+		unordered_map< size_t, Aen::Entity*> m_lightMap;
 
 
 		int m_selectedEntity = 0;
@@ -84,6 +84,8 @@ namespace Aen {
 		unsigned int m_enemyCount = 0;
 		int m_entityCount = 0;
 		int m_lightCount = 0;
+
+		int m_OriginalCount = 0;
 
 	public:
 		// All Add func here
@@ -140,27 +142,29 @@ namespace Aen {
 		void Render();
 		void Release();
 
+	private:
+
 
 		void ReadAllModelsFromHandler();
 		void CreatePreviewTextureThumbnail();
-
 		void RemoveObject();
-
 		void ReadAllFilesFromResourceFolder();
-
-
-		void UpdateMap(uint32_t key, string& texValue, string& matValue, string& meshName, string& texName);
+		void UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName);
 	
-		private:
-			void ModelButtons();
-			void LightButtons();
-			const string CheckType(Aen::Entity* entity);
+		void ModelButtons();
+		void LightButtons();
+		const string CheckType(Aen::Entity* entity);
 
-			void CustomCombo(vector<string>& list, string name, string type);
+		void CustomCombo(vector<string>& list, string name, string type);
 
-			string CustomCombo(vector<string>& list, string name);
+		string CustomCombo(vector<string>& list, string name);
 
-			void ChangeMaterial(int& currentIndex);
+		void ChangeMaterial(int& currentIndex);
+
+		void update();
+
+		void DuplicateWindow(bool& active);
+
 
 };
 }
