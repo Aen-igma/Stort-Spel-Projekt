@@ -82,6 +82,7 @@ void main(CS_Input input) {
 	float4 depth =		depthMap[uv];
 	float4 glow =		glowMap[uv];
 
+
 	if(length(diffuse) > 0.f) {
 
 		float2 sobelX = 0.f;
@@ -92,11 +93,15 @@ void main(CS_Input input) {
 		float3 cToP = normalize(worldPos - camPos);
 		float3 dotNP = dot(normal, cToP);
 
+		uint2 window;
+		outputMap.GetDimensions(window.x, window.y);
+		window.x -= 1;
+		window.y -= 1;
+
 		for(uint i = 0; i < 9; i++) {
-			float2 points = sPoint[i];
-			float3 sn = normalMap[uv + points * innerEdgeThickness].xyz * 2.f - 1.f;
+			float3 sn = normalMap[clamp(uv + sPoint[i] * innerEdgeThickness, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
 			sn = normalize(mul(sn, (float3x3)vMat)).xyz;
-			float sd = depthMap[uv + points * outerEdgeThickness].x;
+			float sd = depthMap[clamp(uv + sPoint[i] * outerEdgeThickness, uint2(0u, 0u), window)].x;
 			float2 kernel = float2(hRow[i], vRow[i]);
 			sobelX += sn.x * kernel;
 			sobelY += sn.y * kernel;
