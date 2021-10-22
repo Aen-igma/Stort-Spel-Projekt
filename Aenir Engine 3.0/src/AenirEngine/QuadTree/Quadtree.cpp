@@ -57,13 +57,14 @@ namespace Aen
 			if (ComponentHandler::RigidExist(i.first))
 			{
 				//ComponentHandler::GetRigid(i.first).GetType() == dynamic;
-				ComponentHandler::GetRigid(i.first)
+				//ComponentHandler::GetRigid(i.first)
 				valid = false;
 			}
-			//if (ComponentHandler::CharacterExist(i.first)) 
-			//{
-			//	//valid = false;
-			//}
+			if (ComponentHandler::CharacterControllerExist(i.first))
+			{
+				valid = false;
+			}
+			
 			if (valid)
 			{
 				layer = i.second->GetLayer() + 3;
