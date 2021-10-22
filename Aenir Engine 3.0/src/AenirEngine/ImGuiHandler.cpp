@@ -1079,7 +1079,7 @@ namespace Aen {
 
 	void ImGuiHandler::RemoveObject()
 	{
-		/*size_t id = m_entityList[m_selectedEntity]->GetID();
+		size_t id = m_entityList[m_selectedEntity]->GetID();
 		if (!Aen::ComponentHandler::CameraExist(id))
 		{
 			if (m_modelMap.find(id) != m_modelMap.end())
@@ -1096,28 +1096,6 @@ namespace Aen {
 			m_entityList.erase(m_entityList.begin() + m_selectedEntity);
 			m_itemList.erase(m_itemList.begin() + m_selectedEntity);
 			m_selectedEntity--;
-		}*/
-
-		for (size_t i = 0; i < m_entityList.size(); i++)
-		{
-			size_t id = m_entityList[i]->GetID();
-			cout << i << endl;
-			if (!Aen::ComponentHandler::CameraExist(id))
-			{
-				if (m_modelMap.find(id) != m_modelMap.end())
-				{
-					m_modelMap.erase(id);
-				}
-
-				if (m_lightMap.find(id) != m_lightMap.end())
-				{
-					m_lightMap.erase(id);
-				}
-
-				mp_entityHandlerPtr->RemoveEntity(*m_entityList[i]);
-				m_entityList.erase(m_entityList.begin() + i);
-				m_itemList.erase(m_itemList.begin() + i);
-			}
 		}
 	}
 }

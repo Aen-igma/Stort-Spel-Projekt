@@ -149,7 +149,6 @@ namespace AenIMP {
 
 	Light::~Light()
 	{
-		cout << "D lightStruct" << endl;
 		delete this->light;
 	}
 
