@@ -11,7 +11,7 @@ Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, cons
 
 void Client::Start()
 {
-	State::SetState(States::Gameplay);
+	State::SetState(States::Main_Menu);
 }
 
 void Client::Update(const float& deltaTime) 
@@ -39,8 +39,7 @@ void Client::ChangeState(const States& states)
 	switch (states) 
 	{
 		case States::Gameplay:
-			mp_state = AEN_NEW Gameplay(m_window);
-			//mp_state = mp_gameplay;
+			mp_state = mp_gameplay;
 			mp_gameplay = nullptr;
 			break;
 		case States::Main_Menu:
@@ -52,7 +51,7 @@ void Client::ChangeState(const States& states)
 			break;
 	}
 
-	//if (mp_state && mp_state->GetCurrentState() != States::Gameplay)
+	if (mp_state && mp_state->GetCurrentState() != States::Gameplay)
 		mp_state->Initialize();
 
 	m_typeState = states;
