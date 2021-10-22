@@ -50,12 +50,12 @@ namespace Aen {
 		RoomTheme m_roomTheme = RoomTheme::GENERIC;
 
 		////connection location
-		//uint32_t m_north		=    0;	|//|	___0 - ___9		 //	Straight	: 0101	: _S_N
-		//uint32_t m_east		=   00;	|//|	__0_ - __9_		 //	Bend		: 0011	: __EN
-		//uint32_t m_south		=  000;	|//|	_0__ - _9__		 //	T junction	: 1011	: W_EN
-		//uint32_t m_west		= 0000;	|//|	0___ - 9___		 //	Four way	: 1111	: NESW
+		//m_north		=    0;		|//|	___0 - ___9		|//|	Straight	: 0101	: _S_N
+		//m_east		=   00;		|//|	__0_ - __9_		|//|	Bend		: 0011	: __EN
+		//m_south		=  000;		|//|	_0__ - _9__		|//|	T junction	: 1011	: W_EN
+		//m_west		= 0000;		|//|	0___ - 9___		|//|	Four way	: 1111	: NESW
 		uint16_t connectionDirections = 0000;
-		//Read only
+		//Read only, internal use
 		uint16_t m_roomIndex;
 
 		//Probabilities
@@ -129,5 +129,8 @@ namespace Aen {
 		const Room* GetMapPointer();
 
 		void InitPlaceholderRooms();
+
+		void SpawnRoom(Entity** container, Vec2i pos);
+
 	};
 }

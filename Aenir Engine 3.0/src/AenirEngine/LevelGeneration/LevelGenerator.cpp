@@ -178,7 +178,48 @@ namespace Aen
 		}
 
 		int r = LehmerInt() % 4;
-		map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+		switch (r)
+		{
+		case 0:
+			map[3][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			break;
+		case 1:
+			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			break;
+		case 2:
+			map[4][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			break;
+		case 3:
+			map[4][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			break;
+		default:
+			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			break;
+		}
+
+
+		r = LehmerInt() % 4;
+		switch (r)
+		{
+		case 1:
+			map[3][3].rotateCW();
+			map[3][4].rotateCW();
+			map[4][4].rotateCW();
+			map[4][3].rotateCW();
+			break;
+		case 2:
+			map[3][3].rotateCCW();
+			map[3][4].rotateCCW();
+			map[4][4].rotateCCW();
+			map[4][3].rotateCCW();
+			break;
+		case 3:
+			map[3][3].rotate180();
+			map[3][4].rotate180();
+			map[4][4].rotate180();
+			map[4][3].rotate180();
+			break;
+		}
 
 		bool openConnections = true;
 		int maxRooms = 16; //Soft limit
@@ -343,14 +384,16 @@ namespace Aen
 
 	void LevelGenerator::InitPlaceholderRooms()
 	{
+		Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
+		cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
 		m_mapTheme = RoomTheme::PLACEHOLDER;
-		uint16_t direction[5]{101, 11, 111, 1111};
 		Room temp;
 		temp.m_baseChance = 15;
 		temp.m_present = true;
 		temp.m_roomSpecial = SpecialRoom::NONE;
 		temp.m_roomTheme = RoomTheme::PLACEHOLDER;
 		temp.connectionDirections = 101;
+		temp.mptr_mesh = &cube;
 		AddRoomToGeneration(temp);
 		temp.connectionDirections = 11;
 		AddRoomToGeneration(temp);
@@ -359,11 +402,23 @@ namespace Aen
 		temp.connectionDirections = 1111;
 		AddRoomToGeneration(temp);
 
-
 		temp.connectionDirections = 1;
 		temp.m_roomSpecial = SpecialRoom::ENTRANCE;
 		AddRoomToGeneration(temp);
 
+	}
+
+	void LevelGenerator::SpawnRoom(Entity** container, Vec2i pos)
+	{
+		if (container[pos.x + pos.y * Aen::mapSize] != nullptr)
+			Aen::EntityHandler::RemoveEntity(*container[pos.x + pos.y * Aen::mapSize]);
+		container[pos.x + pos.y * Aen::mapSize] = nullptr;
+		if (map[pos.x][pos.y].m_present) {
+			container[pos.x + pos.y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
+			container[pos.x + pos.y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
+			container[pos.x + pos.y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*map[pos.x][pos.y].mptr_mesh);
+			container[pos.x + pos.y * Aen::mapSize]->SetPos(pos.x * 2, 1.f, pos.y * 2);
+		}
 	}
 
 

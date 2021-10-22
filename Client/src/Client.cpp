@@ -49,8 +49,8 @@ void Client::Start() {
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
 	Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
-	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
+	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
 	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));
 
 	// ----------------------------- Load Reimushes -------------------------------- //
@@ -124,21 +124,22 @@ void Client::Start() {
 
 	// ------------------- Procedural generation testing staging grounds ------- //
 	m_levelGenerator.InitPlaceholderRooms();
-	mptr_map = m_levelGenerator.GenerateLevel();;
+	mptr_map = m_levelGenerator.GenerationTestingFunction();;
 	
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
-			if (mptr_map[x + y * Aen::mapSize].m_present) {
-				rooms[x + y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
-				rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
-				rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-				rooms[x + y * Aen::mapSize]->SetPos(x * 2, 1.f, y * 2);
-			}
-			else {
-				if (rooms[x + y * Aen::mapSize] != nullptr)
-					Aen::EntityHandler::RemoveEntity(*rooms[x + y * Aen::mapSize]);
-				rooms[x + y * Aen::mapSize] = nullptr;
-			}
+			//if (mptr_map[x + y * Aen::mapSize].m_present) {
+			//	rooms[x + y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
+			//	rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
+			//	rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+			//	rooms[x + y * Aen::mapSize]->SetPos(x * 2, 1.f, y * 2);
+			//}
+			//else {
+			//	if (rooms[x + y * Aen::mapSize] != nullptr)
+			//		Aen::EntityHandler::RemoveEntity(*rooms[x + y * Aen::mapSize]);
+			//	rooms[x + y * Aen::mapSize] = nullptr;
+			//}
+			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x ,y));
 		}
 	}
 
@@ -181,24 +182,25 @@ void Client::Update(const float& deltaTime) {
 
 	if (Aen::Input::KeyDown(Aen::Key::L)) {
 		
-		m_levelGenerator.GenerateLevel();
+		m_levelGenerator.GenerationTestingFunction();
 		 
 		for (UINT y = 0; y < Aen::mapSize; y++) {
 			for (UINT x = 0; x < Aen::mapSize; x++) {
-				if (mptr_map[x + y * Aen::mapSize].m_present) {
-					if (rooms[x + y * Aen::mapSize] == nullptr) {
-						rooms[x + y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
-						rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
-						rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-						rooms[x + y * Aen::mapSize]->SetPos(x * 2, 1.f, y * 2);
-					}
-				}
-				else {
-					if (rooms[x + y * Aen::mapSize] != nullptr){
-						Aen::EntityHandler::RemoveEntity(*rooms[x + y * Aen::mapSize]);
-						rooms[x + y * Aen::mapSize] = nullptr;
-					}
-				}
+				m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+				//if (mptr_map[x + y * Aen::mapSize].m_present) {
+				//	if (rooms[x + y * Aen::mapSize] == nullptr) {
+				//		rooms[x + y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
+				//		rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
+				//		rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
+				//		rooms[x + y * Aen::mapSize]->SetPos(x * 2, 1.f, y * 2);
+				//	}
+				//}
+				//else {
+				//	if (rooms[x + y * Aen::mapSize] != nullptr){
+				//		Aen::EntityHandler::RemoveEntity(*rooms[x + y * Aen::mapSize]);
+				//		rooms[x + y * Aen::mapSize] = nullptr;
+				//	}
+				//}
 			}
 		}
 	}
