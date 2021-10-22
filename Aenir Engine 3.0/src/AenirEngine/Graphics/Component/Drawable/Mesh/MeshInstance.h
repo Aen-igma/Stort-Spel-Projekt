@@ -25,8 +25,8 @@ namespace Aen {
 		friend class Renderer;
 		friend class Entity;
 
-		virtual void Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) override;
-		virtual void DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) override;
+		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
+		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
 	};
 
 }

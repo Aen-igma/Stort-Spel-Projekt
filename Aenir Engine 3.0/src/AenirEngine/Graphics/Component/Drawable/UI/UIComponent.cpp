@@ -12,7 +12,7 @@ namespace Aen {
 
 	void UIComponent::AddText() {}
 
-	void UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) {}
+	void UIComponent::Draw(Renderer& renderer, const uint32_t& layer) {}
 
-	void UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) {}
+	void UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer) {}
 }

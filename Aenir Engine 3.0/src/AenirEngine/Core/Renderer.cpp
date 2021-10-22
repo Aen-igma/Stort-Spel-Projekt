@@ -109,7 +109,7 @@ namespace Aen {
 				
 				// Pre Depth Pass
 
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, k.first, i);
+				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, i);
 
 				// Light Cull Pass
 
@@ -132,7 +132,7 @@ namespace Aen {
 
 				// Draw pass
 
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, k.first, i);
+				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, i);
 
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}
