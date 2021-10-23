@@ -40,7 +40,10 @@ void Gameplay::Initialize()
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 
-	planeMat["BaseColor"] = Aen::Color(.4f, .4f, .4f, 1.f);
+	planeMat["InnerEdgeColor"] = Aen::Color::Red;
+	planeMat["OuterEdgeColor"] = Aen::Color::Red;
+
+	planeMat["BaseColor"] = Aen::Color::White;
 	playerMat["BaseColor"] = Aen::Color::White;
 
 	// -------------------------- Setup Entities -------------------------------- //
