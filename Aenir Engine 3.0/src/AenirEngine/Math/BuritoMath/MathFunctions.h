@@ -69,7 +69,7 @@ namespace Aen {
 	}
 
 	template<class T> 
-	inline const float Clamp(T& value, const T& min, const T& max) noexcept {
+	inline const T Clamp(const T& value, const T& min, const T& max) noexcept {
 		return (value < min) ? min : (value > max) ? max : value;
 	}
 

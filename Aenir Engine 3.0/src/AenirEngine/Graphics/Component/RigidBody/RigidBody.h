@@ -47,7 +47,7 @@ namespace Aen {
 		void SetRestitutionCombineMode(const CombineMode& mode);
 		void SetMaterialFlag(const MaterialFlag& flag);
 		void SetRigidType(const RigidType& type);
-		void SetGeometry(const GeometryType& geometry);
+		void SetGeometry(const GeometryType& geometry, const Vec3f& scale = Vec3f::one);
 		void SetAngularDamping(const float& damp);
 		void SetSleepThresHold(const float& value);
 		void SetMass(const float& mass);
@@ -81,6 +81,8 @@ namespace Aen {
 	px::PxPhysics* mp_LocalPhysics;
 	px::PxRigidStatic* mp_StaticBody;
 	px::PxRigidDynamic* mp_DynamicBody;
+
+	Vec3f m_scale;
 
 	friend class ComponentHandler;
 	friend class MeshInstance;
