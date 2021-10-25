@@ -359,6 +359,11 @@ namespace Aen
 
 	}
 
+	Aen::ImGuiHandler* LevelGenerator::GetHandlerPtr()
+	{
+		return &m_handler;
+	}
+
 	const float& LevelGenerator::GetRoomDimension()
 	{
 		return roomDimension;
@@ -415,27 +420,30 @@ namespace Aen
 	}
 
 
-	void LevelGenerator::constructRoom(Entity** container, const Vec2i pos)
+	void LevelGenerator::constructRoom(Entity** container, Vec2i pos)
 	{
-		AenIMP::CompleteRoom* cRoom_ptr = map[pos.x][pos.y].mptr_parent;
-		auto modelVector = &cRoom_ptr->GetModelVector();
-		for (auto model : *modelVector) {
-			Aen::Mesh* subMesh = &Aen::Resource::CreateMesh(model.mesh);
-			subMesh->Load((model.mesh));
-			container[pos.x + pos.y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
-			Entity* temp = container[pos.x + pos.y * Aen::mapSize];
-			temp->AddComponent<Aen::MeshInstance>();
-			temp->GetComponent<Aen::MeshInstance>().SetMesh(*subMesh);
-			temp->SetPos(model.translation[0] + (pos.x * roomDimension), model.translation[1], model.translation[2] + (pos.y * roomDimension));
-		}
+		m_handler.LoadLevel(0, Vec2f(pos) * roomDimension);
+		
+		//AenIMP::CompleteRoom* cRoom_ptr = map[pos.x][pos.y].mptr_parent;
+		//auto modelVector = &cRoom_ptr->GetModelVector();
+		//for (auto model : *modelVector) {
+		//	Aen::Mesh* subMesh = &Aen::Resource::CreateMesh(model.mesh);
+		//	Aen::ImGuiHandler handler;
+		//	subMesh->Load((model.mesh));
+		//	container[pos.x + pos.y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
+		//	Entity* temp = container[pos.x + pos.y * Aen::mapSize];
+		//	temp->AddComponent<Aen::MeshInstance>();
+		//	temp->GetComponent<Aen::MeshInstance>().SetMesh(*subMesh);
+		//	temp->SetPos(model.translation[0] + (pos.x * roomDimension), model.translation[1], model.translation[2] + (pos.y * roomDimension));
+		//}
 	}
 
 
 	void LevelGenerator::SpawnRoom(Entity** container, Vec2i pos)
 	{
-		if (container[pos.x + pos.y * Aen::mapSize] != nullptr)
+		if (container[pos.x + pos.y * Aen::mapSize] != nullptr){};
 			//Aen::EntityHandler::RemoveEntity(*container[pos.x + pos.y * Aen::mapSize]);
-		//container[pos.x + pos.y * Aen::mapSize] = nullptr;
+			//container[pos.x + pos.y * Aen::mapSize] = nullptr;
 		if (map[pos.x][pos.y].m_present) {
 			//container[pos.x + pos.y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
 			//container[pos.x + pos.y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
@@ -447,7 +455,7 @@ namespace Aen
 
 	void LevelGenerator::LoadRoomFiles(const string& filePath)
 	{
-		m_importer.ReadFromFile(filePath);
+		m_handler.GetImporterPtr()->ReadFromFile(filePath);
 	}
 
 	inline void LevelGenerator::LoadMutipleRoomFiles(const std::vector<string>& filePaths)
@@ -455,18 +463,20 @@ namespace Aen
 		for (string path : filePaths) {
 			LoadRoomFiles(path);
 		}
+		m_handler.ReadAllFilesFromResourceFolder();
 	}
 
 	void LevelGenerator::AddLoadedToGeneration()
 	{
 		Room temp;
-		for (auto strRoom : m_importer.GetRoomVector()) {
+		for (auto strRoom : m_handler.GetImporterPtr()->GetRoomVector()) {
 
 			temp.connectionDirections	=	strRoom.GetRoom().type;
 			temp.m_roomSpecial	=	(SpecialRoom)strRoom.GetRoom().special;
 			temp.m_roomTheme	=	(RoomTheme)strRoom.GetRoom().theme;
 			temp.m_baseChance	=	strRoom.GetRoom().probability;
 			temp.mptr_parent	=	&strRoom;
+			temp.m_present = true;
 
 			this->AddRoomToGeneration(temp);
 		}

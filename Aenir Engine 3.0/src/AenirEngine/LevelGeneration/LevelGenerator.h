@@ -16,6 +16,7 @@
 #include "../Graphics/Component/EntityHandler.h"
 #include "../AenDefines.h"
 #include "../LevelImporter.h"
+#include "../ImGuiHandler.h"
 
 
 #define NORTH 1
@@ -110,14 +111,17 @@ namespace Aen {
 
 		Room map[mapSize][mapSize];
 		std::vector<Room> levelRoom;
-		AenIMP::LevelImporter m_importer;
+		Aen::ImGuiHandler m_handler;
 
 		std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< std::uint16_t, std::vector<uint16_t> > > > masterRoomMap;
 
-		void constructRoom(Entity** container, const Vec2i pos);
+		void constructRoom(Entity** container, Vec2i pos);
 	protected:
 		std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
 	public:
+		
+		Aen::ImGuiHandler* GetHandlerPtr();
+
 		Room* GenerateLevel();
 
 		Room* GenerationTestingFunction();

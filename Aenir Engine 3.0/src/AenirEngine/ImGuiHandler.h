@@ -42,6 +42,8 @@ namespace Aen {
 
 		vector<Aen::Entity*> GetEntityList();
 
+		void ReadAllFilesFromResourceFolder();
+
 		AenIF::Room GetRoom(size_t index);
 		void AddModel(Aen::Entity* entity);
 		void AddLight(Aen::Entity* entity);
@@ -51,8 +53,14 @@ namespace Aen {
 		void AddSpotLight(AenIF::Light& input);
 		void AddDirectional(AenIF::Light& input);
 
-		void ReadAllFilesFromResourceFolder();
+		bool LoadLevel(int index);
 
-		void LoadLevel(int index);
+
+		bool LoadLevel(int index, Aen::Vec2f offset);
+		void AddBase(AenIF::Model& model, AenIF::Texture& texture, Aen::Vec2f offset);
+		void AddPointLight(AenIF::Light& input, Aen::Vec2f offset);
+		void AddSpotLight(AenIF::Light& input, Aen::Vec2f offset);
+
+		AenIMP::LevelImporter* GetImporterPtr();
 	};
 }

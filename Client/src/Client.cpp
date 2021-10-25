@@ -124,23 +124,26 @@ void Client::Start() {
 
 	// ------------------- Procedural generation testing staging grounds ------- //
 	std::vector<string> levelPaths;
-	levelPaths.reserve(5);
-	levelPaths.push_back("../LevelFolder/Entrance.Level");
-	levelPaths.push_back("../LevelFolder/regBend.Level");
-	levelPaths.push_back("../LevelFolder/regFourway.Level");
-	levelPaths.push_back("../LevelFolder/regStraight.Level");
-	levelPaths.push_back("../LevelFolder/regTJunction.Level");
+	//levelPaths.reserve(5);
+	//levelPaths.push_back("../LevelFolder/Entrance.Level");
+	//levelPaths.push_back("../LevelFolder/regBend.Level");
+	//levelPaths.push_back("../LevelFolder/regFourway.Level");
+	//levelPaths.push_back("../LevelFolder/regStraight.Level");
+	//levelPaths.push_back("../LevelFolder/regTJunction.Level");
 
 	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
+
+
 	m_levelGenerator.AddLoadedToGeneration();
 
 	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
-
+	m_levelGenerator.SetRoomDimension(23);
 	//m_levelGenerator.InitPlaceholderRooms();
 	mptr_map = m_levelGenerator.GenerateLevel();
 	
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
+			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
 			//if (mptr_map[x + y * Aen::mapSize].m_present) {
 			//	rooms[x + y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
 			//	rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
@@ -152,7 +155,6 @@ void Client::Start() {
 			//		Aen::EntityHandler::RemoveEntity(*rooms[x + y * Aen::mapSize]);
 			//	rooms[x + y * Aen::mapSize] = nullptr;
 			//}
-			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x ,y));
 		}
 	}
 
@@ -199,7 +201,7 @@ void Client::Update(const float& deltaTime) {
 		 
 		for (UINT y = 0; y < Aen::mapSize; y++) {
 			for (UINT x = 0; x < Aen::mapSize; x++) {
-				m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+				//m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
 				//if (mptr_map[x + y * Aen::mapSize].m_present) {
 				//	if (rooms[x + y * Aen::mapSize] == nullptr) {
 				//		rooms[x + y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
