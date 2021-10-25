@@ -1,22 +1,21 @@
+// LevelImporter
+
 #pragma once
-#include "AenDefines.h"
 #include "LevelHeader.h"
 #include "RoomFormat.h"
 #include <iostream>
 #include <fstream>
-#include <map>
-#include <unordered_map>
 #include <vector>
 
 using std::string;
 using std::ifstream;
 using std::cout;
 using std::endl;
-using std::map;
 using std::vector;
 
 namespace AenIMP
 {
+
 	struct Room
 	{
 		Aen::RoomHeader roomHeader;
@@ -88,11 +87,8 @@ namespace AenIMP
 		Particle();
 		~Particle();
 	};
-}
 
-namespace Aen 
-{
-	class AEN_DECLSPEC CompleteRoom
+	class CompleteRoom
 	{
 	private:
 
@@ -102,7 +98,6 @@ namespace Aen
 		vector<AenIF::Material> materialVector;
 		vector<AenIF::Light> lightVector;
 		vector<AenIF::Particle> particleVector;
-
 	public:
 
 		CompleteRoom();
@@ -110,12 +105,12 @@ namespace Aen
 
 		void print();
 
-		void addRoom(AenIMP::Room* input);
-		void addModel(AenIMP::Model* input);
-		void addTexture(AenIMP::Texture* input);
-		void addMaterial(AenIMP::Material* input);
-		void addLight(AenIMP::Light* input);
-		void addParticle(AenIMP::Particle* input);
+		void addRoom(Room* input);
+		void addModel(Model* input);
+		void addTexture(Texture* input);
+		void addMaterial(Material* input);
+		void addLight(Light* input);
+		void addParticle(Particle* input);
 
 		AenIF::Room& GetRoom();
 		vector<AenIF::Model>& GetModelVector();
@@ -123,10 +118,9 @@ namespace Aen
 		vector<AenIF::Material>& GetMaterialVector();
 		vector<AenIF::Light>& GetLightVector();
 		vector<AenIF::Particle>& GetParticleVector();
-
 	};
 
-	class AEN_DECLSPEC LevelImporter
+	class LevelImporter
 	{
 	private:
 		ifstream infile;
@@ -136,8 +130,6 @@ namespace Aen
 		LevelImporter();
 		~LevelImporter();
 
-		// Opens a binary file at input [filePath].
-		// Reads all data inside and stores it in a pre defined std::map, then closes the file.    
 		void ReadFromFile(string filePath);
 
 		// Opens a binary file at input [filepath].
@@ -148,6 +140,5 @@ namespace Aen
 		void printArray();
 
 		vector<CompleteRoom>& GetRoomVector();
-
 	};
 }

@@ -8,9 +8,9 @@ namespace AenIF
 
 	struct Room
 	{
-		string type;
-		string special;
-		string theme;
+		int type;
+		int special;
+		int theme;
 		unsigned int probability;
 
 	};

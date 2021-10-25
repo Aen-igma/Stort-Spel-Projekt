@@ -46,6 +46,7 @@ namespace Aen {
 		bool m_present = false;
 
 		Mesh* mptr_mesh;
+		AenIMP::CompleteRoom* mptr_parent;
 
 		SpecialRoom m_roomSpecial = SpecialRoom::NONE;
 		RoomTheme m_roomTheme = RoomTheme::GENERIC;
@@ -109,11 +110,11 @@ namespace Aen {
 
 		Room map[mapSize][mapSize];
 		std::vector<Room> levelRoom;
-
-		LevelImporter m_importer;
+		AenIMP::LevelImporter m_importer;
 
 		std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< std::uint16_t, std::vector<uint16_t> > > > masterRoomMap;
 
+		void constructRoom(Entity** container, const Vec2i pos);
 	protected:
 		std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
 	public:
@@ -136,9 +137,11 @@ namespace Aen {
 
 		void SpawnRoom(Entity** container,const Vec2i pos);
 
-		void LoadRoomFiles(const string filePath);
-		inline void LoadMutipleRoomFiles( const std::vector<string> filePaths);
+		void LoadRoomFiles(const string& filePath);
+		inline void LoadMutipleRoomFiles( const std::vector<string>& filePaths);
 
 		void AddLoadedToGeneration();
+
+		void SetMapTheme(RoomTheme theme);
 	};
 }

@@ -7,8 +7,9 @@ namespace Aen
 
 	Room LevelGenerator::RNGRoomFromVector(std::vector<uint16_t>* roomVec) {
 		//Todo implement weigths
-
-		return levelRoom[(*roomVec)[LehmerInt() % roomVec->size()]];
+		auto temp = levelRoom[(*roomVec)[LehmerInt() % roomVec->size()]];
+		temp.m_present = true;
+		return temp;
 	};
 
 	Room LevelGenerator::RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex) {
@@ -51,7 +52,7 @@ namespace Aen
 		}
 		rerolls = 0;
 		AlignRoom(&result, connectionDir, type);
-		//result.m_present = true;
+		result.m_present = true;
 		return result;
 	}
 
@@ -181,19 +182,24 @@ namespace Aen
 		switch (r)
 		{
 		case 0:
-			map[3][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[3][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
+			map[3][3].m_present = true;
 			break;
 		case 1:
-			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
+			map[3][4].m_present = true;
 			break;
 		case 2:
-			map[4][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[4][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
+			map[4][4].m_present = true;
 			break;
 		case 3:
-			map[4][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[4][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
+			map[4][3].m_present = true;
 			break;
 		default:
-			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
+			map[3][4].m_present = true;
 			break;
 		}
 
@@ -408,25 +414,43 @@ namespace Aen
 
 	}
 
-	void LevelGenerator::SpawnRoom(Entity** container, Vec2i pos)
+
+	void LevelGenerator::constructRoom(Entity** container, const Vec2i pos)
 	{
-		if (container[pos.x + pos.y * Aen::mapSize] != nullptr)
-			Aen::EntityHandler::RemoveEntity(*container[pos.x + pos.y * Aen::mapSize]);
-		container[pos.x + pos.y * Aen::mapSize] = nullptr;
-		if (map[pos.x][pos.y].m_present) {
+		AenIMP::CompleteRoom* cRoom_ptr = map[pos.x][pos.y].mptr_parent;
+		auto modelVector = &cRoom_ptr->GetModelVector();
+		for (auto model : *modelVector) {
+			Aen::Mesh* subMesh = &Aen::Resource::CreateMesh(model.mesh);
+			subMesh->Load((model.mesh));
 			container[pos.x + pos.y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
-			container[pos.x + pos.y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
-			container[pos.x + pos.y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*map[pos.x][pos.y].mptr_mesh);
-			container[pos.x + pos.y * Aen::mapSize]->SetPos(pos.x * 2, 1.f, pos.y * 2);
+			Entity* temp = container[pos.x + pos.y * Aen::mapSize];
+			temp->AddComponent<Aen::MeshInstance>();
+			temp->GetComponent<Aen::MeshInstance>().SetMesh(*subMesh);
+			temp->SetPos(model.translation[0] + (pos.x * roomDimension), model.translation[1], model.translation[2] + (pos.y * roomDimension));
 		}
 	}
 
-	void LevelGenerator::LoadRoomFiles(string filePath)
+
+	void LevelGenerator::SpawnRoom(Entity** container, Vec2i pos)
+	{
+		if (container[pos.x + pos.y * Aen::mapSize] != nullptr)
+			//Aen::EntityHandler::RemoveEntity(*container[pos.x + pos.y * Aen::mapSize]);
+		//container[pos.x + pos.y * Aen::mapSize] = nullptr;
+		if (map[pos.x][pos.y].m_present) {
+			//container[pos.x + pos.y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
+			//container[pos.x + pos.y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
+			//container[pos.x + pos.y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*map[pos.x][pos.y].mptr_mesh);
+			//container[pos.x + pos.y * Aen::mapSize]->SetPos(pos.x * roomDimension, 1.f, pos.y * roomDimension);
+			constructRoom(container, pos);
+		}
+	}
+
+	void LevelGenerator::LoadRoomFiles(const string& filePath)
 	{
 		m_importer.ReadFromFile(filePath);
 	}
 
-	inline void LevelGenerator::LoadMutipleRoomFiles(std::vector<string> filePaths)
+	inline void LevelGenerator::LoadMutipleRoomFiles(const std::vector<string>& filePaths)
 	{
 		for (string path : filePaths) {
 			LoadRoomFiles(path);
@@ -438,13 +462,19 @@ namespace Aen
 		Room temp;
 		for (auto strRoom : m_importer.GetRoomVector()) {
 
-			temp.connectionDirections	=	atoi( strRoom.GetRoom().type.c_str());
-			temp.m_roomSpecial	=	(SpecialRoom)atoi(strRoom.GetRoom().special.c_str());
-			temp.m_roomTheme	=	(RoomTheme)atoi(strRoom.GetRoom().theme.c_str());
+			temp.connectionDirections	=	strRoom.GetRoom().type;
+			temp.m_roomSpecial	=	(SpecialRoom)strRoom.GetRoom().special;
+			temp.m_roomTheme	=	(RoomTheme)strRoom.GetRoom().theme;
 			temp.m_baseChance	=	strRoom.GetRoom().probability;
+			temp.mptr_parent	=	&strRoom;
 
 			this->AddRoomToGeneration(temp);
 		}
+	}
+
+	void LevelGenerator::SetMapTheme(RoomTheme theme)
+	{
+		m_mapTheme = theme;
 	}
 
 
@@ -456,6 +486,7 @@ namespace Aen
 		m_roomIndex = MAXUINT16;
 
 		mptr_mesh = nullptr;
+		mptr_parent = nullptr;
 
 		//connection location
 		connectionDirections = 0;
@@ -476,6 +507,7 @@ namespace Aen
 		m_roomTheme = p.m_roomTheme;
 
 		mptr_mesh = p.mptr_mesh;
+		mptr_parent = p.mptr_parent;
 		this->m_roomIndex = p.m_roomIndex;
 
 		//connection location

@@ -123,8 +123,21 @@ void Client::Start() {
 	m_window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
 
 	// ------------------- Procedural generation testing staging grounds ------- //
-	m_levelGenerator.InitPlaceholderRooms();
-	mptr_map = m_levelGenerator.GenerationTestingFunction();;
+	std::vector<string> levelPaths;
+	levelPaths.reserve(5);
+	levelPaths.push_back("../LevelFolder/Entrance.Level");
+	levelPaths.push_back("../LevelFolder/regBend.Level");
+	levelPaths.push_back("../LevelFolder/regFourway.Level");
+	levelPaths.push_back("../LevelFolder/regStraight.Level");
+	levelPaths.push_back("../LevelFolder/regTJunction.Level");
+
+	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
+	m_levelGenerator.AddLoadedToGeneration();
+
+	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
+
+	//m_levelGenerator.InitPlaceholderRooms();
+	mptr_map = m_levelGenerator.GenerateLevel();
 	
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {

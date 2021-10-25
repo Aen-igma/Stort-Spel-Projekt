@@ -1,3 +1,6 @@
+// LevelImporter
+
+
 #include "PCH.h"
 #include "LevelImporter.h"
 
@@ -146,7 +149,6 @@ namespace AenIMP {
 
 	Light::~Light()
 	{
-		cout << "D lightStruct" << endl;
 		delete this->light;
 	}
 
@@ -174,10 +176,7 @@ namespace AenIMP {
 		cout << "D particleStruct" << endl;
 		delete particle;
 	}
-}
 
-namespace Aen 
-{
 	LevelImporter::LevelImporter()
 	{
 
@@ -201,8 +200,7 @@ namespace Aen
 
 			if (sectionHeader.type == Aen::MODEL)
 			{
-
-				AenIMP::Model* model = new AenIMP::Model;
+				Model* model = new Model;
 				model->readFromFile(infile);
 				model->printModel();
 
@@ -211,7 +209,7 @@ namespace Aen
 			}
 			else if (sectionHeader.type == Aen::TEXTURE)
 			{
-				AenIMP::Texture* texture = new AenIMP::Texture;
+				Texture* texture = new Texture;
 				texture->readFromFile(infile);
 				texture->printTexture();
 
@@ -220,7 +218,7 @@ namespace Aen
 			}
 			else if (sectionHeader.type == Aen::MATERIAL)
 			{
-				AenIMP::Material* material = new AenIMP::Material;
+				Material* material = new Material;
 				material->readFromFile(infile);
 				material->printMaterial();
 
@@ -229,7 +227,7 @@ namespace Aen
 			}
 			else if (sectionHeader.type == Aen::LIGHT)
 			{
-				AenIMP::Light* light = new AenIMP::Light;
+				Light* light = new Light;
 				light->readFromFile(infile);
 				light->printLight();
 
@@ -238,7 +236,7 @@ namespace Aen
 			}
 			else if (sectionHeader.type == Aen::PARTICLE)
 			{
-				AenIMP::Particle* particle = new AenIMP::Particle;
+				Particle* particle = new Particle;
 				particle->readFromFile(infile);
 				particle->printParticle();
 
@@ -247,7 +245,7 @@ namespace Aen
 			}
 			else if (sectionHeader.type == Aen::ROOM)
 			{
-				AenIMP::Room* room = new AenIMP::Room;
+				Room* room = new Room;
 				room->readFromFile(infile);
 				room->printRoom();
 
@@ -269,12 +267,15 @@ namespace Aen
 
 	}
 
+	#include <assert.h>
+
 	void LevelImporter::OpenFile(string filePath)
 	{
 		infile.open(filePath, std::ios::in | std::ios::binary);
 		if (!infile)
 		{
 			cout << "Cannot open file!" << endl;
+			//assert(!infile);
 		}
 		cout << "File is Open" << endl;
 	}
@@ -370,7 +371,7 @@ namespace Aen
 
 
 
-	void CompleteRoom::addRoom(AenIMP::Room* input)
+	void CompleteRoom::addRoom(Room* input)
 	{
 		room.type = input->room->type;
 		room.special = input->room->special;
@@ -378,7 +379,7 @@ namespace Aen
 		room.probability = input->room->probability;
 	}
 
-	void CompleteRoom::addModel(AenIMP::Model* input)
+	void CompleteRoom::addModel(Model* input)
 	{
 		AenIF::Model temp;
 		temp.name = input->model->name;
@@ -396,7 +397,7 @@ namespace Aen
 		modelVector.push_back(temp);
 	}
 
-	void CompleteRoom::addTexture(AenIMP::Texture* input)
+	void CompleteRoom::addTexture(Texture* input)
 	{
 		AenIF::Texture temp;
 		temp.name = input->texture->name;
@@ -404,7 +405,7 @@ namespace Aen
 		textureVector.push_back(temp);
 	}
 
-	void CompleteRoom::addMaterial(AenIMP::Material* input)
+	void CompleteRoom::addMaterial(Material* input)
 	{
 		AenIF::Material temp;
 		for (int i = 0; i < 3; i++)
@@ -418,7 +419,7 @@ namespace Aen
 		materialVector.push_back(temp);
 	}
 
-	void CompleteRoom::addLight(AenIMP::Light* input)
+	void CompleteRoom::addLight(Light* input)
 	{
 		AenIF::Light temp;
 		temp.type = input->light->type;
@@ -437,14 +438,13 @@ namespace Aen
 		lightVector.push_back(temp);
 	}
 
-	void CompleteRoom::addParticle(AenIMP::Particle* input)
+	void CompleteRoom::addParticle(Particle* input)
 	{
 		AenIF::Particle temp;
 		temp.type = input->particle->type;
 		for (int i = 0; i < 3; i++)
 		{
 			temp.translation[i] = input->particle->translation[i];
-
 		}
 		particleVector.push_back(temp);
 	}
@@ -478,5 +478,4 @@ namespace Aen
 	{
 		return particleVector;
 	}
-
 }
