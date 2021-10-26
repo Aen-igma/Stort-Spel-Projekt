@@ -54,12 +54,16 @@ namespace Aen {
 		CBuffer<CB_Camera> m_cbCamera;
 		CBuffer<Vec4i> m_cbUseTexture;
 		SBuffer<SB_Light> m_sbLight;
-		
-		Vec2i m_dispatchGroups;
-		VShader m_opaqueVS;
-		UAView m_UAVBackBuffer;
+
+		GBuffer m_postProcessBuffer;
+		GBuffer m_layerBuffer;
 		BBuffer m_backBuffer;
-		ILayout m_opaqueLayout;
+		
+		VShader m_postProcessVS;
+		PShader m_postProcessPS;
+		PShader m_combineLayersPS;
+		Sampler m_clampSampler;
+		ILayout m_postLayout;
 
 		D3D11_VIEWPORT m_viewPort;
 		DepthMap m_depthMap;

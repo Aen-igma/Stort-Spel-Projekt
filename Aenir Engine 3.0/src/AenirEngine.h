@@ -2,7 +2,7 @@
 
 
 // Entry Point
-#include"AenirEngine/WinMain.cpp"
+#include"AenirEngine/WinMain.h"
 
 #include"AenirEngine/AenCore.h"
 #include"AenirEngine/AenDefines.h"

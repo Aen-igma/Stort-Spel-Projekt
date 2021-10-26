@@ -24,11 +24,12 @@ namespace Aen {
 			}
 		}
 
-		static auto GetTagedEntities(const std::string& tag) {
+		/*static auto GetTagedEntities(const std::string& tag) {
 			size_t cTag = std::stoi(tag);
-			return std::pair<std::multimap<size_t, Entity*>::iterator, std::multimap<size_t, Entity*>::iterator>(
-				m_tagedEntities.lower_bound(cTag), m_tagedEntities.upper_bound(cTag));
-		}
+			m_tagedEntities.lower_bound(cTag);
+			m_tagedEntities.upper_bound(cTag);
+			return std::iterator();
+		}*/
 
 		private:
 		EntityHandler();

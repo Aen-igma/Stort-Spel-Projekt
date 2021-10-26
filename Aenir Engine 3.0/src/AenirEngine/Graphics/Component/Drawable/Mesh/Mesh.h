@@ -30,8 +30,6 @@ namespace Aen {
 
 		~Mesh();
 
-
-
 		VBuffer<Vertex> m_vertices;
 		std::vector<PartitionData> m_partitions;
 		std::unordered_map<std::string, uint32_t> m_meshMaterialName;

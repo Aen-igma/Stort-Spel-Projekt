@@ -1,8 +1,7 @@
 #pragma once
-#include "States\Gameplay.h"
-#include "States\Menu.h"
-#include "States\Loadscreen.h"
-#include "AenirEngine.h"
+#include"AenirEngine.h"
+#include"AenirEngine/ThirdParty/ImGui/imgui.h"
+#include"Level/LevelGenerator.h"
 
 #include<stack>
 
@@ -14,7 +13,6 @@ class Client : public Aen::App {
 
 	void Start() override;
 	void Update(const float& deltaTime) override;
-	void ChangeState(const States& states);
 
 	private:
 
@@ -38,11 +36,8 @@ class Client : public Aen::App {
 
 	std::stack<Aen::Entity*> m_reimubes;
 	std::stack<Aen::Entity*> m_pLights;
-
-	State* mp_state;
-	States m_typeState;
-	Gameplay* mp_gameplay;
 };
+
 
 Aen::App* Aen::CreateApp() {
 

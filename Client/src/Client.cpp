@@ -1,8 +1,13 @@
+#include"AenirEngine.h"
 #include"Client.h"
 
 Client::~Client() {
-
-	delete mp_state;
+	/*for (UINT i = 0; i < mapSize * mapSize; i++) {
+		if (rooms[i] != nullptr) {
+			delete rooms[i];
+			rooms[i] = nullptr;
+		}
+	}*/
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
@@ -73,18 +78,15 @@ void Client::Start() {
 
 	Aen::Input::ToggleRawMouse(false);
 
-	:Aen::App(desc, windowName, className), mp_state(nullptr), m_typeState(States::None), mp_gameplay(nullptr)
-{}
-
-
-void Client::Start()
-{
-	State::SetState(States::Main_Menu);
 }
 
-void Client::Update(const float& deltaTime) 
-{
-	if (m_typeState != mp_state->GetCurrentState()){
+void Client::Update(const float& deltaTime) {
+
+	// --------------------------- Raw Mouse and scroll Input --------------------------- //
+
+	while (!Aen::Input::MouseBufferIsEmbty())
+	{
+		Aen::MouseEvent me = Aen::Input::ReadEvent();
 
 		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
 		{
@@ -128,41 +130,92 @@ void Client::Update(const float& deltaTime)
 	} else if(Aen::Input::KeyUp(Aen::Key::RMOUSE)) {
 		Aen::Input::SetMouseVisible(true);
 		Aen::Input::ToggleRawMouse(false);
-		ChangeState(mp_state->GetCurrentState());
 	}
 
-	if (mp_state)
-		mp_state->Update(deltaTime);
+	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
-	if (mp_gameplay->GetLoaded())
-	{
-		std::thread work(&Gameplay::Initialize, mp_gameplay); //Initialize Gameplay
-		work.detach();
-	}
-}
+	if (Aen::Input::KeyDown(Aen::Key::F1)) {
+		m_toggleFullScreen = !m_toggleFullScreen;
+		Aen::WindowDesc wDesc;
 
-void Client::ChangeState(const States& states)
-{
-	delete mp_state;
-	mp_state = nullptr;
-	
-	switch (states) 
-	{
-		case States::Gameplay:
-			mp_state = mp_gameplay;
-			mp_gameplay = nullptr;
-			break;
-		case States::Main_Menu:
-			mp_state = AEN_NEW MainMenu(m_window);
-			break;
-		case States::Loadscreen:
-			mp_state = AEN_NEW Loadscreen(m_window);
-			mp_gameplay = new Gameplay(m_window);
-			break;
+		if (m_toggleFullScreen) {
+			wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
+			wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
+			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
+			wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
+			m_window.LoadSettings(wDesc);
+		}
+		else {
+			wDesc.width = static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f);
+			wDesc.height = static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f);
+			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
+			wDesc.style = AEN_WS_OVERLAPPEDWINDOW | AEN_WS_VISIBLE;
+			m_window.LoadSettings(wDesc);
+		}
 	}
 
-	if (mp_state && mp_state->GetCurrentState() != States::Gameplay)
-		mp_state->Initialize();
+	// ------------------------------ Quick Exist Button -------------------------------- //
 
-	m_typeState = states;
+	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
+		m_window.Exit();
+
+	// ---------------------------------------------------------------------------------- //
+
+	if(Aen::Input::KeyDown(Aen::Key::G)) {
+		Aen::Entity& e = Aen::EntityHandler::CreateEntity();
+
+		int r = rand() % 6;
+		Aen::Color clr;
+		switch(r) {
+			case 0: clr = Aen::Color::Red;
+			break;
+			case 1: clr = Aen::Color::Green;
+			break;
+			case 2: clr = Aen::Color::Blue;
+			break;
+			case 3: clr = Aen::Color::Magenta;
+			break;
+			case 4: clr = Aen::Color::Yellow;
+			break;
+			case 5: clr = Aen::Color::Cyan;
+			break;
+		}
+
+		e.AddComponent<Aen::PointLight>();
+		e.GetComponent<Aen::PointLight>().SetColor(clr);
+		e.GetComponent<Aen::PointLight>().SetLightDist(1.f, 1.f, 1.f, 5.f);
+		e.GetComponent<Aen::PointLight>().SetStrength(100.f);
+		e.SetPos(rand() % 20 - 10, 1.f / (rand() % 100) + 0.5f, rand() % 20 - 20);
+		m_pLights.push(&e);
+	}
+
+	if(Aen::Input::KeyPress(Aen::Key::H)) {
+		if(!m_pLights.empty()) {
+			Aen::EntityHandler::RemoveEntity(*m_pLights.top());
+			m_pLights.pop();
+		}
+	}
+
+	// ------------------------------------- Reimubes -------------------------------------- //
+
+	if (Aen::Input::KeyPress(Aen::Key::J)) {
+		Aen::Entity& e = Aen::EntityHandler::CreateEntity();
+		e.AddComponent<Aen::RigidBody>();
+		e.AddComponent<Aen::MeshInstance>();
+
+		e.GetComponent<Aen::MeshInstance>().SetMesh(*m_reimubeMesh);
+		e.GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
+		e.GetComponent<Aen::RigidBody>().CreateMaterial();
+		e.GetComponent<Aen::RigidBody>().CreateCube();
+		e.SetPos(0.f, 10.f, 0.f);
+
+		m_reimubes.push(&e);
+	}
+
+	if (Aen::Input::KeyPress(Aen::Key::K)) {
+		if(!m_reimubes.empty()) {
+			Aen::EntityHandler::RemoveEntity(*m_reimubes.top());
+			m_reimubes.pop();
+		}
+	}
 }

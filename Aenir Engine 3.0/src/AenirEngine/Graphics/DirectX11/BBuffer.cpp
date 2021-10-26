@@ -5,16 +5,17 @@ namespace Aen {
 
     BBuffer::~BBuffer() {
         m_rtv.Reset();
-        m_bbTexture.Reset();
     }
 
     BBuffer::BBuffer()
-        :m_rtv(NULL), m_bbTexture(NULL) {
-
-        if(FAILED(m_sChain->GetBuffer(0, IID_ID3D11Resource, reinterpret_cast<void**>(m_bbTexture.GetAddressOf()))))
+        :m_rtv(NULL) {
+        ComTexture2D backBuffer;
+        if(FAILED(m_sChain->GetBuffer(0, IID_ID3D11Resource, reinterpret_cast<void**>(backBuffer.GetAddressOf()))))
             throw;
 
-        if(FAILED(m_device->CreateRenderTargetView(m_bbTexture.Get(), nullptr, m_rtv.GetAddressOf())))
+        if(FAILED(m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, m_rtv.GetAddressOf())))
             throw;
+
+        backBuffer.Reset();
     }
 }

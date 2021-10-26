@@ -68,8 +68,8 @@ namespace Aen {
 	}
 
 	template<class T> 
-	inline const float Clamp(T& value, const T& min, const T& max) noexcept {
-		return (value < min) ? min : (value > max) ? max : value;
+	inline void Clamp(T& value, const T& min, const T& max) noexcept {
+		value = (value < min) ? min : (value > max) ? max : value;
 	}
 
 	template<class T> 
@@ -265,7 +265,6 @@ namespace Aen {
 			y = std::atan2f(-mat.a31, sy);
 			r = 0;
 		}
-
 		return Concealed::TVec<T, 3>(Aen::RadToDeg(p), Aen::RadToDeg(y), Aen::RadToDeg(r));
 	}
 	

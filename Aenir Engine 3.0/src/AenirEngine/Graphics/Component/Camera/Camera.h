@@ -9,7 +9,6 @@ namespace Aen {
 
 		void SetCameraPerspective(const float& fov, const float& aRatio, const float& minZ, const float& maxZ);
 		void SetCameraOrthographic(const float& width, const float& height, const float& minZ, const float& maxZ);
-		void LookTowards(const Vec3f& dir);
 
 		const Vec3f GetForward();
 		const Vec3f GetUp();

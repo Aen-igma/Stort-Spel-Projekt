@@ -18,7 +18,8 @@ namespace Aen {
 			exit(-1);
 
 		// Initialize physX
-		PhysicsHandler::Initialize(100, 981);
+		PhysXService::SetInstance(&m_PhysX);
+		PhysXService::GetInstance()->InitPhysics(100, 981);
 
 		GlobalSettings::Initialize(m_app->m_window);
 
@@ -30,12 +31,12 @@ namespace Aen {
 
 		m_app->Start();
 	}
-	
-	void GameLoop::Run() {
 
+	void GameLoop::Run() {
+		
 		m_start = m_end = ResClock::now();
 		while(Aen::WindowHandle::HandleMsg()) {
-
+		
 			m_end = ResClock::now();
 			while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
 				m_deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start);
@@ -45,21 +46,20 @@ namespace Aen {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
-
-				PhysicsHandler::Update(m_deltaTime.count());
+				PhysXService::GetInstance()->RunPhysics(m_deltaTime.count());
+				m_renderer->Render(); // VSync
 			}
-
-			m_renderer->Render();
 		}
 
 		// Destroy imGui
 		Aen::GlobalSettings::GetImGuiHandler()->Release();
 		delete Aen::GlobalSettings::GetImGuiHandler();
+
+		PhysXService::GetInstance()->ClosePhysics();
 		
 		Resource::Destroy();
 		EntityHandler::Destroy();
 		GCore::Concealed::Release();
-		PhysicsHandler::Destroy;
 		delete m_app;
 		delete m_renderer;
 	}

@@ -12,7 +12,6 @@ namespace Aen {
 		ComponentHandler::RemovePointLight(m_id);
 		ComponentHandler::RemoveDirectionalLight(m_id);
 		ComponentHandler::RemoveRigid(m_id);
-		ComponentHandler::RemoveCharacterController(m_id);
 
 		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
 	}
@@ -67,18 +66,14 @@ namespace Aen {
 	}
 
 	void Entity::SetPos(const Vec3f& pos) {
-		if(ComponentHandler::CharacterControllerExist(m_id))
-			ComponentHandler::GetCharacterController(m_id).SetPos(pos);
-		else if(ComponentHandler::RigidExist(m_id))
+		if(ComponentHandler::RigidExist(m_id))
 			ComponentHandler::GetRigid(m_id).SetPos(pos);
 		else if(ComponentHandler::TranslationExist(m_id))
 			ComponentHandler::GetTranslation(m_id).SetPos(pos);
 	}
 
 	void Entity::SetPos(const float& x, const float& y, const float& z) {
-		if(ComponentHandler::CharacterControllerExist(m_id))
-			ComponentHandler::GetCharacterController(m_id).SetPos(x, y, z);
-		else if(ComponentHandler::RigidExist(m_id))
+		if(ComponentHandler::RigidExist(m_id))
 			ComponentHandler::GetRigid(m_id).SetPos(x, y, z);
 		else if(ComponentHandler::TranslationExist(m_id))
 			ComponentHandler::GetTranslation(m_id).SetPos(x, y, z);
@@ -105,9 +100,6 @@ namespace Aen {
 			ComponentHandler::GetRigid(m_id).SetRot(rot);
 		else if(ComponentHandler::RotationExist(m_id))
 			ComponentHandler::GetRotation(m_id).SetRot(rot);
-
-		if(ComponentHandler::CameraExist(m_id))
-			ComponentHandler::GetCamera(m_id).LookTowards(Transform(MatRotate(rot), Vec3f(0.f, 0.f, -1.f)).Normalized());
 	}
 
 	void Entity::SetRot(const float& p, const float& y, const float& r) {
@@ -115,23 +107,14 @@ namespace Aen {
 			ComponentHandler::GetRigid(m_id).SetRot(p, y, r);
 		else if(ComponentHandler::RotationExist(m_id))
 			ComponentHandler::GetRotation(m_id).SetRot(p, y, r);
-
-		if(ComponentHandler::CameraExist(m_id))
-			ComponentHandler::GetCamera(m_id).LookTowards(Transform(MatRotate(p, y, r), Vec3f(0.f, 0.f, -1.f)).Normalized());
 	}
 
 	void Entity::Rotate(const Vec3f& rot) {
 		ComponentHandler::GetRotation(m_id).Rotate(rot);
-
-		if(ComponentHandler::CameraExist(m_id))
-			ComponentHandler::GetCamera(m_id).LookTowards(Transform(MatRotate(rot), Vec3f(0.f, 0.f, -1.f)).Normalized());
 	}
 
 	void Entity::Rotate(const float& p, const float& y, const float& r) {
 		ComponentHandler::GetRotation(m_id).Rotate(p, y, r);
-
-		if(ComponentHandler::CameraExist(m_id))
-			ComponentHandler::GetCamera(m_id).LookTowards(Transform(MatRotate(p, y, r), Vec3f(0.f, 0.f, -1.f)).Normalized());
 	}
 
 	void Entity::SetScale(const Vec3f& scale) {
