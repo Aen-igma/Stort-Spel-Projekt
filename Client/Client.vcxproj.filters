@@ -27,26 +27,26 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Client.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Level\LevelGenerator.h">
       <Filter>Header Files\Level</Filter>
     </ClInclude>
     <ClInclude Include="src\Level\RandomNumberGenerator.h">
       <Filter>Header Files\Level</Filter>
     </ClInclude>
-    <ClInclude Include="src\States\States.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\Client.h">
+      <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="src\States\Gameplay.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\States\Menu.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="src\States\Loadscreen.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\States\Menu.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\States\States.h">
+      <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

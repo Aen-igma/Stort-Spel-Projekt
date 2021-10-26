@@ -5,6 +5,7 @@
 #include"Light/Light.h"
 #include"RigidBody/RigidBody.h"
 #include"CharacterController/CharacterController.h"
+#include "Drawable\UI\UIComponent.h"
 
 #include<unordered_map>
 #include<array>
@@ -64,6 +65,30 @@ namespace Aen {
 		static MeshInstance& GetMeshInstance(const size_t& id) {
 			if(m_mesheInstances.count(id) > 0)
 				return *m_mesheInstances.at(id);
+		}
+
+		// ----------- UI Component ---------- //
+
+		static const bool UIComponentExist(const size_t& id) {
+			return m_UI.count(id) > 0;
+		}
+
+		static void CreateUI(const size_t& id, const size_t& layer) {
+			m_UI.emplace(id, AEN_NEW UIComponent());
+			m_meshLayer[layer].emplace(id, m_UI.at(id));
+		}
+
+		static void RemoveUI(const size_t& id) {
+			if (m_UI.count(id) > 0) {
+				delete m_UI.at(id);
+				m_UI.at(id) = nullptr;
+				m_UI.erase(id);
+			}
+		}
+
+		static UIComponent& GetUI(const size_t& id) {
+			if (m_UI.count(id) > 0)
+				return *m_UI.at(id);
 		}
 
 		// ------------ Transform Component ------------- //
@@ -316,8 +341,8 @@ namespace Aen {
 		static std::unordered_map<size_t, Scale*> m_scales;
 		static std::unordered_map<size_t, RigidBody*> m_rigids;
 		static std::unordered_map<size_t, CharacterController*> m_characterControllers;
+		static std::unordered_map<size_t, UIComponent*> m_UI;
 		static std::multimap<size_t, Light*> m_lights;
-		
 		
 		static std::array<std::unordered_map<size_t, Drawable*>, 7> m_meshLayer;
 

@@ -28,6 +28,8 @@ private:
 
     Aen::Entity* rooms[mapSize * mapSize];
 
+    //Aen::Entity* UI;
+
     Aen::Mesh* m_reimubeMesh;
     Aen::Material* m_ReimuMat;
     Aen::Texture* m_ReimuTex;

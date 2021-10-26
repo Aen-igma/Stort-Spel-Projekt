@@ -2,15 +2,18 @@
 #include "Graphics\Graphics.h"
 #include "../Drawable.h"
 #include "BuritoMath.h"
+#include "ButtonUI.h"
 
 namespace Aen {
 
 	class AEN_DECLSPEC UIComponent : public Drawable
 	{
 	private:
+		ButtonUI button;
 
 	public:
 		UIComponent();
+		UIComponent(std::string dir);
 		~UIComponent();
 
 		void AddButton();

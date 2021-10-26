@@ -28,6 +28,7 @@ Gameplay::~Gameplay()
 	//	delete m_pLights[i];
 	//}
 	//m_pLights.clear();
+	//Aen::EntityHandler::RemoveEntity(*UI);
 
 	m_meshcube = nullptr;
 	m_reimubeMesh = nullptr;
@@ -38,7 +39,12 @@ Gameplay::~Gameplay()
 void Gameplay::Initialize()
 {
 	State::SetLoad(false);
-	char q = 219;
+
+	// ----------------------------- UI -------------------------------- //
+	//UI  = &Aen::EntityHandler::CreateEntity();
+	//UI->AddComponent<Aen::UIComponent>();
+	//UI->GetComponent<Aen::UIComponent>().AddButton();
+
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	m_camera = &Aen::EntityHandler::CreateEntity();
@@ -154,7 +160,6 @@ void Gameplay::Initialize()
 	m_emiCube->AddComponent<Aen::MeshInstance>();
 	m_emiCube->GetComponent<Aen::MeshInstance>().SetMesh(cube);
 	m_emiCube->SetPos(0.f, 3.f, -5.f);
-
 
 	Aen::Texture& face = Aen::Resource::CreateTexture("FaceTexture");
 	Aen::Texture& peng = Aen::Resource::CreateTexture("NekoTexture");
