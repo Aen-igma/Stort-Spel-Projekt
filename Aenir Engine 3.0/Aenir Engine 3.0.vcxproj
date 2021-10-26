@@ -269,6 +269,7 @@
     <ClCompile Include="src\AenirEngine\Window\Input.cpp" />
     <ClCompile Include="src\AenirEngine\Window\Window.cpp" />
     <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp" />
+    <ClCompile Include="UITextHolder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\BuritoMath.h" />
@@ -347,6 +348,8 @@
     <ClInclude Include="src\AenirEngine\Window\WindowDef.h" />
     <ClInclude Include="src\AenirEngine\Window\WindowDesc.h" />
     <ClInclude Include="src\AenirEngine\Window\WindowHandle.h" />
+    <ClInclude Include="UITextComponent.h" />
+    <ClInclude Include="UITextHolder.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderPS.hlsl">
