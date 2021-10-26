@@ -82,6 +82,7 @@ namespace AenIMP {
 
 	Texture::Texture()
 	{
+
 	}
 
 	Texture::~Texture()
@@ -149,7 +150,6 @@ namespace AenIMP {
 
 	Light::~Light()
 	{
-		cout << "D lightStruct" << endl;
 		delete this->light;
 	}
 
