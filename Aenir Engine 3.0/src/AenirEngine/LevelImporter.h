@@ -99,6 +99,7 @@ namespace AenIMP
 		vector<AenIF::Light> lightVector;
 		vector<AenIF::Particle> particleVector;
 	public:
+		int m_index;
 
 		CompleteRoom();
 		~CompleteRoom();
