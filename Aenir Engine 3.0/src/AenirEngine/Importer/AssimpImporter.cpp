@@ -88,7 +88,7 @@ void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBu
 {
 	UINT offset = 0;
 	UINT numMeshes = node->mNumMeshes;
-	partsData.resize(numMeshes);
+	//partsData.resize(numMeshes);
 	for (UINT i = 0; i < numMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
