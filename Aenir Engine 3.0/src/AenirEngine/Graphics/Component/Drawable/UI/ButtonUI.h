@@ -16,11 +16,9 @@ namespace Aen {
 	class ButtonUI : public GCore
 	{
 	private:
-		ID2D1Bitmap* testBmp;
-		D2D1_RECT_F rect;
-
-		std::unordered_map<std::string, ButtonData> buttonData;
-
+		std::vector<ButtonData> buttonData;
+		Vec2f GetButtonSize();
+		Vec2f GetButtonCenter();
 
 	public:
 		ButtonUI();
@@ -28,6 +26,8 @@ namespace Aen {
 
 		void Initialize();
 		void AddButton(LPCWSTR path);
+		void SetButtonPos(float x, float y);
+		void SetButtonSize(float width, float height);
 
 		friend class GameLoop;
 

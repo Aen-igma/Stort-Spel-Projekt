@@ -18,14 +18,15 @@ namespace Aen {
 		//right: Bottom right vertex X Pos
 		//bottom: Bottom right vertex Y Pos
 
-		rect.left = 0;;
-		rect.top = 50;
-		rect.right = 500;
-		rect.bottom = 500;
+		//rect.left = 0;;
+		//rect.top = 50;
+		//rect.right = 500;
+		//rect.bottom = 500;
 	}
 
 	void Aen::ButtonUI::AddButton(LPCWSTR texturePath)
 	{
+		ButtonData tempData;
 		IWICImagingFactory* WFactory = NULL;
 		IWICBitmapDecoder* BCoder = NULL;
 		IWICFormatConverter* FormatConverter = NULL;
@@ -37,19 +38,28 @@ namespace Aen {
 		ASSERT_HR(WFactory->CreateFormatConverter(&FormatConverter));
 		ASSERT_HR(BCoder->GetFrame(0, &FrameDecode));
 		ASSERT_HR(FormatConverter->Initialize(FrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));
-		ASSERT_HR(m_target2D->CreateBitmapFromWicBitmap(FormatConverter, NULL, &testBmp));
+		ASSERT_HR(m_target2D->CreateBitmapFromWicBitmap(FormatConverter, NULL, &tempData.bmp));
 
+		buttonData.push_back(tempData);
 		WFactory->Release();
 		BCoder->Release();
 		FormatConverter->Release();
 		FrameDecode->Release();
 	}
 
+	void ButtonUI::SetButtonPos(float x, float y)
+	{
+		buttonData.data()->rect.left = x;
+		buttonData.data()->rect.top = y;
+		buttonData.data()->rect.right = x;
+		buttonData.data()->rect.bottom = y;
+	}
+
 	void Aen::ButtonUI::Draw()
 	{
 		m_target2D->BeginDraw();
 
-		m_target2D->DrawBitmap(testBmp, rect);
+		m_target2D->DrawBitmap(buttonData.data()->bmp , buttonData.data()->rect);
 
 		m_target2D->EndDraw();
 	}

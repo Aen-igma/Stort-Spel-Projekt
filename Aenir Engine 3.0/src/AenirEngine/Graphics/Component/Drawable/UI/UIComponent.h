@@ -13,10 +13,9 @@ namespace Aen {
 
 	public:
 		UIComponent();
-		UIComponent(std::string dir);
 		~UIComponent();
 
-		void AddButton();
+		void AddButton(LPCWSTR dir);
 		void AddText();
 
 		friend class ComponentHandler;

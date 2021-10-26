@@ -28,6 +28,7 @@ void MainMenu::Initialize()
 	// ----------------------------- UI -------------------------------- //
 	testUI = &Aen::EntityHandler::CreateEntity();
 	testUI->AddComponent<Aen::UIComponent>();
+	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Reimu.png");
 
 	//m_cube = &Aen::EntityHandler::CreateEntity();
 	//m_cube->AddComponent<Aen::MeshInstance>();

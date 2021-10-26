@@ -4,12 +4,6 @@
 Aen::UIComponent::UIComponent()
 {
 	button.Initialize();
-	AddButton();
-}
-
-Aen::UIComponent::UIComponent(std::string dir)
-{
-	//button.Initialize();
 }
 
 Aen::UIComponent::~UIComponent()
@@ -17,9 +11,9 @@ Aen::UIComponent::~UIComponent()
 
 }
 
-void Aen::UIComponent::AddButton()
+void Aen::UIComponent::AddButton(LPCWSTR dir)
 {
-	button.AddButton(L"../Resource/Reimu.png");
+	button.AddButton(dir);
 }
 
 void Aen::UIComponent::AddText()

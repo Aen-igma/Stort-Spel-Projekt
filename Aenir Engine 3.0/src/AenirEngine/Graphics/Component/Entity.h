@@ -211,4 +211,9 @@ namespace Aen {
 	inline CharacterController& Entity::GetComponent() {
 		return ComponentHandler::GetCharacterController(m_id);
 	}
+
+	template<>
+	inline UIComponent& Entity::GetComponent() {
+		return ComponentHandler::GetUI(m_id);
+	}
 }
