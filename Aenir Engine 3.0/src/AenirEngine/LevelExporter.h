@@ -33,7 +33,6 @@ namespace Aen {
 	{
 		string m_name = ""; // Editor name
 		string m_meshName = ""; // Obj name
-
 	};
 
 	struct MaterialInfo 
@@ -101,12 +100,29 @@ namespace Aen {
 		}
 	};
 
+	struct RoomValues
+	{
+		unordered_map<string, int> map;
+		
+		void insert(string key[],int value[],int size)
+		{
+			for (int i = 0; i < size; i++)
+			{
+				map.insert(std::make_pair(key[i], value[i]));
+			}
+		}
+		
+	};
+
 	class LevelExporter
 	{
 	private:
 
+		int typeValue[14] = {101,11,1011,1111,0,1,2,3,4,5,0,1,2,3};
+		string validType[14] = { "Straight","Bend","T Junction","Four Way", "Normal", "Entrance", "Exit", "Boss", "Arena", "Item", "Normal Dungeon", "Skeleton", "Gothic", "Aztec"};
+
+		RoomValues valid;
 		string m_filePath = "../LevelFolder/";
-		//string m_fileName = "LevelFile.Level";
 		ofstream m_outfile;
 
 		vector<ModelStruct> m_ModelVector;
@@ -119,7 +135,7 @@ namespace Aen {
 		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, ModelContainer>& modelMap,size_t& index);
 		void roomFunc(RoomStruct*& roomStruct, string array[]);
 		void textureFunc(TextureStruct*& textureStruct, string& textureFileName);
-
+		int CheckValidType(string& check);
 
 	public:
 

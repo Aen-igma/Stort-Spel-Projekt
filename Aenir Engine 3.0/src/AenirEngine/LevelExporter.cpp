@@ -134,9 +134,10 @@ namespace Aen {
 
 	void LevelExporter::roomFunc(RoomStruct*& roomStruct, string array[])
 	{
-		strcpy(roomStruct->type, array[0].c_str());
-		strcpy(roomStruct->special, array[1].c_str());
-		strcpy(roomStruct->theme, array[2].c_str());
+		
+		roomStruct->type = CheckValidType(array[0]);
+		roomStruct->special = CheckValidType(array[1]);
+		roomStruct->theme = CheckValidType(array[2]);
 		roomStruct->probability = stoi(array[3].c_str());
 
 		cout << roomStruct->type << endl;
@@ -152,9 +153,24 @@ namespace Aen {
 		m_TextureVector.push_back(*textureStruct);
 	}
 
+	int LevelExporter::CheckValidType(string& check)
+	{
+
+		for (std::pair<std::string, int> element : valid.map)
+		{
+			
+
+			if (element.first == check)
+			{
+				return element.second;
+			}
+		}
+		return -1;
+	}
+
 	LevelExporter::LevelExporter()
 	{
-		
+		valid.insert(validType, typeValue, 14);
 	}
 
 	LevelExporter::~LevelExporter()

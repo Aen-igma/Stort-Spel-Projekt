@@ -5,6 +5,7 @@
 #include "CreateThumbnail.h"
 #include "LevelExporter.h"
 #include "LevelImporter.h"
+#include <algorithm>
 
 #include "ThirdParty/ImGui/imgui.h"
 #include "ThirdParty/ImGui/imfilebrowser.h"
@@ -61,8 +62,11 @@ namespace Aen {
 		unordered_map< size_t, ModelContainer> m_modelMap;
 		unordered_map< size_t, Aen::Entity*> m_lightMap;
 
-
+		bool m_multiSelectActive = false;
 		int m_selectedEntity = 0;
+		vector<bool> m_selectedEntities;
+
+
 		float m_xyzTranslation[3] = { 0,0,0 };
 		float m_xyzRotation[3] = { 0,0,0 };
 		float m_xyzScale[3] = { 1,1,1 };

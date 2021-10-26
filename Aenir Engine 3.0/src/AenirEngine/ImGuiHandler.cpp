@@ -12,6 +12,7 @@ namespace Aen {
 	{
 		m_entityList.push_back(entity);
 		m_itemList.push_back("light " + std::to_string(m_lightCount));
+		m_selectedEntities.push_back(false);
 		m_lightCount++;
 	}
 
@@ -119,7 +120,7 @@ namespace Aen {
 	{
 		ReadAllModelsFromHandler();
 		ReadAllFilesFromResourceFolder();
-		CreatePreviewTextureThumbnail();
+		//CreatePreviewTextureThumbnail();
 	}
 
 	void ImGuiHandler::RenderAllWindows()
@@ -226,33 +227,66 @@ namespace Aen {
 						AddPointLight(m_levelImporter.GetRoomVector()[0].GetLightVector()[i]);
 					}
 				}
+				m_levelImporter.GetRoomVector().clear();
+				m_openOrSave = "";
 			}
 			m_fileDialog.ClearSelected();
 		}
 
 		ImGui::BeginChild("List");
 
-		if (ImGui::BeginListBox(""))
+		static string previewValue = m_itemList[0];
+
+		static bool* selected = new bool[m_selectedEntities.size()];
+
+		for (int i = 0; i < m_selectedEntities.size(); i++)
 		{
+			selected[i] = m_selectedEntities[i];
+		}
+
+
+
+		if (ImGui::BeginCombo("",previewValue.c_str()))
+		{
+			previewValue = "";
+			vector<string> vec;
+
 			for (size_t i = 0; i < m_itemList.size(); i++)
 			{
-				const bool is_selected = (m_selectedEntity == i);
-				if (ImGui::Selectable(m_itemList[i].c_str(), is_selected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+				ImGui::Selectable(m_itemList[i].c_str(), &selected[i], ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups);
+
+				if (selected[i] == true)
 				{
-					m_selectedEntity = static_cast<int>(i);
-				}
-
-				if (is_selected == true)
-				{
-					/*if (ImGui::IsItemHovered && ImGui::IsMouseDoubleClicked(0))
-					{
-
-					}*/
-					ImGui::SetItemDefaultFocus();
-
+					vec.push_back(m_itemList[i]);
 				}
 			}
-			ImGui::EndListBox();
+			for (size_t i = 0; i < vec.size(); i++)
+			{
+				if (vec.size() == 1)
+				{
+					previewValue += vec[i];
+
+				}
+				else if(!(i == vec.size()))
+				{
+					previewValue += vec[i] + ",";
+				}
+				else
+				{
+					previewValue += vec[i];
+
+				}
+
+			}
+
+			ImGui::EndCombo();
+
+			for (int i = 0; i < m_selectedEntities.size(); i++)
+			{
+				m_selectedEntities[i] = selected[i];
+				string test = i + " " + std::to_string(m_selectedEntities[i]) + "\n";
+				OutputDebugStringA(test.c_str());
+			}
 		}
 		ImGui::EndChild();
 		ImGui::End();
@@ -319,9 +353,9 @@ namespace Aen {
 		static int selectedSpecial = 0;
 		static int probability = 0;
 
-		const char* roomTheme[] = { "Normal Dungeon", "Aztec", "Gothic" };
-		const char* roomType[] = { "Exit", "Entrance", "Crossing" };
-		const char* specialRoom[] = { "Normal", "Boss" };
+		const char* roomTheme[] = { "Normal Dungeon", "Skeleton", "Gothic", "Aztec"};
+		const char* roomType[] = { "Straight", "Bend", "T Junction" ,"Four Way", "None"};
+		const char* specialRoom[] = { "Normal", "Entrance", "Exit", "Boss", "Arena", "Item"};
 
 		static char materialName[MESH_NAME_MAX_LENGTH];
 
@@ -591,6 +625,7 @@ namespace Aen {
 	{
 		m_entityList.push_back(entity);
 		m_itemList.push_back(name + std::to_string(m_entityCount));
+		m_selectedEntities.push_back(false);
 		m_entityCount++;
 	}
 
@@ -598,6 +633,7 @@ namespace Aen {
 	{
 		m_entityList.push_back(entity);
 		m_itemList.push_back("Model" + std::to_string(m_entityCount));
+		m_selectedEntities.push_back(false);
 		m_entityCount++;
 	}
 
@@ -606,6 +642,8 @@ namespace Aen {
 		m_lightMap.insert(std::make_pair(entity->GetID(), entity));
 		m_entityList.push_back(entity);
 		m_itemList.push_back(type + std::to_string(m_lightCount));
+		m_selectedEntities.push_back(false);
+
 		m_lightCount++;
 	}
 
@@ -617,6 +655,7 @@ namespace Aen {
 			{
 				m_entityList.push_back(element.second);
 				m_itemList.push_back(CheckType(element.second));
+				m_selectedEntities.push_back(false);
 				m_OriginalCount++;
 			}
 		}
@@ -1079,7 +1118,7 @@ namespace Aen {
 
 	void ImGuiHandler::RemoveObject()
 	{
-		/*size_t id = m_entityList[m_selectedEntity]->GetID();
+		size_t id = m_entityList[m_selectedEntity]->GetID();
 		if (!Aen::ComponentHandler::CameraExist(id))
 		{
 			if (m_modelMap.find(id) != m_modelMap.end())
@@ -1095,29 +1134,8 @@ namespace Aen {
 			mp_entityHandlerPtr->RemoveEntity(*m_entityList[m_selectedEntity]);
 			m_entityList.erase(m_entityList.begin() + m_selectedEntity);
 			m_itemList.erase(m_itemList.begin() + m_selectedEntity);
+			m_selectedEntities.erase(m_selectedEntities.begin() + m_selectedEntity);
 			m_selectedEntity--;
-		}*/
-
-		for (size_t i = 0; i < m_entityList.size(); i++)
-		{
-			size_t id = m_entityList[i]->GetID();
-			cout << i << endl;
-			if (!Aen::ComponentHandler::CameraExist(id))
-			{
-				if (m_modelMap.find(id) != m_modelMap.end())
-				{
-					m_modelMap.erase(id);
-				}
-
-				if (m_lightMap.find(id) != m_lightMap.end())
-				{
-					m_lightMap.erase(id);
-				}
-
-				mp_entityHandlerPtr->RemoveEntity(*m_entityList[i]);
-				m_entityList.erase(m_entityList.begin() + i);
-				m_itemList.erase(m_itemList.begin() + i);
-			}
 		}
 	}
 }

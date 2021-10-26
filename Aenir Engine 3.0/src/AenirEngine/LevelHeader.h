@@ -37,9 +37,9 @@ namespace Aen
 
 	struct RoomStruct
 	{
-		char type[TYPE_NAME];
-		char special[TYPE_NAME];
-		char theme[TYPE_NAME];
+		int type;
+		int special;
+		int theme;
 		unsigned int probability;
 	};
 
