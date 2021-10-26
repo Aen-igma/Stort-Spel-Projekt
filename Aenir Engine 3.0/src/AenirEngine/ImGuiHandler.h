@@ -64,7 +64,8 @@ namespace Aen {
 
 		bool m_multiSelectActive = false;
 		int m_selectedEntity = 0;
-		vector<bool> m_selectedEntities;
+		//vector<bool> m_selected;
+		//vector<int> m_selectedEntities;
 
 
 		float m_xyzTranslation[3] = { 0,0,0 };
