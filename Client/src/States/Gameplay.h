@@ -30,8 +30,6 @@ private:
     float m_movementSpeed;
     Aen::Vec3f m_finalDir;
 
-    Aen::Entity* rooms[mapSize * mapSize];
-
 public:
 	Gameplay(Aen::Window& window);
 	~Gameplay()override;
