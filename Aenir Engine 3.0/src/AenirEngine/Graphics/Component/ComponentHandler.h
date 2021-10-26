@@ -4,6 +4,7 @@
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
 
+#include"ThirdParty/PhysX/RigidBody.h"
 #include"RigidBody/RigidBody.h"
 #include"CharacterController/CharacterController.h"
 
