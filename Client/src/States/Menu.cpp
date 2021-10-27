@@ -36,6 +36,9 @@ void MainMenu::Initialize()
 	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(900.f, 500.f, 1);
 	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 300.f, 1);
 
+	//Text
+	testUI->GetComponent<Aen::UIComponent>().AddText(L"HI AGAIN!");
+
 	//m_cube = &Aen::EntityHandler::CreateEntity();
 	//m_cube->AddComponent<Aen::MeshInstance>();
 	//m_cube->GetComponent<Aen::MeshInstance>().SetMesh(cube);

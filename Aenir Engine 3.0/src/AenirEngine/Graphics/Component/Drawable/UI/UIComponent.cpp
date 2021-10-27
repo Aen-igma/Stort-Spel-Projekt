@@ -28,9 +28,9 @@ namespace Aen {
 		button.SetButtonPos(x, y, indX);
 	}
 
-void Aen::UIComponent::AddText()
+void Aen::UIComponent::AddText(std::wstring texts)
 {
-	text.createText();
+	text.createText(texts);
 }
 
 	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
@@ -39,9 +39,14 @@ void Aen::UIComponent::AddText()
 		for (auto& b : button.GetData()) {
 
 			button.Draw(b);
+			
 		}
+		for (auto& t : text.getData())
+		{
+			text.renderText(t);
+		}
+		
 	}
-
 	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
 	{
 
