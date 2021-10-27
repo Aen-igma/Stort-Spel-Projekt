@@ -4,7 +4,15 @@ Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false), m_targetDist(25.f), m_movementSpeed(4.f),
 	m_finalDir(0.f, 0.f, -1.f) {}
 
-Gameplay::~Gameplay() {}
+Gameplay::~Gameplay() {
+	Aen::GlobalSettings::RemoveMainCamera();
+	Aen::EntityHandler::RemoveEntity(*m_camera);
+	Aen::EntityHandler::RemoveEntity(*m_dLight);
+	Aen::EntityHandler::RemoveEntity(*m_plane);
+	Aen::EntityHandler::RemoveEntity(*m_player);
+	Aen::EntityHandler::RemoveEntity(*m_reimube);
+	
+}
 
 void Gameplay::Initialize()
 {
