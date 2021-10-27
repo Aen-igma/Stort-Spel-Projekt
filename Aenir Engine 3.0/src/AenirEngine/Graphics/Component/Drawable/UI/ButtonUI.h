@@ -17,8 +17,8 @@ namespace Aen {
 	{
 	private:
 		std::vector<ButtonData> buttonData;
-		Vec2f GetButtonSize();
-		Vec2f GetButtonCenter();
+		Vec2f GetButtonSize(D2D1_RECT_F& rect);
+		Vec2f GetButtonCenter(D2D1_RECT_F& rect);
 
 	public:
 		ButtonUI();
@@ -26,8 +26,8 @@ namespace Aen {
 
 		void Initialize();
 		void AddButton(LPCWSTR path);
-		void SetButtonPos(float x, float y);
-		void SetButtonSize(float width, float height);
+		void SetButtonPos(float x, float y, D2D1_RECT_F& rect);
+		void SetButtonSize(float width, float height, D2D1_RECT_F& rect);
 
 		friend class GameLoop;
 

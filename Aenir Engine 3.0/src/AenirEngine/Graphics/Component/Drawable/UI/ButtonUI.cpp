@@ -2,7 +2,14 @@
 #include "ButtonUI.h"
 
 namespace Aen {
-
+	Vec2f ButtonUI::GetButtonSize(D2D1_RECT_F& rect)
+	{
+		return Vec2f();
+	}
+	Vec2f ButtonUI::GetButtonCenter(D2D1_RECT_F& rect)
+	{
+		return Vec2f();
+	}
 	Aen::ButtonUI::ButtonUI()
 	{
 	}
@@ -18,7 +25,7 @@ namespace Aen {
 		//right: Bottom right vertex X Pos
 		//bottom: Bottom right vertex Y Pos
 
-		//rect.left = 0;;
+		//rect.left = 0;
 		//rect.top = 50;
 		//rect.right = 500;
 		//rect.bottom = 500;
@@ -47,12 +54,22 @@ namespace Aen {
 		FrameDecode->Release();
 	}
 
-	void ButtonUI::SetButtonPos(float x, float y)
+	void ButtonUI::SetButtonPos(float x, float y, D2D1_RECT_F& rect)
 	{
-		buttonData.data()->rect.left = x;
-		buttonData.data()->rect.top = y;
-		buttonData.data()->rect.right = x;
-		buttonData.data()->rect.bottom = y;
+		float left = GetButtonCenter(rect).x - (x / 2.f);
+		float right = GetButtonCenter(rect).x + (x / 2.f);
+		float top = GetButtonCenter(rect).y - (y / 2.f);
+		float bottom = GetButtonCenter(rect).y + (y / 2.f);
+
+		rect.left = left;
+		rect.right = right;
+		rect.top = top;
+		rect.bottom = bottom;
+	}
+
+	void ButtonUI::SetButtonSize(float width, float height, D2D1_RECT_F& rect)
+	{
+
 	}
 
 	void Aen::ButtonUI::Draw()
