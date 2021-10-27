@@ -56,7 +56,7 @@ void Gameplay::Initialize()
 	planeMat["BaseColor"] = Aen::Color::White;
 	playerMat["BaseColor"] = Aen::Color::White;
 
-	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Reimu.png"));
+	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
 	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
 
