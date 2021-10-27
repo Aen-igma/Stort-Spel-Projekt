@@ -34,6 +34,16 @@ namespace Aen {
 		}
 	}
 
+	void MeshInstance::SetMesh(const std::string& meshName) {
+		if(!Resource::MeshExist(meshName)) throw;
+		m_pMesh = &Resource::GetMesh(meshName);
+
+		if(m_pMesh->m_meshMaterialName.size() > 0) {
+			m_pMaterials.reserve(m_pMesh->m_meshMaterialName.size());
+			m_pMaterials.resize(m_pMesh->m_meshMaterialName.size(), &Resource::GetMaterial("DefaultMaterial"));
+		}
+	}
+
 	void MeshInstance::PrintMaterialSlots() {
 		if(m_pMesh)
 			m_pMesh->PrintMaterialSlots();
@@ -41,6 +51,11 @@ namespace Aen {
 
 	void MeshInstance::SetMaterial(Material& material) {
 		m_pMaterials[0] = &material;
+	}
+
+	void MeshInstance::SetMaterial(const std::string& materialName) {
+		if(!Resource::MaterialExist(materialName)) throw;
+		m_pMaterials[0] = &Resource::GetMaterial(materialName);
 	}
 
 	void MeshInstance::SetMaterial(const UINT& index, Material& material) {

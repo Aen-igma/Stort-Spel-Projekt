@@ -25,16 +25,17 @@ private:
     Aen::Entity* m_plane;
     Aen::Entity* m_player;
     Aen::Entity* m_reimube;
+
+    Aen::Entity* m_target;
+    float m_targetDist;
     
     std::queue<EventData> m_eventQueue;
     float m_movementSpeed;
     Aen::Vec3f m_finalDir;
 
-    Aen::Entity* rooms[mapSize * mapSize];
-
 public:
 	Gameplay(Aen::Window& window);
-	~Gameplay()override;
+	~Gameplay() override;
 
 	// Inherited via State
 	virtual void Update(const float& deltaTime) override;

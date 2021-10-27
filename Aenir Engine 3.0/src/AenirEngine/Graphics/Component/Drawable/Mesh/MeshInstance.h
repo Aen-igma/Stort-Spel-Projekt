@@ -10,8 +10,10 @@ namespace Aen {
 
 		void RemoveMesh();
 		void SetMesh(Mesh& mesh);
+		void SetMesh(const std::string& meshName);
 		void PrintMaterialSlots();
 		void SetMaterial(Material& material);
+		void SetMaterial(const std::string& materialName);
 		void SetMaterial(const std::string& materialSlotName, Material& material);
 		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
 		void SetMaterial(const UINT& index, Material& material);

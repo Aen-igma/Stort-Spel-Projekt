@@ -25,9 +25,8 @@ namespace Aen {
 		}
 
 		static auto GetTagedEntities(const std::string& tag) {
-			size_t cTag = std::stoi(tag);
-			return std::pair<std::multimap<size_t, Entity*>::iterator, std::multimap<size_t, Entity*>::iterator>(
-				m_tagedEntities.lower_bound(cTag), m_tagedEntities.upper_bound(cTag));
+			return std::pair<std::multimap<std::string, Entity*>::iterator, std::multimap<std::string, Entity*>::iterator>(
+				m_tagedEntities.lower_bound(tag), m_tagedEntities.upper_bound(tag));
 		}
 
 		private:
@@ -47,7 +46,7 @@ namespace Aen {
 		}
 
 		static std::unordered_map<size_t, Entity*> m_entities;
-		static std::multimap<size_t, Entity*> m_tagedEntities;
+		static std::multimap<std::string, Entity*> m_tagedEntities;
 		static size_t m_iDs;
 		
 		friend class Entity;
