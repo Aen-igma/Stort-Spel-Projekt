@@ -137,7 +137,13 @@ void Client::Start() {
 	m_levelGenerator.AddLoadedToGeneration();
 
 	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
+
+	//Match this value to the size of the rooms we are using
 	m_levelGenerator.SetRoomDimension(44.005);
+
+	//Sets the origin of the map
+	//m_levelGenerator.m_mapOrigin = Aen::Vec2f(4 * m_levelGenerator.GetRoomDimension(), 4 * m_levelGenerator.GetRoomDimension());
+
 	mptr_map = m_levelGenerator.GenerationTestingFunction();
 	
 	for (UINT y = 0; y < Aen::mapSize; y++) {
