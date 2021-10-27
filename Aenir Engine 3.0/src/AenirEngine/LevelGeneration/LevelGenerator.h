@@ -48,6 +48,7 @@ namespace Aen {
 
 		Mesh* mptr_mesh;
 		AenIMP::CompleteRoom* mptr_parent;
+		int m_CRIndex = 0;
 
 		SpecialRoom m_roomSpecial = SpecialRoom::NONE;
 		RoomTheme m_roomTheme = RoomTheme::GENERIC;
@@ -70,18 +71,24 @@ namespace Aen {
 		float m_dynamic4 = 0;
 
 		void rotateCW() { //Clockwise rotation
+			rotation = 90;
 			connectionDirections *= 10u;
 			if (connectionDirections >= 10000u)
 				connectionDirections += connectionDirections - 9999u;
 			//TODO rotate associated model
 		}
 		void rotateCCW() { //count clockwise rotation
+			rotation = -90;
 			uint16_t temp = connectionDirections % 10u;
 			connectionDirections /= 10u;
 			connectionDirections += 1000u * temp;
 			//TODO rotate associated model
 		}
 		void rotate180() {
+			rotation = 180;
+			if ((LehmerInt() % 2)) {
+				rotation = -180;
+			}
 			uint16_t temp = connectionDirections % 10u;
 			connectionDirections /= 10u;
 			connectionDirections += 1000u * temp;
@@ -90,6 +97,8 @@ namespace Aen {
 			connectionDirections += 1000u * temp;
 			//TODO rotate associated model
 		}
+
+		int rotation = 0;
 
 		Room();
 		Room(const Room& p);
@@ -120,6 +129,8 @@ namespace Aen {
 		std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
 	public:
 		
+		Vec2f m_mapOrigin;
+
 		Aen::ImGuiHandler* GetHandlerPtr();
 
 		Room* GenerateLevel();

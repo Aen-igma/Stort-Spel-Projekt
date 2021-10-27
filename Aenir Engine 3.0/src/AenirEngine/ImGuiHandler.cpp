@@ -57,14 +57,14 @@ namespace Aen
 		return true;
 	}
 
-	bool ImGuiHandler::LoadLevel(int index, Aen::Vec2f offset)
+	bool ImGuiHandler::LoadLevel(int index, Aen::Vec2f offset, float angle)
 	{
 		if (index >= m_levelImporter.GetRoomVector().size())
 			return false;
 		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetModelVector().size(); i++)
 		{
 			cout << "Model " << endl;
-			AddBase(m_levelImporter.GetRoomVector()[index].GetModelVector()[i], m_levelImporter.GetRoomVector()[index].GetTextureVector()[i], offset);
+			AddBase(m_levelImporter.GetRoomVector()[index].GetModelVector()[i], m_levelImporter.GetRoomVector()[index].GetTextureVector()[i], offset, angle);
 		}
 
 		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetLightVector().size(); i++)
@@ -79,13 +79,13 @@ namespace Aen
 			{
 				cout << "s Light " << endl;
 
-				AddSpotLight(m_levelImporter.GetRoomVector()[index].GetLightVector()[i], offset);
+				AddSpotLight(m_levelImporter.GetRoomVector()[index].GetLightVector()[i], offset, angle);
 			}
 			else if (m_levelImporter.GetRoomVector()[index].GetLightVector()[i].type == "Point light")
 			{
 				cout << "p Light " << endl;
 
-				AddPointLight(m_levelImporter.GetRoomVector()[index].GetLightVector()[i], offset);
+				AddPointLight(m_levelImporter.GetRoomVector()[index].GetLightVector()[i], offset, angle);
 			}
 		}
 		return true;
@@ -135,7 +135,7 @@ namespace Aen
 		AddModel(entity);
 	}
 
-	void ImGuiHandler::AddBase(AenIF::Model& model, AenIF::Texture& texture, Aen::Vec2f offset)
+	void ImGuiHandler::AddBase(AenIF::Model& model, AenIF::Texture& texture, Aen::Vec2f offset, float angle)
 	{
 		string imageName = AEN_RESOURCE_DIR(texture.name);
 		string matName = "Material" + to_string(m_entityCount);
@@ -156,7 +156,13 @@ namespace Aen
 		size_t id = entity->GetID();
 		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
 
-		entity->SetPos(model.translation[0] + offset.x, model.translation[1], model.translation[2] + offset.y);
+		float s = sin(angle);
+		float c = cos(angle);
+
+		float posX = (model.translation[0] * c) - (model.translation[2] * s);
+		float posY = (model.translation[0] * s) + (model.translation[2] * c);
+
+		entity->SetPos(posX + offset.x, model.translation[1], posY + offset.y);
 		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);
 		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
 
@@ -178,7 +184,7 @@ namespace Aen
 		AddLight(light);
 	}
 
-	void ImGuiHandler::AddPointLight(AenIF::Light& input, Aen::Vec2f offset)
+	void ImGuiHandler::AddPointLight(AenIF::Light& input, Aen::Vec2f offset, float angle)
 	{
 		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
@@ -186,7 +192,14 @@ namespace Aen
 		light->GetComponent<Aen::PointLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
 		light->GetComponent<Aen::PointLight>().SetLightDist(1, 1, 1, 5);
 		light->GetComponent<Aen::PointLight>().SetStrength(100);
-		light->SetPos(input.translation[0] + offset.x, input.translation[1], input.translation[2] + offset.y);
+
+		float s = sin(angle);
+		float c = cos(angle);
+
+		float posX = (input.translation[0] * c) - (input.translation[2] * s);
+		float posY = (input.translation[0] * s) + (input.translation[2] * c);
+
+		light->SetPos(posX + offset.x, input.translation[1], posY + offset.y);
 		light->SetRot(input.rotation[0], input.rotation[1], input.rotation[2]);
 
 		AddLight(light);
@@ -205,7 +218,7 @@ namespace Aen
 
 		AddLight(light);
 	}
-	void ImGuiHandler::AddSpotLight(AenIF::Light& input, Aen::Vec2f offset)
+	void ImGuiHandler::AddSpotLight(AenIF::Light& input, Aen::Vec2f offset, float angle)
 	{
 		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
@@ -214,7 +227,14 @@ namespace Aen
 		light->GetComponent<Aen::SpotLight>().SetConeSize(input.angle);
 		light->GetComponent<Aen::SpotLight>().SetLightDist(input.attenuation[0], input.attenuation[1], input.attenuation[2], input.range);
 		light->GetComponent<Aen::SpotLight>().SetStrength(input.intensity);
-		light->SetPos(input.translation[0] + offset.x, input.translation[1], input.translation[2] + offset.y);
+
+		float s = sin(angle);
+		float c = cos(angle);
+
+		float posX = (input.translation[0] * c) - (input.translation[2] * s);
+		float posY = (input.translation[0] * s) + (input.translation[2] * c);
+		
+		light->SetPos(posX + offset.x, input.translation[1], posY + offset.y);
 		light->SetRot(input.rotation[0], input.rotation[1], input.rotation[2]);
 
 

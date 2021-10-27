@@ -341,9 +341,13 @@ namespace Aen
 				for (int j = 0; j < 3 * mapSize; j++) {
 					std::cout << cmap[i][j];
 				}
+				LPCSTR out = LPCSTR(cmap[i]);
+				OutputDebugStringA(out);
 				std::cout << std::endl;
+				OutputDebugStringA(LPCSTR("\n"));
 			}
 			std::cout << std::endl;
+			OutputDebugStringA(LPCSTR("\n"));
 		}
 		return *map;
 	}
@@ -422,7 +426,7 @@ namespace Aen
 
 	void LevelGenerator::constructRoom(Entity** container, Vec2i pos)
 	{
-		m_handler.LoadLevel(0, Vec2f(pos) * roomDimension);
+		m_handler.LoadLevel(map[pos.x][pos.y].m_CRIndex, (Vec2f(pos) * roomDimension) - m_mapOrigin, map[pos.x][pos.y].rotation);
 		
 		//AenIMP::CompleteRoom* cRoom_ptr = map[pos.x][pos.y].mptr_parent;
 		//auto modelVector = &cRoom_ptr->GetModelVector();
@@ -441,14 +445,7 @@ namespace Aen
 
 	void LevelGenerator::SpawnRoom(Entity** container, Vec2i pos)
 	{
-		if (container[pos.x + pos.y * Aen::mapSize] != nullptr){};
-			//Aen::EntityHandler::RemoveEntity(*container[pos.x + pos.y * Aen::mapSize]);
-			//container[pos.x + pos.y * Aen::mapSize] = nullptr;
 		if (map[pos.x][pos.y].m_present) {
-			//container[pos.x + pos.y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
-			//container[pos.x + pos.y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
-			//container[pos.x + pos.y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*map[pos.x][pos.y].mptr_mesh);
-			//container[pos.x + pos.y * Aen::mapSize]->SetPos(pos.x * roomDimension, 1.f, pos.y * roomDimension);
 			constructRoom(container, pos);
 		}
 	}
@@ -469,6 +466,7 @@ namespace Aen
 	void LevelGenerator::AddLoadedToGeneration()
 	{
 		Room temp;
+		int index = 0;
 		for (auto strRoom : m_handler.GetImporterPtr()->GetRoomVector()) {
 
 			temp.connectionDirections	=	strRoom.GetRoom().type;
@@ -476,6 +474,8 @@ namespace Aen
 			temp.m_roomTheme	=	(RoomTheme)strRoom.GetRoom().theme;
 			temp.m_baseChance	=	strRoom.GetRoom().probability;
 			temp.mptr_parent	=	&strRoom;
+			temp.m_CRIndex	=	index;
+			index++;
 			temp.m_present = true;
 
 			this->AddRoomToGeneration(temp);
@@ -519,6 +519,7 @@ namespace Aen
 		mptr_mesh = p.mptr_mesh;
 		mptr_parent = p.mptr_parent;
 		this->m_roomIndex = p.m_roomIndex;
+		m_CRIndex = p.m_CRIndex;
 
 		//connection location
 		connectionDirections = p.connectionDirections;

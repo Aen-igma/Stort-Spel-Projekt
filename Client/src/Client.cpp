@@ -137,24 +137,12 @@ void Client::Start() {
 	m_levelGenerator.AddLoadedToGeneration();
 
 	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
-	m_levelGenerator.SetRoomDimension(23);
-	//m_levelGenerator.InitPlaceholderRooms();
-	mptr_map = m_levelGenerator.GenerateLevel();
+	m_levelGenerator.SetRoomDimension(44.05);
+	mptr_map = m_levelGenerator.GenerationTestingFunction();
 	
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
-			//if (mptr_map[x + y * Aen::mapSize].m_present) {
-			//	rooms[x + y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
-			//	rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
-			//	rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-			//	rooms[x + y * Aen::mapSize]->SetPos(x * 2, 1.f, y * 2);
-			//}
-			//else {
-			//	if (rooms[x + y * Aen::mapSize] != nullptr)
-			//		Aen::EntityHandler::RemoveEntity(*rooms[x + y * Aen::mapSize]);
-			//	rooms[x + y * Aen::mapSize] = nullptr;
-			//}
 		}
 	}
 
@@ -202,27 +190,13 @@ void Client::Update(const float& deltaTime) {
 		for (UINT y = 0; y < Aen::mapSize; y++) {
 			for (UINT x = 0; x < Aen::mapSize; x++) {
 				//m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
-				//if (mptr_map[x + y * Aen::mapSize].m_present) {
-				//	if (rooms[x + y * Aen::mapSize] == nullptr) {
-				//		rooms[x + y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
-				//		rooms[x + y * Aen::mapSize]->AddComponent<Aen::MeshInstance>();
-				//		rooms[x + y * Aen::mapSize]->GetComponent<Aen::MeshInstance>().SetMesh(*m_meshcube);
-				//		rooms[x + y * Aen::mapSize]->SetPos(x * 2, 1.f, y * 2);
-				//	}
-				//}
-				//else {
-				//	if (rooms[x + y * Aen::mapSize] != nullptr){
-				//		Aen::EntityHandler::RemoveEntity(*rooms[x + y * Aen::mapSize]);
-				//		rooms[x + y * Aen::mapSize] = nullptr;
-				//	}
-				//}
 			}
 		}
 	}
 
 	if (Aen::Input::KeyPress(Aen::Key::RMOUSE)) {
 		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;
-		m_camera->MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
+		m_camera->MoveRelative(3.f * axis.x * deltaTime * m_speed * focus, 0.f, 3.f * axis.z * deltaTime * m_speed * focus);
 		m_camera->Move(0.f, axis.y * deltaTime * m_speed * focus, 0.f);
 
 		if(m_toggleFullScreen)

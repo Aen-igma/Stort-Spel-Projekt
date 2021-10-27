@@ -56,10 +56,10 @@ namespace Aen {
 		bool LoadLevel(int index);
 
 
-		bool LoadLevel(int index, Aen::Vec2f offset);
-		void AddBase(AenIF::Model& model, AenIF::Texture& texture, Aen::Vec2f offset);
-		void AddPointLight(AenIF::Light& input, Aen::Vec2f offset);
-		void AddSpotLight(AenIF::Light& input, Aen::Vec2f offset);
+		bool LoadLevel(int index, Aen::Vec2f offset, float angle);
+		void AddBase(AenIF::Model& model, AenIF::Texture& texture, Aen::Vec2f offset, float angle);
+		void AddPointLight(AenIF::Light& input, Aen::Vec2f offset, float angle);
+		void AddSpotLight(AenIF::Light& input, Aen::Vec2f offset, float angle);
 
 		AenIMP::LevelImporter* GetImporterPtr();
 	};
