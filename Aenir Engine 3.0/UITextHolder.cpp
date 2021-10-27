@@ -9,66 +9,37 @@ Aen::UITextHolder::~UITextHolder()
 {
 }
 
-bool Aen::UITextHolder::createText()
+void Aen::UITextHolder::createText()
 {
-	this->hr = D2D1CreateFactory(
-		D2D1_FACTORY_TYPE_SINGLE_THREADED, &this->m_pD2DFactory);
-	if (SUCCEEDED(this->hr))
-	{
-		this->hr = DWriteCreateFactory(
-			DWRITE_FACTORY_TYPE_SHARED,
-			__uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&this->m_pDWriteFactory)
-		);
-	}
+	ASSERT_HR(m_target2D->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::SkyBlue),&this->m_pBlackBrush));
+	ASSERT_HR(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&m_pDWriteFactory)));
 	this->m_pCharText = L"Hi again!";
 	this->m_TextLenght = (UINT32)wcslen(this->m_pCharText);
-
-	if (SUCCEEDED(this->hr))
-	{
-		this->hr = this->m_pDWriteFactory->CreateTextFormat(L"Gabriola",
-			NULL,
-			DWRITE_FONT_WEIGHT_REGULAR,
-			DWRITE_FONT_STYLE_NORMAL,
-			DWRITE_FONT_STRETCH_NORMAL,
-			72.0f,
-			L"en-us",
-			&this->m_pTextFormat);
-	}
-	if (SUCCEEDED(this->hr))
-	{
-		this->hr = this->m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-	}
-	if (SUCCEEDED(this->hr))
-	{
-		this->hr = this->m_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-	}
-	return this->hr;
+	ASSERT_HR(m_pDWriteFactory->CreateTextFormat(L"Gabriola",
+		NULL,
+		DWRITE_FONT_WEIGHT_REGULAR,
+		DWRITE_FONT_STYLE_NORMAL,
+		DWRITE_FONT_STRETCH_NORMAL,
+		72.0f,
+		L"en-us",
+		&this->m_pTextFormat));
+	ASSERT_HR(m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
+	ASSERT_HR(m_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
+	
 }
 
-bool Aen::UITextHolder::createDeviceResources()
+void Aen::UITextHolder::createDeviceResources()
 {
 	RECT rc;
 	GetClientRect(this->hwnd, &rc);
 	D2D1_SIZE_U size = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
-
-	if (!this->m_pRtv)
-	{
-		this->hr = this->m_pD2DFactory->CreateHwndRenderTarget(
-			D2D1::RenderTargetProperties(),
-			D2D1::HwndRenderTargetProperties(this->hwnd, size), &this->m_pRtv);
-	}
-	if (SUCCEEDED(this->hr))
-	{
-		this->hr = this->m_pRtv->CreateSolidColorBrush
-		(D2D1::ColorF(D2D1::ColorF::Black), &this->m_pBlackBrush);
-	}
-	SafeRelease(&this->m_pRtv);
 	SafeRelease(&this->m_pBlackBrush);
-	return this->hr;
+
 }
 
-bool Aen::UITextHolder::renderText()
+void Aen::UITextHolder::renderText(UITextData& tData)
 {
-
-	return this->hr;
+	this->m_target2D->BeginDraw();
+	this->m_target2D->DrawText(tData.m_UIText.c_str(),tData.m_TextLenght,tData.m_pFormat, tData.rc, tData.m_pBrush);
+	this->m_target2D->EndDraw();
 }

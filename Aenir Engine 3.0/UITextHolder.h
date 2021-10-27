@@ -1,7 +1,11 @@
 #pragma once
 #pragma comment(lib,"Dwrite.lib")
 #include <dwrite.h>
-#include <d2d1.h>
+#include <d2d1_1.h>
+#include "Graphics/Graphics.h"
+
+#define ASSERT_HR(hr) assert(SUCCEEDED(hr))
+
 
 template <class T> void SafeRelease(T** ppT)
 {
@@ -11,18 +15,28 @@ template <class T> void SafeRelease(T** ppT)
 		*ppT = NULL;
 	}
 }
+struct UITextData
+{
+	std::string name;
+	ID2D1SolidColorBrush* m_pBrush;
+	D2D1_RECT_F rc;
+	IDWriteTextFormat* m_pFormat;
+	UINT32 m_TextLenght;
+	std::wstring m_UIText;
+
+};
 
 namespace Aen
 {
-	class UITextHolder
+	class UITextHolder : public GCore
 	{
 	public:
 		UITextHolder();
 		~UITextHolder();
 
-		bool createText();
-		bool createDeviceResources();
-		bool renderText();
+		void createText();
+		void createDeviceResources();
+		void renderText(UITextData& tData);
 	protected:
 
 	private:
@@ -31,14 +45,14 @@ namespace Aen
 		IDWriteTextFormat* m_pTextFormat;
 		const wchar_t* m_pCharText;
 		UINT32 m_TextLenght;
-
-		ID2D1Factory* m_pD2DFactory;
-		ID2D1HwndRenderTarget* m_pRtv;
 		ID2D1SolidColorBrush* m_pBlackBrush;
+		
 
 		RECT rc;
+		D2D1_RECT_F m_rcf;
 		HWND hwnd;
 		HRESULT hr;
+		
 	};
 
 
