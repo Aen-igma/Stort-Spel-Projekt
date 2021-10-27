@@ -269,6 +269,6 @@ void Gameplay::Update(const float& deltaTime)
 	// ------------------------------------- States -------------------------------------- //
 	if (Aen::Input::KeyDown(Aen::Key::ENTER))
 	{
-		State::SetState(States::Main_Menu);
+		State::SetState(States::Gameover);
 	}
 }
