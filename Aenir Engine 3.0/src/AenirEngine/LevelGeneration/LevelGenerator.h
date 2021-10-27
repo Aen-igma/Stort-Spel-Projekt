@@ -114,6 +114,7 @@ namespace Aen {
 	
 	class AEN_DECLSPEC LevelGenerator {
 	private:
+	protected:
 		Room RNGRoomFromVector(std::vector<uint16_t>* roomVec);
 		Room RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex);
 		static void AlignRoom(Room* room, const uint16_t& connectionDir, unsigned char& type);
@@ -125,8 +126,9 @@ namespace Aen {
 		std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< std::uint16_t, std::vector<uint16_t> > > > masterRoomMap;
 
 		void constructRoom(Entity** container, Vec2i pos);
-	protected:
 		std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
+
+		void placeBossRoom();
 	public:
 		
 		Vec2f m_mapOrigin;

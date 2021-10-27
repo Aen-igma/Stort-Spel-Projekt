@@ -7,6 +7,8 @@ namespace Aen
 
 	Room LevelGenerator::RNGRoomFromVector(std::vector<uint16_t>* roomVec) {
 		//Todo implement weigths
+
+		//Om du inte är Andreas eller Filip och du får en div by zero krash här, så saknar du .Level filer
 		auto temp = levelRoom[(*roomVec)[LehmerInt() % roomVec->size()]];
 		temp.m_present = true;
 		return temp;
@@ -294,6 +296,9 @@ namespace Aen
 			}
 		}
 
+		
+		placeBossRoom();
+
 		return *map;
 	}
 	Room* LevelGenerator::GenerationTestingFunction()
@@ -315,7 +320,7 @@ namespace Aen
 			for (int y = 0; y < mapSize; y++) {
 				for (int x = 0; x < mapSize; x++) {
 					if (map[x][y].m_present) {
-						cmap[3 * y + 1][3 * x + 1] = ((int)'0' + (int)map[x][y].m_roomTheme);
+						cmap[3 * y + 1][3 * x + 1] = ((int)'0' + (int)map[x][y].m_roomSpecial);
 						if (map[x][y].connectionDirections % 10u)
 						{
 							cmap[3 * y + 0][3 * x + 1] = '|'; //North
@@ -335,7 +340,7 @@ namespace Aen
 					}
 				}
 			}
-			cmap[3 * 4 + 1][3 * 3 + 1] = 'X';
+			//cmap[3 * 4 + 1][3 * 3 + 1] = 'X';
 			for (int i = 0; i < 3 * mapSize; i++) {
 				std::cout << (char)9;
 				for (int j = 0; j < 3 * mapSize; j++) {
@@ -392,6 +397,60 @@ namespace Aen
 		return uint16_t(x + y * mapSize);
 	}
 
+	void LevelGenerator::placeBossRoom()
+	{
+		bool bossRoomPlaced = false;
+		Vec2i entrancePos;
+		unsigned char type = 1;
+
+		for (int y = 0; y < mapSize; y++) {
+			for (int x = 0; x < mapSize; x++) {
+				if (map[x][y].m_present && map[x][y].m_roomSpecial == SpecialRoom::ENTRANCE) {
+					entrancePos = Vec2i(x, y);
+				}
+			}
+		}
+		for (int y = 0; y < mapSize; y++) {
+
+			for (int x = 0; x < mapSize; x++) {
+				if (map[x][y].m_present && !bossRoomPlaced) {
+
+					if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
+					{																				//Prevents out of bounds
+						if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {	//Checks if region is clear
+							map[x][y - 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][101]);	//Insert random room
+							AlignRoom( &map[x][y - 1], 1, type);
+							bossRoomPlaced = true;
+							break;																	
+							//North
+						}
+						else if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
+							map[x + 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][101]);
+							AlignRoom(&map[x + 1][y], 10, type);
+							bossRoomPlaced = true;
+							break;
+							//East
+						}
+						else if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
+							map[x][y + 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][101]);
+							AlignRoom(&map[x][y + 1], 100, type);
+							bossRoomPlaced = true;
+							break;
+							//South
+						}
+						else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
+							map[x - 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][101]);
+							AlignRoom(&map[x - 1][y], 1000, type);
+							bossRoomPlaced = true;
+							break;
+							//West
+						}
+					}
+				}
+			}
+		}
+	}
+
 	const Room* LevelGenerator::GetMapPointer()
 	{
 		return *map;
@@ -427,19 +486,6 @@ namespace Aen
 	void LevelGenerator::constructRoom(Entity** container, Vec2i pos)
 	{
 		m_handler.LoadLevel(map[pos.x][pos.y].m_CRIndex, (Vec2f(pos) * roomDimension) - m_mapOrigin, map[pos.x][pos.y].rotation);
-		
-		//AenIMP::CompleteRoom* cRoom_ptr = map[pos.x][pos.y].mptr_parent;
-		//auto modelVector = &cRoom_ptr->GetModelVector();
-		//for (auto model : *modelVector) {
-		//	Aen::Mesh* subMesh = &Aen::Resource::CreateMesh(model.mesh);
-		//	Aen::ImGuiHandler handler;
-		//	subMesh->Load((model.mesh));
-		//	container[pos.x + pos.y * Aen::mapSize] = &Aen::EntityHandler::CreateEntity();
-		//	Entity* temp = container[pos.x + pos.y * Aen::mapSize];
-		//	temp->AddComponent<Aen::MeshInstance>();
-		//	temp->GetComponent<Aen::MeshInstance>().SetMesh(*subMesh);
-		//	temp->SetPos(model.translation[0] + (pos.x * roomDimension), model.translation[1], model.translation[2] + (pos.y * roomDimension));
-		//}
 	}
 
 
