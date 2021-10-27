@@ -25,7 +25,10 @@ void Aen::UITextHolder::createText()
 		&this->m_pTextFormat));
 	ASSERT_HR(m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
 	ASSERT_HR(m_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
-	
+	m_rcf.left = 0;
+	m_rcf.top = 50;
+	m_rcf.right = 500;
+	m_rcf.bottom = 500;
 }
 
 void Aen::UITextHolder::createDeviceResources()
@@ -37,9 +40,10 @@ void Aen::UITextHolder::createDeviceResources()
 
 }
 
-void Aen::UITextHolder::renderText(UITextData& tData)
+void Aen::UITextHolder::renderText()
 {
 	this->m_target2D->BeginDraw();
-	this->m_target2D->DrawText(tData.m_UIText.c_str(),tData.m_TextLenght,tData.m_pFormat, tData.rc, tData.m_pBrush);
+	this->m_target2D->DrawText(L"Hi again", this->m_TextLenght, this->m_pTextFormat, this->m_rcf, this->m_pBlackBrush);
+	/*this->m_target2D->DrawText(tData.m_UIText.c_str(),tData.m_TextLenght,tData.m_pFormat, tData.rc, tData.m_pBrush);*/
 	this->m_target2D->EndDraw();
 }

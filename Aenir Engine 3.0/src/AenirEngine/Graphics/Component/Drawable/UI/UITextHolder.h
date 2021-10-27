@@ -36,7 +36,7 @@ namespace Aen
 
 		void createText();
 		void createDeviceResources();
-		void renderText(UITextData& tData);
+		void renderText();
 	protected:
 
 	private:

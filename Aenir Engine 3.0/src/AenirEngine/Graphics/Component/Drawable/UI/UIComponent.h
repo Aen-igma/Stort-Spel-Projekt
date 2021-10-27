@@ -3,6 +3,7 @@
 #include "../Drawable.h"
 #include "BuritoMath.h"
 #include "ButtonUI.h"
+#include "UITextHolder.h"
 
 namespace Aen {
 
@@ -10,6 +11,7 @@ namespace Aen {
 	{
 	private:
 		ButtonUI button;
+		UITextHolder text;
 
 	public:
 		UIComponent();
