@@ -177,8 +177,22 @@ void Gameplay::Update(const float& deltaTime) {
 		// Lock On Target
 
 
-		if(Aen::Input::GPKeyDown(0u, Aen::GP::LSHOULDER))
+		if(Aen::Input::GPKeyDown(0u, Aen::GP::LSHOULDER)) {
 			lockedOn = !lockedOn;
+
+			if(lockedOn) {
+				m_targetDist = 25.f;
+				for(auto i = enemies.first; i != enemies.second; i++) {
+					Aen::Entity* enemy = i->second;
+					Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
+					float dist = eDir.Magnitude();
+					if(dist < m_targetDist) {
+						m_targetDist = dist;
+						m_target = enemy;
+					}
+				}
+			}
+		}
 
 	} else {
 		axis.x = (float)Aen::Input::KeyPress(Aen::Key::A) - (float)Aen::Input::KeyPress(Aen::Key::D);
@@ -214,28 +228,30 @@ void Gameplay::Update(const float& deltaTime) {
 
 		// Lock On Target
 
-		if(Aen::Input::KeyDown(Aen::Key::E))
+		if(Aen::Input::KeyDown(Aen::Key::E)) {
 			lockedOn = !lockedOn;
+
+			if(lockedOn) {
+				m_targetDist = 25.f;
+				for(auto i = enemies.first; i != enemies.second; i++) {
+					Aen::Entity* enemy = i->second;
+					Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
+					float dist = eDir.Magnitude();
+					if(dist < m_targetDist) {
+						m_targetDist = dist;
+						m_target = enemy;
+					}
+				}
+			}
+		}
 	}
 
 	Aen::Vec3f camDir;
 	static float side = 0.f;
 
-	if(lockedOn) {
-		if(axis.x != 0.f)
-			side = axis.x;
+	if(axis.x != 0.f && lockedOn)
+		side = axis.x;
 
-		m_targetDist = 25.f;
-		for(auto i = enemies.first; i != enemies.second; i++) {
-			Aen::Entity* enemy = i->second;
-			Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
-			float dist = eDir.Magnitude();
-			if(dist < m_targetDist) {
-				m_targetDist = dist;
-				m_target = enemy;
-			}
-		}
-	}
 
 	if(m_targetDist < 20.f && m_target && lockedOn) {
 		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos()).Normalized();
