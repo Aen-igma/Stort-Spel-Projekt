@@ -1,32 +1,49 @@
 #include "PCH.h"
 #include "UIComponent.h"
 
-Aen::UIComponent::UIComponent()
-{
-	button.Initialize();
-}
+namespace Aen {
 
-Aen::UIComponent::~UIComponent()
-{
+	Aen::UIComponent::UIComponent()
+	{
+		button.Initialize();
+	}
 
-}
+	Aen::UIComponent::~UIComponent()
+	{
 
-void Aen::UIComponent::AddButton(LPCWSTR dir)
-{
-	button.AddButton(dir);
-}
+	}
 
-void Aen::UIComponent::AddText()
-{
-}
+	void Aen::UIComponent::AddButton(LPCWSTR dir, int indX)
+	{
+		button.AddButton(dir, indX);
+	}
 
-void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
-{
-	//Draw button
-	button.Draw();
-}
+	void UIComponent::SetButtonSize(float width, float height, int indX)
+	{
+		button.SetButtonSize(width, height, indX);
+	}
 
-void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
-{
+	void UIComponent::SetButtonPos(float x, float y, int indX)
+	{
+		button.SetButtonPos(x, y, indX);
+	}
+
+	void Aen::UIComponent::AddText()
+	{
+	}
+
+	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
+	{
+		//Draw button
+		for (auto& b : button.GetData()) {
+
+			button.Draw(b);
+		}
+	}
+
+	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
+	{
+
+	}
 
 }

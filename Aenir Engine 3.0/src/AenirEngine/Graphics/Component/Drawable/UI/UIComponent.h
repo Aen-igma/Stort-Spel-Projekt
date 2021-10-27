@@ -15,7 +15,10 @@ namespace Aen {
 		UIComponent();
 		~UIComponent();
 
-		void AddButton(LPCWSTR dir);
+		void AddButton(LPCWSTR dir, int indX);
+		void SetButtonSize(float width, float height, int indX);
+		void SetButtonPos(float x, float y, int indX);
+
 		void AddText();
 
 		friend class ComponentHandler;

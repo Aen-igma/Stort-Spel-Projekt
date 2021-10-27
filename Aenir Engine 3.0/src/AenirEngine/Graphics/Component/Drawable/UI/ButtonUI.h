@@ -11,6 +11,8 @@ namespace Aen {
 	{
 		D2D1_RECT_F rect;
 		ID2D1Bitmap* bmp;
+		//std::string name;
+		int index;
 	};
 
 	class ButtonUI : public GCore
@@ -25,12 +27,13 @@ namespace Aen {
 		~ButtonUI();
 
 		void Initialize();
-		void AddButton(LPCWSTR path);
-		void SetButtonPos(float x, float y, D2D1_RECT_F& rect);
-		void SetButtonSize(float width, float height, D2D1_RECT_F& rect);
+		void AddButton(LPCWSTR path, int indX);
+		void SetButtonPos(float x, float y, int indX);
+		void SetButtonSize(float width, float height, int indX);
+		std::vector<ButtonData> GetData()const;
 
 		friend class GameLoop;
 
-		void Draw();
+		void Draw(ButtonData& data);
 	};
 }
