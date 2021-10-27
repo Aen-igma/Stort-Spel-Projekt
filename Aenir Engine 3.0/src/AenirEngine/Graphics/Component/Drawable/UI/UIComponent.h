@@ -2,18 +2,20 @@
 #include "Graphics\Graphics.h"
 #include "../Drawable.h"
 #include "BuritoMath.h"
+#include "ButtonUI.h"
 
 namespace Aen {
 
 	class AEN_DECLSPEC UIComponent : public Drawable
 	{
 	private:
+		ButtonUI button;
 
 	public:
 		UIComponent();
 		~UIComponent();
 
-		void AddButton();
+		void AddButton(LPCWSTR dir);
 		void AddText();
 
 		friend class ComponentHandler;

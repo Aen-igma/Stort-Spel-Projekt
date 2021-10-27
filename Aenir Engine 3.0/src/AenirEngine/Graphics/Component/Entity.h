@@ -1,21 +1,18 @@
 #pragma once
 #include"ComponentHandler.h"
 #include"Resource.h"
-#include"EntityHandler.h"
 
 namespace Aen {
 
 	class AEN_DECLSPEC Entity {
 		public:
-		~Entity();
-		Entity();
-
 		template<class T> 
 		void AddComponent();
 
 		template<class T>
 		T& GetComponent();
 
+		void SetTag(const std::string& tag);
 		void SetRenderLayer(const int& layer);
 		void SetParent(Entity& parent);
 		void RemoveParent();
@@ -38,24 +35,28 @@ namespace Aen {
 		const Vec3f& GetPos();
 		const Vec3f& GetRot();
 		const Vec3f& GetScale();
-
-		const uint32_t& GetID();
+		const size_t& GetID();
+		const std::string& GetTag();
 
 		private:
+		Entity(const size_t& id);
+		~Entity();
+
+		const bool HasId(const size_t& id);
 		const Mat4f GetTransformation();
 		const Mat4f GetPosMat();
 		const Mat4f GetRotMat();
 		const Mat4f GetScaleMat();
 
-		static uint32_t m_iDs;
-
-		uint32_t m_id;
-		uint32_t m_parentId;
-		uint32_t m_layer;
+		const size_t m_id;
+		size_t m_parentId;
+		size_t m_layer;
 		bool m_hasParent;
+		std::string m_tag;
 
 		friend class Renderer;
 		friend class MeshInstance;
+		friend class EntityHandler;
 	};
 
 	// --------------------- AddComponent ---------------------------
@@ -98,6 +99,13 @@ namespace Aen {
 	}
 
 	template<>
+	inline void Entity::AddComponent<UIComponent>() {
+		m_layer = 3;
+		if (!ComponentHandler::UIComponentExist(m_id))
+			ComponentHandler::CreateUI(m_id, m_layer + 3);
+	}
+
+	template<>
 	inline void Entity::AddComponent<Mesh>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
 			ComponentHandler::CreateMeshInstance(m_id, m_layer + 3);
@@ -136,6 +144,20 @@ namespace Aen {
 	inline void Entity::AddComponent<RigidBody>() {
 		if (!ComponentHandler::RigidExist(m_id))
 			ComponentHandler::CreateRigid(m_id);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
+	}
+
+	template<>
+	inline void Entity::AddComponent<CharacterController>() {
+		if (!ComponentHandler::CharacterControllerExist(m_id))
+			ComponentHandler::CreateCharacterController(m_id);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
 	}
 
 	// --------------- GetComponent -----------------
@@ -183,5 +205,15 @@ namespace Aen {
 	template<>
 	inline RigidBody& Entity::GetComponent() {
 		return ComponentHandler::GetRigid(m_id);
+	}
+
+	template<>
+	inline CharacterController& Entity::GetComponent() {
+		return ComponentHandler::GetCharacterController(m_id);
+	}
+
+	template<>
+	inline UIComponent& Entity::GetComponent() {
+		return ComponentHandler::GetUI(m_id);
 	}
 }

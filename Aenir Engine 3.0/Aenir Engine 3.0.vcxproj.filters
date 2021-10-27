@@ -243,19 +243,28 @@
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Physics\Physics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\CharacterController\CharacterController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Importer\AssimpImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UITextHolder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -476,16 +485,28 @@
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Physics\Physics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysX.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\CharacterController\CharacterController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Importer\AssimpImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UITextComponent.h">
@@ -496,40 +517,14 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessVS.hlsl">
-      <Filter>Shader Files</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessPS.hlsl">
-      <Filter>Shader Files</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CombineLayersPS.hlsl">
-      <Filter>Shader Files</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairShaderVS.hlsl">
-      <Filter>Shader Files\HairShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairPostPS.hlsl">
-      <Filter>Shader Files\HairShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairPostVS.hlsl">
-      <Filter>Shader Files\HairShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\HairShader\HairShaderPS.hlsl">
-      <Filter>Shader Files\HairShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderVS.hlsl">
-      <Filter>Shader Files\CellShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellPostPS.hlsl">
-      <Filter>Shader Files\CellShader</Filter>
-    </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellPostVS.hlsl">
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\OpaqueVS.hlsl">
       <Filter>Shader Files\CellShader</Filter>
     </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderPS.hlsl">
       <Filter>Shader Files\CellShader</Filter>
     </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\LightCullCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderCS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">

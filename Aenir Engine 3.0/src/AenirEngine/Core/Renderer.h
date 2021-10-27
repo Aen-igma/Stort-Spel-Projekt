@@ -1,6 +1,6 @@
 #pragma once
 #include"../Graphics/RenderSystem.h"
-#include"../Graphics/Component/Entity.h"
+#include"../Graphics/Component/EntityHandler.h"
 #include<thread>
 
 namespace Aen {
@@ -54,16 +54,12 @@ namespace Aen {
 		CBuffer<CB_Camera> m_cbCamera;
 		CBuffer<Vec4i> m_cbUseTexture;
 		SBuffer<SB_Light> m_sbLight;
-
-		GBuffer m_postProcessBuffer;
-		GBuffer m_layerBuffer;
-		BBuffer m_backBuffer;
 		
-		VShader m_postProcessVS;
-		PShader m_postProcessPS;
-		PShader m_combineLayersPS;
-		Sampler m_clampSampler;
-		ILayout m_postLayout;
+		Vec2i m_dispatchGroups;
+		VShader m_opaqueVS;
+		UAView m_UAVBackBuffer;
+		BBuffer m_backBuffer;
+		ILayout m_opaqueLayout;
 
 		D3D11_VIEWPORT m_viewPort;
 		DepthMap m_depthMap;

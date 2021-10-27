@@ -11,13 +11,13 @@ namespace Aen {
 	ImGuiHandler::~ImGuiHandler()
 	{
 
-		if (m_deleteList.size() > 0)
+		/*if (m_deleteList.size() > 0)
 		{
 			for (size_t i = 0; i < m_deleteList.size(); i++)
 			{
 				delete m_entityList[m_deleteList[i] - static_cast<size_t>(1)];
 			}
-		}
+		}*/
 	}
 
 	void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
@@ -345,14 +345,14 @@ namespace Aen {
 
 	void ImGuiHandler::ReadAllModelsFromHandler()
 	{
-		if (m_entityList.size() < mp_entityHandlerPtr->m_entities.size())
+		/*if (m_entityList.size() < mp_entityHandlerPtr->m_entities.size())
 		{
 			for (std::pair<uint32_t, Aen::Entity*> element : mp_entityHandlerPtr->m_entities)
 			{
 				m_entityList.push_back(element.second);
 				m_itemList.push_back(CheckType(element.second));
 			}
-		}
+		}*/
 	}
 
 	void ImGuiHandler::CreatePreviewTextureThumbnail()
@@ -537,7 +537,7 @@ namespace Aen {
 
 	void ImGuiHandler::AddBase(const string& meshName, const string& objName)
 	{
-		Aen::Entity* entity = AEN_NEW(Aen::Entity);
+		/*Aen::Entity* entity = AEN_NEW(Aen::Entity);
 		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName + std::to_string(m_entityCount));
 		mesh.Load(AEN_RESOURCE_DIR(objName));
 
@@ -548,7 +548,7 @@ namespace Aen {
 		m_textureFileList.push_back("Missing_Textures.png");
 
 		AddModel(entity);
-		m_deleteList.push_back(static_cast<int>(m_entityList.size()));
+		m_deleteList.push_back(static_cast<int>(m_entityList.size()));*/
 	}
 
 	const string ImGuiHandler::CheckType(Aen::Entity* entity)
@@ -665,7 +665,7 @@ namespace Aen {
 	void ImGuiHandler::RemoveObject()
 	{
 
-		for (int i = 0; i < m_deleteList.size(); i++)
+		/*for (int i = 0; i < m_deleteList.size(); i++)
 		{
 			if (m_selectedEntity == m_deleteList[i] - 1)
 			{
@@ -675,7 +675,7 @@ namespace Aen {
 				m_deleteList.erase(m_deleteList.begin() + i);
 				m_entityCount--;
 			}
-		}
+		}*/
 	}
 }
 
