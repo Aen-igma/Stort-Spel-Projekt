@@ -7,6 +7,7 @@
 #define ASSERT_HR(hr) assert(SUCCEEDED(hr))
 
 
+
 template <class T> void SafeRelease(T** ppT)
 {
 	if (*ppT)
@@ -34,13 +35,13 @@ namespace Aen
 		UITextHolder();
 		~UITextHolder();
 
-		void createText();
+		void createText(/*std::wstring m_text, LPCWSTR m_fonts*/);
 		void createDeviceResources();
 		void renderText();
-	protected:
 
+		//För att skriva mera än en
+		std::unordered_map<std::string, UITextData> m_UITextData;
 	private:
-
 		IDWriteFactory* m_pDWriteFactory;
 		IDWriteTextFormat* m_pTextFormat;
 		const wchar_t* m_pCharText;
@@ -48,7 +49,8 @@ namespace Aen
 		ID2D1SolidColorBrush* m_pBlackBrush;
 		
 
-		RECT rc;
+
+		
 		D2D1_RECT_F m_rcf;
 		HWND hwnd;
 		HRESULT hr;
