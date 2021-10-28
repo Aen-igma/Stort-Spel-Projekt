@@ -371,7 +371,7 @@ void Gameplay::Update(const float& deltaTime) {
 		m_Window.Exit();
 
 	// ------------------------------------- States -------------------------------------- //
-	if (Aen::Input::KeyDown(Aen::Key::ENTER))
+	if (Aen::Input::KeyDown(Aen::Key::ENTER) && m_enemyQueue.size() == 0)
 	{
 		State::SetState(States::Gameover);
 	}
