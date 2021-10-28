@@ -82,6 +82,7 @@ namespace AenIMP {
 
 	Texture::Texture()
 	{
+
 	}
 
 	Texture::~Texture()
@@ -267,15 +268,12 @@ namespace AenIMP {
 
 	}
 
-	#include <assert.h>
-
 	void LevelImporter::OpenFile(string filePath)
 	{
 		infile.open(filePath, std::ios::in | std::ios::binary);
 		if (!infile)
 		{
 			cout << "Cannot open file!" << endl;
-			//assert(!infile);
 		}
 		cout << "File is Open" << endl;
 	}

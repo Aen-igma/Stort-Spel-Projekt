@@ -5,13 +5,14 @@ using std::string;
 
 namespace AenIF
 {
-
+	
 	struct Room
 	{
 		int type;
 		int special;
 		int theme;
 		unsigned int probability;
+		int size;
 
 	};
 
@@ -27,6 +28,8 @@ namespace AenIF
 		//Texture texture;
 		string sound;
 		//Material material;
+		bool rigidBody;
+		string rigidBodyType;
 	};
 
 	struct Texture

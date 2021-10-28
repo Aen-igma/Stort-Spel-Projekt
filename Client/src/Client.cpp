@@ -124,12 +124,6 @@ void Client::Start() {
 
 	// ------------------- Procedural generation testing staging grounds ------- //
 	std::vector<string> levelPaths;
-	//levelPaths.reserve(5);
-	//levelPaths.push_back("../LevelFolder/Entrance.Level");
-	//levelPaths.push_back("../LevelFolder/regBend.Level");
-	//levelPaths.push_back("../LevelFolder/regFourway.Level");
-	//levelPaths.push_back("../LevelFolder/regStraight.Level");
-	//levelPaths.push_back("../LevelFolder/regTJunction.Level");
 
 	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
 
@@ -141,7 +135,7 @@ void Client::Start() {
 	//Match this value to the size of the rooms we are using
 	m_levelGenerator.SetRoomDimension(44.005);
 
-	//Sets the origin of the map
+	////	Sets the origin of the map	////
 	//m_levelGenerator.m_mapOrigin = Aen::Vec2f(4 * m_levelGenerator.GetRoomDimension(), 4 * m_levelGenerator.GetRoomDimension());
 
 	mptr_map = m_levelGenerator.GenerationTestingFunction();

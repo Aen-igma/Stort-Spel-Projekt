@@ -112,7 +112,7 @@ namespace AenIMP
 		void addLight(Light* input);
 		void addParticle(Particle* input);
 
-		AenIF::Room& GetRoom();
+		AenIF::Room & GetRoom();
 		vector<AenIF::Model>& GetModelVector();
 		vector<AenIF::Texture>& GetTextureVector();
 		vector<AenIF::Material>& GetMaterialVector();
@@ -129,7 +129,7 @@ namespace AenIMP
 	public:
 		LevelImporter();
 		~LevelImporter();
-
+  
 		void ReadFromFile(string filePath);
 
 		// Opens a binary file at input [filepath].

@@ -7,7 +7,7 @@
 #define FILE_PATH_NAME_MAX_LENGTH 128
 #define TYPE_NAME 32
 
-namespace Aen
+namespace Aen 
 {
 	enum TYPE
 	{
@@ -41,6 +41,7 @@ namespace Aen
 		int special;
 		int theme;
 		unsigned int probability;
+		int size;
 	};
 
 	struct ModelStruct
@@ -55,6 +56,10 @@ namespace Aen
 		//Texture texture;
 		char sound[MESH_NAME_MAX_LENGTH];
 		//Material material;
+		bool rigidBody;
+		char rigidBodyType[TYPE_NAME];
+
+
 	};
 
 	struct TextureStruct
