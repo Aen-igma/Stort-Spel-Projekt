@@ -29,18 +29,6 @@ void MainMenu::Initialize()
 	testUI = &Aen::EntityHandler::CreateEntity();
 	testUI->AddComponent<Aen::UIComponent>();
 	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Reimu.png");
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-	//Text
-	testUI->GetComponent<Aen::UIComponent>().AddText(L"HI AGAIN!");
-=======
->>>>>>> parent of 23caf9e (UICanDrawText)
-=======
->>>>>>> parent of 23caf9e (UICanDrawText)
-=======
->>>>>>> parent of 23caf9e (UICanDrawText)
 
 	//m_cube = &Aen::EntityHandler::CreateEntity();
 	//m_cube->AddComponent<Aen::MeshInstance>();
