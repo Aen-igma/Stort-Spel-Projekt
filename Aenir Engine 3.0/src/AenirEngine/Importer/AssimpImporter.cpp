@@ -2,19 +2,10 @@
 #include "AssimpImporter.h"
 
 #undef min
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/Importer.hpp"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/scene.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/postprocess.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/matrix4x4.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/cimport.h"
 
-aiAABB m_aabb;
 
 void Aen::AssimpImport::LoadFbx(VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
-	m_aabb.mMax = { 0.f,0.f,0.f };
-	m_aabb.mMin = { 0.f,0.f,0.f };
-
 	std::vector<Vertex> mesh;
 	Assimp::Importer importer;
 
@@ -84,13 +75,6 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 			verts.emplace_back(vertex);
 		}
 		offset = numVerts;
-		if (m_aabb.mMin.x > mesh->mAABB.mMin.x) m_aabb.mMin.x = mesh->mAABB.mMin.x;
-		if (m_aabb.mMin.y > mesh->mAABB.mMin.y) m_aabb.mMin.y = mesh->mAABB.mMin.y;
-		if (m_aabb.mMin.z > mesh->mAABB.mMin.z) m_aabb.mMin.z = mesh->mAABB.mMin.z;
-
-		if (m_aabb.mMax.x < mesh->mAABB.mMax.x) m_aabb.mMax.x = mesh->mAABB.mMax.x;
-		if (m_aabb.mMax.y < mesh->mAABB.mMax.y) m_aabb.mMax.y = mesh->mAABB.mMax.y;
-		if (m_aabb.mMax.z < mesh->mAABB.mMax.z) m_aabb.mMax.z = mesh->mAABB.mMax.z;
 		printf("\n");
 	}
 	
@@ -101,7 +85,6 @@ void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBu
 {
 	UINT offset = 0;
 	UINT numMeshes = node->mNumMeshes;
-	//partsData.resize(numMeshes);
 	for (UINT i = 0; i < numMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -111,13 +94,4 @@ void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBu
 	UINT numNodes = node->mNumChildren;
 	for (UINT i = 0; i < numNodes; i++)
 		AssimpImport::ProcessNode(node->mChildren[i], scene, vBuffer, verts, partsData, meshMaterial);
-}
-
-const DirectX::BoundingBox Aen::AssimpImport::getDXAABB()
-{
-	DirectX::BoundingBox dxBox;
-
-	dxBox.Center = 
-
-	return dxBox;
 }
