@@ -100,8 +100,12 @@ void Gameplay::Update(const float& deltaTime) {
 	auto enemies = Aen::EntityHandler::GetTagedEntities("Enemy");
 
 	Aen::Vec3f camDir;
-	static float side = 0.f;
-	side = Aen::Lerp(side, axis.x, 0.05f);
+	static Aen::Vec2f side;
+	if(lockedOn)
+		side.x = Aen::Lerp(side.x, axis.x, 0.05f);
+	else
+		side.x = Aen::Lerp(side.x, 0.f, 0.05f);
+	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
 
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
 
@@ -250,7 +254,7 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 
 	if(m_targetDist < 20.f && m_target && lockedOn) {
-		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos() - m_camera->GetComponent<Aen::Camera>().GetRight() * side * 1.5f).Normalized();
+		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos() - m_camera->GetComponent<Aen::Camera>().GetRight() * side.x * 1.5f).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
 
@@ -280,7 +284,7 @@ void Gameplay::Update(const float& deltaTime) {
 		AEN_ENDL;
 	}
 
-	m_camera->SetPos(Aen::Lerp(m_camera->GetPos(), m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * -m_ray.GetDistance() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 1.25f * side, 0.4f));
+	m_camera->SetPos(m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * (-m_ray.GetDistance() - side.y) + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 1.25f * side.x);
 
 	m_camera->GetComponent<Aen::Camera>().LookTowards(camDir);
 	m_player->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(0.f, -1.f, 0.f) * deltaTime, deltaTime);
