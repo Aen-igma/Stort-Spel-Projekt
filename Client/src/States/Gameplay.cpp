@@ -104,7 +104,7 @@ void Gameplay::Update(const float& deltaTime) {
 	if(lockedOn)
 		side.x = Aen::Lerp(side.x, axis.x, 0.05f);
 	else
-		side.x = Aen::Lerp(side.x, 0.f, 0.05f);
+		side.x = Aen::Lerp(side.x, axis.x * 0.3f, 0.05f);
 	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
 
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
@@ -284,8 +284,7 @@ void Gameplay::Update(const float& deltaTime) {
 		AEN_ENDL;
 	}
 
-	m_camera->SetPos(m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * (-m_ray.GetDistance() - side.y) + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 1.25f * side.x);
-
+	m_camera->SetPos(Aen::Lerp(m_camera->GetPos(), m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * (-m_ray.GetDistance() - side.y) + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 1.25f * side.x, 0.6f));
 	m_camera->GetComponent<Aen::Camera>().LookTowards(camDir);
 	m_player->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(0.f, -1.f, 0.f) * deltaTime, deltaTime);
 
