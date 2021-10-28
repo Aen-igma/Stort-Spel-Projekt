@@ -4,12 +4,26 @@
 namespace Aen {
 	Vec2f ButtonUI::GetButtonSize(D2D1_RECT_F& rect)
 	{
-		return Vec2f();
+		float buttonWidth = rect.right - rect.left;
+		float buttonHeight = rect.bottom - rect.top;
+
+		return Vec2f(buttonWidth, buttonHeight);
 	}
+
 	Vec2f ButtonUI::GetButtonCenter(D2D1_RECT_F& rect)
 	{
-		return Vec2f();
+		float xCenter = rect.right - (GetButtonSize(rect).x / 2.f);
+		float yCenter = rect.bottom - (GetButtonSize(rect).y / 2.f);
+
+		//Den här hämtar knappens locala mittpunkt
+		//center.x = GetButtonSize(button).x / 2.f;
+		//center.y = GetButtonSize(button).y / 2.f;
+
+		return Vec2f(xCenter, yCenter);
 	}
+
+	
+
 	Aen::ButtonUI::ButtonUI()
 	{
 	}
@@ -24,16 +38,11 @@ namespace Aen {
 		//top:  Top left vertex Y Pos
 		//right: Bottom right vertex X Pos
 		//bottom: Bottom right vertex Y Pos
-
-		//rect.left = 0;
-		//rect.top = 50;
-		//rect.right = 500;
-		//rect.bottom = 500;
 	}
 
-	void Aen::ButtonUI::AddButton(LPCWSTR texturePath)
+	void Aen::ButtonUI::AddButton(LPCWSTR texturePath, int indX)
 	{
-		ButtonData tempData;
+		ButtonData data;
 		IWICImagingFactory* WFactory = NULL;
 		IWICBitmapDecoder* BCoder = NULL;
 		IWICFormatConverter* FormatConverter = NULL;
@@ -45,39 +54,65 @@ namespace Aen {
 		ASSERT_HR(WFactory->CreateFormatConverter(&FormatConverter));
 		ASSERT_HR(BCoder->GetFrame(0, &FrameDecode));
 		ASSERT_HR(FormatConverter->Initialize(FrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));
-		ASSERT_HR(m_target2D->CreateBitmapFromWicBitmap(FormatConverter, NULL, &tempData.bmp));
+		ASSERT_HR(m_target2D->CreateBitmapFromWicBitmap(FormatConverter, NULL, &data.bmp));
 
-		buttonData.push_back(tempData);
+		//tempData.name = name;
+		data.index = indX;
+		buttonData.push_back(data);
 		WFactory->Release();
 		BCoder->Release();
 		FormatConverter->Release();
 		FrameDecode->Release();
 	}
 
-	void ButtonUI::SetButtonPos(float x, float y, D2D1_RECT_F& rect)
+	void ButtonUI::SetButtonPos(float x, float y, int indX)
 	{
-		float left = GetButtonCenter(rect).x - (x / 2.f);
-		float right = GetButtonCenter(rect).x + (x / 2.f);
-		float top = GetButtonCenter(rect).y - (y / 2.f);
-		float bottom = GetButtonCenter(rect).y + (y / 2.f);
+		//rect.left = x;
+		//rect.top = y;
+		//rect.right = x;
+		//rect.bottom = y;
 
-		rect.left = left;
-		rect.right = right;
-		rect.top = top;
-		rect.bottom = bottom;
+		buttonData.at(indX).rect.left = x;
+		buttonData.at(indX).rect.top = y;
+		buttonData.at(indX).rect.right = x;
+		buttonData.at(indX).rect.bottom = y;
 	}
 
-	void ButtonUI::SetButtonSize(float width, float height, D2D1_RECT_F& rect)
+	void ButtonUI::SetButtonSize(float width, float height, int indX)
 	{
+		//left: Top left vertex X Pos
+		//top:  Top left vertex Y Pos
+		//right: Bottom right vertex X Pos
+		//bottom: Bottom right vertex Y Pos
 
+		//Skapa en RECT från mittpunkten
+		//Mittpunkten ändras varje gång du ändrar en punkts position så positionerna måste sparas innan du ändrar dem
+		float left = GetButtonCenter(buttonData.at(indX).rect).x - (width / 2.f);
+		float right = GetButtonCenter(buttonData.at(indX).rect).x + (width / 2.f);
+		float top = GetButtonCenter(buttonData.at(indX).rect).y - (height / 2.f);
+		float bottom = GetButtonCenter(buttonData.at(indX).rect).y + (height / 2.f);
+
+		buttonData.at(indX).rect.left = left;
+		buttonData.at(indX).rect.right = right;
+		buttonData.at(indX).rect.top = top;
+		buttonData.at(indX).rect.bottom = bottom;
+
+		tempData = buttonData;
 	}
 
-	void Aen::ButtonUI::Draw()
+	std::vector<ButtonData> ButtonUI::GetData() const
+	{
+		return buttonData;
+	}
+
+	void Aen::ButtonUI::Draw(ButtonData& data)
 	{
 		m_target2D->BeginDraw();
 
-		m_target2D->DrawBitmap(buttonData.data()->bmp , buttonData.data()->rect);
+		m_target2D->DrawBitmap(data.bmp, data.rect);
 
 		m_target2D->EndDraw();
 	}
+
+	
 }

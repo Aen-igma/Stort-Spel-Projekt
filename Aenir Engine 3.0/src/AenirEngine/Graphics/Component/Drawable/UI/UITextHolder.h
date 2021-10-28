@@ -27,16 +27,17 @@ namespace Aen
 		UITextHolder();
 		~UITextHolder();
 
-<<<<<<< HEAD:Aenir Engine 3.0/src/AenirEngine/Graphics/Component/Drawable/UI/UITextHolder.h
-		void createText(std::wstring m_text);
-		void renderText(UITextData& data);
 		std::vector<UITextData> getData() const;
-=======
 		void createText();
 		void createDeviceResources();
-		void renderText(UITextData& tData);
+		void renderText();
+
+		void setTextSize(float width, float height);
+		void setTextPosition(float x, float y);
+		Vec2f getTextCenter()const;
+		Vec2f getTextSize()const;
 	protected:
->>>>>>> parent of 23caf9e (UICanDrawText):Aenir Engine 3.0/UITextHolder.h
+
 
 	private:
 		IDWriteFactory* m_pDWriteFactory;
@@ -45,6 +46,7 @@ namespace Aen
 		UINT32 m_TextLenght;
 		ID2D1SolidColorBrush* m_pBlackBrush;
 
+		D2D1_RECT_F m_rcf;
 		//För att skriva mera än en
 		std::vector<UITextData> m_UITextData;
 	};

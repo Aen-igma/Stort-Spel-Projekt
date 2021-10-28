@@ -1,52 +1,65 @@
 #include "PCH.h"
 #include "UIComponent.h"
 
-Aen::UIComponent::UIComponent()
-{
-	button.Initialize();
-}
+#include "PCH.h"
+#include "UIComponent.h"
 
-Aen::UIComponent::~UIComponent()
-{
+namespace Aen {
 
-<<<<<<< HEAD
-void Aen::UIComponent::AddText(std::wstring texts)
-{
-	text.createText(texts);
-=======
->>>>>>> parent of bf48282 (Can have multiple buttons)
-}
+    Aen::UIComponent::UIComponent()
+    {
+        button.Initialize();
+    }
 
-void Aen::UIComponent::AddButton(LPCWSTR dir)
-{
-	button.AddButton(dir);
-}
+    Aen::UIComponent::~UIComponent()
+    {
 
-<<<<<<< HEAD
-			button.Draw(b);
-			
-		}
-		for (auto& t : text.getData())
-		{
-			text.renderText(t);
-		}
-		
-	}
-	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
-	{
-=======
-void Aen::UIComponent::AddText()
-{
-}
+    }
 
-void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
-{
-	//Draw button
-	button.Draw();
-}
->>>>>>> parent of bf48282 (Can have multiple buttons)
+    void Aen::UIComponent::AddButton(LPCWSTR dir, int indX)
+    {
+        button.AddButton(dir, indX);
+    }
 
-void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
-{
+    void UIComponent::SetButtonSize(float width, float height, int indX)
+    {
+        button.SetButtonSize(width, height, indX);
+    }
+
+    void UIComponent::SetButtonPos(float x, float y, int indX)
+    {
+        button.SetButtonPos(x, y, indX);
+    }
+
+    void Aen::UIComponent::AddText()
+    {
+        text.createText();
+    }
+
+    void UIComponent::SetTextSize(float width, float height)
+    {
+        text.setTextSize(width,height);
+    }
+
+    void UIComponent::SetTextPos(float x, float y)
+    {
+        text.setTextPosition(x,y);
+    }
+
+    void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
+    {
+        //Draw button
+        for (auto& b : button.GetData()) {
+
+            button.Draw(b);
+        }
+        text.renderText();
+        
+    }
+
+    void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
+    {
+
+    }
 
 }

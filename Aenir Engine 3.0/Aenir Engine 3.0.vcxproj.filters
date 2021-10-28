@@ -261,7 +261,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UITextHolder.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UITextHolder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.cpp">
@@ -509,10 +509,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UITextComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UITextHolder.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UITextHolder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

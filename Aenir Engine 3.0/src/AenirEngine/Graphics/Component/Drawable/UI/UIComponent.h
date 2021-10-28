@@ -3,6 +3,7 @@
 #include "../Drawable.h"
 #include "BuritoMath.h"
 #include "ButtonUI.h"
+#include "UITextHolder.h"
 
 namespace Aen {
 
@@ -10,21 +11,20 @@ namespace Aen {
 	{
 	private:
 		ButtonUI button;
+		UITextHolder text;
 
 	public:
 		UIComponent();
 		~UIComponent();
 
-<<<<<<< HEAD
+
 		void AddButton(LPCWSTR dir, int indX);
 		void SetButtonSize(float width, float height, int indX);
 		void SetButtonPos(float x, float y, int indX);
-
-		void AddText(std::wstring texts);
-=======
-		void AddButton(LPCWSTR dir);
 		void AddText();
->>>>>>> parent of bf48282 (Can have multiple buttons)
+		void SetTextSize(float width, float height);
+		void SetTextPos(float x, float y);
+
 
 		friend class ComponentHandler;
 		friend class Renderer;
