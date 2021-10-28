@@ -35,10 +35,10 @@ namespace Aen {
 		VBuffer<Vertex> m_vertices;
 		std::vector<PartitionData> m_partitions;
 		std::unordered_map<std::string, uint32_t> m_meshMaterialName;
-		DirectX::BoundingBox m_AABB;
 
 		friend class Resource;
 		friend class MeshInstance;
 		friend class Renderer;
+		friend class AABoundBox;
 	};
 }

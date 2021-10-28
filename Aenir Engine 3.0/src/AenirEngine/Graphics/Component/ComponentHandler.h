@@ -294,6 +294,32 @@ namespace Aen {
 
 		// -------------------------------------------- //
 
+		// ----------- Axis Aligned Bounding Box ------------ //
+
+		static const bool AABBExist(const size_t& id) {
+			return m_AABB.count(id) > 0;
+		}
+
+		static void CreateAABB(const size_t& id) {
+			m_AABB.emplace(id, AEN_NEW DirectX::BoundingBox(id));
+		}
+
+		static void RemoveAABB(const size_t& id) {
+			if (m_characterControllers.count(id) > 0) {
+				delete m_characterControllers.at(id);
+				m_characterControllers.at(id) = nullptr;
+				m_characterControllers.erase(id);
+			}
+		}
+
+		static CharacterController& GetAABB(const size_t& id) {
+			if (m_characterControllers.count(id) > 0)
+				return *m_characterControllers.at(id);
+			throw;
+		}
+
+		// -------------------------------------------- //
+
 		// ----------- Mesh Instance Layer ------------ //
 
 		static void SetRenderLayer(MeshInstance& mesh, const size_t id, const size_t& layer) {
@@ -316,6 +342,7 @@ namespace Aen {
 		static std::unordered_map<size_t, Scale*> m_scales;
 		static std::unordered_map<size_t, RigidBody*> m_rigids;
 		static std::unordered_map<size_t, CharacterController*> m_characterControllers;
+		static std::unordered_map<size_t, DirectX::BoundingBox*> m_AABB;
 		static std::multimap<size_t, Light*> m_lights;
 		
 		

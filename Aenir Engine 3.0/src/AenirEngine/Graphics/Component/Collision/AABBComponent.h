@@ -1,0 +1,19 @@
+#pragma once
+#include "../Tranform/Tranform.h"
+#include "../Drawable/Mesh/Mesh.h"
+#include "../Component.h"
+#include "BuritoMath.h"
+
+namespace Aen
+{
+	class AABoundBox
+	{
+	public:
+		AABoundBox(const size_t& id);
+
+		void Create()
+	private:
+
+
+	};
+}
