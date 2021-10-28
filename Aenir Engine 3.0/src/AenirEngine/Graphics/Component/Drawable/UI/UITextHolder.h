@@ -27,14 +27,10 @@ namespace Aen
 		UITextHolder();
 		~UITextHolder();
 
-		void createText(std::wstring m_text, int index);
+		void createText(std::wstring m_text);
 		void renderText(UITextData& data);
 		std::vector<UITextData> getData() const;
 
-		void setTextSize(float width, float height, int index);
-		void setTextPosition(float x,float y, int index);
-		Vec2f getTextCenter(int index)const;
-		Vec2f getTextSize(int index)const;
 	private:
 		IDWriteFactory* m_pDWriteFactory;
 		IDWriteTextFormat* m_pTextFormat;
