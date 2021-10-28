@@ -11,7 +11,6 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_reimube);
-	
 }
 
 void Gameplay::Initialize()
@@ -95,10 +94,14 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
-	Aen::Vec3f axis;
+	static Aen::Vec3f axis;
 	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
 	static bool lockedOn = false;
 	auto enemies = Aen::EntityHandler::GetTagedEntities("Enemy");
+
+	Aen::Vec3f camDir;
+	static float side = 0.f;
+	side = Aen::Lerp(side, axis.x, 0.05f);
 
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
 
@@ -246,15 +249,8 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 	}
 
-	Aen::Vec3f camDir;
-	static float side = 0.f;
-
-	if(axis.x != 0.f && lockedOn)
-		side = axis.x;
-
-
 	if(m_targetDist < 20.f && m_target && lockedOn) {
-		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos()).Normalized();
+		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos() - m_camera->GetComponent<Aen::Camera>().GetRight() * side * 1.5f).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
 
@@ -273,7 +269,18 @@ void Gameplay::Update(const float& deltaTime) {
 	float r = Aen::Clamp(m_camera->GetRot().x, -45.f, 45.f);
 	m_camera->SetRot(r, m_camera->GetRot().y, m_camera->GetRot().z);
 	camDir = Aen::Lerp(camDir, Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), targetDir).Normalized(), 0.6f).Normalized();
-	m_camera->SetPos(Aen::Lerp(m_camera->GetPos(), m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * -4.f + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 0.5f * side, 0.1f));
+	
+	m_ray.SetOrigin(m_player->GetPos() - camDir * 0.8f);
+	m_ray.SetDirection(-camDir);
+	m_ray.SetMaxDist(5.f);
+	m_ray.Update();
+
+	if(m_ray.Hit()) {
+		AEN_PRINT(m_ray.GetHitPos());
+		AEN_ENDL;
+	}
+
+	m_camera->SetPos(Aen::Lerp(m_camera->GetPos(), m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * -m_ray.GetDistance() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 1.25f * side, 0.4f));
 
 	m_camera->GetComponent<Aen::Camera>().LookTowards(camDir);
 	m_player->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(0.f, -1.f, 0.f) * deltaTime, deltaTime);

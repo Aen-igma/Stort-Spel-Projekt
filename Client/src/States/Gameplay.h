@@ -21,6 +21,8 @@ private:
     bool m_toggleFullScreen;
 
     Aen::Entity* m_camera;
+    Aen::Raycast m_ray;
+
     Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
     Aen::Entity* m_player;
