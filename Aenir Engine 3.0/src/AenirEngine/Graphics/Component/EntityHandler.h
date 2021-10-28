@@ -32,11 +32,20 @@ namespace Aen {
 		private:
 		EntityHandler();
 		
+		static void RemoveFromTaged(const size_t id, const std::string& tag) {
+			if(m_tagedEntities.count(tag) > 0)
+				for(auto i = m_tagedEntities.lower_bound(tag); i != m_tagedEntities.upper_bound(tag); i++)
+					if(i->second->HasId(id)) {
+						m_tagedEntities.erase(i);
+						break;
+					}
+		}
+
 		static Entity& GetEntity(const size_t& id) {
 			if(m_entities.count(id) > 0)
 				return *m_entities.at(id);
 		}
-		
+
 		static void Destroy() {
 
 			for(auto i : m_entities) {
