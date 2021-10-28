@@ -14,10 +14,10 @@ namespace Aen
 	void Aen::UITextHolder::createText()
 	{
 
-		this->textName = L"VeryVeryLongTextThingLenght";
+		this->textName = L"GAME OVER!";
 		this->m_TextLenght = (UINT64)wcslen(this->textName.c_str());
 
-		ASSERT_HR(m_target2D->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::SkyBlue), &this->m_pBlackBrush));
+		ASSERT_HR(m_target2D->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Crimson), &this->m_pBlackBrush));
 		ASSERT_HR(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&m_pDWriteFactory)));
 		ASSERT_HR(m_pDWriteFactory->CreateTextFormat(L"Ariel", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 72.0f, L"en-us", &this->m_pTextFormat));
 		ASSERT_HR(m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
