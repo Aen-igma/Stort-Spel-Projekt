@@ -21,8 +21,9 @@ namespace Aen {
 		void SetButtonSize(float width, float height, int indX);
 		void SetButtonPos(float x, float y, int indX);
 
-		void AddText(std::wstring texts);
-
+		void AddText(std::wstring texts, int indX);
+		void SetTextSize(float width, float height, int indX);
+		void SetTextPos(float x, float y, int indX);
 		friend class ComponentHandler;
 		friend class Renderer;
 		friend class Entity;
