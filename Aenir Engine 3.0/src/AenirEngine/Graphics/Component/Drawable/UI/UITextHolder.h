@@ -29,25 +29,21 @@ namespace Aen
 
 		std::vector<UITextData> getData() const;
 		void createText();
-		void createDeviceResources();
 		void renderText();
 
 		void setTextSize(float width, float height);
 		void setTextPosition(float x, float y);
 		Vec2f getTextCenter()const;
 		Vec2f getTextSize()const;
-	protected:
-
-
 	private:
 		IDWriteFactory* m_pDWriteFactory;
 		IDWriteTextFormat* m_pTextFormat;
-		const wchar_t* m_pCharText;
+		std::wstring textName;
 		UINT32 m_TextLenght;
 		ID2D1SolidColorBrush* m_pBlackBrush;
-
 		D2D1_RECT_F m_rcf;
-		//För att skriva mera än en
+
+		//För att skriva mera än en, not done
 		std::vector<UITextData> m_UITextData;
 	};
 
