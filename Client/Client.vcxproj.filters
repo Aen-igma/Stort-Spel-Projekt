@@ -48,6 +48,9 @@
     <ClInclude Include="src\States\Loadscreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\States\GameEnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Client.cpp">
@@ -69,6 +72,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\States\Loadscreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\States\GameEnd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
