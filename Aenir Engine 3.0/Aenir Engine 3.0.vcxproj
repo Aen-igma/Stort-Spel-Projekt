@@ -245,6 +245,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\UAView.cpp" />
     <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp" />
+    <ClCompile Include="src\AenirEngine\Importer\AssimpImporter.cpp" />
     <ClCompile Include="src\AenirEngine\LevelGeneration\LevelGenerator.cpp" />
     <ClCompile Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.cpp" />
     <ClCompile Include="src\AenirEngine\LevelImporter.cpp" />
@@ -317,6 +318,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
     <ClInclude Include="src\AenirEngine\ImGuiHandler.h" />
+    <ClInclude Include="src\AenirEngine\Importer\AssimpImporter.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
     <ClInclude Include="src\AenirEngine\LevelGeneration\LevelGenerator.h" />
     <ClInclude Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.h" />
