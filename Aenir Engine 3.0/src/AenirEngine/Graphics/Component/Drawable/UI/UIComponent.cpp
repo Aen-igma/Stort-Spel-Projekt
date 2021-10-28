@@ -13,6 +13,11 @@ namespace Aen {
 
 	}
 
+	void UIComponent::SaveButtonData()
+	{
+		button.SaveData();
+	}
+
 	void Aen::UIComponent::AddButton(LPCWSTR dir, int indX)
 	{
 		button.AddButton(dir, indX);
@@ -28,8 +33,21 @@ namespace Aen {
 		button.SetButtonPos(x, y, indX);
 	}
 
+	bool UIComponent::getBool() const
+	{
+		return button.getBool();
+	}
+
 	void Aen::UIComponent::AddText()
 	{
+	}
+
+	void UIComponent::Update(Window& window)
+	{
+		for (auto& b : button.GetData()) {
+
+			button.Update(window, b.index);
+		}
 	}
 
 	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)

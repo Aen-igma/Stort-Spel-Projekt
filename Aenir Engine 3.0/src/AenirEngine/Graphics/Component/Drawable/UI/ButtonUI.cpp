@@ -22,6 +22,31 @@ namespace Aen {
 		return Vec2f(xCenter, yCenter);
 	}
 
+	bool ButtonUI::Intersect(Window& window, int index)
+	{
+		//Get mouse pos, cuz right now its dumb af
+		//POINT P;
+		bool intersected = false;
+		//GetCursorPos(&P);
+		//ScreenToClient(window.GetWHND() ,&P);
+
+		float x = Input::GetMousePos().x;
+		float y = Input::GetMousePos().y;
+
+		//OutputDebugStringA(("Mouse X: " + std::to_string(x) + "	Mouse Y: " + std::to_string(y) + "\n").c_str());
+		//OutputDebugStringA(("Rect.x: " + std::to_string(buttonData.at(0).rect.right) + "\n").c_str());
+
+		if (x < buttonData.at(index).rect.right && x > buttonData.at(index).rect.left && y > buttonData.at(index).rect.top && y < buttonData.at(index).rect.bottom)
+		{
+			intersected = true;
+		}
+		else {
+			intersected = false;
+		}
+
+		return intersected;
+	}
+
 	Aen::ButtonUI::ButtonUI()
 	{
 	}
@@ -36,16 +61,11 @@ namespace Aen {
 		//top:  Top left vertex Y Pos
 		//right: Bottom right vertex X Pos
 		//bottom: Bottom right vertex Y Pos
-
-		//rect.left = 0;
-		//rect.top = 50;
-		//rect.right = 500;
-		//rect.bottom = 500;
 	}
 
 	void Aen::ButtonUI::AddButton(LPCWSTR texturePath, int indX)
 	{
-		ButtonData tempData;
+		ButtonData data;
 		IWICImagingFactory* WFactory = NULL;
 		IWICBitmapDecoder* BCoder = NULL;
 		IWICFormatConverter* FormatConverter = NULL;
@@ -57,11 +77,11 @@ namespace Aen {
 		ASSERT_HR(WFactory->CreateFormatConverter(&FormatConverter));
 		ASSERT_HR(BCoder->GetFrame(0, &FrameDecode));
 		ASSERT_HR(FormatConverter->Initialize(FrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));
-		ASSERT_HR(m_target2D->CreateBitmapFromWicBitmap(FormatConverter, NULL, &tempData.bmp));
+		ASSERT_HR(m_target2D->CreateBitmapFromWicBitmap(FormatConverter, NULL, &data.bmp));
 
 		//tempData.name = name;
-		tempData.index = indX;
-		buttonData.push_back(tempData);
+		data.index = indX;
+		buttonData.push_back(data);
 		WFactory->Release();
 		BCoder->Release();
 		FormatConverter->Release();
@@ -106,12 +126,43 @@ namespace Aen {
 		return buttonData;
 	}
 
+	void ButtonUI::SaveData()
+	{
+		tempData = buttonData;
+	}
+
 	void Aen::ButtonUI::Draw(ButtonData& data)
 	{
 		m_target2D->BeginDraw();
 
-		m_target2D->DrawBitmap(data.bmp , data.rect);
+		m_target2D->DrawBitmap(data.bmp, data.rect);
 
 		m_target2D->EndDraw();
+	}
+
+	void ButtonUI::Update(Window& window, int indX)
+	{
+		int addX = 20.f;
+		int addY = 5.f;
+		ButtonData temp = tempData.at(indX);
+
+		tempBool = Intersect(window, indX);
+
+		if (tempBool)
+		{
+			float buttonWidth = GetButtonSize(tempData.at(indX).rect).x + addX;
+			float buttonHeight = GetButtonSize(tempData.at(indX).rect).y + addY;
+
+			SetButtonSize(buttonWidth, buttonHeight, indX);
+		}
+		else {
+
+			//Behöver fixa logiken, fungerar bara på en knapp inte på flera eftersom positionen är static. Knapparna som kommer efter sätts till första knappens position
+			buttonData.at(indX).rect = temp.rect;
+		}
+	}
+	bool ButtonUI::getBool() const
+	{
+		return tempBool;
 	}
 }
