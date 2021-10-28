@@ -1,7 +1,7 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false), m_movementSpeed(4.f),
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false), m_targetDist(25.f), m_movementSpeed(4.f),
 	m_finalDir(0.f, 0.f, -1.f) {}
 
 Gameplay::~Gameplay() {
@@ -11,7 +11,6 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_reimube);
-	
 }
 
 void Gameplay::Initialize()
@@ -48,13 +47,12 @@ void Gameplay::Initialize()
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
+	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 
-	planeMat["InnerEdgeColor"] = Aen::Color::Red;
-	planeMat["OuterEdgeColor"] = Aen::Color::Red;
-
-	planeMat["BaseColor"] = Aen::Color::White;
-	playerMat["BaseColor"] = Aen::Color::White;
+	enemyMat["InnerEdgeColor"] = Aen::Color::Red;
+	enemyMat["OuterEdgeColor"] = Aen::Color::Red;
+	enemyMat["BaseColor"] = Aen::Color::Red;
 
 	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Reimu.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
@@ -94,8 +92,21 @@ void Gameplay::Initialize()
 	cout << "Press Enter To Continue\n";
 }
 
-void Gameplay::Update(const float& deltaTime)
-{
+void Gameplay::Update(const float& deltaTime) {
+
+	static Aen::Vec3f axis;
+	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
+	static bool lockedOn = false;
+	auto enemies = Aen::EntityHandler::GetTagedEntities("Enemy");
+
+	Aen::Vec3f camDir;
+	static Aen::Vec2f side;
+	if(lockedOn)
+		side.x = Aen::Lerp(side.x, axis.x, 0.05f);
+	else
+		side.x = Aen::Lerp(side.x, 0.f, 0.05f);
+	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
+
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
 
 	while (!Aen::Input::MouseBufferIsEmbty())
@@ -104,7 +115,7 @@ void Gameplay::Update(const float& deltaTime)
 
 		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
 		{
-			if(!Aen::Input::GPGetActive(0u)) {
+			if(!Aen::Input::GPGetActive(0u) && !lockedOn) {
 				m_camera->Rotate(
 					-(float)me.GetPos().y * m_mouseSense * deltaTime,
 					-(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
@@ -122,14 +133,14 @@ void Gameplay::Update(const float& deltaTime)
 
 	// ------------------------------ Player Controler ---------------------------------- //
 
-	Aen::Vec3f axis;
+	
 
 	if(Aen::Input::GPGetActive(0u)) {
-		axis.x = Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).x;
-		axis.z = -Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).y;
+		axis.x = -Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).x;
+		axis.z = Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).y;
 
 		m_camera->Rotate(
-			-Aen::Input::GPGetAnalog(0u, Aen::Analog::RTHUMB).y * m_mouseSense * 18.f * deltaTime,
+			Aen::Input::GPGetAnalog(0u, Aen::Analog::RTHUMB).y * m_mouseSense * 18.f * deltaTime,
 			-Aen::Input::GPGetAnalog(0u, Aen::Analog::RTHUMB).x * m_mouseSense * 28.f * deltaTime, 0.f);
 
 		// Dash/Dodge
@@ -170,9 +181,29 @@ void Gameplay::Update(const float& deltaTime)
 			m_eventQueue.emplace(data);
 		}
 
+		// Lock On Target
+
+
+		if(Aen::Input::GPKeyDown(0u, Aen::GP::LSHOULDER)) {
+			lockedOn = !lockedOn;
+
+			if(lockedOn) {
+				m_targetDist = 25.f;
+				for(auto i = enemies.first; i != enemies.second; i++) {
+					Aen::Entity* enemy = i->second;
+					Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
+					float dist = eDir.Magnitude();
+					if(dist < m_targetDist) {
+						m_targetDist = dist;
+						m_target = enemy;
+					}
+				}
+			}
+		}
+
 	} else {
-		axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
-		axis.z = (float)Aen::Input::KeyPress(Aen::Key::S) - (float)Aen::Input::KeyPress(Aen::Key::W); 
+		axis.x = (float)Aen::Input::KeyPress(Aen::Key::A) - (float)Aen::Input::KeyPress(Aen::Key::D);
+		axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S); 
 
 		// Dash/Dodge
 
@@ -201,14 +232,60 @@ void Gameplay::Update(const float& deltaTime)
 
 			m_eventQueue.emplace(data);
 		}
+
+		// Lock On Target
+
+		if(Aen::Input::KeyDown(Aen::Key::E)) {
+			lockedOn = !lockedOn;
+
+			if(lockedOn) {
+				m_targetDist = 25.f;
+				for(auto i = enemies.first; i != enemies.second; i++) {
+					Aen::Entity* enemy = i->second;
+					Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
+					float dist = eDir.Magnitude();
+					if(dist < m_targetDist) {
+						m_targetDist = dist;
+						m_target = enemy;
+					}
+				}
+			}
+		}
+	}
+
+	if(m_targetDist < 20.f && m_target && lockedOn) {
+		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos() - m_camera->GetComponent<Aen::Camera>().GetRight() * side.x * 1.5f).Normalized();
+		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
+		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
+
+		m_camera->SetRot(pitch, yaw, 0.f);
+
+		if(m_target) {
+			Aen::Vec3f eDir = m_player->GetPos() - m_target->GetPos();
+			if(eDir.Magnitude() > 20.f) lockedOn = false;
+		}
+
+	} else {
+		lockedOn = false;
+		m_targetDist = 25.f;
 	}
 
 	float r = Aen::Clamp(m_camera->GetRot().x, -45.f, 45.f);
 	m_camera->SetRot(r, m_camera->GetRot().y, m_camera->GetRot().z);
+	camDir = Aen::Lerp(camDir, Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), targetDir).Normalized(), 0.6f).Normalized();
+	
+	m_ray.SetOrigin(m_player->GetPos() - camDir * 0.8f);
+	m_ray.SetDirection(-camDir);
+	m_ray.SetMaxDist(5.f);
+	m_ray.Update();
 
-	Aen::Vec3f camDir = Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), Aen::Vec3f(0.f, 0.f, -1.f)).Normalized();
-	camDir = Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), Aen::Vec3f(0.f, 0.f, -1.f)).Normalized();
-	m_camera->SetPos(Aen::Lerp(m_camera->GetPos(), m_player->GetPos() + Aen::Vec3f(0.f, 0.5f, 0.f) + camDir * -4.f, 0.3f));
+	if(m_ray.Hit()) {
+		AEN_PRINT(m_ray.GetHitPos());
+		AEN_ENDL;
+	}
+
+	m_camera->SetPos(m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * (-m_ray.GetDistance() - side.y) + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 1.25f * side.x);
+
 	m_camera->GetComponent<Aen::Camera>().LookTowards(camDir);
 	m_player->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(0.f, -1.f, 0.f) * deltaTime, deltaTime);
 
@@ -217,7 +294,7 @@ void Gameplay::Update(const float& deltaTime)
 	else
 		Aen::Input::SetMousePos(m_Window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_Window.GetSize() * 0.5f));
 	
-	Aen::Vec3f playerDir = Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), axis.Normalized());
+	Aen::Vec3f playerDir = m_camera->GetComponent<Aen::Camera>().GetForward() * axis.Normalized().z + m_camera->GetComponent<Aen::Camera>().GetRight() * axis.Normalized().x;
 	Aen::Vec2f dir(playerDir.x, playerDir.z);
 
 	if(!m_eventQueue.empty())
@@ -237,6 +314,28 @@ void Gameplay::Update(const float& deltaTime)
 			Aen::Vec2f dir(camDir.x, camDir.z);
 			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 		}
+	}
+
+	// ---------------------------------- Enemies --------------------------------------- //
+
+	for(auto i = enemies.first; i != enemies.second; i++) {
+		Aen::Entity* enemy = i->second;
+		Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
+		float dist = eDir.Magnitude();
+		if(dist  < 8.f)
+			enemy->GetComponent<Aen::CharacterController>().Move(eDir.Normalized() * 3.f * deltaTime, deltaTime);
+	}
+
+	if(Aen::Input::KeyDown(Aen::Key::J)) {
+		Aen::Entity* enemy = &Aen::EntityHandler::CreateEntity();
+		enemy->SetTag("Enemy");
+		enemy->AddComponent<Aen::MeshInstance>();
+		enemy->GetComponent<Aen::MeshInstance>().SetMesh("Capsule");
+		enemy->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
+		enemy->AddComponent<Aen::CharacterController>();
+		enemy->SetPos(0.f, 1.f, 3.f);
+
+		enemy = nullptr;
 	}
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //

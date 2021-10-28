@@ -21,10 +21,15 @@ private:
     bool m_toggleFullScreen;
 
     Aen::Entity* m_camera;
+    Aen::Raycast m_ray;
+
     Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
     Aen::Entity* m_player;
     Aen::Entity* m_reimube;
+
+    Aen::Entity* m_target;
+    float m_targetDist;
     
     std::queue<EventData> m_eventQueue;
     float m_movementSpeed;
@@ -32,7 +37,7 @@ private:
 
 public:
 	Gameplay(Aen::Window& window);
-	~Gameplay()override;
+	~Gameplay() override;
 
 	// Inherited via State
 	virtual void Update(const float& deltaTime) override;
