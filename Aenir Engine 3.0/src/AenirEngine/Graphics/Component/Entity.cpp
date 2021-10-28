@@ -22,12 +22,11 @@ namespace Aen {
 
 	void Entity::SetTag(const std::string& tag) {
 
-		size_t cTag = std::stoi(m_tag);
 		if(m_tag == tag)
 			return;
 
-		if(EntityHandler::m_tagedEntities.count(cTag) > 0)
-			for(auto i = EntityHandler::m_tagedEntities.lower_bound(cTag); i != EntityHandler::m_tagedEntities.upper_bound(cTag); i++)
+		if(EntityHandler::m_tagedEntities.count(tag) > 0)
+			for(auto i = EntityHandler::m_tagedEntities.lower_bound(tag); i != EntityHandler::m_tagedEntities.upper_bound(tag); i++)
 				if(i->second->HasId(m_id)) {
 					EntityHandler::m_tagedEntities.erase(i);
 					break;
@@ -36,7 +35,7 @@ namespace Aen {
 		m_tag = tag;
 
 		if(m_tag != "NONE")
-			EntityHandler::m_tagedEntities.emplace(cTag, this);
+			EntityHandler::m_tagedEntities.emplace(tag, this);
 	}
 
 	void Entity::SetRenderLayer(const int& layer) {

@@ -44,7 +44,6 @@ namespace Aen {
 
     void Camera::UpdateView(const Vec3f& pos, const Vec3f& rot) {
         Vec3f camTarget = m_forwardVec + pos;
-        m_upVec = Transform(MatRotate(rot), Vec3f(0.f, 1.f, 0.f)).Normalized();
         m_view = MatViewRH(pos, camTarget, m_upVec);
     }
 }
