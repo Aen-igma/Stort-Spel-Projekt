@@ -207,27 +207,27 @@ namespace Aen
 
 
 		r = LehmerInt() % 4;
-		switch (r)
-		{
-		case 1:
-			map[3][3].rotateCW();
-			map[3][4].rotateCW();
-			map[4][4].rotateCW();
-			map[4][3].rotateCW();
-			break;
-		case 2:
-			map[3][3].rotateCCW();
-			map[3][4].rotateCCW();
-			map[4][4].rotateCCW();
-			map[4][3].rotateCCW();
-			break;
-		case 3:
-			map[3][3].rotate180();
-			map[3][4].rotate180();
-			map[4][4].rotate180();
-			map[4][3].rotate180();
-			break;
-		}
+		//switch (r)
+		//{
+		//case 1:
+		//	map[3][3].rotateCW();
+		//	map[3][4].rotateCW();
+		//	map[4][4].rotateCW();
+		//	map[4][3].rotateCW();
+		//	break;
+		//case 2:
+		//	map[3][3].rotateCCW();
+		//	map[3][4].rotateCCW();
+		//	map[4][4].rotateCCW();
+		//	map[4][3].rotateCCW();
+		//	break;
+		//case 3:
+		//	map[3][3].rotate180();
+		//	map[3][4].rotate180();
+		//	map[4][4].rotate180();
+		//	map[4][3].rotate180();
+		//	break;
+		//}
 
 		bool openConnections = true;
 		int maxRooms = 16; //Soft limit
@@ -297,7 +297,7 @@ namespace Aen
 		}
 
 		
-		placeBossRoom();
+		//placeBossRoom();
 
 		return *map;
 	}
@@ -555,26 +555,26 @@ namespace Aen
 		m_dynamic4 = 0;
 	}
 
-	Room::Room(const Room& p)
-	{
-		m_enclosed = p.m_enclosed; //Var used in level generation, true when room is surrounded
-		m_present = p.m_present;
-		m_roomSpecial = p.m_roomSpecial;
-		m_roomTheme = p.m_roomTheme;
+	//Room::Room(const Room& p)
+	//{
+	//	m_enclosed = p.m_enclosed; //Var used in level generation, true when room is surrounded
+	//	m_present = p.m_present;
+	//	m_roomSpecial = p.m_roomSpecial;
+	//	m_roomTheme = p.m_roomTheme;
 
-		mptr_mesh = p.mptr_mesh;
-		mptr_parent = p.mptr_parent;
-		this->m_roomIndex = p.m_roomIndex;
-		m_CRIndex = p.m_CRIndex;
+	//	mptr_mesh = p.mptr_mesh;
+	//	mptr_parent = p.mptr_parent;
+	//	this->m_roomIndex = p.m_roomIndex;
+	//	m_CRIndex = p.m_CRIndex;
 
-		//connection location
-		connectionDirections = p.connectionDirections;
+	//	//connection location
+	//	connectionDirections = p.connectionDirections;
 
-		//Probabilities
-		m_baseChance = p.m_baseChance;
-		m_dynamic1 = p.m_dynamic1;
-		m_dynamic2 = p.m_dynamic2;
-		m_dynamic3 = p.m_dynamic3;
-		m_dynamic4 = p.m_dynamic4;
-	}
+	//	//Probabilities
+	//	m_baseChance = p.m_baseChance;
+	//	m_dynamic1 = p.m_dynamic1;
+	//	m_dynamic2 = p.m_dynamic2;
+	//	m_dynamic3 = p.m_dynamic3;
+	//	m_dynamic4 = p.m_dynamic4;
+	//}
 }

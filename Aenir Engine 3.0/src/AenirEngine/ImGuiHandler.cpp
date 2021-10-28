@@ -156,14 +156,22 @@ namespace Aen
 		size_t id = entity->GetID();
 		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
 
+		//Mat4f rotTranMatric;
+		//rotTranMatric = Mat4f(
+		//Vec4f(cos(angle), 0, sin(angle), 0), 
+		//Vec4f(0, 1, 0, 0),
+		//Vec4f(sin(angle), 0, cos(angle), 0),
+		//Vec4f(0, 0, 0, 1));
+
+
 		float s = sin(angle);
 		float c = cos(angle);
 
-		float posX = (model.translation[0] * c) - (model.translation[2] * s);
-		float posY = (model.translation[0] * s) + (model.translation[2] * c);
+		float posX = ((model.translation[0]) * c) - ((model.translation[2]) * s);
+		float posZ = ((model.translation[0]) * s) + ((model.translation[2]) * c);
 
-		entity->SetPos(posX + offset.x, model.translation[1], posY + offset.y);
-		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);
+		entity->SetPos(posX + offset.x, model.translation[1], posZ + offset.y);
+		entity->SetRot(model.rotation[0], model.rotation[1] + (angle * 57.2957795), model.rotation[2]);
 		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
 
 		AddModel(entity);

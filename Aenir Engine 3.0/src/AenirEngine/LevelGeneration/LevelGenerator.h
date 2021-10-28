@@ -70,25 +70,24 @@ namespace Aen {
 		float m_dynamic3 = 0;
 		float m_dynamic4 = 0;
 
+		double rotation = 3.14159265;
+
 		void rotateCW() { //Clockwise rotation
-			rotation = 90;
+			rotation += 1.57079633;
 			connectionDirections *= 10u;
 			if (connectionDirections >= 10000u)
 				connectionDirections += connectionDirections - 9999u;
 			//TODO rotate associated model
 		}
 		void rotateCCW() { //count clockwise rotation
-			rotation = -90;
+			rotation += -1.57079633;
 			uint16_t temp = connectionDirections % 10u;
 			connectionDirections /= 10u;
 			connectionDirections += 1000u * temp;
 			//TODO rotate associated model
 		}
 		void rotate180() {
-			rotation = 180;
-			if ((LehmerInt() % 2)) {
-				rotation = -180;
-			}
+			rotation += 3.14159265;
 			uint16_t temp = connectionDirections % 10u;
 			connectionDirections /= 10u;
 			connectionDirections += 1000u * temp;
@@ -98,10 +97,9 @@ namespace Aen {
 			//TODO rotate associated model
 		}
 
-		int rotation = 0;
 
 		Room();
-		Room(const Room& p);
+		//Room(const Room& p);
 	};
 
 
