@@ -91,7 +91,7 @@ namespace Aen {
 	template<>
 	inline void Entity::AddComponent<MeshInstance>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
-			ComponentHandler::CreateMeshInstance(m_id);
+			ComponentHandler::CreateMeshInstance(m_id, 0);
 
 		AddComponent<Translation>();
 		AddComponent<Rotation>();
@@ -101,7 +101,7 @@ namespace Aen {
 	template<>
 	inline void Entity::AddComponent<Mesh>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
-			ComponentHandler::CreateMeshInstance(m_id);
+			ComponentHandler::CreateMeshInstance(m_id, 0);
 
 		AddComponent<Translation>();
 		AddComponent<Rotation>();

@@ -89,7 +89,7 @@ namespace Aen
 			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetProjecton().smMat);
 			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetView().smMat);
 			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetVPMatrix().Transposed().smMat);
-			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetVPMatrix().smMat);
+			m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetVPMatrix().smMat);
 			for (auto& i : ComponentHandler::m_meshLayer)
 			{
 				i.clear();
@@ -105,24 +105,6 @@ namespace Aen
 			}
 
 
-
-			/*
-			for (auto& i : m_QuadObjectsToRender) // For every object seen
-			{
-				for (auto& j : ComponentHandler::m_meshLayer[i->m_RenderLayer]) // On the layer the object is on
-				{
-					if (false) // Check if the object is already in m_meshLayer
-					{
-						addToLayer = false;
-					}
-				}
-				if (addToLayer) // If object isn't in m_meshLayer
-				{
-					//ComponentHandler::m_meshLayer[i->m_RenderLayer].insert(i->m_ID, ); 
-					ComponentHandler::SetRenderLayer(EntityHandler::GetEntity(i->m_ID), i->m_ID, i->m_RenderLayer); // Add it
-				}
-			}
-			*/
 
 
 			//if (Input::KeyDown(Key::V))
