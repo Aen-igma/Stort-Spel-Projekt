@@ -35,6 +35,8 @@ private:
     float m_movementSpeed;
     Aen::Vec3f m_finalDir;
 
+    std::queue<Aen::Entity*> m_enemyQueue;
+
 public:
 	Gameplay(Aen::Window& window);
 	~Gameplay() override;

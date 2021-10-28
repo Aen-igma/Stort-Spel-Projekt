@@ -328,14 +328,20 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if(Aen::Input::KeyDown(Aen::Key::J)) {
 		Aen::Entity* enemy = &Aen::EntityHandler::CreateEntity();
+		m_enemyQueue.emplace(enemy);
 		enemy->SetTag("Enemy");
 		enemy->AddComponent<Aen::MeshInstance>();
 		enemy->GetComponent<Aen::MeshInstance>().SetMesh("Capsule");
 		enemy->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
 		enemy->AddComponent<Aen::CharacterController>();
-		enemy->SetPos(0.f, 1.f, 3.f);
+		enemy->SetPos(0.f, 1.5f, 5.f);
 
 		enemy = nullptr;
+	}
+
+	if (Aen::Input::KeyDown(Aen::Key::O) && !lockedOn) {
+		Aen::EntityHandler::RemoveEntity(*m_enemyQueue.front());
+		m_enemyQueue.pop();
 	}
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
