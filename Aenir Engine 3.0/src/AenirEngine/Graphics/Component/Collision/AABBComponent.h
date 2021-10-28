@@ -9,11 +9,14 @@ namespace Aen
 	class AABoundBox
 	{
 	public:
-		AABoundBox(const size_t& id);
+		AABoundBox(const size_t& id, Mesh& mesh);
+		~AABoundBox();
 
-		void Create()
+		void Create();
 	private:
+		DirectX::BoundingBox m_aabb;
 
+		
 
 	};
 }
