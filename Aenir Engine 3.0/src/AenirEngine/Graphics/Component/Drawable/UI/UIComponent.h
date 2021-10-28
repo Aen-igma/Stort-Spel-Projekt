@@ -17,11 +17,16 @@ namespace Aen {
 		UIComponent();
 		~UIComponent();
 
+<<<<<<< HEAD
 		void AddButton(LPCWSTR dir, int indX);
 		void SetButtonSize(float width, float height, int indX);
 		void SetButtonPos(float x, float y, int indX);
 
 		void AddText(std::wstring texts);
+=======
+		void AddButton(LPCWSTR dir);
+		void AddText();
+>>>>>>> parent of bf48282 (Can have multiple buttons)
 
 		friend class ComponentHandler;
 		friend class Renderer;

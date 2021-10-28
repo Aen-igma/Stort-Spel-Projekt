@@ -1,43 +1,28 @@
 #include "PCH.h"
 #include "UIComponent.h"
 
-namespace Aen {
+Aen::UIComponent::UIComponent()
+{
+	button.Initialize();
+}
 
-	Aen::UIComponent::UIComponent()
-	{
-		button.Initialize();
-	}
+Aen::UIComponent::~UIComponent()
+{
 
-	Aen::UIComponent::~UIComponent()
-	{
-
-	}
-
-	void Aen::UIComponent::AddButton(LPCWSTR dir, int indX)
-	{
-		button.AddButton(dir, indX);
-	}
-
-	void UIComponent::SetButtonSize(float width, float height, int indX)
-	{
-		button.SetButtonSize(width, height, indX);
-	}
-
-	void UIComponent::SetButtonPos(float x, float y, int indX)
-	{
-		button.SetButtonPos(x, y, indX);
-	}
-
+<<<<<<< HEAD
 void Aen::UIComponent::AddText(std::wstring texts)
 {
 	text.createText(texts);
+=======
+>>>>>>> parent of bf48282 (Can have multiple buttons)
 }
 
-	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
-	{
-		//Draw button
-		for (auto& b : button.GetData()) {
+void Aen::UIComponent::AddButton(LPCWSTR dir)
+{
+	button.AddButton(dir);
+}
 
+<<<<<<< HEAD
 			button.Draw(b);
 			
 		}
@@ -49,7 +34,19 @@ void Aen::UIComponent::AddText(std::wstring texts)
 	}
 	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
 	{
+=======
+void Aen::UIComponent::AddText()
+{
+}
 
-	}
+void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
+{
+	//Draw button
+	button.Draw();
+}
+>>>>>>> parent of bf48282 (Can have multiple buttons)
+
+void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
+{
 
 }

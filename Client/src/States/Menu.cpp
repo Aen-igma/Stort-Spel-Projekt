@@ -28,13 +28,7 @@ void MainMenu::Initialize()
 	// ----------------------------- UI -------------------------------- //
 	testUI = &Aen::EntityHandler::CreateEntity();
 	testUI->AddComponent<Aen::UIComponent>();
-	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Reimu.png", 0);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(500.f, 500.f, 0);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 300.f, 0);
-
-	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/gunter2.png", 1);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(900.f, 500.f, 1);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 300.f, 1);
+	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Reimu.png");
 
 	//Text
 	testUI->GetComponent<Aen::UIComponent>().AddText(L"HI AGAIN!");
