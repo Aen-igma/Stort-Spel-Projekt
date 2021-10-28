@@ -99,7 +99,7 @@ void Gameplay::Update(const float& deltaTime) {
 	static bool lockedOn = false;
 	auto enemies = Aen::EntityHandler::GetTagedEntities("Enemy");
 
-	Aen::Vec3f camDir;
+	static Aen::Vec3f camDir;
 	static Aen::Vec2f side;
 	if(lockedOn)
 		side.x = Aen::Lerp(side.x, axis.x, 0.05f);
@@ -254,7 +254,7 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 
 	if(m_targetDist < 20.f && m_target && lockedOn) {
-		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos() - m_camera->GetComponent<Aen::Camera>().GetRight() * side.x * 1.5f).Normalized();
+		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x * 1.2f).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
 
