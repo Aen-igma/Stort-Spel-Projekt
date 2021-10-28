@@ -1,6 +1,8 @@
 #pragma once
+#include "Graphics/DirectX11/DX11Core.h"
 #include "Graphics/Component/Resource.h"
-#include "Graphics/Component/Entity.h"
+
+
 #include <filesystem>
 #include "CreateThumbnail.h"
 #include "LevelExporter.h"

@@ -30,64 +30,69 @@ void Aen::AssimpImport::LoadFbx(VBuffer<Vertex>& vBuffer, const std::string path
 	}
 }
 
-void Aen::AssimpImport::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>& verts, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
+void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>& verts, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
 	UINT numVerts = mesh->mNumVertices;
-	UINT numMats = scene->mNumMaterials;
+
 	aiMaterial* material;
-	for (UINT i = 0; i < numMats; i++)
-	{
-		material = scene->mMaterials[mesh->mMaterialIndex];
-		//meshMaterial.emplace(material->GetName().C_Str(), mesh->mMaterialIndex);
-	}
-	verts.resize(numVerts);
+	//UINT invertedIndex = scene->mNumMaterials - mesh->mMaterialIndex - 1;
+	material = scene->mMaterials[mesh->mMaterialIndex];
+	meshMaterial.emplace(material->GetName().C_Str(), mesh->mMaterialIndex);
+	
 	Aen::PartitionData data;
 	data.materialIndex = mesh->mMaterialIndex;
 	data.size = numVerts;
-	data.offset = numVerts;
+	data.offset = offset;
 	partsData.emplace_back(data);
-	for (UINT i = 0; i < numVerts; i++)
+
+	for (UINT m = 0; m < 1; m++)
 	{
-		Aen::Vertex vertex;
-		vertex.pos.x = mesh->mVertices[i].x;
-		vertex.pos.y = mesh->mVertices[i].y;
-		vertex.pos.z = mesh->mVertices[i].z;
-
-		if (mesh->mTextureCoords[0])
+		for (UINT i = 0; i < numVerts; i++)
 		{
-			vertex.uv.x = (float)mesh->mTextureCoords[0][i].x;
-			vertex.uv.y = (float)mesh->mTextureCoords[0][i].y;
-		}
-		if (mesh->HasNormals())
-		{
-			vertex.norm.x = (float)mesh->mNormals[i].x;
-			vertex.norm.y = (float)mesh->mNormals[i].y;
-			vertex.norm.z = (float)mesh->mNormals[i].z;
-		}
-		if (mesh->HasTangentsAndBitangents())
-		{
-			vertex.tan.x = (float)mesh->mTangents[i].x;
-			vertex.tan.y = (float)mesh->mTangents[i].y;
-			vertex.tan.z = (float)mesh->mTangents[i].z;
+			Vertex vertex;
+			vertex.pos.x = mesh[m].mVertices[i].x;
+			vertex.pos.y = mesh[m].mVertices[i].y;
+			vertex.pos.z = mesh[m].mVertices[i].z;
 
-			vertex.bi.x = (float)mesh->mBitangents[i].x;
-			vertex.bi.y = (float)mesh->mBitangents[i].y;
-			vertex.bi.z = (float)mesh->mBitangents[i].z;
-		}
+			if (mesh->mTextureCoords[0])
+			{
+				vertex.uv.x = (float)mesh[m].mTextureCoords[0][i].x;
+				vertex.uv.y = (float)mesh[m].mTextureCoords[0][i].y;
+			}
+			if (mesh->HasNormals())
+			{
+				vertex.norm.x = (float)mesh[m].mNormals[i].x;
+				vertex.norm.y = (float)mesh[m].mNormals[i].y;
+				vertex.norm.z = (float)mesh[m].mNormals[i].z;
+			}
+			if (mesh->HasTangentsAndBitangents())
+			{
+				vertex.tan.x = (float)mesh[m].mTangents[i].x;
+				vertex.tan.y = (float)mesh[m].mTangents[i].y;
+				vertex.tan.z = (float)mesh[m].mTangents[i].z;
 
-		verts.emplace_back(vertex);
+				vertex.bi.x = (float)mesh[m].mBitangents[i].x;
+				vertex.bi.y = (float)mesh[m].mBitangents[i].y;
+				vertex.bi.z = (float)mesh[m].mBitangents[i].z;
+			}
+			verts.emplace_back(vertex);
+		}
+		offset = numVerts;
+		printf("\n");
 	}
-	printf("\n");
+	
 }
 
 void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBuffer<Aen::Vertex>& vBuffer,
 	std::vector<Aen::Vertex>& verts, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
+	UINT offset = 0;
 	UINT numMeshes = node->mNumMeshes;
+	//partsData.resize(numMeshes);
 	for (UINT i = 0; i < numMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		AssimpImport::ProcessMesh(mesh, scene, verts, partsData, meshMaterial);
+		AssimpImport::ProcessMesh(offset, mesh, scene, verts, partsData, meshMaterial);
 	}
 
 	UINT numNodes = node->mNumChildren;

@@ -1,11 +1,18 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false)
-{
-}
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false), m_movementSpeed(4.f),
+	m_finalDir(0.f, 0.f, -1.f) {}
 
-Gameplay::~Gameplay() {}
+Gameplay::~Gameplay() {
+	Aen::GlobalSettings::RemoveMainCamera();
+	Aen::EntityHandler::RemoveEntity(*m_camera);
+	Aen::EntityHandler::RemoveEntity(*m_dLight);
+	Aen::EntityHandler::RemoveEntity(*m_plane);
+	Aen::EntityHandler::RemoveEntity(*m_player);
+	Aen::EntityHandler::RemoveEntity(*m_reimube);
+	
+}
 
 void Gameplay::Initialize()
 {
@@ -33,15 +40,25 @@ void Gameplay::Initialize()
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	plane.Load(AEN_RESOURCE_DIR("Plane.fbx"));
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
+	capsule.Load(AEN_RESOURCE_DIR("Capsule.fbx"));
+	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
+	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
+	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
+
+	planeMat["InnerEdgeColor"] = Aen::Color::Red;
+	planeMat["OuterEdgeColor"] = Aen::Color::Red;
 
 	planeMat["BaseColor"] = Aen::Color::White;
 	playerMat["BaseColor"] = Aen::Color::White;
+
+	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Reimu.png"));
+	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
+	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
 
 	// -------------------------- Setup Entities -------------------------------- //
 
@@ -59,11 +76,21 @@ void Gameplay::Initialize()
 	m_player->GetComponent<Aen::MeshInstance>().SetMaterial(playerMat);
 	m_player->SetPos(0.f, 1.f, 0.f);
 
+	m_reimube = &Aen::EntityHandler::CreateEntity();
+	m_reimube->AddComponent<Aen::RigidBody>();
+	m_reimube->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 2.f, 2.f));
+	m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
+	m_reimube->AddComponent<Aen::MeshInstance>();
+	m_reimube->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
+	m_reimube->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
+	m_reimube->SetPos(0.f, 1.f, 0.f);
+
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
 
-	Aen::Input::ToggleRawMouse(false);
+	Aen::Input::ToggleRawMouse(true);
+	Aen::Input::SetMouseVisible(false);
 	cout << "Press Enter To Continue\n";
 }
 
@@ -77,9 +104,11 @@ void Gameplay::Update(const float& deltaTime)
 
 		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
 		{
-			m_camera->Rotate(
-				-(float)me.GetPos().y * m_mouseSense * deltaTime,
-				-(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
+			if(!Aen::Input::GPGetActive(0u)) {
+				m_camera->Rotate(
+					-(float)me.GetPos().y * m_mouseSense * deltaTime,
+					-(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
+			}
 		}
 		if (me.getInputType() == Aen::MouseEvent::SCROLL_UP) {
 			printf("scroll up\n");
@@ -91,37 +120,124 @@ void Gameplay::Update(const float& deltaTime)
 		}
 	}
 
-	// ------------------------------ Camera Controler ---------------------------------- //
+	// ------------------------------ Player Controler ---------------------------------- //
 
 	Aen::Vec3f axis;
-	axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
-	axis.y = (float)Aen::Input::KeyPress(Aen::Key::SPACE) - (float)Aen::Input::KeyPress(Aen::Key::LSHIFT);
-	axis.z = (float)Aen::Input::KeyPress(Aen::Key::S) - (float)Aen::Input::KeyPress(Aen::Key::W);
 
-	static Aen::Vec2i mouseAxis;
+	if(Aen::Input::GPGetActive(0u)) {
+		axis.x = Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).x;
+		axis.z = -Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).y;
 
-	if (Aen::Input::KeyPress(Aen::Key::RMOUSE)) {
-		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;
-		m_camera->MoveRelative(axis.x * deltaTime * m_speed * focus, 0.f, axis.z * deltaTime * m_speed * focus);
-		m_camera->Move(0.f, axis.y * deltaTime * m_speed * focus, 0.f);
+		m_camera->Rotate(
+			-Aen::Input::GPGetAnalog(0u, Aen::Analog::RTHUMB).y * m_mouseSense * 18.f * deltaTime,
+			-Aen::Input::GPGetAnalog(0u, Aen::Analog::RTHUMB).x * m_mouseSense * 28.f * deltaTime, 0.f);
 
-		if (m_toggleFullScreen)
-			Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
-		else
-			Aen::Input::SetMousePos(m_Window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_Window.GetSize() * 0.5f));
+		// Dash/Dodge
+
+		static bool toggle = false;
+		static bool lTriggerPressed = false;
+
+		if(Aen::Input::GPGetAnalog(0u, Aen::Analog::TRIGGER).x > 0.f && !toggle) {
+			lTriggerPressed = true;
+			toggle = true;
+		} else if(Aen::Input::GPGetAnalog(0u, Aen::Analog::TRIGGER).x <= 0.f)
+			toggle = false;
+
+		if(lTriggerPressed) {
+			lTriggerPressed = false;
+			EventData data;
+			data.accell = 14.f;
+			data.duration = 0.3f;
+			data.function = [&](float& accell) {
+				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				accell -= 30.f * deltaTime;
+			};
+
+			m_eventQueue.emplace(data);
+		}
+
+		// Attack
+
+		if(Aen::Input::GPKeyDown(0u, Aen::GP::A)) {
+			EventData data;
+			data.accell = 6.f;
+			data.duration = 0.1f;
+			data.function = [&](float& accell) {
+				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				accell -= 12.f * deltaTime;
+			};
+
+			m_eventQueue.emplace(data);
+		}
+
+	} else {
+		axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
+		axis.z = (float)Aen::Input::KeyPress(Aen::Key::S) - (float)Aen::Input::KeyPress(Aen::Key::W); 
+
+		// Dash/Dodge
+
+		if(Aen::Input::KeyDown(Aen::Key::SPACE)) {
+			EventData data;
+			data.accell = 14.f;
+			data.duration = 0.4f;
+			data.function = [&](float& accell) {
+				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				accell -= 30.f * deltaTime;
+			};
+
+			m_eventQueue.emplace(data);
+		}
+
+		// Attack
+
+		if(Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
+			EventData data;
+			data.accell = 6.f;
+			data.duration = 0.1f;
+			data.function = [&](float& accell) {
+				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				accell -= 12.f * deltaTime;
+			};
+
+			m_eventQueue.emplace(data);
+		}
 	}
 
-	if (Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
-		Aen::Input::SetMouseVisible(false);
-		Aen::Input::ToggleRawMouse(true);
-	}
-	else if (Aen::Input::KeyUp(Aen::Key::RMOUSE)) {
-		Aen::Input::SetMouseVisible(true);
-		Aen::Input::ToggleRawMouse(false);
-	}
+	float r = Aen::Clamp(m_camera->GetRot().x, -45.f, 45.f);
+	m_camera->SetRot(r, m_camera->GetRot().y, m_camera->GetRot().z);
 
-	m_player->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(0.f, -1.f, 0.f), deltaTime);
-	m_camera->GetComponent<Aen::Camera>().LookTowards(Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), Aen::Vec3f(0.f, 0.f, -1.f)));
+	Aen::Vec3f camDir = Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), Aen::Vec3f(0.f, 0.f, -1.f)).Normalized();
+	camDir = Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), Aen::Vec3f(0.f, 0.f, -1.f)).Normalized();
+	m_camera->SetPos(Aen::Lerp(m_camera->GetPos(), m_player->GetPos() + Aen::Vec3f(0.f, 0.5f, 0.f) + camDir * -4.f, 0.3f));
+	m_camera->GetComponent<Aen::Camera>().LookTowards(camDir);
+	m_player->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(0.f, -1.f, 0.f) * deltaTime, deltaTime);
+
+	if (m_toggleFullScreen)
+		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
+	else
+		Aen::Input::SetMousePos(m_Window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_Window.GetSize() * 0.5f));
+	
+	Aen::Vec3f playerDir = Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), axis.Normalized());
+	Aen::Vec2f dir(playerDir.x, playerDir.z);
+
+	if(!m_eventQueue.empty())
+		if(m_eventQueue.front().duration > 0.f) {
+			m_eventQueue.front().function(m_eventQueue.front().accell);
+			m_eventQueue.front().duration -= deltaTime;
+		} else {
+			if(axis.Magnitude() > 0.f) m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+			m_eventQueue.pop();
+		}
+
+	if(m_eventQueue.empty()) {
+		if(axis.Magnitude() > 0.f) {
+			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+			m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * m_movementSpeed * deltaTime, deltaTime);
+		} else {
+			Aen::Vec2f dir(camDir.x, camDir.z);
+			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+		}
+	}
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
@@ -155,6 +271,4 @@ void Gameplay::Update(const float& deltaTime)
 	{
 		State::SetState(States::Main_Menu);
 	}
-
-	cout << "Press Enter to Change to Main Menu\n";
 }

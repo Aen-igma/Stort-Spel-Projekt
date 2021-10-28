@@ -17,6 +17,7 @@ namespace Aen {
 		}
 
 		static ShaderModel& CreateShader(const std::string& name, Window& window) {
+			if (ShaderExist(name)) return *m_shaders.at(name);
 			m_shaders.emplace(name, AEN_NEW ShaderModel(window));
 			return *m_shaders.at(name);
 		}
@@ -48,6 +49,7 @@ namespace Aen {
 		}
 
 		static Material& CreateMaterial(const std::string& name, const std::string& shaderName) {
+			if (MaterialExist(name)) return *m_materials.at(name);
 			if(m_shaders.count(shaderName) == 0) throw;
 			m_materials.emplace(name, AEN_NEW Material(*m_shaders.at(shaderName)));
 			return *m_materials.at(name);
@@ -75,6 +77,7 @@ namespace Aen {
 		}
 
 		static Texture& CreateTexture(const std::string& name) {
+			if (TextureExist(name)) return *m_textures.at(name);
 			m_textures.emplace(name, AEN_NEW Texture());
 			return *m_textures.at(name);
 		}
@@ -101,6 +104,7 @@ namespace Aen {
 		}
 
 		static Mesh& CreateMesh(const std::string& name) {
+			if (MeshExist(name)) return *m_meshes.at(name);
 			m_meshes.emplace(name, AEN_NEW Mesh());
 			return *m_meshes.at(name);
 		}

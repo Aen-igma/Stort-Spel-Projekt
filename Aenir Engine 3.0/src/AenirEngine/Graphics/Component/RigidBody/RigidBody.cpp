@@ -4,7 +4,7 @@
 namespace Aen {
 	RigidBody::RigidBody(const size_t& id)
 		:Component(id), m_mass(25.f), m_density(50.f), m_sleep(1.f), m_aDamp(0.5f), m_gType(GeometryType::PLANE), m_rigidType(RigidType::STATIC), mp_Material(nullptr), 
-		mp_LocalPhysics(PhysicsHandler::GetInstance()->GetPxPhysics()), mp_StaticBody(nullptr), mp_DynamicBody(nullptr) {
+		mp_LocalPhysics(PhysicsHandler::GetInstance()->GetPxPhysics()), mp_StaticBody(nullptr), mp_DynamicBody(nullptr), m_scale(Vec3f::one) {
 		mp_Material = mp_LocalPhysics->createMaterial(1.f, 1.f, 0.2f);
 		mp_Material->setFrictionCombineMode(px::PxCombineMode::eAVERAGE);
 		mp_Material->setRestitutionCombineMode(px::PxCombineMode::eAVERAGE);
@@ -50,9 +50,11 @@ namespace Aen {
 
 		m_rigidType = type;
 
-		px::PxSphereGeometry sphere(0.5f);
-		px::PxBoxGeometry cube(0.5f, 0.5f, 0.5f);
-		px::PxCapsuleGeometry capsule(0.5f, 1.f);
+		float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5;
+		px::PxSphereGeometry sphere(r);
+		px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.x * 0.5f);
+		float rc = Max(m_scale.x, m_scale.z);
+		px::PxCapsuleGeometry capsule(rc * 0.5f, m_scale.y);
 		if(m_rigidType == RigidType::DYNAMIC) {
 
 			switch(m_gType) {
@@ -96,16 +98,19 @@ namespace Aen {
 		}
 	}
 
-	void RigidBody::SetGeometry(const GeometryType& geometry) {
+	void RigidBody::SetGeometry(const GeometryType& geometry, const Vec3f& scale) {
 
 		if(geometry == m_gType)
 			return;
 		
+		m_scale = scale;
 		m_gType = geometry;
 		px::PxTransform t(0.f, 0.f, 0.f);
-		px::PxSphereGeometry sphere(0.5f);
-		px::PxBoxGeometry cube(0.5f, 0.5f, 0.5f);
-		px::PxCapsuleGeometry capsule(0.5f, 1.f);
+		float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5;
+		px::PxSphereGeometry sphere(r);
+		px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.x * 0.5f);
+		float rc = Max(m_scale.x, m_scale.z);
+		px::PxCapsuleGeometry capsule(rc * 0.5f, m_scale.y);
 
 		if(m_rigidType == RigidType::DYNAMIC) {
 
