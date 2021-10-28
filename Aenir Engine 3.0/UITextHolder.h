@@ -27,9 +27,16 @@ namespace Aen
 		UITextHolder();
 		~UITextHolder();
 
+<<<<<<< HEAD:Aenir Engine 3.0/src/AenirEngine/Graphics/Component/Drawable/UI/UITextHolder.h
 		void createText(std::wstring m_text);
 		void renderText(UITextData& data);
 		std::vector<UITextData> getData() const;
+=======
+		void createText();
+		void createDeviceResources();
+		void renderText(UITextData& tData);
+	protected:
+>>>>>>> parent of 23caf9e (UICanDrawText):Aenir Engine 3.0/UITextHolder.h
 
 	private:
 		IDWriteFactory* m_pDWriteFactory;
