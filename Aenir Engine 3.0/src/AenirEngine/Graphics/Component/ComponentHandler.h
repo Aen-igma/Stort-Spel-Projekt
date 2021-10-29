@@ -74,7 +74,7 @@ namespace Aen {
 		}
 
 		static void CreateUI(const size_t& id, const size_t& layer) {
-			m_UI.emplace(id, AEN_NEW UIComponent());
+			m_UI.emplace(id, AEN_NEW UIComponent(id));
 			m_meshLayer[layer].emplace(id, m_UI.at(id));
 		}
 

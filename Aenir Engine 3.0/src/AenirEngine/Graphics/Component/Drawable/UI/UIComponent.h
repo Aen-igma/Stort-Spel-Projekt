@@ -23,6 +23,8 @@ namespace Aen {
 
 		void AddText();
 
+		void Update(Window& window);
+
 		friend class ComponentHandler;
 		friend class Renderer;
 		friend class Entity;

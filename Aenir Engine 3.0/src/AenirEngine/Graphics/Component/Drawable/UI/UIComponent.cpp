@@ -3,7 +3,8 @@
 
 namespace Aen {
 
-	Aen::UIComponent::UIComponent()
+	Aen::UIComponent::UIComponent(const size_t& id)
+		:Drawable(id)
 	{
 		button.Initialize();
 	}
@@ -50,7 +51,7 @@ namespace Aen {
 		}
 	}
 
-	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
+	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& layer)
 	{
 		//Draw button
 		for (auto& b : button.GetData()) {
@@ -59,7 +60,7 @@ namespace Aen {
 		}
 	}
 
-	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
+	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	{
 
 	}
