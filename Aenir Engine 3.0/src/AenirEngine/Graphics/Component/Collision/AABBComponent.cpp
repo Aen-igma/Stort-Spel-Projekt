@@ -43,24 +43,34 @@ namespace Aen {
 			DirectX::XMFLOAT3 points[size];
 			m_aabb.GetCorners(points);
 			Vertex verts[8];
-			for(uint32_t i = 0; i < size; i++)
+			for(uint32_t i = 0; i < size; i++) {
 				verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
+				AEN_PRINT("Index: ");
+				AEN_PRINT(i);
+				AEN_PRINT("	");
+				AEN_PRINT(verts[i].pos);
+				AEN_ENDL;
+			}
 
 			DWORD ind[]{
-				0, 1, 2,
-				2, 1, 3,
-				1, 4, 3,
-				3, 4, 5,
-				4, 6, 5,
-				5, 6, 7,
-				6, 0, 7,
-				7, 0, 2
+				0, 1, 2, 
+				0, 2, 3, 
+				1, 5, 6, 
+				1, 6, 2, 
+				5, 4, 7, 
+				5, 7, 6, 
+				4, 0, 3, 
+				4, 3, 7, 
+				6, 3, 2, 
+				6, 7, 3, 
+				5, 0, 4, 
+				5, 1, 0, 
 			};
 
 			if(!m_vBuffer.Create(verts, (UINT)size))
 				throw;
 
-			m_iBuffer.Create(ind, 24u);
+			m_iBuffer.Create(ind, 36u);
 			m_canDraw = true;
 		#endif
 
@@ -94,7 +104,7 @@ namespace Aen {
 				RenderSystem::BindShader(renderer.m_opaqueVS);
 				RenderSystem::BindShader(renderer.m_collisionPS);
 				RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
-				RenderSystem::BindRenderTargetView(renderer.m_backBuffer, renderer.m_depthMap);
+				RenderSystem::BindRenderTargetView(renderer.m_backBuffer);
 				m_vBuffer.BindBuffer();
 				m_iBuffer.BindBuffer();
 				m_iBuffer.DrawIndexed();
