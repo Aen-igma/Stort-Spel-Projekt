@@ -173,6 +173,7 @@
     <ClInclude Include="src\Client.h" />
     <ClInclude Include="src\Level\LevelGenerator.h" />
     <ClInclude Include="src\Level\RandomNumberGenerator.h" />
+    <ClInclude Include="src\States\GameEnd.h" />
     <ClInclude Include="src\States\Gameplay.h" />
     <ClInclude Include="src\States\Loadscreen.h" />
     <ClInclude Include="src\States\Menu.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="src\Client.cpp" />
     <ClCompile Include="src\Level\LevelGenerator.cpp" />
     <ClCompile Include="src\Level\RandomNumberGenerator.cpp" />
+    <ClCompile Include="src\States\GameEnd.cpp" />
     <ClCompile Include="src\States\Gameplay.cpp" />
     <ClCompile Include="src\States\Loadscreen.cpp" />
     <ClCompile Include="src\States\Menu.cpp" />

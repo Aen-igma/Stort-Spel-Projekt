@@ -221,6 +221,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Component.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\ComponentHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Entity.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\EntityHandler.cpp" />
@@ -248,6 +249,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\Stencil.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\UAView.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Physics\Physics.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Physics\Raycast.cpp" />
     <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Importer\AssimpImporter.cpp" />
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp" />
@@ -273,6 +275,7 @@
     <ClCompile Include="src\AenirEngine\Window\Input.cpp" />
     <ClCompile Include="src\AenirEngine\Window\Window.cpp" />
     <ClCompile Include="src\AenirEngine\Window\WindowDesc.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UITextHolder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\BuritoMath.h" />
@@ -292,6 +295,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Component.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Entity.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\EntityHandler.h" />
@@ -322,6 +326,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\Stencil.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\UAView.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Physics\Physics.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Physics\Raycast.h" />
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
     <ClInclude Include="src\AenirEngine\ImGuiHandler.h" />
@@ -356,6 +361,7 @@
     <ClInclude Include="src\AenirEngine\Window\WindowDef.h" />
     <ClInclude Include="src\AenirEngine\Window\WindowDesc.h" />
     <ClInclude Include="src\AenirEngine\Window\WindowHandle.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UITextHolder.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderCS.hlsl">

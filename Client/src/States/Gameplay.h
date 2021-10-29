@@ -26,6 +26,8 @@ private:
     bool m_toggleFullScreen;
 
     Aen::Entity* m_camera;
+    Aen::Raycast m_ray;
+
     Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
     Aen::Entity* m_player;
@@ -37,6 +39,8 @@ private:
     std::queue<EventData> m_eventQueue;
     float m_movementSpeed;
     Aen::Vec3f m_finalDir;
+
+    std::queue<Aen::Entity*> m_enemyQueue;
 
 public:
 	Gameplay(Aen::Window& window);

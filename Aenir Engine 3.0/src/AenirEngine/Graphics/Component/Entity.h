@@ -99,6 +99,13 @@ namespace Aen {
 	}
 
 	template<>
+	inline void Entity::AddComponent<UIComponent>() {
+		m_layer = 3;
+		if (!ComponentHandler::UIComponentExist(m_id))
+			ComponentHandler::CreateUI(m_id, m_layer + 3);
+	}
+
+	template<>
 	inline void Entity::AddComponent<Mesh>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
 			ComponentHandler::CreateMeshInstance(m_id, m_layer + 3);
@@ -210,6 +217,11 @@ namespace Aen {
 	template<>
 	inline CharacterController& Entity::GetComponent() {
 		return ComponentHandler::GetCharacterController(m_id);
+	}
+
+	template<>
+	inline UIComponent& Entity::GetComponent() {
+		return ComponentHandler::GetUI(m_id);
 	}
 
 	template<>

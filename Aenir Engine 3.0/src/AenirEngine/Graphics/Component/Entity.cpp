@@ -13,8 +13,10 @@ namespace Aen {
 		ComponentHandler::RemoveDirectionalLight(m_id);
 		ComponentHandler::RemoveRigid(m_id);
 		ComponentHandler::RemoveCharacterController(m_id);
+		ComponentHandler::RemoveUI(m_id);
 
 		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
+		EntityHandler::RemoveFromTaged(m_id, m_tag);
 	}
 
 	Entity::Entity(const size_t& id)
@@ -25,12 +27,7 @@ namespace Aen {
 		if(m_tag == tag)
 			return;
 
-		if(EntityHandler::m_tagedEntities.count(tag) > 0)
-			for(auto i = EntityHandler::m_tagedEntities.lower_bound(tag); i != EntityHandler::m_tagedEntities.upper_bound(tag); i++)
-				if(i->second->HasId(m_id)) {
-					EntityHandler::m_tagedEntities.erase(i);
-					break;
-				}
+		EntityHandler::RemoveFromTaged(m_id, m_tag);
 
 		m_tag = tag;
 

@@ -2,6 +2,7 @@
 #include "States\Gameplay.h"
 #include "States\Menu.h"
 #include "States\Loadscreen.h"
+#include "States\GameEnd.h"
 #include "AenirEngine.h"
 
 #include<stack>
@@ -20,6 +21,7 @@ class Client : public Aen::App {
 	State* mp_state;
 	States m_typeState;
 	Gameplay* mp_gameplay;
+	GameEnd* mp_gameEnd;
 };
 
 Aen::App* Aen::CreateApp() {
@@ -32,7 +34,7 @@ Aen::App* Aen::CreateApp() {
 	wDesc.hMenu = 0;
 	wDesc.WCStyle = 0;
 
-	return new Client(wDesc, L"Aenir Engine", L"Main_Window");
+	return AEN_NEW Client(wDesc, L"Aenir Engine", L"Main_Window");
 }
 
 
