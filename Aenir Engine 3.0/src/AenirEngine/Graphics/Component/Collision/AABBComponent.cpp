@@ -20,13 +20,8 @@ namespace Aen {
 
 	const bool AABoundBox::CreateAABB() {
 
-		UINT vCount = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_vertices.GetVertCount();
-		UINT vStride = sizeof(DirectX::XMFLOAT3);
-
-		size_t vertCount = static_cast<size_t>(vCount);
-		size_t vertStride = static_cast<size_t>(vStride);
-
-		
+		size_t vCount = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_vertices.GetVertCount();
+		size_t vStride = sizeof(DirectX::XMFLOAT3);
 
 		if(!ComponentHandler::GetMeshInstance(m_id).m_pMesh) {
 			throw;
@@ -36,7 +31,7 @@ namespace Aen {
 		std::vector<DirectX::XMFLOAT3> positions;
 		positions = ComponentHandler::GetMeshInstance(m_id).m_pMesh->mv_pos;
 
-		m_aabb.CreateFromPoints(m_aabb, vertCount, positions.data(), vStride);
+		m_aabb.CreateFromPoints(m_aabb, vCount, positions.data(), vStride);
 
 		#ifdef _DEBUG
 			const size_t size = m_aabb.CORNER_COUNT;
