@@ -11,7 +11,7 @@ namespace Aen
 	{
 	public:
 		AABoundBox(const size_t& id);
-		const bool Intersects(AABoundBox& otherBox) const;
+		const bool Intersects(AABoundBox& otherBox);
 		/// <summary>
 		/// Creates AABB based on mesh. If mesh is NULL it will throw
 		/// </summary>
@@ -25,6 +25,8 @@ namespace Aen
 
 		Vec3f m_positionOffset;
 		Vec3f m_sizeOffset;
+
+		bool m_isColliding;
 
 		#ifdef _DEBUG
 			bool m_canDraw;

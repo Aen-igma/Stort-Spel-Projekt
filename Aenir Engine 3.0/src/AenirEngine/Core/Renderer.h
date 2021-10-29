@@ -5,6 +5,12 @@
 
 namespace Aen {
 
+	struct CB_Collision
+	{
+		Vec3f color;
+		int switcher;
+	};
+
 	struct CB_DispatchInfo {
 		Vec2i threadGroups;
 		Vec2i numThreads;
@@ -78,5 +84,7 @@ namespace Aen {
 		RWTexture2D m_lGrid;
 		Vec2i m_dispatchCall;
 		const uint32_t m_avarageLights;
+
+		CBuffer<CB_Collision> m_collisionBuffer;
 	};
 }

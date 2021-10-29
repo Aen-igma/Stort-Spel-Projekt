@@ -7,14 +7,18 @@ namespace Aen {
 
 	AABoundBox::AABoundBox(const size_t& id) 
 		:Drawable(id),
+		m_isColliding(false),
 		#ifdef _DEBUG
 			m_canDraw(false)
 		#endif
 		{}
 
-	const bool AABoundBox::Intersects(AABoundBox& otherBox) const {
-		if(m_aabb.Intersects(otherBox.m_aabb))
+	const bool AABoundBox::Intersects(AABoundBox& otherBox) {
+		if (m_aabb.Intersects(otherBox.m_aabb)) {
+			m_isColliding = true;
 			return true;
+		}
+		m_isColliding = false;
 		return false;
 	}
 
@@ -85,6 +89,13 @@ namespace Aen {
 				renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z).Transposed();
 				renderer.m_cbTransform.UpdateBuffer();
 				renderer.m_cbTransform.BindBuffer<VShader>(0u);
+
+				renderer.m_collisionBuffer.BindBuffer<PShader>(0);
+				if(m_isColliding) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
+				else renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
+				renderer.m_collisionBuffer.GetData().switcher = 0;
+				renderer.m_collisionBuffer.UpdateBuffer();
+
 				RenderSystem::SetRasteriserState(renderer.m_wireFrameState);
 				RenderSystem::BindShader(renderer.m_opaqueVS);
 				RenderSystem::BindShader(renderer.m_collisionPS);

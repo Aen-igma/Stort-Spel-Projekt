@@ -74,6 +74,7 @@ namespace Aen {
 
 		void StartUp();
 
+
 		void Initialize(const HWND& hwnd, ID3D11Device* mp_device, ID3D11DeviceContext* mp_dContext);
 		void NewFrame();
 		void Render();
