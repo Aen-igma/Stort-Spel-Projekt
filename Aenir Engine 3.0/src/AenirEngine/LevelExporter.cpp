@@ -127,6 +127,8 @@ namespace Aen {
 
 			strcpy(modelStruct->type, it->second.m_type.c_str());
 			strcpy(modelStruct->sound, it->second.m_sound.c_str());
+			modelStruct->rigidBody = it->second.m_model.rigidBody;
+			strcpy(modelStruct->rigidBodyType, it->second.m_model.rigidBodyType.c_str());
 
 			m_ModelVector.push_back(*modelStruct);
 		}
@@ -139,11 +141,8 @@ namespace Aen {
 		roomStruct->special = CheckValidType(array[1]);
 		roomStruct->theme = CheckValidType(array[2]);
 		roomStruct->probability = stoi(array[3].c_str());
+		roomStruct->size = stoi(array[4].c_str());
 
-		cout << roomStruct->type << endl;
-		cout << roomStruct->special << endl;
-		cout << roomStruct->theme << endl;
-		cout << roomStruct->probability << endl;
 	}
 
 	void LevelExporter::textureFunc(TextureStruct*& textureStruct, string& textureFileName)
@@ -170,7 +169,7 @@ namespace Aen {
 
 	LevelExporter::LevelExporter()
 	{
-		valid.insert(validType, typeValue, 14);
+		valid.insert(validType, typeValue, 15);
 	}
 
 	LevelExporter::~LevelExporter()
@@ -284,16 +283,6 @@ namespace Aen {
 
 		for (size_t i = 0; i < m_LightVector.size(); i++)
 		{
-			cout << m_LightVector[i].type << endl;
-			cout << m_LightVector[i].translation[0] << " " << m_LightVector[i].translation[1] << " " << m_LightVector[i].translation[2] << endl;
-			cout << m_LightVector[i].rotation[0] << " " << m_LightVector[i].rotation[1] << " " << m_LightVector[i].rotation[2] << endl;
-			cout << m_LightVector[i].direction[0] << " " << m_LightVector[i].direction[1] << " " << m_LightVector[i].direction[2] << endl;
-			cout << m_LightVector[i].intensity << endl;
-			cout << m_LightVector[i].color[0] << " " << m_LightVector[i].color[1] << " " << m_LightVector[i].color[2] << endl;
-			cout << m_LightVector[i].range << endl;
-			cout << "att " << m_LightVector[i].attenuation[0] << " " << m_LightVector[i].attenuation[1] << " " << m_LightVector[i].attenuation[2] << endl;
-			cout << m_LightVector[i].angle;
-
 			WriteToFile(lightHeader, m_outfile);
 			*lightStruct = m_LightVector[i];
 			WriteToFile(lightStruct, m_outfile);

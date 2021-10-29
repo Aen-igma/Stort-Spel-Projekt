@@ -41,6 +41,7 @@ namespace Aen
 		int special;
 		int theme;
 		unsigned int probability;
+		int size;
 	};
 
 	struct ModelStruct
@@ -55,6 +56,10 @@ namespace Aen
 		//Texture texture;
 		char sound[MESH_NAME_MAX_LENGTH];
 		//Material material;
+		bool rigidBody;
+		char rigidBodyType[TYPE_NAME];
+
+
 	};
 
 	struct TextureStruct

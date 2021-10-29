@@ -6,6 +6,7 @@
 #include "LevelExporter.h"
 #include "LevelImporter.h"
 #include <algorithm>
+#include "LevelEditor/ImguiType.h"
 
 #include "ThirdParty/ImGui/imgui.h"
 #include "ThirdParty/ImGui/imfilebrowser.h"
@@ -43,8 +44,7 @@ namespace Aen {
 
 	private:
 
-		string m_roomProperty[4] = {"","","",""};
-
+		string m_roomProperty[5] = {"","","","1","1"};
 		
 		Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> m_entityList;
@@ -72,8 +72,6 @@ namespace Aen {
 		float m_xyzRotation[3] = { 0,0,0 };
 		float m_xyzScale[3] = { 1,1,1 };
 		
-
-
 		ImGui::FileBrowser m_fileDialog;
 
 		// Level exporter info
@@ -99,7 +97,8 @@ namespace Aen {
 		void AddLight(Aen::Entity* entity, string type);
 
 		void AddBase(AenIF::Model& model, AenIF::Texture &texture);
-		void AddBase(const string& meshName, const string& objName);
+		size_t AddBase(const string& meshName, const string& objName);
+		void AddEnemy(Aen::Entity *entity, AenIF::Model& model);
 
 		void AddPointLight(AenIF::Light& input);
 		void AddPointLight();
@@ -115,6 +114,7 @@ namespace Aen {
 
 		void AddModel(Aen::Entity* entity);
 		bool AddButton(const string& name);
+
 		void AddEnemyButton();
 
 	public:
@@ -160,15 +160,18 @@ namespace Aen {
 		void LightButtons();
 		const string CheckType(Aen::Entity* entity);
 
-		void CustomCombo(vector<string>& list, string name, string type);
+		void CustomCombo(vector<string>& list, string name, string type, int &index);
 
-		string CustomCombo(vector<string>& list, string name);
+		string CustomCombo(vector<string>& list, string name, int& index);
 
 		void ChangeMaterial(int& currentIndex);
 
 		void update();
 
 		void DuplicateWindow(bool& active);
+
+		void lightTab();
+		void RoomTab();
 
 
 };

@@ -33,6 +33,8 @@ namespace Aen {
 	{
 		string m_name = ""; // Editor name
 		string m_meshName = ""; // Obj name
+		bool rigidBody = false;
+		string rigidBodyType = "";
 	};
 
 	struct MaterialInfo 
@@ -67,9 +69,17 @@ namespace Aen {
 			this->m_texture.m_textureName = textureName;
 			this->m_model.m_name = modelName;
 			this->m_model.m_meshName = meshName;
+		}
 
-			cout << "MeshName " << this->m_model.m_meshName << endl;
-			cout << "name " << this->m_model.m_name << endl;
+		ModelContainer(string materialTextureName, string materialName, string textureName, string modelName, string meshName, string type, bool rigidBody, string rigidBodyType) {
+			this->m_material.m_materialTextureName = materialTextureName;
+			this->m_material.m_materialName = materialName;
+			this->m_texture.m_textureName = textureName;
+			this->m_model.m_name = modelName;
+			this->m_model.m_meshName = meshName;
+			this->m_type = type;
+			this->m_model.rigidBody = rigidBody;
+			this->m_model.rigidBodyType = rigidBodyType;
 		}
 
 		void update(string &materialTextureName, string &materialName, string &textureName, string &modelName)
@@ -118,8 +128,8 @@ namespace Aen {
 	{
 	private:
 
-		int typeValue[14] = {101,11,1011,1111,0,1,2,3,4,5,0,1,2,3};
-		string validType[14] = { "Straight","Bend","T Junction","Four Way", "Normal", "Entrance", "Exit", "Boss", "Arena", "Item", "Normal Dungeon", "Skeleton", "Gothic", "Aztec"};
+		int typeValue[15] = {101,11,1011,1111,1,0,1,2,3,4,5,0,1,2,3};
+		string validType[15] = { "Straight","Bend","T Junction","Four Way", "None", "Normal","Entrance", "Exit", "Boss", "Arena", "Item", "Normal Dungeon", "Skeleton", "Gothic", "Aztec"};
 
 		RoomValues valid;
 		string m_filePath = "../LevelFolder/";

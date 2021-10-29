@@ -261,6 +261,9 @@
     <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp">
       <Filter>Source Files\LevelEditor</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\Importer\AssimpImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -492,6 +495,12 @@
       <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\CreateThumbnail.h">
+      <Filter>Header Files\LevelEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Importer\AssimpImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelEditor\ImguiType.h">
       <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
   </ItemGroup>
