@@ -13,9 +13,8 @@ namespace Aen {
 		ComponentHandler::RemoveDirectionalLight(m_id);
 		ComponentHandler::RemoveRigid(m_id);
 		ComponentHandler::RemoveCharacterController(m_id);
-		ComponentHandler::RemoveUI(m_id);
-
 		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
+		EntityHandler::RemoveFromTaged(m_id, m_tag);
 	}
 
 	Entity::Entity(const size_t& id)
@@ -23,21 +22,15 @@ namespace Aen {
 
 	void Entity::SetTag(const std::string& tag) {
 
-		size_t cTag = std::stoi(m_tag);
 		if(m_tag == tag)
 			return;
 
-		if(EntityHandler::m_tagedEntities.count(cTag) > 0)
-			for(auto i = EntityHandler::m_tagedEntities.lower_bound(cTag); i != EntityHandler::m_tagedEntities.upper_bound(cTag); i++)
-				if(i->second->HasId(m_id)) {
-					EntityHandler::m_tagedEntities.erase(i);
-					break;
-				}
+		EntityHandler::RemoveFromTaged(m_id, m_tag);
 
 		m_tag = tag;
 
 		if(m_tag != "NONE")
-			EntityHandler::m_tagedEntities.emplace(cTag, this);
+			EntityHandler::m_tagedEntities.emplace(tag, this);
 	}
 
 	void Entity::SetRenderLayer(const int& layer) {
@@ -143,15 +136,30 @@ namespace Aen {
 		ComponentHandler::GetScale(m_id).SetScale(x, y, z);
 	}
 
-	const Vec3f& Entity::GetPos() {
-		return ComponentHandler::GetTranslation(m_id).GetPos();
+	const Vec3f Entity::GetPos() {
+
+		Vec3f pos;
+		if(ComponentHandler::RigidExist(m_id))
+			pos = ComponentHandler::GetRigid(m_id).GetPos();
+		else if(ComponentHandler::CharacterControllerExist(m_id))
+			pos = ComponentHandler::GetCharacterController(m_id).GetPos();
+		else
+			pos = ComponentHandler::GetTranslation(m_id).GetPos();
+
+		return pos;
 	}
 
-	const Vec3f& Entity::GetRot() {
-		return ComponentHandler::GetRotation(m_id).GetRot();
+	const Vec3f Entity::GetRot() {
+		Vec3f rot;
+		if(ComponentHandler::RigidExist(m_id))
+			rot = ComponentHandler::GetRigid(m_id).GetRot();
+		else
+			rot = ComponentHandler::GetRotation(m_id).GetRot();
+
+		return rot;
 	}
 
-	const Vec3f& Entity::GetScale() {
+	const Vec3f Entity::GetScale() {
 		return ComponentHandler::GetScale(m_id).GetScale();
 	}
 

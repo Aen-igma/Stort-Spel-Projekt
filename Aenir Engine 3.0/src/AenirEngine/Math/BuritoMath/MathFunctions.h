@@ -1,5 +1,6 @@
 #pragma once
 
+#include"AenDefines.h"
 #include"../../ThirdParty/SimpleMath/SimpleMath.h"
 #include<DirectXMath.h>
 #include<type_traits>
@@ -68,7 +69,7 @@ namespace Aen {
 	}
 
 	template<class T> 
-	inline const float Clamp(T& value, const T& min, const T& max) noexcept {
+	inline const T Clamp(const T& value, const T& min, const T& max) noexcept {
 		return (value < min) ? min : (value > max) ? max : value;
 	}
 

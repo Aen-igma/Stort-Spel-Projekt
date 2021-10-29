@@ -32,9 +32,9 @@ namespace Aen {
 		void SetScale(const Vec3f& scale);
 		void SetScale(const float& x, const float& y, const float& z);
 
-		const Vec3f& GetPos();
-		const Vec3f& GetRot();
-		const Vec3f& GetScale();
+		const Vec3f GetPos();
+		const Vec3f GetRot();
+		const Vec3f GetScale();
 		const size_t& GetID();
 		const std::string& GetTag();
 

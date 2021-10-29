@@ -3,65 +3,16 @@
 
 namespace Aen {
 
-	Aen::UIComponent::UIComponent()
-	{
-		button.Initialize();
-	}
+	UIComponent::UIComponent(const size_t& id) 
+		:Drawable(id) {}
 
-	Aen::UIComponent::~UIComponent()
-	{
+	UIComponent::~UIComponent() {}
 
-	}
+	void UIComponent::AddButton() {}
 
-	void UIComponent::SaveButtonData()
-	{
-		button.SaveData();
-	}
+	void UIComponent::AddText() {}
 
-	void Aen::UIComponent::AddButton(LPCWSTR dir, int indX)
-	{
-		button.AddButton(dir, indX);
-	}
+	void UIComponent::Draw(Renderer& renderer, const uint32_t& layer) {}
 
-	void UIComponent::SetButtonSize(float width, float height, int indX)
-	{
-		button.SetButtonSize(width, height, indX);
-	}
-
-	void UIComponent::SetButtonPos(float x, float y, int indX)
-	{
-		button.SetButtonPos(x, y, indX);
-	}
-
-	bool UIComponent::getBool() const
-	{
-		return button.getBool();
-	}
-
-	void Aen::UIComponent::AddText()
-	{
-	}
-
-	void UIComponent::Update(Window& window)
-	{
-		for (auto& b : button.GetData()) {
-
-			button.Update(window, b.index);
-		}
-	}
-
-	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
-	{
-		//Draw button
-		for (auto& b : button.GetData()) {
-
-			button.Draw(b);
-		}
-	}
-
-	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
-	{
-
-	}
-
+	void UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer) {}
 }

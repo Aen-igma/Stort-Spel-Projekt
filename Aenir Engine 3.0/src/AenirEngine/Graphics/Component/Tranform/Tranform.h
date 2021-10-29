@@ -1,11 +1,11 @@
 #pragma once
-#include"../../Graphics.h"
+#include"../Component.h"
 
 namespace Aen {
 
-	class Translation {
+	class AEN_DECLSPEC Translation : public Component {
 		public:
-		Translation() = default;
+		Translation(const size_t& id);
 
 		void SetPos(const Vec3f& pos);
 		void SetPos(const float& x, const float& y, const float& z);
@@ -23,9 +23,9 @@ namespace Aen {
 		friend class ComponentHandler;
 	};
 
-	class Rotation {
+	class AEN_DECLSPEC Rotation : public Component {
 		public:
-		Rotation() = default;
+		Rotation(const size_t& id);
 
 		void SetRot(const Vec3f& rot);
 		void SetRot(const float& p, const float& y, const float& r);
@@ -43,9 +43,9 @@ namespace Aen {
 		friend class ComponentHandler;
 	};
 
-	class Scale {
+	class AEN_DECLSPEC Scale : public Component{
 		public:
-		Scale();
+		Scale(const size_t& id);
 
 		void SetScale(const Vec3f& scale);
 		void SetScale(const float& x, const float& y, const float& z);

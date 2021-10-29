@@ -1,5 +1,5 @@
 #pragma once
-#include"../../Graphics.h"
+#include"../Component.h"
 #include"../../Physics/PhysicsHandler.h"
 
 namespace Aen {
@@ -36,9 +36,9 @@ namespace Aen {
 		ACCELERATION	
 	};
 
-	class AEN_DECLSPEC RigidBody {
+	class AEN_DECLSPEC RigidBody : public Component {
 	public:
-		RigidBody();
+		RigidBody(const size_t& id);
 
 		void SetStaticFriction(const float& value);
 		void SetDynamicFriction(const float& value);
@@ -47,7 +47,7 @@ namespace Aen {
 		void SetRestitutionCombineMode(const CombineMode& mode);
 		void SetMaterialFlag(const MaterialFlag& flag);
 		void SetRigidType(const RigidType& type);
-		void SetGeometry(const GeometryType& geometry);
+		void SetGeometry(const GeometryType& geometry, const Vec3f& scale = Vec3f::one);
 		void SetAngularDamping(const float& damp);
 		void SetSleepThresHold(const float& value);
 		void SetMass(const float& mass);
@@ -65,9 +65,11 @@ namespace Aen {
 	const Mat4f GetTransform();
 	void SetPos(const Vec3f& pos);
 	void SetPos(const float& x, const float& y, const float& z);
-
 	void SetRot(const Vec3f& rot);
 	void SetRot(const float& p, const float& y, const float& r);
+
+	const Vec3f GetPos();
+	const Vec3f GetRot();
 
 	float m_mass;
 	float m_sleep;
@@ -79,6 +81,8 @@ namespace Aen {
 	px::PxPhysics* mp_LocalPhysics;
 	px::PxRigidStatic* mp_StaticBody;
 	px::PxRigidDynamic* mp_DynamicBody;
+
+	Vec3f m_scale;
 
 	friend class ComponentHandler;
 	friend class MeshInstance;
