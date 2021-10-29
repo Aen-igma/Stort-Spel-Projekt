@@ -20,6 +20,12 @@ cbuffer CB_CellShader {
 	float rimLightSize;
 };
 
+cbuffer Aen_CB_Transform {
+	float4x4 vMat;
+	float4x4 pMat;
+	float4x4 mdlMat;
+}
+
 cbuffer Aen_CB_LightCount {
 	uint lightCount;
 }
@@ -61,7 +67,7 @@ struct PS_Input {
 struct PS_Output {
 	float4 diffuse : SV_Target0;
 	float4 pos : SV_Target1;
-	float4 normal : SV_Target2;
+	float4 depthNormal : SV_Target2;
 	float4 depth : SV_Target3;
 	float4 glow : SV_Target4;
 };
@@ -135,7 +141,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 
 	output.diffuse = float4(saturate(finalPixel * diffuseM), 1.f);
 	output.pos = float4(input.worldPos, 1.f);
-	output.normal = float4(normal, 1.f);
+	output.depthNormal = mul(float4(normal, 0.f), vMat);
 	output.depth = float4(sqrt(input.pos.z / input.pos.w), 0.f, 0.f, 1.f);
 	output.glow = float4((emissionM * glowColor.xyz * glowStr), 1.f);
 

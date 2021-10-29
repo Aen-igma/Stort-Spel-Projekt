@@ -3,7 +3,14 @@
 #include "../Level/LevelGenerator.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
 #include "AenirEngine\Graphics\Component\EntityHandler.h"
-#include <stack>
+#include<queue>
+#include<functional>
+
+struct EventData {
+    float duration;
+    float accell;
+    std::function<void(float& accell)> function;
+};
 
 class Gameplay : public State
 {
@@ -14,34 +21,23 @@ private:
     bool m_toggleFullScreen;
 
     Aen::Entity* m_camera;
+    Aen::Raycast m_ray;
+
     Aen::Entity* m_dLight;
-    Aen::Entity* m_spotLight;
     Aen::Entity* m_plane;
-    Aen::Entity* m_plane1;
-    Aen::Entity* m_cube;
+    Aen::Entity* m_player;
+    Aen::Entity* m_reimube;
 
-    //Aen::Entity* m_skele;
-    Aen::Entity* m_goblin;
-
-    Aen::Mesh* m_meshcube;
-    Aen::Entity* m_sphere;
-
-    Aen::Entity* rooms[mapSize * mapSize];
-
-    //Aen::Entity* UI;
-
-    Aen::Mesh* m_reimubeMesh;
-    Aen::Material* m_ReimuMat;
-    Aen::Texture* m_ReimuTex;
-
-    Aen::Entity* m_emiCube;
-
-    std::stack<Aen::Entity*> m_reimubes;
-    std::stack<Aen::Entity*> m_pLights;
+    Aen::Entity* m_target;
+    float m_targetDist;
+    
+    std::queue<EventData> m_eventQueue;
+    float m_movementSpeed;
+    Aen::Vec3f m_finalDir;
 
 public:
 	Gameplay(Aen::Window& window);
-	~Gameplay()override;
+	~Gameplay() override;
 
 	// Inherited via State
 	virtual void Update(const float& deltaTime) override;

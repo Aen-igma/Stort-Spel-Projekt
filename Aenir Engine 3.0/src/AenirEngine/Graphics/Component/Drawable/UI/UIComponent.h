@@ -12,7 +12,7 @@ namespace Aen {
 		ButtonUI button;
 
 	public:
-		UIComponent();
+		UIComponent(const size_t& id);
 		~UIComponent();
 
 		void SaveButtonData();
@@ -29,8 +29,7 @@ namespace Aen {
 		friend class GCore;
 
 		// Inherited via Drawable
-		void Update(Window& window);
-		virtual void Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) override;
-		virtual void DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) override;
+		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
+		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
 	};
 }

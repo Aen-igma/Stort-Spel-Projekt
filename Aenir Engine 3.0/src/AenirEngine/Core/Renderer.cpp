@@ -70,7 +70,6 @@ namespace Aen {
 			Vec3f pos = pCam->GetPos();
 			Vec3f rot = pCam->GetRot();
 
-			pCam->GetComponent<Camera>().LookTowards(Transform(pCam->GetRotMat(), Vec3f(0.f, 0.f, -1.f)));
 			pCam->GetComponent<Camera>().UpdateView(pos, rot);
 
 			m_cbCamera.GetData().pos = { pos.x, pos.y, pos.z };
@@ -110,7 +109,7 @@ namespace Aen {
 				
 				// Pre Depth Pass
 
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, k.first, i);
+				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, i);
 
 				// Light Cull Pass
 
@@ -133,7 +132,7 @@ namespace Aen {
 
 				// Draw pass
 
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, k.first, i);
+				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, i);
 
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}

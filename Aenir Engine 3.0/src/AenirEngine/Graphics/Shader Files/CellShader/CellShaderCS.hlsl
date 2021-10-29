@@ -57,11 +57,11 @@ static int vRow[9] = {
 	-1, -2, -1
 };
 
-Texture2D diffuseMap	: DIFFUSEMAP	: register(t0);
-Texture2D posMap		: POSMAP		: register(t1);
-Texture2D normalMap		: NORMALMAP		: register(t2);
-Texture2D depthMap		: DEPTHMAP		: register(t3);
-Texture2D glowMap		: GLOWMAP		: register(t4);
+Texture2D diffuseMap		: DIFFUSEMAP	: register(t0);
+Texture2D posMap			: POSMAP		: register(t1);
+Texture2D depthNormalMap	: NORMALMAP		: register(t2);
+Texture2D depthMap			: DEPTHMAP		: register(t3);
+Texture2D glowMap			: GLOWMAP		: register(t4);
 
 RWTexture2D<unorm float4> outputMap;
 
@@ -77,7 +77,7 @@ void main(CS_Input input) {
 
 	uint2 uv = input.dtId.xy;
 	float4 diffuse =	diffuseMap[uv];
-	float3 normal =		normalMap[uv];
+	float3 normal =		depthNormalMap[uv];
 	float3 worldPos =	posMap[uv];
 	float4 depth =		depthMap[uv];
 	float4 glow =		glowMap[uv];
@@ -99,8 +99,7 @@ void main(CS_Input input) {
 		window.y -= 1;
 
 		for(uint i = 0; i < 9; i++) {
-			float3 sn = normalMap[clamp(uv + sPoint[i] * innerEdgeThickness, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
-			sn = normalize(mul(sn, (float3x3)vMat)).xyz;
+			float3 sn = depthNormalMap[clamp(uv + sPoint[i] * innerEdgeThickness * depth, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
 			float sd = depthMap[clamp(uv + sPoint[i] * outerEdgeThickness, uint2(0u, 0u), window)].x;
 			float2 kernel = float2(hRow[i], vRow[i]);
 			sobelX += sn.x * kernel;
