@@ -14,6 +14,6 @@ public:
 	~MainMenu() override;
 
 	// Inherited via State
-	virtual void Update(const float& deltaTime) override;
-	virtual void Initialize() override;
+	void Update(const float& deltaTime) override;
+	void Initialize() override;
 };
