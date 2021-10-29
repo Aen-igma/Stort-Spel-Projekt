@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include "Graphics\Graphics.h"
 #include "BuritoMath.h"
 #include "Window\Input.h"
@@ -9,13 +8,13 @@
 
 namespace Aen {
 
-	struct ButtonData
-	{
-		D2D1_RECT_F rect;
-		ID2D1Bitmap* bmp;
-		//std::string name;
-		int index;
-	};
+    struct ButtonData
+    {
+        D2D1_RECT_F rect;
+        ID2D1Bitmap* bmp;
+        //std::string name;
+        int index;
+    };
 
 	class ButtonUI : public GCore
 	{
@@ -39,7 +38,7 @@ namespace Aen {
 		std::vector<ButtonData> GetData()const;
 		void SaveData();
 
-		friend class GameLoop;
+        friend class GameLoop;
 
 		void Draw(ButtonData& data);
 		void Update(Window& window, int indX);

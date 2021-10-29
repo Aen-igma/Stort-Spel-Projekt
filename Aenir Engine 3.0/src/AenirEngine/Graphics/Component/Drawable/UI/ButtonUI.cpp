@@ -95,10 +95,10 @@ namespace Aen {
 		//rect.right = x;
 		//rect.bottom = y;
 
-		buttonData.at(indX).rect.left	= x;
-		buttonData.at(indX).rect.top	= y;
-		buttonData.at(indX).rect.right	= x;
-		buttonData.at(indX).rect.bottom	= y;
+		buttonData.at(indX).rect.left = x;
+		buttonData.at(indX).rect.top = y;
+		buttonData.at(indX).rect.right = x;
+		buttonData.at(indX).rect.bottom = y;
 	}
 
 	void ButtonUI::SetButtonSize(float width, float height, int indX)
@@ -119,6 +119,8 @@ namespace Aen {
 		buttonData.at(indX).rect.right = right;
 		buttonData.at(indX).rect.top = top;
 		buttonData.at(indX).rect.bottom = bottom;
+
+		tempData = buttonData;
 	}
 
 	std::vector<ButtonData> ButtonUI::GetData() const

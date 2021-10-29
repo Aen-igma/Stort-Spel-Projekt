@@ -1,6 +1,9 @@
 #include "PCH.h"
 #include "UIComponent.h"
 
+#include "PCH.h"
+#include "UIComponent.h"
+
 namespace Aen {
 
 	Aen::UIComponent::UIComponent(const size_t& id)
@@ -9,10 +12,10 @@ namespace Aen {
 		button.Initialize();
 	}
 
-	Aen::UIComponent::~UIComponent()
-	{
+    Aen::UIComponent::~UIComponent()
+    {
 
-	}
+    }
 
 	void UIComponent::SaveButtonData()
 	{
@@ -24,15 +27,15 @@ namespace Aen {
 		button.AddButton(dir, indX);
 	}
 
-	void UIComponent::SetButtonSize(float width, float height, int indX)
-	{
-		button.SetButtonSize(width, height, indX);
-	}
+    void UIComponent::SetButtonSize(float width, float height, int indX)
+    {
+        button.SetButtonSize(width, height, indX);
+    }
 
-	void UIComponent::SetButtonPos(float x, float y, int indX)
-	{
-		button.SetButtonPos(x, y, indX);
-	}
+    void UIComponent::SetButtonPos(float x, float y, int indX)
+    {
+        button.SetButtonPos(x, y, indX);
+    }
 
 	bool UIComponent::getBool() const
 	{
@@ -42,6 +45,20 @@ namespace Aen {
 	void Aen::UIComponent::AddText()
 	{
 	}
+    void Aen::UIComponent::AddText()
+    {
+        text.createText();
+    }
+
+    void UIComponent::SetTextSize(float width, float height)
+    {
+        text.setTextSize(width,height);
+    }
+
+    void UIComponent::SetTextPos(float x, float y)
+    {
+        text.setTextPosition(x,y);
+    }
 
 	void UIComponent::Update(Window& window)
 	{
@@ -56,13 +73,15 @@ namespace Aen {
 		//Draw button
 		for (auto& b : button.GetData()) {
 
-			button.Draw(b);
-		}
-	}
+            button.Draw(b);
+        }
+        text.renderText();
+        
+    }
 
 	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	{
 
-	}
+    }
 
 }

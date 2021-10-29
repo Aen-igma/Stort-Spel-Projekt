@@ -3,6 +3,7 @@
 #include "../Drawable.h"
 #include "BuritoMath.h"
 #include "ButtonUI.h"
+#include "UITextHolder.h"
 
 namespace Aen {
 
@@ -10,6 +11,7 @@ namespace Aen {
 	{
 	private:
 		ButtonUI button;
+		UITextHolder text;
 
 	public:
 		UIComponent(const size_t& id);
@@ -20,8 +22,10 @@ namespace Aen {
 		void SetButtonSize(float width, float height, int indX);
 		void SetButtonPos(float x, float y, int indX);
 		bool getBool()const;
-
 		void AddText();
+		void SetTextSize(float width, float height);
+		void SetTextPos(float x, float y);
+
 
 		void Update(Window& window);
 
