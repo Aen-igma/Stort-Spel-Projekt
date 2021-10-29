@@ -106,7 +106,7 @@ void Gameplay::Update(const float& deltaTime) {
 	m_player->GetComponent<Aen::AABoundBox>().Update();
 	m_reimube->GetComponent<Aen::AABoundBox>().Update();
 
-	if (!m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
+	if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
 	{
 		printf("ping");
 	}
