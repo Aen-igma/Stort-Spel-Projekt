@@ -22,6 +22,11 @@ namespace Aen {
 		std::vector<ButtonData> buttonData;
 		std::vector<ButtonData> tempData;
 		bool tempBool = false;
+		
+		IWICImagingFactory* WFactory = NULL;
+		IWICBitmapDecoder* BCoder = NULL;
+		IWICFormatConverter* FormatConverter = NULL;
+		IWICBitmapFrameDecode* FrameDecode = NULL;
 
 		Vec2f GetButtonSize(D2D1_RECT_F& rect);
 		Vec2f GetButtonCenter(D2D1_RECT_F& rect);

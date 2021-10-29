@@ -32,7 +32,6 @@ void MainMenu::Initialize()
 	m_Window.LoadSettings(wDesc);
 
 	cout << "Main Menu\n";
-	cout << "Press Enter to Play\n";
 
 	// ----------------------------- UI -------------------------------- //
 	testUI = &Aen::EntityHandler::CreateEntity();

@@ -64,6 +64,11 @@ namespace Aen {
         #ifdef _DEBUG
         flags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
         #endif
+        
+        //#ifdef NDEBUG
+        //flags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+        //#endif // RELEASE
+
 
         HRESULT hr = D3D11CreateDeviceAndSwapChain(
             pAdapter.Get(),
@@ -93,7 +98,6 @@ namespace Aen {
             Vec2f dpi;
             dpi = static_cast<FLOAT>(GetDpiForWindow(window.m_hwnd));
             D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), dpi.x, dpi.y);
-
             ASSERT_HR(m_factory->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D.GetAddressOf()));
         }
 

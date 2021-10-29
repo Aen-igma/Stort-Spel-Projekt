@@ -54,6 +54,10 @@ namespace Aen {
 	Aen::ButtonUI::~ButtonUI()
 	{
 		buttonData.clear();
+		WFactory->Release();
+		BCoder->Release();
+		FormatConverter->Release();
+		FrameDecode->Release();
 	}
 
 	void Aen::ButtonUI::Initialize()
@@ -67,10 +71,6 @@ namespace Aen {
 	void Aen::ButtonUI::AddButton(LPCWSTR texturePath, int indX)
 	{
 		ButtonData data;
-		IWICImagingFactory* WFactory = NULL;
-		IWICBitmapDecoder* BCoder = NULL;
-		IWICFormatConverter* FormatConverter = NULL;
-		IWICBitmapFrameDecode* FrameDecode = NULL;
 
 		ASSERT_HR(CoInitializeEx(NULL, COINIT_MULTITHREADED));
 		ASSERT_HR(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)(&WFactory)));
@@ -83,10 +83,6 @@ namespace Aen {
 		//tempData.name = name;
 		data.index = indX;
 		buttonData.push_back(data);
-		WFactory->Release();
-		BCoder->Release();
-		FormatConverter->Release();
-		FrameDecode->Release();
 	}
 
 	void ButtonUI::SetButtonPos(float x, float y, int indX)

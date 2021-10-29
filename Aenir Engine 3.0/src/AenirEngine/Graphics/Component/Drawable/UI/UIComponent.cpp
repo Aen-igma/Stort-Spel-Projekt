@@ -1,9 +1,6 @@
 #include "PCH.h"
 #include "UIComponent.h"
 
-#include "PCH.h"
-#include "UIComponent.h"
-
 namespace Aen {
 
 	Aen::UIComponent::UIComponent(const size_t& id)
@@ -72,9 +69,7 @@ namespace Aen {
 
             button.Draw(b);
         }
-		if (text.getData().size()) {
-			//text.renderText();
-		}
+		//text.renderText();
     }
 
 	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)

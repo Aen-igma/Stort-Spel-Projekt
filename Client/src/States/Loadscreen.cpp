@@ -15,8 +15,6 @@ void Loadscreen::Update(const float& deltaTime)
 	{
 		State::SetState(States::Gameplay);
 	}
-
-	//cout << "Loadstate\n";
 }
 
 void Loadscreen::Initialize()

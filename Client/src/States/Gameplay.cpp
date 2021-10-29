@@ -16,15 +16,6 @@ Gameplay::~Gameplay() {
 void Gameplay::Initialize()
 {
 	State::SetLoad(false);
-
-	// ----------------------------- UI -------------------------------- //
-	m_UI = &Aen::EntityHandler::CreateEntity();
-	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/reimu.png", 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(500.f, 500.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 300.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
-
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	m_camera = &Aen::EntityHandler::CreateEntity();
@@ -93,7 +84,14 @@ void Gameplay::Initialize()
 
 	// --------------------------- Setup Window --------------------------------- //
 
-	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
+	//m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
+
+	// ----------------------------- UI -------------------------------- //
+	m_UI = &Aen::EntityHandler::CreateEntity();
+	m_UI->AddComponent<Aen::UIComponent>();
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/healthbar.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(250.f, 100.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(500.f, 200.f, 0);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
