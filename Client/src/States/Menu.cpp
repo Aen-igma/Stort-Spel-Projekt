@@ -20,6 +20,9 @@ void MainMenu::Update(const float& deltaTime)
 		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(0)) {
 			State::SetState(States::Loadscreen);
 		}
+		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(1)) {
+			m_Window.Exit();
+		}
 	}
 }
 
