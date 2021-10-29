@@ -132,7 +132,7 @@ void Client::Start() {
 
 	////	Sets the origin of the map	////
 	//m_levelGenerator.m_mapOrigin = Aen::Vec2f(4 * m_levelGenerator.GetRoomDimension(), 4 * m_levelGenerator.GetRoomDimension());
-	m_levelGenerator.m_mapOrigin = Aen::Vec2f(2 * m_levelGenerator.GetRoomDimension(), 2 * m_levelGenerator.GetRoomDimension());
+	//m_levelGenerator.m_mapOrigin = Aen::Vec2f(3 * m_levelGenerator.GetRoomDimension(), 3 * m_levelGenerator.GetRoomDimension());
 
 	mptr_map = m_levelGenerator.GenerationTestingFunction();
 	
@@ -149,6 +149,8 @@ void Client::Start() {
 void Client::Update(const float& deltaTime) {
 
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
+	
+
 
 	while (!Aen::Input::MouseBufferIsEmbty())
 	{
@@ -179,16 +181,39 @@ void Client::Update(const float& deltaTime) {
 	
 	static Aen::Vec2i mouseAxis;
 
-	if (Aen::Input::KeyDown(Aen::Key::L)) {
-		
-		m_levelGenerator.GenerationTestingFunction();
-		 
-		for (UINT y = 0; y < Aen::mapSize; y++) {
-			for (UINT x = 0; x < Aen::mapSize; x++) {
-				//m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
-			}
-		}
+	//if (Aen::Input::KeyDown(Aen::Key::L)) {
+	//	
+	//	m_levelGenerator.GenerationTestingFunction();
+	//	 
+	//	for (UINT y = 0; y < Aen::mapSize; y++) {
+	//		for (UINT x = 0; x < Aen::mapSize; x++) {
+	//			//m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+	//		}
+	//	}
+	//}
+#ifdef _DEBUG
+	#undef min
+	#undef max
+	static uint16_t oldPos;
+	Aen::Vec2f temp(m_camera->GetPos().x + m_levelGenerator.GetRoomDimension()/2.f, m_camera->GetPos().z + m_levelGenerator.GetRoomDimension() / 2.f);
+	temp = temp - m_levelGenerator.m_mapOrigin;
+	if (m_levelGenerator.GetClosestRoomIndex(temp.x, temp.y) != oldPos) {
+		oldPos = m_levelGenerator.GetClosestRoomIndex(temp.x, temp.y);
+		uint16_t index = std::max(std::min(m_levelGenerator.GetClosestRoomIndex(temp.x, temp.y), (uint16_t)(Aen::mapSize * Aen::mapSize)), (uint16_t)0);
+		const Aen::Room* roomptr = m_levelGenerator.GetMapPointer();
+		std::cout << (int) (temp.x / m_levelGenerator.GetRoomDimension()) 
+		<< ':' << (int)(temp.y / m_levelGenerator.GetRoomDimension()) 
+		<< '	' << m_levelGenerator.GetClosestRoomIndex(temp.x, temp.y) 
+		<< " mdl:" << roomptr[index].m_CRIndex
+		<< " idx:" << roomptr[index].m_roomIndex
+		<< " deg:" << std::roundf(roomptr[index].rotation * 57.2957795)
+		<< " x:" << (int)roomptr[index].m_roomSpecial
+		<< " p:" << (int)roomptr[index].m_present
+		<< " dir:" << roomptr[index].connectionDirections << std::endl;
 	}
+
+#endif // DEBUG
+
 
 	if (Aen::Input::KeyPress(Aen::Key::RMOUSE)) {
 		float focus = (Aen::Input::KeyPress(Aen::Key::LCONTROL)) ? m_fSpeed : 1.f;

@@ -16,7 +16,7 @@ namespace Aen
 
 	Room LevelGenerator::RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex) {
 
-		Room result;
+		Room result = Room();
 		if (connectionDir < 1 || connectionDir > 9999) {
 			return result; //Backup incase of invalid direction
 		}
@@ -30,7 +30,7 @@ namespace Aen
 		uint32_t weightSum = weightS + weightB + weightT + weightF;
 
 		uint32_t randNum = LehmerInt() % weightSum;
-		unsigned char type = 0;
+		static unsigned char type = 0;
 
 		if (randNum < weightS) {
 			result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 101));
@@ -52,6 +52,8 @@ namespace Aen
 			result = RNGRoom(connectionDir, roomIndex);
 			rerolls++;
 		}
+		assert(result.m_roomIndex < levelRoom.size());
+
 		rerolls = 0;
 		AlignRoom(&result, connectionDir, type);
 		result.m_present = true;
@@ -183,22 +185,22 @@ namespace Aen
 		int r = LehmerInt() % 4;
 		switch (r)
 		{
-		case 0:
-			map[3][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-			map[3][3].m_present = true;
-			break;
-		case 1:
-			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-			map[3][4].m_present = true;
-			break;
-		case 2:
-			map[4][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-			map[4][4].m_present = true;
-			break;
-		case 3:
-			map[4][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-			map[4][3].m_present = true;
-			break;
+		//case 0:
+		//	map[3][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
+		//	map[3][3].m_present = true;
+		//	break;
+		//case 1:
+		//	map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
+		//	map[3][4].m_present = true;
+		//	break;
+		//case 2:
+		//	map[4][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
+		//	map[4][4].m_present = true;
+		//	break;
+		//case 3:
+		//	map[4][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
+		//	map[4][3].m_present = true;
+		//	break;
 		default:
 			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
 			map[3][4].m_present = true;
@@ -242,7 +244,7 @@ namespace Aen
 						if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
 						{																				//Prevents out of bounds
 							if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {	//Checks if region is clear
-								map[x][y - 1] = RNGRoom(0x001u, map[x][y].m_roomIndex);										//Insert random room (Pass along direction)
+								map[x][y - 1] = RNGRoom(0x001u, map[x][y].m_roomIndex);					//Insert random room (Pass along direction)
 								maxRooms--;																//reduce maxRooms
 								break;																	//Break to go generate off other rooms (Experimental)
 								//North
@@ -297,7 +299,7 @@ namespace Aen
 		}
 
 		
-		//placeBossRoom();
+		placeBossRoom();
 
 		return *map;
 	}
@@ -383,7 +385,7 @@ namespace Aen
 		roomDimension = dimension;
 	}
 
-	void LevelGenerator::GetRoomPos(const uint16_t& x, const uint16_t& y, float* xf, float* yf)
+	void LevelGenerator::GetRoomPos(const int& x, const int& y, float* xf, float* yf)
 	{
 		*xf = x * roomDimension;
 		*yf = y * roomDimension;
@@ -485,7 +487,7 @@ namespace Aen
 
 	void LevelGenerator::constructRoom(Entity** container, Vec2i pos)
 	{
-		m_handler.LoadLevel(map[pos.x][pos.y].m_CRIndex, (Vec2f(pos) * roomDimension) - m_mapOrigin, map[pos.x][pos.y].rotation);
+		m_handler.LoadLevel(map[pos.x][pos.y].mptr_parent, (Vec2f(pos) * roomDimension) - m_mapOrigin, map[pos.x][pos.y].rotation);
 	}
 
 
@@ -513,16 +515,15 @@ namespace Aen
 	{
 		Room temp;
 		int index = 0;
-		for (auto strRoom : m_handler.GetImporterPtr()->GetRoomVector()) {
-
-			temp.connectionDirections	=	strRoom.GetRoom().type;
-			temp.m_roomSpecial	=	(SpecialRoom)strRoom.GetRoom().special;
-			temp.m_roomTheme	=	(RoomTheme)strRoom.GetRoom().theme;
-			temp.m_baseChance	=	strRoom.GetRoom().probability;
-			temp.mptr_parent	=	&strRoom;
-			temp.m_CRIndex	=	index;
-			index++;
-			temp.m_present = true;
+		for (auto i = 0; i < m_handler.GetImporterPtr()->GetRoomVector().size(); i++) {
+			auto strRoom = &m_handler.GetImporterPtr()->GetRoomVector()[i];
+			temp.connectionDirections	=	strRoom->GetRoom().type;
+			temp.m_roomSpecial	=	(SpecialRoom)strRoom->GetRoom().special;
+			temp.m_roomTheme	=	(RoomTheme)strRoom->GetRoom().theme;
+			temp.m_baseChance	=	strRoom->GetRoom().probability;
+			temp.mptr_parent	=	strRoom;
+			temp.m_CRIndex		=	i;
+			temp.m_present		= true;
 
 			this->AddRoomToGeneration(temp);
 		}

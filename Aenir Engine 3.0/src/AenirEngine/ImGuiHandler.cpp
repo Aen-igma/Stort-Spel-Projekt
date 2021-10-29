@@ -57,35 +57,35 @@ namespace Aen
 		return true;
 	}
 
-	bool ImGuiHandler::LoadLevel(int index, Aen::Vec2f offset, float angle)
+	bool ImGuiHandler::LoadLevel(AenIMP::CompleteRoom* roomPtr, Aen::Vec2f offset, float angle)
 	{
-		if (index >= m_levelImporter.GetRoomVector().size())
-			return false;
-		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetModelVector().size(); i++)
+		//if (index >= m_levelImporter.GetRoomVector().size())
+		//	return false;
+		for (size_t i = 0; i < roomPtr->GetModelVector().size(); i++)
 		{
 			cout << "Model " << endl;
-			AddBase(m_levelImporter.GetRoomVector()[index].GetModelVector()[i], m_levelImporter.GetRoomVector()[index].GetTextureVector()[i], offset, angle);
+			AddBase(roomPtr->GetModelVector()[i], roomPtr->GetTextureVector()[i], offset, angle);
 		}
 
-		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[index].GetLightVector().size(); i++)
+		for (size_t i = 0; i < roomPtr->GetLightVector().size(); i++)
 		{
-			if (m_levelImporter.GetRoomVector()[index].GetLightVector()[i].type == "Directional light")
+			if (roomPtr->GetLightVector()[i].type == "Directional light")
 			{
 				cout << "d Light " << endl;
 
-				AddDirectional(m_levelImporter.GetRoomVector()[index].GetLightVector()[i]);
+				AddDirectional(roomPtr->GetLightVector()[i]);
 			}
-			else if (m_levelImporter.GetRoomVector()[index].GetLightVector()[i].type == "Spot light")
+			else if (roomPtr->GetLightVector()[i].type == "Spot light")
 			{
 				cout << "s Light " << endl;
 
-				AddSpotLight(m_levelImporter.GetRoomVector()[index].GetLightVector()[i], offset, angle);
+				AddSpotLight(roomPtr->GetLightVector()[i], offset, angle);
 			}
-			else if (m_levelImporter.GetRoomVector()[index].GetLightVector()[i].type == "Point light")
+			else if (roomPtr->GetLightVector()[i].type == "Point light")
 			{
 				cout << "p Light " << endl;
 
-				AddPointLight(m_levelImporter.GetRoomVector()[index].GetLightVector()[i], offset, angle);
+				AddPointLight(roomPtr->GetLightVector()[i], offset, angle);
 			}
 		}
 		return true;
@@ -208,7 +208,7 @@ namespace Aen
 		float posY = (input.translation[0] * s) + (input.translation[2] * c);
 
 		light->SetPos(posX + offset.x, input.translation[1], posY + offset.y);
-		light->SetRot(input.rotation[0], input.rotation[1], input.rotation[2]);
+		light->SetRot(input.rotation[0], input.rotation[1] + (angle * 57.2957795), input.rotation[2]);
 
 		AddLight(light);
 	}
@@ -243,7 +243,7 @@ namespace Aen
 		float posY = (input.translation[0] * s) + (input.translation[2] * c);
 		
 		light->SetPos(posX + offset.x, input.translation[1], posY + offset.y);
-		light->SetRot(input.rotation[0], input.rotation[1], input.rotation[2]);
+		light->SetRot(input.rotation[0], input.rotation[1] + (angle * 57.2957795), input.rotation[2]);
 
 
 		AddLight(light);

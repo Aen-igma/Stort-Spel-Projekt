@@ -18,6 +18,8 @@
 #include "../LevelImporter.h"
 #include "../ImGuiHandler.h"
 
+#include <assert.h>
+
 
 #define NORTH 1
 #define EAST 10
@@ -58,7 +60,7 @@ namespace Aen {
 		//m_east		=   00;		|//|	__0_ - __9_		|//|	Bend		:   11	: __EN
 		//m_south		=  000;		|//|	_0__ - _9__		|//|	T junction	: 1011	: W_EN
 		//m_west		= 0000;		|//|	0___ - 9___		|//|	Four way	: 1111	: NESW
-		uint16_t connectionDirections = 0000;
+		int connectionDirections;
 
 		//Read only, internal use
 		uint16_t m_roomIndex;
@@ -81,14 +83,14 @@ namespace Aen {
 		}
 		void rotateCCW() { //count clockwise rotation
 			rotation += -1.57079633;
-			uint16_t temp = connectionDirections % 10u;
+			int temp = connectionDirections % 10u;
 			connectionDirections /= 10u;
 			connectionDirections += 1000u * temp;
 			//TODO rotate associated model
 		}
 		void rotate180() {
 			rotation += 3.14159265;
-			uint16_t temp = connectionDirections % 10u;
+			int temp = connectionDirections % 10u;
 			connectionDirections /= 10u;
 			connectionDirections += 1000u * temp;
 			temp = connectionDirections % 10u;
@@ -121,7 +123,7 @@ namespace Aen {
 		std::vector<Room> levelRoom;
 		Aen::ImGuiHandler m_handler;
 
-		std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< std::uint16_t, std::vector<uint16_t> > > > masterRoomMap;
+		std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< int, std::vector<uint16_t> > > > masterRoomMap;
 
 		void constructRoom(Entity** container, Vec2i pos);
 		std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
@@ -142,7 +144,7 @@ namespace Aen {
 		static void SetRoomDimension(float dimension);
 
 		static const float& GetRoomDimension();
-		static void GetRoomPos(const uint16_t& x, const uint16_t& y, float* xf, float* yf);
+		static void GetRoomPos(const int& x, const int& y, float* xf, float* yf);
 
 		static const uint16_t GetClosestRoomIndex(const float& xf, const float& yf);
 

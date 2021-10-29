@@ -56,7 +56,7 @@ namespace Aen {
 		bool LoadLevel(int index);
 
 
-		bool LoadLevel(int index, Aen::Vec2f offset, float angle);
+		bool LoadLevel(AenIMP::CompleteRoom* roomPtr, Aen::Vec2f offset, float angle);
 		void AddBase(AenIF::Model& model, AenIF::Texture& texture, Aen::Vec2f offset, float angle);
 		void AddPointLight(AenIF::Light& input, Aen::Vec2f offset, float angle);
 		void AddSpotLight(AenIF::Light& input, Aen::Vec2f offset, float angle);
