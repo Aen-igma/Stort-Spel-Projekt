@@ -18,6 +18,8 @@ namespace Aen
 		/// <returns></returns>
 		const bool CreateAABB();
 		const bool CreateAABB(const Vec3f extents, const Vec3f center);
+		void ToggleActive(bool b);
+		void ToggleActive();
 		void Update();
 		~AABoundBox();
 	private:
@@ -27,6 +29,7 @@ namespace Aen
 		Vec3f m_sizeOffset;
 
 		bool m_isColliding;
+		bool m_isOn;
 
 		#ifdef _DEBUG
 			bool m_canDraw;

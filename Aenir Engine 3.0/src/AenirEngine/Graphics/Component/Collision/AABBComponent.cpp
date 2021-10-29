@@ -14,7 +14,7 @@ namespace Aen {
 		{}
 
 	const bool AABoundBox::Intersects(AABoundBox& otherBox) {
-		if (m_aabb.Intersects(otherBox.m_aabb)) {
+		if (m_aabb.Intersects(otherBox.m_aabb) && m_isOn) {
 			otherBox.m_isColliding = true;
 			m_isColliding = true;
 			return true;
@@ -22,6 +22,14 @@ namespace Aen {
 		otherBox.m_isColliding = false;
 		m_isColliding = false;
 		return false;
+	}
+
+	void AABoundBox::ToggleActive(bool b) {
+		m_isOn = b;
+	}
+
+	void AABoundBox::ToggleActive() {
+		m_isOn = !m_isOn;
 	}
 
 	const bool AABoundBox::CreateAABB() {

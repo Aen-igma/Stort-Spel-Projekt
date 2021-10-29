@@ -15,6 +15,11 @@ struct EventData {
 class Gameplay : public State
 {
 private:
+    int m_hp;
+    float m_iFrames;
+    const float IFRAMEMAX;
+    bool m_invincible;
+
     float m_speed;
     float m_fSpeed;
     float m_mouseSense;

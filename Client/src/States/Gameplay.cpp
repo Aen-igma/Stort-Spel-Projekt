@@ -2,7 +2,8 @@
 
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false), m_targetDist(25.f), m_movementSpeed(4.f),
-	m_finalDir(0.f, 0.f, -1.f) {}
+	m_finalDir(0.f, 0.f, -1.f),
+	m_hp(2), IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
 	Aen::GlobalSettings::RemoveMainCamera();
@@ -78,15 +79,15 @@ void Gameplay::Initialize()
 	m_player->SetPos(0.f, 1.f, 0.f);
 
 	m_reimube = &Aen::EntityHandler::CreateEntity();
-	m_reimube->AddComponent<Aen::RigidBody>();
-	m_reimube->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 2.f, 2.f));
-	m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
+	//m_reimube->AddComponent<Aen::RigidBody>();
+	//m_reimube->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 2.f, 2.f));
+	//m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
 	m_reimube->AddComponent<Aen::MeshInstance>();
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
 	m_reimube->AddComponent<Aen::AABoundBox>();
 	m_reimube->GetComponent<Aen::AABoundBox>().CreateAABB();
-	m_reimube->SetPos(0.f, 1.f, 0.f);
+	m_reimube->SetPos(0.f, 1.f, -3.f);
 
 	//printf("");
 
@@ -101,15 +102,27 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
-	// AABB
+	// Collision
 
 	m_player->GetComponent<Aen::AABoundBox>().Update();
 	m_reimube->GetComponent<Aen::AABoundBox>().Update();
 
 	if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
 	{
-		printf("ping");
+		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+		printf("ouch\n");
 	}
+	if (m_invincible && m_iFrames <= IFRAMEMAX)
+	{
+		m_iFrames += deltaTime;
+		printf("Iframes: %f\n", m_iFrames);
+	}
+	else 
+	{
+		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+		m_iFrames = 0.f;
+	}
+
 
 
 
