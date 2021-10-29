@@ -11,6 +11,7 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_reimube);
+	Aen::EntityHandler::RemoveEntity(*m_UI);
 }
 
 void Gameplay::Initialize()

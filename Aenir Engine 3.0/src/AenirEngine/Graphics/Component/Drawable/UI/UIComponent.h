@@ -10,8 +10,9 @@ namespace Aen {
 	class AEN_DECLSPEC UIComponent : public Drawable
 	{
 	private:
-		ButtonUI button;
-		UITextHolder text;
+		ButtonUI m_button;
+		UITextHolder m_text;
+		bool m_check;
 
 	public:
 		UIComponent(const size_t& id);
@@ -21,7 +22,7 @@ namespace Aen {
 		void AddButton(LPCWSTR dir, int indX);
 		void SetButtonSize(float width, float height, int indX);
 		void SetButtonPos(float x, float y, int indX);
-		bool getBool()const;
+		bool Intersects(int indX);
 
 		void AddText();
 		void SetTextSize(float width, float height);
@@ -31,7 +32,8 @@ namespace Aen {
 		friend class Renderer;
 		friend class Entity;
 		friend class GCore;
-		void Update(Window& window);
+		std::vector<ButtonData> GetData()const;
+		void Update();
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;

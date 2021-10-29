@@ -19,18 +19,13 @@ namespace Aen {
 	class ButtonUI : public GCore
 	{
 	private:
-		std::vector<ButtonData> buttonData;
-		std::vector<ButtonData> tempData;
-		bool tempBool = false;
+		std::vector<ButtonData> m_buttonData;
+		std::vector<ButtonData> m_tempData;
 		
-		IWICImagingFactory* WFactory = NULL;
-		IWICBitmapDecoder* BCoder = NULL;
-		IWICFormatConverter* FormatConverter = NULL;
-		IWICBitmapFrameDecode* FrameDecode = NULL;
-
-		Vec2f GetButtonSize(D2D1_RECT_F& rect);
-		Vec2f GetButtonCenter(D2D1_RECT_F& rect);
-		bool Intersect(Window& window, int index);
+		IWICImagingFactory* mp_WFactory;
+		IWICBitmapDecoder* mp_BCoder;
+		IWICFormatConverter* mp_FormatConverter;
+		IWICBitmapFrameDecode* mp_FrameDecode;
 
 	public:
 		ButtonUI();
@@ -40,14 +35,17 @@ namespace Aen {
 		void AddButton(LPCWSTR path, int indX);
 		void SetButtonPos(float x, float y, int indX);
 		void SetButtonSize(float width, float height, int indX);
-		std::vector<ButtonData> GetData()const;
+		
 		void SaveData();
 		void ClearButtons();
+		bool Intersect(int index);
+		std::vector<ButtonData> GetData()const;
 
         friend class GameLoop;
+		Vec2f GetButtonSize(D2D1_RECT_F& rect);
+		Vec2f GetButtonCenter(D2D1_RECT_F& rect);
 
 		void Draw(ButtonData& data);
-		void Update(Window& window, int indX);
-		bool getBool()const;
+		void Update(int index);
 	};
 }
