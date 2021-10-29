@@ -88,6 +88,8 @@ void Gameplay::Initialize()
 	m_reimube->GetComponent<Aen::AABoundBox>().CreateAABB();
 	m_reimube->SetPos(0.f, 1.f, 0.f);
 
+	//printf("");
+
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));

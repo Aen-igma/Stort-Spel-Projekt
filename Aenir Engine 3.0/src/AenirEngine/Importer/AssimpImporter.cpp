@@ -4,7 +4,7 @@
 #undef min
 
 
-void Aen::AssimpImport::LoadFbx(sm::Vector3*& pPosV, VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial)
+void Aen::AssimpImport::LoadFbx(std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
 	std::vector<Vertex> mesh;
 	Assimp::Importer importer;
@@ -21,12 +21,12 @@ void Aen::AssimpImport::LoadFbx(sm::Vector3*& pPosV, VBuffer<Vertex>& vBuffer, c
 
 	UINT meshSize = mesh.size();
 
-	pPosV = AEN_NEW sm::Vector3[meshSize];
+	vPos.resize(meshSize);
 	for (int i = 0; i < meshSize; i++)
 	{
-		pPosV[i].x = mesh[i].pos.x;
-		pPosV[i].y = mesh[i].pos.y;
-		pPosV[i].z = mesh[i].pos.z;
+		vPos[i] = mesh[i].pos.smVec;
+
+		//pPosV[i] = mesh[i].pos.smVec;
 	}
 
 	if (!vBuffer.Create(mesh.data(), (UINT)mesh.size())) {

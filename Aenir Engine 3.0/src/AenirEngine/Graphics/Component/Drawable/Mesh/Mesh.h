@@ -30,7 +30,7 @@ namespace Aen {
 
 		~Mesh();
 
-		sm::Vector3* mp_posV;
+		std::vector<DirectX::XMFLOAT3> mv_pos;
 
 		VBuffer<Vertex> m_vertices;
 		std::vector<PartitionData> m_partitions;

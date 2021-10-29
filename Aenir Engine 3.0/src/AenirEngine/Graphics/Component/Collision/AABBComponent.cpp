@@ -19,15 +19,24 @@ namespace Aen {
 	}
 
 	const bool AABoundBox::CreateAABB() {
-		size_t vertCount = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_vertices.GetVertCount();
-		size_t vertStride = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_vertices.GetStride();
+
+		UINT vCount = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_vertices.GetVertCount();
+		UINT vStride = sizeof(DirectX::XMFLOAT3);
+
+		size_t vertCount = static_cast<size_t>(vCount);
+		size_t vertStride = static_cast<size_t>(vStride);
+
+		
 
 		if(!ComponentHandler::GetMeshInstance(m_id).m_pMesh) {
 			throw;
 			printf("Can't create AABB without mesh");
 		}
 
-		DirectX::BoundingBox::CreateFromPoints(m_aabb, vertCount, ComponentHandler::GetMeshInstance(m_id).m_pMesh->mp_posV, vertStride);
+		std::vector<DirectX::XMFLOAT3> positions;
+		positions = ComponentHandler::GetMeshInstance(m_id).m_pMesh->mv_pos;
+
+		m_aabb.CreateFromPoints(m_aabb, vertCount, positions.data(), vStride);
 
 		#ifdef _DEBUG
 			const size_t size = m_aabb.CORNER_COUNT;
@@ -37,7 +46,7 @@ namespace Aen {
 			for(uint32_t i = 0; i < size; i++)
 				verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
 
-			DWORD ind[24]{
+			DWORD ind[]{
 				0, 1, 2,
 				2, 1, 3,
 				1, 4, 3,

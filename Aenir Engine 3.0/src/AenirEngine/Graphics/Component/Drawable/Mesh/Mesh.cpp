@@ -34,7 +34,7 @@ namespace Aen {
 		size_t off = dir.find_last_of('.');
 		std::string format = dir.substr(off + 1);
 		if (format == "fbx") {
-			AssimpImport::LoadFbx(mp_posV, m_vertices, dir, m_partitions, m_meshMaterialName);
+			AssimpImport::LoadFbx(mv_pos, m_vertices, dir, m_partitions, m_meshMaterialName);
 		}
 		else if (format == "obj") {
 			std::thread worker(ImportObj, std::ref(m_vertices), dir, std::ref(m_partitions), std::ref(m_meshMaterialName));
@@ -49,6 +49,6 @@ namespace Aen {
 	}
 
 	Mesh::~Mesh() {
-		delete[] mp_posV;
+		//delete[] mp_posV;
 	}
 }
