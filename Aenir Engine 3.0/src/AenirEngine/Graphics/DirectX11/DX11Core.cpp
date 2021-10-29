@@ -31,7 +31,7 @@ namespace Aen {
         sChainDesc.Windowed = true;
         sChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
         sChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-        
+
         ComAdapter1 pAdapter = NULL;
         ComFactory2 pFactory2 = NULL;
         ComFactory6 pFactory6 = NULL;
@@ -66,7 +66,7 @@ namespace Aen {
         #endif
         
         //#ifdef NDEBUG
-        //flags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+        //flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
         //#endif // RELEASE
 
 
@@ -88,6 +88,7 @@ namespace Aen {
         pFactory2.Reset();
         pFactory6.Reset();
 
+        
 
         //----------------------------------    Direct 2D   ---------------------------------//
         ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_factory.GetAddressOf()));
@@ -100,11 +101,15 @@ namespace Aen {
             D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), dpi.x, dpi.y);
             ASSERT_HR(m_factory->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D.GetAddressOf()));
         }
-
+        
         return SUCCEEDED(hr);
 	}
 
     void GCore::Concealed::Release() {
+        IDXGIDebug* debugDev;
+        ASSERT_HR(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev)));
+        ASSERT_HR(debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL));
+
         m_device.Reset();
         m_dContext.Reset();
         m_sChain.Reset();
