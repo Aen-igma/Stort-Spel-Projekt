@@ -28,17 +28,19 @@ namespace Aen
 		~UITextHolder();
 
 		std::vector<UITextData> getData() const;
-		void createText();
-		void renderText();
+		void createText(int index);
+		void renderText(UITextData& data);
 
-		void setTextSize(float width, float height);
-		void setTextPosition(float x, float y);
-		Vec2f getTextCenter()const;
-		Vec2f getTextSize()const;
+		void setTextSize(float width, float height, int index);
+		void setTextPosition(float x, float y, int index);
+		void ChangeName();
+		Vec2f getTextCenter(int index)const;
+		Vec2f getTextSize(int index)const;
 	private:
 		IDWriteFactory* m_pDWriteFactory;
 		IDWriteTextFormat* m_pTextFormat;
 		std::wstring textName;
+		const wchar_t* m_pCharText;
 		UINT32 m_TextLenght;
 		ID2D1SolidColorBrush* m_pBlackBrush;
 		D2D1_RECT_F m_rcf;
@@ -46,7 +48,4 @@ namespace Aen
 		//För att skriva mera än en, not done
 		std::vector<UITextData> m_UITextData;
 	};
-
-
-
 }

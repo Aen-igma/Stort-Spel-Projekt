@@ -21,10 +21,9 @@ namespace Aen {
 		void AddButton(LPCWSTR dir, int indX);
 		void SetButtonSize(float width, float height, int indX);
 		void SetButtonPos(float x, float y, int indX);
-		void AddText();
-		void SetTextSize(float width, float height);
-		void SetTextPos(float x, float y);
-
+		void AddText(int index);
+		void SetTextSize(float width, float height, int index);
+		void SetTextPos(float x, float y, int index);
 
 		friend class ComponentHandler;
 		friend class Renderer;

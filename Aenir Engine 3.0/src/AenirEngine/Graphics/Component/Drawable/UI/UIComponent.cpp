@@ -31,19 +31,19 @@ namespace Aen {
         button.SetButtonPos(x, y, indX);
     }
 
-    void Aen::UIComponent::AddText()
+    void Aen::UIComponent::AddText(int index)
     {
-        text.createText();
+        text.createText(index);
     }
 
-    void UIComponent::SetTextSize(float width, float height)
+    void UIComponent::SetTextSize(float width, float height, int index)
     {
-        text.setTextSize(width,height);
+        text.setTextSize(width,height, index);
     }
 
-    void UIComponent::SetTextPos(float x, float y)
+    void UIComponent::SetTextPos(float x, float y, int index)
     {
-        text.setTextPosition(x,y);
+        text.setTextPosition(x,y, index);
     }
 
     void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
@@ -53,8 +53,11 @@ namespace Aen {
 
             button.Draw(b);
         }
-        text.renderText();
-        
+        for (auto& a : text.getData())
+        {
+            text.renderText(a);
+        }
+
     }
 
     void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
