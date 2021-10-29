@@ -5,6 +5,7 @@
 #include"DX11Type.h"
 #include"..\..\ThirdParty\SimpleMath\SimpleMath.h"
 #include <assert.h>
+#include <dxgidebug.h>
 #define ASSERT_HR(hr) assert(SUCCEEDED(hr))
 
 namespace sm = DirectX::SimpleMath;
