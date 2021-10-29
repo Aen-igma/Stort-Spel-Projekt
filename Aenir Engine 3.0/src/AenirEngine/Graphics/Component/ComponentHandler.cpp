@@ -10,6 +10,7 @@ namespace Aen {
 	std::unordered_map<size_t, Scale*> ComponentHandler::m_scales;
 	std::unordered_map<size_t, RigidBody*> ComponentHandler::m_rigids;
 	std::unordered_map<size_t, CharacterController*> ComponentHandler::m_characterControllers;
+	std::unordered_map<size_t, AABoundBox*> ComponentHandler::m_AABBs;
 	std::multimap<size_t, Light*> ComponentHandler::m_lights;
 
 	std::array<std::unordered_map<size_t, Drawable*>, 7> ComponentHandler::m_meshLayer;

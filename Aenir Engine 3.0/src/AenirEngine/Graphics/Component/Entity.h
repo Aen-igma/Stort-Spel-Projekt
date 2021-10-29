@@ -153,6 +153,13 @@ namespace Aen {
 		AddComponent<Scale>();
 	}
 
+
+	template<>
+	inline void Entity::AddComponent<AABoundBox>(){
+		AddComponent<MeshInstance>();
+		if (!ComponentHandler::AABBExist(m_id))
+			ComponentHandler::CreateAABB(m_id);
+	}
 	// --------------- GetComponent -----------------
 
 	template<>
@@ -203,5 +210,10 @@ namespace Aen {
 	template<>
 	inline CharacterController& Entity::GetComponent() {
 		return ComponentHandler::GetCharacterController(m_id);
+	}
+
+	template<>
+	inline AABoundBox& Entity::GetComponent() {
+		return ComponentHandler::GetAABB(m_id);
 	}
 }

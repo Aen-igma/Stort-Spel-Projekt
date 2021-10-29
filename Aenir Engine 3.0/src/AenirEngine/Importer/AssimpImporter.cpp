@@ -4,7 +4,7 @@
 #undef min
 
 
-void Aen::AssimpImport::LoadFbx(VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial)
+void Aen::AssimpImport::LoadFbx(sm::Vector3*& pPosV, VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
 	std::vector<Vertex> mesh;
 	Assimp::Importer importer;
@@ -19,6 +19,14 @@ void Aen::AssimpImport::LoadFbx(VBuffer<Vertex>& vBuffer, const std::string path
 
 	AssimpImport::ProcessNode(pScene->mRootNode, pScene, vBuffer, mesh, partitions, meshMaterial);
 
+	UINT meshSize = mesh.size();
+
+	pPosV = AEN_NEW sm::Vector3[meshSize];
+	for (int i = 0; i < meshSize; i++)
+	{
+		pPosV[i] = mesh[i].pos.smVec;
+	}
+
 	if (!vBuffer.Create(mesh.data(), (UINT)mesh.size())) {
 		throw;
 		printf("Failed to create vbuffer");
@@ -32,7 +40,6 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 	
 
 	aiMaterial* material;
-	//UINT invertedIndex = scene->mNumMaterials - mesh->mMaterialIndex - 1;
 	material = scene->mMaterials[mesh->mMaterialIndex];
 	meshMaterial.emplace(material->GetName().C_Str(), mesh->mMaterialIndex);
 	

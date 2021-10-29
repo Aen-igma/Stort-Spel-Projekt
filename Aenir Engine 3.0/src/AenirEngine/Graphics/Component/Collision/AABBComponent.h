@@ -6,17 +6,26 @@
 
 namespace Aen
 {
-	class AABoundBox
+	class AEN_DECLSPEC AABoundBox : public Component
 	{
 	public:
-		AABoundBox(const size_t& id, Mesh& mesh);
+		AABoundBox(const size_t& id);
+		const bool Intersects(AABoundBox& otherBox) const;
+		/// <summary>
+		/// Creates AABB based on mesh. If mesh is NULL it will throw
+		/// </summary>
+		/// <returns></returns>
+		const bool CreateAABB();
+		const bool CreateAABB(const Vec3f extents, const Vec3f center);
+		void Update();
 		~AABoundBox();
-
-		void Create();
 	private:
 		DirectX::BoundingBox m_aabb;
 
-		
+		Vec3f m_positionOffset;
+		Vec3f m_sizeOffset;
+
+		const size_t m_id;
 
 	};
 }

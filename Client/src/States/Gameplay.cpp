@@ -73,6 +73,8 @@ void Gameplay::Initialize()
 	m_player->AddComponent<Aen::MeshInstance>();
 	m_player->GetComponent<Aen::MeshInstance>().SetMesh(capsule);
 	m_player->GetComponent<Aen::MeshInstance>().SetMaterial(playerMat);
+	m_player->AddComponent<Aen::AABoundBox>();
+	m_player->GetComponent<Aen::AABoundBox>().CreateAABB();
 	m_player->SetPos(0.f, 1.f, 0.f);
 
 	m_reimube = &Aen::EntityHandler::CreateEntity();
@@ -82,6 +84,8 @@ void Gameplay::Initialize()
 	m_reimube->AddComponent<Aen::MeshInstance>();
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
+	m_reimube->AddComponent<Aen::AABoundBox>();
+	m_reimube->GetComponent<Aen::AABoundBox>().CreateAABB();
 	m_reimube->SetPos(0.f, 1.f, 0.f);
 
 	// --------------------------- Setup Window --------------------------------- //
@@ -95,11 +99,23 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
+	// AABB
+
+	m_player->GetComponent<Aen::AABoundBox>().Update();
+	m_reimube->GetComponent<Aen::AABoundBox>().Update();
+
+	if (!m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
+	{
+		printf("ping");
+	}
+
+
+
 	Aen::Vec3f axis;
 	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
 	static bool lockedOn = false;
 	auto enemies = Aen::EntityHandler::GetTagedEntities("Enemy");
-
+	
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
 
 	while (!Aen::Input::MouseBufferIsEmbty())

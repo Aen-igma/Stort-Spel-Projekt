@@ -53,6 +53,16 @@ namespace Aen {
 			m_dContext->Draw(count, offset);
 		}
 
+		const UINT GetVertCount() const
+		{
+			return m_bufferSize;
+		}
+
+		const UINT GetStride() const
+		{
+			return *m_stride.get();
+		}
+
 		private:
 		ComBuffer m_buffer;
 		std::unique_ptr<UINT> m_stride;
