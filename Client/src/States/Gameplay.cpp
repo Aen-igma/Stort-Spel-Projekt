@@ -2,7 +2,7 @@
 
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(true), m_targetDist(25.f), m_movementSpeed(4.f),
-	m_finalDir(0.f, 0.f, -1.f), m_hp(2), IFRAMEMAX(1.5f), m_iFrames(0.f) {}
+	m_finalDir(0.f, 0.f, -1.f), m_hp(2), IFRAMEMAX(2.f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
 	Aen::GlobalSettings::RemoveMainCamera();
@@ -118,21 +118,29 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
 	{
+		m_hp--;
 		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
-		printf("ouch\n");
+		m_invincible = true;
 	}
+
+	cout << m_hp << endl;
+
+	// Invincible frames
 	if (m_invincible && m_iFrames <= IFRAMEMAX)
 	{
 		m_iFrames += deltaTime;
-		printf("Iframes: %f\n", m_iFrames);
 	}
 	else 
 	{
 		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 		m_iFrames = 0.f;
+		m_invincible = false;
 	}
 
-
+	if (m_hp <= 0)
+	{
+		State::SetState(States::Gameover);
+	}
 
 
 	static Aen::Vec3f axis;
