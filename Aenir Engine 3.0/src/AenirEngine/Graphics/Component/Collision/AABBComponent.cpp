@@ -15,9 +15,11 @@ namespace Aen {
 
 	const bool AABoundBox::Intersects(AABoundBox& otherBox) {
 		if (m_aabb.Intersects(otherBox.m_aabb)) {
+			otherBox.m_isColliding = true;
 			m_isColliding = true;
 			return true;
 		}
+		otherBox.m_isColliding = false;
 		m_isColliding = false;
 		return false;
 	}
