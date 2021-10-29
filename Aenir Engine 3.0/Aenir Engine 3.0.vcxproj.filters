@@ -261,6 +261,15 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UITextHolder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -506,10 +515,19 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Physics\Raycast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UITextHolder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

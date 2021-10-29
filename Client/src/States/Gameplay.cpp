@@ -16,7 +16,12 @@ Gameplay::~Gameplay() {
 void Gameplay::Initialize()
 {
 	State::SetLoad(false);
-	char q = 219;
+
+	// ----------------------------- UI -------------------------------- //
+	//UI  = &Aen::EntityHandler::CreateEntity();
+	//UI->AddComponent<Aen::UIComponent>();
+	//UI->GetComponent<Aen::UIComponent>().AddButton();
+
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	m_camera = &Aen::EntityHandler::CreateEntity();
