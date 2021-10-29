@@ -39,6 +39,7 @@ namespace Aen {
 
 		friend class GameLoop;
 		friend class MeshInstance;
+		friend class AABoundBox;
 
 		private:
 		void Initialize();
@@ -57,6 +58,7 @@ namespace Aen {
 		
 		Vec2i m_dispatchGroups;
 		VShader m_opaqueVS;
+		PShader m_collisionPS;
 		UAView m_UAVBackBuffer;
 		BBuffer m_backBuffer;
 		ILayout m_opaqueLayout;
@@ -67,6 +69,7 @@ namespace Aen {
 		Stencil m_maskStencil;
 		Stencil m_offStencil;
 		RState m_rasterizerState;
+		RState m_wireFrameState;
 
 		CBuffer<CB_DispatchInfo> m_dispatchInfo;
 		CBuffer<uint32_t> m_heatMap;

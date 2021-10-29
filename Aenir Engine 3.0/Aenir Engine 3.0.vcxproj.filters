@@ -522,6 +522,7 @@
     </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\LightCullCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CollisionPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">

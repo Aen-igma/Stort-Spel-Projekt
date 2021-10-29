@@ -24,7 +24,9 @@ void Aen::AssimpImport::LoadFbx(sm::Vector3*& pPosV, VBuffer<Vertex>& vBuffer, c
 	pPosV = AEN_NEW sm::Vector3[meshSize];
 	for (int i = 0; i < meshSize; i++)
 	{
-		pPosV[i] = mesh[i].pos.smVec;
+		pPosV[i].x = mesh[i].pos.x;
+		pPosV[i].y = mesh[i].pos.y;
+		pPosV[i].z = mesh[i].pos.z;
 	}
 
 	if (!vBuffer.Create(mesh.data(), (UINT)mesh.size())) {

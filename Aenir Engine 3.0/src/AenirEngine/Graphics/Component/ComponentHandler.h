@@ -301,8 +301,9 @@ namespace Aen {
 			return m_AABBs.count(id) > 0;
 		}
 
-		static void CreateAABB(const size_t& id) {
+		static void CreateAABB(const size_t& id, const size_t& layer) {
 			m_AABBs.emplace(id, AEN_NEW AABoundBox(id));
+			m_meshLayer[6].emplace(id, m_AABBs.at(id));
 		}
 
 		static void RemoveAABB(const size_t& id) {

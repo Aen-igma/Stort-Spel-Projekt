@@ -158,7 +158,7 @@ namespace Aen {
 	inline void Entity::AddComponent<AABoundBox>(){
 		AddComponent<MeshInstance>();
 		if (!ComponentHandler::AABBExist(m_id))
-			ComponentHandler::CreateAABB(m_id);
+			ComponentHandler::CreateAABB(m_id, m_layer + 3);
 	}
 	// --------------- GetComponent -----------------
 
