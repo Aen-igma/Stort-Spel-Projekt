@@ -119,8 +119,6 @@ namespace Aen {
 		buttonData.at(indX).rect.right = right;
 		buttonData.at(indX).rect.top = top;
 		buttonData.at(indX).rect.bottom = bottom;
-
-		tempData = buttonData;
 	}
 
 	std::vector<ButtonData> ButtonUI::GetData() const

@@ -22,17 +22,16 @@ namespace Aen {
 		void SetButtonSize(float width, float height, int indX);
 		void SetButtonPos(float x, float y, int indX);
 		bool getBool()const;
+
 		void AddText();
 		void SetTextSize(float width, float height);
 		void SetTextPos(float x, float y);
-
-
-		void Update(Window& window);
-
+		
 		friend class ComponentHandler;
 		friend class Renderer;
 		friend class Entity;
 		friend class GCore;
+		void Update(Window& window);
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;

@@ -40,13 +40,11 @@ void MainMenu::Initialize()
 	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 0);
 	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(500.f, 500.f, 0);
 	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 300.f, 0);
+	testUI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
-	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/gunter2.png", 1);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(900.f, 500.f, 1);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 300.f, 1);
 	//Text
 	testUI->GetComponent<Aen::UIComponent>().AddText();
-	testUI->GetComponent<Aen::UIComponent>().SetTextPos(500.f,500.f);
+	testUI->GetComponent<Aen::UIComponent>().SetTextPos(800.f,500.f);
 	testUI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
 
 	//m_cube = &Aen::EntityHandler::CreateEntity();

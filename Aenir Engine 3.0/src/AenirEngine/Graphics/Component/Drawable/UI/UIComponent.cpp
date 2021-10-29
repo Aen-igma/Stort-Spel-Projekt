@@ -42,9 +42,6 @@ namespace Aen {
 		return button.getBool();
 	}
 
-	void Aen::UIComponent::AddText()
-	{
-	}
     void Aen::UIComponent::AddText()
     {
         text.createText();
