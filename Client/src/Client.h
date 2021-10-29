@@ -32,7 +32,7 @@ Aen::App* Aen::CreateApp() {
 	wDesc.hMenu = 0;
 	wDesc.WCStyle = 0;
 
-	return new Client(wDesc, L"Aenir Engine", L"Main_Window");
+	return AEN_NEW Client(wDesc, L"Aenir Engine", L"Main_Window");
 }
 
 
