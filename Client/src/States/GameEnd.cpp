@@ -16,10 +16,9 @@ void GameEnd::Update(const float& deltaTime)
 		State::SetState(States::Main_Menu);
 	}
 
-	/*if (m_toggleFullScreen)
-		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
-	else
-		Aen::Input::SetMousePos(m_Window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_Window.GetSize() * 0.5f));*/
+	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
+		m_Window.Exit();
+
 
 	if (Aen::Input::KeyDown(Aen::Key::F1)) {
 		m_toggleFullScreen = !m_toggleFullScreen;
@@ -49,16 +48,23 @@ void GameEnd::Initialize()
 	m_UI->AddComponent<Aen::UIComponent>();
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Menu.png", 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 800.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 300.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 0);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	//Text
 	m_UI->GetComponent<Aen::UIComponent>().AddText();
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(950.f, 200.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300.f);
 
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
+	Aen::WindowDesc wDesc;
+	wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
+	wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
+	wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
+	wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
+	m_Window.LoadSettings(wDesc);
+
 	cout << "Game End\n";
 	cout << "Press Enter to return to Main Menu\n";
 

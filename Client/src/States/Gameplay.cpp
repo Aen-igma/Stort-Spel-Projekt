@@ -91,6 +91,12 @@ void Gameplay::Initialize()
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
+	Aen::WindowDesc wDesc;
+	wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
+	wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
+	wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
+	wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
+	m_Window.LoadSettings(wDesc);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);

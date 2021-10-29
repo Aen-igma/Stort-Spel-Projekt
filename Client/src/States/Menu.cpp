@@ -15,10 +15,11 @@ void MainMenu::Update(const float& deltaTime)
 {
 	testUI->GetComponent<Aen::UIComponent>().Update(m_Window);
 
-	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && testUI->GetComponent<Aen::UIComponent>().getBool())
-	{
+	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && testUI[0].GetComponent<Aen::UIComponent>().getBool())
 		State::SetState(States::Loadscreen);
-	}
+
+	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
+		m_Window.Exit();
 }
 
 void MainMenu::Initialize()
@@ -37,11 +38,17 @@ void MainMenu::Initialize()
 	// ----------------------------- UI -------------------------------- //
 	testUI = &Aen::EntityHandler::CreateEntity();
 	testUI->AddComponent<Aen::UIComponent>();
-	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 0);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(500.f, 500.f, 0);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 300.f, 0);
+	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/PathToTheTower.png", 0);
+	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(965.f, 520.f, 0);
+	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(1700.f, 900.f, 0);
 	testUI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
+	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 1);
+	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950, 1);
+	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 1);
+	testUI->GetComponent<Aen::UIComponent>().SaveButtonData();
+
+	
 	//Text
 	testUI->GetComponent<Aen::UIComponent>().AddText();
 	testUI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f,-100.f);
