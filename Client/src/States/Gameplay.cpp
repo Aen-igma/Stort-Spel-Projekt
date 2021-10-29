@@ -118,19 +118,20 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
 	{
-		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
-		printf("ouch\n");
+		//m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+		//printf("ouch\n");
 	}
-	if (m_invincible && m_iFrames <= IFRAMEMAX)
-	{
-		m_iFrames += deltaTime;
-		printf("Iframes: %f\n", m_iFrames);
-	}
-	else 
-	{
-		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
-		m_iFrames = 0.f;
-	}
+	// Invincible frames
+	//if (m_invincible && m_iFrames <= IFRAMEMAX)
+	//{
+	//	m_iFrames += deltaTime;
+	//	printf("Iframes: %f\n", m_iFrames);
+	//}
+	//else 
+	//{
+	//	m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+	//	m_iFrames = 0.f;
+	//}
 
 
 
