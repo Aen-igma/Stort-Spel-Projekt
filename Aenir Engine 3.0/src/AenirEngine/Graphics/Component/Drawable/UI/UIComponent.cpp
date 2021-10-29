@@ -1,18 +1,84 @@
 #include "PCH.h"
 #include "UIComponent.h"
 
+#include "PCH.h"
+#include "UIComponent.h"
+
 namespace Aen {
 
-	UIComponent::UIComponent(const size_t& id) 
-		:Drawable(id) {}
+	Aen::UIComponent::UIComponent(const size_t& id)
+		:Drawable(id)
+	{
+		button.Initialize();
+	}
 
-	UIComponent::~UIComponent() {}
+    Aen::UIComponent::~UIComponent()
+    {
 
-	void UIComponent::AddButton() {}
+    }
 
-	void UIComponent::AddText() {}
+	void UIComponent::SaveButtonData()
+	{
+		button.SaveData();
+	}
 
-	void UIComponent::Draw(Renderer& renderer, const uint32_t& layer) {}
+	void Aen::UIComponent::AddButton(LPCWSTR dir, int indX)
+	{
+		button.AddButton(dir, indX);
+	}
 
-	void UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer) {}
+    void UIComponent::SetButtonSize(float width, float height, int indX)
+    {
+        button.SetButtonSize(width, height, indX);
+    }
+
+    void UIComponent::SetButtonPos(float x, float y, int indX)
+    {
+        button.SetButtonPos(x, y, indX);
+    }
+
+	bool UIComponent::getBool() const
+	{
+		return button.getBool();
+	}
+
+    void Aen::UIComponent::AddText()
+    {
+        text.createText();
+    }
+
+    void UIComponent::SetTextSize(float width, float height)
+    {
+        text.setTextSize(width,height);
+    }
+
+    void UIComponent::SetTextPos(float x, float y)
+    {
+        text.setTextPosition(x,y);
+    }
+
+	void UIComponent::Update(Window& window)
+	{
+		for (auto& b : button.GetData()) {
+
+			button.Update(window, b.index);
+		}
+	}
+
+	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& layer)
+	{
+		//Draw button
+		for (auto& b : button.GetData()) {
+
+            button.Draw(b);
+        }
+        text.renderText();
+        
+    }
+
+	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)
+	{
+
+    }
+
 }

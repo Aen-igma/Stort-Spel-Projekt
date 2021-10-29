@@ -13,6 +13,8 @@ namespace Aen {
 		ComponentHandler::RemoveDirectionalLight(m_id);
 		ComponentHandler::RemoveRigid(m_id);
 		ComponentHandler::RemoveCharacterController(m_id);
+		ComponentHandler::RemoveUI(m_id);
+
 		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
 		EntityHandler::RemoveFromTaged(m_id, m_tag);
 	}

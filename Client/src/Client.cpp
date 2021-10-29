@@ -47,7 +47,7 @@ void Client::ChangeState(const States& states)
 			break;
 		case States::Loadscreen:
 			mp_state = AEN_NEW Loadscreen(m_window);
-			mp_gameplay = new Gameplay(m_window);
+			mp_gameplay = AEN_NEW Gameplay(m_window);
 			break;
 		case States::Gameover:
 			mp_state = AEN_NEW GameEnd(m_window);
