@@ -72,8 +72,9 @@ namespace Aen {
 
             button.Draw(b);
         }
-        text.renderText();
-        
+		if (text.getData().size()) {
+			//text.renderText();
+		}
     }
 
 	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)

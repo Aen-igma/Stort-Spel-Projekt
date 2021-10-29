@@ -18,9 +18,12 @@ void Gameplay::Initialize()
 	State::SetLoad(false);
 
 	// ----------------------------- UI -------------------------------- //
-	//UI  = &Aen::EntityHandler::CreateEntity();
-	//UI->AddComponent<Aen::UIComponent>();
-	//UI->GetComponent<Aen::UIComponent>().AddButton();
+	m_UI = &Aen::EntityHandler::CreateEntity();
+	m_UI->AddComponent<Aen::UIComponent>();
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/reimu.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(500.f, 500.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 300.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	// ----------------------------- Setup Camera ------------------------------- //
 

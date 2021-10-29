@@ -53,6 +53,7 @@ namespace Aen {
 
 	Aen::ButtonUI::~ButtonUI()
 	{
+		buttonData.clear();
 	}
 
 	void Aen::ButtonUI::Initialize()
@@ -129,6 +130,11 @@ namespace Aen {
 	void ButtonUI::SaveData()
 	{
 		tempData = buttonData;
+	}
+
+	void ButtonUI::ClearButtons()
+	{
+			buttonData.clear();
 	}
 
 	void Aen::ButtonUI::Draw(ButtonData& data)

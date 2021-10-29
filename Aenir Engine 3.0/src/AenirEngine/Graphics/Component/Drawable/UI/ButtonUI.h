@@ -37,6 +37,7 @@ namespace Aen {
 		void SetButtonSize(float width, float height, int indX);
 		std::vector<ButtonData> GetData()const;
 		void SaveData();
+		void ClearButtons();
 
         friend class GameLoop;
 
