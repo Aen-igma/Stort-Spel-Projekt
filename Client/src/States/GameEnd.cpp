@@ -1,14 +1,17 @@
 #include "GameEnd.h"
 GameEnd::GameEnd(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false) {}
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(true) {}
 
 GameEnd::~GameEnd()
 {
+	Aen::EntityHandler::RemoveEntity(*m_UI);
 }
 
 void GameEnd::Update(const float& deltaTime)
 {
-	if (Aen::Input::KeyDown(Aen::Key::ENTER))
+	m_UI->GetComponent<Aen::UIComponent>().Update(m_Window);
+
+	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().getBool())
 	{
 		State::SetState(States::Main_Menu);
 	}
@@ -41,6 +44,20 @@ void GameEnd::Update(const float& deltaTime)
 
 void GameEnd::Initialize()
 {
+	// ----------------------------- UI -------------------------------- //
+	m_UI = &Aen::EntityHandler::CreateEntity();
+	m_UI->AddComponent<Aen::UIComponent>();
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Menu.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 800.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 300.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
+
+	//Text
+	m_UI->GetComponent<Aen::UIComponent>().AddText();
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(950.f, 200.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
+
+
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
 	cout << "Game End\n";
 	cout << "Press Enter to return to Main Menu\n";

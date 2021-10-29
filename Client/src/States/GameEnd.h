@@ -12,6 +12,8 @@ private:
     float m_mouseSense;
     bool m_toggleFullScreen;
 
+    Aen::Entity* m_UI;
+
 public:
     GameEnd(Aen::Window& window);
     ~GameEnd()override;

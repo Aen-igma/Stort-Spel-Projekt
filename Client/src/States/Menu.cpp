@@ -44,7 +44,7 @@ void MainMenu::Initialize()
 
 	//Text
 	testUI->GetComponent<Aen::UIComponent>().AddText();
-	testUI->GetComponent<Aen::UIComponent>().SetTextPos(800.f,500.f);
+	testUI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f,-100.f);
 	testUI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
 
 	//m_cube = &Aen::EntityHandler::CreateEntity();
