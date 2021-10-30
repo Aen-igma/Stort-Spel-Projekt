@@ -31,16 +31,17 @@ namespace Aen {
 
 	void Mesh::Load(const std::string& dir) {
 
+
 		size_t off = dir.find_last_of('.');
 		std::string format = dir.substr(off + 1);
 		if (format == "fbx") {
-			AssimpImport::LoadFbx(mv_pos, m_vertices, dir, m_partitions, m_meshMaterialName);
-		}
-		else if (format == "obj") {
-			std::thread worker(ImportObj, std::ref(m_vertices), dir, std::ref(m_partitions), std::ref(m_meshMaterialName));
-			worker.join();
-		}
-		else {
+			std::vector<DirectX::XMFLOAT3> vPos;
+			AssimpImport::LoadFbx(vPos, m_vertices, dir, m_partitions, m_meshMaterialName);
+
+			size_t vStride = sizeof(DirectX::XMFLOAT3);
+			m_aabb.CreateFromPoints(m_aabb, vPos.size(), vPos.data(), vStride);
+
+		} else {
 			throw;
 			printf("Format not supported!");
 		}

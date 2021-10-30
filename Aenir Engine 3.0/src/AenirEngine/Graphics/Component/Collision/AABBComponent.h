@@ -11,32 +11,34 @@ namespace Aen
 	{
 	public:
 		AABoundBox(const size_t& id);
+		~AABoundBox();
 		const bool Intersects(AABoundBox& otherBox);
 		/// <summary>
 		/// Creates AABB based on mesh. If mesh is NULL it will throw
 		/// </summary>
 		/// <returns></returns>
-		const bool CreateAABB();
-		const bool CreateAABB(const Vec3f extents, const Vec3f center);
+		void SetBoundsToMesh();
+		void SetBoundingBox(const Vec3f& extents);
+		void SetBoundingBox(const float& x, const float& y, const float& z);
+
+		void SetOffset(const Vec3f& offset);
+		void SetOffset(const float& x, const float& y, const float& z);
+
 		void ToggleActive(bool b);
 		void ToggleActive();
-		void Update();
-		~AABoundBox();
 	private:
 		DirectX::BoundingBox m_aabb;
 
-		Vec3f m_positionOffset;
-		Vec3f m_sizeOffset;
+		Vec3f m_offset;
+
+		#ifdef _DEBUG
+		VBuffer<Vertex> m_vBuffer;
+		IBuffer m_iBuffer;
+		bool m_canDraw;
+		#endif 
 
 		bool m_isColliding;
 		bool m_isOn;
-
-		#ifdef _DEBUG
-			bool m_canDraw;
-			VBuffer<Vertex> m_vBuffer;
-			IBuffer m_iBuffer;
-		#endif 
-
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
