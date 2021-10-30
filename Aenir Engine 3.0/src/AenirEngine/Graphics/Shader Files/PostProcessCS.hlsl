@@ -51,5 +51,5 @@ void main(CS_Input input) {
         }
     }
     
-    outputMap[uv] += float4(Glow * (1.f / radius), 1.f);
+    outputMap[uv] += float4(sqrt(Glow) * (1.f / (float)radius), 1.f);
 }
