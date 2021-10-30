@@ -101,6 +101,10 @@ namespace Aen {
 	}
 
     void GCore::Concealed::Release() {
+        IDXGIDebug* debugDev;
+        ASSERT_HR(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev)));
+        ASSERT_HR(debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL));
+
         m_device.Reset();
         m_dContext.Reset();
         m_sChain.Reset();
