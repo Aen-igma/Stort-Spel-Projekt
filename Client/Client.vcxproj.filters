@@ -51,6 +51,15 @@
     <ClInclude Include="src\States\GameEnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Enemy\Enemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Enemy\Rimuru\Rimuru.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Enemy\Enemies.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Client.cpp">
@@ -75,6 +84,12 @@
       <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="src\States\GameEnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Enemy\Enemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Enemy\Rimuru\Rimuru.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

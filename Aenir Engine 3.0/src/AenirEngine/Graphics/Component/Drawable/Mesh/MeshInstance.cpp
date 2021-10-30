@@ -153,12 +153,13 @@ namespace Aen {
 
 					RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer);
 					RenderSystem::BindUnOrderedAccessView(0u, renderer.m_UAVBackBuffer);
+					RenderSystem::BindUnOrderedAccessView(1u, renderer.m_UAVFinal);
 					RenderSystem::BindShader(pMaterial->m_pShaderModel->m_CShader);
 
 					RenderSystem::Dispatch(renderer.m_dispatchGroups, 1u);
 
 					RenderSystem::UnBindShader<CShader>();
-					RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
+					RenderSystem::UnBindUnOrderedAccessViews(0u, 2u);
 					RenderSystem::UnBindShaderResources<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
 				}
 			}

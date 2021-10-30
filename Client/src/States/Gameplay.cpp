@@ -366,30 +366,15 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// ---------------------------------- Enemies --------------------------------------- //
 
-	for(auto i = enemies.first; i != enemies.second; i++) {
-		Aen::Entity* enemy = i->second;
-		Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
-		float dist = eDir.Magnitude();
-		if(dist  < 8.f)
-			enemy->GetComponent<Aen::CharacterController>().Move(eDir.Normalized() * 3.f * deltaTime, deltaTime);
-	}
+	for(auto& i : m_enemyQueue)
+		i->Update(deltaTime, *m_player);
 
-	if(Aen::Input::KeyDown(Aen::Key::J)) {
-		Aen::Entity* enemy = &Aen::EntityHandler::CreateEntity();
-		m_enemyQueue.emplace(enemy);
-		enemy->SetTag("Enemy");
-		enemy->AddComponent<Aen::MeshInstance>();
-		enemy->GetComponent<Aen::MeshInstance>().SetMesh("Capsule");
-		enemy->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
-		enemy->AddComponent<Aen::CharacterController>();
-		enemy->SetPos(0.f, 1.5f, 5.f);
-
-		enemy = nullptr;
-	}
+	if(Aen::Input::KeyDown(Aen::Key::J))
+		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
 
 	if (Aen::Input::KeyDown(Aen::Key::O) && !lockedOn) {
-		Aen::EntityHandler::RemoveEntity(*m_enemyQueue.front());
-		m_enemyQueue.pop();
+		delete m_enemyQueue.front();
+		m_enemyQueue.pop_front();
 	}
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //

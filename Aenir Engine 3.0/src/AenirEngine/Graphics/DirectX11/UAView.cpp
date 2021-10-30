@@ -91,5 +91,8 @@ namespace Aen {
 	void UAView::Create(BBuffer& bBuffer) {
 		if(FAILED(m_device->CreateUnorderedAccessView(bBuffer.m_bbTexture.Get(), NULL, m_uav.GetAddressOf())))
 			throw;
+
+		if(FAILED(m_device->CreateShaderResourceView(bBuffer.m_bbTexture.Get(), NULL, m_srv.GetAddressOf())))
+			throw;
 	}
 }

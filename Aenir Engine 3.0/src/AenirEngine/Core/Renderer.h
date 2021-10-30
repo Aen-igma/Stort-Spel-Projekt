@@ -62,10 +62,14 @@ namespace Aen {
 		CBuffer<Vec4i> m_cbUseTexture;
 		SBuffer<SB_Light> m_sbLight;
 		
+		CShader m_postProcessCS;
+		Sampler m_wrapSampler;
+
 		Vec2i m_dispatchGroups;
 		VShader m_opaqueVS;
 		PShader m_collisionPS;
 		UAView m_UAVBackBuffer;
+		RWTexture2D m_UAVFinal;
 		BBuffer m_backBuffer;
 		ILayout m_opaqueLayout;
 
