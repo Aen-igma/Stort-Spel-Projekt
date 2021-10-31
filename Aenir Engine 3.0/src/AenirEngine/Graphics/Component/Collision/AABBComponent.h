@@ -34,6 +34,7 @@ namespace Aen
 		#ifdef _DEBUG
 		VBuffer<Vertex> m_vBuffer;
 		IBuffer m_iBuffer;
+		Vertex m_verts[8];
 		bool m_canDraw;
 		#endif 
 

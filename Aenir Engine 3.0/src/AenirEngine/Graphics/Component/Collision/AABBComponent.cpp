@@ -20,9 +20,8 @@ namespace Aen {
 			const size_t size = tBox.CORNER_COUNT;
 			DirectX::XMFLOAT3 points[size];
 			tBox.GetCorners(points);
-			Vertex verts[8];
 			for(uint32_t i = 0; i < size; i++)
-				verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
+				m_verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
 
 			DWORD ind[]{
 				0, 1, 2, 
@@ -39,7 +38,7 @@ namespace Aen {
 				5, 1, 0, 
 			};
 
-			if(!m_vBuffer.Create(verts, (UINT)size, D3D11_USAGE_DYNAMIC))
+			if(!m_vBuffer.Create(m_verts, (UINT)size, D3D11_USAGE_DYNAMIC))
 				throw;
 
 			m_iBuffer.Create(ind, 36u);
@@ -56,6 +55,7 @@ namespace Aen {
 			m_isColliding = true;
 			return true;
 		}
+
 		otherBox.m_isColliding = false;
 		m_isColliding = false;
 		return false;
@@ -75,20 +75,14 @@ namespace Aen {
 				m_aabb = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_aabb;
 
 				#ifdef _DEBUG
-					if(m_canDraw) {
+					DirectX::BoundingBox tBox;
+					tBox.Extents = m_aabb.Extents;
 
-						DirectX::BoundingBox tBox;
-						tBox.Extents = m_aabb.Extents;
-
-						const size_t size = tBox.CORNER_COUNT;
-						DirectX::XMFLOAT3 points[size];
-						tBox.GetCorners(points);
-						Vertex verts[8];
-						for(uint32_t i = 0; i < size; i++)
-							verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
-
-						m_vBuffer.UpdateBuffer(verts, 8);
-					}
+					const size_t size = tBox.CORNER_COUNT;
+					DirectX::XMFLOAT3 points[size];
+					tBox.GetCorners(points);
+					for(uint32_t i = 0; i < size; i++)
+						m_verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
 				#endif
 			}
 	}
@@ -97,19 +91,14 @@ namespace Aen {
 		m_aabb.Extents = Vec3f(x, y, z).smVec;
 
 		#ifdef _DEBUG
-		if(m_canDraw) {
 			DirectX::BoundingBox tBox;
 			tBox.Extents = m_aabb.Extents;
 
 			const size_t size = tBox.CORNER_COUNT;
 			DirectX::XMFLOAT3 points[size];
 			tBox.GetCorners(points);
-			Vertex verts[8];
 			for(uint32_t i = 0; i < size; i++)
-				verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
-
-			m_vBuffer.UpdateBuffer(verts, 8);
-		}
+				m_verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
 		#endif
 	}
 
@@ -117,19 +106,14 @@ namespace Aen {
 		m_aabb.Extents = extents.smVec;
 
 		#ifdef _DEBUG
-		if(m_canDraw) {
 			DirectX::BoundingBox tBox;
 			tBox.Extents = m_aabb.Extents;
 
 			const size_t size = tBox.CORNER_COUNT;
 			DirectX::XMFLOAT3 points[size];
 			tBox.GetCorners(points);
-			Vertex verts[8];
 			for(uint32_t i = 0; i < size; i++)
-				verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
-
-			m_vBuffer.UpdateBuffer(verts, 8);
-		}
+				m_verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
 		#endif
 	}
 
@@ -144,15 +128,9 @@ namespace Aen {
 
 	void AABoundBox::Draw(Renderer& renderer, const uint32_t& layer) {
 
-		if(m_canDraw) {
-			if(ComponentHandler::RigidExist(m_id))
-				m_aabb.Center = ComponentHandler::GetRigid(m_id).GetPos().smVec + m_offset.smVec;
-			else if(ComponentHandler::CharacterControllerExist(m_id))
-				m_aabb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
-			else
-				m_aabb.Center = ComponentHandler::GetTranslation(m_id).GetPos().smVec + m_offset.smVec;
+		#ifdef _DEBUG
+			if(m_canDraw) {
 
-			#ifdef _DEBUG
 				Vec3f p = Vec3f(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z);
 				renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(p).Transposed();
 				renderer.m_cbTransform.UpdateBuffer();
@@ -175,24 +153,34 @@ namespace Aen {
 				RenderSystem::UnBindRenderTargets(1u);
 				RenderSystem::UnBindShader<VShader>();
 				RenderSystem::UnBindShader<PShader>();
-			#endif
-		}
+			}
+		#endif
 	}
 
 	void AABoundBox::DepthDraw(Renderer& renderer, const uint32_t& layer) {
-		#ifdef _DEBUG
+
 			if(m_canDraw) {
-				Vec3f p = Vec3f(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z);
-				renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(p).Transposed();
-				renderer.m_cbTransform.UpdateBuffer();
-				renderer.m_cbTransform.BindBuffer<VShader>(0u);
-				RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
-				RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
-				RenderSystem::UnBindShader<PShader>();
-				m_vBuffer.BindBuffer();
-				m_iBuffer.BindBuffer();
-				m_iBuffer.DrawIndexed();
+				if(ComponentHandler::RigidExist(m_id))
+					m_aabb.Center = ComponentHandler::GetRigid(m_id).GetPos().smVec + m_offset.smVec;
+				else if(ComponentHandler::CharacterControllerExist(m_id))
+					m_aabb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
+				else
+					m_aabb.Center = ComponentHandler::GetTranslation(m_id).GetPos().smVec + m_offset.smVec;
+
+				#ifdef _DEBUG
+						m_vBuffer.UpdateBuffer(m_verts, 8);
+
+						Vec3f p = Vec3f(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z);
+						renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(p).Transposed();
+						renderer.m_cbTransform.UpdateBuffer();
+						renderer.m_cbTransform.BindBuffer<VShader>(0u);
+						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
+						RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
+						RenderSystem::UnBindShader<PShader>();
+						m_vBuffer.BindBuffer();
+						m_iBuffer.BindBuffer();
+						m_iBuffer.DrawIndexed();
+				#endif
 			}
-		#endif
 	}
 }

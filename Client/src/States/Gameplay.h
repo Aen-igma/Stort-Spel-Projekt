@@ -27,6 +27,8 @@ private:
     Aen::Entity* m_player;
     Aen::Entity* m_reimube;
 
+    Aen::Entity* m_wall;
+
     Aen::Entity* m_target;
     float m_targetDist;
     

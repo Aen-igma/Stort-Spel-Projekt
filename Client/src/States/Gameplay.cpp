@@ -47,6 +47,8 @@ void Gameplay::Initialize()
 	capsule.Load(AEN_RESOURCE_DIR("Capsule.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
+	Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
+	wall.Load(AEN_RESOURCE_DIR("Wall.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -64,6 +66,12 @@ void Gameplay::Initialize()
 	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
 
 	// -------------------------- Setup Entities -------------------------------- //
+
+	m_wall = &Aen::EntityHandler::CreateEntity();
+	m_wall->AddComponent<Aen::MeshInstance>();
+	m_wall->GetComponent<Aen::MeshInstance>().SetMesh(wall);
+	m_wall->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
+	m_wall->SetPos(0.f, 0.f, 10.f);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::RigidBody>();
@@ -84,10 +92,10 @@ void Gameplay::Initialize()
 	//m_reimube->AddComponent<Aen::RigidBody>();
 	//m_reimube->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 2.f, 2.f));
 	//m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
-	m_reimube->AddComponent<Aen::MeshInstance>();
+	m_reimube->AddComponent<Aen::AABoundBox>();
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube->AddComponent<Aen::AABoundBox>();
+	m_reimube->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_reimube->SetPos(0.f, 1.f, -3.f);
 
 	//printf("");
