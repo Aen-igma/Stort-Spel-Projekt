@@ -9,9 +9,9 @@ GameEnd::~GameEnd()
 
 void GameEnd::Update(const float& deltaTime)
 {
-	m_UI->GetComponent<Aen::UIComponent>().Update(m_Window);
+	m_UI->GetComponent<Aen::UIComponent>().Update();
 
-	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().getBool())
+	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().Intersects(0))
 	{
 		State::SetState(States::Main_Menu);
 	}

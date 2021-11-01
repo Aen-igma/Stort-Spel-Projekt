@@ -11,17 +11,12 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_reimube);
+	//Aen::EntityHandler::RemoveEntity(*m_UI);
 }
 
 void Gameplay::Initialize()
 {
 	State::SetLoad(false);
-
-	// ----------------------------- UI -------------------------------- //
-	//UI  = &Aen::EntityHandler::CreateEntity();
-	//UI->AddComponent<Aen::UIComponent>();
-	//UI->GetComponent<Aen::UIComponent>().AddButton();
-
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	m_camera = &Aen::EntityHandler::CreateEntity();
