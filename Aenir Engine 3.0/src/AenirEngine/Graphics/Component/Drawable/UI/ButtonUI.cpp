@@ -58,6 +58,10 @@ namespace Aen {
 
 	Aen::ButtonUI::~ButtonUI()
 	{
+		for (int i = 0; i < m_buttonData.size(); i++)
+		{
+			m_buttonData.at(i).bmp->Release();
+		}
 		m_buttonData.clear();
 		mp_WFactory->Release();
 		mp_BCoder->Release();

@@ -91,7 +91,11 @@ namespace Aen {
         
 
         //----------------------------------    Direct 2D   ---------------------------------//
-        ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_factory.GetAddressOf()));
+        D2D1_FACTORY_OPTIONS fo{};
+        #ifdef _DEBUG
+        fo.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
+        #endif
+        ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf()));
 
         IDXGISurface* IXSurface;
         if (SUCCEEDED(m_sChain->GetBuffer(0, IID_PPV_ARGS(&IXSurface))))
@@ -110,10 +114,11 @@ namespace Aen {
 	}
 
     void GCore::Concealed::Release() {
+        #ifdef _DEBUG
         IDXGIDebug* debugDev;
         ASSERT_HR(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev)));
         ASSERT_HR(debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL));
-
+        #endif
         m_device.Reset();
         m_dContext.Reset();
         m_sChain.Reset();

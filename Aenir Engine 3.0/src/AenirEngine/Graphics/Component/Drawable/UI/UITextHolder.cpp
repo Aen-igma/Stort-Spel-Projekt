@@ -9,6 +9,14 @@ namespace Aen
 
 	Aen::UITextHolder::~UITextHolder()
 	{
+		m_pDWriteFactory->Release();
+		m_pTextFormat->Release();
+		m_pBlackBrush->Release();
+		for (int i = 0; i < m_UITextData.size(); i++)
+		{
+			m_UITextData.at(i).m_pFormat->Release();
+			m_UITextData.at(i).m_pBrush->Release();
+		}
 		m_UITextData.clear();
 	}
 
