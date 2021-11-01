@@ -5,7 +5,7 @@ namespace Aen {
 
 	class Renderer;
 
-	class Drawable : public Component {
+	class AEN_DECLSPEC Drawable : public Component {
 		public:
 		Drawable(const size_t& id);
 		~Drawable();

@@ -25,7 +25,7 @@ namespace Aen {
         sChainDesc.SampleDesc.Count = 1;
         sChainDesc.SampleDesc.Quality = 0;
         
-        sChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_UNORDERED_ACCESS;
+        sChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_SHADER_INPUT;
         sChainDesc.BufferCount = 1;
         sChainDesc.OutputWindow = window.m_hwnd;
         sChainDesc.Windowed = true;
@@ -54,9 +54,9 @@ namespace Aen {
         DXGI_ADAPTER_DESC1 desc;
         pAdapter->GetDesc1(&desc);
 
-        const UINT featureLvls = 2;
-        D3D_FEATURE_LEVEL featureLvl[featureLvls] = {
-            D3D_FEATURE_LEVEL_11_1,
+        //const UINT featureLvls = 1;
+        D3D_FEATURE_LEVEL featureLvl[] = {
+            //D3D_FEATURE_LEVEL_11_1,
             D3D_FEATURE_LEVEL_11_0
         };
 
@@ -76,7 +76,7 @@ namespace Aen {
             NULL,
             flags,
             featureLvl,
-            featureLvls,
+            ARRAYSIZE(featureLvl),
             D3D11_SDK_VERSION,
             &sChainDesc,
             m_sChain.GetAddressOf(),

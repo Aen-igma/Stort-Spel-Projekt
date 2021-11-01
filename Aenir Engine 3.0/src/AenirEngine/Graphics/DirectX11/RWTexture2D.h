@@ -8,8 +8,8 @@ namespace Aen {
 		~RWTexture2D();
 		RWTexture2D();
 
-		void Create(const UINT& width, const UINT& height);
-		void Create(const Vec2i& size);
+		void Create(const UINT& width, const UINT& height, const DXGI_FORMAT& format);
+		void Create(const Vec2i& size, const DXGI_FORMAT& format);
 
 		friend class RenderSystem;
 

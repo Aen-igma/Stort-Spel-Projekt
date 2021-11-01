@@ -57,6 +57,9 @@ namespace Aen {
 		void AddTorque(const Vec3f& force, const ForceMode& mode);
 		void AddTorque(const float& x, const float& y, const float& z, const ForceMode& mode);
 
+		const Vec3f GetPos();
+		const Vec3f GetRot();
+
 	private:
 	~RigidBody();
 
@@ -68,8 +71,7 @@ namespace Aen {
 	void SetRot(const Vec3f& rot);
 	void SetRot(const float& p, const float& y, const float& r);
 
-	const Vec3f GetPos();
-	const Vec3f GetRot();
+
 
 	float m_mass;
 	float m_sleep;

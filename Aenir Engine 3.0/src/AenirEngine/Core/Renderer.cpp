@@ -8,7 +8,8 @@ namespace Aen {
 		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
-		m_rasterizerState(FillMode::Solid, CullMode::Front), m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u) {}
+		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::Front), 
+		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP) {}
 
 	void Renderer::Initialize() {
 
@@ -29,8 +30,17 @@ namespace Aen {
 			if(!m_lightCullCS.Create(L"LightCullCS.cso"))
 				throw;
 
-		m_UAVBackBuffer.Create(m_backBuffer);
+		if(!m_collisionPS.Create(AEN_OUTPUT_DIR_WSTR(L"CollisionPS.cso")))
+			if(!m_collisionPS.Create(L"CollisionPS.cso"))
+				throw;
+
+		if(!m_postProcessCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessCS.cso")))
+			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
+				throw;
+
+		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32G32B32A32_FLOAT);
 		m_opaqueLayout.Create(m_opaqueVS);
+		m_UAVBackBuffer.Create(m_backBuffer);
 
 		m_dispatchInfo.GetData().windowSize.x = m_window.GetSize().x;
 		m_dispatchInfo.GetData().windowSize.y = m_window.GetSize().y;
@@ -46,7 +56,7 @@ namespace Aen {
 
 		uint32_t size = m_dispatchInfo.GetData().numThreads.x * m_dispatchInfo.GetData().numThreads.y;
 		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
-		m_lGrid.Create(m_dispatchInfo.GetData().numThreads);
+		m_lGrid.Create(m_dispatchInfo.GetData().numThreads, DXGI_FORMAT_R32G32_UINT);
 	}
 
 	void Renderer::Render() {
@@ -136,6 +146,20 @@ namespace Aen {
 
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}
+
+		// PostProcess
+
+		m_dispatchInfo.BindBuffer<CShader>(0u);
+		RenderSystem::BindShaderResourceView<CShader>(0u, m_UAVFinal);
+		RenderSystem::BindSamplers<CShader>(0u, m_wrapSampler);
+		RenderSystem::BindUnOrderedAccessView(0u, m_UAVBackBuffer);
+		RenderSystem::BindShader(m_postProcessCS);
+
+		RenderSystem::Dispatch(m_dispatchGroups, 1u);
+
+		RenderSystem::UnBindShader<CShader>();
+		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
+		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);
 
 		// Present
 		RenderSystem::Present();

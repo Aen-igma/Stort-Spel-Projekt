@@ -30,7 +30,7 @@ namespace Aen {
 
 		~Mesh();
 
-
+		DirectX::BoundingBox m_aabb;
 
 		VBuffer<Vertex> m_vertices;
 		std::vector<PartitionData> m_partitions;
@@ -39,5 +39,6 @@ namespace Aen {
 		friend class Resource;
 		friend class MeshInstance;
 		friend class Renderer;
+		friend class AABoundBox;
 	};
 }

@@ -12,13 +12,13 @@ namespace Aen {
 		void SetSlopeLimit(const float& ang);
 		void Move(const Vec3f& dir, const float& deltaTime);
 		void SetUpDirection(const Vec3f& up);
+		const Vec3f GetPos();
 		
 		private:
 		~CharacterController();
 
 		void SetPos(const Vec3f& pos);
 		void SetPos(const float& x, const float& y, const float& z);
-		const Vec3f GetPos();
 
 		px::PxScene* m_pScene;
 		px::PxPhysics* m_physics;

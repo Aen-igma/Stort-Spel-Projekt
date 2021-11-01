@@ -276,6 +276,9 @@
     <ClCompile Include="src\AenirEngine\Graphics\Physics\Raycast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Collision\AABBComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -530,6 +533,9 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UITextHolder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Collision\AABBComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\OpaqueVS.hlsl">
@@ -540,6 +546,8 @@
     </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\LightCullCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CollisionPS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessCS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">

@@ -29,7 +29,6 @@ namespace Aen {
 	}
 	
 	void GameLoop::Run() {
-
 		m_start = m_end = ResClock::now();
 		while(Aen::WindowHandle::HandleMsg()) {
 
@@ -50,6 +49,7 @@ namespace Aen {
 		}
 
 		// Destroy imGui
+
 		delete Aen::GlobalSettings::GetImGuiHandler();
 		
 		Resource::Destroy();

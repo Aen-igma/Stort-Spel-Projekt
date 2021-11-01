@@ -14,7 +14,7 @@ namespace Aen {
 		VBuffer()
 			:m_buffer(NULL), m_stride(nullptr), m_bufferSize(0) {}
 
-		const bool Create(T* data, const UINT& vCount) {
+		const bool Create(T* data, const UINT& vCount, const D3D11_USAGE& usage = D3D11_USAGE_IMMUTABLE) {
 
 			m_bufferSize = vCount;
 			m_stride = std::make_unique<UINT>(sizeof(T));
@@ -22,10 +22,13 @@ namespace Aen {
 			D3D11_BUFFER_DESC bDesc;
 			ZeroMemory(&bDesc, sizeof(D3D11_BUFFER_DESC));
 
-			bDesc.Usage = D3D11_USAGE_IMMUTABLE;
+			bDesc.Usage = usage;
 			bDesc.ByteWidth = sizeof(T) * m_bufferSize;
 			bDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bDesc.CPUAccessFlags = 0;
+
+			if(usage == D3D11_USAGE_IMMUTABLE) bDesc.CPUAccessFlags = 0;
+			else if(usage == D3D11_USAGE_DYNAMIC) bDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
 			bDesc.MiscFlags = 0;
 			bDesc.StructureByteStride = 0;
 
@@ -51,6 +54,24 @@ namespace Aen {
 		
 		void Draw(const UINT& count, const UINT& offset) {
 			m_dContext->Draw(count, offset);
+		}
+
+		const UINT GetVertCount() const
+		{
+			return m_bufferSize;
+		}
+
+		const UINT GetStride() const
+		{
+			return *m_stride.get();
+		}
+
+		void UpdateBuffer(T* data, const UINT& size) {
+			D3D11_MAPPED_SUBRESOURCE mResource;
+			m_dContext->Map(m_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mResource);
+
+			CopyMemory(mResource.pData, data, sizeof(T) * size);
+			m_dContext->Unmap(m_buffer.Get(), 0);
 		}
 
 		private:

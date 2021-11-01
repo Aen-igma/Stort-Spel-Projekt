@@ -1,8 +1,8 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(false), m_targetDist(25.f), m_movementSpeed(4.f),
-	m_finalDir(0.f, 0.f, -1.f) {}
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_mouseSense(5.f), m_toggleFullScreen(true), m_targetDist(25.f), m_movementSpeed(4.f),
+	m_finalDir(0.f, 0.f, -1.f), m_hp(2), IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
 	Aen::GlobalSettings::RemoveMainCamera();
@@ -37,11 +37,15 @@ void Gameplay::Initialize()
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
-	plane.Load(AEN_RESOURCE_DIR("Plane.fbx"));
+	plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
 	capsule.Load(AEN_RESOURCE_DIR("Capsule.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
+	Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
+	wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
+	Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
+	wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -49,50 +53,101 @@ void Gameplay::Initialize()
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
+	Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
 	enemyMat["InnerEdgeColor"] = Aen::Color::Red;
 	enemyMat["OuterEdgeColor"] = Aen::Color::Red;
 	enemyMat["BaseColor"] = Aen::Color::Red;
 
-	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Reimu.png"));
+	wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
+	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+
+	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
 	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
 
+	planeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Floor_Diffuse.png"));
+	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+
 	// -------------------------- Setup Entities -------------------------------- //
+
+	m_wall = &Aen::EntityHandler::CreateEntity();
+	m_wall->AddComponent<Aen::MeshInstance>();
+	m_wall->GetComponent<Aen::MeshInstance>().SetMesh(wallDoor);
+	m_wall->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
+	m_wall->SetPos(22.f, 0.f, 0.f);
+
+	Aen::Entity* wallE = &Aen::EntityHandler::CreateEntity();
+	wallE->AddComponent<Aen::MeshInstance>();
+	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
+	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
+	wallE->SetPos(-22.f, 0.f, 0.f);
+
+	wallE = nullptr;
+
+	wallE = &Aen::EntityHandler::CreateEntity();
+	wallE->AddComponent<Aen::MeshInstance>();
+	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
+	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
+	wallE->SetPos(0.f, 0.f, 22.f);
+	wallE->SetRot(0.f, 90.f, 0.f);
+
+	wallE = nullptr;
+
+	wallE = &Aen::EntityHandler::CreateEntity();
+	wallE->AddComponent<Aen::MeshInstance>();
+	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
+	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
+	wallE->SetPos(0.f, 0.f, -22.f);
+	wallE->SetRot(0.f, 90.f, 0.f);
+
+	wallE = nullptr;
+
+	wallE = &Aen::EntityHandler::CreateEntity();
+	wallE->AddComponent<Aen::MeshInstance>();
+	wallE->GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
+	wallE->SetPos(0.f, 22.f, 0.f);
+
+	wallE = nullptr;
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::RigidBody>();
 	m_plane->AddComponent<Aen::MeshInstance>();
 	m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
-	m_plane->SetScale(0.5f, 0.5f, 0.5f);
 
 	m_player = &Aen::EntityHandler::CreateEntity();
 	m_player->AddComponent<Aen::CharacterController>();
-	m_player->AddComponent<Aen::MeshInstance>();
+	m_player->AddComponent<Aen::AABoundBox>();
 	m_player->GetComponent<Aen::MeshInstance>().SetMesh(capsule);
 	m_player->GetComponent<Aen::MeshInstance>().SetMaterial(playerMat);
+	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_player->SetPos(0.f, 1.f, 0.f);
 
 	m_reimube = &Aen::EntityHandler::CreateEntity();
-	m_reimube->AddComponent<Aen::RigidBody>();
-	m_reimube->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 2.f, 2.f));
-	m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
-	m_reimube->AddComponent<Aen::MeshInstance>();
+	//m_reimube->AddComponent<Aen::RigidBody>();
+	//m_reimube->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 2.f, 2.f));
+	//m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
+	m_reimube->AddComponent<Aen::AABoundBox>();
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube->SetPos(0.f, 1.f, 0.f);
+	m_reimube->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
+	m_reimube->SetPos(0.f, 1.f, -3.f);
+
+	//printf("");
 
 	// --------------------------- Setup Window --------------------------------- //
 
-	//m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
-
-	// ----------------------------- UI -------------------------------- //
-	//m_UI = &Aen::EntityHandler::CreateEntity();
-	//m_UI->AddComponent<Aen::UIComponent>();
-	//m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/healthbar.png", 0);
-	//m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(250.f, 100.f, 0);
-	//m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(500.f, 200.f, 0);
+	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
+	Aen::WindowDesc wDesc;
+	wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
+	wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
+	wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
+	wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
+	m_Window.LoadSettings(wDesc);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
@@ -100,6 +155,25 @@ void Gameplay::Initialize()
 }
 
 void Gameplay::Update(const float& deltaTime) {
+
+	// Collision
+
+	if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
+	{
+		//m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+		//printf("ouch\n");
+	}
+	// Invincible frames
+	//if (m_invincible && m_iFrames <= IFRAMEMAX)
+	//{
+	//	m_iFrames += deltaTime;
+	//	printf("Iframes: %f\n", m_iFrames);
+	//}
+	//else 
+	//{
+	//	m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+	//	m_iFrames = 0.f;
+	//}
 
 	static Aen::Vec3f axis;
 	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
@@ -179,8 +253,14 @@ void Gameplay::Update(const float& deltaTime) {
 		if(Aen::Input::GPKeyDown(0u, Aen::GP::A)) {
 			EventData data;
 			data.accell = 6.f;
-			data.duration = 0.1f;
+			data.duration = 0.2f;
 			data.function = [&](float& accell) {
+				if(lockedOn) {
+					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
+					Aen::Vec3f d(d2.x, 0.f, d2.y);
+					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
+				}
+
 				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
 				accell -= 12.f * deltaTime;
 			};
@@ -231,8 +311,14 @@ void Gameplay::Update(const float& deltaTime) {
 		if(Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
 			EventData data;
 			data.accell = 6.f;
-			data.duration = 0.1f;
+			data.duration = 0.2f;
 			data.function = [&](float& accell) {
+				if(lockedOn) {
+					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
+					Aen::Vec3f d(d2.x, 0.f, d2.y);
+					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
+				}
+
 				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
 				accell -= 12.f * deltaTime;
 			};
@@ -261,7 +347,7 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 
 	if(m_targetDist < 20.f && m_target && lockedOn) {
-		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x * 1.2f).Normalized();
+		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
 
@@ -285,11 +371,6 @@ void Gameplay::Update(const float& deltaTime) {
 	m_ray.SetDirection(-camDir);
 	m_ray.SetMaxDist(5.f);
 	m_ray.Update();
-
-	if(m_ray.Hit()) {
-		AEN_PRINT(m_ray.GetHitPos());
-		AEN_ENDL;
-	}
 
 	m_camera->SetPos(Aen::Lerp(m_camera->GetPos(), m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * (-m_ray.GetDistance() - side.y) + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 1.25f * side.x, 0.6f));
 	m_camera->GetComponent<Aen::Camera>().LookTowards(camDir);
@@ -324,24 +405,15 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// ---------------------------------- Enemies --------------------------------------- //
 
-	for(auto i = enemies.first; i != enemies.second; i++) {
-		Aen::Entity* enemy = i->second;
-		Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
-		float dist = eDir.Magnitude();
-		if(dist  < 8.f)
-			enemy->GetComponent<Aen::CharacterController>().Move(eDir.Normalized() * 3.f * deltaTime, deltaTime);
-	}
+	for(auto& i : m_enemyQueue)
+		i->Update(deltaTime, *m_player);
 
-	if(Aen::Input::KeyDown(Aen::Key::J)) {
-		Aen::Entity* enemy = &Aen::EntityHandler::CreateEntity();
-		enemy->SetTag("Enemy");
-		enemy->AddComponent<Aen::MeshInstance>();
-		enemy->GetComponent<Aen::MeshInstance>().SetMesh("Capsule");
-		enemy->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
-		enemy->AddComponent<Aen::CharacterController>();
-		enemy->SetPos(0.f, 1.f, 3.f);
+	if(Aen::Input::KeyDown(Aen::Key::J))
+		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
 
-		enemy = nullptr;
+	if (Aen::Input::KeyDown(Aen::Key::O) && !lockedOn) {
+		delete m_enemyQueue.front();
+		m_enemyQueue.pop_front();
 	}
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
@@ -372,8 +444,8 @@ void Gameplay::Update(const float& deltaTime) {
 		m_Window.Exit();
 
 	// ------------------------------------- States -------------------------------------- //
-	if (Aen::Input::KeyDown(Aen::Key::ENTER))
+	if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()) && m_enemyQueue.size() == 0)
 	{
-		State::SetState(States::Main_Menu);
+		State::SetState(States::Gameover);
 	}
 }

@@ -6,6 +6,7 @@
 #include"RigidBody/RigidBody.h"
 #include"CharacterController/CharacterController.h"
 #include "Drawable\UI\UIComponent.h"
+#include"Collision\AABBComponent.h"
 
 #include<unordered_map>
 #include<array>
@@ -319,6 +320,33 @@ namespace Aen {
 
 		// -------------------------------------------- //
 
+		// ----------- Axis Aligned Bounding Box ------------ //
+
+		static const bool AABBExist(const size_t& id) {
+			return m_AABBs.count(id) > 0;
+		}
+
+		static void CreateAABB(const size_t& id, const size_t& layer) {
+			m_AABBs.emplace(id, AEN_NEW AABoundBox(id));
+			m_meshLayer[6].emplace(id, m_AABBs.at(id));
+		}
+
+		static void RemoveAABB(const size_t& id) {
+			if (m_AABBs.count(id) > 0) {
+				delete m_AABBs.at(id);
+				m_AABBs.at(id) = nullptr;
+				m_AABBs.erase(id);
+			}
+		}
+
+		static AABoundBox& GetAABB(const size_t& id) {
+			if (m_AABBs.count(id) > 0)
+				return *m_AABBs.at(id);
+			throw;
+		}
+
+		// -------------------------------------------- //
+
 		// ----------- Mesh Instance Layer ------------ //
 
 		static void SetRenderLayer(MeshInstance& mesh, const size_t id, const size_t& layer) {
@@ -341,6 +369,7 @@ namespace Aen {
 		static std::unordered_map<size_t, Scale*> m_scales;
 		static std::unordered_map<size_t, RigidBody*> m_rigids;
 		static std::unordered_map<size_t, CharacterController*> m_characterControllers;
+		static std::unordered_map<size_t, AABoundBox*> m_AABBs;
 		static std::unordered_map<size_t, UIComponent*> m_UI;
 		static std::multimap<size_t, Light*> m_lights;
 		
@@ -350,6 +379,7 @@ namespace Aen {
 		friend class MeshInstance;
 		friend class Renderer;
 		friend class ImGuiHandler;
+		friend class AABoundBox;
 	};
 
 }
