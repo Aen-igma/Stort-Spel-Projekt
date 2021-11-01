@@ -63,7 +63,8 @@ Texture2D depthNormalMap	: NORMALMAP		: register(t2);
 Texture2D depthMap			: DEPTHMAP		: register(t3);
 Texture2D glowMap			: GLOWMAP		: register(t4);
 
-RWTexture2D<unorm float4> outputMap;
+RWTexture2D<unorm float4> outputMap : register(u0);
+RWTexture2D<float4> finalMap : register(u1);
 
 struct CS_Input {
 	uint3 gId : SV_GroupID;
@@ -116,7 +117,10 @@ void main(CS_Input input) {
 		float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
 
 		outputMap[uv] = output;
+		finalMap[uv] = output;
 	} else
-		if(length(outputMap[uv]) <= 0.f)
+		if(length(outputMap[uv]) <= 0.f) {
 			outputMap[uv] = bgColor;
+			finalMap[uv] = bgColor;
+		}
 }

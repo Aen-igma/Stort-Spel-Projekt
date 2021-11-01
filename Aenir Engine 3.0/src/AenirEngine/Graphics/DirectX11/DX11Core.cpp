@@ -25,7 +25,7 @@ namespace Aen {
         sChainDesc.SampleDesc.Count = 1;
         sChainDesc.SampleDesc.Quality = 0;
         
-        sChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_UNORDERED_ACCESS;
+        sChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_SHADER_INPUT;
         sChainDesc.BufferCount = 1;
         sChainDesc.OutputWindow = window.m_hwnd;
         sChainDesc.Windowed = true;
@@ -101,6 +101,10 @@ namespace Aen {
 	}
 
     void GCore::Concealed::Release() {
+        IDXGIDebug* debugDev;
+        ASSERT_HR(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev)));
+        ASSERT_HR(debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL));
+
         m_device.Reset();
         m_dContext.Reset();
         m_sChain.Reset();

@@ -3,14 +3,8 @@
 #include "../Level/LevelGenerator.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
 #include "AenirEngine\Graphics\Component\EntityHandler.h"
-#include<queue>
+#include"../Enemy/Enemies.h"
 #include<functional>
-
-struct EventData {
-    float duration;
-    float accell;
-    std::function<void(float& accell)> function;
-};
 
 class Gameplay : public State
 {
@@ -35,6 +29,8 @@ private:
     Aen::Entity* m_player;
     Aen::Entity* m_reimube;
 
+    Aen::Entity* m_wall;
+
     Aen::Entity* m_target;
     float m_targetDist;
     
@@ -42,7 +38,7 @@ private:
     float m_movementSpeed;
     Aen::Vec3f m_finalDir;
 
-    std::queue<Aen::Entity*> m_enemyQueue;
+    std::deque<Enemy*> m_enemyQueue;
 
 public:
 	Gameplay(Aen::Window& window);

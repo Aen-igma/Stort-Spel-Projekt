@@ -11,7 +11,7 @@ namespace Aen {
 	RWTexture2D::RWTexture2D()
 		:m_uav(NULL), m_srv(NULL) {}
 	
-	void RWTexture2D::Create(const UINT& width, const UINT& height) {
+	void RWTexture2D::Create(const UINT& width, const UINT& height, const DXGI_FORMAT& format) {
 		
 		ComTexture2D tex = NULL;
 		D3D11_TEXTURE2D_DESC textureDesc;
@@ -20,7 +20,7 @@ namespace Aen {
 		textureDesc.Height = height;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
-		textureDesc.Format = DXGI_FORMAT_R32G32_UINT;
+		textureDesc.Format = format;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -51,7 +51,7 @@ namespace Aen {
 		tex.Reset();
 	}
 
-	void RWTexture2D::Create(const Vec2i& size) {
+	void RWTexture2D::Create(const Vec2i& size, const DXGI_FORMAT& format) {
 		
 		ComTexture2D tex = NULL;
 		D3D11_TEXTURE2D_DESC textureDesc;
@@ -60,7 +60,7 @@ namespace Aen {
 		textureDesc.Height = size.y;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
-		textureDesc.Format = DXGI_FORMAT_R32G32_UINT;
+		textureDesc.Format = format;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
