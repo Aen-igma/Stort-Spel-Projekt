@@ -60,6 +60,9 @@ namespace Aen {
 		const Vec3f GetPos();
 		const Vec3f GetRot();
 
+		void SetOffset(const float& x, const float& y, const float& z);
+		void SetOffset(const Vec3f& offset);
+
 	private:
 	~RigidBody();
 
@@ -87,6 +90,7 @@ namespace Aen {
 	px::PxRigidDynamic* mp_DynamicBody;
 
 	Vec3f m_scale;
+	Vec3f m_offset;
 
 	friend class ComponentHandler;
 	friend class MeshInstance;

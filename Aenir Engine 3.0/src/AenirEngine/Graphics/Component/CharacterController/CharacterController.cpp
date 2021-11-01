@@ -22,6 +22,8 @@ namespace Aen {
 			throw;
 
 		m_controller = m_cManager->createController(desc);
+
+		ZeroMemory(&m_state, sizeof(m_state));
 	}
 
 	void CharacterController::SetHeight(const float& height) {
@@ -63,6 +65,4 @@ namespace Aen {
 		px::PxExtendedVec3 p = m_controller->getPosition();
 		return Vec3f(p.x, p.y, p.z);
 	}
-
-
 }
