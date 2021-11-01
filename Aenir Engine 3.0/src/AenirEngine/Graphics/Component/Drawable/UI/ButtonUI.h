@@ -4,7 +4,6 @@
 #include "Window\Input.h"
 #include <wincodec.h>
 #include <string>
-#include <unordered_map>
 
 namespace Aen {
 

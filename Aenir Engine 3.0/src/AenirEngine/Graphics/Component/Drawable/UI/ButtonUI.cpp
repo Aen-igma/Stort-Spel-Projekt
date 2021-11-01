@@ -80,11 +80,11 @@ namespace Aen {
 		ASSERT_HR(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)(&mp_WFactory)));
 	}
 
-	void Aen::ButtonUI::AddButton(LPCWSTR texturePath, int indX)
+	void Aen::ButtonUI::AddButton(LPCWSTR path, int indX)
 	{
 		ButtonData data;
 
-		ASSERT_HR(mp_WFactory->CreateDecoderFromFilename(texturePath, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &mp_BCoder));
+		ASSERT_HR(mp_WFactory->CreateDecoderFromFilename(path, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &mp_BCoder));
 		ASSERT_HR(mp_WFactory->CreateFormatConverter(&mp_FormatConverter));
 		ASSERT_HR(mp_BCoder->GetFrame(0, &mp_FrameDecode));
 		ASSERT_HR(mp_FormatConverter->Initialize(mp_FrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));

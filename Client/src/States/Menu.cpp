@@ -17,11 +17,8 @@ void MainMenu::Update(const float& deltaTime)
 
 	if (Aen::Input::KeyDown(Aen::Key::LMOUSE))
 	{
-		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(1)) {
-			State::SetState(States::Loadscreen);
-		}
 		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(0)) {
-			m_Window.Exit();
+			State::SetState(States::Loadscreen);
 		}
 	}
 }
@@ -42,16 +39,14 @@ void MainMenu::Initialize()
 	// ----------------------------- UI -------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/PathToTheTower.png", 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(965.f, 520.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(1700.f, 900.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/PathToTheTower.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 520.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1700.f, 900.f, 0);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 1);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950, 1);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 0);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
-
 	
 	//Text
 	m_UI->GetComponent<Aen::UIComponent>().AddText();
