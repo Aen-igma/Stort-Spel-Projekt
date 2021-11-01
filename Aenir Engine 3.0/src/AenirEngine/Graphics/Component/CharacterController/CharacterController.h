@@ -17,6 +17,7 @@ namespace Aen {
 		private:
 		~CharacterController();
 
+		const Mat4f GetTranslate();
 		void SetPos(const Vec3f& pos);
 		void SetPos(const float& x, const float& y, const float& z);
 

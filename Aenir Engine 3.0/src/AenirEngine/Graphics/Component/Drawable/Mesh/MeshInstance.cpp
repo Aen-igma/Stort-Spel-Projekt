@@ -80,14 +80,7 @@ namespace Aen {
 
 			// Transform
 
-			Mat4f m;
-			if(ComponentHandler::RigidExist(m_id))
-				m = (EntityHandler::GetEntity(m_id).GetScaleMat() * ComponentHandler::GetRigid(m_id).GetTransform());
-			else if(ComponentHandler::CharacterControllerExist(m_id))
-				m = (ComponentHandler::GetScale(m_id).GetTranform() * ComponentHandler::GetRotation(m_id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(m_id).GetPos()));
-			else
-				m = EntityHandler::GetEntity(m_id).GetTransformation();
-
+			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
@@ -180,14 +173,7 @@ namespace Aen {
 
 		if(m_pMesh) {
 
-			Mat4f m;
-			if(ComponentHandler::RigidExist(m_id))
-				m = (EntityHandler::GetEntity(m_id).GetScaleMat() * ComponentHandler::GetRigid(m_id).GetTransform());
-			else if(ComponentHandler::CharacterControllerExist(m_id))
-				m = (ComponentHandler::GetScale(m_id).GetTranform() * ComponentHandler::GetRotation(m_id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(m_id).GetPos()));
-			else
-				m = EntityHandler::GetEntity(m_id).GetTransformation();
-
+			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 

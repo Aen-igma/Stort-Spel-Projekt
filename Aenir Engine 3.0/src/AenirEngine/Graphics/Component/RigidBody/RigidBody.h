@@ -66,6 +66,8 @@ namespace Aen {
 	void RemoveRigid();
 
 	const Mat4f GetTransform();
+	const Mat4f GetTranslate();
+	const Mat4f GetRotMat();
 	void SetPos(const Vec3f& pos);
 	void SetPos(const float& x, const float& y, const float& z);
 	void SetRot(const Vec3f& rot);

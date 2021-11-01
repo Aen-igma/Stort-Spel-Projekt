@@ -181,8 +181,20 @@ namespace Aen {
 
 	const Mat4f Entity::GetTransformation() {
 
-		Mat4f pos = (ComponentHandler::TranslationExist(m_id)) ? ComponentHandler::GetTranslation(m_id).GetTranform() : Mat4f::identity;
-		Mat4f rot = (ComponentHandler::RotationExist(m_id)) ? ComponentHandler::GetRotation(m_id).GetTranform() : Mat4f::identity;
+		Mat4f pos(Mat4f::identity); 
+		if(ComponentHandler::RigidExist(m_id))
+			pos = ComponentHandler::GetRigid(m_id).GetTranslate(); 
+		else if(ComponentHandler::CharacterControllerExist(m_id))
+			pos = ComponentHandler::GetCharacterController(m_id).GetTranslate();
+		else if(ComponentHandler::TranslationExist(m_id))
+			pos = ComponentHandler::GetTranslation(m_id).GetTranform(); 
+
+		Mat4f rot(Mat4f::identity);
+		if(ComponentHandler::RigidExist(m_id))
+			rot = ComponentHandler::GetRigid(m_id).GetRotMat();
+		else if(ComponentHandler::RotationExist(m_id))
+			rot = ComponentHandler::GetRotation(m_id).GetTranform();
+
 		Mat4f scale = (ComponentHandler::ScaleExist(m_id)) ? ComponentHandler::GetScale(m_id).GetTranform() : Mat4f::identity;
 
 		Mat4f parentMatrix;

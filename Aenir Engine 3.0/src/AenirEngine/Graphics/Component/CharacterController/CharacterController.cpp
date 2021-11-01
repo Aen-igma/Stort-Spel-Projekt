@@ -42,6 +42,11 @@ namespace Aen {
 		m_pScene = nullptr;
 	}
 
+	const Mat4f CharacterController::GetTranslate() {
+		px::PxExtendedVec3 p = m_controller->getPosition();
+		return MatTranslate(Vec3f(p.x, p.y, p.z));
+	}
+
 	void CharacterController::SetPos(const Vec3f& pos) {
 		m_controller->setPosition(px::PxExtendedVec3(pos.x, pos.y, pos.z));
 	}

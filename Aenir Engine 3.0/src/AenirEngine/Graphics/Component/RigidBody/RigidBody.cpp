@@ -236,6 +236,30 @@ namespace Aen {
 		}
 	}
 
+	const Mat4f RigidBody::GetTranslate() {
+		px::PxTransform t;
+		ZeroMemory(&t, sizeof(px::PxTransform));
+		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody) {
+			t = mp_DynamicBody->getGlobalPose();
+			return MatTranslate(t.p.x, t.p.y, t.p.z);
+		} else if(mp_StaticBody) {
+			t = mp_StaticBody->getGlobalPose();
+			return MatTranslate(t.p.x, t.p.y, t.p.z);
+		}
+	}
+
+	const Mat4f RigidBody::GetRotMat() {
+		px::PxTransform t;
+		ZeroMemory(&t, sizeof(px::PxTransform));
+		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody) {
+			t = mp_DynamicBody->getGlobalPose();
+			return MatQuaternion(t.q.x, t.q.y, t.q.z, t.q.w);
+		} else if(mp_StaticBody) {
+			t = mp_StaticBody->getGlobalPose();
+			return Mat4f::identity;
+		}
+	}
+
 	void RigidBody::SetPos(const Vec3f& pos) {
 
 		px::PxTransform t(pos.x, pos.y, pos. z);
