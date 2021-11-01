@@ -14,7 +14,7 @@ void Client::Start() {
 
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
-	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, m_window.GetAspectRatio(), 0.01f, 100.f);
+	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, m_window.GetAspectRatio(), 0.01f, 200.f);
 	m_camera->SetPos(0.f, 2.f, -2.f);
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);

@@ -75,27 +75,31 @@ namespace Aen {
 		double rotation = 3.14159265;
 
 		void rotateCW() { //Clockwise rotation
-			rotation += 1.57079633;
-			connectionDirections *= 10u;
-			if (connectionDirections >= 10000u)
-				connectionDirections += connectionDirections - 9999u;
+			rotate180();
+			rotateCCW();
+			//rotation += 1.57079633;
+			//connectionDirections *= 10;
+			//if (connectionDirections > 1111)
+			//	connectionDirections += connectionDirections - 9999;
 			//TODO rotate associated model
 		}
 		void rotateCCW() { //count clockwise rotation
 			rotation += -1.57079633;
-			int temp = connectionDirections % 10u;
-			connectionDirections /= 10u;
-			connectionDirections += 1000u * temp;
+			int temp = connectionDirections % 10;
+			connectionDirections /= 10;
+			connectionDirections += 1000 * temp;
 			//TODO rotate associated model
 		}
 		void rotate180() {
-			rotation += 3.14159265;
-			int temp = connectionDirections % 10u;
-			connectionDirections /= 10u;
-			connectionDirections += 1000u * temp;
-			temp = connectionDirections % 10u;
-			connectionDirections /= 10u;
-			connectionDirections += 1000u * temp;
+			rotateCCW();
+			rotateCCW();
+			//rotation += 3.14159265;
+			//int temp = connectionDirections % 10;
+			//connectionDirections /= 10;
+			//connectionDirections += 1000 * temp;
+			//temp = connectionDirections % 10;
+			//connectionDirections /= 10;
+			//connectionDirections += 1000 * temp;
 			//TODO rotate associated model
 		}
 
