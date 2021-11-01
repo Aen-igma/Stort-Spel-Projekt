@@ -48,16 +48,17 @@ namespace Aen
 			result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 1111));
 			type = 4;
 		}
-		if (result.m_roomIndex == roomIndex && rerolls < 4) {
-			rerolls++;
-			result = RNGRoom(connectionDir, roomIndex);
-		}
+		//if (result.m_roomIndex == roomIndex && rerolls < 4) {
+		//	rerolls++;
+		//	result = RNGRoom(connectionDir, roomIndex);
+		//}
 		assert(result.m_roomIndex < levelRoom.size());
 
 		AlignRoom(&result, connectionDir, type);
 		result.m_present = true;
 		if (result.connectionDirections > 1111 && rerolls < 8) {
 			rerolls++;
+			result = Room();
 			result = RNGRoom(connectionDir, roomIndex);
 		}
 		rerolls = 0;
@@ -185,7 +186,8 @@ namespace Aen
 				map[x][y] = Room();
 			}
 		}
-
+		srand(time(0));
+		SetLehmerConstSeed(rand());
 		int r = LehmerInt() % 4;
 		switch (r)
 		{
@@ -243,6 +245,7 @@ namespace Aen
 			for (int y = 0; y < mapSize; y++) {
 
 				for (int x = 0; x < mapSize; x++) {
+					SetLehmerSeed(x + y * mapSize);
 					if (map[x][y].m_present) {
 
 						if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
