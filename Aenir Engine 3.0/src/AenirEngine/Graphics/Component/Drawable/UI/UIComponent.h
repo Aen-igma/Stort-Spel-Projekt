@@ -12,7 +12,6 @@ namespace Aen {
 	private:
 		ButtonUI m_button;
 		UITextHolder m_text;
-		bool m_check;
 
 	public:
 		UIComponent(const size_t& id);
@@ -20,8 +19,8 @@ namespace Aen {
 
 		void SaveButtonData();
 		void AddButton(LPCWSTR dir, int indX);
-		void SetButtonSize(float width, float height, int indX);
 		void SetButtonPos(float x, float y, int indX);
+		void SetButtonSize(float width, float height, int indX);
 		bool Intersects(int indX);
 
 		void AddText();

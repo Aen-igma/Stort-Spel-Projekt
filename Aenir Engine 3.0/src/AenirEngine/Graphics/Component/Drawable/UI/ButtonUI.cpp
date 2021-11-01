@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "ButtonUI.h"
+#include "Core\GlobalSettings.h"
 
 namespace Aen {
 	Vec2f ButtonUI::GetButtonSize(D2D1_RECT_F& rect)
@@ -25,15 +26,23 @@ namespace Aen {
 	bool  ButtonUI::Intersect(int index)
 	{
 		//Get mouse pos, cuz right now its dumb af
-		//POINT P;
-		//GetCursorPos(&P);
-		//ScreenToClient(window.GetWHND() ,&P);
+		POINT P;
+		GetCursorPos(&P);
+		ScreenToClient(Aen::GlobalSettings::GetWindow()->GetWHND() ,&P);
 
-		float x = Input::GetMousePos().x;
-		float y = Input::GetMousePos().y;
+		m_gameSize.x = Aen::GlobalSettings::GetWindow()->GetSize().x;
+		m_gameSize.y = Aen::GlobalSettings::GetWindow()->GetSize().y;
+
+		int X = GetSystemMetrics(SM_CXSCREEN);
+		int Y = GetSystemMetrics(SM_CYSCREEN);
+		float xSize = m_gameSize.x / X;
+		float ySize = m_gameSize.y / Y;
+
+		float x = P.x / xSize;
+		float y = P.y / ySize;
 
 		//OutputDebugStringA(("Mouse X: " + std::to_string(x) + "	Mouse Y: " + std::to_string(y) + "\n").c_str());
-		//OutputDebugStringA(("Rect.x: " + std::to_string(buttonData.at(0).rect.right) + "\n").c_str());
+		//OutputDebugStringA(("Rect.x: " + std::to_string(GetButtonCenter(m_buttonData.at(0).rect).y) + "\n").c_str());
 
 		if (x < m_buttonData.at(index).rect.right && x > m_buttonData.at(index).rect.left && y > m_buttonData.at(index).rect.top && y < m_buttonData.at(index).rect.bottom)
 		{
@@ -44,7 +53,7 @@ namespace Aen {
 		}
 	}
 
-	Aen::ButtonUI::ButtonUI(): mp_WFactory (nullptr), mp_BCoder (nullptr),	mp_FormatConverter (nullptr), mp_FrameDecode(nullptr)
+	Aen::ButtonUI::ButtonUI(): mp_WFactory (nullptr), mp_BCoder (nullptr),	mp_FormatConverter(nullptr), mp_FrameDecode(nullptr)
 	{}
 
 	Aen::ButtonUI::~ButtonUI()
@@ -84,11 +93,6 @@ namespace Aen {
 
 	void ButtonUI::SetButtonPos(float x, float y, int indX)
 	{
-		//rect.left = x;
-		//rect.top = y;
-		//rect.right = x;
-		//rect.bottom = y;
-
 		m_buttonData.at(indX).rect.left = x;
 		m_buttonData.at(indX).rect.top = y;
 		m_buttonData.at(indX).rect.right = x;
@@ -123,11 +127,6 @@ namespace Aen {
 	void ButtonUI::SaveData()
 	{
 		m_tempData = m_buttonData;
-	}
-
-	void ButtonUI::ClearButtons()
-	{
-			m_buttonData.clear();
 	}
 
 	void Aen::ButtonUI::Draw(ButtonData& data)

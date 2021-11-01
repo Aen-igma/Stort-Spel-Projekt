@@ -41,6 +41,10 @@ namespace Aen {
 			m_pMainCamera = nullptr;
 		}
 
+		static Window* GetWindow(){
+			return m_pWindow;
+		}
+
 		friend class GameLoop;
 		friend class Renderer;
 

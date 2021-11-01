@@ -88,11 +88,11 @@ void Gameplay::Initialize()
 	//m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
 
 	// ----------------------------- UI -------------------------------- //
-	m_UI = &Aen::EntityHandler::CreateEntity();
-	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/healthbar.png", 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(250.f, 100.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(500.f, 200.f, 0);
+	//m_UI = &Aen::EntityHandler::CreateEntity();
+	//m_UI->AddComponent<Aen::UIComponent>();
+	//m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/healthbar.png", 0);
+	//m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(250.f, 100.f, 0);
+	//m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(500.f, 200.f, 0);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);

@@ -7,7 +7,6 @@ namespace Aen {
 		:Drawable(id)
 	{
 		m_button.Initialize();
-        m_check = false;
 	}
 
     Aen::UIComponent::~UIComponent()
@@ -82,5 +81,4 @@ namespace Aen {
 	{
 
     }
-
 }
