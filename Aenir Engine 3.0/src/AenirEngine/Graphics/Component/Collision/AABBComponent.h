@@ -35,8 +35,8 @@ namespace Aen
 		VBuffer<Vertex> m_vBuffer;
 		IBuffer m_iBuffer;
 		Vertex m_verts[8];
-		bool m_canDraw;
 		#endif 
+		bool m_canDraw;
 
 		bool m_isColliding;
 		bool m_isOn;
