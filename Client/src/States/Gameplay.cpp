@@ -42,13 +42,15 @@ void Gameplay::Initialize()
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
-	plane.Load(AEN_RESOURCE_DIR("Plane.fbx"));
+	plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
 	capsule.Load(AEN_RESOURCE_DIR("Capsule.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
 	Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
-	wall.Load(AEN_RESOURCE_DIR("Wall.fbx"));
+	wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
+	Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
+	wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -56,29 +58,71 @@ void Gameplay::Initialize()
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
+	Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
 	enemyMat["InnerEdgeColor"] = Aen::Color::Red;
 	enemyMat["OuterEdgeColor"] = Aen::Color::Red;
 	enemyMat["BaseColor"] = Aen::Color::Red;
 
+	wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
+	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+
 	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
 	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
+
+	planeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Floor_Diffuse.png"));
+	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 
 	// -------------------------- Setup Entities -------------------------------- //
 
 	m_wall = &Aen::EntityHandler::CreateEntity();
 	m_wall->AddComponent<Aen::MeshInstance>();
-	m_wall->GetComponent<Aen::MeshInstance>().SetMesh(wall);
-	m_wall->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
-	m_wall->SetPos(0.f, 0.f, 10.f);
+	m_wall->GetComponent<Aen::MeshInstance>().SetMesh(wallDoor);
+	m_wall->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
+	m_wall->SetPos(22.f, 0.f, 0.f);
+
+	Aen::Entity* wallE = &Aen::EntityHandler::CreateEntity();
+	wallE->AddComponent<Aen::MeshInstance>();
+	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
+	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
+	wallE->SetPos(-22.f, 0.f, 0.f);
+
+	wallE = nullptr;
+
+	wallE = &Aen::EntityHandler::CreateEntity();
+	wallE->AddComponent<Aen::MeshInstance>();
+	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
+	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
+	wallE->SetPos(0.f, 0.f, 22.f);
+	wallE->SetRot(0.f, 90.f, 0.f);
+
+	wallE = nullptr;
+
+	wallE = &Aen::EntityHandler::CreateEntity();
+	wallE->AddComponent<Aen::MeshInstance>();
+	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
+	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
+	wallE->SetPos(0.f, 0.f, -22.f);
+	wallE->SetRot(0.f, 90.f, 0.f);
+
+	wallE = nullptr;
+
+	wallE = &Aen::EntityHandler::CreateEntity();
+	wallE->AddComponent<Aen::MeshInstance>();
+	wallE->GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
+	wallE->SetPos(0.f, 22.f, 0.f);
+
+	wallE = nullptr;
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::RigidBody>();
 	m_plane->AddComponent<Aen::MeshInstance>();
 	m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
-	m_plane->SetScale(0.5f, 0.5f, 0.5f);
 
 	m_player = &Aen::EntityHandler::CreateEntity();
 	m_player->AddComponent<Aen::CharacterController>();
