@@ -195,7 +195,7 @@ void Client::Update(const float& deltaTime) {
 	#undef min
 	#undef max
 	static uint16_t oldPos;
-	Aen::Vec2f temp(m_camera->GetPos().x + m_levelGenerator.GetRoomDimension()/2.f, m_camera->GetPos().z + m_levelGenerator.GetRoomDimension() / 2.f);
+	Aen::Vec2f temp( m_camera->GetPos().z + m_levelGenerator.GetRoomDimension() / 2.f, m_camera->GetPos().x + m_levelGenerator.GetRoomDimension() / 2.f);
 	temp = temp - m_levelGenerator.m_mapOrigin;
 	if (m_levelGenerator.GetClosestRoomIndex(temp.x, temp.y) != oldPos) {
 		oldPos = m_levelGenerator.GetClosestRoomIndex(temp.x, temp.y);

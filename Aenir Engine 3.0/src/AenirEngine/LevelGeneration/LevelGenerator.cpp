@@ -49,14 +49,18 @@ namespace Aen
 			type = 4;
 		}
 		if (result.m_roomIndex == roomIndex && rerolls < 4) {
-			result = RNGRoom(connectionDir, roomIndex);
 			rerolls++;
+			result = RNGRoom(connectionDir, roomIndex);
 		}
 		assert(result.m_roomIndex < levelRoom.size());
 
-		rerolls = 0;
 		AlignRoom(&result, connectionDir, type);
 		result.m_present = true;
+		if (result.connectionDirections > 1111 && rerolls < 8) {
+			rerolls++;
+			result = RNGRoom(connectionDir, roomIndex);
+		}
+		rerolls = 0;
 		return result;
 	}
 
@@ -303,7 +307,7 @@ namespace Aen
 
 		return *map;
 	}
-	Room* LevelGenerator::GenerationTestingFunction()
+	inline Room* LevelGenerator::GenerationTestingFunction()
 	{
 		char cmap[mapSize * 3][mapSize * 3];
 
@@ -500,14 +504,11 @@ namespace Aen
 
 	void LevelGenerator::LoadRoomFiles(const string& filePath)
 	{
-		m_handler.GetImporterPtr()->ReadFromFile(filePath);
+		//m_handler.GetImporterPtr()->ReadFromFile(filePath);
 	}
 
 	inline void LevelGenerator::LoadMutipleRoomFiles(const std::vector<string>& filePaths)
 	{
-		for (string path : filePaths) {
-			LoadRoomFiles(path);
-		}
 		m_handler.ReadAllFilesFromResourceFolder();
 	}
 
@@ -524,7 +525,10 @@ namespace Aen
 			temp.mptr_parent	=	strRoom;
 			temp.m_CRIndex		=	i;
 			temp.m_present		= true;
-
+			temp.rotation = 3.14159265;
+			if (temp.connectionDirections == 11) {
+				temp.rotation += 1.57079633;
+			}
 			this->AddRoomToGeneration(temp);
 		}
 	}

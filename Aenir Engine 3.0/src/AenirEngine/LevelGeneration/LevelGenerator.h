@@ -137,7 +137,7 @@ namespace Aen {
 
 		Room* GenerateLevel();
 
-		Room* GenerationTestingFunction();
+		inline Room* GenerationTestingFunction();
 
 		void AddRoomToGeneration(Room room);
 
