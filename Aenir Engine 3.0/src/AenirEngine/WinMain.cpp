@@ -25,12 +25,17 @@ void RedirectIOToConsole() {
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPInstance, _In_ LPWSTR lpCmdLine, _In_ int cmdShow) {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(150);
+
+
 	RedirectIOToConsole();
 
 	Aen::GameLoop gameLoop;
 	gameLoop.m_app = Aen::CreateApp(); //    remove this
 	gameLoop.Initialize();
 	gameLoop.Run();
+
+	_CrtDumpMemoryLeaks();
 	return 0;
 }
 

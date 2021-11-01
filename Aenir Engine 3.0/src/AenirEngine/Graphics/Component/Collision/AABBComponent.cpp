@@ -6,9 +6,9 @@
 namespace Aen {
 
 	AABoundBox::AABoundBox(const size_t& id) 
-		:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false),
+		:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false)
 		#ifdef _DEBUG
-		m_canDraw(false)
+		,m_canDraw(false)
 		#endif 
 		{
 		SetBoundsToMesh();
@@ -159,28 +159,27 @@ namespace Aen {
 
 	void AABoundBox::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 
+			if(ComponentHandler::RigidExist(m_id))
+				m_aabb.Center = ComponentHandler::GetRigid(m_id).GetPos().smVec + m_offset.smVec;
+			else if(ComponentHandler::CharacterControllerExist(m_id))
+				m_aabb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
+			else
+				m_aabb.Center = ComponentHandler::GetTranslation(m_id).GetPos().smVec + m_offset.smVec;
+
+			#ifdef _DEBUG
 			if(m_canDraw) {
-				if(ComponentHandler::RigidExist(m_id))
-					m_aabb.Center = ComponentHandler::GetRigid(m_id).GetPos().smVec + m_offset.smVec;
-				else if(ComponentHandler::CharacterControllerExist(m_id))
-					m_aabb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
-				else
-					m_aabb.Center = ComponentHandler::GetTranslation(m_id).GetPos().smVec + m_offset.smVec;
-
-				#ifdef _DEBUG
-						m_vBuffer.UpdateBuffer(m_verts, 8);
-
-						Vec3f p = Vec3f(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z);
-						renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(p).Transposed();
-						renderer.m_cbTransform.UpdateBuffer();
-						renderer.m_cbTransform.BindBuffer<VShader>(0u);
-						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
-						RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
-						RenderSystem::UnBindShader<PShader>();
-						m_vBuffer.BindBuffer();
-						m_iBuffer.BindBuffer();
-						m_iBuffer.DrawIndexed();
-				#endif
+				m_vBuffer.UpdateBuffer(m_verts, 8);
+				Vec3f p = Vec3f(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z);
+				renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(p).Transposed();
+				renderer.m_cbTransform.UpdateBuffer();
+				renderer.m_cbTransform.BindBuffer<VShader>(0u);
+				RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
+				RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
+				RenderSystem::UnBindShader<PShader>();
+				m_vBuffer.BindBuffer();
+				m_iBuffer.BindBuffer();
+				m_iBuffer.DrawIndexed();
 			}
+			#endif
 	}
 }
