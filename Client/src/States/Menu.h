@@ -6,7 +6,7 @@ using namespace std;
 class MainMenu : public State
 {
 private:
-	Aen::Entity* testUI;
+	Aen::Entity* m_UI;
 	//Aen::Entity* m_cube;
 
 public:

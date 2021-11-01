@@ -44,6 +44,7 @@ namespace Aen {
 
 		const bool HasId(const size_t& id);
 		const Mat4f GetTransformation();
+		const Vec3f GetTranslation();
 		const Mat4f GetPosMat();
 		const Mat4f GetRotMat();
 		const Mat4f GetScaleMat();
