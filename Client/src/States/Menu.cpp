@@ -44,8 +44,8 @@ void MainMenu::Initialize()
 	testUI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 1);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950, 1);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 1);
+	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(960.f, 400, 1);
+	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(250.f, 150.f, 1);
 	testUI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	
