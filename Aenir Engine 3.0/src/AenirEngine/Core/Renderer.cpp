@@ -82,12 +82,17 @@ namespace Aen {
 
 			pCam->GetComponent<Camera>().UpdateView(pos, rot);
 
-			m_cbCamera.GetData().pos = { pos.x, pos.y, pos.z };
+			m_cbCamera.GetData().pos = pos;
 			m_cbCamera.GetData().fDir = pCam->GetComponent<Camera>().GetForward();
 			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
 			m_cbCamera.UpdateBuffer();
 
-			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+			if(Input::KeyPress(Key::M)) {
+				Mat4f otherView = MatViewRH(Vec3f(20.f, 20.f, 20.f), Vec3f(0.f, 0.f, 0.f), Vec3f(0.f, 1.f, 0.f));
+				m_cbTransform.GetData().m_vMat = otherView.Transposed();
+			} else
+				m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+
 			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
 		} else {
 			m_cbTransform.GetData().m_vMat = Mat4f::identity;
@@ -149,7 +154,7 @@ namespace Aen {
 
 		// PostProcess
 
-		m_dispatchInfo.BindBuffer<CShader>(0u);
+		/*m_dispatchInfo.BindBuffer<CShader>(0u);
 		RenderSystem::BindShaderResourceView<CShader>(0u, m_UAVFinal);
 		RenderSystem::BindSamplers<CShader>(0u, m_wrapSampler);
 		RenderSystem::BindUnOrderedAccessView(0u, m_UAVBackBuffer);
@@ -159,7 +164,7 @@ namespace Aen {
 
 		RenderSystem::UnBindShader<CShader>();
 		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
-		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);
+		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);*/
 
 		// Present
 		RenderSystem::Present();

@@ -8,6 +8,8 @@ Enemy::Enemy()
 	m_enemy->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
 	m_enemy->AddComponent<Aen::CharacterController>();
 	m_enemy->SetPos(0.f, 1.5f, 5.f);
+	m_enemy->AddComponent<Aen::AABoundBox>();
+	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 }
 
 Enemy::~Enemy() {
@@ -15,5 +17,8 @@ Enemy::~Enemy() {
 }
 
 void Enemy::Update(const float& deltaTime, Aen::Entity& player) {
-	
+
+	/*if (this->m_enemy->GetComponent<Aen::AABoundBox>().Intersects(player.GetComponent<Aen::AABoundBox>())) {
+
+	}*/
 }

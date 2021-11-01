@@ -42,8 +42,14 @@ namespace Aen {
         return m_projection;
     }
 
+    const DirectX::BoundingFrustum& Camera::GetFrustum() {
+        return m_boxFrustum;
+    }
+
     void Camera::UpdateView(const Vec3f& pos, const Vec3f& rot) {
         Vec3f camTarget = m_forwardVec + pos;
         m_view = MatViewRH(pos, camTarget, m_upVec);
+
+        DirectX::BoundingFrustum::CreateFromMatrix(m_boxFrustum, m_view.smMat * m_projection.smMat); 
     }
 }
