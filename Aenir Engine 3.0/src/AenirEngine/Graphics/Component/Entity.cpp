@@ -190,6 +190,17 @@ namespace Aen {
 		return scale * rot * pos * parentMatrix;
 	}
 
+	const Vec3f Entity::GetTranslation() {
+
+		Vec3f pos = (ComponentHandler::TranslationExist(m_id)) ? ComponentHandler::GetTranslation(m_id).GetPos() : Vec3f::zero;
+
+		Vec3f parent;
+		if(m_hasParent)
+			parent = EntityHandler::GetEntity(m_parentId).GetTranslation();
+
+		return pos * parent;
+	}
+
 	const Mat4f Entity::GetPosMat() {
 		Mat4f pos = (ComponentHandler::TranslationExist(m_id)) ? ComponentHandler::GetTranslation(m_id).GetTranform() : Mat4f::identity;
 

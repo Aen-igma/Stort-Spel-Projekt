@@ -20,6 +20,10 @@ namespace Aen {
 			m_pMainCamera = &camera;
 		}
 
+		static Entity* GetMainCamera() {
+			return m_pMainCamera;
+		}
+
 		static void SetBGColor(const Color& color) {
 			m_BGColor = color;
 		}

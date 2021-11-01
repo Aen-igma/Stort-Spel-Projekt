@@ -2,6 +2,7 @@
 #include"MeshInstance.h"
 #include"..\..\ComponentHandler.h"
 #include"Core/Renderer.h"
+#include"Core/GlobalSettings.h"
 
 namespace Aen {
 	MeshInstance::~MeshInstance() {
@@ -79,90 +80,101 @@ namespace Aen {
 
 			// Transform
 
-			if(ComponentHandler::RigidExist(m_id))
+			Vec3f p;
+			if(ComponentHandler::RigidExist(m_id)) {
 				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(m_id).GetScaleMat() * ComponentHandler::GetRigid(m_id).GetTransform()).Transposed();
-			else {
-				if(ComponentHandler::CharacterControllerExist(m_id))
-					ComponentHandler::GetTranslation(m_id).SetPos(ComponentHandler::GetCharacterController(m_id).GetPos());
-
+				p = ComponentHandler::GetRigid(m_id).GetPos();
+			} else if(ComponentHandler::CharacterControllerExist(m_id)) {
+				renderer.m_cbTransform.GetData().m_mdlMat = (ComponentHandler::GetScale(m_id).GetTranform() * ComponentHandler::GetRotation(m_id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(m_id).GetPos())).Transposed();
+				p = ComponentHandler::GetCharacterController(m_id).GetPos();
+			} else {
 				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation().Transposed();
+				p = EntityHandler::GetEntity(m_id).GetTranslation();
 			}
+
 			renderer.m_cbTransform.UpdateBuffer();
+
+			DirectX::BoundingBox box(m_pMesh->m_aabb);
+			box.Center = p.smVec;
+
+			if(GlobalSettings::GetMainCamera())
+				if(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Intersects(box)) {
 
 			// Mesh and Material
 
-			for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
+					for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
 
-				m_pMesh->m_vertices.BindBuffer();
+						m_pMesh->m_vertices.BindBuffer();
 
-				// Opaque pass
+						// Opaque pass
 
-				uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
-				Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
-				if(pMaterial) {
-					
-					RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
+						uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
+						Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
+						if(pMaterial) {
 
-					RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
-					RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShader);
+							RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 
-					uint32_t* slots = pMaterial->m_pShaderModel->m_slots;
+							RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
+							RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShader);
 
-					for(UINT k = 0; k < 4; k++)
-						if(pMaterial->m_textures[k] && slots[k] != UINT_MAX) {
-							RenderSystem::UnBindShaderResources<PShader>(slots[k], 1u);
-							RenderSystem::BindShaderResourceView<PShader>(slots[k], pMaterial->m_textures[k]->m_shaderResource);
-							renderer.m_cbUseTexture.GetData()[k] = (int)true;
-						} else
-							renderer.m_cbUseTexture.GetData()[k] = (int)false;
+							uint32_t* slots = pMaterial->m_pShaderModel->m_slots;
 
-					pMaterial->m_dBuffer.UpdateBuffer();
-					renderer.m_cbUseTexture.UpdateBuffer();
+							for(UINT k = 0; k < 4; k++)
+								if(pMaterial->m_textures[k] && slots[k] != UINT_MAX) {
+									RenderSystem::UnBindShaderResources<PShader>(slots[k], 1u);
+									RenderSystem::BindShaderResourceView<PShader>(slots[k], pMaterial->m_textures[k]->m_shaderResource);
+									renderer.m_cbUseTexture.GetData()[k] = (int)true;
+								} else
+									renderer.m_cbUseTexture.GetData()[k] = (int)false;
 
-					if(slots[4] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<PShader>(			slots[4]	);
-					if(slots[5] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<PShader>(		slots[5]	);
-					if(slots[6] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<PShader>(			slots[6]	);
-					if(slots[7] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<PShader>(		slots[7]	);
-					if(slots[8] != UINT_MAX)	renderer.m_sbLight.BindSRV<PShader>(				slots[8]	);
-					if(slots[9] != UINT_MAX)	RenderSystem::BindShaderResourceView<PShader>(		slots[9],	renderer.m_lGrid);
-					if(slots[10] != UINT_MAX)	RenderSystem::BindShaderResourceView<PShader>(		slots[10],	renderer.m_lIndex);
-					if(slots[11] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<PShader>(			slots[11]	);
+								pMaterial->m_dBuffer.UpdateBuffer();
+								renderer.m_cbUseTexture.UpdateBuffer();
 
-					RenderSystem::BindSamplers<PShader>(pMaterial->m_pShaderModel->m_samplerData.first, pMaterial->m_pShaderModel->m_samplerData.second);
+								if(slots[4] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<PShader>(slots[4]);
+								if(slots[5] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<PShader>(slots[5]);
+								if(slots[6] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<PShader>(slots[6]);
+								if(slots[7] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<PShader>(slots[7]);
+								if(slots[8] != UINT_MAX)	renderer.m_sbLight.BindSRV<PShader>(slots[8]);
+								if(slots[9] != UINT_MAX)	RenderSystem::BindShaderResourceView<PShader>(slots[9], renderer.m_lGrid);
+								if(slots[10] != UINT_MAX)	RenderSystem::BindShaderResourceView<PShader>(slots[10], renderer.m_lIndex);
+								if(slots[11] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<PShader>(slots[11]);
 
-					RenderSystem::ClearRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, Color(0.f, 0.f, 0.f, 0.f));
-					RenderSystem::BindRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, renderer.m_depthMap);
+								RenderSystem::BindSamplers<PShader>(pMaterial->m_pShaderModel->m_samplerData.first, pMaterial->m_pShaderModel->m_samplerData.second);
 
-					RenderSystem::ClearDepthStencilView(renderer.m_depthMap, false, true);
-					RenderSystem::SetDepthStencilState(renderer.m_writeStencil, 0xFF);
-					m_pMesh->m_vertices.Draw(m_pMesh->m_partitions[i].size, m_pMesh->m_partitions[i].offset);
+								RenderSystem::ClearRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, Color(0.f, 0.f, 0.f, 0.f));
+								RenderSystem::BindRenderTargetView(pMaterial->m_pShaderModel->m_gBuffer, renderer.m_depthMap);
+
+								RenderSystem::ClearDepthStencilView(renderer.m_depthMap, false, true);
+								RenderSystem::SetDepthStencilState(renderer.m_writeStencil, 0xFF);
+								m_pMesh->m_vertices.Draw(m_pMesh->m_partitions[i].size, m_pMesh->m_partitions[i].offset);
 
 
-					// Per Object Post Process Pass
+								// Per Object Post Process Pass
 
-					RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
-					RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
-					RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
-					if(slots[12] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<CShader>(			slots[12]	);
-					if(slots[13] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<CShader>(		slots[13]	);
-					if(slots[14] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<CShader>(			slots[14]	);
-					if(slots[15] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<CShader>(		slots[15]	);
-					if(slots[16] != UINT_MAX)	renderer.m_sbLight.BindSRV<CShader>(				slots[16]	);
-					if(slots[17] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<CShader>(			slots[17]	);
-					if(slots[18] != UINT_MAX)	renderer.m_cbBGColor.BindBuffer<CShader>(			slots[18]	);
+								RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
+								RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
+								RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
+								if(slots[12] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<CShader>(slots[12]);
+								if(slots[13] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<CShader>(slots[13]);
+								if(slots[14] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<CShader>(slots[14]);
+								if(slots[15] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<CShader>(slots[15]);
+								if(slots[16] != UINT_MAX)	renderer.m_sbLight.BindSRV<CShader>(slots[16]);
+								if(slots[17] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<CShader>(slots[17]);
+								if(slots[18] != UINT_MAX)	renderer.m_cbBGColor.BindBuffer<CShader>(slots[18]);
 
-					RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer);
-					RenderSystem::BindUnOrderedAccessView(0u, renderer.m_UAVBackBuffer);
-					RenderSystem::BindUnOrderedAccessView(1u, renderer.m_UAVFinal);
-					RenderSystem::BindShader(pMaterial->m_pShaderModel->m_CShader);
+								RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer);
+								RenderSystem::BindUnOrderedAccessView(0u, renderer.m_UAVBackBuffer);
+								RenderSystem::BindUnOrderedAccessView(1u, renderer.m_UAVFinal);
+								RenderSystem::BindShader(pMaterial->m_pShaderModel->m_CShader);
 
-					RenderSystem::Dispatch(renderer.m_dispatchGroups, 1u);
+								RenderSystem::Dispatch(renderer.m_dispatchGroups, 1u);
 
-					RenderSystem::UnBindShader<CShader>();
-					RenderSystem::UnBindUnOrderedAccessViews(0u, 2u);
-					RenderSystem::UnBindShaderResources<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
+								RenderSystem::UnBindShader<CShader>();
+								RenderSystem::UnBindUnOrderedAccessViews(0u, 2u);
+								RenderSystem::UnBindShaderResources<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
+						}
+					}
 				}
-			}
 		}
 	}
 
@@ -170,25 +182,37 @@ namespace Aen {
 
 		if(m_pMesh) {
 
-			if(ComponentHandler::RigidExist(m_id))
+			Vec3f p;
+			if(ComponentHandler::RigidExist(m_id)) {
 				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(m_id).GetScaleMat() * ComponentHandler::GetRigid(m_id).GetTransform()).Transposed();
-			else if(ComponentHandler::CharacterControllerExist(m_id))
+				p = ComponentHandler::GetRigid(m_id).GetPos();
+			} else if(ComponentHandler::CharacterControllerExist(m_id)) {
 				renderer.m_cbTransform.GetData().m_mdlMat = (ComponentHandler::GetScale(m_id).GetTranform() * ComponentHandler::GetRotation(m_id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(m_id).GetPos())).Transposed();
-			else
+				p = ComponentHandler::GetCharacterController(m_id).GetPos();
+			} else {
 				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation().Transposed();
-			renderer.m_cbTransform.UpdateBuffer();
-
-			Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
-			if(pMaterial) {
-				RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
-				RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
-				RenderSystem::UnBindShader<PShader>();
-
-				renderer.m_cbTransform.BindBuffer<VShader>(0);
+				p = EntityHandler::GetEntity(m_id).GetTranslation();
 			}
 
-			m_pMesh->m_vertices.BindBuffer();
-			m_pMesh->m_vertices.Draw();
+			renderer.m_cbTransform.UpdateBuffer();
+
+			DirectX::BoundingBox box(m_pMesh->m_aabb);
+			box.Center = p.smVec;
+
+			if(GlobalSettings::GetMainCamera())
+				if(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Intersects(box)) {
+					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
+					if(pMaterial) {
+						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
+						RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
+						RenderSystem::UnBindShader<PShader>();
+
+						renderer.m_cbTransform.BindBuffer<VShader>(0);
+					}
+
+					m_pMesh->m_vertices.BindBuffer();
+					m_pMesh->m_vertices.Draw();
+				}
 		}
 	}
 }
