@@ -9,7 +9,7 @@ void Aen::AssimpImport::LoadFbx(std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Ve
 	std::vector<Vertex> mesh;
 	Assimp::Importer importer;
 
-	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace);
+	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_MakeLeftHanded);
 	
 
 	if (pScene == NULL) {

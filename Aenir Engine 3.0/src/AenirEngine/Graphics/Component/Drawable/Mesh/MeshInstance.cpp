@@ -80,25 +80,23 @@ namespace Aen {
 
 			// Transform
 
-			Vec3f p;
-			if(ComponentHandler::RigidExist(m_id)) {
-				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(m_id).GetScaleMat() * ComponentHandler::GetRigid(m_id).GetTransform()).Transposed();
-				p = ComponentHandler::GetRigid(m_id).GetPos();
-			} else if(ComponentHandler::CharacterControllerExist(m_id)) {
-				renderer.m_cbTransform.GetData().m_mdlMat = (ComponentHandler::GetScale(m_id).GetTranform() * ComponentHandler::GetRotation(m_id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(m_id).GetPos())).Transposed();
-				p = ComponentHandler::GetCharacterController(m_id).GetPos();
-			} else {
-				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation().Transposed();
-				p = EntityHandler::GetEntity(m_id).GetTranslation();
-			}
+			Mat4f m;
+			if(ComponentHandler::RigidExist(m_id))
+				m = (EntityHandler::GetEntity(m_id).GetScaleMat() * ComponentHandler::GetRigid(m_id).GetTransform());
+			else if(ComponentHandler::CharacterControllerExist(m_id))
+				m = (ComponentHandler::GetScale(m_id).GetTranform() * ComponentHandler::GetRotation(m_id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(m_id).GetPos()));
+			else
+				m = EntityHandler::GetEntity(m_id).GetTransformation();
 
+			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
-			DirectX::BoundingBox box(m_pMesh->m_aabb);
-			box.Center = p.smVec;
+			DirectX::BoundingOrientedBox box;
+			box.Extents = m_pMesh->m_aabb.Extents;
+			box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())
-				if(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Intersects(box)) {
+				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
 
 			// Mesh and Material
 
@@ -182,25 +180,23 @@ namespace Aen {
 
 		if(m_pMesh) {
 
-			Vec3f p;
-			if(ComponentHandler::RigidExist(m_id)) {
-				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(m_id).GetScaleMat() * ComponentHandler::GetRigid(m_id).GetTransform()).Transposed();
-				p = ComponentHandler::GetRigid(m_id).GetPos();
-			} else if(ComponentHandler::CharacterControllerExist(m_id)) {
-				renderer.m_cbTransform.GetData().m_mdlMat = (ComponentHandler::GetScale(m_id).GetTranform() * ComponentHandler::GetRotation(m_id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(m_id).GetPos())).Transposed();
-				p = ComponentHandler::GetCharacterController(m_id).GetPos();
-			} else {
-				renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation().Transposed();
-				p = EntityHandler::GetEntity(m_id).GetTranslation();
-			}
+			Mat4f m;
+			if(ComponentHandler::RigidExist(m_id))
+				m = (EntityHandler::GetEntity(m_id).GetScaleMat() * ComponentHandler::GetRigid(m_id).GetTransform());
+			else if(ComponentHandler::CharacterControllerExist(m_id))
+				m = (ComponentHandler::GetScale(m_id).GetTranform() * ComponentHandler::GetRotation(m_id).GetTranform() * MatTranslate(ComponentHandler::GetCharacterController(m_id).GetPos()));
+			else
+				m = EntityHandler::GetEntity(m_id).GetTransformation();
 
+			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
-			DirectX::BoundingBox box(m_pMesh->m_aabb);
-			box.Center = p.smVec;
+			DirectX::BoundingOrientedBox box;
+			box.Extents = m_pMesh->m_aabb.Extents;
+			box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())
-				if(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Intersects(box)) {
+				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);

@@ -200,7 +200,7 @@ namespace Aen {
 		if(m_hasParent)
 			parent = EntityHandler::GetEntity(m_parentId).GetTranslation();
 
-		return pos * parent;
+		return pos + parent;
 	}
 
 	const Mat4f Entity::GetPosMat() {

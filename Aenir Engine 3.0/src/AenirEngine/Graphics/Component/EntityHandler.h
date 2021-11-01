@@ -29,6 +29,11 @@ namespace Aen {
 				m_tagedEntities.lower_bound(tag), m_tagedEntities.upper_bound(tag));
 		}
 
+		static Entity& GetEntity(const size_t& id) {
+			if(m_entities.count(id) > 0)
+				return *m_entities.at(id);
+		}
+
 		private:
 		EntityHandler();
 		
@@ -39,11 +44,6 @@ namespace Aen {
 						m_tagedEntities.erase(i);
 						break;
 					}
-		}
-
-		static Entity& GetEntity(const size_t& id) {
-			if(m_entities.count(id) > 0)
-				return *m_entities.at(id);
 		}
 
 		static void Destroy() {

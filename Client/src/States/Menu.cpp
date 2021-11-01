@@ -16,7 +16,7 @@ void MainMenu::Update(const float& deltaTime)
 	testUI->GetComponent<Aen::UIComponent>().Update(m_Window);
 
 	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && testUI[0].GetComponent<Aen::UIComponent>().getBool())
-		State::SetState(States::Loadscreen);
+		State::SetState(States::Gameplay);
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		m_Window.Exit();

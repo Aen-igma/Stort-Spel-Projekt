@@ -225,7 +225,7 @@ namespace Aen {
 		MatPerspective(const float& fov, const float& aspect, const float& min, const float& max) noexcept {
 		float ang = DegToRad(fov);
 		Concealed::TMat<T> out;
-		out.smMat = sm::Matrix::CreatePerspectiveFieldOfView(ang, aspect, min, max);
+		out.smMat = DirectX::XMMatrixPerspectiveFovLH(ang, aspect, min, max);
 		return out;
 	}
 

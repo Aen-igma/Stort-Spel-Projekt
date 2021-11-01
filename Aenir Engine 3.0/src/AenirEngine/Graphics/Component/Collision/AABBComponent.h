@@ -4,6 +4,7 @@
 #include "../Drawable/Drawable.h"
 #include "../Component.h"
 #include "BuritoMath.h"
+#include"../Camera/Camera.h"
 
 namespace Aen
 {
@@ -35,8 +36,8 @@ namespace Aen
 		VBuffer<Vertex> m_vBuffer;
 		IBuffer m_iBuffer;
 		Vertex m_verts[8];
-		#endif 
 		bool m_canDraw;
+		#endif 
 
 		bool m_isColliding;
 		bool m_isOn;

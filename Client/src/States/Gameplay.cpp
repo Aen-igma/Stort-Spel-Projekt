@@ -142,8 +142,6 @@ void Gameplay::Initialize()
 	m_reimube->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_reimube->SetPos(0.f, 1.f, -3.f);
 
-	//printf("");
-
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
@@ -168,6 +166,7 @@ void Gameplay::Update(const float& deltaTime) {
 		//m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 		//printf("ouch\n");
 	}
+
 	// Invincible frames
 	//if (m_invincible && m_iFrames <= IFRAMEMAX)
 	//{
@@ -204,7 +203,7 @@ void Gameplay::Update(const float& deltaTime) {
 			if(!Aen::Input::GPGetActive(0u) && !lockedOn) {
 				m_camera->Rotate(
 					-(float)me.GetPos().y * m_mouseSense * deltaTime,
-					-(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
+					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
 			}
 		}
 		if (me.getInputType() == Aen::MouseEvent::SCROLL_UP) {
@@ -218,8 +217,6 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 
 	// ------------------------------ Player Controler ---------------------------------- //
-
-	
 
 	if(Aen::Input::GPGetActive(0u)) {
 		axis.x = -Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).x;
@@ -294,7 +291,7 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 
 	} else {
-		axis.x = (float)Aen::Input::KeyPress(Aen::Key::A) - (float)Aen::Input::KeyPress(Aen::Key::D);
+		axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
 		axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S); 
 
 		// Dash/Dodge
@@ -449,8 +446,8 @@ void Gameplay::Update(const float& deltaTime) {
 		m_Window.Exit();
 
 	// ------------------------------------- States -------------------------------------- //
-	if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()) && m_enemyQueue.size() == 0)
+	/*if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()) && m_enemyQueue.size() == 0)
 	{
 		State::SetState(States::Gameover);
-	}
+	}*/
 }

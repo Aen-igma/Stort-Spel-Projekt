@@ -2,13 +2,14 @@
 #include "AABBComponent.h"
 #include "../ComponentHandler.h"
 #include"Core/Renderer.h"
+#include"Core/GlobalSettings.h"
 
 namespace Aen {
 
-	AABoundBox::AABoundBox(const size_t& id) 
+	AABoundBox::AABoundBox(const size_t& id)
 		:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false)
 		#ifdef _DEBUG
-		,m_canDraw(false)
+		, m_canDraw(false)
 		#endif 
 		{
 		SetBoundsToMesh();
@@ -42,9 +43,10 @@ namespace Aen {
 				throw;
 
 			m_iBuffer.Create(ind, 36u);
+
+			m_canDraw = true;
 		#endif
 
-		m_canDraw = true;
 	}
 	
 	AABoundBox::~AABoundBox() {}
@@ -124,11 +126,11 @@ namespace Aen {
 	void AABoundBox::SetOffset(const float& x, const float& y, const float& z) {
 		m_offset = Vec3f(x, y, z);
 	}
-
-
+	
 	void AABoundBox::Draw(Renderer& renderer, const uint32_t& layer) {
 
 		#ifdef _DEBUG
+			
 			if(m_canDraw) {
 
 				Vec3f p = Vec3f(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z);
@@ -167,6 +169,7 @@ namespace Aen {
 				m_aabb.Center = ComponentHandler::GetTranslation(m_id).GetPos().smVec + m_offset.smVec;
 
 			#ifdef _DEBUG
+			
 			if(m_canDraw) {
 				m_vBuffer.UpdateBuffer(m_verts, 8);
 				Vec3f p = Vec3f(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z);
