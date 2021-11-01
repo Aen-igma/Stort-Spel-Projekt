@@ -89,6 +89,42 @@ namespace Aen {
 	const bool AABoundBox::CreateAABB(const Vec3f extents, const Vec3f center) {
 		m_aabb.Extents = extents.smVec;
 		m_aabb.Center = center.smVec;
+
+#ifdef _DEBUG
+		const size_t size = m_aabb.CORNER_COUNT;
+		DirectX::XMFLOAT3 points[size];
+		m_aabb.GetCorners(points);
+		Vertex verts[8];
+		for (uint32_t i = 0; i < size; i++) {
+			verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
+			AEN_PRINT("Index: ");
+			AEN_PRINT(i);
+			AEN_PRINT("	");
+			AEN_PRINT(verts[i].pos);
+			AEN_ENDL;
+		}
+
+		DWORD ind[]{
+			0, 1, 2,
+			0, 2, 3,
+			1, 5, 6,
+			1, 6, 2,
+			5, 4, 7,
+			5, 7, 6,
+			4, 0, 3,
+			4, 3, 7,
+			6, 3, 2,
+			6, 7, 3,
+			5, 0, 4,
+			5, 1, 0,
+		};
+
+		if (!m_vBuffer.Create(verts, (UINT)size))
+			throw;
+
+		m_iBuffer.Create(ind, 36u);
+		m_canDraw = true;
+#endif
 		return true;
 	}
 

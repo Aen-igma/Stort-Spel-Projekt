@@ -92,6 +92,14 @@ void Gameplay::Initialize()
 	m_reimube->GetComponent<Aen::AABoundBox>().CreateAABB();
 	m_reimube->SetPos(0.f, 1.f, -3.f);
 
+	m_attack = &Aen::EntityHandler::CreateEntity();
+	m_attack->AddComponent<Aen::AABoundBox>();
+	m_attack->GetComponent<Aen::AABoundBox>().CreateAABB({ 2.f,2.f,2.f }, { 0.f,4.f,0.f });
+	m_attack->SetPos(3.f, 1.f, 0);
+	m_attack->GetComponent<Aen::AABoundBox>().Update();
+
+	m_reimube->SetParent(*m_attack);
+
 	//printf("");
 
 	// --------------------------- Setup Window --------------------------------- //

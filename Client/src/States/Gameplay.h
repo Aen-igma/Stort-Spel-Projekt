@@ -25,6 +25,8 @@ private:
     float m_mouseSense;
     bool m_toggleFullScreen;
 
+    Aen::Entity* m_attack;
+
     Aen::Entity* m_camera;
     Aen::Raycast m_ray;
 
