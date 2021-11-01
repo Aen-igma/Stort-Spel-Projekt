@@ -449,7 +449,7 @@ void Gameplay::Update(const float& deltaTime) {
 		m_Window.Exit();
 
 	// ------------------------------------- States -------------------------------------- //
-	if (Aen::Input::KeyDown(Aen::Key::ENTER) && m_enemyQueue.size() == 0)
+	if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()) && m_enemyQueue.size() == 0)
 	{
 		State::SetState(States::Gameover);
 	}

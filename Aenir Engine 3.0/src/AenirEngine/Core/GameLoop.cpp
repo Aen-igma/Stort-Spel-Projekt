@@ -29,7 +29,6 @@ namespace Aen {
 	}
 	
 	void GameLoop::Run() {
-
 		m_start = m_end = ResClock::now();
 		while(Aen::WindowHandle::HandleMsg()) {
 
