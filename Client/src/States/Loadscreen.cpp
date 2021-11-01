@@ -12,9 +12,9 @@ Loadscreen::~Loadscreen()
 
 void Loadscreen::Update(const float& deltaTime)
 {
-	m_loading->GetComponent<Aen::UIComponent>().Update(m_Window);
+	m_loading->GetComponent<Aen::UIComponent>().Update();
 
-	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_loading[0].GetComponent<Aen::UIComponent>().getBool())
+	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_loading->GetComponent<Aen::UIComponent>().Intersects(1))
 	{
 		State::SetState(States::Gameplay);
 	}

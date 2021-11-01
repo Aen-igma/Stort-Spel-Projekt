@@ -35,6 +35,7 @@ namespace Aen
 		void setTextPosition(float x, float y);
 		Vec2f getTextCenter()const;
 		Vec2f getTextSize()const;
+
 	private:
 		IDWriteFactory* m_pDWriteFactory;
 		IDWriteTextFormat* m_pTextFormat;

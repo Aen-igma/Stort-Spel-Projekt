@@ -155,7 +155,7 @@ namespace Aen {
 		RenderSystem::BindUnOrderedAccessView(0u, m_UAVBackBuffer);
 		RenderSystem::BindShader(m_postProcessCS);
 
-		RenderSystem::Dispatch(m_dispatchGroups, 1u);
+		//RenderSystem::Dispatch(m_dispatchGroups, 1u);
 
 		RenderSystem::UnBindShader<CShader>();
 		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);

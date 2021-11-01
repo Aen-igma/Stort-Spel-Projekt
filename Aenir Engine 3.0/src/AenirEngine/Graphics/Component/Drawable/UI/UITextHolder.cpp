@@ -9,12 +9,13 @@ namespace Aen
 
 	Aen::UITextHolder::~UITextHolder()
 	{
+		m_UITextData.clear();
 	}
 
 	void Aen::UITextHolder::createText()
 	{
 
-		this->textName = L"GAME OVER!";
+		this->textName = L"High Tower!";
 		this->m_TextLenght = (UINT64)wcslen(this->textName.c_str());
 
 		ASSERT_HR(m_target2D->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Crimson), &this->m_pBlackBrush));
@@ -67,7 +68,7 @@ namespace Aen
 
 	std::vector<UITextData> Aen::UITextHolder::getData() const
 	{
-		return std::vector<UITextData>();
+		return m_UITextData;
 	}
 }
 
