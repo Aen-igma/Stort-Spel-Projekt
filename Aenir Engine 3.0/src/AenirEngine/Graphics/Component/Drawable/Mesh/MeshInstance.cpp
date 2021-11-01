@@ -97,8 +97,8 @@ namespace Aen {
 			DirectX::BoundingBox box(m_pMesh->m_aabb);
 			box.Center = p.smVec;
 
-			if(GlobalSettings::GetMainCamera())
-				if(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Intersects(box)) {
+			if (GlobalSettings::GetMainCamera())
+				if (GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Intersects(box)); {
 
 			// Mesh and Material
 
@@ -199,8 +199,8 @@ namespace Aen {
 			DirectX::BoundingBox box(m_pMesh->m_aabb);
 			box.Center = p.smVec;
 
-			if(GlobalSettings::GetMainCamera())
-				if(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Intersects(box)) {
+			if (GlobalSettings::GetMainCamera())
+				if (GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Intersects(box)); {
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);

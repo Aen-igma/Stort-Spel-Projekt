@@ -61,6 +61,19 @@ namespace Aen {
 		return false;
 	}
 
+	const bool AABoundBox::Intersects(OBBox& volume)
+	{
+		if (m_aabb.Intersects(volume.m_obb) && m_isOn) {
+			volume.m_isColliding = true;
+			m_isColliding = true;
+			return true;
+		}
+
+		volume.m_isColliding = false;
+		m_isColliding = false;
+		return false;
+	}
+
 	void AABoundBox::ToggleActive(bool b) {
 		m_isOn = b;
 	}
@@ -159,12 +172,15 @@ namespace Aen {
 
 	void AABoundBox::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 
-			if(ComponentHandler::RigidExist(m_id))
-				m_aabb.Center = ComponentHandler::GetRigid(m_id).GetPos().smVec + m_offset.smVec;
-			else if(ComponentHandler::CharacterControllerExist(m_id))
-				m_aabb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
-			else
-				m_aabb.Center = ComponentHandler::GetTranslation(m_id).GetPos().smVec + m_offset.smVec;
+		Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
+
+		m_aabb.Center = transformation.smVec;
+		if (ComponentHandler::RigidExist(m_id))
+			m_aabb.Center = ComponentHandler::GetRigid(m_id).GetPos().smVec + m_offset.smVec;
+		else if (ComponentHandler::CharacterControllerExist(m_id))
+			m_aabb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
+		
+
 
 			#ifdef _DEBUG
 			if(m_canDraw) {

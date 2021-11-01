@@ -4,50 +4,57 @@
 #include "../Drawable/Drawable.h"
 #include "../Component.h"
 #include "BuritoMath.h"
-#include"OBBComponent.h"
+#include"AABBComponent.h"
 
 namespace Aen
 {
-	class AEN_DECLSPEC AABoundBox : public Drawable
+	class AEN_DECLSPEC OBBox : public Drawable
 	{
 	public:
-		AABoundBox(const size_t& id);
-		~AABoundBox();
-		const bool Intersects(AABoundBox& otherBox);
-		const bool Intersects(OBBox& volume);
-		/// <summary>
-		/// Creates AABB based on mesh. If mesh is NULL it will throw
-		/// </summary>
-		/// <returns></returns>
-		void SetBoundsToMesh();
-		void SetBoundingBox(const Vec3f& extents);
-		void SetBoundingBox(const float& x, const float& y, const float& z);
+		OBBox(const size_t& id);
+		~OBBox();
 
+		const bool Intersects(OBBox& volume);
+		const bool Intersects(AABoundBox& volume);
+		
 		void SetOffset(const Vec3f& offset);
 		void SetOffset(const float& x, const float& y, const float& z);
 
+		/// <summary>
+		/// Creates OBB based on mesh. If mesh is NULL it will throw.
+		/// </summary>
+		void SetBoundToMesh();
+		void SetBoundingBox(const Vec3f& extents);
+		void SetBoundingBox(const float& x, const float& y, const float& z);
+
+		void Transform(Aen::Mat4f transform);
+		void Transform(sm::Matrix transform);
+		void Rotate(Aen::Vec3f v);
+
 		void ToggleActive(bool b);
 		void ToggleActive();
+		
 	private:
-		DirectX::BoundingBox m_aabb;
+		DirectX::BoundingOrientedBox m_obb;
 
 		Vec3f m_offset;
-
-		#ifdef _DEBUG
+		void UpdateVerts();
+#ifdef _DEBUG
 		VBuffer<Vertex> m_vBuffer;
 		IBuffer m_iBuffer;
 		Vertex m_verts[8];
-		#endif 
+#endif 
 		bool m_canDraw;
 
 		bool m_isColliding;
 		bool m_isOn;
+		
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
-		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
 
-		friend class OBBox;
+		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
+		friend class AABoundBox;
 
 	};
 }

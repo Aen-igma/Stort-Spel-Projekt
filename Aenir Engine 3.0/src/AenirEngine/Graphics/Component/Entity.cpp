@@ -194,13 +194,16 @@ namespace Aen {
 
 	const Vec3f Entity::GetTranslation() {
 
-		Vec3f pos = (ComponentHandler::TranslationExist(m_id)) ? ComponentHandler::GetTranslation(m_id).GetPos() : Vec3f::zero;
+		//Vec3f pos = (ComponentHandler::TranslationExist(m_id)) ? ComponentHandler::GetTranslation(m_id).GetPos() : Vec3f::zero;
+		Vec3f pos = GetPos();
 
 		Vec3f parent;
-		if(m_hasParent)
+		if (m_hasParent)
+		{
 			parent = EntityHandler::GetEntity(m_parentId).GetTranslation();
+		}
 
-		return pos * parent;
+		return pos + parent;
 	}
 
 	const Mat4f Entity::GetPosMat() {

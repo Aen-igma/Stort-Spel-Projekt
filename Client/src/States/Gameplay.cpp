@@ -143,12 +143,11 @@ void Gameplay::Initialize()
 	m_reimube->SetPos(0.f, 1.f, -3.f);
 
 	m_attack = &Aen::EntityHandler::CreateEntity();
-	m_attack->AddComponent<Aen::AABoundBox>();
-	m_attack->GetComponent<Aen::AABoundBox>().CreateAABB({ 2.f,2.f,2.f }, { 0.f,4.f,0.f });
+	m_attack->AddComponent<Aen::OBBox>();
+	m_attack->GetComponent<Aen::OBBox>().SetBoundingBox({ 2.f,2.f,2.f });
 	m_attack->SetPos(3.f, 1.f, 0);
-	m_attack->GetComponent<Aen::AABoundBox>().Update();
 
-	m_reimube->SetParent(*m_attack);
+	m_attack->SetParent(*m_player);
 
 	//printf("");
 
@@ -173,29 +172,40 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
 	{
-		m_hp--;
-		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
-		m_invincible = true;
+		//m_hp--;
+		//m_player->getcomponent<aen::aaboundbox>().toggleactive(false);
+		//m_invincible = true;
+	}
+	if (m_attack->GetComponent<Aen::OBBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
+	{
+
 	}
 
-	cout << m_hp << endl;
+	static sm::Matrix m = DirectX::XMMatrixRotationRollPitchYaw(1.f, 2.f, 1.f);
 
-	// Invincible frames
-	if (m_invincible && m_iFrames <= IFRAMEMAX)
-	{
-		m_iFrames += deltaTime;
-	}
-	else 
-	{
-		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
-		m_iFrames = 0.f;
-		m_invincible = false;
-	}
+	
 
-	if (m_hp <= 0)
-	{
-		State::SetState(States::Gameover);
-	}
+	if (Aen::Input::KeyDown(Aen::Key::B)) 
+		m_attack->GetComponent<Aen::OBBox>().Transform(m);
+
+	//cout << m_hp << endl;
+
+	//// Invincible frames
+	//if (m_invincible && m_iFrames <= IFRAMEMAX)
+	//{
+	//	m_iFrames += deltaTime;
+	//}
+	//else 
+	//{
+	//	m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+	//	m_iFrames = 0.f;
+	//	m_invincible = false;
+	//}
+
+	//if (m_hp <= 0)
+	//{
+	//	State::SetState(States::Gameover);
+	//}
 
 
 	static Aen::Vec3f axis;
@@ -467,7 +477,7 @@ void Gameplay::Update(const float& deltaTime) {
 		m_Window.Exit();
 
 	// ------------------------------------- States -------------------------------------- //
-	if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()) && m_enemyQueue.size() == 0)
+	if (m_hp <= 0 && m_enemyQueue.size() == 0)
 	{
 		State::SetState(States::Gameover);
 	}

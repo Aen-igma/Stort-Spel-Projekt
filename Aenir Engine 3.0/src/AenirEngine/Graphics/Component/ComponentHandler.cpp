@@ -11,6 +11,7 @@ namespace Aen {
 	std::unordered_map<size_t, RigidBody*> ComponentHandler::m_rigids;
 	std::unordered_map<size_t, CharacterController*> ComponentHandler::m_characterControllers;
 	std::unordered_map<size_t, AABoundBox*> ComponentHandler::m_AABBs;
+	std::unordered_map<size_t, OBBox*> ComponentHandler::m_OBBs;
 	std::unordered_map<size_t, UIComponent*> ComponentHandler::m_UI;
 	std::multimap<size_t, Light*> ComponentHandler::m_lights;
 

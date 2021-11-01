@@ -218,6 +218,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Camera\Camera.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\CharacterController\CharacterController.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Collision\AABBComponent.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Collision\OBBComponent.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Component.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\ComponentHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.cpp" />
@@ -292,6 +293,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Camera\Camera.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\CharacterController\CharacterController.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Collision\AABBComponent.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Collision\OBBComponent.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Component.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.h" />
