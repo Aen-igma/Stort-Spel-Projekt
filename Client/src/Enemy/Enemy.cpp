@@ -8,7 +8,6 @@ Enemy::Enemy()
 }
 
 Enemy::~Enemy() {
-	Aen::EntityHandler::RemoveEntity(*m_enemy);
 }
 
 void Enemy::Update(const float& deltaTime, Aen::Entity& player) {
