@@ -24,8 +24,8 @@ Aen::Entity*& Rimuru::GetEntity()
 	return m_rimuru;
 }
 
-void Rimuru::Update(const float& deltaTime, Aen::Entity& player) {
-	Aen::Vec3f eDir = player.GetPos() - m_enemy->GetPos();
+void Rimuru::Update(const float& deltaTime, Player& player) {
+	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float dist = eDir.Magnitude();
 
 	m_lDir = Aen::Lerp(m_lDir, eDir.Normalized(), 0.03f);

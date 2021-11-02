@@ -187,9 +187,9 @@ void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
 		renderer.m_cbTransform.BindBuffer<VShader>(0u);
 
 		renderer.m_collisionBuffer.BindBuffer<PShader>(0);
-		if (m_isColliding && m_isOn) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
-		else if(!m_isColliding && m_isOn) renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
-		else renderer.m_collisionBuffer.GetData().color = { .2f,.2f,.2f };
+		if (!m_isOn) renderer.m_collisionBuffer.GetData().color = { .2f,.2f,.2f };
+		else if(m_isColliding) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
+		else renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
 		renderer.m_collisionBuffer.GetData().switcher = 0;
 		renderer.m_collisionBuffer.UpdateBuffer();
 

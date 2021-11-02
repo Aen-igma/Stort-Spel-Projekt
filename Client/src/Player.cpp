@@ -1,11 +1,12 @@
 #include"Player.h"
+#include "Enemy/Enemy.h"
 
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
 	m_hurtbox(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_targetDist(25.f), m_movementSpeed(6.f), m_finalDir(0.f, 0.f, -1.f),
-	m_lightAttacking(false), m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f){
-	
+	m_lightAttacking(false), m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f) {
+
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
 	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 200.f);
@@ -47,7 +48,7 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 	if (Aen::Input::KeyDown(Aen::Key::LMOUSE))
 		m_lightAttacking = true;
 
-	LightAttack(e, deltaTime);
+	//LightAttack(e, deltaTime);
 
 	static Aen::Vec3f axis;
 	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
@@ -56,7 +57,7 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 
 	static Aen::Vec3f camDir;
 	static Aen::Vec2f side;
-	if(lockedOn)
+	if (lockedOn)
 		side.x = Aen::Lerp(side.x, axis.x, 0.05f);
 	else
 		side.x = Aen::Lerp(side.x, axis.x * 0.3f, 0.05f);
@@ -72,7 +73,7 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 
 		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
 		{
-			if(!Aen::Input::GPGetActive(0u) && !lockedOn) {
+			if (!Aen::Input::GPGetActive(0u) && !lockedOn) {
 				m_camera->Rotate(
 					-(float)me.GetPos().y * m_mouseSense * deltaTime,
 					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
@@ -90,7 +91,7 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 
 	// ------------------------------ Player Controler ---------------------------------- //
 
-	if(Aen::Input::GPGetActive(0u)) {
+	if (Aen::Input::GPGetActive(0u)) {
 		axis.x = Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).x;
 		axis.z = Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).y;
 
@@ -103,13 +104,14 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 		static bool toggle = false;
 		static bool lTriggerPressed = false;
 
-		if(Aen::Input::GPGetAnalog(0u, Aen::Analog::TRIGGER).x > 0.f && !toggle) {
+		if (Aen::Input::GPGetAnalog(0u, Aen::Analog::TRIGGER).x > 0.f && !toggle) {
 			lTriggerPressed = true;
 			toggle = true;
-		} else if(Aen::Input::GPGetAnalog(0u, Aen::Analog::TRIGGER).x <= 0.f)
+		}
+		else if (Aen::Input::GPGetAnalog(0u, Aen::Analog::TRIGGER).x <= 0.f)
 			toggle = false;
 
-		if(lTriggerPressed) {
+		if (lTriggerPressed) {
 			lTriggerPressed = false;
 			EventData data;
 			data.accell = 16.f;
@@ -124,12 +126,12 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 
 		// Attack
 
-		if(Aen::Input::GPKeyDown(0u, Aen::GP::A)) {
+		if (Aen::Input::GPKeyDown(0u, Aen::GP::A)) {
 			EventData data;
 			data.accell = 6.f;
 			data.duration = 0.2f;
 			data.function = [&](float& accell) {
-				if(lockedOn) {
+				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
 					Aen::Vec3f d(d2.x, 0.f, d2.y);
 					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
@@ -145,16 +147,16 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 		// Lock On Target
 
 
-		if(Aen::Input::GPKeyDown(0u, Aen::GP::LSHOULDER)) {
+		if (Aen::Input::GPKeyDown(0u, Aen::GP::LSHOULDER)) {
 			lockedOn = !lockedOn;
 
-			if(lockedOn) {
+			if (lockedOn) {
 				m_targetDist = 25.f;
-				for(auto i = enemies.first; i != enemies.second; i++) {
+				for (auto i = enemies.first; i != enemies.second; i++) {
 					Aen::Entity* enemy = i->second;
 					Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
 					float dist = eDir.Magnitude();
-					if(dist < m_targetDist) {
+					if (dist < m_targetDist) {
 						m_targetDist = dist;
 						m_target = enemy;
 					}
@@ -162,13 +164,14 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 			}
 		}
 
-	} else {
+	}
+	else {
 		axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
-		axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S); 
+		axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S);
 
 		// Dash/Dodge
 
-		if(Aen::Input::KeyDown(Aen::Key::SPACE)) {
+		if (Aen::Input::KeyDown(Aen::Key::SPACE)) {
 			EventData data;
 			data.accell = 16.f;
 			data.duration = 0.4f;
@@ -182,12 +185,12 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 
 		// Attack
 
-		if(Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
+		if (Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
 			EventData data;
 			data.accell = 6.f;
 			data.duration = 0.2f;
 			data.function = [&](float& accell) {
-				if(lockedOn) {
+				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
 					Aen::Vec3f d(d2.x, 0.f, d2.y);
 					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
@@ -202,16 +205,16 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 
 		// Lock On Target
 
-		if(Aen::Input::KeyDown(Aen::Key::E)) {
+		if (Aen::Input::KeyDown(Aen::Key::E)) {
 			lockedOn = !lockedOn;
 
-			if(lockedOn) {
+			if (lockedOn) {
 				m_targetDist = 25.f;
-				for(auto i = enemies.first; i != enemies.second; i++) {
+				for (auto i = enemies.first; i != enemies.second; i++) {
 					Aen::Entity* enemy = i->second;
 					Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
 					float dist = eDir.Magnitude();
-					if(dist < m_targetDist) {
+					if (dist < m_targetDist) {
 						m_targetDist = dist;
 						m_target = enemy;
 					}
@@ -220,19 +223,20 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 		}
 	}
 
-	if(m_targetDist < 20.f && m_target && lockedOn) {
+	if (m_targetDist < 20.f && m_target && lockedOn) {
 		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
 
 		m_camera->SetRot(pitch, yaw, 0.f);
 
-		if(m_target) {
+		if (m_target) {
 			Aen::Vec3f eDir = m_player->GetPos() - m_target->GetPos();
-			if(eDir.Magnitude() > 20.f) lockedOn = false;
+			if (eDir.Magnitude() > 20.f) lockedOn = false;
 		}
 
-	} else {
+	}
+	else {
 		lockedOn = false;
 		m_targetDist = 25.f;
 	}
@@ -261,20 +265,22 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 
 	m_hurtbox->GetComponent<Aen::OBBox>().SetRotation(0.f, yaw, 0.f);
 
-	if(!m_eventQueue.empty())
-		if(m_eventQueue.front().duration > 0.f) {
+	if (!m_eventQueue.empty())
+		if (m_eventQueue.front().duration > 0.f) {
 			m_eventQueue.front().function(m_eventQueue.front().accell);
 			m_eventQueue.front().duration -= deltaTime;
-		} else {
-			if(axis.Magnitude() > 0.f) m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+		}
+		else {
+			if (axis.Magnitude() > 0.f) m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 			m_eventQueue.pop();
 		}
 
-	if(m_eventQueue.empty()) {
-		if(axis.Magnitude() > 0.f) {
+	if (m_eventQueue.empty()) {
+		if (axis.Magnitude() > 0.f) {
 			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 			m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * m_movementSpeed * deltaTime, deltaTime);
-		} else {
+		}
+		else {
 			Aen::Vec2f dir(camDir.x, camDir.z);
 			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 		}
@@ -287,24 +293,38 @@ Aen::Entity*& Player::GetEntity() {
 	return m_player;
 }
 
-bool Player::LightAttack(Aen::Entity* e, const float deltatime)
+Aen::Entity*& Player::GetHurtBox()
+{
+	return m_hurtbox;
+}
+
+bool Player::LightAttack(std::deque<Enemy*>& e, const float deltatime)
 {
 	bool hit = false;
 	if (m_lightAttacking)
 	{
 		m_attackTimer += deltatime;
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-		if (m_hurtbox->GetComponent<Aen::OBBox>().Intersects(e->GetComponent<Aen::AABoundBox>()))
+
+		for (int i = 0; i < e.size(); i++)
 		{
-			hit = true;
-			printf("Hit\n");
+			if (m_hurtbox->GetComponent<Aen::OBBox>().Intersects(e[i]->GetEntity()->GetComponent<Aen::AABoundBox>()))
+			{
+				delete e[i];
+				e[i] = e.front();
+				e.pop_front();
+				hit = true;
+				printf("Hit\n");
+			}
+			else
+			{
+				hit = false;
+				printf("miss\n");
+			}
 		}
-		else
-		{
-			hit = false;
-			printf("miss\n");
-		}
-		
+
+
+
 		if (m_attackTimer > m_LIGHTATTACKTIME)
 		{
 			m_lightAttacking = false;
@@ -312,7 +332,7 @@ bool Player::LightAttack(Aen::Entity* e, const float deltatime)
 			m_attackTimer = 0.f;
 		}
 	}
-	
-	
+
+
 	return hit;
 }

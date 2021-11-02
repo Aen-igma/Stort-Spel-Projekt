@@ -2,6 +2,8 @@
 #include "AenirEngine\AenCore.h"
 #include<queue>
 
+class Enemy;
+
 struct EventData {
 	float duration;
 	float accell;
@@ -15,7 +17,9 @@ class Player {
 
 	void Update(Aen::Entity* e,const float& deltaTime);
 	Aen::Entity*& GetEntity();
+	Aen::Entity*& GetHurtBox();
 
+	bool LightAttack(std::deque<Enemy*>& e, const float deltatime);
 
 private:
 	Aen::Entity* m_hurtbox;
@@ -38,7 +42,6 @@ private:
 	const float m_LIGHTATTACKTIME;
 	const float m_HEAVYATTACKTIME;
 
-	bool LightAttack(Aen::Entity* e, const float deltatime);
 
 	std::queue<EventData> m_eventQueue;
 };

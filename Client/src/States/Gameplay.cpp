@@ -176,7 +176,6 @@ void Gameplay::Update(const float& deltaTime) {
 		m_iFrames = 0.f;
 	}
 
-	m_player.Update(m_reimube, deltaTime);
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -186,7 +185,7 @@ void Gameplay::Update(const float& deltaTime) {
 	// ---------------------------------- Enemies --------------------------------------- //
 
 	for(auto& i : m_enemyQueue)
-		i->Update(deltaTime, *m_player.GetEntity());
+		i->Update(deltaTime, m_player);
 
 	if(Aen::Input::KeyDown(Aen::Key::J))
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
@@ -195,6 +194,9 @@ void Gameplay::Update(const float& deltaTime) {
 		delete m_enemyQueue.front();
 		m_enemyQueue.pop_front();
 	}
+
+	m_player.LightAttack(m_enemyQueue, deltaTime);
+	m_player.Update(m_reimube, deltaTime);
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
@@ -227,5 +229,5 @@ void Gameplay::Update(const float& deltaTime) {
 	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)
 	{
 		State::SetState(States::Gameover);
-	}
+	}*/
 }
