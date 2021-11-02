@@ -4,9 +4,10 @@
 class Enemy {
 	public:
 	Enemy();
-	virtual ~Enemy();
+	virtual~Enemy();
+	Aen::Entity*& GetEntity();
 
-	virtual void Update(const float& deltaTime, Aen::Entity& player) = 0;
+	virtual void Update(const float& deltaTime, Player& player) = 0;
 
 	protected:
 	Aen::Entity* m_enemy;

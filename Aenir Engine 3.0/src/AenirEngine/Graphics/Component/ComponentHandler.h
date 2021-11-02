@@ -7,6 +7,7 @@
 #include"CharacterController/CharacterController.h"
 #include "Drawable\UI\UIComponent.h"
 #include"Collision\AABBComponent.h"
+#include"Collision\OBBComponent.h"
 
 #include<unordered_map>
 #include<array>
@@ -141,7 +142,7 @@ namespace Aen {
 		static Translation& GetTranslation(const size_t& id) {
 			if(m_translations.count(id) > 0)
 				return *m_translations.at(id);
-
+			
 			throw;
 		}
 
@@ -347,6 +348,33 @@ namespace Aen {
 
 		// -------------------------------------------- //
 
+		// ----------- Axis Aligned Bounding Box ------------ //
+
+		static const bool OBBExist(const size_t& id) {
+			return m_OBBs.count(id) > 0;
+		}
+
+		static void CreateOBB(const size_t& id, const size_t& layer) {
+			m_OBBs.emplace(id, AEN_NEW OBBox(id));
+			m_meshLayer[6].emplace(id, m_OBBs.at(id));
+		}
+
+		static void RemoveOBB(const size_t& id) {
+			if (m_OBBs.count(id) > 0) {
+				delete m_OBBs.at(id);
+				m_OBBs.at(id) = nullptr;
+				m_OBBs.erase(id);
+			}
+		}
+
+		static OBBox& GetOBB(const size_t& id) {
+			if (m_OBBs.count(id) > 0)
+				return *m_OBBs.at(id);
+			throw;
+		}
+
+		// -------------------------------------------- //
+
 		// ----------- Mesh Instance Layer ------------ //
 
 		static void SetRenderLayer(MeshInstance& mesh, const size_t id, const size_t& layer) {
@@ -370,6 +398,7 @@ namespace Aen {
 		static std::unordered_map<size_t, RigidBody*> m_rigids;
 		static std::unordered_map<size_t, CharacterController*> m_characterControllers;
 		static std::unordered_map<size_t, AABoundBox*> m_AABBs;
+		static std::unordered_map<size_t, OBBox*> m_OBBs;
 		static std::unordered_map<size_t, UIComponent*> m_UI;
 		static std::multimap<size_t, Light*> m_lights;
 		
@@ -380,6 +409,7 @@ namespace Aen {
 		friend class Renderer;
 		friend class ImGuiHandler;
 		friend class AABoundBox;
+		friend class OBBox;
 		friend class Camera;
 	};
 
