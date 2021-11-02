@@ -60,14 +60,12 @@ namespace Aen {
             D3D_FEATURE_LEVEL_11_0
         };
 
-        UINT flags = 0;
-        #ifdef _DEBUG
-        flags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-        #endif
         
-        //#ifdef NDEBUG
-        //flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-        //#endif // RELEASE
+        UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+        #ifdef _DEBUG
+        flags |= D3D11_CREATE_DEVICE_DEBUG;
+        #endif
+       
 
 
         HRESULT hr = D3D11CreateDeviceAndSwapChain(
@@ -88,14 +86,12 @@ namespace Aen {
         pFactory2.Reset();
         pFactory6.Reset();
 
-        
-
         //----------------------------------    Direct 2D   ---------------------------------//
         D2D1_FACTORY_OPTIONS fo{};
         #ifdef _DEBUG
         fo.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
         #endif
-        ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf()));
+        D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, IID_PPV_ARGS(m_factory.GetAddressOf()));
 
         IDXGISurface* IXSurface;
         if (SUCCEEDED(m_sChain->GetBuffer(0, IID_PPV_ARGS(&IXSurface))))

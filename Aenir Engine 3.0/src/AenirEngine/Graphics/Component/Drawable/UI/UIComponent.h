@@ -27,6 +27,7 @@ namespace Aen {
 		bool Intersects(int indX);
 
 		//----------------------	Text	----------------------------//
+		void AddText(std::wstring text);
 		void AddText();
 		void SetTextSize(float width, float height);
 		void SetTextPos(float x, float y);
