@@ -108,7 +108,7 @@ namespace Aen {
 		px::PxTransform t(0.f, 0.f, 0.f);
 		float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5;
 		px::PxSphereGeometry sphere(r);
-		px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.x * 0.5f);
+		px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.z * 0.5f);
 		float rc = Max(m_scale.x, m_scale.z);
 		px::PxCapsuleGeometry capsule(rc * 0.5f, m_scale.y);
 
@@ -120,6 +120,10 @@ namespace Aen {
 				t = mp_DynamicBody->getGlobalPose();
 				RemoveRigid();
 			}
+
+			t.p.x += m_offset.x;
+			t.p.y += m_offset.y;
+			t.p.z += m_offset.z;
 
 			switch(geometry) {
 				case GeometryType::SPHERE:
@@ -143,6 +147,10 @@ namespace Aen {
 				t = mp_StaticBody->getGlobalPose();
 				RemoveRigid();
 			}
+
+			t.p.x += m_offset.x;
+			t.p.y += m_offset.y;
+			t.p.z += m_offset.z;
 
 			px::PxPlane plane(px::PxVec3(0.f, 0.f, 0.f), px::PxVec3(0.f, 1.f, 0.f));
 			switch(geometry) {
@@ -229,16 +237,40 @@ namespace Aen {
 		ZeroMemory(&t, sizeof(px::PxTransform));
 		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody) {
 			t = mp_DynamicBody->getGlobalPose();
-			return MatQuaternion(t.q.x, t.q.y, t.q.z, t.q.w) * MatTranslate(t.p.x, t.p.y, t.p.z);
+			return MatQuaternion(t.q.x, t.q.y, t.q.z, t.q.w) * MatTranslate(t.p.x - m_offset.x, t.p.y - m_offset.y, t.p.z - m_offset.z);
 		} else if(mp_StaticBody) {
 			t = mp_StaticBody->getGlobalPose();
-			return MatTranslate(t.p.x, t.p.y, t.p.z);
+			return MatTranslate(t.p.x - m_offset.x, t.p.y - m_offset.y, t.p.z - m_offset.z);
+		}
+	}
+
+	const Mat4f RigidBody::GetTranslate() {
+		px::PxTransform t;
+		ZeroMemory(&t, sizeof(px::PxTransform));
+		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody) {
+			t = mp_DynamicBody->getGlobalPose();
+			return MatTranslate(t.p.x - m_offset.x, t.p.y - m_offset.y, t.p.z - m_offset.z);
+		} else if(mp_StaticBody) {
+			t = mp_StaticBody->getGlobalPose();
+			return MatTranslate(t.p.x - m_offset.x, t.p.y - m_offset.y, t.p.z - m_offset.z);
+		}
+	}
+
+	const Mat4f RigidBody::GetRotMat() {
+		px::PxTransform t;
+		ZeroMemory(&t, sizeof(px::PxTransform));
+		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody) {
+			t = mp_DynamicBody->getGlobalPose();
+			return MatQuaternion(t.q.x, t.q.y, t.q.z, t.q.w);
+		} else if(mp_StaticBody) {
+			t = mp_StaticBody->getGlobalPose();
+			return Mat4f::identity;
 		}
 	}
 
 	void RigidBody::SetPos(const Vec3f& pos) {
 
-		px::PxTransform t(pos.x, pos.y, pos. z);
+		px::PxTransform t(pos.x + m_offset.x, pos.y + m_offset.y, pos.z + m_offset.z);
 
 		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody)
 			mp_DynamicBody->setGlobalPose(t);
@@ -248,7 +280,7 @@ namespace Aen {
 
 	void RigidBody::SetPos(const float& x, const float& y, const float& z) {
 
-		px::PxTransform t(px::PxVec3(x, y, z));
+		px::PxTransform t(px::PxVec3(x + m_offset.x, y + m_offset.y, z + m_offset.z));
 
 		if(m_rigidType == RigidType::DYNAMIC && mp_DynamicBody)
 			mp_DynamicBody->setGlobalPose(t);
@@ -273,5 +305,13 @@ namespace Aen {
 
 	const Vec3f RigidBody::GetRot() {
 		return Vec3f();
+	}
+
+	void RigidBody::SetOffset(const float& x, const float& y, const float& z) {
+		m_offset = Vec3f(x, y, z);
+	}
+
+	void RigidBody::SetOffset(const Vec3f& offset) {
+		m_offset = offset;
 	}
 }

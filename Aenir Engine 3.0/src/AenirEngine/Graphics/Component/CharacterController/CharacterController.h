@@ -13,10 +13,11 @@ namespace Aen {
 		void Move(const Vec3f& dir, const float& deltaTime);
 		void SetUpDirection(const Vec3f& up);
 		const Vec3f GetPos();
-		
+
 		private:
 		~CharacterController();
 
+		const Mat4f GetTranslate();
 		void SetPos(const Vec3f& pos);
 		void SetPos(const float& x, const float& y, const float& z);
 
@@ -24,6 +25,7 @@ namespace Aen {
 		px::PxPhysics* m_physics;
 		px::PxControllerManager* m_cManager;
 		px::PxController* m_controller;
+		px::PxControllerState m_state;
 
 		friend class Entity;
 		friend class MeshInstance;
