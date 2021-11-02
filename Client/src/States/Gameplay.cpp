@@ -11,8 +11,11 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_reimube);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	for (auto& d : m_enemyQueue) {
-		Aen::EntityHandler::RemoveEntity(*d->GetEntity());
+		delete d;
 	}
+	Aen::Resource::RemoveAllMaterials();
+	Aen::Resource::RemoveAllMeshes();
+	Aen::Resource::RemoveAllTextures();
 }
 
 void Gameplay::Initialize()
