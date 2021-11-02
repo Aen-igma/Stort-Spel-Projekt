@@ -1,6 +1,6 @@
 #pragma once
 #include "States.h"
-#include "../Level/LevelGenerator.h"
+#include "AenirEngine/LevelGeneration/LevelGenerator.h"
 #include"AenirEngine/ThirdParty/ImGui/imgui.h"
 #include "AenirEngine\Graphics\Component\EntityHandler.h"
 
