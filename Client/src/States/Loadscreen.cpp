@@ -14,7 +14,7 @@ void Loadscreen::Update(const float& deltaTime)
 {
 	m_loading->GetComponent<Aen::UIComponent>().Update();
 
-	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_loading->GetComponent<Aen::UIComponent>().Intersects(1))
+	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_loading->GetComponent<Aen::UIComponent>().Intersects(0))
 	{
 		State::SetState(States::Gameplay);
 	}
@@ -40,21 +40,20 @@ void Loadscreen::Initialize()
 	// keyboard
 	m_loading = &Aen::EntityHandler::CreateEntity();
 	m_loading->AddComponent<Aen::UIComponent>();
-	m_loading->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/KeyboardLayout.png", 0);
-	m_loading->GetComponent<Aen::UIComponent>().SetButtonPos(975.f, 520.f, 0);
-	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize(1900.f, 1000.f, 0);
-	m_loading->GetComponent<Aen::UIComponent>().SaveButtonData();
+	m_loading->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/KeyboardLayout.png", 0);
+	m_loading->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 520.f, 0);
+	m_loading->GetComponent<Aen::UIComponent>().SetPicSize(1700.f, 900.f, 0);
 
 	// continue
-	m_loading->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Continue.png", 1);
-	m_loading->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950.f, 1);
-	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 150.f, 1);
+	m_loading->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Continue.png", 0);
+	m_loading->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950.f, 0);
+	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 150.f, 0);
 	m_loading->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	//Text
-	m_loading->GetComponent<Aen::UIComponent>().AddText();
-	m_loading->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f);
-	m_loading->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
+	//m_loading->GetComponent<Aen::UIComponent>().AddText();
+	//m_loading->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f);
+	//m_loading->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
 
 	if (!State::GetLoaded())
 		State::SetLoad(true);

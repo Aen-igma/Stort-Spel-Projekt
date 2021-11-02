@@ -14,10 +14,15 @@ namespace Aen {
             m_pictureData.at(i).bmp->Release();
         }
         m_pictureData.clear();
-        mp_WFactory->Release();
-        mp_BCoder->Release();
-        mp_FormatConverter->Release();
-        mp_FrameDecode->Release();
+
+        if (mp_WFactory)
+            mp_WFactory->Release();
+        if (mp_BCoder)
+            mp_BCoder->Release();
+        if (mp_FormatConverter)
+            mp_FormatConverter->Release();
+        if (mp_FrameDecode)
+            mp_FrameDecode->Release();
     }
 
     void Aen::Picture::Initialize()

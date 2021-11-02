@@ -20,6 +20,9 @@ void MainMenu::Update(const float& deltaTime)
 		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(0)) {
 			State::SetState(States::Loadscreen);
 		}
+		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(1)) {
+			m_Window.Exit();
+		}
 	}
 }
 
@@ -44,14 +47,18 @@ void MainMenu::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1700.f, 900.f, 0);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(500.f, 950, 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 0);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Quit.png", 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950, 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 1);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 	
 	//Text
-	m_UI->GetComponent<Aen::UIComponent>().AddText();
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f,-100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
+	//m_UI->GetComponent<Aen::UIComponent>().AddText();
+	//m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f,-100.f);
+	//m_UI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
 
 	//m_cube = &Aen::EntityHandler::CreateEntity();
 	//m_cube->AddComponent<Aen::MeshInstance>();

@@ -11,12 +11,19 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_reimube);
-	//Aen::EntityHandler::RemoveEntity(*m_UI);
+	Aen::EntityHandler::RemoveEntity(*m_UI);
 }
 
 void Gameplay::Initialize()
 {
 	State::SetLoad(false);
+	// -----------------------------	UI	------------------------------- //
+	m_UI = &Aen::EntityHandler::CreateEntity();
+	m_UI->AddComponent<Aen::UIComponent>();
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/healthbar.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(220.f, 60.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(400.f, 150.f, 0);
+
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	m_camera = &Aen::EntityHandler::CreateEntity();

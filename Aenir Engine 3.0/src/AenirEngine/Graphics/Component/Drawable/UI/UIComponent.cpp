@@ -8,11 +8,11 @@ namespace Aen {
 	{
 		m_button.Initialize();
         m_picture.Initialize();
+        m_text.Initialize();
 	}
 
     Aen::UIComponent::~UIComponent()
     {
-
     }
 
     //----------------------	Button	----------------------------//
