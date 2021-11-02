@@ -14,7 +14,14 @@ Rimuru::Rimuru()
 }
 
 Rimuru::~Rimuru() {
+	m_rimuru->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_rimuru);
+	Aen::EntityHandler::RemoveEntity(*m_enemy);
+}
+
+Aen::Entity*& Rimuru::GetEntity()
+{
+	return m_rimuru;
 }
 
 void Rimuru::Update(const float& deltaTime, Aen::Entity& player) {

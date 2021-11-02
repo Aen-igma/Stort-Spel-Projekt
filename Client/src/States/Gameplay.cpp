@@ -2,7 +2,7 @@
 
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true),
-	m_hp(2), IFRAMEMAX(1.5f), m_iFrames(0.f) {}
+	m_hp(3), IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
 	Aen::GlobalSettings::RemoveMainCamera();
@@ -10,6 +10,12 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_reimube);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
+	for (auto& d : m_enemyQueue) {
+		delete d;
+	}
+	Aen::Resource::RemoveAllMaterials();
+	Aen::Resource::RemoveAllMeshes();
+	Aen::Resource::RemoveAllTextures();
 }
 
 void Gameplay::Initialize()
@@ -153,41 +159,24 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// Collision
 
-	if (m_reimube->GetComponent<Aen::AABoundBox>().Intersects(m_player.GetEntity()->GetComponent<Aen::AABoundBox>()))
-	{
-		//m_hp--;
-		//m_player->getcomponent<aen::aaboundbox>().toggleactive(false);
-		//m_invincible = true;
+	for (auto& h : m_enemyQueue) {
+		if (m_player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(h->GetEntity()->GetComponent<Aen::AABoundBox>())){
+			m_player.GetEntity()->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+			m_hp--;
+			cout << "PLAYER HEALTH: " << m_hp << endl;;
+		}
+	}
+	 //Invincible frames
+	if (m_invincible && m_iFrames <= IFRAMEMAX) {
+		m_iFrames += deltaTime;
+		//printf("Iframes: %f\n", m_iFrames);
+	}
+	else {
+		m_player.GetEntity()->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+		m_iFrames = 0.f;
 	}
 
-	static sm::Matrix m = DirectX::XMMatrixRotationRollPitchYaw(1.f, 2.f, 1.f);
-
-	
-
-	//if (Aen::Input::KeyDown(Aen::Key::B))
-	//	m_player->SetRot(0.f, 90.f, 0.f);
-		//m_attack->GetComponent<Aen::OBBox>().Transform(m);
-
-	//cout << m_hp << endl;
-
-	//// Invincible frames
-	//if (m_invincible && m_iFrames <= IFRAMEMAX)
-	//{
-	//	m_iFrames += deltaTime;
-	//}
-	//else 
-	//{
-	//	m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
-	//	m_iFrames = 0.f;
-	//	m_invincible = false;
-	//}
-
-	//if (m_hp <= 0)
-	//{
-	//	State::SetState(States::Gameover);
-	//}
-
-	m_player.Update(m_reimube ,deltaTime);
+	m_player.Update(m_reimube, deltaTime);
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -238,5 +227,5 @@ void Gameplay::Update(const float& deltaTime) {
 	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)
 	{
 		State::SetState(States::Gameover);
-	}*/
+	}
 }
