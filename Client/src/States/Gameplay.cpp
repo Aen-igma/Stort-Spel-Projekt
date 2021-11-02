@@ -44,7 +44,7 @@ void Gameplay::Initialize()
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_RESOURCE_DIR("Capsule.fbx"));
+	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
 	Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
@@ -185,8 +185,9 @@ void Gameplay::Update(const float& deltaTime) {
 
 	
 
-	if (Aen::Input::KeyDown(Aen::Key::B)) 
-		m_attack->GetComponent<Aen::OBBox>().Transform(m);
+	if (Aen::Input::KeyDown(Aen::Key::B))
+		m_player->SetRot(0.f, 90.f, 0.f);
+		//m_attack->GetComponent<Aen::OBBox>().Transform(m);
 
 	//cout << m_hp << endl;
 
