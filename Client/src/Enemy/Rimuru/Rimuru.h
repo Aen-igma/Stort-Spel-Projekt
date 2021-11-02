@@ -10,5 +10,8 @@ class Rimuru : public Enemy {
 	virtual void Update(const float& deltaTime, Aen::Entity& player) override;
 
 	private:
+	Aen::Entity* m_rimuru;
+	Aen::Vec3f m_lDir;
+	float v;
 
 };

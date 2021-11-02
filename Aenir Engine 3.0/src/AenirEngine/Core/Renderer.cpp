@@ -8,7 +8,7 @@ namespace Aen {
 		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
-		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::Front), 
+		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
 		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP) {}
 
 	void Renderer::Initialize() {
@@ -87,12 +87,7 @@ namespace Aen {
 			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
 			m_cbCamera.UpdateBuffer();
 
-			if(Input::KeyPress(Key::M)) {
-				Mat4f otherView = MatViewRH(Vec3f(20.f, 20.f, 20.f), Vec3f(0.f, 0.f, 0.f), Vec3f(0.f, 1.f, 0.f));
-				m_cbTransform.GetData().m_vMat = otherView.Transposed();
-			} else
-				m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
-
+			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
 			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
 		} else {
 			m_cbTransform.GetData().m_vMat = Mat4f::identity;
@@ -160,7 +155,7 @@ namespace Aen {
 		RenderSystem::BindUnOrderedAccessView(0u, m_UAVBackBuffer);
 		RenderSystem::BindShader(m_postProcessCS);
 
-		//RenderSystem::Dispatch(m_dispatchGroups, 1u);
+		RenderSystem::Dispatch(m_dispatchGroups, 1u);
 
 		RenderSystem::UnBindShader<CShader>();
 		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);

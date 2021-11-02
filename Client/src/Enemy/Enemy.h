@@ -1,12 +1,5 @@
 #pragma once
-#include "AenirEngine\AenCore.h"
-#include<queue>
-
-struct EventData {
-	float duration;
-	float accell;
-	std::function<void(float& accell)> function;
-};
+#include"../Player.h"
 
 class Enemy {
 	public:

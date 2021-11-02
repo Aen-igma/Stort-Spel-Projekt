@@ -37,13 +37,13 @@ namespace Aen {
 		const Vec3f GetScale();
 		const size_t& GetID();
 		const std::string& GetTag();
+		const Mat4f GetTransformation();
 
 		private:
 		Entity(const size_t& id);
 		~Entity();
 
 		const bool HasId(const size_t& id);
-		const Mat4f GetTransformation();
 		const Vec3f GetTranslation();
 		const Mat4f GetPosMat();
 		const Mat4f GetRotMat();

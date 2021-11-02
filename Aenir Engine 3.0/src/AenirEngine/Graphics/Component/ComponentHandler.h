@@ -380,6 +380,7 @@ namespace Aen {
 		friend class Renderer;
 		friend class ImGuiHandler;
 		friend class AABoundBox;
+		friend class Camera;
 	};
 
 }
