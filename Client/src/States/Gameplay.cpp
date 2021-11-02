@@ -156,7 +156,6 @@ void Gameplay::Update(const float& deltaTime) {
 		m_UI->GetComponent<Aen::UIComponent>().LessenPic(m_sub, 0);
 	}
 
-
 	if (m_reimube->GetComponent<Aen::AABoundBox>().Intersects(m_player.GetEntity()->GetComponent<Aen::AABoundBox>()))
 	{
 		//m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
