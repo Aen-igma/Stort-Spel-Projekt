@@ -16,7 +16,7 @@ class Player {
 	void Update(const float& deltaTime);
 	Aen::Entity*& GetEntity();
 
-	protected:
+	private:
 	Aen::Entity* m_player;
 	Aen::Entity* m_camera;
 	Aen::Raycast m_ray;

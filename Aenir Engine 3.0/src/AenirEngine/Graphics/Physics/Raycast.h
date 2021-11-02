@@ -9,8 +9,10 @@ namespace Aen {
 		~Raycast();
 
 		void Update();
-		void SetOrigin(const Aen::Vec3f& origin);
-		void SetDirection(const Aen::Vec3f& dir);
+		void SetOrigin(const Vec3f& origin);
+		void SetOrigin(const float& x, const float& y, const float& z);
+		void SetDirection(const Vec3f& dir);
+		void SetDirection(const float& x, const float& y, const float& z);
 		void SetMaxDist(const float& dist);
 
 		const bool Hit();
