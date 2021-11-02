@@ -379,6 +379,7 @@ namespace Aen {
 		friend class MeshInstance;
 		friend class Renderer;
 		friend class ImGuiHandler;
+		friend class LevelExporter;
 		friend class AABoundBox;
 		friend class Camera;
 	};
