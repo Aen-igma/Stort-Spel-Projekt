@@ -27,7 +27,6 @@ class Gameplay : public State {
 
     Player m_player;
     bool m_beatBoss;
-    std::queue<EventData> m_eventQueue;
 
     std::deque<Enemy*> m_enemyQueue;
 

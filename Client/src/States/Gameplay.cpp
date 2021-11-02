@@ -190,13 +190,7 @@ void Gameplay::Update(const float& deltaTime) {
 	if(Aen::Input::KeyDown(Aen::Key::J))
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
 
-	if (Aen::Input::KeyDown(Aen::Key::O)) {
-		delete m_enemyQueue.front();
-		m_enemyQueue.pop_front();
-	}
-
-	m_player.LightAttack(m_enemyQueue, deltaTime);
-	m_player.Update(m_reimube, deltaTime);
+	m_player.Update(m_enemyQueue, deltaTime);
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 

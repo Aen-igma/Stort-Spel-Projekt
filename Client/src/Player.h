@@ -10,16 +10,19 @@ struct EventData {
 	std::function<void(float& accell)> function;
 };
 
+struct TargetData {
+	float distance;
+	Aen::Entity* target;
+};
+
 class Player {
 	public:
 	Player();
 	~Player();
 
-	void Update(Aen::Entity* e,const float& deltaTime);
+	void Update(std::deque<Enemy*>& e,const float& deltaTime);
 	Aen::Entity*& GetEntity();
 	Aen::Entity*& GetHurtBox();
-
-	bool LightAttack(std::deque<Enemy*>& e, const float deltatime);
 
 private:
 	Aen::Entity* m_hurtbox;
@@ -34,9 +37,6 @@ private:
 	float m_movementSpeed;
 	Aen::Vec3f m_finalDir;
 
-	Aen::Entity* m_target;
-	float m_targetDist;
-
 	float m_attackTimer;
 
 	const float m_LIGHTATTACKTIME;
@@ -44,4 +44,5 @@ private:
 
 
 	std::queue<EventData> m_eventQueue;
+	std::deque<TargetData> m_targets;
 };
