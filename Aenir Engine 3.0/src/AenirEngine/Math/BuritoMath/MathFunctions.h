@@ -292,5 +292,22 @@ namespace Aen {
 		return out;
 	}
 
+	template<class T>
+	inline const Concealed::TVec<T, 4> EulerToQuat(const T& x, const T& y, const T& z) noexcept {
+		Concealed::TVec<T, 4> out;
+		out.smVec = DirectX::XMQuaternionRotationRollPitchYaw(DegToRad(x), DegToRad(y), DegToRad(z));
+
+		return out;
+	}
+
+	template<class T>
+	inline const Concealed::TVec<T, 4> EulerToQuat(const Concealed::TVec<T, 3> rot) noexcept {
+		Concealed::TVec<T, 4> out;
+		Concealed::TVec<T, 3> tempRot = DegToRad(rot);
+		out.smVec = DirectX::XMQuaternionRotationRollPitchYaw(tempRot.x, tempRot.y, tempRot.z);
+
+		return out;
+	}
+
 	// --------------------------------------------------------------------------------------------------------------------- //
 }

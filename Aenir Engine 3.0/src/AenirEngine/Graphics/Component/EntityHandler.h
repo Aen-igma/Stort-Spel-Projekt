@@ -63,5 +63,6 @@ namespace Aen {
 		friend class ImGuiHandler;
 		friend class MeshInstance;
 		friend class GameLoop;
+		friend class ImGuiImporter;
 	};
 }

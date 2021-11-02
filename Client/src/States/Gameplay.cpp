@@ -78,7 +78,7 @@ void Gameplay::Initialize()
 	m_wall->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
 	m_wall->SetPos(22.f, 0.f, 0.f);
 
-	Aen::Entity* wallE = &Aen::EntityHandler::CreateEntity();
+	/*Aen::Entity* wallE = &Aen::EntityHandler::CreateEntity();
 	wallE->AddComponent<Aen::MeshInstance>();
 	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
 	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
@@ -110,12 +110,13 @@ void Gameplay::Initialize()
 	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 	wallE->SetPos(0.f, 22.f, 0.f);
 
-	wallE = nullptr;
+	wallE = nullptr;*/
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::RigidBody>();
 	m_plane->GetComponent<Aen::RigidBody>().SetOffset(0.f, -0.5f, 0.f);
-	m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
+	//m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
+	m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::PLANE);
 	m_plane->AddComponent<Aen::MeshInstance>();
 	m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
@@ -128,7 +129,11 @@ void Gameplay::Initialize()
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
 	m_reimube->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
-	m_reimube->SetPos(0.f, 1.f, -3.f);
+	m_reimube->SetPos(50.f, 1.f, -3.f);
+
+	// ------ Level Importer ------ //
+	std::string path = "../LevelFolder/Entrance.Level";
+	m_levelImporter.import(path);
 
 	// --------------------------- Setup Window --------------------------------- //
 
