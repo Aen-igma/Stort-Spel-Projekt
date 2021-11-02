@@ -1,5 +1,5 @@
 #pragma once
-#include"BBuffer.h"
+#include"DX11Core.h"
 
 namespace Aen {
 
@@ -10,7 +10,6 @@ namespace Aen {
 		UAView(const uint32_t& stride, const uint32_t& size);
 
 		void Create(const uint32_t& stride, const uint32_t& size);
-		void Create(BBuffer& bBuffer);
 
 		private:
 		ComBuffer m_buffer;

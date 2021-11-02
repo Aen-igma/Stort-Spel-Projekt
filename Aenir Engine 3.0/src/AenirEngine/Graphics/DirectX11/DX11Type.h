@@ -13,8 +13,6 @@ using ComFactory1 = Microsoft::WRL::ComPtr<IDXGIFactory1>;
 using ComFactory2 = Microsoft::WRL::ComPtr<IDXGIFactory2>;
 using ComFactory6 = Microsoft::WRL::ComPtr<IDXGIFactory6>;
 using ComAdapter1 = Microsoft::WRL::ComPtr<IDXGIAdapter1>;
-using Com2DTarget = Microsoft::WRL::ComPtr<ID2D1RenderTarget>;
-using Com2DFactory = Microsoft::WRL::ComPtr<ID2D1Factory1>;
 
 using ComTexture2D = Microsoft::WRL::ComPtr<ID3D11Texture2D>;
 using ComDepthStencilView = Microsoft::WRL::ComPtr<ID3D11DepthStencilView>;
