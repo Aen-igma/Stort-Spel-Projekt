@@ -37,7 +37,6 @@ namespace Aen {
 		void SetPicPos(float x, float y, int indX);
 		void SetPicSize(float width, float height, int indX);
 		void LessenPic(float width, int indX);
-
 		
 		friend class ComponentHandler;
 		friend class Renderer;

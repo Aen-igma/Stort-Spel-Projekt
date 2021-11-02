@@ -112,7 +112,7 @@ namespace Aen {
 
             m_button.Draw(b);
         }
-		//m_text.Draw();
+		m_text.Draw();
     }
 
 	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)
