@@ -3,7 +3,8 @@
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
 	m_hurtbox(&Aen::EntityHandler::CreateEntity()),
-	m_mouseSense(5.f), m_targetDist(25.f), m_movementSpeed(6.f), m_finalDir(0.f, 0.f, -1.f){
+	m_mouseSense(5.f), m_targetDist(25.f), m_movementSpeed(6.f), m_finalDir(0.f, 0.f, -1.f),
+	m_lightAttacking(false), m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f){
 	
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
@@ -31,8 +32,7 @@ Player::Player()
 	m_hurtbox->AddComponent<Aen::OBBox>();
 	m_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.0);
 	m_hurtbox->GetComponent<Aen::OBBox>().SetOffset(0.f, 0.f, 0.f);
-
-	//m_lightAttack->SetParent(*m_player);
+	m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
 }
 
 Player::~Player() {
@@ -44,10 +44,10 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 
 	// Collision
 
-	if (m_hurtbox->GetComponent<Aen::OBBox>().Intersects(e->GetComponent<Aen::AABoundBox>()))
-	{
+	if (Aen::Input::KeyDown(Aen::Key::LMOUSE))
+		m_lightAttacking = true;
 
-	}
+	LightAttack(e, deltaTime);
 
 	static Aen::Vec3f axis;
 	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
@@ -285,4 +285,34 @@ void Player::Update(Aen::Entity* e, const float& deltaTime) {
 
 Aen::Entity*& Player::GetEntity() {
 	return m_player;
+}
+
+bool Player::LightAttack(Aen::Entity* e, const float deltatime)
+{
+	bool hit = false;
+	if (m_lightAttacking)
+	{
+		m_attackTimer += deltatime;
+		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
+		if (m_hurtbox->GetComponent<Aen::OBBox>().Intersects(e->GetComponent<Aen::AABoundBox>()))
+		{
+			hit = true;
+			printf("Hit\n");
+		}
+		else
+		{
+			hit = false;
+			printf("miss\n");
+		}
+		
+		if (m_attackTimer > m_LIGHTATTACKTIME)
+		{
+			m_lightAttacking = false;
+			m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+			m_attackTimer = 0.f;
+		}
+	}
+	
+	
+	return hit;
 }

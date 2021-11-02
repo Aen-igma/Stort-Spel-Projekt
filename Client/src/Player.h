@@ -24,12 +24,21 @@ private:
 	Aen::Entity* m_camera;
 	Aen::Raycast m_ray;
 
+	bool m_lightAttacking;
+
 	float m_mouseSense;
 	float m_movementSpeed;
 	Aen::Vec3f m_finalDir;
 
 	Aen::Entity* m_target;
 	float m_targetDist;
+
+	float m_attackTimer;
+
+	const float m_LIGHTATTACKTIME;
+	const float m_HEAVYATTACKTIME;
+
+	bool LightAttack(Aen::Entity* e, const float deltatime);
 
 	std::queue<EventData> m_eventQueue;
 };

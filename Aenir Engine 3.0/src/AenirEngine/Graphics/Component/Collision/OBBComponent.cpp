@@ -60,7 +60,7 @@ const bool Aen::OBBox::Intersects(OBBox& volume)
 
 const bool Aen::OBBox::Intersects(AABoundBox& volume)
 {
-	if (m_obb.Intersects(volume.m_aabb) && m_isOn)
+	if (m_isOn && m_obb.Intersects(volume.m_aabb))
 	{
 		volume.m_isColliding = m_isColliding = true;
 		return true;
@@ -153,6 +153,11 @@ void Aen::OBBox::ToggleActive()
 	m_isOn = !m_isOn;
 }
 
+const bool Aen::OBBox::GetIsOn() const
+{
+	return m_isOn;
+}
+
 void Aen::OBBox::UpdateVerts()
 {
 #ifdef _DEBUG
@@ -182,8 +187,9 @@ void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
 		renderer.m_cbTransform.BindBuffer<VShader>(0u);
 
 		renderer.m_collisionBuffer.BindBuffer<PShader>(0);
-		if (m_isColliding) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
-		else renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
+		if (m_isColliding && m_isOn) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
+		else if(!m_isColliding && m_isOn) renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
+		else renderer.m_collisionBuffer.GetData().color = { .2f,.2f,.2f };
 		renderer.m_collisionBuffer.GetData().switcher = 0;
 		renderer.m_collisionBuffer.UpdateBuffer();
 

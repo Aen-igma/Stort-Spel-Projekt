@@ -32,8 +32,17 @@ namespace Aen
 		void SetRotation(Aen::Vec3f v);
 		void SetRotation(const float& x, const float& y, const float& z);
 
+		/// <summary>
+		/// Used for turning off/on collision checking
+		/// </summary>
+		/// <param name="b"></param>
 		void ToggleActive(bool b);
+		/// <summary>
+		/// Used for turning off/on collision checking
+		/// </summary>
 		void ToggleActive();
+
+		const bool GetIsOn() const;
 		
 	private:
 		DirectX::BoundingOrientedBox m_obb;
