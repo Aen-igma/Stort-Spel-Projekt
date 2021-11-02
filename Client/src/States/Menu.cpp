@@ -56,7 +56,8 @@ void MainMenu::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 	
 	//Text
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"HIGH TOWER");
+	m_UI->GetComponent<Aen::UIComponent>().AddText();
+	//m_UI->GetComponent<Aen::UIComponent>().AddText(L"High Tower");
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(300.f,100.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(600.f, 300);
 

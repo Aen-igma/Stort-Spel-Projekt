@@ -1,8 +1,8 @@
 #pragma once
 #include <dwrite.h>
 #include <d2d1_1.h>
-#include <memory>
 #include <string>
+#include <wincodec.h>
 #include "Graphics/Graphics.h"
 
 struct UITextData
@@ -23,7 +23,7 @@ namespace Aen
 		UITextHolder();
 		~UITextHolder();
 
-		std::vector<UITextData> getData() const;
+		//std::vector<UITextData> getData() const;
 		void Initialize();
 		void TextAdd(std::wstring text);
 		void AddText();
@@ -35,7 +35,7 @@ namespace Aen
 		Vec2f getTextSize()const;
 
 	private:
-		std::vector<UITextData> m_UITextData;
+		//std::vector<UITextData> m_UITextData;
 		IDWriteFactory* m_pDWriteFactory;
 
 		std::wstring m_text;

@@ -18,25 +18,26 @@ namespace Aen
 		if (mp_Brush)
 			mp_Brush->Release();
 
-		for (int i = 0; i < m_UITextData.size(); i++)
-		{
-			m_UITextData.at(i).m_pFormat->Release();
-			m_UITextData.at(i).m_pBrush->Release();
-		}
-		m_UITextData.clear();
+		//for (int i = 0; i < m_UITextData.size(); i++)
+		//{
+		//	m_UITextData.at(i).m_pFormat->Release();
+		//	m_UITextData.at(i).m_pBrush->Release();
+		//}
+		//m_UITextData.clear();
 	}
 
 	void UITextHolder::Initialize()
 	{
+		//ASSERT_HR(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&m_pDWriteFactory)));
 		ASSERT_HR(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&m_pDWriteFactory)));
-	}
-
-	void UITextHolder::TextAdd(std::wstring text)
-	{
 		ASSERT_HR(m_target2D->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &mp_Brush));
 		ASSERT_HR(m_pDWriteFactory->CreateTextFormat(L"Arial", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 72.0f, L"en-us", &m_Format));
 		ASSERT_HR(m_Format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
 		ASSERT_HR(m_Format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
+	}
+
+	void UITextHolder::TextAdd(std::wstring text)
+	{
 
 		this->m_text = text;
 		//this->m_Lenght = (UINT32)wcslen(this->m_text.c_str());
@@ -51,8 +52,7 @@ namespace Aen
 		ASSERT_HR(m_Format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
 
 		this->m_text = L"High Tower!";
-		//this->m_text = text;
-		this->m_Lenght = (UINT32)wcslen(this->m_text.c_str());
+		this->m_Lenght = m_text.size();
 	}
 
 	void Aen::UITextHolder::Draw()
@@ -97,9 +97,9 @@ namespace Aen
 		return Vec2f(RectWidth, RectHeight);
 	}
 
-	std::vector<UITextData> Aen::UITextHolder::getData() const
-	{
-		return m_UITextData;
-	}
+	//std::vector<UITextData> Aen::UITextHolder::getData() const
+	//{
+	//	return m_UITextData;
+	//}
 }
 
