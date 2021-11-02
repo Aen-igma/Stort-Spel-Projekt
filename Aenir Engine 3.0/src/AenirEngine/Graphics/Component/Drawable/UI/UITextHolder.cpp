@@ -9,9 +9,15 @@ namespace Aen
 
 	Aen::UITextHolder::~UITextHolder()
 	{
-		m_pDWriteFactory->Release();
-		m_pTextFormat->Release();
-		m_pBlackBrush->Release();
+		//if (m_pDWriteFactory)
+		//	m_pDWriteFactory->Release();
+
+		if (m_pTextFormat)
+			m_pTextFormat->Release();
+
+		if (m_pBlackBrush)
+			m_pBlackBrush->Release();
+
 		for (int i = 0; i < m_UITextData.size(); i++)
 		{
 			m_UITextData.at(i).m_pFormat->Release();
@@ -20,17 +26,20 @@ namespace Aen
 		m_UITextData.clear();
 	}
 
-	void Aen::UITextHolder::createText()
+	void UITextHolder::Initialize()
 	{
-
-		this->textName = L"High Tower!";
-		this->m_TextLenght = (UINT64)wcslen(this->textName.c_str());
-
 		ASSERT_HR(m_target2D->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Crimson), &this->m_pBlackBrush));
 		ASSERT_HR(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&m_pDWriteFactory)));
 		ASSERT_HR(m_pDWriteFactory->CreateTextFormat(L"Ariel", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 72.0f, L"en-us", &this->m_pTextFormat));
 		ASSERT_HR(m_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
 		ASSERT_HR(m_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
+	}
+
+	void Aen::UITextHolder::createText()
+	{
+
+		this->textName = L"High Tower!";
+		this->m_TextLenght = (UINT64)wcslen(this->textName.c_str());
 	}
 
 	void Aen::UITextHolder::renderText()

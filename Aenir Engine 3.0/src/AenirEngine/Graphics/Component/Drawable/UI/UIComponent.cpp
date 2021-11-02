@@ -7,12 +7,15 @@ namespace Aen {
 		:Drawable(id)
 	{
 		m_button.Initialize();
+        m_picture.Initialize();
+        m_text.Initialize();
 	}
 
     Aen::UIComponent::~UIComponent()
     {
-
     }
+
+    //----------------------	Button	----------------------------//
 
 	void UIComponent::SaveButtonData()
 	{
@@ -39,6 +42,8 @@ namespace Aen {
        return m_button.Intersect(indX);
     }
 
+    //----------------------	Text	----------------------------//
+
     void Aen::UIComponent::AddText()
     {
         m_text.createText();
@@ -54,6 +59,24 @@ namespace Aen {
         m_text.setTextPosition(x,y);
     }
 
+    //----------------------	Just pictures	----------------------------//
+
+    void UIComponent::AddPicture(LPCWSTR dir, int indX)
+    {
+        m_picture.AddPicture(dir, indX);
+    }
+
+    void UIComponent::SetPicPos(float x, float y, int indX)
+    {
+        m_picture.SetPicPos(x, y, indX);
+    }
+
+    void UIComponent::SetPicSize(float width, float height, int indX)
+    {
+        m_picture.SetPicSize(width, height, indX);
+    }
+
+    //----------------------	General stuff   ----------------------------//
 	void UIComponent::Update()
 	{
 		for (auto& b : GetData()) {
@@ -69,6 +92,11 @@ namespace Aen {
 
 	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& layer)
 	{
+        //Draw Picture
+        for (auto& b : m_picture.GetData()) {
+
+            m_picture.Draw(b);
+        }
 		//Draw button
 		for (auto& b : GetData()) {
 
