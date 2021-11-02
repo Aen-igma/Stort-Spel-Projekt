@@ -9,102 +9,17 @@ namespace Aen {
 		return m_levelImporter.GetRoomVector()[index].GetRoom();
 	}
 
-	void ImGuiHandler::AddLight(Aen::Entity* entity)
-	{
-		m_entityList.push_back(entity);
-		m_itemList.push_back(IGH::LIGHT + std::to_string(m_lightCount));
-		//m_selected.push_back(false);
-		//m_selectedEntities.push_back(-1);
-		m_lightCount++;
-	}
-
-	void ImGuiHandler::AddBase(AenIF::Model& model, AenIF::Texture& texture)
-	{
-		string imageName = AEN_RESOURCE_DIR(texture.name);
-		string materialName = IGH::MATERIAL + to_string(m_entityCount);
-		string textureName = IGH::TEXTURE + to_string(m_entityCount);
-
-		Aen::Entity* entity = &mp_entityHandlerPtr->CreateEntity();
-
-		Aen::Mesh& mesh = Aen::Resource::CreateMesh(model.name);
-		mesh.Load(AEN_RESOURCE_DIR(model.mesh));
-
-		Aen::Texture& materialTexture = Aen::Resource::CreateTexture(textureName);
-		materialTexture.LoadTexture(imageName);
-		Aen::Material& material = Aen::Resource::CreateMaterial(materialName, true);
-		material.SetDiffuseMap(materialTexture);
-
-		entity->AddComponent<Aen::MeshInstance>();
-		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
-
-		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);
-		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);
-		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
-
-		size_t id = entity->GetID();
-		Aen::ComponentHandler::GetMeshInstance(static_cast<size_t>(id)).SetMaterial(material);
-
-		AddEnemy(entity, model);
-
-		AddModel(entity, model.name);
-		m_modelMap.insert(std::make_pair(entity->GetID(), ModelContainer(textureName, materialName, texture.name, model.name, model.mesh, model.type,model.rigidBody,model.rigidBodyType )));
-		cout << endl;
-	}
-
-	void ImGuiHandler::AddPointLight(AenIF::Light& input)
-	{
-		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
-
-
-		light->AddComponent<Aen::PointLight>();
-		light->GetComponent<Aen::PointLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
-		light->GetComponent<Aen::PointLight>().SetLightDist(input.attenuation[0], input.attenuation[1], input.attenuation[2], input.range);
-		light->GetComponent<Aen::PointLight>().SetStrength(100);
-		light->SetPos(input.translation[0], input.translation[1], input.translation[2]);
-
-		AddLight(light, IGH::POINTLIGHT);
-	}
-
-	void ImGuiHandler::AddSpotLight(AenIF::Light& input)
-	{
-		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
-
-		light->AddComponent<Aen::SpotLight>();
-		light->GetComponent<Aen::SpotLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
-		light->GetComponent<Aen::SpotLight>().SetConeSize(input.angle);
-		light->GetComponent<Aen::SpotLight>().SetLightDist(input.attenuation[0], input.attenuation[1], input.attenuation[2], input.range);
-		light->GetComponent<Aen::SpotLight>().SetStrength(input.intensity);
-		light->SetPos(input.translation[0], input.translation[1], input.translation[2]);
-		light->SetRot(input.rotation[0], input.rotation[1], input.rotation[2]);
-
-		AddLight(light, IGH::SPOTLIGHT);
-	}
-
-	void ImGuiHandler::AddDirectional(AenIF::Light& input)
-	{
-		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
-
-		light->AddComponent<Aen::DirectionalLight>();
-		light->GetComponent<Aen::DirectionalLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
-		light->GetComponent<Aen::DirectionalLight>().SetStrength(input.intensity);
-		light->SetRot(input.direction[0], input.direction[1], input.direction[2]);
-
-		AddLight(light, IGH::DIRECTIONALLIGHT);
-	}
-
-	void ImGuiHandler::AddEnemy()
-	{
-		EnemyCreateWindow();
-	}
-
-
 	ImGuiHandler::ImGuiHandler()
 	{
-
+		imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap);
 	}
 
 	ImGuiHandler::~ImGuiHandler()
 	{
+		if (imguiImporter != nullptr)
+		{
+			delete imguiImporter;
+		}
 	}
 
 	void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
@@ -138,6 +53,8 @@ namespace Aen {
 		ToolWindow();
 		SaveWindow();
 		EnemyCreateWindow();
+		ImportWindow();
+
 	}
 
 	void ImGuiHandler::Initialize(const HWND& hwnd, ID3D11Device* mp_device, ID3D11DeviceContext* mp_dContext)
@@ -211,29 +128,8 @@ namespace Aen {
 		{
 			if (m_openOrSave == IGH::OPEN.c_str())
 			{
-				m_levelImporter.ReadFromFile(m_fileDialog.GetSelected().string());
-				
-				for (size_t i = 0; i < m_levelImporter.GetRoomVector()[0].GetModelVector().size(); i++)
-				{
-					AddBase(m_levelImporter.GetRoomVector()[0].GetModelVector()[i], m_levelImporter.GetRoomVector()[0].GetTextureVector()[i]);
-				}
-
-				for (size_t i = 0; i < m_levelImporter.GetRoomVector()[0].GetLightVector().size(); i++)
-				{
-					if (m_levelImporter.GetRoomVector()[0].GetLightVector()[i].type == IGH::DIRECTIONALLIGHT.c_str())
-					{
-						AddDirectional(m_levelImporter.GetRoomVector()[0].GetLightVector()[i]);
-					}
-					else if (m_levelImporter.GetRoomVector()[0].GetLightVector()[i].type == IGH::SPOTLIGHT.c_str())
-					{
-						AddSpotLight(m_levelImporter.GetRoomVector()[0].GetLightVector()[i]);
-					}
-					else if (m_levelImporter.GetRoomVector()[0].GetLightVector()[i].type == IGH::POINTLIGHT.c_str())
-					{
-						AddPointLight(m_levelImporter.GetRoomVector()[0].GetLightVector()[i]);
-					}
-				}
-				m_levelImporter.GetRoomVector().clear();
+				levelPath = m_fileDialog.GetSelected().string();
+				m_ImportWindowActive = true;
 				m_openOrSave = "";
 			}
 			m_fileDialog.ClearSelected();
@@ -307,7 +203,7 @@ namespace Aen {
 
 	void ImGuiHandler::ColorWheel()
 	{
-		ImGui::Begin("Color", nullptr);
+		ImGui::Begin(IGH::COLOR.c_str(), nullptr);
 		static float color[3] = { 255,255,255 };
 		ImGui::ColorPicker3("##picker", color, ImGuiColorEditFlags_PickerHueWheel);
 		ImGui::End();
@@ -354,7 +250,7 @@ namespace Aen {
 				if (hitBoxEnable == true)
 				{
 					size_t key = m_entityList[m_selectedEntity]->GetID();
-					unordered_map<size_t, ModelContainer>::iterator it = m_modelMap.find(key);
+					unordered_map<size_t, IGH::ModelContainer>::iterator it = m_modelMap.find(key);
 
 					if (it != m_modelMap.end())
 					{
@@ -416,27 +312,26 @@ namespace Aen {
 	void ImGuiHandler::ToolWindow()
 	{
 		static int mode = -1;
-		static const std::string stringArray[3] = { "Move","Rotate","Scale" };
 		static std::string currentMode = "";
 
 		ImGui::Begin("a", nullptr);
 		for (int i = 0; i < 3; i++)
 		{
-			if (ImGui::Button(stringArray[i].c_str()))
+			if (ImGui::Button(IGH::TOOLS[i]))
 			{
 				mode = i;
 
 				if (mode == 0)
 				{
-					currentMode = stringArray[0];
+					currentMode = IGH::TOOLS[i];
 				}
 				else if (mode == 1)
 				{
-					currentMode = stringArray[1];
+					currentMode = IGH::TOOLS[i];
 				}
 				else if (mode == 2)
 				{
-					currentMode = stringArray[2];
+					currentMode = IGH::TOOLS[i];
 				}
 			}
 		}
@@ -470,13 +365,12 @@ namespace Aen {
 			static int selectedType = 0;
 			static int CurrentIndex = 0;
 			static char name[MESH_NAME_MAX_LENGTH];
-			const char* type[] = { "Normal Enemy", "Boss Enemy" };
 			static string mesh = "";
 
 			ImGui::Begin("Create Enemy", nullptr);
 
 			ImGui::InputText("Name", name, MESH_NAME_MAX_LENGTH);
-			ImGui::Combo("Type", &selectedType, type, IM_ARRAYSIZE(type));
+			ImGui::Combo("Type", &selectedType, IGH::ENEMYTYPE, IM_ARRAYSIZE(IGH::ENEMYTYPE));
 
 			mesh = CustomCombo(m_objFileName, "Mesh", CurrentIndex);
 
@@ -484,8 +378,8 @@ namespace Aen {
 			{
 				if (mesh != "")
 				{
-					size_t id = AddBase(name, mesh);
-					m_modelMap.at(id).m_type = type[selectedType];
+					size_t id = imguiImporter->AddBase(name, mesh);
+					m_modelMap.at(id).m_type = IGH::ENEMYTYPE[selectedType];
 				}
 			
 				m_createEnemyWindowActive = false;
@@ -495,34 +389,31 @@ namespace Aen {
 		}
 	}
 
-	void ImGuiHandler::AddModel(Aen::Entity* entity, string name)
+	void ImGuiHandler::ImportWindow()
 	{
-		m_entityList.push_back(entity);
-		m_itemList.push_back(name + std::to_string(m_entityCount));
-		//m_selected.push_back(false);
-		//m_selectedEntities.push_back(-1);
-		m_entityCount++;
-	}
+		if (m_ImportWindowActive == true)
+		{
+			ImGui::Begin("Offset", nullptr);
 
-	void ImGuiHandler::AddModel(Aen::Entity* entity)
-	{
-		m_entityList.push_back(entity);
-		m_itemList.push_back(IGH::MODEL + std::to_string(m_entityCount));
-		//m_selected.push_back(false);
-		//m_selectedEntities.push_back(-1);
-		m_entityCount++;
-	}
-
-	void ImGuiHandler::AddLight(Aen::Entity* entity, string type)
-	{
-		m_lightMap.insert(std::make_pair(entity->GetID(), entity));
-		m_entityList.push_back(entity);
-		m_itemList.push_back(type + std::to_string(m_lightCount));
-	//	m_selected.push_back(false);
-	//	m_selectedEntities.push_back(-1);
+			static float tempTranslation[3] = { 0,0,0 };
+			static float tempRotation[3] = { 0,0,0 };
+			static float tempScale[3] = { 1,1,1 };
+			//static float roomRotation[2] = { 0,0 };
+			//static bool roomRotate = false;
 
 
-		m_lightCount++;
+			ImGui::DragFloat3("Translate", tempTranslation, 0.02f);
+			ImGui::DragFloat3("Rotate", tempRotation, 0.5f);
+			ImGui::DragFloat3("Scale", tempScale, 0.02f);
+			//ImGui::DragFloat2("Room Rotation", roomRotation, 0.02f);
+			//ImGui::Checkbox("Room Rotation", &roomRotate);
+			
+			if (ImGui::Button("Import"))
+			{
+				m_ImportWindowActive = imguiImporter->import(m_levelImporter,levelPath,tempTranslation,tempRotation,tempScale);
+			}
+			ImGui::End();
+		}
 	}
 
 	void ImGuiHandler::ReadAllModelsFromHandler()
@@ -542,8 +433,8 @@ namespace Aen {
 
 	void ImGuiHandler::CreatePreviewTextureThumbnail()
 	{
-		string filePathDestination = "../Resource/Thumbnail/";
-		string filePathSource = "../Resource/";
+		string filePathDestination = IGH::RESOURCEPATH + "Thumbnail/";
+		string filePathSource = IGH::RESOURCEPATH;
 		string destinationPath;
 		string sourcePath;
 
@@ -692,92 +583,27 @@ namespace Aen {
 		}
 	}
 
+	//void ImGuiHandler::AddEnemy(Aen::Entity* entity, AenIF::Model& model)
+	//{
+	//	if (model.type == IGH::NORMALENEMY)
+	//	{
+	//		OutputDebugStringA(IGH::NORMALENEMY.c_str());
+	//	}
+	//	else if (model.type == IGH::BOSS.c_str())
+	//	{
+	//		OutputDebugStringA(IGH::NORMALENEMY.c_str());
+	//	}
+	//}
 
 
-	size_t ImGuiHandler::AddBase(const string& meshName, const string& objName)
-	{
-		string imageName = AEN_RESOURCE_DIR("Missing_Textures.png");
-		string materialName = "Material" + to_string(m_entityCount);
-		string textureName = "Texture" + to_string(m_entityCount);
-
-
-		Aen::Entity* entity = &mp_entityHandlerPtr->CreateEntity();
-		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName + std::to_string(m_entityCount));
-		mesh.Load(AEN_RESOURCE_DIR(objName));
-
-		entity->AddComponent<Aen::MeshInstance>();
-		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
-
-
-		AddModel(entity, meshName);
-		m_modelMap.insert(std::make_pair(entity->GetID(), ModelContainer(textureName, materialName, imageName, meshName, objName)));
-
-		size_t id = entity->GetID();
-
-		return id;
-
-	}
-
-	void ImGuiHandler::AddEnemy(Aen::Entity* entity, AenIF::Model& model)
-	{
-		if (model.type == "Normal Enemy")
-		{
-			OutputDebugStringA("Normal Enemy");
-		}
-		else if (model.type == "Boss Enemy")
-		{
-			OutputDebugStringA("Boss Enemy");
-		}
-	}
-
-	
-	void ImGuiHandler::AddPointLight()
-	{
-		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
-
-		light->AddComponent<Aen::PointLight>();
-		light->GetComponent<Aen::PointLight>().SetColor(Aen::Color::White);
-		light->GetComponent<Aen::PointLight>().SetLightDist(1, 1, 1, 1);
-		light->GetComponent<Aen::PointLight>().SetStrength(100);
-		light->SetPos(0.0f, 0.0f, 0.0f);
-
-		AddLight(light, "Point light");			
-	}
-
-	void ImGuiHandler::AddSpotLight()
-	{
-		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
-
-		light->AddComponent<Aen::SpotLight>();
-		light->GetComponent<Aen::SpotLight>().SetColor(Aen::Color::White);
-		light->GetComponent<Aen::SpotLight>().SetConeSize(1);
-		light->GetComponent<Aen::SpotLight>().SetLightDist(1, 1, 1, 1);
-		light->GetComponent<Aen::SpotLight>().SetStrength(100);
-		light->SetPos(0.0f, 0.0f, 0.0f);
-		light->SetRot(0.0f, 0.0f, 0.0f);
-
-		AddLight(light, "Spot light");
-	}
-
-	void ImGuiHandler::AddDirectional()
-	{
-		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
-
-		light->AddComponent<Aen::DirectionalLight>();
-		light->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
-		light->GetComponent<Aen::DirectionalLight>().SetStrength(1);
-		light->SetRot(0.0f, 0.0f, 0.0f);
-
-		AddLight(light, "Directional light");
-	}
 
 	void ImGuiHandler::ChangeMaterial(int& currentIndex)
 	{
 		size_t id = m_entityList[m_selectedEntity]->GetID();
 
 		string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
-		string materialName = "Material" + to_string(m_selectedEntity);
-		string textureName = "Texture" + to_string(m_selectedEntity);
+		string materialName = IGH::MATERIAL + to_string(m_selectedEntity);
+		string textureName = IGH::TEXTURE + to_string(m_selectedEntity);
 		UpdateMap(id, textureName, materialName, m_itemList[m_selectedEntity], m_textureFileName[currentIndex]);
 
 		Aen::Texture& texture = Aen::Resource::CreateTexture(textureName);
@@ -816,9 +642,9 @@ namespace Aen {
 
 			ImGui::Begin("Copy", nullptr);
 
-			ImGui::DragFloat3("Translate", m_xyzTranslation, 0.02f);
-			ImGui::DragFloat3("Rotate", m_xyzTranslation, 0.02f);
-			ImGui::DragFloat3("Scale", m_xyzTranslation, 0.02f);
+			ImGui::DragFloat3(IGH::TRANSLATION.c_str(), m_xyzTranslation, 0.02f);
+			ImGui::DragFloat3(IGH::ROTATION.c_str(), m_xyzTranslation, 0.02f);
+			ImGui::DragFloat3(IGH::SCALE.c_str(), m_xyzTranslation, 0.02f);
 			ImGui::SliderInt("Number of copies", &copies, 0, 10);
 
 
@@ -832,7 +658,7 @@ namespace Aen {
 
 	void ImGuiHandler::lightTab()
 	{
-		if (ImGui::BeginTabItem("Light"))
+		if (ImGui::BeginTabItem(IGH::LIGHT.c_str()))
 		{
 			size_t id = m_entityList[m_selectedEntity]->GetID();
 			static float color[4];
@@ -853,7 +679,7 @@ namespace Aen {
 
 				SetValues();
 
-				ImGui::DragFloat4("Color", color, 0.02f);
+				ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
 				ImGui::DragFloat("Intensity", &intensity, 0.02f);
 
 				lightPtr.SetColor(color[0], color[1], color[2], color[3]);
@@ -879,7 +705,7 @@ namespace Aen {
 
 				SetValues();
 
-				ImGui::DragFloat4("Color", color, 0.02f);
+				ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
 				ImGui::DragFloat("Intensity", &intensity, 0.02f);
 				ImGui::DragFloat3("Attenuation", attenuation, 0.02f);
 				ImGui::DragFloat("Range", &range, 0.02f);
@@ -909,7 +735,7 @@ namespace Aen {
 
 				SetValues();
 
-				ImGui::DragFloat4("Color", color, 0.02f);
+				ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
 				ImGui::DragFloat("Intensity", &intensity, 0.02f);
 				ImGui::DragFloat3("Attenuation", attenuation, 0.02f);
 				ImGui::DragFloat("Range", &range, 0.02f);
@@ -951,9 +777,11 @@ namespace Aen {
 		}
 	}
 
+
+
 	void ImGuiHandler::UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName)
 	{
-		unordered_map<size_t, ModelContainer>::iterator it;
+		unordered_map<size_t, IGH::ModelContainer>::iterator it;
 
 		it = m_modelMap.find(key);
 
@@ -1016,7 +844,7 @@ namespace Aen {
 			ImGui::Columns(4, nullptr);
 			if (AddButton(m_objName[i]))
 			{
-				AddBase(m_objName[i], m_objFileName[i]);
+				imguiImporter->AddBase(m_objName[i], m_objFileName[i]);
 			}
 			ImGui::NextColumn();
 		}
@@ -1026,17 +854,17 @@ namespace Aen {
 	{
 		if (AddButton(IGH::POINTLIGHT.c_str()))
 		{
-			AddPointLight();
+			imguiImporter->AddPointLight();
 		}
 
 		if (AddButton(IGH::SPOTLIGHT.c_str()))
 		{
-			AddSpotLight();
+			imguiImporter->AddSpotLight();
 		}
 
 		if (AddButton(IGH::DIRECTIONALLIGHT.c_str()))
 		{
-			AddDirectional();
+			imguiImporter->AddDirectional();
 		}
 	}
 

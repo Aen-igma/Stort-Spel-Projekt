@@ -7,6 +7,7 @@
 #include "LevelImporter.h"
 #include <algorithm>
 #include "LevelEditor/ImguiType.h"
+#include "LevelEditor/ImGuiImporter.h"
 
 #include "ThirdParty/ImGui/imgui.h"
 #include "ThirdParty/ImGui/imfilebrowser.h"
@@ -25,16 +26,6 @@ using std::unordered_map;
 
 namespace Aen {
 
-	struct Enemy 
-	{
-		string m_mesh;
-		float m_translation[3];
-		float m_scale[3];
-		float m_rotation[3];
-		string m_type;
-	};
-
-
 	class AEN_DECLSPEC ImGuiHandler {
 
 	private:
@@ -44,10 +35,13 @@ namespace Aen {
 
 	private:
 
+		string levelPath = "";
 		string m_roomProperty[5] = {"","","","1","1"};
 		
 		Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> m_entityList;
+
+		Aen::ImGuiImporter* imguiImporter;
 
 		// Display in scene list
 		vector<string> m_itemList;
@@ -59,7 +53,7 @@ namespace Aen {
 		vector<string> m_textureFileName;
 		vector<string> m_textureName;
 
-		unordered_map< size_t, ModelContainer> m_modelMap;
+		unordered_map< size_t, IGH::ModelContainer> m_modelMap;
 		unordered_map< size_t, Aen::Entity*> m_lightMap;
 
 		bool m_multiSelectActive = false;
@@ -81,40 +75,20 @@ namespace Aen {
 		AenIMP::LevelImporter m_levelImporter;
 
 		bool m_saveWindowActive = false;
+		bool m_ImportWindowActive = false;
 		bool m_createEnemyWindowActive = false;
 
 		// Counters
 		unsigned int m_enemyCount = 0;
 		int m_entityCount = 0;
 		int m_lightCount = 0;
-
 		int m_OriginalCount = 0;
 
 	public:
 		// All Add func here
 
-		void AddLight(Aen::Entity* entity);
-		void AddLight(Aen::Entity* entity, string type);
 
-		void AddBase(AenIF::Model& model, AenIF::Texture &texture);
-		size_t AddBase(const string& meshName, const string& objName);
-		void AddEnemy(Aen::Entity *entity, AenIF::Model& model);
-
-		void AddPointLight(AenIF::Light& input);
-		void AddPointLight();
-
-		void AddSpotLight(AenIF::Light& input);
-		void AddSpotLight();
-
-		void AddDirectional(AenIF::Light& input);
-		void AddDirectional();
-
-		void AddEnemy();
-		void AddModel(Aen::Entity* entity, string name);
-
-		void AddModel(Aen::Entity* entity);
 		bool AddButton(const string& name);
-
 		void AddEnemyButton();
 
 	public:
@@ -134,6 +108,7 @@ namespace Aen {
 		void ToolWindow();
 		void SaveWindow();
 		void EnemyCreateWindow();
+		void ImportWindow();
 
 	public:
 		ImGuiHandler();
@@ -172,6 +147,7 @@ namespace Aen {
 
 		void lightTab();
 		void RoomTab();
+
 
 
 };

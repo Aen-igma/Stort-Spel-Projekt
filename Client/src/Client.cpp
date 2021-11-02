@@ -198,7 +198,7 @@ void Client::Update(const float& deltaTime) {
 
 	// ------------------------------------- Reimubes -------------------------------------- //
 
-	if (Aen::Input::KeyPress(Aen::Key::J)) {
+	/*if (Aen::Input::KeyPress(Aen::Key::J)) {
 		Aen::Entity& e = Aen::EntityHandler::CreateEntity();
 		e.AddComponent<Aen::RigidBody>();
 		e.AddComponent<Aen::MeshInstance>();
@@ -217,5 +217,5 @@ void Client::Update(const float& deltaTime) {
 			Aen::EntityHandler::RemoveEntity(*m_reimubes.top());
 			m_reimubes.pop();
 		}
-	}
+	}*/
 }

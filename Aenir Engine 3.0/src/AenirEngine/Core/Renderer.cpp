@@ -185,7 +185,7 @@ namespace Aen {
 		RenderSystem::BindShaderResourceView<PShader>(4, m_lGrid);
 
 		static bool toggle = false;
-		toggle = (Input::KeyDown(Key::P)) ? !toggle : toggle;
+		//toggle = (Input::KeyDown(Key::P)) ? !toggle : toggle;
 		m_heatMap.GetData() = toggle;
 		m_heatMap.UpdateBuffer();
 		m_heatMap.BindBuffer<PShader>(0u);

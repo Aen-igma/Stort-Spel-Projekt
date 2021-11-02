@@ -301,6 +301,7 @@ namespace Aen {
 		friend class Renderer;
 		friend class ImGuiHandler;
 		friend class LevelExporter;
+		friend class ImGuiImporter;
 
 	};
 

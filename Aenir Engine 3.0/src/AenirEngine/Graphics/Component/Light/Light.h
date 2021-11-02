@@ -60,6 +60,7 @@ namespace Aen {
 		friend class Renderer;
 		friend class LevelExporter;
 		friend class ImGuiHandler;
+		friend class ImGuiImporter;
 
 	};
 
@@ -79,6 +80,7 @@ namespace Aen {
 		friend class Renderer;
 		friend class LevelExporter;
 		friend class ImGuiHandler;
+		friend class ImGuiImporter;
 
 	};
 
@@ -93,6 +95,7 @@ namespace Aen {
 		friend class Renderer;
 		friend class LevelExporter;
 		friend class ImGuiHandler;
+		friend class ImGuiImporter;
 
 	};
 }

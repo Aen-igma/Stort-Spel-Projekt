@@ -6,13 +6,13 @@ namespace Aen {
 		vector<LightStruct>& m_LightVector, Entity*& entity, unordered_map<size_t, Aen::Entity*>& lightMap)
 	{
 		size_t id = entity->GetID();
-		LIGHTTYPES type = Type(entity);
+		IGH::LIGHTTYPES type = Type(entity);
 
 		if (lightMap.find(id) != lightMap.end())
 		{
-			if (type == LIGHTTYPES::DIRECTIONAL)
+			if (type == IGH::LIGHTTYPES::DIRECTIONAL)
 			{
-				strcpy(lightStruct->type, "Directional light");
+				strcpy(lightStruct->type, IGH::DIRECTIONALLIGHT.c_str());
 
 				lightStruct->translation[0] = 0;
 				lightStruct->translation[1] = 0;
@@ -39,9 +39,9 @@ namespace Aen {
 				lightStruct->angle = 0;
 			}
 
-			if (type == LIGHTTYPES::POINT)
+			if (type == IGH::LIGHTTYPES::POINT)
 			{
-				strcpy(lightStruct->type, "Point light");
+				strcpy(lightStruct->type, IGH::POINTLIGHT.c_str());
 
 				lightStruct->translation[0] = entity->GetPos().x;
 				lightStruct->translation[1] = entity->GetPos().y;
@@ -69,9 +69,9 @@ namespace Aen {
 				lightStruct->angle = 0;
 			}
 
-			if (type == LIGHTTYPES::SPOT)
+			if (type == IGH::LIGHTTYPES::SPOT)
 			{
-				strcpy(lightStruct->type, "Spot light");
+				strcpy(lightStruct->type, IGH::SPOTLIGHT.c_str());
 				lightStruct->translation[0] = entity->GetPos().x;
 				lightStruct->translation[1] = entity->GetPos().y;
 				lightStruct->translation[2] = entity->GetPos().z;
@@ -102,11 +102,11 @@ namespace Aen {
 		}
 	}
 
-	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, ModelContainer>& modelMap, size_t& index)
+	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index)
 	{
 		size_t id = entityList[index]->GetID();
 
-		unordered_map<size_t, ModelContainer>::iterator it = modelMap.find(id);
+		unordered_map<size_t, IGH::ModelContainer>::iterator it = modelMap.find(id);
 
 		if (modelMap.find(id) != modelMap.end())
 		{
@@ -179,8 +179,7 @@ namespace Aen {
 
 	void LevelExporter::OpenFile(string fileName)
 	{
-		m_outfile.open(m_filePath + fileName + ".Level", std::ofstream::out | std::ofstream::binary);
-
+		m_outfile.open(IGH::LEVELPATH + fileName + "." + IGH::LEVEL, std::ofstream::out | std::ofstream::binary);
 	}
 
 	void LevelExporter::CloseFile()
@@ -197,14 +196,9 @@ namespace Aen {
 		outfile.write((const char*)&*whatToWrite, sizeof(T));
 	}
 
-	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, unordered_map<size_t, ModelContainer>& modelMap, unordered_map<size_t, Aen::Entity*>& lightMap, string array[], string& fileName)
+	void LevelExporter::WriteInto(vector<Aen::Entity*>& entityList, vector<string>& itemList, unordered_map<size_t, IGH::ModelContainer>& modelMap, unordered_map<size_t, Aen::Entity*>& lightMap, string array[], string& fileName)
 	{
 		OpenFile(fileName);
-		//cout << "writeInto" << endl;
-		//cout << "entityList " << entityList.size() << endl;
-		//cout << "itemList " << itemList.size() << endl;
-		//cout << "meshObjList " << meshObjList.size() << endl;
-		//cout << "textureFileName " << textureFileName.size() << endl;
 
 		RoomHeader* roomHeader = AEN_NEW(RoomHeader);
 		ModelHeader* modelHeader = AEN_NEW(ModelHeader);
@@ -221,7 +215,7 @@ namespace Aen {
 		MaterialStruct* materialStruct = AEN_NEW(MaterialStruct);
 		ParticleStruct* particleStruct = AEN_NEW(ParticleStruct);
 
-		unordered_map <size_t, ModelContainer>::iterator it;
+		unordered_map <size_t, IGH::ModelContainer>::iterator it;
 
 		m_ModelVector.reserve(modelMap.size());
 		m_TextureVector.reserve(modelMap.size());
@@ -248,9 +242,6 @@ namespace Aen {
 		{
 			textureFunc(textureStruct, it->second.m_texture.m_textureName);
 		}
-
-
-		cout << endl << "start" << endl;
 		
 		WriteToFile(roomHeader, m_outfile);
 		WriteToFile(roomStruct, m_outfile);
@@ -316,27 +307,27 @@ namespace Aen {
 		CloseFile();
 	}
 
-	LIGHTTYPES LevelExporter::Type(Aen::Entity* entity)
+	IGH::LIGHTTYPES LevelExporter::Type(Aen::Entity* entity)
 	{
 		size_t id = entity->GetID();
 
-		LIGHTTYPES type;
+		IGH::LIGHTTYPES type;
 		
 		if (Aen::ComponentHandler::DirectionalLightExist(id))
 		{
-			type = LIGHTTYPES::DIRECTIONAL;
+			type = IGH::LIGHTTYPES::DIRECTIONAL;
 		}
 		else if (Aen::ComponentHandler::SpotLightExist(id))
 		{
-			type = LIGHTTYPES::SPOT;
+			type = IGH::LIGHTTYPES::SPOT;
 		}
 		else if (Aen::ComponentHandler::PointLightExist(id))
 		{
-			type = LIGHTTYPES::POINT;
+			type = IGH::LIGHTTYPES::POINT;
 		}
 		else
 		{
-			type = LIGHTTYPES::NOLIGHT;
+			type = IGH::LIGHTTYPES::NOLIGHT;
 		}
 
 		return type;
