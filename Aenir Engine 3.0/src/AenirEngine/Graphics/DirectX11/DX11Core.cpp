@@ -91,11 +91,19 @@ namespace Aen {
         
 
         //----------------------------------    Direct 2D   ---------------------------------//
-        D2D1_FACTORY_OPTIONS fo{};
         #ifdef _DEBUG
+        D2D1_FACTORY_OPTIONS fo{};
         fo.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
+        if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf())))
+            return false;
+        #else
+        if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_factory.GetAddressOf())))
+            return false;
         #endif
-        ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf()));
+        
+
+
+        //ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf()));
 
         IDXGISurface* IXSurface;
         if (SUCCEEDED(m_sChain->GetBuffer(0, IID_PPV_ARGS(&IXSurface))))

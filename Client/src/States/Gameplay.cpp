@@ -2,7 +2,9 @@
 
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true),
-	m_hp(2), IFRAMEMAX(1.5f), m_iFrames(0.f) {}
+	m_hp(2), IFRAMEMAX(1.5f), m_iFrames(0.f) {
+	m_beatBoss = false;
+}
 
 Gameplay::~Gameplay() {
 	Aen::GlobalSettings::RemoveMainCamera();
@@ -213,8 +215,24 @@ void Gameplay::Update(const float& deltaTime) {
 		m_Window.Exit();
 
 	// ------------------------------------- States -------------------------------------- //
-	/*if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()) && m_enemyQueue.size() == 0)
+	/*
+	 // Condition: Enter boss room
+		if(entered boss room)
+		{
+			if(defeated boss and touch entrance to next level)
+			{
+				WIN
+			}
+		}
+	*/
+
+	if (Aen::Input::KeyDown(Aen::Key::ENTER))
+	{
+		m_beatBoss = true;
+	}
+
+	if (m_beatBoss && m_enemyQueue.size() == 0 && m_player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
 	{
 		State::SetState(States::Gameover);
-	}*/
+	}
 }
