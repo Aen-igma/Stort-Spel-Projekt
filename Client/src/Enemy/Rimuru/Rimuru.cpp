@@ -19,8 +19,7 @@ Rimuru::~Rimuru() {
 	Aen::EntityHandler::RemoveEntity(*m_enemy);
 }
 
-Aen::Entity*& Rimuru::GetEntity()
-{
+Aen::Entity*& Rimuru::GetEntity() {
 	return m_rimuru;
 }
 
