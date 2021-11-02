@@ -129,9 +129,17 @@ void Aen::OBBox::Transform(sm::Matrix transform)
 	UpdateVerts();
 }
 
-void Aen::OBBox::Rotate(Aen::Vec3f v)
+void Aen::OBBox::SetRotation(Aen::Vec3f v)
 {
-	m_obb.Transform(m_obb, 1.f, v.smVec, Vec3f::zero.smVec);
+	//m_obb.Transform(m_obb, 0.f, v.smVec, Vec3f::zero.smVec);
+	
+	m_obb.Orientation = sm::Vector4(DirectX::XMQuaternionRotationRollPitchYaw(v.x, v.y, v.z));
+	UpdateVerts();
+}
+
+void Aen::OBBox::SetRotation(const float& x, const float& y, const float& z)
+{
+	m_obb.Orientation = sm::Vector4(DirectX::XMQuaternionRotationRollPitchYaw(x, y, z));
 	UpdateVerts();
 }
 
@@ -169,7 +177,7 @@ void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
 	if (m_canDraw)
 	{
 		Vec3f p = Vec3f(m_obb.Center.x, m_obb.Center.y, m_obb.Center.z);
-		renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(p).Transposed();
+		renderer.m_cbTransform.GetData().m_mdlMat = Mat4f::identity; //MatTranslate(p).Transposed();
 		renderer.m_cbTransform.UpdateBuffer();
 		renderer.m_cbTransform.BindBuffer<VShader>(0u);
 
@@ -209,7 +217,7 @@ void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	if (m_canDraw) {
 		m_vBuffer.UpdateBuffer(m_verts, 8);
 		Vec3f p = Vec3f(m_obb.Center.x, m_obb.Center.y, m_obb.Center.z);
-		renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(p).Transposed();
+		renderer.m_cbTransform.GetData().m_mdlMat = Mat4f::identity; //MatTranslate(p).Transposed();
 		renderer.m_cbTransform.UpdateBuffer();
 		renderer.m_cbTransform.BindBuffer<VShader>(0u);
 		RenderSystem::SetInputLayout(renderer.m_opaqueLayout);

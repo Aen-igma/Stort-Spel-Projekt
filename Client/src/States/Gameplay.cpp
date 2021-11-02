@@ -130,12 +130,7 @@ void Gameplay::Initialize()
 	m_reimube->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_reimube->SetPos(0.f, 1.f, -3.f);
 
-	m_attack = &Aen::EntityHandler::CreateEntity();
-	m_attack->AddComponent<Aen::OBBox>();
-	m_attack->GetComponent<Aen::OBBox>().SetBoundingBox({ 2.f,2.f,2.f });
-	m_attack->SetPos(3.f, 1.f, 0);
-
-	m_attack->SetParent(*m_player);
+	//m_attack->SetParent(*m_player);
 
 	//printf("");
 
@@ -164,17 +159,13 @@ void Gameplay::Update(const float& deltaTime) {
 		//m_player->getcomponent<aen::aaboundbox>().toggleactive(false);
 		//m_invincible = true;
 	}
-	if (m_attack->GetComponent<Aen::OBBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
-	{
-
-	}
 
 	static sm::Matrix m = DirectX::XMMatrixRotationRollPitchYaw(1.f, 2.f, 1.f);
 
 	
 
-	if (Aen::Input::KeyDown(Aen::Key::B))
-		m_player->SetRot(0.f, 90.f, 0.f);
+	//if (Aen::Input::KeyDown(Aen::Key::B))
+	//	m_player->SetRot(0.f, 90.f, 0.f);
 		//m_attack->GetComponent<Aen::OBBox>().Transform(m);
 
 	//cout << m_hp << endl;
@@ -196,7 +187,7 @@ void Gameplay::Update(const float& deltaTime) {
 	//	State::SetState(States::Gameover);
 	//}
 
-	m_player.Update(deltaTime);
+	m_player.Update(m_reimube ,deltaTime);
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));

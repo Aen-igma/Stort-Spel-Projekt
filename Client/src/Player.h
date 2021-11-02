@@ -13,10 +13,13 @@ class Player {
 	Player();
 	~Player();
 
-	void Update(const float& deltaTime);
+	void Update(Aen::Entity* e,const float& deltaTime);
 	Aen::Entity*& GetEntity();
 
-	protected:
+
+private:
+	Aen::Entity* m_hurtbox;
+
 	Aen::Entity* m_player;
 	Aen::Entity* m_camera;
 	Aen::Raycast m_ray;

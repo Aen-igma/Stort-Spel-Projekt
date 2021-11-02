@@ -2,6 +2,7 @@
 
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
+	m_hurtbox(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_targetDist(25.f), m_movementSpeed(6.f), m_finalDir(0.f, 0.f, -1.f){
 	
 	m_camera = &Aen::EntityHandler::CreateEntity();
@@ -11,10 +12,14 @@ Player::Player()
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
+	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
+	sword.Load(AEN_RESOURCE_DIR("Sword.fbx"));
+
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_RESOURCE_DIR("Capsule.fbx"));
+	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
 
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
+	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
 
 	m_player->AddComponent<Aen::CharacterController>();
 	m_player->AddComponent<Aen::AABoundBox>();
@@ -22,6 +27,12 @@ Player::Player()
 	m_player->GetComponent<Aen::MeshInstance>().SetMaterial(playerMat);
 	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_player->SetPos(0.f, 1.f, 0.f);
+
+	m_hurtbox->AddComponent<Aen::OBBox>();
+	m_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.0);
+	m_hurtbox->GetComponent<Aen::OBBox>().SetOffset(0.f, 0.f, 0.f);
+
+	//m_lightAttack->SetParent(*m_player);
 }
 
 Player::~Player() {
@@ -29,7 +40,14 @@ Player::~Player() {
 	Aen::EntityHandler::RemoveEntity(*m_camera);
 }
 
-void Player::Update(const float& deltaTime) {
+void Player::Update(Aen::Entity* e, const float& deltaTime) {
+
+	// Collision
+
+	if (m_hurtbox->GetComponent<Aen::OBBox>().Intersects(e->GetComponent<Aen::AABoundBox>()))
+	{
+
+	}
 
 	static Aen::Vec3f axis;
 	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
@@ -43,6 +61,8 @@ void Player::Update(const float& deltaTime) {
 	else
 		side.x = Aen::Lerp(side.x, axis.x * 0.3f, 0.05f);
 	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
+
+
 
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
 
@@ -233,6 +253,14 @@ void Player::Update(const float& deltaTime) {
 	Aen::Vec3f playerDir = m_camera->GetComponent<Aen::Camera>().GetForward() * axis.Normalized().z + m_camera->GetComponent<Aen::Camera>().GetRight() * axis.Normalized().x;
 	Aen::Vec2f dir(playerDir.x, playerDir.z);
 
+	Aen::Vec3f attackPos = m_player->GetPos() + m_finalDir * 2.f;
+
+	m_hurtbox->SetPos(attackPos);
+
+	float yaw = std::atan2(m_finalDir.x, m_finalDir.z);
+
+	m_hurtbox->GetComponent<Aen::OBBox>().SetRotation(0.f, yaw, 0.f);
+
 	if(!m_eventQueue.empty())
 		if(m_eventQueue.front().duration > 0.f) {
 			m_eventQueue.front().function(m_eventQueue.front().accell);
@@ -251,6 +279,8 @@ void Player::Update(const float& deltaTime) {
 			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 		}
 	}
+
+
 }
 
 Aen::Entity*& Player::GetEntity() {

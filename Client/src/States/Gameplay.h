@@ -18,7 +18,6 @@ class Gameplay : public State {
     bool m_toggleFullScreen;
 
     Aen::Raycast m_ray;
-    Aen::Entity* m_attack;
 
     Aen::Entity* m_dLight;
     Aen::Entity* m_plane;

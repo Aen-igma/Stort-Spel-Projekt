@@ -29,7 +29,8 @@ namespace Aen
 
 		void Transform(Aen::Mat4f transform);
 		void Transform(sm::Matrix transform);
-		void Rotate(Aen::Vec3f v);
+		void SetRotation(Aen::Vec3f v);
+		void SetRotation(const float& x, const float& y, const float& z);
 
 		void ToggleActive(bool b);
 		void ToggleActive();
