@@ -8,8 +8,8 @@ cbuffer CB_CellShader {
 	float4 outerEdgeColor;
 	float4 glowColor;
 	float glowStr;
-	float innerEdgeThickness;
-	float outerEdgeThickness;
+	int innerEdgeThickness;
+	int outerEdgeThickness;
 	float specularPower;
 	float specularStrength;
 	float roughness;
