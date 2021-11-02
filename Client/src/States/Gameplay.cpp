@@ -44,6 +44,8 @@ void Gameplay::Initialize()
 	plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
 	rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
+	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
+	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
 	Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
@@ -134,6 +136,10 @@ void Gameplay::Initialize()
 	m_reimube->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_reimube->SetPos(0.f, 1.f, -3.f);
 
+	//m_attack->SetParent(*m_player);
+
+	//printf("");
+
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
@@ -170,7 +176,6 @@ void Gameplay::Update(const float& deltaTime) {
 		m_iFrames = 0.f;
 	}
 
-	m_player.Update(deltaTime);
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -180,7 +185,7 @@ void Gameplay::Update(const float& deltaTime) {
 	// ---------------------------------- Enemies --------------------------------------- //
 
 	for(auto& i : m_enemyQueue)
-		i->Update(deltaTime, *m_player.GetEntity());
+		i->Update(deltaTime, m_player);
 
 	if(Aen::Input::KeyDown(Aen::Key::J))
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
@@ -189,6 +194,9 @@ void Gameplay::Update(const float& deltaTime) {
 		delete m_enemyQueue.front();
 		m_enemyQueue.pop_front();
 	}
+
+	m_player.LightAttack(m_enemyQueue, deltaTime);
+	m_player.Update(m_reimube, deltaTime);
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
@@ -218,7 +226,8 @@ void Gameplay::Update(const float& deltaTime) {
 		m_Window.Exit();
 
 	// ------------------------------------- States -------------------------------------- //
-	if ((Aen::Input::KeyDown(Aen::Key::ENTER) && m_enemyQueue.size() == 0) || m_hp <= 0) {
+	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)
+	{
 		State::SetState(States::Gameover);
-	}
+	}*/
 }

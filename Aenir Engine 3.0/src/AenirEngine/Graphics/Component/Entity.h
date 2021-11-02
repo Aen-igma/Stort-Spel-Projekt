@@ -37,6 +37,8 @@ namespace Aen {
 		const Vec3f GetScale();
 		const size_t& GetID();
 		const std::string& GetTag();
+
+		const Vec3f GetTranslation();
 		const Mat4f GetTransformation();
 
 		private:
@@ -44,7 +46,6 @@ namespace Aen {
 		~Entity();
 
 		const bool HasId(const size_t& id);
-		const Vec3f GetTranslation();
 		const Mat4f GetPosMat();
 		const Mat4f GetRotMat();
 		const Mat4f GetScaleMat();
@@ -167,6 +168,19 @@ namespace Aen {
 		AddComponent<MeshInstance>();
 		if (!ComponentHandler::AABBExist(m_id))
 			ComponentHandler::CreateAABB(m_id, m_layer + 3);
+		
+		if (!ComponentHandler::TranslationExist(m_id))
+			AddComponent<Translation>();
+	}
+
+	template<>
+	inline void Entity::AddComponent<OBBox>() {
+		AddComponent<MeshInstance>();
+		if (!ComponentHandler::OBBExist(m_id))
+			ComponentHandler::CreateOBB(m_id, m_layer + 3);
+
+		if (!ComponentHandler::TranslationExist(m_id))
+			AddComponent<Translation>();
 	}
 	// --------------- GetComponent -----------------
 
@@ -228,5 +242,10 @@ namespace Aen {
 	template<>
 	inline AABoundBox& Entity::GetComponent() {
 		return ComponentHandler::GetAABB(m_id);
+	}
+
+	template<>
+	inline OBBox& Entity::GetComponent() {
+		return ComponentHandler::GetOBB(m_id);
 	}
 }

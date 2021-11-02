@@ -16,5 +16,9 @@ Aen::Entity*& Enemy::GetEntity()
 	// TODO: insert return statement here
 }
 
-void Enemy::Update(const float& deltaTime, Aen::Entity& player) {
+void Enemy::Update(const float& deltaTime, Player& player) {
+	if (m_enemy->GetComponent<Aen::AABoundBox>().Intersects(player.GetHurtBox()->GetComponent<Aen::OBBox>()))
+	{
+		printf("am ded\n");
+	}
 }

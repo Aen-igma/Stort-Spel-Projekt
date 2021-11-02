@@ -46,6 +46,7 @@ namespace Aen {
 		friend class GameLoop;
 		friend class MeshInstance;
 		friend class AABoundBox;
+		friend class OBBox;
 
 		private:
 		void Initialize();
