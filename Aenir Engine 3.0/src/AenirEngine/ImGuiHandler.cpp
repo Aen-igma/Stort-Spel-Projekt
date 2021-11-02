@@ -11,7 +11,7 @@ namespace Aen {
 
 	ImGuiHandler::ImGuiHandler()
 	{
-		imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap);
+		imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter);
 	}
 
 	ImGuiHandler::~ImGuiHandler()

@@ -1,6 +1,8 @@
 #pragma once
 #include "Graphics/DirectX11/DX11Core.h"
 #include "Graphics/Component/Resource.h"
+#include <filesystem>
+
 
 #include "LevelImporter.h"
 #include "Graphics/Component/Entity.h"
@@ -22,9 +24,10 @@ namespace Aen
 	class ImGuiImporter
 	{
 	private:
-		Aen::EntityHandler* mp_entityHandlerPtr;
-		
 
+		AenIMP::LevelImporter *m_levelImporter;
+
+		Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> *m_entityList;
 		vector<string> *m_itemList;
 
@@ -34,13 +37,27 @@ namespace Aen
 		unsigned int m_entityCount = 0;
 		unsigned int m_lightCount = 0;
 
+		bool m_standAlone = false;
+
 	public:
 
-		ImGuiImporter(vector<Aen::Entity*>* m_entityList, vector<string>* m_itemList, unordered_map< size_t, IGH::ModelContainer>* m_modelMap, unordered_map< size_t, Aen::Entity*>* m_lightMap);
+		ImGuiImporter();
+		ImGuiImporter(vector<Aen::Entity*>* m_entityList, vector<string>* m_itemList, unordered_map< size_t, IGH::ModelContainer>* m_modelMap, unordered_map< size_t, Aen::Entity*>* m_lightMap, AenIMP::LevelImporter* m_levelImporter);
+		~ImGuiImporter();
+
+
+
 		bool import(AenIMP::LevelImporter &m_levelImporter, string & levelPath, float* translation, float* rotation, float* scale);
 
 		void GetFloatArray(float* inputArray, float& x, float& y, float& z);
 
+		void ReadAllFilesFromResourceFolder();
+
+		AenIMP::LevelImporter* GetImporterPtr();
+		AenIF::Room GetRoom(size_t index);
+		vector<Aen::Entity*>* GetEntityList();
+		bool LoadLevel(int index);
+		bool LoadLevel(AenIMP::CompleteRoom* roomPtr, Aen::Vec2f offset, float angle);
 
 
 	public:
@@ -68,6 +85,9 @@ namespace Aen
 		void AddModel(Aen::Entity* entity, string name);
 		void AddModel(Aen::Entity* entity);
 
+		void AddBase(AenIF::Model& model, AenIF::Texture& texture, Aen::Vec2f offset, float angle);
+		void AddPointLight(AenIF::Light& input, Aen::Vec2f offset, float angle);
+		void AddSpotLight(AenIF::Light& input, Aen::Vec2f offset, float angle);
 	};
 
 }
