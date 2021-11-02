@@ -11,13 +11,15 @@ void GameEnd::Update(const float& deltaTime)
 {
 	m_UI->GetComponent<Aen::UIComponent>().Update();
 
-	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().Intersects(0))
+	if (Aen::Input::KeyDown(Aen::Key::LMOUSE))
 	{
-		State::SetState(States::Main_Menu);
+		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(0)) {
+			State::SetState(States::Main_Menu);
+		}
+		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(1)) {
+			m_Window.Exit();
+		}
 	}
-
-	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
-		m_Window.Exit();
 
 
 	if (Aen::Input::KeyDown(Aen::Key::F1)) {
@@ -47,8 +49,13 @@ void GameEnd::Initialize()
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Menu.png", 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 800.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(700.f, 800.f, 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
+
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Quit.png", 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(1200.f, 800, 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 1);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	//Text

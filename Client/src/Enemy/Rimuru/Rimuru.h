@@ -6,6 +6,8 @@ class Rimuru : public Enemy {
 	Rimuru();
 	~Rimuru();
 
+	Aen::Entity*& GetEntity();
+
 	// Inherited via Enemy
 	virtual void Update(const float& deltaTime, Aen::Entity& player) override;
 

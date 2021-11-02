@@ -17,6 +17,11 @@ Rimuru::~Rimuru() {
 	Aen::EntityHandler::RemoveEntity(*m_rimuru);
 }
 
+Aen::Entity*& Rimuru::GetEntity()
+{
+	return m_rimuru;
+}
+
 void Rimuru::Update(const float& deltaTime, Aen::Entity& player) {
 	Aen::Vec3f eDir = player.GetPos() - m_enemy->GetPos();
 	float dist = eDir.Magnitude();

@@ -2,7 +2,7 @@
 
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true),
-	m_hp(2), IFRAMEMAX(1.5f), m_iFrames(0.f) {}
+	m_hp(3), IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
 	Aen::GlobalSettings::RemoveMainCamera();
@@ -10,6 +10,9 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_reimube);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
+	for (auto& d : m_enemyQueue) {
+		Aen::EntityHandler::RemoveEntity(*d->GetEntity());
+	}
 }
 
 void Gameplay::Initialize()
@@ -147,23 +150,22 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// Collision
 
-	if (m_reimube->GetComponent<Aen::AABoundBox>().Intersects(m_player.GetEntity()->GetComponent<Aen::AABoundBox>()))
-	{
-		//m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
-		//printf("ouch\n");
+	for (auto& h : m_enemyQueue) {
+		if (m_player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(h->GetEntity()->GetComponent<Aen::AABoundBox>())){
+			m_player.GetEntity()->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+			m_hp--;
+			cout << "PLAYER HEALTH: " << m_hp << endl;;
+		}
 	}
-
-	// Invincible frames
-	//if (m_invincible && m_iFrames <= IFRAMEMAX)
-	//{
-	//	m_iFrames += deltaTime;
-	//	printf("Iframes: %f\n", m_iFrames);
-	//}
-	//else 
-	//{
-	//	m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
-	//	m_iFrames = 0.f;
-	//}
+	 //Invincible frames
+	if (m_invincible && m_iFrames <= IFRAMEMAX) {
+		m_iFrames += deltaTime;
+		//printf("Iframes: %f\n", m_iFrames);
+	}
+	else {
+		m_player.GetEntity()->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+		m_iFrames = 0.f;
+	}
 
 	m_player.Update(deltaTime);
 
@@ -213,8 +215,7 @@ void Gameplay::Update(const float& deltaTime) {
 		m_Window.Exit();
 
 	// ------------------------------------- States -------------------------------------- //
-	/*if (m_player->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()) && m_enemyQueue.size() == 0)
-	{
+	if ((Aen::Input::KeyDown(Aen::Key::ENTER) && m_enemyQueue.size() == 0) || m_hp <= 0) {
 		State::SetState(States::Gameover);
-	}*/
+	}
 }

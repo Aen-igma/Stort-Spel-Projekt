@@ -11,5 +11,11 @@ Enemy::~Enemy() {
 	Aen::EntityHandler::RemoveEntity(*m_enemy);
 }
 
+Aen::Entity*& Enemy::GetEntity()
+{
+	return m_enemy;
+	// TODO: insert return statement here
+}
+
 void Enemy::Update(const float& deltaTime, Aen::Entity& player) {
 }
