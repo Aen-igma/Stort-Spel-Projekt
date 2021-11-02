@@ -4,7 +4,7 @@
 class Rimuru : public Enemy {
 	public:
 	Rimuru();
-	~Rimuru();
+	~Rimuru() override;
 
 	Aen::Entity*& GetEntity();
 

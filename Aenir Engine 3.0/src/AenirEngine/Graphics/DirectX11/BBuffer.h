@@ -9,10 +9,8 @@ namespace Aen {
 		BBuffer();
 
 		friend class RenderSystem;
-		friend class UAView;
 
 		private:
 		ComRenderTargetView m_rtv;
-		ComTexture2D m_bbTexture;
 	};
 }

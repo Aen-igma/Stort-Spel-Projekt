@@ -8,7 +8,6 @@ Enemy::Enemy()
 }
 
 Enemy::~Enemy() {
-	Aen::EntityHandler::RemoveEntity(*m_enemy);
 }
 
 Aen::Entity*& Enemy::GetEntity()

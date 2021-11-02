@@ -3,6 +3,7 @@
 #include<chrono>
 #include "ThirdParty\fmod\fmod.hpp"
 #include "ThirdParty\fmod\fmod_errors.h"
+#include "ThirdParty\PhysX\PhysXService.h"
 
 namespace Aen {
 
@@ -27,5 +28,6 @@ namespace Aen {
 		DurationLD m_deltaTime;
 
 		Renderer* m_renderer;
+		PhysXWrap m_PhysX;
 	};
 }
