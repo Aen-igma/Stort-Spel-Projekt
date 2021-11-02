@@ -410,6 +410,7 @@ namespace Aen {
 		friend class ImGuiHandler;
 		friend class AABoundBox;
 		friend class OBBox;
+		friend class Camera;
 	};
 
 }

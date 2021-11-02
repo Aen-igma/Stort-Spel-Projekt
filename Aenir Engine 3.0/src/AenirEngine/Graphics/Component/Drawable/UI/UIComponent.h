@@ -4,34 +4,44 @@
 #include "BuritoMath.h"
 #include "ButtonUI.h"
 #include "UITextHolder.h"
+#include "Picture.h"
 
 namespace Aen {
 
 	class AEN_DECLSPEC UIComponent : public Drawable
 	{
 	private:
-		ButtonUI button;
-		UITextHolder text;
+		ButtonUI m_button;
+		UITextHolder m_text;
+		Picture m_picture;
 
 	public:
 		UIComponent(const size_t& id);
 		~UIComponent();
 
+		//----------------------	Button	----------------------------//
 		void SaveButtonData();
 		void AddButton(LPCWSTR dir, int indX);
-		void SetButtonSize(float width, float height, int indX);
 		void SetButtonPos(float x, float y, int indX);
-		bool getBool()const;
+		void SetButtonSize(float width, float height, int indX);
+		bool Intersects(int indX);
 
+		//----------------------	Text	----------------------------//
 		void AddText();
 		void SetTextSize(float width, float height);
 		void SetTextPos(float x, float y);
+
+		//----------------------	Just pictures	----------------------------//
+		void AddPicture(LPCWSTR dir, int indX);
+		void SetPicPos(float x, float y, int indX);
+		void SetPicSize(float width, float height, int indX);
 		
 		friend class ComponentHandler;
 		friend class Renderer;
 		friend class Entity;
 		friend class GCore;
-		void Update(Window& window);
+		std::vector<ButtonData> GetData()const;
+		void Update();
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;

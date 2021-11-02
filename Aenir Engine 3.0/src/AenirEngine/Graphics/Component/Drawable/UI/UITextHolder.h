@@ -3,11 +3,8 @@
 #include <dwrite.h>
 #include <d2d1_1.h>
 #include "Graphics/Graphics.h"
-
+#include <memory>
 #define ASSERT_HR(hr) assert(SUCCEEDED(hr))
-
-
-
 
 struct UITextData
 {
@@ -28,6 +25,7 @@ namespace Aen
 		~UITextHolder();
 
 		std::vector<UITextData> getData() const;
+		void Initialize();
 		void createText();
 		void renderText();
 
@@ -35,6 +33,7 @@ namespace Aen
 		void setTextPosition(float x, float y);
 		Vec2f getTextCenter()const;
 		Vec2f getTextSize()const;
+
 	private:
 		IDWriteFactory* m_pDWriteFactory;
 		IDWriteTextFormat* m_pTextFormat;

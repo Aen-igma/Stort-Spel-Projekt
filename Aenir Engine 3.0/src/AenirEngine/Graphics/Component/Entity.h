@@ -37,6 +37,7 @@ namespace Aen {
 		const Vec3f GetScale();
 		const size_t& GetID();
 		const std::string& GetTag();
+		const Mat4f GetTransformation();
 
 		const Vec3f GetTranslation();
 		const Mat4f GetTransformation();

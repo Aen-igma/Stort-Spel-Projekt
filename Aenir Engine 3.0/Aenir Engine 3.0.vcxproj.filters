@@ -282,6 +282,9 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Collision\OBBComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\Picture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -540,6 +543,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\Collision\OBBComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\Picture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

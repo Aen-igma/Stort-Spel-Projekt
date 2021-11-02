@@ -30,7 +30,7 @@ namespace Aen {
 		}
 
 		static Entity& GetEntity(const size_t& id) {
-			if (m_entities.count(id) > 0)
+			if(m_entities.count(id) > 0)
 				return *m_entities.at(id);
 		}
 

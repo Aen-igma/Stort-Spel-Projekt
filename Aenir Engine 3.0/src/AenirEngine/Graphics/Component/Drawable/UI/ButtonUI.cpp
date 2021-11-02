@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "ButtonUI.h"
+#include "Core\GlobalSettings.h"
 
 namespace Aen {
 	Vec2f ButtonUI::GetButtonSize(D2D1_RECT_F& rect)
@@ -22,37 +23,58 @@ namespace Aen {
 		return Vec2f(xCenter, yCenter);
 	}
 
-	bool ButtonUI::Intersect(Window& window, int index)
+	bool  ButtonUI::Intersect(int index)
 	{
 		//Get mouse pos, cuz right now its dumb af
-		//POINT P;
-		bool intersected = false;
-		//GetCursorPos(&P);
-		//ScreenToClient(window.GetWHND() ,&P);
+		POINT P;
+		GetCursorPos(&P);
+		ScreenToClient(Aen::GlobalSettings::GetWindow()->GetWHND() ,&P);
 
-		float x = Input::GetMousePos().x;
-		float y = Input::GetMousePos().y;
+		m_gameSize.x = Aen::GlobalSettings::GetWindow()->GetSize().x;
+		m_gameSize.y = Aen::GlobalSettings::GetWindow()->GetSize().y;
+
+		int X = GetSystemMetrics(SM_CXSCREEN);
+		int Y = GetSystemMetrics(SM_CYSCREEN);
+		float xSize = m_gameSize.x / X;
+		float ySize = m_gameSize.y / Y;
+
+		float x = P.x / xSize;
+		float y = P.y / ySize;
 
 		//OutputDebugStringA(("Mouse X: " + std::to_string(x) + "	Mouse Y: " + std::to_string(y) + "\n").c_str());
-		//OutputDebugStringA(("Rect.x: " + std::to_string(buttonData.at(0).rect.right) + "\n").c_str());
+		//OutputDebugStringA(("Rect.x: " + std::to_string(GetButtonCenter(m_buttonData.at(0).rect).y) + "\n").c_str());
 
-		if (x < buttonData.at(index).rect.right && x > buttonData.at(index).rect.left && y > buttonData.at(index).rect.top && y < buttonData.at(index).rect.bottom)
+		if (x < m_buttonData.at(index).rect.right && x > m_buttonData.at(index).rect.left && y > m_buttonData.at(index).rect.top && y < m_buttonData.at(index).rect.bottom)
 		{
-			intersected = true;
+			return true;
 		}
 		else {
-			intersected = false;
+			return false;
 		}
-
-		return intersected;
 	}
 
-	Aen::ButtonUI::ButtonUI()
-	{
-	}
+	Aen::ButtonUI::ButtonUI(): mp_WFactory (nullptr), mp_BCoder (nullptr),	mp_FormatConverter(nullptr), mp_FrameDecode(nullptr)
+	{}
 
 	Aen::ButtonUI::~ButtonUI()
 	{
+		for (int i = 0; i < m_buttonData.size(); i++)
+		{
+			m_buttonData.at(i).bmp->Release();
+		}
+		m_buttonData.clear();
+
+		if (mp_WFactory)
+			mp_WFactory->Release();
+
+		if (mp_BCoder)
+			mp_BCoder->Release();
+
+		if (mp_FormatConverter)
+			mp_FormatConverter->Release();
+
+		if (mp_FrameDecode)
+			mp_FrameDecode->Release();
 	}
 
 	void Aen::ButtonUI::Initialize()
@@ -61,44 +83,32 @@ namespace Aen {
 		//top:  Top left vertex Y Pos
 		//right: Bottom right vertex X Pos
 		//bottom: Bottom right vertex Y Pos
-	}
-
-	void Aen::ButtonUI::AddButton(LPCWSTR texturePath, int indX)
-	{
-		ButtonData data;
-		IWICImagingFactory* WFactory = NULL;
-		IWICBitmapDecoder* BCoder = NULL;
-		IWICFormatConverter* FormatConverter = NULL;
-		IWICBitmapFrameDecode* FrameDecode = NULL;
 
 		ASSERT_HR(CoInitializeEx(NULL, COINIT_MULTITHREADED));
-		ASSERT_HR(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)(&WFactory)));
-		ASSERT_HR(WFactory->CreateDecoderFromFilename(texturePath, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &BCoder));
-		ASSERT_HR(WFactory->CreateFormatConverter(&FormatConverter));
-		ASSERT_HR(BCoder->GetFrame(0, &FrameDecode));
-		ASSERT_HR(FormatConverter->Initialize(FrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));
-		ASSERT_HR(m_target2D->CreateBitmapFromWicBitmap(FormatConverter, NULL, &data.bmp));
+		ASSERT_HR(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)(&mp_WFactory)));
+	}
+
+	void Aen::ButtonUI::AddButton(LPCWSTR path, int indX)
+	{
+		ButtonData data;
+
+		ASSERT_HR(mp_WFactory->CreateDecoderFromFilename(path, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &mp_BCoder));
+		ASSERT_HR(mp_WFactory->CreateFormatConverter(&mp_FormatConverter));
+		ASSERT_HR(mp_BCoder->GetFrame(0, &mp_FrameDecode));
+		ASSERT_HR(mp_FormatConverter->Initialize(mp_FrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));
+		ASSERT_HR(m_target2D->CreateBitmapFromWicBitmap(mp_FormatConverter, NULL, &data.bmp));
 
 		//tempData.name = name;
 		data.index = indX;
-		buttonData.push_back(data);
-		WFactory->Release();
-		BCoder->Release();
-		FormatConverter->Release();
-		FrameDecode->Release();
+		m_buttonData.push_back(data);
 	}
 
 	void ButtonUI::SetButtonPos(float x, float y, int indX)
 	{
-		//rect.left = x;
-		//rect.top = y;
-		//rect.right = x;
-		//rect.bottom = y;
-
-		buttonData.at(indX).rect.left = x;
-		buttonData.at(indX).rect.top = y;
-		buttonData.at(indX).rect.right = x;
-		buttonData.at(indX).rect.bottom = y;
+		m_buttonData.at(indX).rect.left = x;
+		m_buttonData.at(indX).rect.top = y;
+		m_buttonData.at(indX).rect.right = x;
+		m_buttonData.at(indX).rect.bottom = y;
 	}
 
 	void ButtonUI::SetButtonSize(float width, float height, int indX)
@@ -110,25 +120,25 @@ namespace Aen {
 
 		//Skapa en RECT från mittpunkten
 		//Mittpunkten ändras varje gång du ändrar en punkts position så positionerna måste sparas innan du ändrar dem
-		float left = GetButtonCenter(buttonData.at(indX).rect).x - (width / 2.f);
-		float right = GetButtonCenter(buttonData.at(indX).rect).x + (width / 2.f);
-		float top = GetButtonCenter(buttonData.at(indX).rect).y - (height / 2.f);
-		float bottom = GetButtonCenter(buttonData.at(indX).rect).y + (height / 2.f);
+		float left = GetButtonCenter(m_buttonData.at(indX).rect).x - (width / 2.f);
+		float right = GetButtonCenter(m_buttonData.at(indX).rect).x + (width / 2.f);
+		float top = GetButtonCenter(m_buttonData.at(indX).rect).y - (height / 2.f);
+		float bottom = GetButtonCenter(m_buttonData.at(indX).rect).y + (height / 2.f);
 
-		buttonData.at(indX).rect.left = left;
-		buttonData.at(indX).rect.right = right;
-		buttonData.at(indX).rect.top = top;
-		buttonData.at(indX).rect.bottom = bottom;
+		m_buttonData.at(indX).rect.left = left;
+		m_buttonData.at(indX).rect.right = right;
+		m_buttonData.at(indX).rect.top = top;
+		m_buttonData.at(indX).rect.bottom = bottom;
 	}
 
 	std::vector<ButtonData> ButtonUI::GetData() const
 	{
-		return buttonData;
+		return m_buttonData;
 	}
 
 	void ButtonUI::SaveData()
 	{
-		tempData = buttonData;
+		m_tempData = m_buttonData;
 	}
 
 	void Aen::ButtonUI::Draw(ButtonData& data)
@@ -140,29 +150,21 @@ namespace Aen {
 		m_target2D->EndDraw();
 	}
 
-	void ButtonUI::Update(Window& window, int indX)
+	void ButtonUI::Update(int index)
 	{
-		int addX = 20.f;
-		int addY = 5.f;
-		ButtonData temp = tempData.at(indX);
+		ButtonData temp = m_tempData.at(index);
 
-		tempBool = Intersect(window, indX);
+		if (Intersect(index)) {
+			int addX = 20.f;
+			int addY = 5.f;
 
-		if (tempBool)
-		{
-			float buttonWidth = GetButtonSize(tempData.at(indX).rect).x + addX;
-			float buttonHeight = GetButtonSize(tempData.at(indX).rect).y + addY;
+			float buttonWidth = GetButtonSize(m_tempData.at(index).rect).x + addX;
+			float buttonHeight = GetButtonSize(m_tempData.at(index).rect).y + addY;
 
-			SetButtonSize(buttonWidth, buttonHeight, indX);
+			SetButtonSize(buttonWidth, buttonHeight, index);
 		}
 		else {
-
-			//Behöver fixa logiken, fungerar bara på en knapp inte på flera eftersom positionen är static. Knapparna som kommer efter sätts till första knappens position
-			buttonData.at(indX).rect = temp.rect;
+			m_buttonData.at(index).rect = temp.rect;
 		}
-	}
-	bool ButtonUI::getBool() const
-	{
-		return tempBool;
 	}
 }

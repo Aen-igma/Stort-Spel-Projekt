@@ -8,18 +8,22 @@ MainMenu::MainMenu(Aen::Window& window)
 
 MainMenu::~MainMenu()
 {
-	Aen::EntityHandler::RemoveEntity(*testUI);
+	Aen::EntityHandler::RemoveEntity(*m_UI);
 }
 
 void MainMenu::Update(const float& deltaTime)
 {
-	testUI->GetComponent<Aen::UIComponent>().Update(m_Window);
+	m_UI->GetComponent<Aen::UIComponent>().Update();
 
-	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && testUI[0].GetComponent<Aen::UIComponent>().getBool())
-		State::SetState(States::Loadscreen);
-
-	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
-		m_Window.Exit();
+	if (Aen::Input::KeyDown(Aen::Key::LMOUSE))
+	{
+		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(0)) {
+			State::SetState(States::Loadscreen);
+		}
+		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(1)) {
+			m_Window.Exit();
+		}
+	}
 }
 
 void MainMenu::Initialize()
@@ -36,23 +40,25 @@ void MainMenu::Initialize()
 	cout << "Press Enter to Play\n";
 
 	// ----------------------------- UI -------------------------------- //
-	testUI = &Aen::EntityHandler::CreateEntity();
-	testUI->AddComponent<Aen::UIComponent>();
-	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/PathToTheTower.png", 0);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(965.f, 520.f, 0);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(1700.f, 900.f, 0);
-	testUI->GetComponent<Aen::UIComponent>().SaveButtonData();
+	m_UI = &Aen::EntityHandler::CreateEntity();
+	m_UI->AddComponent<Aen::UIComponent>();
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/PathToTheTower.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 520.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1700.f, 900.f, 0);
 
-	testUI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 1);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950, 1);
-	testUI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 1);
-	testUI->GetComponent<Aen::UIComponent>().SaveButtonData();
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(500.f, 950, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 0);
 
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Quit.png", 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950, 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 	
 	//Text
-	testUI->GetComponent<Aen::UIComponent>().AddText();
-	testUI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f,-100.f);
-	testUI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
+	//m_UI->GetComponent<Aen::UIComponent>().AddText();
+	//m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f,-100.f);
+	//m_UI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
 
 	//m_cube = &Aen::EntityHandler::CreateEntity();
 	//m_cube->AddComponent<Aen::MeshInstance>();

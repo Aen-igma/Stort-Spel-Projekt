@@ -1,84 +1,112 @@
 #include "PCH.h"
 #include "UIComponent.h"
 
-#include "PCH.h"
-#include "UIComponent.h"
-
 namespace Aen {
 
 	Aen::UIComponent::UIComponent(const size_t& id)
 		:Drawable(id)
 	{
-		button.Initialize();
+		m_button.Initialize();
+        m_picture.Initialize();
+        m_text.Initialize();
 	}
 
     Aen::UIComponent::~UIComponent()
     {
-
     }
+
+    //----------------------	Button	----------------------------//
 
 	void UIComponent::SaveButtonData()
 	{
-		button.SaveData();
+		m_button.SaveData();
 	}
 
 	void Aen::UIComponent::AddButton(LPCWSTR dir, int indX)
 	{
-		button.AddButton(dir, indX);
+		m_button.AddButton(dir, indX);
 	}
 
     void UIComponent::SetButtonSize(float width, float height, int indX)
     {
-        button.SetButtonSize(width, height, indX);
+        m_button.SetButtonSize(width, height, indX);
     }
 
     void UIComponent::SetButtonPos(float x, float y, int indX)
     {
-        button.SetButtonPos(x, y, indX);
+        m_button.SetButtonPos(x, y, indX);
     }
 
-	bool UIComponent::getBool() const
-	{
-		return button.getBool();
-	}
+    bool UIComponent::Intersects(int indX)
+    {
+       return m_button.Intersect(indX);
+    }
+
+    //----------------------	Text	----------------------------//
 
     void Aen::UIComponent::AddText()
     {
-        text.createText();
+        m_text.createText();
     }
 
     void UIComponent::SetTextSize(float width, float height)
     {
-        text.setTextSize(width,height);
+        m_text.setTextSize(width,height);
     }
 
     void UIComponent::SetTextPos(float x, float y)
     {
-        text.setTextPosition(x,y);
+        m_text.setTextPosition(x,y);
     }
 
-	void UIComponent::Update(Window& window)
-	{
-		for (auto& b : button.GetData()) {
+    //----------------------	Just pictures	----------------------------//
 
-			button.Update(window, b.index);
+    void UIComponent::AddPicture(LPCWSTR dir, int indX)
+    {
+        m_picture.AddPicture(dir, indX);
+    }
+
+    void UIComponent::SetPicPos(float x, float y, int indX)
+    {
+        m_picture.SetPicPos(x, y, indX);
+    }
+
+    void UIComponent::SetPicSize(float width, float height, int indX)
+    {
+        m_picture.SetPicSize(width, height, indX);
+    }
+
+    //----------------------	General stuff   ----------------------------//
+	void UIComponent::Update()
+	{
+		for (auto& b : GetData()) {
+
+            m_button.Update(b.index);
 		}
 	}
 
+    std::vector<ButtonData> UIComponent::GetData() const
+    {
+        return m_button.GetData();
+    }
+
 	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& layer)
 	{
-		//Draw button
-		for (auto& b : button.GetData()) {
+        //Draw Picture
+        for (auto& b : m_picture.GetData()) {
 
-            button.Draw(b);
+            m_picture.Draw(b);
         }
-        text.renderText();
-        
+		//Draw button
+		for (auto& b : GetData()) {
+
+            m_button.Draw(b);
+        }
+		//text.renderText();
     }
 
 	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	{
 
     }
-
 }

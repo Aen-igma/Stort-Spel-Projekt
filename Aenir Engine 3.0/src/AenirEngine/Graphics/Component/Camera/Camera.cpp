@@ -48,8 +48,9 @@ namespace Aen {
 
     void Camera::UpdateView(const Vec3f& pos, const Vec3f& rot) {
         Vec3f camTarget = m_forwardVec + pos;
-        m_view = MatViewRH(pos, camTarget, m_upVec);
+        m_view = MatViewLH(pos, camTarget, m_upVec);
 
-        DirectX::BoundingFrustum::CreateFromMatrix(m_boxFrustum, m_view.smMat * m_projection.smMat); 
+        DirectX::BoundingFrustum::CreateFromMatrix(m_boxFrustum, m_projection.smMat);
+        m_boxFrustum.Transform(m_boxFrustum, m_view.Inverse().smMat);
     }
 }
