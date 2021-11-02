@@ -76,6 +76,11 @@ namespace Aen {
         m_picture.SetPicSize(width, height, indX);
     }
 
+    void UIComponent::LessenPic(float width, int indX)
+    {
+        m_picture.LessenPic(width, indX);
+    }
+
     //----------------------	General stuff   ----------------------------//
 	void UIComponent::Update()
 	{

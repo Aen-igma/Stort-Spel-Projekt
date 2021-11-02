@@ -1,8 +1,8 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true),
-	m_hp(2), IFRAMEMAX(1.5f), m_iFrames(0.f) {}
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(100.f),
+	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
 	Aen::GlobalSettings::RemoveMainCamera();
@@ -20,7 +20,7 @@ void Gameplay::Initialize()
 	m_UI->AddComponent<Aen::UIComponent>();
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/healthbar.png", 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(220.f, 60.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(400.f, 150.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 4.f, 150.f, 0);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -143,9 +143,19 @@ void Gameplay::Initialize()
 	cout << "Press Enter To Continue\n";
 }
 
+// ---------------------------------------------------------		Update		--------------------------------------------------------------- //
+
 void Gameplay::Update(const float& deltaTime) {
 
 	// Collision
+	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 4.f, 150.f, 0);
+
+	if (Aen::Input::KeyDown(Aen::Key::BACK)) { //ersätt collision med enemy i if satsen
+		float hp = (m_hp - 20.f);
+		m_sub = m_hp - hp;
+		m_UI->GetComponent<Aen::UIComponent>().LessenPic(m_sub, 0);
+	}
+
 
 	if (m_reimube->GetComponent<Aen::AABoundBox>().Intersects(m_player.GetEntity()->GetComponent<Aen::AABoundBox>()))
 	{
