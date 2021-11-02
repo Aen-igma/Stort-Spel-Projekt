@@ -2,6 +2,9 @@
 #include "Tranform.h"
 
 namespace Aen {
+    
+    Translation::Translation(const size_t& id)
+        :Component(id), m_pos(Vec3f::zero) {}
 
     void Translation::SetPos(const Vec3f& pos) {
         m_pos = pos;
@@ -29,6 +32,9 @@ namespace Aen {
     
 
 
+    Rotation::Rotation(const size_t& id)
+        :Component(id), m_rot(Vec3f::zero) {}
+
     void Rotation::SetRot(const Vec3f& rot) {
         m_rot = rot;
     }
@@ -55,8 +61,8 @@ namespace Aen {
     
 
 
-    Scale::Scale()
-        :m_scale(Vec3f::one) {}
+    Scale::Scale(const size_t& id)
+        :Component(id), m_scale(Vec3f::one) {}
 
     void Scale::SetScale(const Vec3f& scale) {
         m_scale = scale;

@@ -2,19 +2,14 @@
 #include "AssimpImporter.h"
 
 #undef min
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/Importer.hpp"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/scene.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/postprocess.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/matrix4x4.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/cimport.h"
 
-void Aen::AssimpImport::LoadFbx(VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial)
+
+void Aen::AssimpImport::LoadFbx(std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
 	std::vector<Vertex> mesh;
 	Assimp::Importer importer;
 
-	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace);
-
+	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_MakeLeftHanded);
 	
 
 	if (pScene == NULL) {
@@ -23,6 +18,16 @@ void Aen::AssimpImport::LoadFbx(VBuffer<Vertex>& vBuffer, const std::string path
 	}
 
 	AssimpImport::ProcessNode(pScene->mRootNode, pScene, vBuffer, mesh, partitions, meshMaterial);
+
+	UINT meshSize = mesh.size();
+
+	vPos.resize(meshSize);
+	for (int i = 0; i < meshSize; i++)
+	{
+		vPos[i] = mesh[i].pos.smVec;
+
+		//pPosV[i] = mesh[i].pos.smVec;
+	}
 
 	if (!vBuffer.Create(mesh.data(), (UINT)mesh.size())) {
 		throw;
@@ -34,8 +39,9 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 {
 	UINT numVerts = mesh->mNumVertices;
 
+	
+
 	aiMaterial* material;
-	//UINT invertedIndex = scene->mNumMaterials - mesh->mMaterialIndex - 1;
 	material = scene->mMaterials[mesh->mMaterialIndex];
 	meshMaterial.emplace(material->GetName().C_Str(), mesh->mMaterialIndex);
 	
@@ -88,7 +94,6 @@ void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBu
 {
 	UINT offset = 0;
 	UINT numMeshes = node->mNumMeshes;
-	//partsData.resize(numMeshes);
 	for (UINT i = 0; i < numMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];

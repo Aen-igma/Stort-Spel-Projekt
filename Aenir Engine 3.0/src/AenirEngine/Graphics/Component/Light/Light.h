@@ -1,5 +1,5 @@
 #pragma once
-#include"../../Graphics.h"
+#include"../Component.h"
 
 namespace Aen {
 
@@ -26,12 +26,12 @@ namespace Aen {
 
 	};
 
-	class AEN_DECLSPEC Light {
+	class AEN_DECLSPEC Light : public Component {
 		public:
 		virtual ~Light() = 0;
 		Light() = delete;
-		Light(const LightType& type);
-		Light(const LightType& type, const Vec4f& dist);
+		Light(const LightType& type, const size_t& id);
+		Light(const LightType& type, const Vec4f& dist, const size_t& id);
 
 		void SetColor(const Color& color);
 		void SetColor(const float& r, const float& g, const float& b, const float& a);
@@ -48,7 +48,7 @@ namespace Aen {
 
 	class AEN_DECLSPEC SpotLight : public Light {
 		public:
-		SpotLight();
+		SpotLight(const size_t& id);
 		
 		void SetLightDist(const Vec4f& dist);
 		void SetLightDist(const float& attA, const float& attB, const float& attC, const float& dist);
@@ -65,7 +65,7 @@ namespace Aen {
 
 	class AEN_DECLSPEC PointLight : public Light {
 		public:
-		PointLight();
+		PointLight(const size_t& id);
 		
 		void SetLightDist(const Vec4f& dist);
 		void SetLightDist(const float& attA, const float& attB, const float& attC, const float& dist);
@@ -83,7 +83,7 @@ namespace Aen {
 
 	class AEN_DECLSPEC DirectionalLight : public Light {
 		public:
-		DirectionalLight();
+		DirectionalLight(const size_t& id);
 
 		private:
 		~DirectionalLight() = default;

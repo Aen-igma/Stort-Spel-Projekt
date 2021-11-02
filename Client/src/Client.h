@@ -1,7 +1,9 @@
 #pragma once
-#include"AenirEngine.h"
-#include"AenirEngine/ThirdParty/ImGui/imgui.h"
-#include"AenirEngine/LevelGeneration/LevelGenerator.h"
+#include "States\Gameplay.h"
+#include "States\Menu.h"
+#include "States\Loadscreen.h"
+#include "States\GameEnd.h"
+#include "AenirEngine.h"
 
 #include<stack>
 
@@ -13,39 +15,14 @@ class Client : public Aen::App {
 
 	void Start() override;
 	void Update(const float& deltaTime) override;
+	void ChangeState(const States& states);
 
 	private:
-
-	float m_speed;
-	float m_fSpeed;
-	float m_mouseSense;
-	bool m_toggleFullScreen;
-
-	Aen::Entity* m_camera;
-	Aen::Entity* m_dLight;
-	Aen::Entity* m_spotLight;
-	Aen::Entity* m_plane;
-	Aen::Entity* m_plane1;
-	Aen::Entity* m_cube;
-	
-	Aen::Mesh* m_meshcube;
-	Aen::Entity* m_sphere;
-
-	//For accessing level generation functions
-	Aen::LevelGenerator m_levelGenerator;
-	Aen::Room* mptr_map;
-	Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
-
-	Aen::Mesh* m_reimubeMesh;
-	Aen::Material* m_ReimuMat;
-	Aen::Texture* m_ReimuTex;
-
-	Aen::Entity* m_emiCube;
-
-	std::stack<Aen::Entity*> m_reimubes;
-	std::stack<Aen::Entity*> m_pLights;
+	State* mp_state;
+	States m_typeState;
+	Gameplay* mp_gameplay;
+	GameEnd* mp_gameEnd;
 };
-
 
 Aen::App* Aen::CreateApp() {
 
@@ -57,6 +34,6 @@ Aen::App* Aen::CreateApp() {
 	wDesc.hMenu = 0;
 	wDesc.WCStyle = 0;
 
-	return new Client(wDesc, L"Aenir Engine", L"Main_Window");
+	return AEN_NEW Client(wDesc, L"Aenir Engine", L"Main_Window");
 }
 

@@ -5,11 +5,11 @@ namespace Aen {
 
 	Light::~Light() {}
 
-	Light::Light(const LightType& type)
-		:m_light(Color::White, Vec4f(0.2f, 0.f, 0.02f, 2.f), Vec3f::zero, 1.f, Vec3f(0.f, 1.f, 0.f), 30.f, type) {}
+	Light::Light(const LightType& type, const size_t& id)
+		:Component(id), m_light(Color::White, Vec4f(0.2f, 0.f, 0.02f, 2.f), Vec3f::zero, 1.f, Vec3f(0.f, 1.f, 0.f), 30.f, type) {}
 
-	Light::Light(const LightType& type, const Vec4f& dist)
-		:m_light(Color::White, dist, Vec3f::zero, 1.f, Vec3f(0.f, 1.f, 0.f), 30.f, type) {}
+	Light::Light(const LightType& type, const Vec4f& dist, const size_t& id)
+		:Component(id), m_light(Color::White, dist, Vec3f::zero, 1.f, Vec3f(0.f, 1.f, 0.f), 30.f, type) {}
 
 	void Light::SetColor(const Color& color) {
 		m_light.m_color = color;
@@ -24,8 +24,8 @@ namespace Aen {
 	}
 
 
-	SpotLight::SpotLight()
-		:Light(LightType::SpotLight, Vec4f(0.1f, 0.f, 0.02f, 5.f)) {}
+	SpotLight::SpotLight(const size_t& id)
+		:Light(LightType::SpotLight, Vec4f(0.1f, 0.f, 0.02f, 5.f), id) {}
 
 	void SpotLight::SetLightDist(const Vec4f& dist) {
 		m_light.m_dist = dist;
@@ -40,8 +40,8 @@ namespace Aen {
 	}
 
 
-	PointLight::PointLight()
-		:Light(LightType::PointLight) {}
+	PointLight::PointLight(const size_t& id)
+		:Light(LightType::PointLight, id) {}
 
 	void PointLight::SetLightDist(const Vec4f& dist) {
 		m_light.m_dist = dist;
@@ -55,6 +55,6 @@ namespace Aen {
 		return m_light.m_dist;
 	}
 
-	DirectionalLight::DirectionalLight()
-		:Light(LightType::DirectionalLight, Vec4f::zero) {}
+	DirectionalLight::DirectionalLight(const size_t& id)
+		:Light(LightType::DirectionalLight, Vec4f::zero, id) {}
 }

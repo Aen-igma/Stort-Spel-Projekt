@@ -1,5 +1,6 @@
 #pragma once
 
+#include"AenDefines.h"
 #include"../../ThirdParty/SimpleMath/SimpleMath.h"
 #include<DirectXMath.h>
 #include<type_traits>
@@ -68,8 +69,8 @@ namespace Aen {
 	}
 
 	template<class T> 
-	inline void Clamp(T& value, const T& min, const T& max) noexcept {
-		value = (value < min) ? min : (value > max) ? max : value;
+	inline const T Clamp(const T& value, const T& min, const T& max) noexcept {
+		return (value < min) ? min : (value > max) ? max : value;
 	}
 
 	template<class T> 
@@ -224,7 +225,7 @@ namespace Aen {
 		MatPerspective(const float& fov, const float& aspect, const float& min, const float& max) noexcept {
 		float ang = DegToRad(fov);
 		Concealed::TMat<T> out;
-		out.smMat = sm::Matrix::CreatePerspectiveFieldOfView(ang, aspect, min, max);
+		out.smMat = DirectX::XMMatrixPerspectiveFovLH(ang, aspect, min, max);
 		return out;
 	}
 
@@ -265,6 +266,7 @@ namespace Aen {
 			y = std::atan2f(-mat.a31, sy);
 			r = 0;
 		}
+
 		return Concealed::TVec<T, 3>(Aen::RadToDeg(p), Aen::RadToDeg(y), Aen::RadToDeg(r));
 	}
 	

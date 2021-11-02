@@ -1,7 +1,8 @@
 #pragma once
-#include "LevelHeader.h"
-#include "Graphics/Component/Entity.h"
+#include "LevelHeader.h";
 #include "Graphics/Component/ComponentHandler.h"
+#include "Graphics/Component/Entity.h"
+#include "Graphics/Component/EntityHandler.h"
 #include <iostream>
 #include <fstream>
 #include <vector>

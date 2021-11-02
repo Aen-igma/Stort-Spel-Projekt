@@ -32,18 +32,19 @@ namespace Aen {
 		void SetScale(const Vec3f& scale);
 		void SetScale(const float& x, const float& y, const float& z);
 
-		const Vec3f& GetPos();
-		const Vec3f& GetRot();
-		const Vec3f& GetScale();
+		const Vec3f GetPos();
+		const Vec3f GetRot();
+		const Vec3f GetScale();
 		const size_t& GetID();
 		const std::string& GetTag();
+		const Mat4f GetTransformation();
 
 		private:
 		Entity(const size_t& id);
 		~Entity();
 
 		const bool HasId(const size_t& id);
-		const Mat4f GetTransformation();
+		const Vec3f GetTranslation();
 		const Mat4f GetPosMat();
 		const Mat4f GetRotMat();
 		const Mat4f GetScaleMat();
@@ -99,6 +100,13 @@ namespace Aen {
 	}
 
 	template<>
+	inline void Entity::AddComponent<UIComponent>() {
+		m_layer = 3;
+		if (!ComponentHandler::UIComponentExist(m_id))
+			ComponentHandler::CreateUI(m_id, m_layer + 3);
+	}
+
+	template<>
 	inline void Entity::AddComponent<Mesh>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
 			ComponentHandler::CreateMeshInstance(m_id, m_layer + 3);
@@ -137,8 +145,29 @@ namespace Aen {
 	inline void Entity::AddComponent<RigidBody>() {
 		if (!ComponentHandler::RigidExist(m_id))
 			ComponentHandler::CreateRigid(m_id);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
 	}
 
+	template<>
+	inline void Entity::AddComponent<CharacterController>() {
+		if (!ComponentHandler::CharacterControllerExist(m_id))
+			ComponentHandler::CreateCharacterController(m_id);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
+	}
+
+
+	template<>
+	inline void Entity::AddComponent<AABoundBox>(){
+		AddComponent<MeshInstance>();
+		if (!ComponentHandler::AABBExist(m_id))
+			ComponentHandler::CreateAABB(m_id, m_layer + 3);
+	}
 	// --------------- GetComponent -----------------
 
 	template<>
@@ -184,5 +213,20 @@ namespace Aen {
 	template<>
 	inline RigidBody& Entity::GetComponent() {
 		return ComponentHandler::GetRigid(m_id);
+	}
+
+	template<>
+	inline CharacterController& Entity::GetComponent() {
+		return ComponentHandler::GetCharacterController(m_id);
+	}
+
+	template<>
+	inline UIComponent& Entity::GetComponent() {
+		return ComponentHandler::GetUI(m_id);
+	}
+
+	template<>
+	inline AABoundBox& Entity::GetComponent() {
+		return ComponentHandler::GetAABB(m_id);
 	}
 }

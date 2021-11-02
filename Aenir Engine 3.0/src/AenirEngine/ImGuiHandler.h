@@ -44,6 +44,18 @@ namespace Aen {
 
 		void ReadAllFilesFromResourceFolder();
 
+		void Initialize(const HWND& hwnd, ID3D11Device* mp_device, ID3D11DeviceContext* mp_dContext);
+		void NewFrame();
+		void Render();
+		void Release();
+		void SceneListWindow();
+		void AssetWindow();
+		void ColorWheel();
+		void PropertyWindow();
+		void ToolWindow();
+		void MaterialWindow();
+		void Update();
+
 		AenIF::Room GetRoom(size_t index);
 		void AddModel(Aen::Entity* entity);
 		void AddLight(Aen::Entity* entity);

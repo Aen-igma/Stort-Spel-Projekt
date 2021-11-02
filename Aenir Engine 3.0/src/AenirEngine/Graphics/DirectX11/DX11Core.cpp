@@ -6,6 +6,8 @@ namespace Aen {
     ComDevice GCore::m_device{nullptr};
     ComDeviceContext GCore::m_dContext{nullptr};
     ComSwapChain GCore::m_sChain{nullptr};
+    Com2DFactory GCore::m_factory{ nullptr };
+    Com2DTarget GCore::m_target2D{ nullptr };
 
 	bool GCore::Concealed::Initialize(const Window& window) {
     
@@ -23,13 +25,13 @@ namespace Aen {
         sChainDesc.SampleDesc.Count = 1;
         sChainDesc.SampleDesc.Quality = 0;
         
-        sChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_UNORDERED_ACCESS;
+        sChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_SHADER_INPUT;
         sChainDesc.BufferCount = 1;
         sChainDesc.OutputWindow = window.m_hwnd;
         sChainDesc.Windowed = true;
         sChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
         sChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-        
+
         ComAdapter1 pAdapter = NULL;
         ComFactory2 pFactory2 = NULL;
         ComFactory6 pFactory6 = NULL;
@@ -52,16 +54,21 @@ namespace Aen {
         DXGI_ADAPTER_DESC1 desc;
         pAdapter->GetDesc1(&desc);
 
-        const UINT featureLvls = 2;
-        D3D_FEATURE_LEVEL featureLvl[featureLvls] = {
-            D3D_FEATURE_LEVEL_11_1,
+        //const UINT featureLvls = 1;
+        D3D_FEATURE_LEVEL featureLvl[] = {
+            //D3D_FEATURE_LEVEL_11_1,
             D3D_FEATURE_LEVEL_11_0
         };
 
         UINT flags = 0;
         #ifdef _DEBUG
-        flags = D3D11_CREATE_DEVICE_DEBUG;
+        flags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
         #endif
+        
+        //#ifdef NDEBUG
+        //flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+        //#endif // RELEASE
+
 
         HRESULT hr = D3D11CreateDeviceAndSwapChain(
             pAdapter.Get(),
@@ -69,7 +76,7 @@ namespace Aen {
             NULL,
             flags,
             featureLvl,
-            featureLvls,
+            ARRAYSIZE(featureLvl),
             D3D11_SDK_VERSION,
             &sChainDesc,
             m_sChain.GetAddressOf(),
@@ -81,12 +88,49 @@ namespace Aen {
         pFactory2.Reset();
         pFactory6.Reset();
 
+        
+
+        //----------------------------------    Direct 2D   ---------------------------------//
+        #ifdef _DEBUG
+        D2D1_FACTORY_OPTIONS fo{};
+        fo.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
+        if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf())))
+            return false;
+        #else
+        if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_factory.GetAddressOf())))
+            return false;
+        #endif
+        
+
+
+        //ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf()));
+
+        IDXGISurface* IXSurface;
+        if (SUCCEEDED(m_sChain->GetBuffer(0, IID_PPV_ARGS(&IXSurface))))
+        {
+            Vec2f dpi;
+            dpi = static_cast<FLOAT>(GetDpiForWindow(window.m_hwnd));
+            D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), dpi.x, dpi.y);
+            
+            if(FAILED(m_factory->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D.GetAddressOf())))
+                return false;
+
+        } else
+            return false;
+        
         return SUCCEEDED(hr);
 	}
 
     void GCore::Concealed::Release() {
+        #ifdef _DEBUG
+        IDXGIDebug* debugDev;
+        ASSERT_HR(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev)));
+        ASSERT_HR(debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL));
+        #endif
         m_device.Reset();
         m_dContext.Reset();
         m_sChain.Reset();
+        m_target2D.Reset();
+        m_factory.Reset();
     }
 }
