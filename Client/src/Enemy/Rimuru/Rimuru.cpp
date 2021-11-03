@@ -34,7 +34,7 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 
 	if(!m_eventQueue.empty()) {
 		if(m_eventQueue.front().duration > 0.f) {
-			m_eventQueue.front().function(m_eventQueue.front().accell);
+			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration);
 			m_eventQueue.front().duration -= deltaTime;
 		} else {
 			m_eventQueue.pop_front();
@@ -71,7 +71,8 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		if(m_dodge) {
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 			Aen::Vec3f right = eDir.Normalized() % Aen::Vec3f(0.f, 1.f, 0.f);
-			m_v = Aen::Vec3f(0.f, 6.f, 0.f) - Aen::Vec3f(nDir.x, 0.f, nDir.y).Normalized() * 12.f + right.Normalized() * d * 14.f;
+			m_v = Aen::Vec3f(0.f, 10.f, 0.f) - Aen::Vec3f(nDir.x, 0.f, nDir.y).Normalized() * 18.f + right.Normalized() * d * 20.f;
+			m_dodge = false;
 		} else
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 	}
@@ -97,11 +98,11 @@ void Rimuru::RandomCombatEvent(const float& deltaTime) {
 	switch(rand() % 2) {
 		case 0:
 		data.duration = rand() % 2 + 1;
-		data.function = [&](float& accell) {};
+		data.function = [&](float& accell, const float& attackDuration) {};
 		break;
 		case 1:
 		data.duration = 0.01f;
-		data.function = [&](float& accell) {
+		data.function = [&](float& accell, const float& attackDuration) {
 			m_v = Aen::Vec3f(0.f, 8.f, 0.f) + m_lDir * 14.f;
 		};
 		break;
@@ -116,11 +117,11 @@ void Rimuru::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir) 
 	switch(rand() % 2) {
 		case 0:
 		data.duration = rand() % 3 + 3;
-		data.function = [&](float& accell) {};
+		data.function = [&](float& accell, const float& attackDuration) {};
 		break;
 		case 1:
 		data.duration = rand() % 3 + 1;
-		data.function = [&](float& accell) {
+		data.function = [&](float& accell, const float& attackDuration) {
 			m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized() * 3.f * deltaTime, deltaTime);
 
 			m_lDir = Aen::Lerp(m_lDir, Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized(), 0.03f);

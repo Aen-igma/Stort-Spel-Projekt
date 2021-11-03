@@ -14,7 +14,7 @@ struct EventData {
 	float accell;
 	float damage;
 	EventType type;
-	std::function<void(float& accell)> function;
+	std::function<void(float& accell, const float& attackDuration)> function;
 };
 
 struct TargetData {
@@ -23,7 +23,7 @@ struct TargetData {
 };
 
 class Player {
-	public:
+public:
 	Player();
 	~Player();
 
@@ -38,8 +38,12 @@ class Player {
 
 	const bool IsAttacking();
 
-	private:
+private:
 	
+	const float* mp_deltaTime;
+
+	void SwordSwing(float speed, float time);
+	void ResetSword();
 	void AddEvent(EventData& event);
 
 	float m_health;
@@ -47,6 +51,7 @@ class Player {
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
 	Aen::Entity* m_camera;
+	Aen::Entity* m_sword;
 	Aen::Raycast m_ray;
 
 	float m_mouseSense;
@@ -57,6 +62,10 @@ class Player {
 
 	const float m_LIGHTATTACKTIME;
 	const float m_HEAVYATTACKTIME;
+	const float m_LIGHTCHARGETIME;
+	const float m_HEAVYCHARGETIME;
+	const float m_LIGHTATTACKSPEED;
+	const float m_HEAVYATTACKSPEED;
 	
 	Aen::Vec3f m_v;
 	std::deque<EventData> m_eventQueue;
