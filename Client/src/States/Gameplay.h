@@ -1,7 +1,7 @@
 #pragma once
 #include "States.h"
-#include "../Level/LevelGenerator.h"
-#include"AenirEngine/ThirdParty/ImGui/imgui.h"
+#include "AenirEngine/LevelGeneration/LevelGenerator.h"
+#include "AenirEngine/ThirdParty/ImGui/imgui.h"
 #include "AenirEngine\Graphics\Component\EntityHandler.h"
 #include"../Enemy/Enemies.h"
 #include"AenirEngine\LevelEditor\ImGuiImporter.h"
@@ -9,7 +9,9 @@
 
 class Gameplay : public State {
     private:
-    int m_hp;
+    float m_hp;
+    float m_sub;
+
     float m_iFrames;
     const float IFRAMEMAX;
     bool m_invincible;

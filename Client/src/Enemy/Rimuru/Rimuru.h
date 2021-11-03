@@ -7,12 +7,21 @@ class Rimuru : public Enemy {
 	Rimuru(const Aen::Vec3f &pos);
 	~Rimuru() override;
 
+	Aen::Entity*& GetEntity();
+
 	// Inherited via Enemy
-	virtual void Update(const float& deltaTime, Aen::Entity& player) override;
+	virtual void Update(const float& deltaTime, Player& player) override;
 
 	private:
+
+	void RandomCombatEvent(const float& deltaTime);
+	void RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir);
+
 	Aen::Entity* m_rimuru;
 	Aen::Vec3f m_lDir;
-	float v;
-
+	Aen::Vec3f m_Dir;
+	bool m_toggleAttacked;
+	bool m_dodge;
+	bool m_hurting;
+	Aen::Vec2f m_rDir;
 };

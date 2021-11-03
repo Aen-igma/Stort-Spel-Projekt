@@ -2,6 +2,7 @@
 #include"Renderer.h"
 #include "../ImGuiHandler.h"
 #include<string>
+//#include"../LevelGeneration/LevelGenerator.h"
 
 namespace Aen {
 
@@ -36,9 +37,9 @@ namespace Aen {
 			return m_BGColor;
 		}
 
-		static ImGuiHandler*& GetImGuiHandler() {
-			return mp_guiHandler;
-		}
+		//static ImGuiHandler*& GetImGuiHandler() {
+		//	return mp_guiHandler;
+		//}
 
 		static void RemoveMainCamera()
 		{

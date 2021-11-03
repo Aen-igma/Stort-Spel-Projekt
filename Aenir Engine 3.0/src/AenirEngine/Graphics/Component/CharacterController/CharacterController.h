@@ -1,6 +1,7 @@
 #pragma once
 #include"../Component.h"
 #include"../../Physics/PhysicsHandler.h"
+#include"../../Physics/Raycast.h"
 
 namespace Aen {
 
@@ -14,6 +15,8 @@ namespace Aen {
 		void SetUpDirection(const Vec3f& up);
 		const Vec3f GetPos();
 
+		const bool IsGrounded();
+
 		private:
 		~CharacterController();
 
@@ -21,11 +24,14 @@ namespace Aen {
 		void SetPos(const Vec3f& pos);
 		void SetPos(const float& x, const float& y, const float& z);
 
-		px::PxScene* m_pScene;
 		px::PxPhysics* m_physics;
-		px::PxControllerManager* m_cManager;
 		px::PxController* m_controller;
-		px::PxControllerState m_state;
+		px::PxControllerFilters m_filter;
+		CollisionFilter m_callback;
+
+		Raycast m_ray;
+		bool m_isGrounded;
+		float m_height;
 
 		friend class Entity;
 		friend class MeshInstance;

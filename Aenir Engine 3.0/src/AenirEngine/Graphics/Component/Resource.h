@@ -30,6 +30,15 @@ namespace Aen {
 			}
 		}
 
+		static void RemoveAllShaders() {
+			for (auto& s : m_shaders) {
+				if (s.second) {
+					delete s.second;
+					s.second = nullptr;
+				}
+			}
+		}
+
 		static ShaderModel& GetShader(const std::string& name) {
 			if(m_shaders.count(name) > 0)
 				return *m_shaders.at(name);
@@ -63,6 +72,15 @@ namespace Aen {
 			}
 		}
 
+		static void RemoveAllMaterials() {
+			for (auto& m : m_materials) {
+				if (m.second) {
+					delete m.second;
+					m.second = nullptr;
+				}
+			}
+		}
+
 		static Material& GetMaterial(const std::string& name) {
 			if(m_materials.count(name) > 0)
 				return *m_materials.at(name);
@@ -87,6 +105,15 @@ namespace Aen {
 				delete m_textures.at(name);
 				m_textures.at(name) = nullptr;
 				m_textures.erase(name);
+			}
+		}
+
+		static void RemoveAllTextures() {
+			for (auto& t : m_materials) {
+				if (t.second) {
+					delete t.second;
+					t.second = nullptr;
+				}
 			}
 		}
 
@@ -119,6 +146,15 @@ namespace Aen {
 				m_meshes.at(name) = nullptr;
 				m_meshes.erase(name);
 
+			}
+		}
+
+		static void RemoveAllMeshes() {
+			for (auto& m : m_materials) {
+				if (m.second) {
+					delete m.second;
+					m.second = nullptr;
+				}
 			}
 		}
 

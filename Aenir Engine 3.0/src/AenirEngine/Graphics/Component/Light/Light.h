@@ -43,6 +43,7 @@ namespace Aen {
 
 		friend class ComponentHandler;
 		friend class Renderer;
+
 	};
 
 	class AEN_DECLSPEC SpotLight : public Light {

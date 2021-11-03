@@ -3,6 +3,7 @@
 #include "../ComponentHandler.h"
 #include"Core/Renderer.h"
 #include"Core/GlobalSettings.h"
+#include"AABBComponent.h"
 
 namespace Aen {
 
@@ -52,13 +53,26 @@ namespace Aen {
 	AABoundBox::~AABoundBox() {}
 
 	const bool AABoundBox::Intersects(AABoundBox& otherBox) {
-		if (m_aabb.Intersects(otherBox.m_aabb) && m_isOn) {
+		if (m_aabb.Intersects(otherBox.m_aabb) && m_isOn && otherBox.m_isOn) {
 			otherBox.m_isColliding = true;
 			m_isColliding = true;
 			return true;
 		}
 
 		otherBox.m_isColliding = false;
+		m_isColliding = false;
+		return false;
+	}
+
+	const bool AABoundBox::Intersects(OBBox& volume)
+	{
+		if (m_aabb.Intersects(volume.m_obb) && m_isOn && volume.m_isOn) {
+			volume.m_isColliding = true;
+			m_isColliding = true;
+			return true;
+		}
+
+		volume.m_isColliding = false;
 		m_isColliding = false;
 		return false;
 	}
@@ -139,8 +153,9 @@ namespace Aen {
 				renderer.m_cbTransform.BindBuffer<VShader>(0u);
 
 				renderer.m_collisionBuffer.BindBuffer<PShader>(0);
-				if(m_isColliding) renderer.m_collisionBuffer.GetData().color = {0.f,1.f,0.f};
-				else renderer.m_collisionBuffer.GetData().color = {1.f,0.f,0.f};
+				if (!m_isOn) renderer.m_collisionBuffer.GetData().color = { .2f,.2f,.2f };
+				else if (m_isColliding) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
+				else renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
 				renderer.m_collisionBuffer.GetData().switcher = 0;
 				renderer.m_collisionBuffer.UpdateBuffer();
 
@@ -161,12 +176,15 @@ namespace Aen {
 
 	void AABoundBox::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 
-			if(ComponentHandler::RigidExist(m_id))
-				m_aabb.Center = ComponentHandler::GetRigid(m_id).GetPos().smVec + m_offset.smVec;
-			else if(ComponentHandler::CharacterControllerExist(m_id))
-				m_aabb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
-			else
-				m_aabb.Center = ComponentHandler::GetTranslation(m_id).GetPos().smVec + m_offset.smVec;
+		Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
+
+		m_aabb.Center = transformation.smVec;
+		if (ComponentHandler::RigidExist(m_id))
+			m_aabb.Center = ComponentHandler::GetRigid(m_id).GetPos().smVec + m_offset.smVec;
+		else if (ComponentHandler::CharacterControllerExist(m_id))
+			m_aabb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
+		
+
 
 			#ifdef _DEBUG
 			

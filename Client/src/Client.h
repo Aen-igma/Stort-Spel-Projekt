@@ -37,10 +37,3 @@ Aen::App* Aen::CreateApp() {
 	return AEN_NEW Client(wDesc, L"Aenir Engine", L"Main_Window");
 }
 
-
-class levelBuilder : public LevelGenerator {
-
-	static bool CreateRooms(std::vector<Aen::Entity>* storage, uint8_t x, uint8_t y);
-
-	public:
-};

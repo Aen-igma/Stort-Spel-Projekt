@@ -22,9 +22,9 @@ namespace Aen {
 		m_button.SaveData();
 	}
 
-	void Aen::UIComponent::AddButton(LPCWSTR dir, int indX)
+	void Aen::UIComponent::AddButton(const std::wstring& dir, int indX)
 	{
-		m_button.AddButton(dir, indX);
+		m_button.AddButton(dir.c_str(), indX);
 	}
 
     void UIComponent::SetButtonSize(float width, float height, int indX)
@@ -44,9 +44,14 @@ namespace Aen {
 
     //----------------------	Text	----------------------------//
 
+    void Aen::UIComponent::AddText(std::wstring text)
+    {
+        m_text.TextAdd(text);
+    }
+
     void Aen::UIComponent::AddText()
     {
-        m_text.createText();
+        m_text.AddText();
     }
 
     void UIComponent::SetTextSize(float width, float height)
@@ -61,9 +66,9 @@ namespace Aen {
 
     //----------------------	Just pictures	----------------------------//
 
-    void UIComponent::AddPicture(LPCWSTR dir, int indX)
+    void UIComponent::AddPicture(const std::wstring& dir, int indX)
     {
-        m_picture.AddPicture(dir, indX);
+        m_picture.AddPicture(dir.c_str(), indX);
     }
 
     void UIComponent::SetPicPos(float x, float y, int indX)
@@ -74,6 +79,11 @@ namespace Aen {
     void UIComponent::SetPicSize(float width, float height, int indX)
     {
         m_picture.SetPicSize(width, height, indX);
+    }
+
+    void UIComponent::LessenPic(float width, int indX)
+    {
+        m_picture.LessenPic(width, indX);
     }
 
     //----------------------	General stuff   ----------------------------//
@@ -102,7 +112,7 @@ namespace Aen {
 
             m_button.Draw(b);
         }
-		//text.renderText();
+		//m_text.Draw();
     }
 
 	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)

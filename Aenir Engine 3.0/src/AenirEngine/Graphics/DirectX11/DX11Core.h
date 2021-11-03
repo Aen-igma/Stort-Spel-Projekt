@@ -6,7 +6,12 @@
 #include"..\..\ThirdParty\SimpleMath\SimpleMath.h"
 #include <assert.h>
 #include <dxgidebug.h>
+
+#ifdef _DEBUG
 #define ASSERT_HR(hr) assert(SUCCEEDED(hr))
+#else
+#define ASSERT_HR(hr) hr
+#endif
 
 namespace sm = DirectX::SimpleMath;
 

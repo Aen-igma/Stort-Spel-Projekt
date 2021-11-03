@@ -387,7 +387,7 @@ namespace AenIMP {
 		temp.sound = input->model->sound;
 		temp.rigidBody = input->model->rigidBody;
 		temp.rigidBodyType = input->model->rigidBodyType;
-		
+
 		for (int i = 0; i < 3; i++)
 		{
 			temp.translation[i] = input->model->translation[i];

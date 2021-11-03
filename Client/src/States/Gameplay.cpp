@@ -1,17 +1,22 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true),
-	m_hp(2), IFRAMEMAX(1.5f), m_iFrames(0.f) {
-	m_beatBoss = false;
-}
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(100.f),
+	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
+	Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::GlobalSettings::RemoveMainCamera();
 	//Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	//Aen::EntityHandler::RemoveEntity(*m_reimube);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
+	for (auto& d : m_enemyQueue) {
+		delete d;
+	}
+	//Aen::Resource::RemoveAllMaterials();
+	//Aen::Resource::RemoveAllMeshes();
+	//Aen::Resource::RemoveAllTextures();
 }
 
 void Gameplay::Initialize()
@@ -20,9 +25,13 @@ void Gameplay::Initialize()
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/healthbar.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png"), 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(220.f, 60.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(400.f, 150.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 4.f, 150.f, 0);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1000.f, 100.f, 1);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -181,6 +190,10 @@ void Gameplay::Initialize()
 		offset -= 20;
 	}
 
+	//m_attack->SetParent(*m_player);
+
+	//printf("");
+
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
@@ -194,31 +207,20 @@ void Gameplay::Initialize()
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	cout << "Press Enter To Continue\n";
+
+	srand((UINT)time(NULL));
 }
+
+// ---------------------------------------------------------		Update		--------------------------------------------------------------- //
 
 void Gameplay::Update(const float& deltaTime) {
 
-	// Collision
+	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
+		float hp = (m_hp - m_player.GetHealth());
 
-	/*if (m_reimube->GetComponent<Aen::AABoundBox>().Intersects(m_player.GetEntity()->GetComponent<Aen::AABoundBox>()))
-	{*/
-		//m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
-		//printf("ouch\n");
-	/*}*/
-
-	// Invincible frames
-	//if (m_invincible && m_iFrames <= IFRAMEMAX)
-	//{
-	//	m_iFrames += deltaTime;
-	//	printf("Iframes: %f\n", m_iFrames);
-	//}
-	//else 
-	//{
-	//	m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
-	//	m_iFrames = 0.f;
-	//}
-
-	m_player.Update(deltaTime);
+		m_UI->GetComponent<Aen::UIComponent>().LessenPic(hp * 4, 0);
+		m_hp = m_player.GetHealth();
+	}
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -227,12 +229,17 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// ---------------------------------- Enemies --------------------------------------- //
 
+	m_player.Update(m_enemyQueue, deltaTime);
+
 	for(auto& i : m_enemyQueue)
-		i->Update(deltaTime, *m_player.GetEntity());
+		i->Update(deltaTime, m_player);
 
-	
+	m_player.UpdateAttack(m_enemyQueue, deltaTime);
 
-	/*if(Aen::Input::KeyDown(Aen::Key::J))
+	if(m_player.GetHealth() <= 0.f)
+		State::SetState(States::Gameover);
+
+	if(Aen::Input::KeyDown(Aen::Key::J))
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
 
 	if (Aen::Input::KeyDown(Aen::Key::O)) {
@@ -268,23 +275,7 @@ void Gameplay::Update(const float& deltaTime) {
 		m_Window.Exit();
 
 	// ------------------------------------- States -------------------------------------- //
-	/*
-	 // Condition: Enter boss room
-		if(entered boss room)
-		{
-			if(defeated boss and touch entrance to next level)
-			{
-				WIN
-			}
-		}
-	*/
-
-	if (Aen::Input::KeyDown(Aen::Key::ENTER))
-	{
-		m_beatBoss = true;
-	}
-
-	/*if (m_beatBoss && m_enemyQueue.size() == 0 && m_player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_reimube->GetComponent<Aen::AABoundBox>()))
+	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)
 	{
 		State::SetState(States::Gameover);
 	}*/
