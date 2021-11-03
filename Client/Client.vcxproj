@@ -180,6 +180,7 @@
     <ClInclude Include="src\States\Loadscreen.h" />
     <ClInclude Include="src\States\Menu.h" />
     <ClInclude Include="src\States\States.h" />
+    <ClInclude Include="src\States\Victory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Client.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="src\States\Loadscreen.cpp" />
     <ClCompile Include="src\States\Menu.cpp" />
     <ClCompile Include="src\States\States.cpp" />
+    <ClCompile Include="src\States\Victory.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
