@@ -27,12 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Level\LevelGenerator.h">
-      <Filter>Header Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Level\RandomNumberGenerator.h">
-      <Filter>Header Files\Level</Filter>
-    </ClInclude>
     <ClInclude Include="src\Client.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
@@ -67,12 +61,6 @@
   <ItemGroup>
     <ClCompile Include="src\Client.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Level\LevelGenerator.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Level\RandomNumberGenerator.cpp">
-      <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="src\States\Gameplay.cpp">
       <Filter>Source Files\States</Filter>

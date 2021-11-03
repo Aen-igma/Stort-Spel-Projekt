@@ -87,9 +87,14 @@ namespace Aen {
         pFactory6.Reset();
 
         //----------------------------------    Direct 2D   ---------------------------------//
-        D2D1_FACTORY_OPTIONS fo{};
         #ifdef _DEBUG
+        D2D1_FACTORY_OPTIONS fo{};
         fo.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
+        if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf())))
+            return false;
+        #else
+        if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_factory.GetAddressOf())))
+            return false;
         #endif
         D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, IID_PPV_ARGS(m_factory.GetAddressOf()));
 

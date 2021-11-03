@@ -1,7 +1,7 @@
 #pragma once
 #include "States.h"
-#include "../Level/LevelGenerator.h"
-#include"AenirEngine/ThirdParty/ImGui/imgui.h"
+#include "AenirEngine/LevelGeneration/LevelGenerator.h"
+#include "AenirEngine/ThirdParty/ImGui/imgui.h"
 #include "AenirEngine\Graphics\Component\EntityHandler.h"
 #include"../Enemy/Enemies.h"
 #include<functional>
@@ -28,8 +28,7 @@ class Gameplay : public State {
     Aen::Entity* m_wall;
 
     Player m_player;
-
-    std::queue<EventData> m_eventQueue;
+    bool m_beatBoss;
 
     std::deque<Enemy*> m_enemyQueue;
 

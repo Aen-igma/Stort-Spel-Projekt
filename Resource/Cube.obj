@@ -1,7 +1,5 @@
-# This file uses centimeters as units for non-parametric coordinates.
-
 usemtl ReimuMaterial
-g Cube
+g Cube_Cube.001
 v -0.500000 -0.500000 0.500000
 v 0.500000 -0.500000 0.500000
 v -0.500000 0.500000 0.500000

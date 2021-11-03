@@ -10,15 +10,29 @@ namespace Aen {
 		px::PxVec3 origin(m_origin.x, m_origin.y, m_origin.z);
 		px::PxVec3 direction(m_direction.x, m_direction.y, m_direction.z);
 		px::PxReal maxDist(m_maxDist);
-		m_hit = PhysicsHandler::GetInstance()->GetScene()->raycast(origin, direction, maxDist, m_ray);
+
+		if(PhysicsHandler::GetInstance()->GetScene()->raycast(origin, direction, maxDist, m_ray)) {
+			px::PxGeometryType::Enum t = m_ray.block.shape->getGeometryType();
+			if(t != px::PxGeometryType::eCAPSULE) 
+				m_hit = true;
+		} else
+			m_hit = false;
 	}
 
 	void Raycast::SetOrigin(const Aen::Vec3f& origin) {
 		m_origin = origin;
 	}
 
+	void Raycast::SetOrigin(const float& x, const float& y, const float& z) {
+		m_origin = Vec3f(x, y, z);
+	}
+
 	void Raycast::SetDirection(const Aen::Vec3f& dir) {
 		m_direction = dir;
+	}
+
+	void Raycast::SetDirection(const float& x, const float& y, const float& z) {
+		m_direction = Vec3f(x, y, z);
 	}
 
 	void Raycast::SetMaxDist(const float& dist) {

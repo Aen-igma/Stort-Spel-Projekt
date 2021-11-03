@@ -5,6 +5,7 @@
 #include "../Component.h"
 #include "BuritoMath.h"
 #include"../Camera/Camera.h"
+#include"OBBComponent.h"
 
 namespace Aen
 {
@@ -14,6 +15,7 @@ namespace Aen
 		AABoundBox(const size_t& id);
 		~AABoundBox();
 		const bool Intersects(AABoundBox& otherBox);
+		const bool Intersects(OBBox& volume);
 		/// <summary>
 		/// Creates AABB based on mesh. If mesh is NULL it will throw
 		/// </summary>
@@ -45,6 +47,8 @@ namespace Aen
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
 		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
+
+		friend class OBBox;
 
 	};
 }

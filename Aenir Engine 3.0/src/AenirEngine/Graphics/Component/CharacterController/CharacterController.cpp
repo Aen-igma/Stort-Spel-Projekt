@@ -2,11 +2,18 @@
 #include "CharacterController.h"
 
 namespace Aen {
+	
+	CollisionFilter::CollisionFilter() {}
+
+	CollisionFilter::~CollisionFilter() {}
+
+	bool CollisionFilter::filter(const px::PxController& a, const px::PxController& b) {
+		return false;
+	}
 
 	CharacterController::CharacterController(const size_t& id) 
-		:Component(id), m_pScene(PhysicsHandler::GetInstance()->GetScene()), m_physics(PhysicsHandler::GetInstance()->GetPxPhysics()),
-		m_cManager(nullptr), m_controller(nullptr) {
-		m_cManager = PxCreateControllerManager(*m_pScene, false);
+		:Component(id), m_physics(PhysicsHandler::GetInstance()->GetPxPhysics()),
+		m_controller(nullptr), m_isGrounded(false) {
 
 		px::PxCapsuleControllerDesc desc;
 		desc.climbingMode = px::PxCapsuleClimbingMode::eCONSTRAINED;
@@ -21,12 +28,19 @@ namespace Aen {
 		if(!desc.isValid())
 			throw;
 
-		m_controller = m_cManager->createController(desc);
+		m_height = 0.99f;
 
-		ZeroMemory(&m_state, sizeof(m_state));
+		m_controller = PhysicsHandler::GetCManager()->createController(desc);
+
+		px::PxVec3 d = -m_controller->getUpDirection();
+		m_ray.SetDirection(d.x, d.y, d.z);
+		m_ray.SetMaxDist(0.01f);
+
+		m_filter.mCCTFilterCallback = &m_callback;
 	}
 
 	void CharacterController::SetHeight(const float& height) {
+		m_height = height;
 		m_controller->resize(height);
 	}
 
@@ -35,13 +49,11 @@ namespace Aen {
 	}
 
 	void CharacterController::Move(const Vec3f& dir, const float& deltaTime) {
-		m_controller->move(px::PxVec3(dir.x, dir.y, dir.z), 0.f, deltaTime, px::PxControllerFilters());
+		m_controller->move(px::PxVec3(dir.x, dir.y, dir.z), 0.f, deltaTime, m_filter);
 	}
 
 	CharacterController::~CharacterController() {
 		m_controller->release();
-		m_cManager->release();
-		m_pScene = nullptr;
 	}
 
 	const Mat4f CharacterController::GetTranslate() {
@@ -64,5 +76,12 @@ namespace Aen {
 	const Vec3f CharacterController::GetPos() {
 		px::PxExtendedVec3 p = m_controller->getPosition();
 		return Vec3f(p.x, p.y, p.z);
+	}
+
+	const bool CharacterController::IsGrounded() {
+		px::PxExtendedVec3 p = m_controller->getFootPosition();
+		m_ray.SetOrigin(Vec3f(p.x, p.y, p.z) + m_ray.GetDirection() * 0.08f);
+		m_ray.Update();
+		return m_ray.Hit();
 	}
 }
