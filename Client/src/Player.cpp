@@ -128,6 +128,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.accell = 6.f;
 			data.duration = 0.2f;
 			data.type = EventType::Attack;
+			data.damage = 20.f;
 			data.function = [&](float& accell) {
 				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
