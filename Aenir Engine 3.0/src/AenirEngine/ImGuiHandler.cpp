@@ -583,19 +583,31 @@ namespace Aen {
 		}
 	}
 
-	//void ImGuiHandler::AddEnemy(Aen::Entity* entity, AenIF::Model& model)
-	//{
-	//	if (model.type == IGH::NORMALENEMY)
-	//	{
-	//		OutputDebugStringA(IGH::NORMALENEMY.c_str());
-	//	}
-	//	else if (model.type == IGH::BOSS.c_str())
-	//	{
-	//		OutputDebugStringA(IGH::NORMALENEMY.c_str());
-	//	}
-	//}
+	void ImGuiHandler::rotate(float angle)
+	{
+		float s = sin(angle * (C_PI / 180));
+		float c = cos(angle * (C_PI / 180));
+		float posX = 0;
+		float posZ = 0;
+		Vec3f translation;
+		Vec3f rotation;
+		size_t id;
+		for (size_t i = 0; i < m_entityList.size(); i++)
+		{
+			id = m_entityList[i]->GetID();
+			if (Aen::ComponentHandler::MeshInstanceExist(id))
+			{
+				translation = m_entityList[i]->GetPos();
+				rotation = m_entityList[i]->GetRot();
 
+				posX = (translation.x * c) - (translation.z * s);
+				posZ = (translation.x * s) + (translation.z * c);
 
+				m_entityList[i]->SetPos(posX, translation.y, posZ);
+				m_entityList[i]->SetRot(rotation.x, rotation.y + angle, rotation.z);
+			}
+		}
+	}
 
 	void ImGuiHandler::ChangeMaterial(int& currentIndex)
 	{
@@ -758,6 +770,7 @@ namespace Aen {
 		static int selectedSpecial = 0;
 		static int probability = 0;
 		static int roomSize = 0;
+		static int rotateRoom = 0;
 
 		m_roomProperty[0] = IGH::ROOMTYPE[selectedType];
 		m_roomProperty[1] = IGH::SPECIALROOM[selectedSpecial];
@@ -772,6 +785,12 @@ namespace Aen {
 			ImGui::Combo("Special Room", &selectedSpecial, IGH::SPECIALROOM, IM_ARRAYSIZE(IGH::SPECIALROOM));
 			ImGui::DragInt("Probability", &probability, 1, 0, 100, "%.d", 0);
 			ImGui::DragInt("Room Size", &roomSize, 1);
+			ImGui::DragInt("Rotate Room", &rotateRoom, 1);
+
+			if (AddButton("Rotate"))
+			{
+				rotate(rotateRoom);
+			}
 
 			ImGui::EndTabItem();
 		}

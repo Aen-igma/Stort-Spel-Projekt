@@ -111,6 +111,64 @@ namespace Aen
 		return false;
 	}
 
+	bool ImGuiImporter::import(string& levelPath)
+	{
+		m_levelImporter->ReadFromFile(levelPath);
+
+		for (size_t i = 0; i < m_levelImporter->GetRoomVector()[0].GetModelVector().size(); i++)
+		{
+			//size_t id = AddBase(m_levelImporter->GetRoomVector()[0].GetModelVector()[i], m_levelImporter->GetRoomVector()[0].GetTextureVector()[i]);
+			size_t id = AddBase(m_levelImporter->GetRoomVector()[0].GetModelVector()[i], m_levelImporter->GetRoomVector()[0].GetTextureVector()[i]);
+
+			float tX = 0, tY = 0, tZ = 0;
+			float rX = 0, rY = 0, rZ = 0;
+			float sX = 0, sY = 0, sZ = 0;
+
+			GetFloatArray(m_levelImporter->GetRoomVector()[0].GetModelVector()[i].translation, tX, tY, tZ);
+			GetFloatArray(m_levelImporter->GetRoomVector()[0].GetModelVector()[i].rotation, rX, rY, rZ);
+			GetFloatArray(m_levelImporter->GetRoomVector()[0].GetModelVector()[i].scale, sX, sY, sZ);
+
+			mp_entityHandlerPtr->GetEntity(id).SetPos(tX , tY , tZ );
+			mp_entityHandlerPtr->GetEntity(id).SetRot(rX , rY, rZ);
+			mp_entityHandlerPtr->GetEntity(id).SetScale(sX, sY, sZ);
+
+		}
+
+		for (size_t i = 0; i < m_levelImporter->GetRoomVector()[0].GetLightVector().size(); i++)
+		{
+			if (m_levelImporter->GetRoomVector()[0].GetLightVector()[i].type == IGH::DIRECTIONALLIGHT.c_str())
+			{
+				size_t id = AddDirectional(m_levelImporter->GetRoomVector()[0].GetLightVector()[i]);
+			}
+			else if (m_levelImporter->GetRoomVector()[0].GetLightVector()[i].type == IGH::SPOTLIGHT.c_str())
+			{
+				size_t id = AddSpotLight(m_levelImporter->GetRoomVector()[0].GetLightVector()[i]);
+
+				float tX = 0, tY = 0, tZ = 0;
+				float rX = 0, rY = 0, rZ = 0;
+
+				GetFloatArray(m_levelImporter->GetRoomVector()[0].GetModelVector()[i].translation, tX, tY, tZ);
+				GetFloatArray(m_levelImporter->GetRoomVector()[0].GetModelVector()[i].rotation, rX, rY, rZ);
+
+				mp_entityHandlerPtr->GetEntity(id).SetPos(tX , tY , tZ );
+				mp_entityHandlerPtr->GetEntity(id).SetRot(rX , rY , rZ);
+			}
+			else if (m_levelImporter->GetRoomVector()[0].GetLightVector()[i].type == IGH::POINTLIGHT.c_str())
+			{
+				size_t id = AddPointLight(m_levelImporter->GetRoomVector()[0].GetLightVector()[i]);
+
+				float tX = 0, tY = 0, tZ = 0;
+
+				GetFloatArray(m_levelImporter->GetRoomVector()[0].GetLightVector()[i].translation, tX, tY, tZ);
+
+				mp_entityHandlerPtr->GetEntity(id).SetPos(tX , tY, tZ);
+			}
+		}
+		m_levelImporter->GetRoomVector().clear();
+
+		return false;
+	}
+
 	void ImGuiImporter::GetFloatArray(float* inputArray, float& x, float& y, float& z)
 	{
 		x = inputArray[0];
@@ -216,6 +274,8 @@ namespace Aen
 		}
 		return true;
 	}
+
+
 
 	size_t ImGuiImporter::AddBase(AenIF::Model& model, AenIF::Texture& texture)
 	{
@@ -327,7 +387,7 @@ namespace Aen
 		light->AddComponent<Aen::PointLight>();
 		light->GetComponent<Aen::PointLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
 		light->GetComponent<Aen::PointLight>().SetLightDist(input.attenuation[0], input.attenuation[1], input.attenuation[2], input.range);
-		light->GetComponent<Aen::PointLight>().SetStrength(100);
+		light->GetComponent<Aen::PointLight>().SetStrength(input.intensity);
 		light->SetPos(input.translation[0], input.translation[1], input.translation[2]);
 
 		AddLight(light, IGH::POINTLIGHT);

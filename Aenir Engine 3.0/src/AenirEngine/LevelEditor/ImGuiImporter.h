@@ -3,7 +3,6 @@
 #include "Graphics/Component/Resource.h"
 #include <filesystem>
 
-
 #include "LevelImporter.h"
 #include "Graphics/Component/Entity.h"
 #include "Graphics/Component/ComponentHandler.h"
@@ -48,6 +47,7 @@ namespace Aen
 
 
 		bool import(AenIMP::LevelImporter &m_levelImporter, string & levelPath, float* translation, float* rotation, float* scale);
+		bool import(string& levelPath);
 
 		void GetFloatArray(float* inputArray, float& x, float& y, float& z);
 
@@ -59,7 +59,6 @@ namespace Aen
 		bool LoadLevel(int index);
 		bool LoadLevel(AenIMP::CompleteRoom* roomPtr, Aen::Vec2f offset, float angle);
 
-
 	public:
 		// All add func here
 
@@ -69,7 +68,6 @@ namespace Aen
 
 		void AddLight(Aen::Entity* entity);
 		void AddLight(Aen::Entity* entity, string type);
-
 		
 		void AddEnemy(Aen::Entity* entity, AenIF::Model& model); // Write import code here
 

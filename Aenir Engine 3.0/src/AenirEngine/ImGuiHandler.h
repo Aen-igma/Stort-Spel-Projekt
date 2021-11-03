@@ -98,6 +98,9 @@ namespace Aen {
 		void SetDefaultValue();
 		void ZeroValue();
 
+		void rotate(float angle);
+
+
 	public: 
 		// All window func here
 		void SceneListWindow();

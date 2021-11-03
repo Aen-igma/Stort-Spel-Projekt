@@ -58,8 +58,6 @@ namespace Aen
 		//Material material;
 		bool rigidBody;
 		char rigidBodyType[TYPE_NAME];
-
-
 	};
 
 	struct TextureStruct
