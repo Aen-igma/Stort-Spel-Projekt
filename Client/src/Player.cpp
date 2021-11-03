@@ -412,8 +412,6 @@ bool Player::HeavyAttack(std::deque<Enemy*>& e, const float deltatime)
 			}
 		}
 
-
-
 		if (m_attackTimer > m_HEAVYATTACKTIME)
 		{
 			m_heavyAttacking = false;
