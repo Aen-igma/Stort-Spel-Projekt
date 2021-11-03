@@ -53,7 +53,7 @@ namespace Aen {
 	AABoundBox::~AABoundBox() {}
 
 	const bool AABoundBox::Intersects(AABoundBox& otherBox) {
-		if (m_aabb.Intersects(otherBox.m_aabb) && m_isOn) {
+		if (m_aabb.Intersects(otherBox.m_aabb) && m_isOn && otherBox.m_isOn) {
 			otherBox.m_isColliding = true;
 			m_isColliding = true;
 			return true;
@@ -66,7 +66,7 @@ namespace Aen {
 
 	const bool AABoundBox::Intersects(OBBox& volume)
 	{
-		if (m_aabb.Intersects(volume.m_obb) && m_isOn) {
+		if (m_aabb.Intersects(volume.m_obb) && m_isOn && volume.m_isOn) {
 			volume.m_isColliding = true;
 			m_isColliding = true;
 			return true;

@@ -16,5 +16,7 @@ class Rimuru : public Enemy {
 	Aen::Vec3f m_lDir;
 	Aen::Vec3f m_Dir;
 	Aen::Vec3f m_v;
+	bool m_toggleAttacked;
+	bool m_dodge;
 
 };
