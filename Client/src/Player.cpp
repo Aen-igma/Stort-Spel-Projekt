@@ -3,7 +3,7 @@
 
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
-	m_hurtbox(&Aen::EntityHandler::CreateEntity()),
+	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_sword(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(6.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
@@ -18,10 +18,10 @@ Player::Player()
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
-	sword.Load(AEN_RESOURCE_DIR("Sword.fbx"));
+	sword.Load(AEN_RESOURCE_DIR("SwordOffset.fbx"));
 
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_RESOURCE_DIR("Capsule.fbx"));
+	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
 
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
@@ -32,6 +32,12 @@ Player::Player()
 	m_player->GetComponent<Aen::MeshInstance>().SetMaterial(playerMat);
 	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_player->SetPos(0.f, 1.f, 0.f);
+
+	m_sword->AddComponent<Aen::MeshInstance>();
+	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
+	m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);
+	//m_sword->SetPos(-1.f, 0.f, 2.f);
+	m_sword->SetParent(*m_player);
 
 	m_hurtbox->AddComponent<Aen::OBBox>();
 	m_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.0);
@@ -45,6 +51,8 @@ Player::~Player() {
 }
 
 void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
+
+	mp_deltaTime = &deltaTime;
 
 	static Aen::Vec3f axis;
 	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
@@ -209,6 +217,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.type = EventType::Dash;
 			data.function = [&](float& accell, const float& attackDuration) {
 				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 				accell -= 25.f * deltaTime;
 			};
 
@@ -224,12 +233,12 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.type = EventType::Attack;
 			data.function = [&](float& accell, const float& attackDuration) {
 				m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
+				SwordSwing(10.f, m_LIGHTATTACKTIME);
 				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
 					Aen::Vec3f d(d2.x, 0.f, d2.y);
 					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
 				}
-
 				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
 				accell -= 12.f * deltaTime;
 			};
@@ -253,7 +262,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
 				accell -= deltaTime * 2;
 				if (attackDuration < m_HEAVYCHARGETIME)
+				{
 					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
+					SwordSwing(5.f, m_HEAVYATTACKTIME);
+				}
 				else
 					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
 			};
@@ -343,8 +355,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	m_hurtbox->SetPos(attackPos);
 
 	float yaw = std::atan2(m_finalDir.x, m_finalDir.z);
+	float swordYaw = std::atan2(playerDir.x, playerDir.z);
 
 	m_hurtbox->GetComponent<Aen::OBBox>().SetRotation(0.f, yaw, 0.f);
+	m_player->SetRot(0.f, Aen::RadToDeg(yaw), 0.f);
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
@@ -412,14 +426,35 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
 		m_attackTimer = 0.f;
 		}*/
-	} else
+	}
+	else
+	{
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+		ResetSword();
+	}
 }
 
 const bool Player::IsAttacking() {
 	if(!m_eventQueue.empty())
 		return (m_eventQueue.front().type == EventType::Attack);
 	return false;
+}
+
+void Player::SwordSwing(float speed, float time)
+{
+	static float timer = 0.f;
+	timer += *mp_deltaTime;
+	if (timer > time)
+	{
+		m_sword->SetRot(0, 0, 0);
+		timer = 0.f;
+	}
+	m_sword->Rotate(-speed, -speed, 0.f);
+}
+
+void Player::ResetSword()
+{
+	m_sword->SetRot(0.f, 0.f, 0.f);
 }
 
 void Player::AddEvent(EventData& event) {

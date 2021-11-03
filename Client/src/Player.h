@@ -22,7 +22,7 @@ struct TargetData {
 };
 
 class Player {
-	public:
+public:
 	Player();
 	~Player();
 
@@ -34,13 +34,18 @@ class Player {
 
 	const bool IsAttacking();
 
-	private:
+private:
 	
+	const float* mp_deltaTime;
+
+	void SwordSwing(float speed, float time);
+	void ResetSword();
 	void AddEvent(EventData& event);
 
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
 	Aen::Entity* m_camera;
+	Aen::Entity* m_sword;
 	Aen::Raycast m_ray;
 
 	float m_mouseSense;
