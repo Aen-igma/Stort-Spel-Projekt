@@ -24,9 +24,11 @@ class Player {
 	Aen::Entity*& GetEntity();
 	Aen::Entity*& GetHurtBox();
 
-private:
-	Aen::Entity* m_hurtbox;
+	private:
+	
+	void AddEvent(EventData& event);
 
+	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
 	Aen::Entity* m_camera;
 	Aen::Raycast m_ray;
@@ -43,6 +45,6 @@ private:
 	const float m_HEAVYATTACKTIME;
 
 
-	std::queue<EventData> m_eventQueue;
+	std::deque<EventData> m_eventQueue;
 	std::deque<TargetData> m_targets;
 };

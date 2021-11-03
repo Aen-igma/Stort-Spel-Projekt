@@ -18,7 +18,7 @@ Player::Player()
 	sword.Load(AEN_RESOURCE_DIR("Sword.fbx"));
 
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
+	capsule.Load(AEN_RESOURCE_DIR("Capsule.fbx"));
 
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
@@ -117,7 +117,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				accell -= 25.f * deltaTime;
 			};
 
-			m_eventQueue.emplace(data);
+			AddEvent(data);
 		}
 
 		// Attack
@@ -139,7 +139,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				accell -= 12.f * deltaTime;
 			};
 
-			m_eventQueue.emplace(data);
+			AddEvent(data);
 		}
 
 		// Lock On Target
@@ -204,7 +204,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				accell -= 25.f * deltaTime;
 			};
 
-			m_eventQueue.emplace(data);
+			AddEvent(data);
 		}
 
 		// Attack
@@ -226,7 +226,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				accell -= 12.f * deltaTime;
 			};
 
-			m_eventQueue.emplace(data);
+			AddEvent(data);
 		}
 
 		// Lock On Target
@@ -311,7 +311,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		}
 		else {
 			if (axis.Magnitude() > 0.f) m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-			m_eventQueue.pop();
+			m_eventQueue.pop_front();
 		}
 
 	if (m_eventQueue.empty()) {
@@ -361,7 +361,13 @@ Aen::Entity*& Player::GetEntity() {
 	return m_player;
 }
 
-Aen::Entity*& Player::GetHurtBox()
-{
+Aen::Entity*& Player::GetHurtBox() {
 	return m_hurtbox;
+}
+
+void Player::AddEvent(EventData& event) {
+	if(m_eventQueue.size() > 1u)
+		m_eventQueue.pop_back();
+
+	m_eventQueue.emplace_back(event);
 }
