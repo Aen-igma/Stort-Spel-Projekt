@@ -46,10 +46,10 @@ namespace Aen
 
 	void Aen::UITextHolder::AddText()
 	{
-		ASSERT_HR(m_target2D->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &mp_Brush));
-		ASSERT_HR(m_pDWriteFactory->CreateTextFormat(L"Arial", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 72.0f, L"en-us", &m_Format));
-		ASSERT_HR(m_Format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
-		ASSERT_HR(m_Format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
+		//ASSERT_HR(m_target2D->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &mp_Brush));
+		//ASSERT_HR(m_pDWriteFactory->CreateTextFormat(L"Arial", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 72.0f, L"en-us", &m_Format));
+		//ASSERT_HR(m_Format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
+		//ASSERT_HR(m_Format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
 
 		this->m_text = L"High Tower!";
 		this->m_Lenght = m_text.size();
