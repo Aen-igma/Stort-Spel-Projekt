@@ -17,9 +17,10 @@ Player::Player()
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 
 	m_player->AddComponent<Aen::CharacterController>();
-	m_player->AddComponent<Aen::AABoundBox>();
+	m_player->AddComponent<Aen::MeshInstance>();
 	m_player->GetComponent<Aen::MeshInstance>().SetMesh(capsule);
 	m_player->GetComponent<Aen::MeshInstance>().SetMaterial(playerMat);
+	m_player->AddComponent<Aen::AABoundBox>();
 	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_player->SetPos(0.f, 1.f, 0.f);
 }

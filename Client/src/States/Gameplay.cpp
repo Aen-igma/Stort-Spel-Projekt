@@ -115,21 +115,22 @@ void Gameplay::Initialize()
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::RigidBody>();
 	m_plane->GetComponent<Aen::RigidBody>().SetOffset(0.f, -0.5f, 0.f);
-	//m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
 	m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::PLANE);
+	//m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
 	m_plane->AddComponent<Aen::MeshInstance>();
 	m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 
 	m_reimube = &Aen::EntityHandler::CreateEntity();
-	//m_reimube->AddComponent<Aen::RigidBody>();
-	//m_reimube->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 2.f, 2.f));
-	//m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
-	m_reimube->AddComponent<Aen::AABoundBox>();
+	m_reimube->AddComponent<Aen::RigidBody>();
+	m_reimube->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 2.f, 2.f));
+	m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
+	m_reimube->AddComponent<Aen::MeshInstance>();
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	m_reimube->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
+	m_reimube->AddComponent<Aen::AABoundBox>();
 	m_reimube->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
-	m_reimube->SetPos(50.f, 1.f, -3.f);
+	m_reimube->SetPos(-5.f, 1.f, 10.f);
 
 	// ------ Level Importer ------ //
 	std::string path = "../LevelFolder/Entrance.Level";

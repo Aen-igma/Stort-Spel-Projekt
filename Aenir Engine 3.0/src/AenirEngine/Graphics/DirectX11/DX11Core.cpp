@@ -60,10 +60,10 @@ namespace Aen {
             D3D_FEATURE_LEVEL_11_0
         };
 
-        UINT flags = 0;
-        #ifdef _DEBUG
-        flags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-        #endif
+        UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+        /*#ifdef _DEBUG
+        flags = D3D11_CREATE_DEVICE_DEBUG;
+        #endif*/
         
         //#ifdef NDEBUG
         //flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
@@ -126,6 +126,7 @@ namespace Aen {
         IDXGIDebug* debugDev;
         ASSERT_HR(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev)));
         ASSERT_HR(debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL));
+        debugDev->Release();
         #endif
         m_device.Reset();
         m_dContext.Reset();
