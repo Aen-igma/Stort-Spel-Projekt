@@ -18,5 +18,6 @@ namespace Aen {
 		friend class Resource;
 		friend class Renderer;
 		friend class MeshInstance;
+		friend class GlobalSettings;
 	};
 }

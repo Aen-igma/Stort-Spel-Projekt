@@ -14,15 +14,15 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	
 	for (auto& b : *m_levelImporter.GetEntityList()) {
-
 		Aen::EntityHandler::RemoveEntity(*b);
 	}
 
 	for (auto& d : m_enemyQueue) {
 		delete d;
 	}
+
 	Aen::Resource::RemoveAllMaterials();
-	//Aen::Resource::RemoveAllMeshes();
+	Aen::Resource::RemoveAllMeshes();
 	Aen::Resource::RemoveAllTextures();
 }
 
@@ -52,16 +52,16 @@ void Gameplay::Initialize()
 
 	// ----------------------------- Load Meshes -------------------------------- //
 
-	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
+	//Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	//plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
 	rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
-	Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
-	wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
-	Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
-	wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
+	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
+	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
+	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
+	//wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -133,9 +133,9 @@ void Gameplay::Initialize()
 	m_plane->GetComponent<Aen::RigidBody>().SetOffset(0.f, -0.5f, 0.f);
 	m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::PLANE);
 	//m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
-	m_plane->AddComponent<Aen::MeshInstance>();
+	//m_plane->AddComponent<Aen::MeshInstance>();
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
+	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	m_reimube1->AddComponent<Aen::RigidBody>();
@@ -184,16 +184,16 @@ void Gameplay::Initialize()
 
 
 	// ------ Level Importer ------ //
-	std::string path = "../LevelFolder/NewTestLevel.Level";
+	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
 	m_levelImporter.import(path);
 
 
 	//---------ENEMIES----------//
 	int numEnemies = 12;
 	int offset = -10;
-	Aen::Vec3f enemyPos{ 0.f, 1.f, -10.f };
+	Aen::Vec3f enemyPos{0.f, 1.f, -10.f};
 	for (int u = 0; u < numEnemies; u++) {
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos+Aen::Vec3f(0.f, 0.f, offset)));
+		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f(0.f, 0.f, offset)));
 		offset -= 5;
 	}
 
@@ -246,8 +246,14 @@ void Gameplay::Update(const float& deltaTime) {
 	if(m_player.GetHealth() <= 0.f)
 		State::SetState(States::Gameover);
 
-	if(Aen::Input::KeyDown(Aen::Key::J))
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
+	if(m_enemyQueue.empty())
+		State::SetState(States::Gameover);
+
+	#ifdef _DEBUG
+		if(Aen::Input::KeyDown(Aen::Key::J))
+			m_enemyQueue.emplace_back(AEN_NEW Rimuru());
+	#endif
+
 
 	//if (Aen::Input::KeyDown(Aen::Key::O)) {
 	//	delete m_enemyQueue.front();

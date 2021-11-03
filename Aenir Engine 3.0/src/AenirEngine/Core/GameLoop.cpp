@@ -56,6 +56,7 @@ namespace Aen {
 		EntityHandler::Destroy();
 		GCore::Concealed::Release();
 		PhysicsHandler::Destroy;
+		GlobalSettings::Destroy;
 		delete m_app;
 		delete m_renderer;
 	}

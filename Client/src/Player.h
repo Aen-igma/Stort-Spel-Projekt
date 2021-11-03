@@ -39,10 +39,8 @@ public:
 	const bool IsAttacking();
 
 private:
-	
-	const float* mp_deltaTime;
 
-	void SwordSwing(float speed, float time);
+	void SwordSwing(float speed, float time, const float& deltaTime);
 	void ResetSword();
 	void AddEvent(EventData& event);
 

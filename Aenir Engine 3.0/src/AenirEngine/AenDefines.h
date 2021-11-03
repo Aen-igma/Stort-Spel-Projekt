@@ -9,6 +9,8 @@
 	#define AEN_RESOURCE_DIR(file) "../Resource/" + std::string(file)
 	#define AEN_RESOURCE_DIR_W(file) L"../Resource/" + std::wstring(file)
 
+	#define AEN_LEVEL_DIR(file) "../LevelFolder/" + std::string(file)
+
 	#ifdef _WIN64
 	#define AEN_OUTPUT_DIR_STR(file) "../bin/Debug-x64/" + std::string(file)
 	#define AEN_OUTPUT_DIR_WSTR(file) L"../bin/Debug-x64/" + std::wstring(file)
@@ -25,6 +27,8 @@
 	
 	#define AEN_RESOURCE_DIR(file) ((IsDebuggerPresent()) ? "../Resource/" + std::string(file) : "../../Resource/" + std::string(file))
 	#define AEN_RESOURCE_DIR_W(file) ((IsDebuggerPresent()) ? L"../Resource/" + std::wstring(file) : L"../../Resource/" + std::wstring(file))
+
+	#define AEN_LEVEL_DIR(file) ((IsDebuggerPresent()) ? "../LevelFolder/" + std::string(file) : "../../LevelFolder/" + std::string(file))
 
 	#ifdef _WIN64
 	#define AEN_OUTPUT_DIR_STR(file) "../bin/Release-x64/" + std::string(file)
