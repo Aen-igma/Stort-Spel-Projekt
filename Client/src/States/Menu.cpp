@@ -24,6 +24,8 @@ void MainMenu::Update(const float& deltaTime)
 			m_Window.Exit();
 		}
 	}
+	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
+		m_Window.Exit();
 }
 
 void MainMenu::Initialize()
