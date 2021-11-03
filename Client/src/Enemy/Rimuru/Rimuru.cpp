@@ -11,6 +11,8 @@ Rimuru::Rimuru()
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
 	m_enemy->SetPos(-11.f, 1.5f, 0.f);
+
+	m_health = 100.f;
 }
 
 Rimuru::~Rimuru() {
@@ -27,8 +29,24 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float dist = eDir.Magnitude();
 
-	if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
-		m_v.y = 0.f;
+	/*if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
+		m_v.y = 0.f;*/
+
+	if(!m_eventQueue.empty()) {
+		if(m_eventQueue.front().duration > 0.f) {
+			m_eventQueue.front().function(m_eventQueue.front().accell);
+			m_eventQueue.front().duration -= deltaTime;
+		} else {
+			m_eventQueue.pop_front();
+		}
+	} else {
+		if(dist < 20.f)
+			RandomCombatEvent(deltaTime);
+		else {
+			m_rDir = Aen::Vec2f(float(rand() % 10) - 5, float(rand() % 10) - 5);
+			RandomIdleEvent(deltaTime, m_rDir);
+		}
+	}
 
 	if(dist < 20.f) {
 		m_lDir = Aen::Lerp(m_lDir, eDir.Normalized(), 0.03f);
@@ -40,10 +58,11 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		nDir = nDir.Normalized();
 		m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(nDir.x, 0.f, nDir.y) * 3.f * deltaTime, deltaTime);
 
-
+		static float d = 0.f;
 		if(m_targeted && player.IsAttacking() && !m_toggleAttacked) {
 			m_toggleAttacked = true;
-			m_dodge = (rand() % 100 > 60);
+			d = float(rand() % 3 - 1);
+			m_dodge = (rand() % 2 == 0);
 		} else if(!player.IsAttacking()) {
 			m_toggleAttacked = false;
 			m_dodge = false;
@@ -52,14 +71,64 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		if(m_dodge) {
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 			Aen::Vec3f right = eDir.Normalized() % Aen::Vec3f(0.f, 1.f, 0.f);
-			m_v = Aen::Vec3f(0.f, 6.f, 0.f) + Aen::Vec3f(nDir.x, 0.f, nDir.y) * -8.f + right * 12.f;
+			m_v = Aen::Vec3f(0.f, 6.f, 0.f) - Aen::Vec3f(nDir.x, 0.f, nDir.y).Normalized() * 12.f + right.Normalized() * d * 14.f;
 		} else
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 	}
 
+	if(player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_enemy->GetComponent<Aen::AABoundBox>())) {
+		if(!m_hurting) {
+			m_hurting = true;
+			player.SubtractHealth(5.f);
+			Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + m_lDir.Normalized();
+			player.Move(dir.Normalized() * 20.f);
+		}
+	} else
+		m_hurting = false;
 
-	m_v += Aen::Vec3f(-m_v.x * 1.5f, -30.f, -m_v.z * 1.5f) * deltaTime;
+	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
-
 	m_enemy->GetComponent<Aen::CharacterController>().Move(m_v * deltaTime, deltaTime);
+}
+
+void Rimuru::RandomCombatEvent(const float& deltaTime) {
+	EventData data;
+
+	switch(rand() % 2) {
+		case 0:
+		data.duration = rand() % 2 + 1;
+		data.function = [&](float& accell) {};
+		break;
+		case 1:
+		data.duration = 0.01f;
+		data.function = [&](float& accell) {
+			m_v = Aen::Vec3f(0.f, 8.f, 0.f) + m_lDir * 14.f;
+		};
+		break;
+	}
+
+	m_eventQueue.emplace_back(data);
+}
+
+void Rimuru::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir) {
+	EventData data;
+
+	switch(rand() % 2) {
+		case 0:
+		data.duration = rand() % 3 + 3;
+		data.function = [&](float& accell) {};
+		break;
+		case 1:
+		data.duration = rand() % 3 + 1;
+		data.function = [&](float& accell) {
+			m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized() * 3.f * deltaTime, deltaTime);
+
+			m_lDir = Aen::Lerp(m_lDir, Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized(), 0.03f);
+			float yaw = Aen::RadToDeg(std::atan2(m_lDir.x, m_lDir.z));
+			m_rimuru->SetRot(0.f, yaw + 180, 0.f);
+		};
+		break;
+	}
+
+	m_eventQueue.emplace_back(data);
 }

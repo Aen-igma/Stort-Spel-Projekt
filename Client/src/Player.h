@@ -12,8 +12,9 @@ enum class EventType {
 struct EventData {
 	float duration;
 	float accell;
+	float damage;
 	EventType type;
-	std::function<void(float& accell, const float& attackDuration)> function;
+	std::function<void(float& accell)> function;
 };
 
 struct TargetData {
@@ -30,7 +31,10 @@ public:
 	Aen::Entity*& GetEntity();
 	Aen::Entity*& GetHurtBox();
 
-	void UpdateAttack(std::deque<Enemy*>& e,const float& deltaTime);
+	void UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime);
+	void SubtractHealth(const float& damage);
+	void Move(const Aen::Vec3f& dir);
+	const float& GetHealth();
 
 	const bool IsAttacking();
 
@@ -41,6 +45,8 @@ private:
 	void SwordSwing(float speed, float time);
 	void ResetSword();
 	void AddEvent(EventData& event);
+
+	float m_health;
 
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
@@ -56,15 +62,8 @@ private:
 
 	const float m_LIGHTATTACKTIME;
 	const float m_HEAVYATTACKTIME;
-	const float m_LIGHTCHARGETIME;
-	const float m_HEAVYCHARGETIME;
-	const float m_LIGHTATTACKSPEED;
-	const float m_HEAVYATTACKSPEED;
-
-	//bool LightAttack(std::deque<Enemy*>& e, const float deltatime);
-	//bool HeavyAttack(std::deque<Enemy*>& e, const float deltatime);
-
-
+	
+	Aen::Vec3f m_v;
 	std::deque<EventData> m_eventQueue;
 	std::deque<TargetData> m_targets;
 };

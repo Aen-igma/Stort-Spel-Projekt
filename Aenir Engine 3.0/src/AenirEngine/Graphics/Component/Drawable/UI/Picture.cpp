@@ -67,6 +67,11 @@ namespace Aen {
         m_pictureData.at(indX).rect.bottom = bottom;
     }
 
+    void Picture::LessenPic(float width, int indX)
+    {
+        m_pictureData.at(indX).rect.right -= width;
+    }
+
     Vec2f Aen::Picture::GetPicSize(D2D1_RECT_F& rect)
     {
         float width = rect.right - rect.left;

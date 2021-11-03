@@ -37,9 +37,9 @@ namespace Aen {
 			return m_BGColor;
 		}
 
-		static ImGuiHandler*& GetImGuiHandler() {
-			return mp_guiHandler;
-		}
+		//static ImGuiHandler*& GetImGuiHandler() {
+		//	return mp_guiHandler;
+		//}
 
 		static void RemoveMainCamera()
 		{
