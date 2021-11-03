@@ -4,6 +4,7 @@
 class Rimuru : public Enemy {
 	public:
 	Rimuru();
+	Rimuru(const Aen::Vec3f &pos);
 	~Rimuru() override;
 
 	// Inherited via Enemy

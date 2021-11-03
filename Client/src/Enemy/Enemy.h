@@ -5,7 +5,7 @@ class Enemy {
 	public:
 	Enemy();
 	virtual ~Enemy();
-
+	Aen::Entity*& GetEntity();
 	virtual void Update(const float& deltaTime, Aen::Entity& player) = 0;
 
 	protected:
