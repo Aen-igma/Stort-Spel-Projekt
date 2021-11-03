@@ -44,19 +44,19 @@ void MainMenu::Initialize()
 	// ----------------------------- UI -------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/PathToTheTower.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"PathToTheTower.png"), 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 520.f, 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1700.f, 900.f, 0);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/Title.png", 1);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"Title.png"), 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(900.f, 400.f, 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(2000.f, 300.f, 1);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Play.png"), 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(500.f, 950, 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 0);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Quit.png", 1);
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Quit.png"), 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950, 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 1);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();

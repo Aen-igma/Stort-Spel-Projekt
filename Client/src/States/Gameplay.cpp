@@ -5,7 +5,6 @@ Gameplay::Gameplay(Aen::Window& window)
 	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
-	Aen::GlobalSettings::RemoveMainCamera();
 	Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_reimube);
@@ -24,11 +23,11 @@ void Gameplay::Initialize()
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/healthbar.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png"), 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(220.f, 60.f, 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 4.f, 150.f, 0);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/GoalText.png", 1);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1000.f, 100.f, 1);
 
@@ -163,33 +162,12 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
-	// Collision
-	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 4.f, 150.f, 0);
-
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
 		float hp = (m_hp - m_player.GetHealth());
 
 		m_UI->GetComponent<Aen::UIComponent>().LessenPic(hp * 4, 0);
 		m_hp = m_player.GetHealth();
 	}
-
-	/*for (auto& h : m_enemyQueue) {
-		if (m_player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(h->GetEntity()->GetComponent<Aen::AABoundBox>())){
-			m_player.GetEntity()->GetComponent<Aen::AABoundBox>().ToggleActive(false);
-			m_hp--;
-			cout << "PLAYER HEALTH: " << m_hp << endl;;
-		}
-	}*/
-	 //Invincible frames
-	//if (m_invincible && m_iFrames <= IFRAMEMAX) {
-	//	m_iFrames += deltaTime;
-	//	//printf("Iframes: %f\n", m_iFrames);
-	//}
-	//else {
-	//	m_player.GetEntity()->GetComponent<Aen::AABoundBox>().ToggleActive(true);
-	//	m_iFrames = 0.f;
-	//}
-
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));

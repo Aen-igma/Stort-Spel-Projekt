@@ -37,7 +37,6 @@ Player::Player()
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
 	m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);
-	//m_sword->SetPos(-1.f, 0.f, 2.f);
 	m_sword->SetParent(*m_player);
 
 	m_hurtbox->AddComponent<Aen::OBBox>();
@@ -47,8 +46,12 @@ Player::Player()
 }
 
 Player::~Player() {
+	Aen::GlobalSettings::RemoveMainCamera();
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_camera);
+	m_sword->RemoveParent();
+	Aen::EntityHandler::RemoveEntity(*m_sword);
+	Aen::EntityHandler::RemoveEntity(*m_hurtbox);
 }
 
 void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {

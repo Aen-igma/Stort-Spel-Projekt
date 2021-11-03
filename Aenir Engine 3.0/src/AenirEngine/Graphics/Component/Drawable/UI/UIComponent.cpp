@@ -22,9 +22,9 @@ namespace Aen {
 		m_button.SaveData();
 	}
 
-	void Aen::UIComponent::AddButton(LPCWSTR dir, int indX)
+	void Aen::UIComponent::AddButton(const std::wstring& dir, int indX)
 	{
-		m_button.AddButton(dir, indX);
+		m_button.AddButton(dir.c_str(), indX);
 	}
 
     void UIComponent::SetButtonSize(float width, float height, int indX)
@@ -66,9 +66,9 @@ namespace Aen {
 
     //----------------------	Just pictures	----------------------------//
 
-    void UIComponent::AddPicture(LPCWSTR dir, int indX)
+    void UIComponent::AddPicture(const std::wstring& dir, int indX)
     {
-        m_picture.AddPicture(dir, indX);
+        m_picture.AddPicture(dir.c_str(), indX);
     }
 
     void UIComponent::SetPicPos(float x, float y, int indX)

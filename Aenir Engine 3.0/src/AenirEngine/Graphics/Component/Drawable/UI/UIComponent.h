@@ -21,7 +21,7 @@ namespace Aen {
 
 		//----------------------	Button	----------------------------//
 		void SaveButtonData();
-		void AddButton(LPCWSTR dir, int indX);
+		void AddButton(const std::wstring& dir, int indX);
 		void SetButtonPos(float x, float y, int indX);
 		void SetButtonSize(float width, float height, int indX);
 		bool Intersects(int indX);
@@ -33,7 +33,7 @@ namespace Aen {
 		void SetTextPos(float x, float y);
 
 		//----------------------	Just pictures	----------------------------//
-		void AddPicture(LPCWSTR dir, int indX);
+		void AddPicture(const std::wstring& dir, int indX);
 		void SetPicPos(float x, float y, int indX);
 		void SetPicSize(float width, float height, int indX);
 		void LessenPic(float width, int indX);

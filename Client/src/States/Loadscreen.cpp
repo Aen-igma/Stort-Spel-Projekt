@@ -40,12 +40,12 @@ void Loadscreen::Initialize()
 	// keyboard
 	m_loading = &Aen::EntityHandler::CreateEntity();
 	m_loading->AddComponent<Aen::UIComponent>();
-	m_loading->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/KeyboardLayout.png", 0);
+	m_loading->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"KeyboardLayout.png"), 0);
 	m_loading->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 520.f, 0);
 	m_loading->GetComponent<Aen::UIComponent>().SetPicSize(1700.f, 900.f, 0);
 
 	// continue
-	m_loading->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Continue.png", 0);
+	m_loading->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Continue.png"), 0);
 	m_loading->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 950.f, 0);
 	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 150.f, 0);
 	m_loading->GetComponent<Aen::UIComponent>().SaveButtonData();
