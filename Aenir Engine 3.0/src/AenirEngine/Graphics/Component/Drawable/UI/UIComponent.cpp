@@ -44,9 +44,14 @@ namespace Aen {
 
     //----------------------	Text	----------------------------//
 
+    void Aen::UIComponent::AddText(std::wstring text)
+    {
+        m_text.TextAdd(text);
+    }
+
     void Aen::UIComponent::AddText()
     {
-        m_text.createText();
+        m_text.AddText();
     }
 
     void UIComponent::SetTextSize(float width, float height)
@@ -76,6 +81,11 @@ namespace Aen {
         m_picture.SetPicSize(width, height, indX);
     }
 
+    void UIComponent::LessenPic(float width, int indX)
+    {
+        m_picture.LessenPic(width, indX);
+    }
+
     //----------------------	General stuff   ----------------------------//
 	void UIComponent::Update()
 	{
@@ -102,7 +112,7 @@ namespace Aen {
 
             m_button.Draw(b);
         }
-		//text.renderText();
+		//m_text.Draw();
     }
 
 	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)

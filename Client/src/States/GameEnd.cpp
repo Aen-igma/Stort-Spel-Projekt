@@ -59,9 +59,9 @@ void GameEnd::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	//Text
-	m_UI->GetComponent<Aen::UIComponent>().AddText();
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(950.f, 200.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300.f);
+	//m_UI->GetComponent<Aen::UIComponent>().AddText();
+	//m_UI->GetComponent<Aen::UIComponent>().SetTextPos(950.f, 200.f);
+	//m_UI->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300.f);
 
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));

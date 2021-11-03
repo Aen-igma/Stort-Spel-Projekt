@@ -8,7 +8,9 @@
 
 class Gameplay : public State {
     private:
-    int m_hp;
+    float m_hp;
+    float m_sub;
+
     float m_iFrames;
     const float IFRAMEMAX;
     bool m_invincible;

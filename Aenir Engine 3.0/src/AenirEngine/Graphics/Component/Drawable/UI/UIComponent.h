@@ -27,6 +27,7 @@ namespace Aen {
 		bool Intersects(int indX);
 
 		//----------------------	Text	----------------------------//
+		void AddText(std::wstring text);
 		void AddText();
 		void SetTextSize(float width, float height);
 		void SetTextPos(float x, float y);
@@ -35,6 +36,7 @@ namespace Aen {
 		void AddPicture(LPCWSTR dir, int indX);
 		void SetPicPos(float x, float y, int indX);
 		void SetPicSize(float width, float height, int indX);
+		void LessenPic(float width, int indX);
 		
 		friend class ComponentHandler;
 		friend class Renderer;
