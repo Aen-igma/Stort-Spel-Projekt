@@ -110,7 +110,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		if (lTriggerPressed) {
 			lTriggerPressed = false;
 			EventData data;
-			data.accell = 16.f;
+			data.accell = 20.f;
 			data.duration = 0.3f;
 			data.type = EventType::Dash;
 			data.function = [&](float& accell) {
@@ -208,7 +208,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 		if (Aen::Input::KeyDown(Aen::Key::SPACE)) {
 			EventData data;
-			data.accell = 16.f;
+			data.accell = 20.f;
 			data.duration = 0.4f;
 			data.type = EventType::Dash;
 			data.function = [&](float& accell) {
@@ -352,6 +352,11 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 		}
 	}
+
+	if(!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Dash)
+		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+	else
+		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
