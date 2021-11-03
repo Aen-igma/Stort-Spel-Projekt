@@ -49,7 +49,7 @@ Aen::OBBox::~OBBox() {}
 
 const bool Aen::OBBox::Intersects(OBBox& volume)
 {
-	if (m_obb.Intersects(volume.m_obb) && m_isOn)
+	if (m_obb.Intersects(volume.m_obb) && m_isOn && volume.m_isOn)
 	{
 		volume.m_isColliding = true;
 		return true;
@@ -60,7 +60,7 @@ const bool Aen::OBBox::Intersects(OBBox& volume)
 
 const bool Aen::OBBox::Intersects(AABoundBox& volume)
 {
-	if (m_isOn && m_obb.Intersects(volume.m_aabb))
+	if (m_isOn && m_obb.Intersects(volume.m_aabb) && volume.m_isOn)
 	{
 		volume.m_isColliding = m_isColliding = true;
 		return true;

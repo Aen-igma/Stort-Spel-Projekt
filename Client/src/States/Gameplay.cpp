@@ -151,6 +151,8 @@ void Gameplay::Initialize()
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	cout << "Press Enter To Continue\n";
+
+	srand((UINT)time(NULL));
 }
 
 void Gameplay::Update(const float& deltaTime) {
@@ -182,13 +184,16 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// ---------------------------------- Enemies --------------------------------------- //
 
+	m_player.Update(m_enemyQueue, deltaTime);
+
 	for(auto& i : m_enemyQueue)
 		i->Update(deltaTime, m_player);
+
+	m_player.UpdateAttack(m_enemyQueue, deltaTime);
 
 	if(Aen::Input::KeyDown(Aen::Key::J))
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
 
-	m_player.Update(m_enemyQueue, deltaTime);
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
