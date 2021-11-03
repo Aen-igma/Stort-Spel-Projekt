@@ -195,8 +195,7 @@ void Gameplay::Update(const float& deltaTime) {
 		m_enemyQueue.pop_front();
 	}
 
-	m_player.LightAttack(m_enemyQueue, deltaTime);
-	m_player.Update(m_reimube, deltaTime);
+	m_player.Update(m_enemyQueue, deltaTime);
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 

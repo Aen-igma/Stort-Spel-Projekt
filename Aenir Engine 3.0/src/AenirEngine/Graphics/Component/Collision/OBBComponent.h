@@ -4,7 +4,8 @@
 #include "../Drawable/Drawable.h"
 #include "../Component.h"
 #include "BuritoMath.h"
-#include"AABBComponent.h"
+
+class AABoundBox;
 
 namespace Aen
 {

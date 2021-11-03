@@ -15,11 +15,11 @@ class Player {
 	Player();
 	~Player();
 
-	void Update(Aen::Entity* e,const float& deltaTime);
+	void Update(std::deque<Enemy*> e,const float& deltaTime);
 	Aen::Entity*& GetEntity();
 	Aen::Entity*& GetHurtBox();
 
-	bool LightAttack(std::deque<Enemy*>& e, const float deltatime);
+
 
 private:
 	Aen::Entity* m_hurtbox;
@@ -29,6 +29,7 @@ private:
 	Aen::Raycast m_ray;
 
 	bool m_lightAttacking;
+	bool m_heavyAttacking;
 
 	float m_mouseSense;
 	float m_movementSpeed;
@@ -41,6 +42,11 @@ private:
 
 	const float m_LIGHTATTACKTIME;
 	const float m_HEAVYATTACKTIME;
+	const float m_LIGHTCHARGETIME;
+	const float m_HEAVYCHARGETIME;
+
+	bool LightAttack(std::deque<Enemy*>& e, const float deltatime);
+	bool HeavyAttack(std::deque<Enemy*>& e, const float deltatime);
 
 
 	std::queue<EventData> m_eventQueue;
