@@ -14,7 +14,7 @@ struct EventData {
 	float accell;
 	float damage;
 	EventType type;
-	std::function<void(float& accell)> function;
+	std::function<void(float& accell, const float& attackDuration)> function;
 };
 
 struct TargetData {
@@ -62,6 +62,10 @@ private:
 
 	const float m_LIGHTATTACKTIME;
 	const float m_HEAVYATTACKTIME;
+	const float m_LIGHTCHARGETIME;
+	const float m_HEAVYCHARGETIME;
+	const float m_LIGHTATTACKSPEED;
+	const float m_HEAVYATTACKSPEED;
 	
 	Aen::Vec3f m_v;
 	std::deque<EventData> m_eventQueue;

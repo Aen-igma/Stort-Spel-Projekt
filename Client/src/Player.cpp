@@ -6,7 +6,10 @@ Player::Player()
 	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(100.f),
 	m_sword(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(6.f), m_finalDir(0.f, 0.f, -1.f),
-	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f) {
+	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
+	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
+	m_LIGHTATTACKSPEED(6.0f), m_HEAVYATTACKSPEED(2.54f)
+{
 
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
@@ -118,7 +121,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.accell = 20.f;
 			data.duration = 0.3f;
 			data.type = EventType::Dash;
-			data.function = [&](float& accell) {
+			data.function = [&](float& accell, const float& attackDuration) {
 				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
 				accell -= 25.f * deltaTime;
 			};
@@ -134,7 +137,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.duration = 0.2f;
 			data.type = EventType::Attack;
 			data.damage = 20.f;
-			data.function = [&](float& accell) {
+			data.function = [&](float& accell, const float& attackDuration) {
 				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
 					Aen::Vec3f d(d2.x, 0.f, d2.y);
@@ -216,7 +219,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.accell = 20.f;
 			data.duration = 0.4f;
 			data.type = EventType::Dash;
-			data.function = [&](float& accell) {
+			data.function = [&](float& accell, const float& attackDuration) {
 				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
 				m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 				accell -= 25.f * deltaTime;
@@ -229,9 +232,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 		if (Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
 			EventData data;
-			data.accell = 6.f;
-			data.duration = 0.2f;
+			data.accell = m_LIGHTATTACKSPEED;
+			data.duration = m_LIGHTATTACKTIME;
 			data.type = EventType::Attack;
+			data.damage = 20.f;
 			data.function = [&](float& accell, const float& attackDuration) {
 				m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 				SwordSwing(10.f, m_LIGHTATTACKTIME);
@@ -251,6 +255,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.accell = m_HEAVYATTACKSPEED;
 			data.duration = m_HEAVYATTACKTIME;
 			data.type = EventType::Attack;
+			data.damage = 40.f;
 			data.function = [&](float& accell, const float& attackDuration)
 			{
 
@@ -363,7 +368,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
-			m_eventQueue.front().function(m_eventQueue.front().accell);
+			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration);
 			m_eventQueue.front().duration -= deltaTime;
 		}
 		else {
@@ -411,7 +416,6 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack) {
 		/*m_attackTimer += deltaTime;*/
-		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 
 		for (int i = 0; i < e.size(); i++) {
 			if (e[i]->GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_hurtbox->GetComponent<Aen::OBBox>()) && !e[i]->IsHurt()) {
@@ -435,15 +439,10 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 			}
 		}
 
-		/*if (m_attackTimer > m_LIGHTATTACKTIME)
-		{
-		m_lightAttacking = false;
-		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
-		m_attackTimer = 0.f;
-		}*/
 	} else {
 		for(auto& i : e) i->Hurt(false);
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+		ResetSword();
 	}
 }
 
