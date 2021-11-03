@@ -40,14 +40,19 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		nDir = nDir.Normalized();
 		m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(nDir.x, 0.f, nDir.y) * 3.f * deltaTime, deltaTime);
 
-		if(m_targeted && player.IsAttacking() && m_toggleAttacked) {
+
+		if(m_targeted && player.IsAttacking() && !m_toggleAttacked) {
+			m_toggleAttacked = true;
+			m_dodge = (rand() % 100 > 60);
+		} else if(!player.IsAttacking()) {
 			m_toggleAttacked = false;
+			m_dodge = false;
 		}
 
-		if(m_targeted && player.IsAttacking() && rand() % 4 == 0) {
+		if(m_dodge) {
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 			Aen::Vec3f right = eDir.Normalized() % Aen::Vec3f(0.f, 1.f, 0.f);
-			m_v = Aen::Vec3f(0.f, 5.f, 0.f) + right * 10.f;
+			m_v = Aen::Vec3f(0.f, 6.f, 0.f) + Aen::Vec3f(nDir.x, 0.f, nDir.y) * -8.f + right * 12.f;
 		} else
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 	}
@@ -55,7 +60,6 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 
 	m_v += Aen::Vec3f(-m_v.x * 1.5f, -30.f, -m_v.z * 1.5f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
-
 
 	m_enemy->GetComponent<Aen::CharacterController>().Move(m_v * deltaTime, deltaTime);
 }
