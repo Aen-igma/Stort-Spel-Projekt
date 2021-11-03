@@ -4,7 +4,7 @@
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
 	m_hurtbox(&Aen::EntityHandler::CreateEntity()),
-	m_mouseSense(5.f), m_targetDist(25.f), m_movementSpeed(6.f), m_finalDir(0.f, 0.f, -1.f),
+	m_mouseSense(5.f), m_movementSpeed(6.f), m_finalDir(0.f, 0.f, -1.f),
 	m_lightAttacking(false), m_heavyAttacking(false), m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.4f)
 {
@@ -358,7 +358,7 @@ bool Player::LightAttack(std::deque<Enemy*>& e, const float deltatime)
 	bool hit = false;
 	if (m_lightAttacking /*&& m_attackTimer == 0*/)
 	{
-		m_attackTimer += deltaTime;
+		m_attackTimer += deltatime;
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 
 		for (int i = 0; i < e.size(); i++) {
@@ -377,6 +377,43 @@ bool Player::LightAttack(std::deque<Enemy*>& e, const float deltatime)
 
 		
 
+		if (m_attackTimer > m_LIGHTATTACKTIME)
+		{
+			m_lightAttacking = false;
+			m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+			m_attackTimer = 0.f;
+		}
+	}
+	return hit;
+}
+
+bool Player::HeavyAttack(std::deque<Enemy*>& e, const float deltatime)
+{
+	bool hit = false;
+	if (m_heavyAttacking)
+	{
+		m_attackTimer += deltatime;
+		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
+
+		if (m_attackTimer < m_HEAVYCHARGETIME) m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+
+		for (int i = 0; i < e.size(); i++)
+		{
+			if (m_hurtbox->GetComponent<Aen::OBBox>().Intersects(e[i]->GetEntity()->GetComponent<Aen::AABoundBox>()))
+			{
+				for (uint32_t k = 0u; k < m_targets.size(); k++)
+					if (m_targets[k].target->GetID() == e[i]->GetEntity()->GetID()) {
+						m_targets.erase(m_targets.begin() + k);
+						break;
+					}
+
+				delete e[i];
+				e.erase(e.begin() + i);
+			}
+		}
+
+
+
 		if (m_attackTimer > m_HEAVYATTACKTIME)
 		{
 			m_heavyAttacking = false;
@@ -384,10 +421,7 @@ bool Player::LightAttack(std::deque<Enemy*>& e, const float deltatime)
 			m_attackTimer = 0.f;
 		}
 	}
-}
-
-Aen::Entity*& Player::GetEntity() {
-	return m_player;
+	return hit;
 }
 
 Aen::Entity*& Player::GetHurtBox()
