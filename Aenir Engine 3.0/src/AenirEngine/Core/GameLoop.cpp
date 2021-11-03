@@ -50,7 +50,7 @@ namespace Aen {
 
 		// Destroy imGui
 
-		delete Aen::GlobalSettings::GetImGuiHandler();
+		//delete Aen::GlobalSettings::GetImGuiHandler();
 		
 		Resource::Destroy();
 		EntityHandler::Destroy();

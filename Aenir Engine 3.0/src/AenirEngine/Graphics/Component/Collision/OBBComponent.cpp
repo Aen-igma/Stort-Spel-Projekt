@@ -4,9 +4,9 @@
 #include"Core/Renderer.h"
 
 Aen::OBBox::OBBox(const size_t& id)
-	:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false),
+	:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false)
 #ifdef _DEBUG,
-	m_canDraw(false)
+	,m_canDraw(false)
 #endif
 {
 	SetBoundToMesh();

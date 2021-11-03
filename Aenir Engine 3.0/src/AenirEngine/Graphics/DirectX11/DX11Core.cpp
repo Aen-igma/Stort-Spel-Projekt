@@ -60,14 +60,12 @@ namespace Aen {
             D3D_FEATURE_LEVEL_11_0
         };
 
-        UINT flags = 0;
-        #ifdef _DEBUG
-        flags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-        #endif
         
-        //#ifdef NDEBUG
-        //flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-        //#endif // RELEASE
+        UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+        //#ifdef _DEBUG
+        //flags |= D3D11_CREATE_DEVICE_DEBUG;
+        //#endif
+       
 
 
         HRESULT hr = D3D11CreateDeviceAndSwapChain(
@@ -88,22 +86,13 @@ namespace Aen {
         pFactory2.Reset();
         pFactory6.Reset();
 
-        
-
         //----------------------------------    Direct 2D   ---------------------------------//
-        #ifdef _DEBUG
+
         D2D1_FACTORY_OPTIONS fo{};
         fo.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
-        if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf())))
-            return false;
-        #else
-        if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_factory.GetAddressOf())))
-            return false;
-        #endif
-        
+        ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf()));
 
-
-        //ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo, m_factory.GetAddressOf()));
+        //ASSERT_HR(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, fo,IID_PPV_ARGS(m_factory.GetAddressOf())));
 
         IDXGISurface* IXSurface;
         if (SUCCEEDED(m_sChain->GetBuffer(0, IID_PPV_ARGS(&IXSurface))))
@@ -112,11 +101,9 @@ namespace Aen {
             dpi = static_cast<FLOAT>(GetDpiForWindow(window.m_hwnd));
             D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), dpi.x, dpi.y);
             
-            if(FAILED(m_factory->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D.GetAddressOf())))
-                return false;
-
-        } else
-            return false;
+            ASSERT_HR(m_factory->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D.GetAddressOf()));
+            IXSurface->Release();
+        }
         
         return SUCCEEDED(hr);
 	}
@@ -126,6 +113,7 @@ namespace Aen {
         IDXGIDebug* debugDev;
         ASSERT_HR(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev)));
         ASSERT_HR(debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL));
+        debugDev->Release();
         #endif
         m_device.Reset();
         m_dContext.Reset();

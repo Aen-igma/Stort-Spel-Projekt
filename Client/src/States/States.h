@@ -4,7 +4,7 @@
 
 enum class States { Main_Menu, Loadscreen, Gameplay, Gameover, None};
 
-class State : public std::thread
+class State
 {
 private:
 	static States m_currentState;

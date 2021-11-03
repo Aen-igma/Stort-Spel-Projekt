@@ -3,6 +3,7 @@
 #include "../ComponentHandler.h"
 #include"Core/Renderer.h"
 #include"Core/GlobalSettings.h"
+#include"AABBComponent.h"
 
 namespace Aen {
 
