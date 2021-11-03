@@ -62,9 +62,9 @@ namespace Aen {
 
         
         UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-        #ifdef _DEBUG
-        flags |= D3D11_CREATE_DEVICE_DEBUG;
-        #endif
+        //#ifdef _DEBUG
+        //flags |= D3D11_CREATE_DEVICE_DEBUG;
+        //#endif
        
 
 
@@ -102,6 +102,7 @@ namespace Aen {
             D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), dpi.x, dpi.y);
             
             ASSERT_HR(m_factory->CreateDxgiSurfaceRenderTarget(IXSurface, props, m_target2D.GetAddressOf()));
+            IXSurface->Release();
         }
         
         return SUCCEEDED(hr);
@@ -112,6 +113,7 @@ namespace Aen {
         IDXGIDebug* debugDev;
         ASSERT_HR(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev)));
         ASSERT_HR(debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL));
+        debugDev->Release();
         #endif
         m_device.Reset();
         m_dContext.Reset();
