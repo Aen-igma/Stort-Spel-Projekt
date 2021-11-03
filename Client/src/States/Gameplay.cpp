@@ -28,6 +28,10 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(220.f, 60.f, 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 4.f, 150.f, 0);
 
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/GoalText.png", 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1000.f, 100.f, 1);
+
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	// ------------------------ Setup Directional Light ------------------------- //

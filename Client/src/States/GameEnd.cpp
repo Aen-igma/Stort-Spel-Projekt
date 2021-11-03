@@ -21,7 +21,6 @@ void GameEnd::Update(const float& deltaTime)
 		}
 	}
 
-
 	if (Aen::Input::KeyDown(Aen::Key::F1)) {
 		m_toggleFullScreen = !m_toggleFullScreen;
 		Aen::WindowDesc wDesc;
@@ -57,6 +56,10 @@ void GameEnd::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(1200.f, 800, 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 1);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
+
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/GameOver.png", 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(1000.f, 200.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1200.f, 300.f, 0);
 
 	//Text
 	//m_UI->GetComponent<Aen::UIComponent>().AddText();

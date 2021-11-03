@@ -48,6 +48,10 @@ void MainMenu::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 520.f, 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1700.f, 900.f, 0);
 
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(L"../Resource/Title.png", 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(900.f, 400.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(2000.f, 300.f, 1);
+
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(L"../Resource/Play.png", 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(500.f, 950, 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 0);
