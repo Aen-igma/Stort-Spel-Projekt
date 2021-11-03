@@ -71,7 +71,8 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		if(m_dodge) {
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 			Aen::Vec3f right = eDir.Normalized() % Aen::Vec3f(0.f, 1.f, 0.f);
-			m_v = Aen::Vec3f(0.f, 6.f, 0.f) - Aen::Vec3f(nDir.x, 0.f, nDir.y).Normalized() * 12.f + right.Normalized() * d * 14.f;
+			m_v = Aen::Vec3f(0.f, 10.f, 0.f) - Aen::Vec3f(nDir.x, 0.f, nDir.y).Normalized() * 18.f + right.Normalized() * d * 20.f;
+			m_dodge = false;
 		} else
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 	}
