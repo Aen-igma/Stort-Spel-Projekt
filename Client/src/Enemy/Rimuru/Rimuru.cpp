@@ -27,7 +27,10 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float dist = eDir.Magnitude();
 
-	if(dist < 12.f) {
+	if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
+		m_v.y = 0.f;
+
+	if(dist < 20.f) {
 		m_lDir = Aen::Lerp(m_lDir, eDir.Normalized(), 0.03f);
 		float yaw = Aen::RadToDeg(std::atan2(m_lDir.x, m_lDir.z));
 		m_rimuru->SetRot(0.f, yaw + 180, 0.f);
@@ -36,13 +39,27 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		Aen::Vec2f nDir(m_Dir.x, m_Dir.z);
 		nDir = nDir.Normalized();
 		m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(nDir.x, 0.f, nDir.y) * 3.f * deltaTime, deltaTime);
+
+
+		if(m_targeted && player.IsAttacking() && !m_toggleAttacked) {
+			m_toggleAttacked = true;
+			m_dodge = (rand() % 100 > 60);
+		} else if(!player.IsAttacking()) {
+			m_toggleAttacked = false;
+			m_dodge = false;
+		}
+
+		if(m_dodge) {
+			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+			Aen::Vec3f right = eDir.Normalized() % Aen::Vec3f(0.f, 1.f, 0.f);
+			m_v = Aen::Vec3f(0.f, 6.f, 0.f) + Aen::Vec3f(nDir.x, 0.f, nDir.y) * -8.f + right * 12.f;
+		} else
+			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 	}
+
 
 	m_v += Aen::Vec3f(-m_v.x * 1.5f, -30.f, -m_v.z * 1.5f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
-
-	if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
-		m_v.y = 0.f;
 
 	m_enemy->GetComponent<Aen::CharacterController>().Move(m_v * deltaTime, deltaTime);
 }

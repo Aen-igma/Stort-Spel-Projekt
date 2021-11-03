@@ -4,15 +4,21 @@
 
 class Enemy;
 
+enum class EventType {
+	Dash,
+	Attack
+};
+
 struct EventData {
 	float duration;
 	float accell;
+	EventType type;
 	std::function<void(float& accell)> function;
 };
 
 struct TargetData {
 	float distance;
-	Aen::Entity* target;
+	Enemy* target;
 };
 
 class Player {
@@ -24,14 +30,18 @@ class Player {
 	Aen::Entity*& GetEntity();
 	Aen::Entity*& GetHurtBox();
 
-private:
-	Aen::Entity* m_hurtbox;
+	void UpdateAttack(std::deque<Enemy*>& e,const float& deltaTime);
 
+	const bool IsAttacking();
+
+	private:
+	
+	void AddEvent(EventData& event);
+
+	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
 	Aen::Entity* m_camera;
 	Aen::Raycast m_ray;
-
-	bool m_lightAttacking;
 
 	float m_mouseSense;
 	float m_movementSpeed;
@@ -43,6 +53,6 @@ private:
 	const float m_HEAVYATTACKTIME;
 
 
-	std::queue<EventData> m_eventQueue;
+	std::deque<EventData> m_eventQueue;
 	std::deque<TargetData> m_targets;
 };
