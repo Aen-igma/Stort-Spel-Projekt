@@ -43,12 +43,11 @@ Player::~Player() {
 	Aen::EntityHandler::RemoveEntity(*m_camera);
 }
 
-void Player::Update(std::deque<Enemy*> e, const float& deltaTime) {
+void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	static Aen::Vec3f axis;
 	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
 	static bool lockedOn = false;
-	auto enemies = Aen::EntityHandler::GetTagedEntities("Enemy");
 
 	static Aen::Vec3f camDir;
 	static Aen::Vec2f side;
@@ -133,6 +132,8 @@ void Player::Update(std::deque<Enemy*> e, const float& deltaTime) {
 					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
 				}
 
+				m_lightAttacking = true;
+
 				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
 				accell -= 12.f * deltaTime;
 			};
@@ -142,24 +143,46 @@ void Player::Update(std::deque<Enemy*> e, const float& deltaTime) {
 
 		// Lock On Target
 
+		if(Aen::Input::GPKeyDown(0u, Aen::GP::DPAD_LEFT))
+			if(m_targets.size() > 1u && lockedOn) {
+				TargetData temp = m_targets.front();
+				m_targets.pop_front();
+				m_targets.emplace_back(temp);
+			}
+
+		if(Aen::Input::GPKeyDown(0u, Aen::GP::DPAD_RIGHT))
+			if(m_targets.size() > 1u && lockedOn) {
+				TargetData temp = m_targets.back();
+				m_targets.pop_back();
+				m_targets.emplace_front(temp);
+			}
 
 		if (Aen::Input::GPKeyDown(0u, Aen::GP::LSHOULDER)) {
 			lockedOn = !lockedOn;
 
 			if (lockedOn) {
-				m_targetDist = 25.f;
-				for (int i = 0; i < e.size(); i++) {
-					if (e[i]->GetEntity())
-					{
-						Aen::Entity* enemy = e[i]->GetEntity();
-						Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
-						float dist = eDir.Magnitude();
-						if (dist < m_targetDist) {
-							m_targetDist = dist;
-							m_target = enemy;
-						}
-					}
-					
+				m_targets.clear();
+				for (auto i : e) {
+					TargetData data;
+					data.target = i->GetEntity();
+					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetPos();
+					data.distance = eDir.Magnitude();
+
+					if(data.distance < 20.f)
+						m_targets.emplace_back(data);
+				}
+
+				for(uint32_t i = 0u; i < m_targets.size(); i++) {
+
+					uint32_t t(i);
+
+					for(uint32_t k = i + 1u; k < m_targets.size(); k++)
+						if(m_targets[t].distance > m_targets[k].distance)
+							t = k;
+
+					TargetData temp = m_targets[i];
+					m_targets[i] = m_targets[t];
+					m_targets[t] = temp;
 				}
 			}
 		}
@@ -226,41 +249,54 @@ void Player::Update(std::deque<Enemy*> e, const float& deltaTime) {
 
 		// Lock On Target
 
+		if(Aen::Input::KeyDown(Aen::Key::TAB))
+			if(m_targets.size() > 1u && lockedOn) {
+				TargetData temp = m_targets.front();
+				m_targets.pop_front();
+				m_targets.emplace_back(temp);
+			}
+
 		if (Aen::Input::KeyDown(Aen::Key::E)) {
 			lockedOn = !lockedOn;
 
 			if (lockedOn) {
-				m_targetDist = 25.f;
-				for (auto i = enemies.first; i != enemies.second; i++) {
-					Aen::Entity* enemy = i->second;
-					Aen::Vec3f eDir = m_player->GetPos() - enemy->GetPos();
-					float dist = eDir.Magnitude();
-					if (dist < m_targetDist) {
-						m_targetDist = dist;
-						m_target = enemy;
-					}
+				m_targets.clear();
+				for (auto i : e) {
+					TargetData data;
+					data.target = i->GetEntity();
+					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetPos();
+					data.distance = eDir.Magnitude();
+
+					if(data.distance < 20.f)
+						m_targets.emplace_back(data);
+				}
+
+				for(uint32_t i = 0u; i < m_targets.size(); i++) {
+
+					uint32_t t(i);
+
+					for(uint32_t k = i + 1u; k < m_targets.size(); k++)
+						if(m_targets[t].distance > m_targets[k].distance)
+							t = k;
+
+					TargetData temp = m_targets[i];
+					m_targets[i] = m_targets[t];
+					m_targets[t] = temp;
 				}
 			}
 		}
 	}
 
-	if (m_targetDist < 20.f && m_target && lockedOn) {
-		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_target->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
+	if (!m_targets.empty() && lockedOn) { 
+		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_targets.front().target->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
 
 		m_camera->SetRot(pitch, yaw, 0.f);
-
-		if (m_target) {
-			Aen::Vec3f eDir = m_player->GetPos() - m_target->GetPos();
-			if (eDir.Magnitude() > 20.f) lockedOn = false;
-		}
-
-	}
-	else {
+		Aen::Vec3f eDir = m_player->GetPos() - m_targets.front().target->GetPos();
+		if (eDir.Magnitude() > 20.f) lockedOn = false;
+	} else
 		lockedOn = false;
-		m_targetDist = 25.f;
-	}
 
 	float r = Aen::Clamp(m_camera->GetRot().x, -45.f, 45.f);
 	m_camera->SetRot(r, m_camera->GetRot().y, m_camera->GetRot().z);
@@ -315,65 +351,27 @@ Aen::Entity*& Player::GetEntity() {
 	return m_player;
 }
 
-Aen::Entity*& Player::GetHurtBox()
-{
-	return m_hurtbox;
-}
+	// Attacking -------------------------------------------------------------------------------------
 
 bool Player::LightAttack(std::deque<Enemy*>& e, const float deltatime)
 {
 	bool hit = false;
 	if (m_lightAttacking /*&& m_attackTimer == 0*/)
 	{
-		m_attackTimer += deltatime;
+		m_attackTimer += deltaTime;
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 
-		if (m_attackTimer < m_LIGHTCHARGETIME)  m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+		for (int i = 0; i < e.size(); i++) {
+			if (m_hurtbox->GetComponent<Aen::OBBox>().Intersects(e[i]->GetEntity()->GetComponent<Aen::AABoundBox>())) {
 
-		for (int i = 0; i < e.size(); i++)
-		{
-			if (m_hurtbox->GetComponent<Aen::OBBox>().Intersects(e[i]->GetEntity()->GetComponent<Aen::AABoundBox>()))
-			{
+				for(uint32_t k = 0u; k < m_targets.size(); k++)
+					if(m_targets[k].target->GetID() == e[i]->GetEntity()->GetID()) {
+						m_targets.erase(m_targets.begin() + k);
+						break;
+					}
+
 				delete e[i];
-				e[i] = e.front();
-				e.pop_front();
-				hit = true;
-				printf("Hit\n");
-			}
-		}
-
-		
-
-		if (m_attackTimer > m_LIGHTATTACKTIME)
-		{
-			m_lightAttacking = false;
-			m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
-			m_attackTimer = 0.f;
-		}
-	}
-
-	return hit;
-}
-
-bool Player::HeavyAttack(std::deque<Enemy*>& e, const float deltatime)
-{
-	bool hit = false;
-	if (m_heavyAttacking)
-	{
-		m_attackTimer += deltatime;
-		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-
-		if (m_attackTimer < m_HEAVYCHARGETIME) m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
-
-		for (int i = 0; i < e.size(); i++)
-		{
-			if (m_hurtbox->GetComponent<Aen::OBBox>().Intersects(e[i]->GetEntity()->GetComponent<Aen::AABoundBox>()))
-			{
-				delete e[i];
-				e[i] = e.front();
-				e.pop_front();
-				hit = true;
-				printf("Hit\n");
+				e.erase(e.begin() + i);
 			}
 		}
 
@@ -386,7 +384,13 @@ bool Player::HeavyAttack(std::deque<Enemy*>& e, const float deltatime)
 			m_attackTimer = 0.f;
 		}
 	}
+}
 
+Aen::Entity*& Player::GetEntity() {
+	return m_player;
+}
 
-	return hit;
+Aen::Entity*& Player::GetHurtBox()
+{
+	return m_hurtbox;
 }

@@ -174,8 +174,6 @@
     <ClInclude Include="src\Enemy\Enemies.h" />
     <ClInclude Include="src\Enemy\Enemy.h" />
     <ClInclude Include="src\Enemy\Rimuru\Rimuru.h" />
-    <ClInclude Include="src\Level\LevelGenerator.h" />
-    <ClInclude Include="src\Level\RandomNumberGenerator.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\States\GameEnd.h" />
     <ClInclude Include="src\States\Gameplay.h" />
@@ -187,8 +185,6 @@
     <ClCompile Include="src\Client.cpp" />
     <ClCompile Include="src\Enemy\Enemy.cpp" />
     <ClCompile Include="src\Enemy\Rimuru\Rimuru.cpp" />
-    <ClCompile Include="src\Level\LevelGenerator.cpp" />
-    <ClCompile Include="src\Level\RandomNumberGenerator.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\States\GameEnd.cpp" />
     <ClCompile Include="src\States\Gameplay.cpp" />

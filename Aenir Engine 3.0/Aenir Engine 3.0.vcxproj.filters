@@ -100,6 +100,18 @@
     <Filter Include="Header Files\Importer">
       <UniqueIdentifier>{828903be-e8d7-40e3-b892-6c38532f4708}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\LevelEditor">
+      <UniqueIdentifier>{22f9b7f6-dd00-414d-ae55-ac0a6bc84f41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\LevelEditor">
+      <UniqueIdentifier>{e4a6ed27-4c4a-4044-bf84-6c20558eee3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\LevelGeneration">
+      <UniqueIdentifier>{07001812-2da7-4a1b-a30d-48a2998c6115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\LevelGeneration">
+      <UniqueIdentifier>{44d54ac9-78ec-4a08-a1b0-b61ca5d566ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\PCH\PCH.cpp">
@@ -201,24 +213,6 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp">
       <Filter>Source Files\Graphics\Component\Tranform</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -234,14 +228,44 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp">
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp">
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp">
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp">
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp">
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp">
+      <Filter>Source Files\ThirdParty\ImGui</Filter>
+    </ClCompile>
     <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\LevelEditor</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\CreateThumbnail.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\AenirEngine\LevelImporter.cpp">
+      <Filter>Source Files\LevelEditor</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\AenirEngine\LevelGeneration\LevelGenerator.cpp">
+      <Filter>Source Files\LevelGeneration</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.cpp">
+      <Filter>Source Files\LevelGeneration</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.cpp">
       <Filter>Source Files</Filter>
@@ -434,30 +458,6 @@
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h">
       <Filter>Header Files\Importer</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -491,17 +491,56 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h">
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h">
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h">
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h">
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.h">
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_internal.h">
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h">
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h">
+      <Filter>Header Files\ThirdParty\ImGui</Filter>
+    </ClInclude>
     <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\CreateThumbnail.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\AenirEngine\RoomFormat.h">
+      <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\LevelExporter.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\AenirEngine\LevelImporter.h">
+      <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\LevelEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelGeneration\LevelGenerator.h">
+      <Filter>Header Files\LevelGeneration</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.h">
+      <Filter>Header Files\LevelGeneration</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.h">
       <Filter>Header Files</Filter>

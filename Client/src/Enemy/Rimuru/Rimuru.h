@@ -14,6 +14,7 @@ class Rimuru : public Enemy {
 	private:
 	Aen::Entity* m_rimuru;
 	Aen::Vec3f m_lDir;
-	float v;
+	Aen::Vec3f m_Dir;
+	Aen::Vec3f m_v;
 
 };
