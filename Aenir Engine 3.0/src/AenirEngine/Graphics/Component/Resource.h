@@ -109,7 +109,7 @@ namespace Aen {
 		}
 
 		static void RemoveAllTextures() {
-			for (auto& t : m_materials) {
+			for (auto& t : m_textures) {
 				if (t.second) {
 					delete t.second;
 					t.second = nullptr;
@@ -150,7 +150,7 @@ namespace Aen {
 		}
 
 		static void RemoveAllMeshes() {
-			for (auto& m : m_materials) {
+			for (auto& m : m_meshes) {
 				if (m.second) {
 					delete m.second;
 					m.second = nullptr;
