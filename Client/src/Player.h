@@ -13,7 +13,7 @@ struct EventData {
 	float duration;
 	float accell;
 	EventType type;
-	std::function<void(float& accell)> function;
+	std::function<void(float& accell, const float& attackDuration)> function;
 };
 
 struct TargetData {
@@ -53,9 +53,11 @@ class Player {
 	const float m_HEAVYATTACKTIME;
 	const float m_LIGHTCHARGETIME;
 	const float m_HEAVYCHARGETIME;
+	const float m_LIGHTATTACKSPEED;
+	const float m_HEAVYATTACKSPEED;
 
-	bool LightAttack(std::deque<Enemy*>& e, const float deltatime);
-	bool HeavyAttack(std::deque<Enemy*>& e, const float deltatime);
+	//bool LightAttack(std::deque<Enemy*>& e, const float deltatime);
+	//bool HeavyAttack(std::deque<Enemy*>& e, const float deltatime);
 
 
 	std::deque<EventData> m_eventQueue;
