@@ -3,7 +3,7 @@
 
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
-	m_hurtbox(&Aen::EntityHandler::CreateEntity()),
+	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(100.f),
 	m_mouseSense(5.f), m_movementSpeed(6.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f) {
 
@@ -192,6 +192,9 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_targets[i] = m_targets[t];
 					m_targets[t] = temp;
 				}
+
+				if(!m_targets.empty())
+					m_targets.front().target->SetISTargeted(true);
 			}
 		}
 
@@ -222,6 +225,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.accell = 6.f;
 			data.duration = 0.2f;
 			data.type = EventType::Attack;
+			data.damage = 20.f;
 			data.function = [&](float& accell) {
 				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
@@ -278,7 +282,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_targets[t] = temp;
 				}
 
-				m_targets.front().target->SetISTargeted(true);
+				if(!m_targets.empty())
+					m_targets.front().target->SetISTargeted(true);
 			}
 		}
 	}
@@ -308,7 +313,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	m_camera->SetPos(Aen::Lerp(m_camera->GetPos(), m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * (-m_ray.GetDistance() - side.y) + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 1.25f * side.x, 0.6f));
 	m_camera->GetComponent<Aen::Camera>().LookTowards(camDir);
-	m_player->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(0.f, -20.f, 0.f) * deltaTime, deltaTime);
 
 	Aen::Vec3f playerDir = m_camera->GetComponent<Aen::Camera>().GetForward() * axis.Normalized().z + m_camera->GetComponent<Aen::Camera>().GetRight() * axis.Normalized().x;
 	Aen::Vec2f dir(playerDir.x, playerDir.z);
@@ -347,6 +351,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 		}
 	}
+
+	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
+	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
+	m_player->GetComponent<Aen::CharacterController>().Move(m_v * deltaTime, deltaTime);
 }
 
 Aen::Entity*& Player::GetEntity() {
@@ -365,21 +373,26 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 
 		for (int i = 0; i < e.size(); i++) {
-			//if (m_hurtbox->GetComponent<Aen::OBBox>().Intersects(e[i]->GetEntity()->GetComponent<Aen::AABoundBox>())) {
-			if (e[i]->GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_hurtbox->GetComponent<Aen::OBBox>())) {
+			if (e[i]->GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_hurtbox->GetComponent<Aen::OBBox>()) && !e[i]->IsHurt()) {
 
-				for(uint32_t k = 0u; k < m_targets.size(); k++)
-					if(m_targets[k].target->GetEntity()->GetID() == e[i]->GetEntity()->GetID()) {
-						m_targets.erase(m_targets.begin() + k);
-						break;
-					}
+				e[i]->Hurt(true);
 
-				delete e[i];
-				e.erase(e.begin() + i);
+				e[i]->SubtractHealth(m_eventQueue.front().damage);
+				Aen::Vec3f dir = Aen::Vec3f(0.f, 1.f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
+				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage);
+
+				if(e[i]->GetHealth() <= 0.f) {
+					for(uint32_t k = 0u; k < m_targets.size(); k++)
+						if(m_targets[k].target->GetEntity()->GetID() == e[i]->GetEntity()->GetID()) {
+							m_targets.erase(m_targets.begin() + k);
+							break;
+						}
+
+					delete e[i];
+					e.erase(e.begin() + i);
+				}
 			}
 		}
-
-
 
 		/*if (m_attackTimer > m_LIGHTATTACKTIME)
 		{
@@ -387,8 +400,22 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
 		m_attackTimer = 0.f;
 		}*/
-	} else
+	} else {
+		for(auto& i : e) i->Hurt(false);
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+	}
+}
+
+void Player::SubtractHealth(const float& damage) {
+	m_health -= Aen::Abs(damage);
+}
+
+void Player::Move(const Aen::Vec3f& dir) {
+	m_v = dir;
+}
+
+const float& Player::GetHealth() {
+	return m_health;
 }
 
 const bool Player::IsAttacking() {

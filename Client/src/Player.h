@@ -12,6 +12,7 @@ enum class EventType {
 struct EventData {
 	float duration;
 	float accell;
+	float damage;
 	EventType type;
 	std::function<void(float& accell)> function;
 };
@@ -30,13 +31,18 @@ class Player {
 	Aen::Entity*& GetEntity();
 	Aen::Entity*& GetHurtBox();
 
-	void UpdateAttack(std::deque<Enemy*>& e,const float& deltaTime);
+	void UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime);
+	void SubtractHealth(const float& damage);
+	void Move(const Aen::Vec3f& dir);
+	const float& GetHealth();
 
 	const bool IsAttacking();
 
 	private:
 	
 	void AddEvent(EventData& event);
+
+	float m_health;
 
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
@@ -51,8 +57,8 @@ class Player {
 
 	const float m_LIGHTATTACKTIME;
 	const float m_HEAVYATTACKTIME;
-
-
+	
+	Aen::Vec3f m_v;
 	std::deque<EventData> m_eventQueue;
 	std::deque<TargetData> m_targets;
 };

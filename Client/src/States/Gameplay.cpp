@@ -159,22 +159,22 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// Collision
 
-	for (auto& h : m_enemyQueue) {
+	/*for (auto& h : m_enemyQueue) {
 		if (m_player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(h->GetEntity()->GetComponent<Aen::AABoundBox>())){
 			m_player.GetEntity()->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 			m_hp--;
 			cout << "PLAYER HEALTH: " << m_hp << endl;;
 		}
-	}
+	}*/
 	 //Invincible frames
-	if (m_invincible && m_iFrames <= IFRAMEMAX) {
-		m_iFrames += deltaTime;
-		//printf("Iframes: %f\n", m_iFrames);
-	}
-	else {
-		m_player.GetEntity()->GetComponent<Aen::AABoundBox>().ToggleActive(true);
-		m_iFrames = 0.f;
-	}
+	//if (m_invincible && m_iFrames <= IFRAMEMAX) {
+	//	m_iFrames += deltaTime;
+	//	//printf("Iframes: %f\n", m_iFrames);
+	//}
+	//else {
+	//	m_player.GetEntity()->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+	//	m_iFrames = 0.f;
+	//}
 
 
 	if (m_toggleFullScreen)
@@ -190,6 +190,9 @@ void Gameplay::Update(const float& deltaTime) {
 		i->Update(deltaTime, m_player);
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
+
+	if(m_player.GetHealth() <= 0.f)
+		State::SetState(States::Gameover);
 
 	if(Aen::Input::KeyDown(Aen::Key::J))
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
