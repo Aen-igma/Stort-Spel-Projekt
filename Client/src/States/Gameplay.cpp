@@ -38,7 +38,7 @@ void Gameplay::Initialize()
 
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1000.f, 100.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -189,7 +189,7 @@ void Gameplay::Initialize()
 
 
 	//---------ENEMIES----------//
-	int numEnemies = 12;
+	int numEnemies = 1;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -10.f};
 	for (int u = 0; u < numEnemies; u++) {
