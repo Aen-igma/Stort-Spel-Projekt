@@ -1,7 +1,7 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(100.f),
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f),
 	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
@@ -28,13 +28,14 @@ Gameplay::~Gameplay() {
 
 void Gameplay::Initialize()
 {
+	srand((UINT)time(NULL));
 	State::SetLoad(false);
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png"), 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(220.f, 60.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 4.f, 150.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f, 0);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
@@ -189,11 +190,11 @@ void Gameplay::Initialize()
 
 
 	//---------ENEMIES----------//
-	int numEnemies = 1;
+	int numEnemies = 20;
 	int offset = -10;
-	Aen::Vec3f enemyPos{0.f, 1.f, -10.f};
+	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f(0.f, 0.f, offset)));
+		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
 	}
 
@@ -214,8 +215,6 @@ void Gameplay::Initialize()
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	cout << "Press Enter To Continue\n";
-
-	srand((UINT)time(NULL));
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -225,7 +224,7 @@ void Gameplay::Update(const float& deltaTime) {
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
 		float hp = (m_hp - m_player.GetHealth());
 
-		m_UI->GetComponent<Aen::UIComponent>().LessenPic(hp * 4, 0);
+		m_UI->GetComponent<Aen::UIComponent>().LessenPic(hp * 2.f, 0);
 		m_hp = m_player.GetHealth();
 	}
 
