@@ -189,7 +189,7 @@ void Gameplay::Initialize()
 
 
 	//---------ENEMIES----------//
-	int numEnemies = 1;
+	int numEnemies = 12;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -10.f};
 	for (int u = 0; u < numEnemies; u++) {
