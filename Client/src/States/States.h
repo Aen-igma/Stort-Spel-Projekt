@@ -2,7 +2,7 @@
 #include "AenirEngine\AenCore.h"
 #include <thread>
 
-enum class States { Main_Menu, Loadscreen, Gameplay, Gameover, None};
+enum class States { Main_Menu, Loadscreen, Gameplay, Gameover, Victory, None};
 
 class State
 {

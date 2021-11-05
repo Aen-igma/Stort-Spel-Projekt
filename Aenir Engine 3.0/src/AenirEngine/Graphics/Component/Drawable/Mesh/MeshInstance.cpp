@@ -14,7 +14,7 @@ namespace Aen {
 	}
 
 	MeshInstance::MeshInstance(const size_t& m_id)
-		:Drawable(m_id), m_pMesh(nullptr), m_pMaterials(1u, &Resource::GetMaterial("DefaultMaterial")) {}
+		:Drawable(m_id), m_pMesh(nullptr), m_pMaterials(1u, GlobalSettings::GetDefaultMaterial()) {}
 
 	void MeshInstance::RemoveMesh() {
 		for(auto& i : m_pMaterials)
@@ -31,7 +31,7 @@ namespace Aen {
 
 		if(m_pMesh->m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_pMesh->m_meshMaterialName.size());
-			m_pMaterials.resize(m_pMesh->m_meshMaterialName.size(), &Resource::GetMaterial("DefaultMaterial"));
+			m_pMaterials.resize(m_pMesh->m_meshMaterialName.size(), GlobalSettings::GetDefaultMaterial());
 		}
 	}
 
@@ -41,7 +41,7 @@ namespace Aen {
 
 		if(m_pMesh->m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_pMesh->m_meshMaterialName.size());
-			m_pMaterials.resize(m_pMesh->m_meshMaterialName.size(), &Resource::GetMaterial("DefaultMaterial"));
+			m_pMaterials.resize(m_pMesh->m_meshMaterialName.size(), GlobalSettings::GetDefaultMaterial());
 		}
 	}
 

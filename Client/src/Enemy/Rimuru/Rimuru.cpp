@@ -15,6 +15,20 @@ Rimuru::Rimuru()
 	m_health = 100.f;
 }
 
+Rimuru::Rimuru(const Aen::Vec3f& pos)
+	:Enemy(), m_rimuru(&Aen::EntityHandler::CreateEntity()) {
+	m_rimuru->AddComponent<Aen::MeshInstance>();
+	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
+	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
+	m_rimuru->SetScale(0.8f, 0.8f, 0.8f);
+	m_rimuru->SetParent(*m_enemy);
+
+	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
+	m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
+	m_enemy->SetPos(pos);
+	m_health = 100.f;
+}
+
 Rimuru::~Rimuru() {
 	m_rimuru->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_rimuru);

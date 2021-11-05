@@ -95,5 +95,6 @@ namespace Aen {
 	friend class ComponentHandler;
 	friend class MeshInstance;
 	friend class Entity;
+	friend class ImGuiImporter;
 	};
 }

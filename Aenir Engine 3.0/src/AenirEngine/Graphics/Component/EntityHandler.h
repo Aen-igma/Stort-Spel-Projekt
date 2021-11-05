@@ -64,5 +64,6 @@ namespace Aen {
 		friend class LevelGenerator;
 		friend class MeshInstance;
 		friend class GameLoop;
+		friend class ImGuiImporter;
 	};
 }

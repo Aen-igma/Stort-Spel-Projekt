@@ -6,7 +6,7 @@ Client::~Client() {
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
-	:Aen::App(desc, windowName, className), mp_state(nullptr), m_typeState(States::None), mp_gameplay(nullptr), mp_gameEnd(nullptr)
+	:Aen::App(desc, windowName, className), mp_state(nullptr), m_typeState(States::None), mp_gameplay(nullptr), mp_gameEnd(nullptr), mp_victory(nullptr)
 {}
 
 void Client::Start()
@@ -51,6 +51,9 @@ void Client::ChangeState(const States& states)
 			break;
 		case States::Gameover:
 			mp_state = AEN_NEW GameEnd(m_window);
+			break;
+		case States::Victory:
+			mp_state = AEN_NEW Victory(m_window);
 			break;
 	}
 

@@ -375,6 +375,7 @@ namespace AenIMP {
 		room.special = input->room->special;
 		room.theme = input->room->theme;
 		room.probability = input->room->probability;
+		room.size = input->room->size;
 	}
 
 	void CompleteRoom::addModel(Model* input)
@@ -384,6 +385,8 @@ namespace AenIMP {
 		temp.mesh = input->model->mesh;
 		temp.type = input->model->type;
 		temp.sound = input->model->sound;
+		temp.rigidBody = input->model->rigidBody;
+		temp.rigidBodyType = input->model->rigidBodyType;
 
 		for (int i = 0; i < 3; i++)
 		{

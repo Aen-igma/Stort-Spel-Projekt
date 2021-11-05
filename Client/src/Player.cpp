@@ -3,9 +3,9 @@
 
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
-	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(100.f),
+	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f),
 	m_sword(&Aen::EntityHandler::CreateEntity()),
-	m_mouseSense(5.f), m_movementSpeed(6.f), m_finalDir(0.f, 0.f, -1.f),
+	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
 	m_LIGHTATTACKSPEED(6.0f), m_HEAVYATTACKSPEED(2.54f)
@@ -14,7 +14,6 @@ Player::Player()
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
 	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 200.f);
-	m_camera->SetPos(0.f, 2.f, -2.f);
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
@@ -28,11 +27,12 @@ Player::Player()
 	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
 
 	m_player->AddComponent<Aen::CharacterController>();
-	m_player->AddComponent<Aen::AABoundBox>();
+	m_player->AddComponent<Aen::MeshInstance>();
 	m_player->GetComponent<Aen::MeshInstance>().SetMesh(capsule);
 	m_player->GetComponent<Aen::MeshInstance>().SetMaterial(playerMat);
+	m_player->AddComponent<Aen::AABoundBox>();
 	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
-	m_player->SetPos(0.f, 1.f, 0.f);
+	m_player->SetPos(0.f, 1.2f, 0.f);
 
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
@@ -55,8 +55,6 @@ Player::~Player() {
 }
 
 void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
-
-	mp_deltaTime = &deltaTime;
 
 	static Aen::Vec3f axis;
 	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
@@ -241,7 +239,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.damage = 20.f;
 			data.function = [&](float& accell, const float& attackDuration) {
 				m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-				SwordSwing(10.f, m_LIGHTATTACKTIME);
+				SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);
 				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
 					Aen::Vec3f d(d2.x, 0.f, d2.y);
@@ -273,7 +271,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				if (attackDuration < m_HEAVYCHARGETIME)
 				{
 					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-					SwordSwing(5.f, m_HEAVYATTACKTIME);
+					SwordSwing(5.f, m_HEAVYATTACKTIME, deltaTime);
 				}
 				else
 					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
@@ -467,10 +465,10 @@ const bool Player::IsAttacking() {
 	return false;
 }
 
-void Player::SwordSwing(float speed, float time)
+void Player::SwordSwing(float speed, float time, const float& deltaTime)
 {
 	static float timer = 0.f;
-	timer += *mp_deltaTime;
+	timer += deltaTime;
 	if (timer > time)
 	{
 		m_sword->SetRot(0, 0, 0);

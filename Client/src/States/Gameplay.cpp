@@ -1,58 +1,68 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(100.f),
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f),
 	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
-	Aen::EntityHandler::RemoveEntity(*m_dLight);
+	//Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
-	Aen::EntityHandler::RemoveEntity(*m_reimube);
+	Aen::EntityHandler::RemoveEntity(*m_reimube1);
+	Aen::EntityHandler::RemoveEntity(*m_reimube2);
+	Aen::EntityHandler::RemoveEntity(*m_reimube3);
+	Aen::EntityHandler::RemoveEntity(*m_reimube4);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
+	
+	for (auto& b : *m_levelImporter.GetEntityList()) {
+		Aen::EntityHandler::RemoveEntity(*b);
+	}
+
 	for (auto& d : m_enemyQueue) {
 		delete d;
 	}
-	//Aen::Resource::RemoveAllMaterials();
-	//Aen::Resource::RemoveAllMeshes();
-	//Aen::Resource::RemoveAllTextures();
+
+	Aen::Resource::RemoveAllMaterials();
+	Aen::Resource::RemoveAllMeshes();
+	Aen::Resource::RemoveAllTextures();
 }
 
 void Gameplay::Initialize()
 {
+	srand((UINT)time(NULL));
 	State::SetLoad(false);
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png"), 0);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(220.f, 60.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 4.f, 150.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f, 0);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1000.f, 100.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	// ------------------------ Setup Directional Light ------------------------- //
 
-	m_dLight = &Aen::EntityHandler::CreateEntity();
+	/*m_dLight = &Aen::EntityHandler::CreateEntity();
 	m_dLight->AddComponent<Aen::DirectionalLight>();
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
-	m_dLight->SetRot(45.f, -135.f, 0.f);
+	m_dLight->SetRot(45.f, -135.f, 0.f);*/
 
 	// ----------------------------- Load Meshes -------------------------------- //
 
-	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
-	plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
+	//Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
+	//plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
 	rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
-	Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
-	wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
-	Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
-	wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
+	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
+	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
+	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
+	//wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -79,13 +89,13 @@ void Gameplay::Initialize()
 
 	// -------------------------- Setup Entities -------------------------------- //
 
-	m_wall = &Aen::EntityHandler::CreateEntity();
+	/*m_wall = &Aen::EntityHandler::CreateEntity();
 	m_wall->AddComponent<Aen::MeshInstance>();
 	m_wall->GetComponent<Aen::MeshInstance>().SetMesh(wallDoor);
 	m_wall->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
-	m_wall->SetPos(22.f, 0.f, 0.f);
+	m_wall->SetPos(22.f, 0.f, 0.f);*/
 
-	Aen::Entity* wallE = &Aen::EntityHandler::CreateEntity();
+	/*Aen::Entity* wallE = &Aen::EntityHandler::CreateEntity();
 	wallE->AddComponent<Aen::MeshInstance>();
 	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
 	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
@@ -117,25 +127,76 @@ void Gameplay::Initialize()
 	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 	wallE->SetPos(0.f, 22.f, 0.f);
 
-	wallE = nullptr;
+	wallE = nullptr;*/
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::RigidBody>();
 	m_plane->GetComponent<Aen::RigidBody>().SetOffset(0.f, -0.5f, 0.f);
-	m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
-	m_plane->AddComponent<Aen::MeshInstance>();
-	m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
+	m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::PLANE);
+	//m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
+	//m_plane->AddComponent<Aen::MeshInstance>();
+	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 
-	m_reimube = &Aen::EntityHandler::CreateEntity();
-	//m_reimube->AddComponent<Aen::RigidBody>();
-	//m_reimube->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 2.f, 2.f));
-	//m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
-	m_reimube->AddComponent<Aen::AABoundBox>();
-	m_reimube->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
-	m_reimube->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
-	m_reimube->SetPos(0.f, 1.f, -3.f);
+	m_reimube1 = &Aen::EntityHandler::CreateEntity();
+	m_reimube1->AddComponent<Aen::RigidBody>();
+	m_reimube1->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(50.f, 10.f, 2.f));
+	/*m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
+	m_reimube1->AddComponent<Aen::MeshInstance>();
+	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
+	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
+	m_reimube1->AddComponent<Aen::AABoundBox>();
+	m_reimube1->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
+	m_reimube1->SetPos(0.f, 5.f, 22.f);
+
+	m_reimube2 = &Aen::EntityHandler::CreateEntity();
+	m_reimube2->AddComponent<Aen::RigidBody>();
+	m_reimube2->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(50.f, 10.f, 2.f));
+	/*m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
+	m_reimube2->AddComponent<Aen::MeshInstance>();
+	//m_reimube2->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
+	//m_reimube2->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
+	m_reimube2->AddComponent<Aen::AABoundBox>();
+	m_reimube2->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
+	m_reimube2->SetPos(0.f, 5.f, -154.f);
+
+
+	m_reimube3 = &Aen::EntityHandler::CreateEntity();
+	m_reimube3->AddComponent<Aen::RigidBody>();
+	m_reimube3->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
+	/*m_reimu3e->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
+	m_reimube3->AddComponent<Aen::MeshInstance>();
+	//m_reimube3->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
+	//m_reimube3->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
+	m_reimube3->AddComponent<Aen::AABoundBox>();
+	m_reimube3->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
+	m_reimube3->SetPos(22.f, 5.f, -65.f);
+
+	m_reimube4 = &Aen::EntityHandler::CreateEntity();
+	m_reimube4->AddComponent<Aen::RigidBody>();
+	m_reimube4->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
+	/*m_reimu4e->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
+	m_reimube4->AddComponent<Aen::MeshInstance>();
+	//m_reimube4->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
+	//m_reimube4->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
+	m_reimube4->AddComponent<Aen::AABoundBox>();
+	m_reimube4->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
+	m_reimube4->SetPos(-22.f, 5.f, -65.f);
+
+
+	// ------ Level Importer ------ //
+	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
+	m_levelImporter.import(path);
+
+
+	//---------ENEMIES----------//
+	int numEnemies = 20;
+	int offset = -10;
+	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
+	for (int u = 0; u < numEnemies; u++) {
+		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
+		offset -= 5;
+	}
 
 	//m_attack->SetParent(*m_player);
 
@@ -154,8 +215,6 @@ void Gameplay::Initialize()
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	cout << "Press Enter To Continue\n";
-
-	srand((UINT)time(NULL));
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -165,7 +224,7 @@ void Gameplay::Update(const float& deltaTime) {
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
 		float hp = (m_hp - m_player.GetHealth());
 
-		m_UI->GetComponent<Aen::UIComponent>().LessenPic(hp * 4, 0);
+		m_UI->GetComponent<Aen::UIComponent>().LessenPic(hp * 2.f, 0);
 		m_hp = m_player.GetHealth();
 	}
 
@@ -186,9 +245,19 @@ void Gameplay::Update(const float& deltaTime) {
 	if(m_player.GetHealth() <= 0.f)
 		State::SetState(States::Gameover);
 
-	if(Aen::Input::KeyDown(Aen::Key::J))
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
+	if(m_enemyQueue.empty())
+		State::SetState(States::Victory);
 
+	#ifdef _DEBUG
+		if(Aen::Input::KeyDown(Aen::Key::J))
+			m_enemyQueue.emplace_back(AEN_NEW Rimuru());
+	#endif
+
+
+	//if (Aen::Input::KeyDown(Aen::Key::O)) {
+	//	delete m_enemyQueue.front();
+	//	m_enemyQueue.pop_front();
+	//}
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 

@@ -411,6 +411,8 @@ namespace Aen {
 		friend class AABoundBox;
 		friend class OBBox;
 		friend class Camera;
+		friend class LevelExporter;
+		friend class ImGuiImporter;
 	};
 
 }

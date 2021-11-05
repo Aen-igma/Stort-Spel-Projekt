@@ -8,7 +8,7 @@
 namespace Aen {
 
 	AABoundBox::AABoundBox(const size_t& id)
-		:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false)
+		:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false), m_isOn(false)
 		#ifdef _DEBUG
 		, m_canDraw(false)
 		#endif 

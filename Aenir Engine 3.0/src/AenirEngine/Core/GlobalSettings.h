@@ -37,6 +37,10 @@ namespace Aen {
 			return m_BGColor;
 		}
 
+		static Material* GetDefaultMaterial() {
+			return m_defaultMaterial;
+		}
+
 		//static ImGuiHandler*& GetImGuiHandler() {
 		//	return mp_guiHandler;
 		//}
@@ -54,6 +58,11 @@ namespace Aen {
 		friend class Renderer;
 
 		private:
+
+		static void Destroy() {
+			delete m_defaultMaterial;
+			delete m_defaultTexture;
+		}
 
 		GlobalSettings();
 
@@ -121,14 +130,14 @@ namespace Aen {
 
 			// --------------------------------- Default Material --------------------------------- //
 
-			Aen::Material& defaultMaterial = Resource::CreateMaterial("DefaultMaterial");
-			Aen::Texture& defaultTexture = Resource::CreateTexture("DefaultTexture");
-			defaultMaterial["InnerEdgeThickness"] = 3;
-			defaultMaterial["OuterEdgeThickness"] = 3;
-			defaultMaterial["InnerEdgeColor"] = Aen::Color::Magenta;
-			defaultMaterial["OuterEdgeColor"] = Aen::Color::Magenta;
-			defaultTexture.LoadTexture(AEN_RESOURCE_DIR("Missing_Textures.png"));
-			defaultMaterial.SetDiffuseMap(defaultTexture);
+			m_defaultMaterial = AEN_NEW Material(true);
+			m_defaultTexture = AEN_NEW Texture();
+			(*m_defaultMaterial)["InnerEdgeThickness"] = 3;
+			(*m_defaultMaterial)["OuterEdgeThickness"] = 3;
+			(*m_defaultMaterial)["InnerEdgeColor"] = Aen::Color::Magenta;
+			(*m_defaultMaterial)["OuterEdgeColor"] = Aen::Color::Magenta;
+			m_defaultTexture->LoadTexture(AEN_RESOURCE_DIR("Missing_Textures.png"));
+			m_defaultMaterial->SetDiffuseMap(*m_defaultTexture);
 
 		}
 
@@ -136,6 +145,9 @@ namespace Aen {
 		static Window* m_pWindow;
 		static Entity* m_pMainCamera;
 		static Color m_BGColor;
+
+		static Material* m_defaultMaterial;
+		static Texture* m_defaultTexture;
 
 		static ImGuiHandler* mp_guiHandler;
 

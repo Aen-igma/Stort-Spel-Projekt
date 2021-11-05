@@ -288,9 +288,27 @@ namespace Aen {
 			mp_StaticBody->setGlobalPose(t);
 	}
 
-	void RigidBody::SetRot(const Vec3f& rot) {}
+	void RigidBody::SetRot(const Vec3f& rot) {
+		Vec4f tempRot = EulerToQuat(rot);
 
-	void RigidBody::SetRot(const float& p, const float& y, const float& r) {}
+		px::PxTransform t(px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w));
+
+		if (m_rigidType == RigidType::DYNAMIC && mp_DynamicBody)
+			mp_DynamicBody->setGlobalPose(t);
+		else if (mp_StaticBody)
+			mp_StaticBody->setGlobalPose(t);
+	}
+
+	void RigidBody::SetRot(const float& p, const float& y, const float& r) {
+		Vec4f tempRot = EulerToQuat(p, y, r);
+
+		px::PxTransform t(px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w));
+
+		if (m_rigidType == RigidType::DYNAMIC && mp_DynamicBody)
+			mp_DynamicBody->setGlobalPose(t);
+		else if (mp_StaticBody)
+			mp_StaticBody->setGlobalPose(t);
+	}
 
 	const Vec3f RigidBody::GetPos() {
 		px::PxTransform t;

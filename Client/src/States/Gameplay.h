@@ -4,6 +4,7 @@
 #include "AenirEngine/ThirdParty/ImGui/imgui.h"
 #include "AenirEngine\Graphics\Component\EntityHandler.h"
 #include"../Enemy/Enemies.h"
+#include"AenirEngine\LevelEditor\ImGuiImporter.h"
 #include<functional>
 
 class Gameplay : public State {
@@ -23,12 +24,19 @@ class Gameplay : public State {
 
     Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
-    Aen::Entity* m_reimube;
+    Aen::Entity* m_reimube1;
+    Aen::Entity* m_reimube2;
+    Aen::Entity* m_reimube3;
+    Aen::Entity* m_reimube4;
     Aen::Entity* m_UI;
     Aen::Entity* m_wall;
 
     Player m_player;
     bool m_beatBoss;
+
+    Aen::ImGuiImporter m_levelImporter;
+
+    std::queue<EventData> m_eventQueue;
 
     std::deque<Enemy*> m_enemyQueue;
 
