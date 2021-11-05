@@ -9,7 +9,7 @@ namespace Aen {
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
-		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP) {}
+		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP), m_toggleView(false) {}
 
 	void Renderer::Initialize() {
 
@@ -87,8 +87,24 @@ namespace Aen {
 			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
 			m_cbCamera.UpdateBuffer();
 
-			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
-			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+			#ifdef _DEBUG
+				if (Aen::Input::KeyDown(Aen::Key::M))
+					m_toggleView = !m_toggleView;
+
+				if (m_toggleView)
+				{
+					m_cbTransform.GetData().m_vMat = MatViewLH(Aen::Vec3f(-20, 20, 20), Aen::Vec3f(0, 0, 0), Aen::Vec3f(0, 1, 0)).Transposed();
+					m_cbTransform.GetData().m_pMat = MatPerspective<float>(90.f, m_window.GetAspectRatio(), 0.01f, 200.f).Transposed();
+				}
+				else {
+					m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+					m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+				}
+			#else
+				m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+				m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+			#endif
+			
 		} else {
 			m_cbTransform.GetData().m_vMat = Mat4f::identity;
 			m_cbTransform.GetData().m_pMat = Mat4f::identity;

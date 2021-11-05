@@ -49,6 +49,8 @@ namespace Aen {
 		friend class OBBox;
 
 		private:
+		bool m_toggleView;
+
 		void Initialize();
 		void Render();
 
