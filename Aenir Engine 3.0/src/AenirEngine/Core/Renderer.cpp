@@ -161,6 +161,8 @@ namespace Aen {
 		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
 		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);*/
 
+		//ImGuiHandler::Initialize();
+
 		// Present
 		RenderSystem::Present();
 		RenderSystem::ClearState();

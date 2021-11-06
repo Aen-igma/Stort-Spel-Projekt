@@ -63,6 +63,8 @@ void Gameplay::Initialize()
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
 	//wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
+	Aen::Mesh& skullPile = Aen::Resource::CreateMesh("Skullpile");
+	skullPile.Load(AEN_RESOURCE_DIR("SkullPileMesh.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -70,6 +72,14 @@ void Gameplay::Initialize()
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 	Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
+	Aen::Material& skullPileMat = Aen::Resource::CreateMaterial("SkullPileMat");
+
+	Aen::Texture& skullPileDiff = Aen::Resource::CreateTexture("skullPileDiff");
+
+	skullPileDiff.LoadTexture(AEN_RESOURCE_DIR("SkullpileDiff2.png"));
+	skullPileMat.SetDiffuseMap(skullPileDiff);
+
+	skullPileMat["ShadowColor"] = Aen::Color(.3f,.2f,0.f, 1.f);
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
@@ -174,7 +184,7 @@ void Gameplay::Initialize()
 
 	m_reimube4 = &Aen::EntityHandler::CreateEntity();
 	m_reimube4->AddComponent<Aen::RigidBody>();
-	m_reimube4->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
+	m_reimube4->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE);
 	/*m_reimu4e->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
 	m_reimube4->AddComponent<Aen::MeshInstance>();
 	//m_reimube4->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
@@ -183,6 +193,15 @@ void Gameplay::Initialize()
 	m_reimube4->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_reimube4->SetPos(-22.f, 5.f, -65.f);
 
+	m_skullPile = &Aen::EntityHandler::CreateEntity();
+	m_skullPile->AddComponent<Aen::MeshInstance>();
+	m_skullPile->GetComponent<Aen::MeshInstance>().SetMesh(skullPile);
+	m_skullPile->GetComponent<Aen::MeshInstance>().SetMaterial(skullPileMat);
+	m_skullPile->AddComponent<Aen::RigidBody>();
+	m_skullPile->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
+	m_skullPile->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
+	m_skullPile->SetPos(3.f, .5f, 0.f);
+	m_skullPile->SetScale(1.5f,1.5f,1.5f);
 
 	// ------ Level Importer ------ //
 	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
@@ -190,7 +209,7 @@ void Gameplay::Initialize()
 
 
 	//---------ENEMIES----------//
-	int numEnemies = 20;
+	int numEnemies = 1;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
