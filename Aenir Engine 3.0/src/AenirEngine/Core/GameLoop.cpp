@@ -25,6 +25,11 @@ namespace Aen {
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
 
+#ifdef _DEBUG
+		Aen::GlobalSettings::GetImGuiHandler()->Initialize(m_app->m_window.GetWHND(), GCore::m_device.Get(), GCore::m_dContext.Get());
+#endif // _DEBUG
+
+
 		m_app->Start();
 	}
 	
@@ -51,7 +56,8 @@ namespace Aen {
 		// Destroy imGui
 
 #ifdef _DEBUG
-		Aen::GlobalSettings::GetImGuiHandler()->Initialize()
+		Aen::GlobalSettings::GetImGuiHandler()->Release();
+		delete Aen::GlobalSettings::GetImGuiHandler();
 #endif 
 
 
