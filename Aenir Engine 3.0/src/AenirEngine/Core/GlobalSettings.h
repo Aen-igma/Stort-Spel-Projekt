@@ -41,9 +41,9 @@ namespace Aen {
 			return m_defaultMaterial;
 		}
 
-		//static ImGuiHandler*& GetImGuiHandler() {
-		//	return mp_guiHandler;
-		//}
+		static ImGuiHandler*& GetImGuiHandler() {
+			return mp_guiHandler;
+		}
 
 		static void RemoveMainCamera()
 		{
