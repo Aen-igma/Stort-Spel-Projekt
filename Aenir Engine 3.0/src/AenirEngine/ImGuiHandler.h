@@ -24,23 +24,30 @@ using std::endl;
 using std::to_string;
 
 
+
 namespace Aen {
+
+	struct ImguiSwitchers
+	{
+		float meshShadow[3];
+	};
 
 	class AEN_DECLSPEC ImGuiHandler {
 
 	private:
 
-		Aen::EntityHandler* mp_entityHandlerPtr;
+		//Aen::EntityHandler mp_entityHandlerPtr;
 		vector<Aen::Entity*> m_entityList;
 		AenIMP::LevelImporter m_levelImporter;
 
 		size_t m_entityCount;
 
-		float* mp_switcher;
 
 	public:
 		ImGuiHandler();
 		~ImGuiHandler();
+
+		ImguiSwitchers* mp_swi;
 
 		vector<Aen::Entity*> GetEntityList();
 

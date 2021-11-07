@@ -25,7 +25,7 @@ namespace Aen
 	private:
 
 		AenIMP::LevelImporter *m_levelImporter;
-
+		int fuckingCock;
 		Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> *m_entityList;
 		vector<string> *m_itemList;

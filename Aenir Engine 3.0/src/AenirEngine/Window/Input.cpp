@@ -8,6 +8,7 @@ namespace Aen {
 
 	std::queue<MouseEvent> Input::m_mouseBuffer;
 	bool Input::m_isRawMouseOn = true;
+	bool Input::m_isMouseVisible = true;
 
 	bool Input::activeGP[XUSER_MAX_COUNT];
 	bool Input::GPKeys[XUSER_MAX_COUNT][14];
@@ -139,7 +140,8 @@ namespace Aen {
 	}
 
 	void Input::SetMouseVisible(const bool& isVisible) {
-		ShowCursor(isVisible);
+		m_isMouseVisible = isVisible;
+		ShowCursor(m_isMouseVisible);
 	}
 
 	POINT MouseEvent::GetPos() const

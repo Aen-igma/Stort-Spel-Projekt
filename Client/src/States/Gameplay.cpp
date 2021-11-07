@@ -234,6 +234,10 @@ void Gameplay::Initialize()
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	cout << "Press Enter To Continue\n";
+#ifdef _DEBUG
+	mp_swi = Aen::GlobalSettings::GetImGuiHandler()->mp_swi;
+	
+#endif // _DEBUG
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -246,11 +250,14 @@ void Gameplay::Update(const float& deltaTime) {
 		m_UI->GetComponent<Aen::UIComponent>().LessenPic(hp * 2.f, 0);
 		m_hp = m_player.GetHealth();
 	}
-
-	if (m_toggleFullScreen)
-		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
-	else
-		Aen::Input::SetMousePos(m_Window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_Window.GetSize() * 0.5f));
+	if (!m_player.GetImPause())
+	{
+		if (m_toggleFullScreen)
+			Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
+		else
+			Aen::Input::SetMousePos(m_Window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_Window.GetSize() * 0.5f));
+	}
+	
 
 	// ---------------------------------- Enemies --------------------------------------- //
 
@@ -271,13 +278,6 @@ void Gameplay::Update(const float& deltaTime) {
 		if(Aen::Input::KeyDown(Aen::Key::J))
 			m_enemyQueue.emplace_back(AEN_NEW Rimuru());
 	#endif
-
-
-	//if (Aen::Input::KeyDown(Aen::Key::O)) {
-	//	delete m_enemyQueue.front();
-	//	m_enemyQueue.pop_front();
-	//}
-
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::F1)) {

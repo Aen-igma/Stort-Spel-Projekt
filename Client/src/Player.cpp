@@ -68,6 +68,15 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		side.x = Aen::Lerp(side.x, axis.x * 0.3f, 0.05f);
 	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
 
+#ifdef _DEBUG
+	if (Aen::Input::KeyDown(Aen::Key::I))
+	{
+		m_imPause = !m_imPause;
+		Aen::Input::ToggleRawMouse();
+		Aen::Input::SetMouseVisible();
+	}
+#endif // _DEBUG
+
 
 
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
@@ -76,7 +85,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	{
 		Aen::MouseEvent me = Aen::Input::ReadEvent();
 
-		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
+		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE && !m_imPause)
 		{
 			if (!Aen::Input::GPGetActive(0u) && !lockedOn) {
 				m_camera->Rotate(
@@ -464,6 +473,12 @@ const bool Player::IsAttacking() {
 		return (m_eventQueue.front().type == EventType::Attack);
 	return false;
 }
+#ifdef _DEBUG
+bool Player::GetImPause() const
+{
+	return m_imPause;
+}
+#endif
 
 void Player::SwordSwing(float speed, float time, const float& deltaTime)
 {

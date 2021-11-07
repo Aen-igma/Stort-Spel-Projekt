@@ -52,7 +52,7 @@ namespace Aen {
 
 		static void SetMousePos(const Vec2i& pos);
 		static void SetMousePos(const int& x, const int& y);
-		static void SetMouseVisible(const bool& isVisible);
+		static void SetMouseVisible(const bool& isVisible = !m_isMouseVisible);
 		static const Vec2i GetMousePos(Window& window);
 		static const Vec2i GetMousePos();
 
@@ -63,6 +63,7 @@ namespace Aen {
 		static const POINT GetRawMouse();
 
 		private:
+		static bool m_isMouseVisible;
 		static bool m_isRawMouseOn;
 		static void SetRawMouse(int x, int y);
 		static void OnWheelUp(int x, int y);

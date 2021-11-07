@@ -38,6 +38,11 @@ public:
 
 	const bool IsAttacking();
 
+#ifdef _DEBUG
+	bool GetImPause() const;
+#endif // _DEBUG
+
+
 private:
 
 	void SwordSwing(float speed, float time, const float& deltaTime);
@@ -45,6 +50,10 @@ private:
 	void AddEvent(EventData& event);
 
 	float m_health;
+#ifdef _DEBUG
+	bool m_imPause = false;
+#endif // _DEBUG
+
 
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
