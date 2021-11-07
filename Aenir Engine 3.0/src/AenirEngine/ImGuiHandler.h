@@ -36,6 +36,8 @@ namespace Aen {
 
 		size_t m_entityCount;
 
+		float* mp_switcher;
+
 	public:
 		ImGuiHandler();
 		~ImGuiHandler();
@@ -44,7 +46,7 @@ namespace Aen {
 
 		void ReadAllFilesFromResourceFolder();
 
-		void Initialize(const HWND& hwnd, ID3D11Device* mp_device, ID3D11DeviceContext* mp_dContext);
+		void Initialize(const HWND& hwnd, ID3D11Device* device, ID3D11DeviceContext* dContext);
 		void NewFrame();
 		void Render();
 		void Release();

@@ -11,5 +11,5 @@ namespace Aen {
 	Material* GlobalSettings::m_defaultMaterial(nullptr);
 	Texture* GlobalSettings::m_defaultTexture(nullptr);
 
-	//ImGuiHandler* GlobalSettings::mp_guiHandler = AEN_NEW ImGuiHandler();
+	ImGuiHandler* GlobalSettings::mp_guiHandler = AEN_NEW ImGuiHandler();
 }

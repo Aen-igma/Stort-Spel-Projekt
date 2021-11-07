@@ -161,7 +161,15 @@ namespace Aen {
 		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
 		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);*/
 
-		//ImGuiHandler::Initialize();
+		RenderSystem::BindRenderTargetView(m_backBuffer);
+
+#ifdef _DEBUG
+		Aen::GlobalSettings::mp_guiHandler->NewFrame();
+		ImGui::Begin("Mesh");
+		ImGui::Text("deez nuts");
+		ImGui::End();
+		Aen::GlobalSettings::mp_guiHandler->Render();
+#endif
 
 		// Present
 		RenderSystem::Present();

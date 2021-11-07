@@ -18,6 +18,39 @@ namespace Aen
 		}*/
 	}
 
+	void ImGuiHandler::Initialize(const HWND& hwnd, ID3D11Device* mp_device, ID3D11DeviceContext* mp_dContext)
+	{
+		// SetUp ImGui
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		ImGui_ImplWin32_Init(hwnd);
+		ImGui_ImplDX11_Init(mp_device, mp_dContext);
+		ImGui::StyleColorsDark();
+	}
+
+	void ImGuiHandler::NewFrame()
+	{
+		// Start the ImGui frame
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+	}
+
+	void ImGuiHandler::Render()
+	{
+		// Draw
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	}
+
+	void ImGuiHandler::Release()
+	{
+		ImGui_ImplDX11_Shutdown();
+		ImGui_ImplWin32_Shutdown();
+		ImGui::DestroyContext();
+	}
+
 	vector<Aen::Entity*> ImGuiHandler::GetEntityList()
 	{
 		return m_entityList;

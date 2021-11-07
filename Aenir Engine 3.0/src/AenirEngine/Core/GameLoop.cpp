@@ -59,9 +59,6 @@ namespace Aen {
 		Aen::GlobalSettings::GetImGuiHandler()->Release();
 		delete Aen::GlobalSettings::GetImGuiHandler();
 #endif 
-
-
-		delete Aen::GlobalSettings::GetImGuiHandler();
 		
 		Resource::Destroy();
 		EntityHandler::Destroy();
