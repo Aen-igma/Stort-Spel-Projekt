@@ -439,6 +439,8 @@ namespace Aen {
 		friend class Camera;
 		friend class LevelExporter;
 		friend class ImGuiImporter;
+		friend class StaticBody;
+		friend class DynamicBody;
 	};
 
 }

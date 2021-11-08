@@ -15,6 +15,7 @@ namespace Aen {
 		void SetRestitutionCombineMode(const CombineMode& mode);
 		void SetMaterialFlag(const MaterialFlag& flag);
 		void SetGeometry(const DynamicGeometryType& geometry, const Vec3f& scale = Vec3f::one);
+		void SetBoundsToMesh();
 		void SetAngularDamping(const float& damp);
 		void SetSleepThresHold(const float& value);
 		void SetMass(const float& mass);

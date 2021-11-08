@@ -42,5 +42,7 @@ namespace Aen {
 		friend class Renderer;
 		friend class AABoundBox;
 		friend class OBBox;
+		friend class StaticBody;
+		friend class DynamicBody;
 	};
 }
