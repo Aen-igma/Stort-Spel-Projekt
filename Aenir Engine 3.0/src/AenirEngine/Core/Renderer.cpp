@@ -93,7 +93,7 @@ namespace Aen {
 
 				if (m_toggleView)
 				{
-					m_cbTransform.GetData().m_vMat = MatViewLH(Aen::Vec3f(-20, 20, 20), Aen::Vec3f(0, 0, 0), Aen::Vec3f(0, 1, 0)).Transposed();
+					m_cbTransform.GetData().m_vMat = MatViewLH(Aen::Vec3f(0, 0, 0), Aen::Vec3f(0, 1.f, -1.f), Aen::Vec3f(0, 1, 0)).Transposed();
 					m_cbTransform.GetData().m_pMat = MatPerspective<float>(90.f, m_window.GetAspectRatio(), 0.01f, 200.f).Transposed();
 				}
 				else {

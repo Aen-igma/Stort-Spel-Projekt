@@ -41,9 +41,9 @@ namespace Aen {
 			return m_defaultMaterial;
 		}
 
-		//static ImGuiHandler*& GetImGuiHandler() {
-		//	return mp_guiHandler;
-		//}
+		static void SetVSync(const bool& set) {
+			m_vSync = set;
+		}
 
 		static void RemoveMainCamera()
 		{
@@ -58,6 +58,10 @@ namespace Aen {
 		friend class Renderer;
 
 		private:
+
+		static const bool GetVSync() {
+			return m_vSync;
+		}
 
 		static void Destroy() {
 			delete m_defaultMaterial;
@@ -150,6 +154,7 @@ namespace Aen {
 		static Texture* m_defaultTexture;
 
 		static ImGuiHandler* mp_guiHandler;
+		static bool m_vSync;
 
 	};
 

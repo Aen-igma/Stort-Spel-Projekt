@@ -130,64 +130,53 @@ void Gameplay::Initialize()
 	wallE = nullptr;*/
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
-	m_plane->AddComponent<Aen::RigidBody>();
-	m_plane->GetComponent<Aen::RigidBody>().SetOffset(0.f, -0.5f, 0.f);
-	m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::PLANE);
-	//m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
+	m_plane->AddComponent<Aen::StaticBody>();
+	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
+	//m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
 	//m_plane->AddComponent<Aen::MeshInstance>();
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
-	m_reimube1->AddComponent<Aen::RigidBody>();
-	m_reimube1->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(50.f, 10.f, 2.f));
-	/*m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
+	m_reimube1->AddComponent<Aen::StaticBody>();
+	m_reimube1->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(50.f, 10.f, 2.f));
+	/*m_reimube->GetComponent<Aen::StaticBody>().SetRigidType(Aen::RigidType::STATIC);*/
 	m_reimube1->AddComponent<Aen::MeshInstance>();
 	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube1->AddComponent<Aen::AABoundBox>();
-	m_reimube1->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_reimube1->SetPos(0.f, 5.f, 22.f);
 
 	m_reimube2 = &Aen::EntityHandler::CreateEntity();
-	m_reimube2->AddComponent<Aen::RigidBody>();
-	m_reimube2->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(50.f, 10.f, 2.f));
-	/*m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
+	m_reimube2->AddComponent<Aen::StaticBody>();
+	m_reimube2->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(50.f, 10.f, 2.f));
+	/*m_reimube->GetComponent<Aen::StaticBody>().SetRigidType(Aen::RigidType::STATIC);*/
 	m_reimube2->AddComponent<Aen::MeshInstance>();
 	//m_reimube2->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	//m_reimube2->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube2->AddComponent<Aen::AABoundBox>();
-	m_reimube2->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_reimube2->SetPos(0.f, 5.f, -154.f);
 
 
 	m_reimube3 = &Aen::EntityHandler::CreateEntity();
-	m_reimube3->AddComponent<Aen::RigidBody>();
-	m_reimube3->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
-	/*m_reimu3e->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
+	m_reimube3->AddComponent<Aen::StaticBody>();
+	m_reimube3->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
+	/*m_reimu3e->GetComponent<Aen::StaticBody>().SetRigidType(Aen::RigidType::STATIC);*/
 	m_reimube3->AddComponent<Aen::MeshInstance>();
 	//m_reimube3->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	//m_reimube3->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube3->AddComponent<Aen::AABoundBox>();
-	m_reimube3->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_reimube3->SetPos(22.f, 5.f, -65.f);
 
 	m_reimube4 = &Aen::EntityHandler::CreateEntity();
-	m_reimube4->AddComponent<Aen::RigidBody>();
-	m_reimube4->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
-	/*m_reimu4e->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
+	m_reimube4->AddComponent<Aen::StaticBody>();
+	m_reimube4->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
+	/*m_reimu4e->GetComponent<Aen::StaticBody>().SetRigidType(Aen::RigidType::STATIC);*/
 	m_reimube4->AddComponent<Aen::MeshInstance>();
 	//m_reimube4->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	//m_reimube4->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube4->AddComponent<Aen::AABoundBox>();
-	m_reimube4->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_reimube4->SetPos(-22.f, 5.f, -65.f);
-
 
 	// ------ Level Importer ------ //
 	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
 	m_levelImporter.import(path);
-
 
 	//---------ENEMIES----------//
 	int numEnemies = 20;

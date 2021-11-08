@@ -232,6 +232,8 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Mesh.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Resource.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\DynamicBody.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\StaticBody.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp" />
@@ -265,7 +267,6 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.cpp" />
-    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp" />
     <ClCompile Include="src\PCH\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -309,6 +310,9 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Mesh.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Resource.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\DynamicBody.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidEnums.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\StaticBody.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\CBuffer.h" />
@@ -359,7 +363,6 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysX.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.h" />
-    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h" />
     <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />

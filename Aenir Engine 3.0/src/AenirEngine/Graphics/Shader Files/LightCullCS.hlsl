@@ -206,7 +206,7 @@ void main(CS_Input input) {
 
         float3 p = light.pos;
         float3 n = light.dir;
-        float d = light.dist.w + 1.f;
+        float d = light.dist.w + 2.f;
 
         float3 dir = normalize(middle.xyz - p);
         Sphere sphere;

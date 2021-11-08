@@ -3,7 +3,8 @@
 #include"Camera/Camera.h"
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
-#include"RigidBody/RigidBody.h"
+#include"RigidBody/StaticBody.h"
+#include"RigidBody/DynamicBody.h"
 #include"CharacterController/CharacterController.h"
 #include "Drawable\UI\UIComponent.h"
 #include"Collision\AABBComponent.h"
@@ -271,27 +272,51 @@ namespace Aen {
 			return *pDLight;
 		}
 
-		// ----------- Rigid Body Component ----------- //
+		// ----------- StaticBody Component ----------- //
 
-		static const bool RigidExist(const size_t& id) {
-			return m_rigids.count(id) > 0;
+		static const bool StaticBodyExist(const size_t& id) {
+			return m_staticBodies.count(id) > 0;
 		}
 
-		static void CreateRigid(const size_t& id) {
-			m_rigids.emplace(id, AEN_NEW RigidBody(id));
+		static void CreateStaticBody(const size_t& id) {
+			m_staticBodies.emplace(id, AEN_NEW StaticBody(id));
 		}
 
-		static void RemoveRigid(const size_t& id) {
-			if (m_rigids.count(id) > 0) {
-				delete m_rigids.at(id);
-				m_rigids.at(id) = nullptr;
-				m_rigids.erase(id);
+		static void RemoveStaticBody(const size_t& id) {
+			if (m_staticBodies.count(id) > 0) {
+				delete m_staticBodies.at(id);
+				m_staticBodies.at(id) = nullptr;
+				m_staticBodies.erase(id);
 			}
 		}
 
-		static RigidBody& GetRigid(const size_t& id) {
-			if (m_rigids.count(id) > 0)
-				return *m_rigids.at(id);
+		static StaticBody& GetStaticBody(const size_t& id) {
+			if (m_staticBodies.count(id) > 0)
+				return *m_staticBodies.at(id);
+			throw;
+		}
+
+		// ----------- DynamicBody Component ----------- //
+
+		static const bool DynamicBodyExist(const size_t& id) {
+			return m_dynamicBodies.count(id) > 0;
+		}
+
+		static void CreateDynamicBody(const size_t& id) {
+			m_dynamicBodies.emplace(id, AEN_NEW DynamicBody(id));
+		}
+
+		static void RemoveDynamicBody(const size_t& id) {
+			if (m_dynamicBodies.count(id) > 0) {
+				delete m_dynamicBodies.at(id);
+				m_dynamicBodies.at(id) = nullptr;
+				m_dynamicBodies.erase(id);
+			}
+		}
+
+		static DynamicBody& GetDynamicBody(const size_t& id) {
+			if (m_dynamicBodies.count(id) > 0)
+				return *m_dynamicBodies.at(id);
 			throw;
 		}
 
@@ -395,7 +420,8 @@ namespace Aen {
 		static std::unordered_map<size_t, Translation*> m_translations;
 		static std::unordered_map<size_t, Rotation*> m_rotations;
 		static std::unordered_map<size_t, Scale*> m_scales;
-		static std::unordered_map<size_t, RigidBody*> m_rigids;
+		static std::unordered_map<size_t, StaticBody*> m_staticBodies;
+		static std::unordered_map<size_t, DynamicBody*> m_dynamicBodies;
 		static std::unordered_map<size_t, CharacterController*> m_characterControllers;
 		static std::unordered_map<size_t, AABoundBox*> m_AABBs;
 		static std::unordered_map<size_t, OBBox*> m_OBBs;

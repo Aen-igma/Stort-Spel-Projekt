@@ -43,9 +43,11 @@ namespace Aen {
 				}
 
 				PhysicsHandler::Update(m_deltaTime.count());
+
+				if(GlobalSettings::GetVSync()) m_renderer->Render();
 			}
 
-			m_renderer->Render();
+			if(!GlobalSettings::GetVSync()) m_renderer->Render();
 		}
 
 		// Destroy imGui

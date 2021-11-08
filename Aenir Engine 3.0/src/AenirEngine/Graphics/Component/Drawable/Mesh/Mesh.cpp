@@ -40,6 +40,7 @@ namespace Aen {
 
 			size_t vStride = sizeof(DirectX::XMFLOAT3);
 			m_aabb.CreateFromPoints(m_aabb, vPos.size(), vPos.data(), vStride);
+			m_obb.CreateFromPoints(m_obb, vPos.size(), vPos.data(), vStride);
 
 		} else {
 			throw;

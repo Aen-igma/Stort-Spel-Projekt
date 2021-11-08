@@ -9,7 +9,7 @@ Aen::OBBox::OBBox(const size_t& id)
 	,m_canDraw(false)
 #endif
 {
-	SetBoundToMesh();
+	SetBoundsToMesh();
 
 #ifdef _DEBUG
 	DirectX::BoundingOrientedBox tBox;
@@ -79,15 +79,15 @@ void Aen::OBBox::SetOffset(const float& x, const float& y, const float& z)
 	m_offset = Vec3f(x, y, z);
 }
 
-void Aen::OBBox::SetBoundToMesh()
+void Aen::OBBox::SetBoundsToMesh()
 {
 	if (ComponentHandler::MeshInstanceExist(m_id))
 		if (ComponentHandler::GetMeshInstance(m_id).m_pMesh) {
 			m_obb = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_obb;
 
 #ifdef _DEBUG
-			DirectX::BoundingBox tBox;
-			tBox.Extents = m_obb.Extents;
+			DirectX::BoundingOrientedBox tBox(m_obb);
+			tBox.Transform(tBox, EntityHandler::GetEntity(m_id).GetTransformation().smMat);
 
 			const size_t size = tBox.CORNER_COUNT;
 			DirectX::XMFLOAT3 points[size];
@@ -182,7 +182,7 @@ void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
 	if (m_canDraw)
 	{
 		Vec3f p = Vec3f(m_obb.Center.x, m_obb.Center.y, m_obb.Center.z);
-		renderer.m_cbTransform.GetData().m_mdlMat = Mat4f::identity; //MatTranslate(p).Transposed();
+		renderer.m_cbTransform.GetData().m_mdlMat = Mat4f::identity;
 		renderer.m_cbTransform.UpdateBuffer();
 		renderer.m_cbTransform.BindBuffer<VShader>(0u);
 
@@ -190,6 +190,7 @@ void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
 		if (!m_isOn) renderer.m_collisionBuffer.GetData().color = { .2f,.2f,.2f };
 		else if(m_isColliding) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
 		else renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
+		renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
 		renderer.m_collisionBuffer.GetData().switcher = 0;
 		renderer.m_collisionBuffer.UpdateBuffer();
 
@@ -214,8 +215,10 @@ void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
 
 	m_obb.Center = transformation.smVec;
-	if (ComponentHandler::RigidExist(m_id))
-		m_obb.Center = ComponentHandler::GetRigid(m_id).GetPos().smVec + m_offset.smVec;
+	if (ComponentHandler::DynamicBodyExist(m_id))
+		m_obb.Center = ComponentHandler::GetDynamicBody(m_id).GetPos().smVec + m_offset.smVec;
+	else if (ComponentHandler::StaticBodyExist(m_id))
+		m_obb.Center = ComponentHandler::GetStaticBody(m_id).GetPos().smVec + m_offset.smVec;
 	else if (ComponentHandler::CharacterControllerExist(m_id))
 		m_obb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
 
@@ -223,7 +226,7 @@ void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	if (m_canDraw) {
 		m_vBuffer.UpdateBuffer(m_verts, 8);
 		Vec3f p = Vec3f(m_obb.Center.x, m_obb.Center.y, m_obb.Center.z);
-		renderer.m_cbTransform.GetData().m_mdlMat = Mat4f::identity; //MatTranslate(p).Transposed();
+		renderer.m_cbTransform.GetData().m_mdlMat = Mat4f::identity;
 		renderer.m_cbTransform.UpdateBuffer();
 		renderer.m_cbTransform.BindBuffer<VShader>(0u);
 		RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
