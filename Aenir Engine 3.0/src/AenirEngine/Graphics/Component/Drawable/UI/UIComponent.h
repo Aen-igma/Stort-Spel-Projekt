@@ -21,14 +21,13 @@ namespace Aen {
 
 		//----------------------	Button	----------------------------//
 		void SaveButtonData();
-		void AddButton(const std::wstring& dir, int indX);
-		void SetButtonPos(float x, float y, int indX);
-		void SetButtonSize(float width, float height, int indX);
-		bool Intersects(int indX);
+		void AddButton(const std::wstring& dir);
+		void SetButtonPos(float x, float y);
+		void SetButtonSize(float width, float height);
+		bool Intersects(int index);
 
 		//----------------------	Text	----------------------------//
-		void AddText(std::wstring text);
-		void AddText();
+		void AddText(LPCWSTR text);
 		void SetTextSize(float width, float height);
 		void SetTextPos(float x, float y);
 
@@ -42,7 +41,6 @@ namespace Aen {
 		friend class Renderer;
 		friend class Entity;
 		friend class GCore;
-		std::vector<ButtonData> GetData()const;
 		void Update();
 
 		// Inherited via Drawable

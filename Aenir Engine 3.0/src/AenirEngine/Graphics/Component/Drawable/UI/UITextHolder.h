@@ -4,6 +4,7 @@
 #include <string>
 #include <wincodec.h>
 #include "Graphics/Graphics.h"
+using namespace std;
 
 struct UITextData
 {
@@ -23,28 +24,21 @@ namespace Aen
 		UITextHolder();
 		~UITextHolder();
 
-		//std::vector<UITextData> getData() const;
+		std::vector<UITextData> GetData() const;
 		void Initialize();
-		void TextAdd(std::wstring text);
-		void AddText();
-		void Draw();
+		void AddText(LPCWSTR text);
+		void Draw(UITextData& data);
 
 		void setTextSize(float width, float height);
 		void setTextPosition(float x, float y);
-		Vec2f getTextCenter()const;
-		Vec2f getTextSize()const;
-
 	private:
-		//std::vector<UITextData> m_UITextData;
+		std::vector<UITextData> m_UITextData;
+		int m_nr;
 		IDWriteFactory* m_pDWriteFactory;
-
-		std::wstring m_text;
-		UINT32 m_Lenght;
 		IDWriteTextFormat* m_Format;
-		D2D1_RECT_F m_rc;
 		ID2D1SolidColorBrush* mp_Brush;
+
+		Vec2f getTextCenter(D2D1_RECT_F& rect)const;
+		Vec2f getTextSize(D2D1_RECT_F& rect)const;
 	};
-
-
-
 }

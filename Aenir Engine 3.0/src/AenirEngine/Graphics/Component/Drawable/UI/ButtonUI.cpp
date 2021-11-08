@@ -3,7 +3,10 @@
 #include "Core\GlobalSettings.h"
 
 namespace Aen {
-	Vec2f ButtonUI::GetButtonSize(D2D1_RECT_F& rect)
+	Aen::ButtonUI::ButtonUI() : mp_WFactory(nullptr), mp_BCoder(nullptr), mp_FormatConverter(nullptr), mp_FrameDecode(nullptr), m_nr(-1)
+	{}
+
+	Vec2f ButtonUI::GetButtonSize(D2D1_RECT_F& rect)const
 	{
 		float buttonWidth = rect.right - rect.left;
 		float buttonHeight = rect.bottom - rect.top;
@@ -11,7 +14,7 @@ namespace Aen {
 		return Vec2f(buttonWidth, buttonHeight);
 	}
 
-	Vec2f ButtonUI::GetButtonCenter(D2D1_RECT_F& rect)
+	Vec2f ButtonUI::GetButtonCenter(D2D1_RECT_F& rect)const
 	{
 		float xCenter = rect.right - (GetButtonSize(rect).x / 2.f);
 		float yCenter = rect.bottom - (GetButtonSize(rect).y / 2.f);
@@ -53,9 +56,6 @@ namespace Aen {
 		}
 	}
 
-	Aen::ButtonUI::ButtonUI(): mp_WFactory (nullptr), mp_BCoder (nullptr),	mp_FormatConverter(nullptr), mp_FrameDecode(nullptr)
-	{}
-
 	Aen::ButtonUI::~ButtonUI()
 	{
 		for (int i = 0; i < m_buttonData.size(); i++)
@@ -83,12 +83,14 @@ namespace Aen {
 		//top:  Top left vertex Y Pos
 		//right: Bottom right vertex X Pos
 		//bottom: Bottom right vertex Y Pos
+		m_gameSize.x = Aen::GlobalSettings::GetWindow()->GetSize().x;
+		m_gameSize.y = Aen::GlobalSettings::GetWindow()->GetSize().y;
 
 		ASSERT_HR(CoInitializeEx(NULL, COINIT_MULTITHREADED));
 		ASSERT_HR(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)(&mp_WFactory)));
 	}
 
-	void Aen::ButtonUI::AddButton(LPCWSTR path, int indX)
+	void Aen::ButtonUI::AddButton(LPCWSTR path)
 	{
 		ButtonData data;
 
@@ -97,21 +99,21 @@ namespace Aen {
 		ASSERT_HR(mp_BCoder->GetFrame(0, &mp_FrameDecode));
 		ASSERT_HR(mp_FormatConverter->Initialize(mp_FrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeMedianCut));
 		ASSERT_HR(m_target2D->CreateBitmapFromWicBitmap(mp_FormatConverter, NULL, &data.bmp));
+		m_nr++;
 
 		//tempData.name = name;
-		data.index = indX;
 		m_buttonData.push_back(data);
 	}
 
-	void ButtonUI::SetButtonPos(float x, float y, int indX)
-	{
-		m_buttonData.at(indX).rect.left = x;
-		m_buttonData.at(indX).rect.top = y;
-		m_buttonData.at(indX).rect.right = x;
-		m_buttonData.at(indX).rect.bottom = y;
+	void ButtonUI::SetButtonPos(float x, float y)
+	{	
+		m_buttonData.at(m_nr).rect.left			= x;
+		m_buttonData.at(m_nr).rect.right		= x;
+		m_buttonData.at(m_nr).rect.top			= y;
+		m_buttonData.at(m_nr).rect.bottom	= y;
 	}
 
-	void ButtonUI::SetButtonSize(float width, float height, int indX)
+	void ButtonUI::SetButtonSize(float width, float height)
 	{
 		//left: Top left vertex X Pos
 		//top:  Top left vertex Y Pos
@@ -120,15 +122,15 @@ namespace Aen {
 
 		//Skapa en RECT från mittpunkten
 		//Mittpunkten ändras varje gång du ändrar en punkts position så positionerna måste sparas innan du ändrar dem
-		float left = GetButtonCenter(m_buttonData.at(indX).rect).x - (width / 2.f);
-		float right = GetButtonCenter(m_buttonData.at(indX).rect).x + (width / 2.f);
-		float top = GetButtonCenter(m_buttonData.at(indX).rect).y - (height / 2.f);
-		float bottom = GetButtonCenter(m_buttonData.at(indX).rect).y + (height / 2.f);
+		float left = GetButtonCenter(m_buttonData.at(m_nr).rect).x - (width / 2.f);
+		float right = GetButtonCenter(m_buttonData.at(m_nr).rect).x + (width / 2.f);
+		float top = GetButtonCenter(m_buttonData.at(m_nr).rect).y - (height / 2.f);
+		float bottom = GetButtonCenter(m_buttonData.at(m_nr).rect).y + (height / 2.f);
 
-		m_buttonData.at(indX).rect.left = left;
-		m_buttonData.at(indX).rect.right = right;
-		m_buttonData.at(indX).rect.top = top;
-		m_buttonData.at(indX).rect.bottom = bottom;
+		m_buttonData.at(m_nr).rect.left			= left;
+		m_buttonData.at(m_nr).rect.right		= right;
+		m_buttonData.at(m_nr).rect.top			= top;
+		m_buttonData.at(m_nr).rect.bottom	= bottom;
 	}
 
 	std::vector<ButtonData> ButtonUI::GetData() const
@@ -161,7 +163,7 @@ namespace Aen {
 			float buttonWidth = GetButtonSize(m_tempData.at(index).rect).x + addX;
 			float buttonHeight = GetButtonSize(m_tempData.at(index).rect).y + addY;
 
-			SetButtonSize(buttonWidth, buttonHeight, index);
+			SetButtonSize(buttonWidth, buttonHeight);
 		}
 		else {
 			m_buttonData.at(index).rect = temp.rect;

@@ -48,10 +48,10 @@ namespace Aen {
 
     void Aen::Picture::SetPicPos(float x, float y, int indX)
     {
-        m_pictureData.at(indX).rect.left = x;
-        m_pictureData.at(indX).rect.top = y;
-        m_pictureData.at(indX).rect.right = x;
-        m_pictureData.at(indX).rect.bottom = y;
+        m_pictureData.at(indX).rect.left        = x;
+        m_pictureData.at(indX).rect.right      = x;
+        m_pictureData.at(indX).rect.top        = y;
+        m_pictureData.at(indX).rect.bottom  = y;
     }
 
     void Aen::Picture::SetPicSize(float width, float height, int indX)

@@ -18,6 +18,7 @@ namespace Aen {
 	{
 	private:
 		std::vector<PictureData> m_pictureData;
+		Vec2f m_gameSize;
 
 		IWICImagingFactory* mp_WFactory;
 		IWICBitmapDecoder* mp_BCoder;

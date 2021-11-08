@@ -47,14 +47,13 @@ void GameEnd::Initialize()
 	// ----------------------------- UI -------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Menu.png"), 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(700.f, 800.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Menu.png"));
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(700.f, 800.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Quit.png"), 1);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(1200.f, 800, 1);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Quit.png"));
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(1200.f, 800);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GameOver.png"), 0);
