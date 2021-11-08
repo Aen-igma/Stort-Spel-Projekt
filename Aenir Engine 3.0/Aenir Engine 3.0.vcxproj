@@ -257,6 +257,8 @@
     <ClCompile Include="src\AenirEngine\Importer\AssimpImporter.cpp" />
     <ClCompile Include="src\AenirEngine\LevelEditor\ImGuiImporter.cpp" />
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp" />
+    <ClCompile Include="src\AenirEngine\LevelGeneration\LevelGenerator.cpp" />
+    <ClCompile Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.cpp" />
     <ClCompile Include="src\AenirEngine\LevelImporter.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
@@ -341,6 +343,8 @@
     <ClInclude Include="src\AenirEngine\LevelEditor\ImGuiImporter.h" />
     <ClInclude Include="src\AenirEngine\LevelEditor\ImguiType.h" />
     <ClInclude Include="src\AenirEngine\LevelExporter.h" />
+    <ClInclude Include="src\AenirEngine\LevelGeneration\LevelGenerator.h" />
+    <ClInclude Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.h" />
     <ClInclude Include="src\AenirEngine\LevelHeader.h" />
     <ClInclude Include="src\AenirEngine\LevelImporter.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h" />

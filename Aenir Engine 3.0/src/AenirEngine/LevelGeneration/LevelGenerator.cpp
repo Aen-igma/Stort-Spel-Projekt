@@ -541,6 +541,15 @@ namespace Aen
 		m_mapTheme = theme;
 	}
 
+	void LevelGenerator::CleanMap()
+	{
+		for (int y = 0; y < mapSize; y++) {
+			for (int x = 0; x < mapSize; x++) {
+
+			}
+		}
+	}
+
 
 	Room::Room()
 	{

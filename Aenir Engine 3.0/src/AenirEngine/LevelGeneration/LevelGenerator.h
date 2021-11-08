@@ -164,5 +164,7 @@ namespace Aen {
 		void AddLoadedToGeneration();
 
 		void SetMapTheme(RoomTheme theme);
+
+		void CleanMap();
 	};
 }
