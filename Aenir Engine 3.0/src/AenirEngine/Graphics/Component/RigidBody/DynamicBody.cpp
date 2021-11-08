@@ -130,26 +130,31 @@ namespace Aen {
 	}
 
 	void DynamicBody::SetPos(const Vec3f& pos) {
-		px::PxTransform t(pos.x, pos.y, pos.z);
+		px::PxTransform t = mp_DynamicBody->getGlobalPose();
+		t.p = px::PxVec3(pos.x, pos.y, pos.z);
 		mp_DynamicBody->setGlobalPose(t);
 	}
 
 	void DynamicBody::SetPos(const float& x, const float& y, const float& z) {
-		px::PxTransform t(px::PxVec3(x, y, z));
+		px::PxTransform t = mp_DynamicBody->getGlobalPose();
+		t.p = px::PxVec3(x, y, z);
 		mp_DynamicBody->setGlobalPose(t);
 	}
 
 	void DynamicBody::SetRot(const Vec3f& rot) {
 		Vec4f tempRot = EulerToQuat(rot);
-		px::PxTransform t(px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w));
+		px::PxTransform t = mp_DynamicBody->getGlobalPose();
+		t.q = px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w);
 		mp_DynamicBody->setGlobalPose(t);
 	}
 
 	void DynamicBody::SetRot(const float& p, const float& y, const float& r) {
 		Vec4f tempRot = EulerToQuat(p, y, r);
-		px::PxTransform t(px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w));
+		px::PxTransform t = mp_DynamicBody->getGlobalPose();
+		t.q = px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w);
 		mp_DynamicBody->setGlobalPose(t);
 	}
+
 
 	const Vec3f DynamicBody::GetPos() {
 		px::PxTransform t = mp_DynamicBody->getGlobalPose();

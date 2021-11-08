@@ -101,24 +101,28 @@ namespace Aen {
 	}
 
 	void StaticBody::SetPos(const Vec3f& pos) {
-		px::PxTransform t(pos.x, pos.y, pos.z);
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		t.p = px::PxVec3(pos.x, pos.y, pos.z);
 		mp_StaticBody->setGlobalPose(t);
 	}
 
 	void StaticBody::SetPos(const float& x, const float& y, const float& z) {
-		px::PxTransform t(px::PxVec3(x, y, z));
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		t.p = px::PxVec3(x, y, z);
 		mp_StaticBody->setGlobalPose(t);
 	}
 
 	void StaticBody::SetRot(const Vec3f& rot) {
 		Vec4f tempRot = EulerToQuat(rot);
-		px::PxTransform t(px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w));
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		t.q = px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w);
 		mp_StaticBody->setGlobalPose(t);
 	}
 
 	void StaticBody::SetRot(const float& p, const float& y, const float& r) {
 		Vec4f tempRot = EulerToQuat(p, y, r);
-		px::PxTransform t(px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w));
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		t.q = px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w);
 		mp_StaticBody->setGlobalPose(t);
 	}
 
