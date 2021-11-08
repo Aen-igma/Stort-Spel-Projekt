@@ -300,6 +300,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Component.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSComponent.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\Picture.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.h" />

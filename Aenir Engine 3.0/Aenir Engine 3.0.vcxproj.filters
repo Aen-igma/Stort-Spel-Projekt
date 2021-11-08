@@ -228,15 +228,6 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp">
       <Filter>Source Files\ThirdParty\ImGui</Filter>
     </ClCompile>
@@ -260,12 +251,6 @@
     </ClCompile>
     <ClCompile Include="src\AenirEngine\LevelImporter.cpp">
       <Filter>Source Files\LevelEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\LevelGeneration\LevelGenerator.cpp">
-      <Filter>Source Files\LevelGeneration</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.cpp">
-      <Filter>Source Files\LevelGeneration</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.cpp">
       <Filter>Source Files</Filter>
@@ -313,6 +298,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\LevelEditor\ImGuiImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -497,15 +485,6 @@
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\RWTexture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\RigidBody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysXWrap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h">
       <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
@@ -541,12 +520,6 @@
     </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Header Files\LevelEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\LevelGeneration\LevelGenerator.h">
-      <Filter>Header Files\LevelGeneration</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.h">
-      <Filter>Header Files\LevelGeneration</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.h">
       <Filter>Header Files</Filter>
@@ -603,6 +576,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelEditor\ImguiType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
