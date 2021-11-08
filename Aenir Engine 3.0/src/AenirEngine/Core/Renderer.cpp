@@ -38,7 +38,7 @@ namespace Aen {
 			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
 				throw;
 
-		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32G32B32A32_FLOAT);
+		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32_FLOAT);
 		m_opaqueLayout.Create(m_opaqueVS);
 		m_UAVBackBuffer.Create(m_backBuffer);
 
@@ -56,7 +56,7 @@ namespace Aen {
 
 		uint32_t size = m_dispatchInfo.GetData().numThreads.x * m_dispatchInfo.GetData().numThreads.y;
 		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
-		m_lGrid.Create(m_dispatchInfo.GetData().numThreads, DXGI_FORMAT_R32G32_UINT);
+		m_lGrid.Create(m_dispatchInfo.GetData().numThreads, DXGI_FORMAT_R32_UINT);
 	}
 
 	void Renderer::Render() {

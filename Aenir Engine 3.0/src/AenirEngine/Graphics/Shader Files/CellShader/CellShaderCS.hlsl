@@ -63,8 +63,8 @@ Texture2D depthNormalMap	: NORMALMAP		: register(t2);
 Texture2D depthMap			: DEPTHMAP		: register(t3);
 Texture2D glowMap			: GLOWMAP		: register(t4);
 
-RWTexture2D<unorm float4> outputMap : register(u0);
-RWTexture2D<float4> finalMap : register(u1);
+RWTexture2D<float> outputMap : register(u0);
+RWTexture2D<float> finalMap : register(u1);
 
 struct CS_Input {
 	uint3 gId : SV_GroupID;

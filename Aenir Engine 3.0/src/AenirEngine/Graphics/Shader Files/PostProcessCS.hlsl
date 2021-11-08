@@ -21,7 +21,7 @@ static float2 sPoint[9] = {
 };
 
 Texture2D finalMap : register(t0);
-RWTexture2D<unorm float4> outputMap : register(u0);
+RWTexture2D<float> outputMap : register(u0);
 SamplerState wrapSampler : register(s0);
 
 

@@ -57,7 +57,7 @@ struct CS_Input {
 };
 
 RWStructuredBuffer<uint> LightIndexList : register(u0);
-RWTexture2D<uint2> LightGrid : register(u1);
+RWTexture2D<uint> LightGrid : register(u1);
 
 StructuredBuffer<Light> Aen_SB_Light : register(t0);
 Texture2D depthMap : DEPTHMAP : register(t1);
