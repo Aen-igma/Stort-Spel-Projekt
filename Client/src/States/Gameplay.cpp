@@ -33,15 +33,15 @@ void Gameplay::Initialize()
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png"), 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(220.f, 60.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png")); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(220.f, 60.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f);
 
 	//m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Kill All Enemies");
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Kill All Enemies"); //0
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 100.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
 

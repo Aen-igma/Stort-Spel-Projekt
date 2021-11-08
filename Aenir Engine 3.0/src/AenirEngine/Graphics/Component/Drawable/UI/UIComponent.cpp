@@ -61,19 +61,19 @@ namespace Aen {
 
     //----------------------	Just pictures	----------------------------//
 
-    void UIComponent::AddPicture(const std::wstring& dir, int indX)
+    void UIComponent::AddPicture(const std::wstring& dir)
     {
-        m_picture.AddPicture(dir.c_str(), indX);
+        m_picture.AddPicture(dir.c_str());
     }
 
-    void UIComponent::SetPicPos(float x, float y, int indX)
+    void UIComponent::SetPicPos(float x, float y)
     {
-        m_picture.SetPicPos(x, y, indX);
+        m_picture.SetPicPos(x, y);
     }
 
-    void UIComponent::SetPicSize(float width, float height, int indX)
+    void UIComponent::SetPicSize(float width, float height)
     {
-        m_picture.SetPicSize(width, height, indX);
+        m_picture.SetPicSize(width, height);
     }
 
     void UIComponent::LessenPic(float width, int indX)

@@ -32,9 +32,9 @@ namespace Aen {
 		void SetTextPos(float x, float y);
 
 		//----------------------	Just pictures	----------------------------//
-		void AddPicture(const std::wstring& dir, int indX);
-		void SetPicPos(float x, float y, int indX);
-		void SetPicSize(float width, float height, int indX);
+		void AddPicture(const std::wstring& dir);
+		void SetPicPos(float x, float y);
+		void SetPicSize(float width, float height);
 		void LessenPic(float width, int indX);
 		
 		friend class ComponentHandler;

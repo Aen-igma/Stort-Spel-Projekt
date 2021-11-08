@@ -56,9 +56,9 @@ void GameEnd::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GameOver.png"), 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(1000.f, 200.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1200.f, 300.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GameOver.png"));
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(1000.f, 200.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1200.f, 300.f);
 
 	//Text
 	//m_UI->GetComponent<Aen::UIComponent>().AddText();
