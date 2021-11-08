@@ -44,9 +44,9 @@ namespace Aen {
 
     //----------------------	Text	----------------------------//
 
-    void Aen::UIComponent::AddText(LPCWSTR text)
+    void Aen::UIComponent::AddText(LPCWSTR text, LPCWSTR font)
     {
-        m_text.AddText(text);
+        m_text.AddText(text, font);
     }
 
     void UIComponent::SetTextSize(float width, float height)
@@ -85,7 +85,6 @@ namespace Aen {
 	void UIComponent::Update()
 	{
         for (int i = 0; i < m_button.GetData().size(); i++) {
-
             m_button.Update(i);
 		}
 	}

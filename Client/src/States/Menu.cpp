@@ -64,11 +64,11 @@ void MainMenu::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 	
 	//Text
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"test");
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"test", L"Arial Black");
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(300.f,100.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Ass");
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Ass", L"Arial Black");
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(500.f, 100.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
 

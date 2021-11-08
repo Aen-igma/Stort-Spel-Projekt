@@ -25,6 +25,9 @@ namespace Aen {
 		IWICBitmapDecoder* mp_BCoder;
 		IWICFormatConverter* mp_FormatConverter;
 		IWICBitmapFrameDecode* mp_FrameDecode;
+
+		void SetButtonPos(float x, float y, int indX);
+		void SetButtonSize(float width, float height, int indX);
 	public:
 		ButtonUI();
 		~ButtonUI();

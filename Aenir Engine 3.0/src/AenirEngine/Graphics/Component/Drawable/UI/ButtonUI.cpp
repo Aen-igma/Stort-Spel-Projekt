@@ -3,6 +3,7 @@
 #include "Core\GlobalSettings.h"
 
 namespace Aen {
+
 	Aen::ButtonUI::ButtonUI() : mp_WFactory(nullptr), mp_BCoder(nullptr), mp_FormatConverter(nullptr), mp_FrameDecode(nullptr), m_nr(-1)
 	{}
 
@@ -24,6 +25,26 @@ namespace Aen {
 		//center.y = GetButtonSize(button).y / 2.f;
 
 		return Vec2f(xCenter, yCenter);
+	}
+
+	void ButtonUI::SetButtonPos(float x, float y, int indX)
+	{
+		m_buttonData.at(indX).rect.left = x;
+		m_buttonData.at(indX).rect.right = x;
+		m_buttonData.at(indX).rect.top = y;
+		m_buttonData.at(indX).rect.bottom = y;
+	}
+	void ButtonUI::SetButtonSize(float width, float height, int indX)
+	{
+		float left = GetButtonCenter(m_buttonData.at(indX).rect).x - (width / 2.f);
+		float right = GetButtonCenter(m_buttonData.at(indX).rect).x + (width / 2.f);
+		float top = GetButtonCenter(m_buttonData.at(indX).rect).y - (height / 2.f);
+		float bottom = GetButtonCenter(m_buttonData.at(indX).rect).y + (height / 2.f);
+
+		m_buttonData.at(indX).rect.left = left;
+		m_buttonData.at(indX).rect.right = right;
+		m_buttonData.at(indX).rect.top = top;
+		m_buttonData.at(indX).rect.bottom = bottom;
 	}
 
 	bool  ButtonUI::Intersect(int index)
@@ -107,7 +128,7 @@ namespace Aen {
 
 	void ButtonUI::SetButtonPos(float x, float y)
 	{	
-		m_buttonData.at(m_nr).rect.left			= x;
+		m_buttonData.at(m_nr).rect.left		= x;
 		m_buttonData.at(m_nr).rect.right		= x;
 		m_buttonData.at(m_nr).rect.top			= y;
 		m_buttonData.at(m_nr).rect.bottom	= y;
@@ -163,7 +184,7 @@ namespace Aen {
 			float buttonWidth = GetButtonSize(m_tempData.at(index).rect).x + addX;
 			float buttonHeight = GetButtonSize(m_tempData.at(index).rect).y + addY;
 
-			SetButtonSize(buttonWidth, buttonHeight);
+			SetButtonSize(buttonWidth, buttonHeight, index);
 		}
 		else {
 			m_buttonData.at(index).rect = temp.rect;
