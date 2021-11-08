@@ -277,6 +277,41 @@ namespace Aen {
 
 	}
 
+	void Animation::GetPose(Animation& anim, Bones& skele, float dt, std::vector<Mat4f>& output, Mat4f& parentTrans, Mat4f& globalInverseTrans)
+	{
+		KeyFrameData& keyFrameData = anim.m_keyFrames[skele.boneName];
+		dt = fmod(dt, anim.m_Duration);
+
+		std::pair<UINT, float> fp;
+
+		// Position
+		fp.first = GetTimeFraction(keyFrameData.timeStampPos, dt).x;
+		fp.second = GetTimeFraction(keyFrameData.timeStampPos, dt).y;
+
+		Vec3f position1 = keyFrameData.position[fp.first - 1];
+		Vec3f position2 = keyFrameData.position[fp.first];
+		Vec3f position = position1 * (1.0 - fp.second) + position2 * fp.second;
+
+		// Rotation
+		fp.first = GetTimeFraction(keyFrameData.timeStampRot, dt).x;
+		fp.second = GetTimeFraction(keyFrameData.timeStampRot, dt).y;
+
+		Mat4f rotation1 = keyFrameData.rotation[fp.first - 1];
+		Mat4f rotation2 = keyFrameData.rotation[fp.first];
+		Mat4f rotation = rotation1 * (1.0 - fp.second) + rotation2 * fp.second;
+
+		Mat4f positionMatrix = positionMatrix.identity;
+		positionMatrix = positionMatrix * position;				// vec3f
+
+		Mat4f localTransform = positionMatrix * rotation;
+		Mat4f globalTransform = parentTrans * localTransform;
+
+		output[skele.boneID] = globalInverseTrans * globalTransform * skele.offsetMatrix;
+
+		for(Bones& child : skele.)
+
+	}
+
 	Animation::~Animation()
 	{
 	}
