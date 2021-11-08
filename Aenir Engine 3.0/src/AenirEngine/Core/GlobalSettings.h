@@ -70,8 +70,9 @@ namespace Aen {
 
 		GlobalSettings();
 
-		static void Initialize(Window& window) {
+		static void Initialize(Window& window, Renderer* renderer) {
 			m_pWindow = &window;
+			m_pRenderer = renderer;
 
 			// -------------------------- Initialize Default ShaderModel -------------------------- //
 
@@ -155,6 +156,8 @@ namespace Aen {
 
 		static ImGuiHandler* mp_guiHandler;
 		static bool m_vSync;
+
+		static Renderer* m_pRenderer;
 
 	};
 

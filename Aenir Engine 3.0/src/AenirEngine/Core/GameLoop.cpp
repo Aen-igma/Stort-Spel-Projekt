@@ -20,7 +20,7 @@ namespace Aen {
 		// Initialize physX
 		PhysicsHandler::Initialize(100, 981);
 
-		GlobalSettings::Initialize(m_app->m_window);
+		GlobalSettings::Initialize(m_app->m_window, m_renderer);
 
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();

@@ -165,9 +165,8 @@ namespace Aen {
 
 		// PostProcess
 
-		/*m_dispatchInfo.BindBuffer<CShader>(0u);
-		RenderSystem::BindShaderResourceView<CShader>(0u, m_UAVFinal);
-		RenderSystem::BindSamplers<CShader>(0u, m_wrapSampler);
+		m_dispatchInfo.BindBuffer<CShader>(0u);
+		RenderSystem::BindShaderResourceView<CShader>(0u, m_lGrid);
 		RenderSystem::BindUnOrderedAccessView(0u, m_UAVBackBuffer);
 		RenderSystem::BindShader(m_postProcessCS);
 
@@ -175,7 +174,7 @@ namespace Aen {
 
 		RenderSystem::UnBindShader<CShader>();
 		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
-		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);*/
+		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);
 
 		// Present
 		RenderSystem::Present();

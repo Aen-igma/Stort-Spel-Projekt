@@ -20,21 +20,24 @@ static float2 sPoint[9] = {
     float2(-1.f, -1.f), float2(0.f, -1.f), float2(1.f, -1.f)
 };
 
-Texture2D finalMap : register(t0);
+Texture2D<uint2> fp : register(t0);
 RWTexture2D<unorm float4> outputMap : register(u0);
-SamplerState wrapSampler : register(s0);
 
 
-float Luminance(float3 color) {
-    return dot(color, float3(0.299f, 0.587f, 0.114f));
-}
+//float Luminance(float3 color) {
+//    return dot(color, float3(0.299f, 0.587f, 0.114f));
+//}
 
 [numthreads(32, 32, 1)]
 void main(CS_Input input) {
 
     uint2 uv = input.dtId.xy;
+    uint2 c = fp[uv / 16];
+    float d = c.y / 10.f;
+    
+    outputMap[uv] += lerp(float4(0.f, 1.f, 0.f, 1.f), float4(1.f, 0.f, 0.f, 1.f), d); 
 
-    const int radius = 8;
+    /*const int radius = 8;
     float3 Glow = float3(0.f, 0.f, 0.f);
     float s = 0.05f;
     float o = 6.5f;
@@ -51,5 +54,5 @@ void main(CS_Input input) {
         }
     }
     
-    outputMap[uv] += float4(sqrt(Glow) * (1.f / (float)radius), 1.f);
+    outputMap[uv] += float4(sqrt(Glow) * (1.f / (float)radius), 1.f);*/
 }
