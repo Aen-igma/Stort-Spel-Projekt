@@ -223,6 +223,8 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Component.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\ComponentHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\ParticleShader.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSComponent.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\Picture.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.cpp" />
@@ -300,6 +302,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Component.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\ComponentHandler.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Drawable.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\ParticleShader.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSComponent.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\ButtonUI.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\Picture.h" />
@@ -375,6 +378,40 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\UI\UITextHolder.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\ComputeShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\GeometryShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>

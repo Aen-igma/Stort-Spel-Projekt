@@ -16,7 +16,7 @@ Aen::ParticleSystemComponent::~ParticleSystemComponent()
 {
 }
 
-bool Aen::ParticleSystemComponent::Initialize(ID3D11Device*& device, std::wstring textureFilename)
+bool Aen::ParticleSystemComponent::Initialize(ComDevice*& device, std::wstring textureFilename)
 {
 	bool result;
 	result = LoadTexture(device,textureFilename);
@@ -47,13 +47,13 @@ void Aen::ParticleSystemComponent::Shutdown()
 	return;
 }
 
-bool Aen::ParticleSystemComponent::Frame(float frameTime, ID3D11DeviceContext*& deviceContext)
+bool Aen::ParticleSystemComponent::Frame(float frameTime, ComDeviceContext*& deviceContext)
 {
 	EmitParticles(frameTime);
 	return true;
 }
 
-void Aen::ParticleSystemComponent::Render(ID3D11DeviceContext*& deviceContext)
+void Aen::ParticleSystemComponent::Render(ComDeviceContext*& deviceContext)
 {
 	RenderBuffers(deviceContext);
 	return;
@@ -90,11 +90,11 @@ float Aen::ParticleSystemComponent::GetRunTime()
 	return this->m_runTime;
 }
 
-bool Aen::ParticleSystemComponent::UpdateBuffers(ID3D11DeviceContext*& deviceContext)
+bool Aen::ParticleSystemComponent::UpdateBuffers(ComDeviceContext*& deviceContext)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedResource{};
 	HRESULT result;
-	result = deviceContext->Map(this->m_directOutputBuffer, 0, D3D11_MAP_READ_WRITE, 0, &mappedResource);
+	result = deviceContext->Get()->Map(this->m_directOutputBuffer, 0, D3D11_MAP_READ_WRITE, 0, &mappedResource);
 	if (FAILED(result))
 	{
 		return false;
@@ -103,7 +103,7 @@ bool Aen::ParticleSystemComponent::UpdateBuffers(ID3D11DeviceContext*& deviceCon
 
 	verticesPtr = (m_Particle*)mappedResource.pData;
 	memcpy(verticesPtr, (void*)this->m_particleList, sizeof(m_Particle) * this->m_maxParticles);
-	deviceContext->Unmap(this->m_directOutputBuffer, 0);
+	deviceContext->Get()->Unmap(this->m_directOutputBuffer, 0);
 	return true;
 }
 
@@ -127,7 +127,7 @@ ID3D11UnorderedAccessView* const* Aen::ParticleSystemComponent::GetOutputUAV() c
 	return &this->m_UAV;
 }
 
-bool Aen::ParticleSystemComponent::LoadTexture(ID3D11Device*& device, std::wstring filename)
+bool Aen::ParticleSystemComponent::LoadTexture(ComDevice*& device, std::wstring filename)
 {
 	return false;
 }
@@ -151,7 +151,7 @@ bool Aen::ParticleSystemComponent::InitializeParticleSystem()
 	//Initalizing all particles at start
 	for (i = 0; i < m_maxParticles; i++)
 	{
-		m_particleList[i].m_alive = true;
+		m_particleList[i].m_active = true;
 	}
 	this->m_currentParticleCount = 0;
 	this->m_accumulatedTime = 0.0f;
@@ -168,7 +168,7 @@ void Aen::ParticleSystemComponent::ShutdownParticleSystem()
 	return;
 }
 
-bool Aen::ParticleSystemComponent::InitializeBuffers(ID3D11Device*& device)
+bool Aen::ParticleSystemComponent::InitializeBuffers(ComDevice*& device)
 {
 	unsigned long* indices;
 	int i;
@@ -187,7 +187,7 @@ bool Aen::ParticleSystemComponent::InitializeBuffers(ID3D11Device*& device)
 	dobd.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	D3D11_SUBRESOURCE_DATA subData;
 	subData.pSysMem = this->m_particleList;
-	result = device->CreateBuffer(&dobd, 0, &this->m_directOutputBuffer);
+	result = device->Get()->CreateBuffer(&dobd, 0, &this->m_directOutputBuffer);
 	if (FAILED(result))
 	{
 		return false;
@@ -201,7 +201,7 @@ bool Aen::ParticleSystemComponent::InitializeBuffers(ID3D11Device*& device)
 	uavd.Buffer.Flags = 0;
 	uavd.Buffer.NumElements = this->m_maxParticles;
 
-	result = device->CreateUnorderedAccessView(this->m_directOutputBuffer, &uavd, &this->m_UAV);
+	result = device->Get()->CreateUnorderedAccessView(this->m_directOutputBuffer, &uavd, &this->m_UAV);
 	if (FAILED(result))
 	{
 		return false;
@@ -216,7 +216,7 @@ bool Aen::ParticleSystemComponent::InitializeBuffers(ID3D11Device*& device)
 	desc.Buffer.FirstElement = 0;
 	desc.Buffer.NumElements = this->m_maxParticles;
 
-	result = device->CreateShaderResourceView(this->m_directOutputBuffer, &desc, &this->m_outputSRV);
+	result = device->Get()->CreateShaderResourceView(this->m_directOutputBuffer, &desc, &this->m_outputSRV);
 	if (FAILED(result))
 	{
 		return false;
@@ -230,7 +230,7 @@ bool Aen::ParticleSystemComponent::InitializeBuffers(ID3D11Device*& device)
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 
-	result = device->CreateBuffer(&cb, NULL, &this->cRuntimeBuffer);
+	result = device->Get()->CreateBuffer(&cb, NULL, &this->cRuntimeBuffer);
 	if (FAILED(result))
 	{
 		return false;
@@ -282,15 +282,15 @@ void Aen::ParticleSystemComponent::EmitParticles(float frameTime)
 
 		float randVelocity = this->m_particleVelocity + (((float)rand() - (float)rand()) / RAND_MAX) * this->m_particleVelocityVariation;
 		index = 0;
-		//m_particleList[this->m_currentParticleCount].position[0] = randPos.x + this->m_systemPos.x;
-		//m_particleList[this->m_currentParticleCount].position[1] = randPos.y + this->m_systemPos.y;
-		//m_particleList[this->m_currentParticleCount].position[2] = randPos.z + this->m_systemPos.z;
-		//m_particleList[this->m_currentParticleCount].m_velocity = randVelocity;
-		//m_particleList[this->m_currentParticleCount].color[0] = randColour.x;
-		//m_particleList[this->m_currentParticleCount].color[1] = randColour.y;
-		//m_particleList[this->m_currentParticleCount].color[2] = randColour.z;
-		//m_particleList[this->m_currentParticleCount].m_color[3] = 1.0f;
-		m_particleList[this->m_currentParticleCount].m_alive = true;
+		m_particleList[this->m_currentParticleCount].m_pos[0] = randPos.x + this->m_systemPos.x;
+		m_particleList[this->m_currentParticleCount].m_pos[1] = randPos.y + this->m_systemPos.y;
+		m_particleList[this->m_currentParticleCount].m_pos[2] = randPos.z + this->m_systemPos.z;
+		m_particleList[this->m_currentParticleCount].m_velocity = randVelocity;
+		m_particleList[this->m_currentParticleCount].m_color[0] = randColour.x;
+		m_particleList[this->m_currentParticleCount].m_color[1] = randColour.y;
+		m_particleList[this->m_currentParticleCount].m_color[2] = randColour.z;
+		m_particleList[this->m_currentParticleCount].m_color[3] = 1.0f;
+		m_particleList[this->m_currentParticleCount].m_active = true;
 		found = false;
 	}
 	return;
@@ -306,12 +306,12 @@ void Aen::ParticleSystemComponent::UpdateParticles(float frameTime)
 	return;
 }
 
-void Aen::ParticleSystemComponent::RenderBuffers(ID3D11DeviceContext*& deviceContext)
+void Aen::ParticleSystemComponent::RenderBuffers(ComDeviceContext*& deviceContext)
 {
 	UpdateBuffers(deviceContext);
 	unsigned int stride = 0;
 	unsigned int offset = 0;
 	ID3D11Buffer* unbound[] = { NULL };
-	deviceContext->IASetVertexBuffers(4, 1, unbound, &stride, &offset);
+	deviceContext->Get()->IASetVertexBuffers(4, 1, unbound, &stride, &offset);
 	return;
 }

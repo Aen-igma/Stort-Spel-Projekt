@@ -303,6 +303,12 @@
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\ParticleShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -584,6 +590,9 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\ParticleShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\OpaqueVS.hlsl">
@@ -596,6 +605,10 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CollisionPS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\VertexShader.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\GeometryShader.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\ComputeShader.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\PixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">

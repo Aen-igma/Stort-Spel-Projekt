@@ -18,7 +18,7 @@ Aen::ParticleShaderComponent::~ParticleShaderComponent()
 
 
 
-bool Aen::ParticleShaderComponent::Initialize(ID3D11Device*& device)
+bool Aen::ParticleShaderComponent::Initialize(ComDevice*& device)
 {
 	bool result;
 	result = InitializeShader(device);
@@ -35,12 +35,12 @@ void Aen::ParticleShaderComponent::Shutdown()
 	return;
 }
 
-bool Aen::ParticleShaderComponent::Render(ID3D11DeviceContext*& deviceContext, const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix, const DirectX::XMMATRIX& projectionMatrix, float runtime, ID3D11ShaderResourceView*& texture, ParticleSystemComponent& particleSystem)
+bool Aen::ParticleShaderComponent::Render(ComDeviceContext*& deviceContext, const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix, const DirectX::XMMATRIX& projectionMatrix, float runtime, ID3D11ShaderResourceView*& texture, ParticleSystemComponent& particleSystem)
 {
 	return false;
 }
 
-bool Aen::ParticleShaderComponent::InitializeShader(ID3D11Device*& device)
+bool Aen::ParticleShaderComponent::InitializeShader(ComDevice*& device)
 {
 	return false;
 }
@@ -49,17 +49,17 @@ void Aen::ParticleShaderComponent::ShutdownShader()
 {
 	if (this->m_samplerState)
 	{
-		this->m_samplerState->Release();
+		this->m_samplerState->Get()->Release();
 		this->m_samplerState = 0;
 	}
 	if (this->m_matrixBuffer)
 	{
-		this->m_matrixBuffer->Release();
+		this->m_matrixBuffer->Get()->Release();
 		this->m_matrixBuffer = 0;
 	}
 	if (this->m_layout)
 	{
-		this->m_layout->Release();
+		this->m_layout->Get()->Release();
 		this->m_layout = 0;
 	}
 	if (m_vertexShader)
@@ -85,28 +85,52 @@ void Aen::ParticleShaderComponent::OutputShaderErrorMessage(ID3D10Blob* errorMes
 {
 }
 
-bool Aen::ParticleShaderComponent::SetShaderParameters(ID3D11DeviceContext*& deviceContext, ParticleSystemComponent& particleSystem, float runtime, const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix, const DirectX::XMMATRIX& projectionMatrix, ID3D11ShaderResourceView*& texture)
+bool Aen::ParticleShaderComponent::SetShaderParameters(ComDeviceContext*& deviceContext, ParticleSystemComponent& particleSystem, float runtime, const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix, const DirectX::XMMATRIX& projectionMatrix, ID3D11ShaderResourceView*& texture)
 {
-	return false;
+	HRESULT result;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	result = deviceContext->Get()->Map(m_matrixBuffer->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+	{
+		return false;
+	}
+	m_MatrixBufferType* dataPtr = (m_MatrixBufferType*)mappedResource.pData;
+
+	dataPtr->world = worldMatrix;
+	dataPtr->view = viewMatrix;
+	dataPtr->projection = projectionMatrix;
+	deviceContext->Get()->Unmap(m_matrixBuffer->Get(), 0);
+
+	//____________________________ CS RUNTIME ____________________________//
+	CSInputBuffer inputData;
+	inputData.m_runtime = { runtime, 0.0f, 0.0f, 0.0f };
+	inputData.m_particleCount = { (float)particleSystem.GetParticleCount(), 0.0f, 0.0f, 0.0f };
+	D3D11_MAPPED_SUBRESOURCE MS_DeltaTime;
+	deviceContext->Get()->Map(particleSystem.GetConstantRunTimeBufferPtr(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MS_DeltaTime);
+	CSInputBuffer* lInputDataPtr = (CSInputBuffer*)MS_DeltaTime.pData;
+	lInputDataPtr->m_runtime = inputData.m_runtime;
+	lInputDataPtr->m_particleCount = inputData.m_particleCount;
+	deviceContext->Get()->Unmap(particleSystem.GetConstantRunTimeBufferPtr(), 0);
+	return true;
 }
 
-void Aen::ParticleShaderComponent::RenderShader(ID3D11DeviceContext*& deviceContext)
+void Aen::ParticleShaderComponent::RenderShader(ComDeviceContext*& deviceContext)
 {
-	deviceContext->VSSetShader(this->m_vertexShader, NULL, 0);
-	deviceContext->GSSetShader(this->m_geometryShader, NULL, 0);
-	deviceContext->PSSetShader(this->m_pixelShader,NULL,0);
+	deviceContext->Get()->VSSetShader(this->m_vertexShader, NULL, 0);
+	deviceContext->Get()->GSSetShader(this->m_geometryShader, NULL, 0);
+	deviceContext->Get()->PSSetShader(this->m_pixelShader,NULL,0);
 	return;
 }
 
-void Aen::ParticleShaderComponent::UpdateComputeShader(ID3D11DeviceContext*& deviceContext, ParticleSystemComponent& particleSystem)
+void Aen::ParticleShaderComponent::UpdateComputeShader(ComDeviceContext*& deviceContext, ParticleSystemComponent& particleSystem)
 {
-	deviceContext->CSSetShader(this->m_computeShader,NULL,0);
-	deviceContext->CSSetConstantBuffers(0,1, particleSystem.GetConstantRunTimeBufferReference());
-	deviceContext->CSSetUnorderedAccessViews(0,1,particleSystem.GetOutputUAV(), NULL);
+	deviceContext->Get()->CSSetShader(this->m_computeShader,NULL,0);
+	deviceContext->Get()->CSSetConstantBuffers(0,1, particleSystem.GetConstantRunTimeBufferReference());
+	deviceContext->Get()->CSSetUnorderedAccessViews(0,1,particleSystem.GetOutputUAV(), NULL);
 	
-	deviceContext->Dispatch((int)(particleSystem.GetMaxParticleCount() / 64.0f) + (particleSystem.GetMaxParticleCount() % 64 != 0), 1, 1);
+	deviceContext->Get()->Dispatch((int)(particleSystem.GetMaxParticleCount() / 64.0f) + (particleSystem.GetMaxParticleCount() % 64 != 0), 1, 1);
 
-	deviceContext->CSSetShader(NULL,NULL,0);
+	deviceContext->Get()->CSSetShader(NULL,NULL,0);
 	ID3D11UnorderedAccessView* unboundUAV[] = { NULL };
-	deviceContext->CSSetUnorderedAccessViews(0, 1, unboundUAV, NULL);
+	deviceContext->Get()->CSSetUnorderedAccessViews(0, 1, unboundUAV, NULL);
 }

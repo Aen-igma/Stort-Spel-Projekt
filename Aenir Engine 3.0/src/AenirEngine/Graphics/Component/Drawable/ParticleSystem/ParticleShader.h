@@ -10,11 +10,11 @@ namespace Aen
 		ParticleShaderComponent();
 		ParticleShaderComponent(const ParticleShaderComponent& other);
 		virtual ~ParticleShaderComponent();
-		void UpdateComputeShader(ID3D11DeviceContext*& deviceContext, ParticleSystemComponent& particleSystem);
+		void UpdateComputeShader(ComDeviceContext*& deviceContext, ParticleSystemComponent& particleSystem);
 
-		bool Initialize(ID3D11Device*& device);
+		bool Initialize(ComDevice*& device);
 		void Shutdown();
-		bool Render(ID3D11DeviceContext*& deviceContext, const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix,
+		bool Render(ComDeviceContext*& deviceContext, const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix,
 			const DirectX::XMMATRIX& projectionMatrix, float runtime, ID3D11ShaderResourceView*& texture, ParticleSystemComponent& particleSystem);
 
 	protected:
@@ -34,12 +34,12 @@ namespace Aen
 		ID3D11Buffer* m_matrixBuffer;
 		ID3D11SamplerState* m_samplerState;
 
-		bool InitializeShader(ID3D11Device*& device);
+		bool InitializeShader(ComDevice*& device);
 		void ShutdownShader();
 		void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename);
-		bool SetShaderParameters(ID3D11DeviceContext*& deviceContext, ParticleSystemComponent& particleSystem, float runtime, const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix,
+		bool SetShaderParameters(ComDeviceContext*& deviceContext, ParticleSystemComponent& particleSystem, float runtime, const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix,
 			const DirectX::XMMATRIX& projectionMatrix, ID3D11ShaderResourceView*& texture);
-		void RenderShader(ID3D11DeviceContext*& deviceContext);
+		void RenderShader(ComDeviceContext*& deviceContext);
 
 
 	};

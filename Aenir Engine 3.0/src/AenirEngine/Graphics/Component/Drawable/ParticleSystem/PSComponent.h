@@ -4,14 +4,11 @@
 
 struct m_Particle
 {
-	float m_color[4];
 	float m_pos[3];
-	float m_uv[2];
-	float m_life;
 	float m_velocity;
-	float m_size;
-	float m_alive;
-	DirectX::XMFLOAT3 pad;
+	float m_color[4];
+	float m_uv[2];
+	bool m_active;
 };
 
 struct CSInputBuffer
