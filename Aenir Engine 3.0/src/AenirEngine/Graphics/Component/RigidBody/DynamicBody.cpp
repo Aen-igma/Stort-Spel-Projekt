@@ -87,12 +87,14 @@ namespace Aen {
 				bounds.smVec = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_obb.Extents;
 
 		m_scale = bounds;
-		m_gType = StaticGeometryType::CUBE;
+		m_gType = DynamicGeometryType::CUBE;
 		px::PxTransform t = mp_DynamicBody->getGlobalPose();
 		RemoveRigid();
 
 		px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.z * 0.5f);
 		mp_DynamicBody = PxCreateDynamic(*mp_LocalPhysics, t, cube, *mp_Material, m_density);
+
+		PhysicsHandler::GetInstance()->AddActor(mp_DynamicBody);
 	}
 
 	void DynamicBody::SetAngularDamping(const float& damp) {

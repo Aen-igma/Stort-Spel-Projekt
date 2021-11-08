@@ -93,6 +93,8 @@ namespace Aen {
 
 		px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.z * 0.5f);
 		mp_StaticBody = PxCreateStatic(*mp_LocalPhysics, t, cube, *mp_Material);
+
+		PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
 	}
 
 
