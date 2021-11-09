@@ -170,7 +170,7 @@ namespace Aen {
 
 		meshDesc.triangles.count = localvPos.size()/3;
 		meshDesc.triangles.stride = 3 * sizeof(px::PxU32);
-		meshDesc.triangles.data = indices32;
+		//meshDesc.triangles.data = indices32;
 
 		//if (!Insert)
 		//{

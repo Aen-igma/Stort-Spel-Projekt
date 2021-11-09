@@ -95,6 +95,7 @@ namespace Aen {
 					for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
 
 						m_pMesh->m_vertices.BindBuffer();
+						m_pMesh->m_ibuffer.BindBuffer();
 
 						// Opaque pass
 
@@ -136,7 +137,8 @@ namespace Aen {
 
 								RenderSystem::ClearDepthStencilView(renderer.m_depthMap, false, true);
 								RenderSystem::SetDepthStencilState(renderer.m_writeStencil, 0xFF);
-								m_pMesh->m_vertices.Draw(m_pMesh->m_partitions[i].size, m_pMesh->m_partitions[i].offset);
+								//m_pMesh->m_vertices.Draw(m_pMesh->m_partitions[i].size, m_pMesh->m_partitions[i].offset);
+								m_pMesh->m_ibuffer.DrawIndexed();
 
 
 								// Per Object Post Process Pass
@@ -192,7 +194,8 @@ namespace Aen {
 					}
 
 					m_pMesh->m_vertices.BindBuffer();
-					m_pMesh->m_vertices.Draw();
+					//m_pMesh->m_vertices.Draw();
+					m_pMesh->m_ibuffer.DrawIndexed();
 				}
 		}
 	}

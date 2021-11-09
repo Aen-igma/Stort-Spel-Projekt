@@ -35,6 +35,7 @@ namespace Aen {
 		DirectX::BoundingOrientedBox m_obb;
 
 		VBuffer<Vertex> m_vertices;
+		IBuffer m_ibuffer;
 		std::vector<PartitionData> m_partitions;
 		std::unordered_map<std::string, uint32_t> m_meshMaterialName;
 		std::vector<DirectX::XMFLOAT3> m_vPos;
