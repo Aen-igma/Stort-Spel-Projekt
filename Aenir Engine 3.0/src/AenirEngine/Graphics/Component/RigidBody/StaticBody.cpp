@@ -167,26 +167,23 @@ namespace Aen {
 		meshDesc.points.count = localvPos.size();
 		meshDesc.points.stride = sizeof(DirectX::XMFLOAT3);
 		meshDesc.points.data = localvPos.data();
-
+		
 		meshDesc.triangles.count = localvPos.size()/3;
 		meshDesc.triangles.stride = 3 * sizeof(px::PxU32);
 		meshDesc.triangles.data = indices32;
 
-		//if (!Insert)
-		//{
-			px::PxDefaultMemoryOutputStream writeBuffer;
-			
-			bool status = PhysicsHandler::GetInstance()->GetCooking()->cookTriangleMesh(meshDesc, writeBuffer);
-			if (!status)
-				return NULL;
-			
-			px::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-			return mp_LocalPhysics->createTriangleMesh(readBuffer);
-		/*}
-		else
-		{
-			return PhysicsHandler::GetInstance()->GetCooking()->createTriangleMesh(meshDesc, mp_LocalPhysics->getPhysicsInsertionCallback());
-		}*/
+		#ifdef _DEBUG
+		bool res = PhysicsHandler::GetInstance()->GetCooking()->validateTriangleMesh(meshDesc);
+		PX_ASSERT(res);
+		#endif
+
+		px::PxDefaultMemoryOutputStream writeBuffer;
+		bool status = PhysicsHandler::GetInstance()->GetCooking()->cookTriangleMesh(meshDesc, writeBuffer);
+		if (!status)
+			return NULL;
+		px::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+		return mp_LocalPhysics->createTriangleMesh(readBuffer);
+		//return PhysicsHandler::GetInstance()->GetCooking()->createTriangleMesh(meshDesc, mp_LocalPhysics->getPhysicsInsertionCallback());
 	}
 
 	const Vec3f StaticBody::GetPos() {

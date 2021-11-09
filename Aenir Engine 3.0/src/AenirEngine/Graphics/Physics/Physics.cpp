@@ -44,7 +44,14 @@ namespace Aen {
 		mp_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *mp_Foundation, m_ToleranceScale, true, mp_Pvd);
 		if (!mp_Physics) throw("PxCreatePhysics Failed!");
 
-		mp_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *mp_Foundation, px::PxCookingParams(m_ToleranceScale));
+		// Speed Up Cooking time
+		px::PxCookingParams params(m_ToleranceScale);
+		// disable mesh cleaning - perform mesh validation on development configurations
+		params.meshPreprocessParams |= px::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
+		// disable edge precompute, edges are set for each triangle, slows contact generation
+		params.meshPreprocessParams |= px::PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
+
+		mp_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *mp_Foundation, params);
 		if (!mp_Cooking) throw("PxCreateCooking Failed!");
 
 		px::PxSceneDesc sceneDesc(mp_Physics->getTolerancesScale());
