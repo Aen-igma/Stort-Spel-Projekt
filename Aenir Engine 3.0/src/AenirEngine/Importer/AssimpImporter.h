@@ -4,6 +4,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "../AenirEngine/Graphics/Component/Animation/Animation.h"
 
 //#include"../AenirEngine/ThirdParty/assimp/include/assimp/Importer.hpp"
 //#include"../AenirEngine/ThirdParty/assimp/include/assimp/scene.h"

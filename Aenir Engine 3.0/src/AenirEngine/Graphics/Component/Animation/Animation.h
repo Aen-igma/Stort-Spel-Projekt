@@ -24,6 +24,7 @@ namespace Aen {
 		std::string boneName;
 		Mat4f offsetMatrix;			// Inverse bind pose
 		//Mat4f transformRelParent;
+		std::vector<Bones> children = {};
 	};
 
 	struct KeyFrameData {
@@ -48,7 +49,6 @@ namespace Aen {
 		Animation();
 		Animation(const std::string& animationPath);
 
-		void printTest();
 		inline float GetTicksPerSecond() { return m_TicksPerSecond; }
 		inline float GetDuration() { return m_Duration; }
 		inline const AssimpData& GetRootNode() { return m_RootNode; }

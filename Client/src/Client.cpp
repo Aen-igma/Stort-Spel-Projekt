@@ -53,7 +53,7 @@ void Client::Start() {
 	Aen::Mesh& sphere = Aen::Resource::CreateMesh("Sphere");
 	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
 	skele.Load(AEN_RESOURCE_DIR("combinedShapes.fbx"));
-	gob.Load(AEN_RESOURCE_DIR("GobTriMtrl.fbx"));
+	gob.Load(AEN_RESOURCE_DIR("AnimTimDab.fbx"));
 	//skele.PrintMaterialSlots();
 	cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
 	sphere.Load(AEN_RESOURCE_DIR("Sphere.obj"));

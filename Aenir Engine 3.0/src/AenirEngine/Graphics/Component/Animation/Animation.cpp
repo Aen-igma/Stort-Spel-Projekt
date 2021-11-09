@@ -36,12 +36,6 @@ namespace Aen {
 		m_TicksPerSecond = animTest->mAnimations[0]->mTicksPerSecond;
 	}
 
-	
-	void Animation::printTest()
-	{
-		AEN_PRINT("Hello There\n");
-	}
-
 	void FindRootBone(Bones& bones, const aiScene* scene, std::vector<Bones>& boneArray) {
 		aiBone* rootBone = scene->mMeshes[0]->mBones[0];
 	}
@@ -50,6 +44,8 @@ namespace Aen {
 	std::vector<aiNodeAnim*> ai_nodes_anim;
 	std::vector<aiNode*> ai_node_bones;
 	std::vector<aiBone*> ai_bone_data;
+
+
 	void RecursiveNodeProcess(aiNode* node) {
 		ai_nodes.emplace_back(node);
 		for (int i = 0; i < node->mNumChildren; i++) {
@@ -68,13 +64,13 @@ namespace Aen {
 		}
 	}
 
-	int FindParentID(const aiNode* parentNode, std::vector<aiNode*>& boneNodeArray) {
+	/*int FindParentID(const aiNode* parentNode, std::vector<aiNode*>& boneNodeArray) {
 		for (int i = 0; i < boneNodeArray.size(); i++) {
 			if (parentNode->mName == boneNodeArray[i]->mName) {
 				return i;
 			}
 		}
-	}
+	}*/
 
 	void MeshBoneData(const aiMesh* meshNode, std::vector<aiBone*>& boneArray) {
 		for (int i = 0; i < meshNode->mNumBones; i++) {
@@ -82,13 +78,13 @@ namespace Aen {
 		}
 	}
 
-	void TransferBones(std::vector<aiBone*>& boneArray, std::vector<Bones>& boneArrayFinal) {
+	/*void TransferBones(std::vector<aiBone*>& boneArray, std::vector<Bones>& boneArrayFinal) {
 		Bones bone;
 		for (int i = 0; i < boneArray.size(); i++) {
 			bone.boneID = i;
 			bone.boneName = boneArray[i]->mName.data;
 		}
-	}
+	}*/
 
 	void TransferNodeBoneData(std::vector<aiNode*>& nodeBoneArray, std::vector<Bones>& boneArray, aiMesh* mesh) {
 		Bones bone;
@@ -101,7 +97,6 @@ namespace Aen {
 					//bone.transformRelParent = nodeBoneArray[i]->mTransformation;					// Do we need this? If so, how do we get the transform..
 				}
 			}
-			//OutputDebugString((nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mParent[0].mParent[0].mName).C_Str());
 			if (bone.boneID == 0)
 				bone.parentID = -1;
 
@@ -119,15 +114,6 @@ namespace Aen {
 
 			boneArray.emplace_back(bone);
 		}
-		for (int i = 0; i < boneArray.size(); i++) {
-			OutputDebugString(" BONE NAME ");
-			OutputDebugString((boneArray[i].boneName).c_str());
-			OutputDebugString(" BONE ID ");
-			OutputDebugString(std::to_string(boneArray[i].boneID).c_str());
-			OutputDebugString(" PARENT ID ");
-			OutputDebugString(std::to_string(boneArray[i].parentID).c_str());
-			OutputDebugString("\n");
-		}
 	}
 
 	void AnimProcess(std::unordered_map<std::string, KeyFrameData>& keyFrameData) {
@@ -137,8 +123,6 @@ namespace Aen {
 		}
 		KeyFrameData data;
 		for (int i = 0; i < animation->mAnimations[0]->mNumChannels; i++) {
-			//ai_nodes_anim.emplace_back(animation->mAnimations[0]->mChannels[i]);
-
 			// Position key data
 			for (int j = 0; j < animation->mAnimations[0]->mChannels[i]->mNumPositionKeys; j++) {
 				data.timeStampPos.emplace_back(animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mTime);
@@ -173,9 +157,6 @@ namespace Aen {
 			}																							// think about how to access the info, save for each channel name?
 			
 			keyFrameData[animation->mAnimations[0]->mChannels[i]->mNodeName.C_Str()] = data;
-
-			//OutputDebugString((animation->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
-			
 		}
 		/*for (int u = 0; u < keyFrameData.size(); u++){
 			OutputDebugString(std::to_string(keyFrameData[u].timeStamp).c_str());
@@ -214,8 +195,6 @@ namespace Aen {
 			OutputDebugString("\n");
 		}*/
 	}
-
-	//void GetBoneOffsetMatrix(const std::vector<aiBone*>& boneArray)
 
 	Vec2f Animation::GetTimeFraction(std::vector<float>& times, float& dt)
 	{
@@ -275,6 +254,9 @@ namespace Aen {
 
 		m_Duration = ani->mDuration * ani->mTicksPerSecond;
 
+		Animation animation;
+		Bones skeleton;
+
 	}
 
 	void Animation::GetPose(Animation& anim, Bones& skele, float dt, std::vector<Mat4f>& output, Mat4f& parentTrans, Mat4f& globalInverseTrans)
@@ -292,7 +274,7 @@ namespace Aen {
 		Vec3f position2 = keyFrameData.position[fp.first];
 		Vec3f position = position1 * (1.0 - fp.second) + position2 * fp.second;
 
-		// Rotation
+		 //Rotation
 		fp.first = GetTimeFraction(keyFrameData.timeStampRot, dt).x;
 		fp.second = GetTimeFraction(keyFrameData.timeStampRot, dt).y;
 
@@ -301,14 +283,20 @@ namespace Aen {
 		Mat4f rotation = rotation1 * (1.0 - fp.second) + rotation2 * fp.second;
 
 		Mat4f positionMatrix = positionMatrix.identity;
-		positionMatrix = positionMatrix * position;				// vec3f
+		
+		positionMatrix.a14 = position.x;
+		positionMatrix.a24 = position.y;
+		positionMatrix.a34 = position.z;
+		positionMatrix.a44 = 1;
 
 		Mat4f localTransform = positionMatrix * rotation;
 		Mat4f globalTransform = parentTrans * localTransform;
 
 		output[skele.boneID] = globalInverseTrans * globalTransform * skele.offsetMatrix;
 
-		for(Bones& child : skele.)
+		for (Bones& child : m_boneArray) {
+			GetPose(anim, child, dt, output, globalTransform, globalInverseTrans);
+		}
 
 	}
 

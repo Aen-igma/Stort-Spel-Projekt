@@ -13,7 +13,7 @@ void Aen::AssimpImport::LoadFbx(VBuffer<Vertex>& vBuffer, const std::string path
 	std::vector<Vertex> mesh;
 	Assimp::Importer importer;
 
-	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace);
+	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_Triangulate);
 
 	
 
@@ -32,6 +32,7 @@ void Aen::AssimpImport::LoadFbx(VBuffer<Vertex>& vBuffer, const std::string path
 
 void Aen::AssimpImport::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>& verts, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
+	Animation animation(;
 	UINT numVerts = mesh->mNumVertices;
 	UINT numMats = scene->mNumMaterials;
 	aiMaterial* material;
@@ -138,6 +139,8 @@ void Aen::AssimpImport::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::vec
 			verts[i].boneWeights = Vec4f(boneWeights.x / totalWeight, boneWeights.y / totalWeight, boneWeights.z / totalWeight, boneWeights.w / totalWeight);
 		}
 	}
+
+	
 }
 
 void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBuffer<Aen::Vertex>& vBuffer,
