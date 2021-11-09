@@ -48,8 +48,6 @@ namespace Aen {
 		if (!mp_Cooking) throw("PxCreateCooking Failed!");
 
 
-
-
 		px::PxSceneDesc sceneDesc(mp_Physics->getTolerancesScale());
 		sceneDesc.gravity = px::PxVec3(0.0f, -30.f, 0.0f);
 		mp_Dispatcher = px::PxDefaultCpuDispatcherCreate(2);

@@ -101,7 +101,7 @@ void Gameplay::Initialize()
 	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(rimuru);
 	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(enemyMat);
 	m_reimube1->AddComponent<Aen::StaticBody>();
-	m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true, true);
+	m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
 	m_reimube1->SetPos(0.f, 1.f, 11.f);
 	m_reimube1->SetRot(10, 1, 1);
 
