@@ -545,7 +545,32 @@ namespace Aen
 	{
 		for (int y = 0; y < mapSize; y++) {
 			for (int x = 0; x < mapSize; x++) {
-
+				if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {
+					//North
+				}
+				else if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
+					break;
+					//East
+				}
+				else if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
+					break;
+					//South
+				}
+				else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
+					//West
+				}
+				if (x - 1 > 0) {
+					map[x - 1][y];
+				}
+				if (x + 1 < mapSize) {
+					map[x + 1][y];
+				}
+				if (y - 1 > 0) {
+					map[x][y - 1];
+				}
+				if (y + 1 < mapSize) {
+					map[x][y + 1];
+				}
 			}
 		}
 	}
