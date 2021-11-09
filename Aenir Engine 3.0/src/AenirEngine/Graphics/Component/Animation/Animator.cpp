@@ -2,9 +2,11 @@
 #include"Animator.h"
 
 namespace Aen {
-	void Animator::printSomething()
+	
+	void Animator::Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
 	{
-		AEN_PRINT("Hello World\n");
-		std::cout << "Hello COUT\n";
+	}
+	void Animator::DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer)
+	{
 	}
 }
