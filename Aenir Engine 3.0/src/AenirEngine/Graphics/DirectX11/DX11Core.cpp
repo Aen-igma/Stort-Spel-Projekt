@@ -54,19 +54,17 @@ namespace Aen {
         DXGI_ADAPTER_DESC1 desc;
         pAdapter->GetDesc1(&desc);
 
-        //const UINT featureLvls = 1;
         D3D_FEATURE_LEVEL featureLvl[] = {
-            //D3D_FEATURE_LEVEL_11_1,
+            D3D_FEATURE_LEVEL_11_1,
             D3D_FEATURE_LEVEL_11_0
         };
 
         
         UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-        //#ifdef _DEBUG
-        //flags |= D3D11_CREATE_DEVICE_DEBUG;
-        //#endif
+        #ifdef _DEBUG
+        flags |= D3D11_CREATE_DEVICE_DEBUG;
+        #endif
        
-
 
         HRESULT hr = D3D11CreateDeviceAndSwapChain(
             pAdapter.Get(),

@@ -47,6 +47,7 @@ namespace Aen {
 		friend class MeshInstance;
 		friend class AABoundBox;
 		friend class OBBox;
+		friend class Animator;
 
 		private:
 		bool m_toggleView;

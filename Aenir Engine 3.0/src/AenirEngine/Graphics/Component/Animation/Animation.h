@@ -57,6 +57,7 @@ namespace Aen {
 		UINT boneCount;
 		VBuffer<VertexAnimation> vBuff;
 		IBuffer m_indexBuffer;
+		SBuffer<Mat4f> m_finalMatrix;
 
 	public:
 		Animation();
@@ -77,6 +78,7 @@ namespace Aen {
 
 		friend class Resource;
 		friend class Renderer;
+		friend class Animator;
 	};
 
 }

@@ -181,6 +181,16 @@ namespace Aen {
 
 		AddComponent<Translation>();
 	}
+
+	template<>
+	inline void Entity::AddComponent<Animator>() {
+		if (!ComponentHandler::AnimatorExists(m_id))
+			ComponentHandler::CreateAnimator(m_id);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
+	}
 	// --------------- GetComponent -----------------
 
 	template<>
@@ -251,5 +261,10 @@ namespace Aen {
 	template<>
 	inline OBBox& Entity::GetComponent() {
 		return ComponentHandler::GetOBB(m_id);
+	}
+
+	template<>
+	inline Animator& Entity::GetComponent() {
+		return ComponentHandler::GetAnimator(m_id);
 	}
 }

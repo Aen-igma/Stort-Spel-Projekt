@@ -83,6 +83,7 @@ namespace Aen {
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
+			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
 			DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
 			box.Transform(box, m.smMat);
@@ -175,6 +176,7 @@ namespace Aen {
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
+			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
 			DirectX::BoundingOrientedBox box;
 			box.Extents = m_pMesh->m_aabb.Extents;

@@ -24,6 +24,7 @@ namespace Aen {
 
 		friend class ComponentHandler;
 		friend class Renderer;
+		friend class Entity;
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;

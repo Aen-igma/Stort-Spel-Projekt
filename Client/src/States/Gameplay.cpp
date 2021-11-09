@@ -174,6 +174,15 @@ void Gameplay::Initialize()
 	//m_reimube4->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
 	m_reimube4->SetPos(-22.f, 5.f, -65.f);
 
+	Aen::Animation& testAnim = Aen::Resource::CreateAnimation("TimDab");
+	testAnim.LoadAnimation("../Resource/AnimTimDab.fbx");
+	
+	Aen::Entity* testAnimObject = &Aen::EntityHandler::CreateEntity();
+	testAnimObject->AddComponent<Aen::Animator>();
+	testAnimObject->GetComponent<Aen::Animator>().SetAnimation(testAnim);
+		
+
+
 	// ------ Level Importer ------ //
 	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
 	m_levelImporter.import(path);

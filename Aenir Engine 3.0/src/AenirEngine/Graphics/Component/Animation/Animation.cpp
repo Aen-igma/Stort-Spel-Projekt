@@ -53,6 +53,14 @@ namespace Aen {
 		}
 	}
 
+	const Mat4f RecursiveWorldMatrix(const Bones& bone, std::vector<Bones>& boneArray) {
+		Mat4f parentMat;
+		if (bone.parentID != -1) {
+			parentMat = RecursiveWorldMatrix(boneArray[bone.parentID], boneArray);
+		}
+		return parentMat * bone.offsetMatrix.Inverse();
+	}
+
 	void AssignBones(const aiScene* scene, std::vector<aiNode*>& nodeArray, std::vector<Bones>& boneArray) {
 		for (int i = 0; i < nodeArray.size(); i++) {
 			for (int j = 0; j < scene->mMeshes[0]->mNumBones; j++) {
@@ -213,13 +221,13 @@ namespace Aen {
 	{
 		//----------------------BONE DATA--------------------------//
 		Bones rootBone;
-		rootBone.boneID = 0;
+		/*rootBone.boneID = 0;
 		rootBone.parentID = -1;
-		rootBone.boneName = "GROOT";
+		rootBone.boneName = "GROOT";*/
 		
 		assert(animation && animation->mRootNode);
 		auto rootBoneNode = animation->mMeshes[0]->mBones[0];
-		m_boneArray.emplace_back(rootBone);
+		//m_boneArray.emplace_back(rootBone);
 		FindRootBone(rootBone, animation, m_boneArray);
 		
 		globalInverseTransformMatrix.a11 = animation->mRootNode->mTransformation.a1; globalInverseTransformMatrix.a12 = animation->mRootNode->mTransformation.a2;
@@ -246,18 +254,32 @@ namespace Aen {
 		
 		std::vector<DWORD> indices;
 		std::vector<VertexAnimation> verts;
+		
 		for (int i = 0; i < m_boneArray.size(); i++) {
-			indices.emplace_back(m_boneArray[i].boneID + 1);
-			indices.emplace_back(m_boneArray[i].parentID + 1);
+			if (m_boneArray[i].parentID != -1) {
+				indices.emplace_back(m_boneArray[i].parentID);
+				indices.emplace_back(m_boneArray[i].boneID);
+			}
 			VertexAnimation currentV;
+			currentV.pos = m_boneArray[i].offsetMatrix.Transposed().Inverse().a;
 			currentV.boneId.x = m_boneArray[i].boneID;
 			currentV.boneWeights.x = 1.f;
 			verts.emplace_back(currentV);
+			
 		}
 
+			// creating index, vertex and structured buffers
 		m_indexBuffer.Create(indices.data(), indices.size());
 		if(!vBuff.Create(verts.data(), verts.size()))
 			throw;
+
+		m_finalMatrix.Create(m_boneArray.size());
+		for (int i = 0; i < m_boneArray.size(); i++) {
+			m_finalMatrix.GetData(i) = Mat4f::identity;
+		}
+		//m_finalMatrix.GetData(10) = m_boneArray[10].offsetMatrix.Transposed().Inverse() * MatRotate(0.f, 0.f, 90.f) * m_boneArray[10].offsetMatrix.Transposed();
+		m_finalMatrix.UpdateBuffer();
+
 
 		//----------------------ANIMATION DATA--------------------------//
 		aiAnimation* ani = animation->mAnimations[0];
