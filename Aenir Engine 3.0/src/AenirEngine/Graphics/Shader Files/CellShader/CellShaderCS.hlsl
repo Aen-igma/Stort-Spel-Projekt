@@ -73,11 +73,11 @@ struct CS_Input {
 	uint gIndex : SV_GroupIndex;
 };
 
-[numthreads(16, 16, 1)]
+[numthreads(32, 18, 1)]
 void main(CS_Input input) {
 
 	uint2 uv = input.dtId.xy;
-	uint2 uv2 = input.dtId.xy * 4;
+	uint2 uv2 = uint2(uv.x * 4, uv.y);
 	float4 diffuse =	diffuseMap[uv];
 	float3 normal =		depthNormalMap[uv];
 	float3 worldPos =	posMap[uv];
@@ -117,11 +117,23 @@ void main(CS_Input input) {
 
 		float4 output = /*float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) **/ diffuse;
 
-		outputMap[uv] = output.y;
-		finalMap[uv] = output.y;
+		outputMap[uv2] = output.x;
+		finalMap[uv2] = output.x;
+		uv2 += uint2(1, 0);
+		outputMap[uv2] = output.y;
+		finalMap[uv2] = output.y;
+		uv2 += uint2(1, 0);
+		outputMap[uv2] = output.z;
+		finalMap[uv2] = output.z;
 	} else
 		if(length(outputMap[uv]) <= 0.f) {
-			outputMap[uv2] = bgColor;
-			finalMap[uv2] = bgColor;
+			outputMap[uv2] = bgColor.x;
+			finalMap[uv2] = bgColor.x;
+			uv2 += uint2(1, 0);
+			outputMap[uv2] = bgColor.y;
+			finalMap[uv2] = bgColor.y;
+			uv2 += uint2(1, 0);
+			outputMap[uv2] = bgColor.z;
+			finalMap[uv2] = bgColor.z;
 		}
 }

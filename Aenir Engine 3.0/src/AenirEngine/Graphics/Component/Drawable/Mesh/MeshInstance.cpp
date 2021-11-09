@@ -88,8 +88,8 @@ namespace Aen {
 			box.Extents = m_pMesh->m_aabb.Extents;
 			box.Transform(box, m.smMat);
 
-			if(GlobalSettings::GetMainCamera())
-				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
+			if (GlobalSettings::GetMainCamera())
+				if (box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())); {
 
 			// Mesh and Material
 
@@ -181,8 +181,8 @@ namespace Aen {
 			box.Extents = m_pMesh->m_aabb.Extents;
 			box.Transform(box, m.smMat);
 
-			if(GlobalSettings::GetMainCamera())
-				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
+			if (GlobalSettings::GetMainCamera())
+				if (box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())); {
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);

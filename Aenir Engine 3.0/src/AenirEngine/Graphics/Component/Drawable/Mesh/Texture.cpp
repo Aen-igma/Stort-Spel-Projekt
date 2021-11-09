@@ -10,7 +10,8 @@ namespace Aen {
 	}
 	
 	void Texture::LoadTexture(const std::string& dir) {
-		std::thread worker(&ShaderResource::LoadResource, &m_shaderResource, dir);
-		worker.join();
+		//std::thread worker(&ShaderResource::LoadResource, &m_shaderResource, dir);
+		//worker.join();
+		m_shaderResource.LoadResource(dir);
 	}
 }
