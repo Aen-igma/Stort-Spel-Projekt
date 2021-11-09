@@ -1,5 +1,6 @@
 #pragma once
 
+#include"AenDefines.h"
 #include"../../ThirdParty/SimpleMath/SimpleMath.h"
 #include<DirectXMath.h>
 #include<type_traits>
@@ -68,8 +69,8 @@ namespace Aen {
 	}
 
 	template<class T> 
-	inline void Clamp(T& value, const T& min, const T& max) noexcept {
-		value = (value < min) ? min : (value > max) ? max : value;
+	inline const T Clamp(const T& value, const T& min, const T& max) noexcept {
+		return (value < min) ? min : (value > max) ? max : value;
 	}
 
 	template<class T> 
@@ -224,7 +225,7 @@ namespace Aen {
 		MatPerspective(const float& fov, const float& aspect, const float& min, const float& max) noexcept {
 		float ang = DegToRad(fov);
 		Concealed::TMat<T> out;
-		out.smMat = sm::Matrix::CreatePerspectiveFieldOfView(ang, aspect, min, max);
+		out.smMat = DirectX::XMMatrixPerspectiveFovLH(ang, aspect, min, max);
 		return out;
 	}
 
@@ -265,6 +266,7 @@ namespace Aen {
 			y = std::atan2f(-mat.a31, sy);
 			r = 0;
 		}
+
 		return Concealed::TVec<T, 3>(Aen::RadToDeg(p), Aen::RadToDeg(y), Aen::RadToDeg(r));
 	}
 	
@@ -286,6 +288,23 @@ namespace Aen {
 		Concealed::TMat<T> out;
 		sm::Quaternion q(x, y, z, w);
 		out.smMat = sm::Matrix::CreateFromQuaternion(q);
+
+		return out;
+	}
+
+	template<class T>
+	inline const Concealed::TVec<T, 4> EulerToQuat(const T& x, const T& y, const T& z) noexcept {
+		Concealed::TVec<T, 4> out;
+		out.smVec = DirectX::XMQuaternionRotationRollPitchYaw(DegToRad(x), DegToRad(y), DegToRad(z));
+
+		return out;
+	}
+
+	template<class T>
+	inline const Concealed::TVec<T, 4> EulerToQuat(const Concealed::TVec<T, 3> rot) noexcept {
+		Concealed::TVec<T, 4> out;
+		Concealed::TVec<T, 3> tempRot = DegToRad(rot);
+		out.smVec = DirectX::XMQuaternionRotationRollPitchYaw(tempRot.x, tempRot.y, tempRot.z);
 
 		return out;
 	}

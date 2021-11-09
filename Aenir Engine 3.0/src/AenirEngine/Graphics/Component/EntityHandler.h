@@ -25,19 +25,27 @@ namespace Aen {
 		}
 
 		static auto GetTagedEntities(const std::string& tag) {
-			size_t cTag = std::stoi(tag);
-			return std::pair<std::multimap<size_t, Entity*>::iterator, std::multimap<size_t, Entity*>::iterator>(
-				m_tagedEntities.lower_bound(cTag), m_tagedEntities.upper_bound(cTag));
+			return std::pair<std::multimap<std::string, Entity*>::iterator, std::multimap<std::string, Entity*>::iterator>(
+				m_tagedEntities.lower_bound(tag), m_tagedEntities.upper_bound(tag));
+		}
+
+		static Entity& GetEntity(const size_t& id) {
+			if(m_entities.count(id) > 0)
+				return *m_entities.at(id);
 		}
 
 		private:
 		EntityHandler();
 		
-		static Entity& GetEntity(const size_t& id) {
-			if(m_entities.count(id) > 0)
-				return *m_entities.at(id);
+		static void RemoveFromTaged(const size_t id, const std::string& tag) {
+			if(m_tagedEntities.count(tag) > 0)
+				for(auto i = m_tagedEntities.lower_bound(tag); i != m_tagedEntities.upper_bound(tag); i++)
+					if(i->second->HasId(id)) {
+						m_tagedEntities.erase(i);
+						break;
+					}
 		}
-		
+
 		static void Destroy() {
 
 			for(auto i : m_entities) {
@@ -47,13 +55,15 @@ namespace Aen {
 		}
 
 		static std::unordered_map<size_t, Entity*> m_entities;
-		static std::multimap<size_t, Entity*> m_tagedEntities;
+		static std::multimap<std::string, Entity*> m_tagedEntities;
 		static size_t m_iDs;
 		
 		friend class Entity;
 		friend class Renderer;
 		friend class ImGuiHandler;
+		friend class LevelGenerator;
 		friend class MeshInstance;
 		friend class GameLoop;
+		friend class ImGuiImporter;
 	};
 }

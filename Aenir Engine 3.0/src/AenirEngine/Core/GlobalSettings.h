@@ -2,6 +2,7 @@
 #include"Renderer.h"
 #include "../ImGuiHandler.h"
 #include<string>
+//#include"../LevelGeneration/LevelGenerator.h"
 
 namespace Aen {
 
@@ -20,6 +21,10 @@ namespace Aen {
 			m_pMainCamera = &camera;
 		}
 
+		static Entity* GetMainCamera() {
+			return m_pMainCamera;
+		}
+
 		static void SetBGColor(const Color& color) {
 			m_BGColor = color;
 		}
@@ -32,14 +37,36 @@ namespace Aen {
 			return m_BGColor;
 		}
 
-		static ImGuiHandler*& GetImGuiHandler() {
-			return mp_guiHandler;
+		static Material* GetDefaultMaterial() {
+			return m_defaultMaterial;
 		}
-		
+
+		static void SetVSync(const bool& set) {
+			m_vSync = set;
+		}
+
+		static void RemoveMainCamera()
+		{
+			m_pMainCamera = nullptr;
+		}
+
+		static Window* GetWindow(){
+			return m_pWindow;
+		}
+
 		friend class GameLoop;
 		friend class Renderer;
 
 		private:
+
+		static const bool GetVSync() {
+			return m_vSync;
+		}
+
+		static void Destroy() {
+			delete m_defaultMaterial;
+			delete m_defaultTexture;
+		}
 
 		GlobalSettings();
 
@@ -107,14 +134,14 @@ namespace Aen {
 
 			// --------------------------------- Default Material --------------------------------- //
 
-			Aen::Material& defaultMaterial = Resource::CreateMaterial("DefaultMaterial");
-			Aen::Texture& defaultTexture = Resource::CreateTexture("DefaultTexture");
-			defaultMaterial["InnerEdgeThickness"] = 3;
-			defaultMaterial["OuterEdgeThickness"] = 3;
-			defaultMaterial["InnerEdgeColor"] = Aen::Color::Magenta;
-			defaultMaterial["OuterEdgeColor"] = Aen::Color::Magenta;
-			defaultTexture.LoadTexture(AEN_RESOURCE_DIR("Missing_Textures.png"));
-			defaultMaterial.SetDiffuseMap(defaultTexture);
+			m_defaultMaterial = AEN_NEW Material(true);
+			m_defaultTexture = AEN_NEW Texture();
+			(*m_defaultMaterial)["InnerEdgeThickness"] = 3;
+			(*m_defaultMaterial)["OuterEdgeThickness"] = 3;
+			(*m_defaultMaterial)["InnerEdgeColor"] = Aen::Color::Magenta;
+			(*m_defaultMaterial)["OuterEdgeColor"] = Aen::Color::Magenta;
+			m_defaultTexture->LoadTexture(AEN_RESOURCE_DIR("Missing_Textures.png"));
+			m_defaultMaterial->SetDiffuseMap(*m_defaultTexture);
 
 		}
 
@@ -123,7 +150,11 @@ namespace Aen {
 		static Entity* m_pMainCamera;
 		static Color m_BGColor;
 
+		static Material* m_defaultMaterial;
+		static Texture* m_defaultTexture;
+
 		static ImGuiHandler* mp_guiHandler;
+		static bool m_vSync;
 
 	};
 

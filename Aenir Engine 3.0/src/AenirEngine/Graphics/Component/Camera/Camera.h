@@ -1,14 +1,15 @@
 #pragma once
-#include"../../Graphics.h"
+#include"../Component.h"
 
 namespace Aen {
 
-	class AEN_DECLSPEC Camera {
+	class AEN_DECLSPEC Camera : public Component {
 		public:
-		Camera();
+		Camera(const size_t& id);
 
 		void SetCameraPerspective(const float& fov, const float& aRatio, const float& minZ, const float& maxZ);
 		void SetCameraOrthographic(const float& width, const float& height, const float& minZ, const float& maxZ);
+		void LookTowards(const Vec3f& dir);
 
 		const Vec3f GetForward();
 		const Vec3f GetUp();
@@ -16,9 +17,12 @@ namespace Aen {
 		const Mat4f GetVPMatrix() const;
 		const Mat4f& GetView() const;
 		const Mat4f& GetProjecton() const;
+		const DirectX::BoundingFrustum& GetFrustum();
 
 		private:
 		~Camera() = default;
+
+		DirectX::BoundingFrustum m_boxFrustum;
 
 		void UpdateView(const Vec3f& pos, const Vec3f& rot);
 

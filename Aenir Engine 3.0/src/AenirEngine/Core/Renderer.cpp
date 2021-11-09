@@ -8,7 +8,8 @@ namespace Aen {
 		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
-		m_rasterizerState(FillMode::Solid, CullMode::Front), m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u) {}
+		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
+		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP), m_toggleView(false) {}
 
 	void Renderer::Initialize() {
 
@@ -29,8 +30,17 @@ namespace Aen {
 			if(!m_lightCullCS.Create(L"LightCullCS.cso"))
 				throw;
 
-		m_UAVBackBuffer.Create(m_backBuffer);
+		if(!m_collisionPS.Create(AEN_OUTPUT_DIR_WSTR(L"CollisionPS.cso")))
+			if(!m_collisionPS.Create(L"CollisionPS.cso"))
+				throw;
+
+		if(!m_postProcessCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessCS.cso")))
+			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
+				throw;
+
+		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32G32B32A32_FLOAT);
 		m_opaqueLayout.Create(m_opaqueVS);
+		m_UAVBackBuffer.Create(m_backBuffer);
 
 		m_dispatchInfo.GetData().windowSize.x = m_window.GetSize().x;
 		m_dispatchInfo.GetData().windowSize.y = m_window.GetSize().y;
@@ -46,7 +56,7 @@ namespace Aen {
 
 		uint32_t size = m_dispatchInfo.GetData().numThreads.x * m_dispatchInfo.GetData().numThreads.y;
 		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
-		m_lGrid.Create(m_dispatchInfo.GetData().numThreads);
+		m_lGrid.Create(m_dispatchInfo.GetData().numThreads, DXGI_FORMAT_R32G32_UINT);
 	}
 
 	void Renderer::Render() {
@@ -72,13 +82,29 @@ namespace Aen {
 
 			pCam->GetComponent<Camera>().UpdateView(pos, rot);
 
-			m_cbCamera.GetData().pos = { pos.x, pos.y, pos.z };
+			m_cbCamera.GetData().pos = pos;
 			m_cbCamera.GetData().fDir = pCam->GetComponent<Camera>().GetForward();
 			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
 			m_cbCamera.UpdateBuffer();
 
-			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
-			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+			#ifdef _DEBUG
+				if (Aen::Input::KeyDown(Aen::Key::M))
+					m_toggleView = !m_toggleView;
+
+				if (m_toggleView)
+				{
+					m_cbTransform.GetData().m_vMat = MatViewLH(Aen::Vec3f(0, 0, 0), Aen::Vec3f(0, 1.f, -1.f), Aen::Vec3f(0, 1, 0)).Transposed();
+					m_cbTransform.GetData().m_pMat = MatPerspective<float>(90.f, m_window.GetAspectRatio(), 0.01f, 200.f).Transposed();
+				}
+				else {
+					m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+					m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+				}
+			#else
+				m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+				m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+			#endif
+			
 		} else {
 			m_cbTransform.GetData().m_vMat = Mat4f::identity;
 			m_cbTransform.GetData().m_pMat = Mat4f::identity;
@@ -109,7 +135,7 @@ namespace Aen {
 				
 				// Pre Depth Pass
 
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, k.first, i);
+				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, i);
 
 				// Light Cull Pass
 
@@ -132,10 +158,24 @@ namespace Aen {
 
 				// Draw pass
 
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, k.first, i);
+				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, i);
 
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}
+
+		// PostProcess
+
+		/*m_dispatchInfo.BindBuffer<CShader>(0u);
+		RenderSystem::BindShaderResourceView<CShader>(0u, m_UAVFinal);
+		RenderSystem::BindSamplers<CShader>(0u, m_wrapSampler);
+		RenderSystem::BindUnOrderedAccessView(0u, m_UAVBackBuffer);
+		RenderSystem::BindShader(m_postProcessCS);
+
+		RenderSystem::Dispatch(m_dispatchGroups, 1u);
+
+		RenderSystem::UnBindShader<CShader>();
+		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
+		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);*/
 
 		// Present
 		RenderSystem::Present();

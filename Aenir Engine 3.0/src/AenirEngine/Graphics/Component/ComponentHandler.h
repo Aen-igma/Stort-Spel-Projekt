@@ -3,8 +3,12 @@
 #include"Camera/Camera.h"
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
-#include"ThirdParty/PhysX/RigidBody.h"
-#include"Animation/Animator.h"
+#include"RigidBody/StaticBody.h"
+#include"RigidBody/DynamicBody.h"
+#include"CharacterController/CharacterController.h"
+#include "Drawable\UI\UIComponent.h"
+#include"Collision\AABBComponent.h"
+#include"Collision\OBBComponent.h"
 
 #include<unordered_map>
 #include<array>
@@ -19,15 +23,15 @@ namespace Aen {
 
 		// ---------- Camera Component ------------ //
 
-		static const bool CameraExist(const uint32_t& id) {
+		static const bool CameraExist(const size_t& id) {
 			return m_cameras.count(id) > 0;
 		}
 
-		static void CreateCamera(const uint32_t& id) {
-			m_cameras.emplace(id, AEN_NEW Camera());
+		static void CreateCamera(const size_t& id) {
+			m_cameras.emplace(id, AEN_NEW Camera(id));
 		}
 
-		static void RemoveCamera(const uint32_t& id) {
+		static void RemoveCamera(const size_t& id) {
 			if(m_cameras.count(id) > 0) {
 				delete m_cameras.at(id);
 				m_cameras.at(id) = nullptr;
@@ -35,7 +39,7 @@ namespace Aen {
 			}
 		}
 
-		static Camera& GetCamera(const uint32_t& id) {
+		static Camera& GetCamera(const size_t& id) {
 			if(m_cameras.count(id) > 0)
 				return *m_cameras.at(id);
 
@@ -44,16 +48,16 @@ namespace Aen {
 
 		// ----------- Mesh Instance Component ---------- //
 
-		static const bool MeshInstanceExist(const uint32_t& id) {
+		static const bool MeshInstanceExist(const size_t& id) {
 			return m_mesheInstances.count(id) > 0;
 		}
 
-		static void CreateMeshInstance(const uint32_t& id, const uint32_t& layer) {
-			m_mesheInstances.emplace(id, AEN_NEW MeshInstance());
+		static void CreateMeshInstance(const size_t& id, const size_t& layer) {
+			m_mesheInstances.emplace(id, AEN_NEW MeshInstance(id));
 			m_meshLayer[layer].emplace(id, m_mesheInstances.at(id));
 		}
 
-		static void RemoveMeshInstance(const uint32_t& id) {
+		static void RemoveMeshInstance(const size_t& id) {
 			if(m_mesheInstances.count(id) > 0) {
 				delete m_mesheInstances.at(id);
 				m_mesheInstances.at(id) = nullptr;
@@ -61,38 +65,62 @@ namespace Aen {
 			}
 		}
 
-		static MeshInstance& GetMeshInstance(const uint32_t& id) {
+		static MeshInstance& GetMeshInstance(const size_t& id) {
 			if(m_mesheInstances.count(id) > 0)
 				return *m_mesheInstances.at(id);
 		}
 
+		// ----------- UI Component ---------- //
+
+		static const bool UIComponentExist(const size_t& id) {
+			return m_UI.count(id) > 0;
+		}
+
+		static void CreateUI(const size_t& id, const size_t& layer) {
+			m_UI.emplace(id, AEN_NEW UIComponent(id));
+			m_meshLayer[layer].emplace(id, m_UI.at(id));
+		}
+
+		static void RemoveUI(const size_t& id) {
+			if (m_UI.count(id) > 0) {
+				delete m_UI.at(id);
+				m_UI.at(id) = nullptr;
+				m_UI.erase(id);
+			}
+		}
+
+		static UIComponent& GetUI(const size_t& id) {
+			if (m_UI.count(id) > 0)
+				return *m_UI.at(id);
+		}
+
 		// ------------ Transform Component ------------- //
 
-		static const bool TranslationExist(const uint32_t& id) {
+		static const bool TranslationExist(const size_t& id) {
 			return m_translations.count(id) > 0;
 		}
 
-		static const bool RotationExist(const uint32_t& id) {
+		static const bool RotationExist(const size_t& id) {
 			return m_rotations.count(id) > 0;
 		}
 
-		static const bool ScaleExist(const uint32_t& id) {
+		static const bool ScaleExist(const size_t& id) {
 			return m_scales.count(id) > 0;
 		}
 
-		static void CreateTranslation(const uint32_t& id) {
-			m_translations.emplace(id, AEN_NEW Translation());
+		static void CreateTranslation(const size_t& id) {
+			m_translations.emplace(id, AEN_NEW Translation(id));
 		}
 
-		static void CreateRotation(const uint32_t& id) {
-			m_rotations.emplace(id, AEN_NEW Rotation());
+		static void CreateRotation(const size_t& id) {
+			m_rotations.emplace(id, AEN_NEW Rotation(id));
 		}
 
-		static void CreateScale(const uint32_t& id) {
-			m_scales.emplace(id, AEN_NEW Scale());
+		static void CreateScale(const size_t& id) {
+			m_scales.emplace(id, AEN_NEW Scale(id));
 		}
 
-		static void RemoveTranform(const uint32_t& id) {
+		static void RemoveTranform(const size_t& id) {
 			if(m_translations.count(id) > 0) {
 				delete m_translations.at(id);
 				m_translations.at(id) = nullptr;
@@ -112,21 +140,21 @@ namespace Aen {
 			}
 		}
 
-		static Translation& GetTranslation(const uint32_t& id) {
+		static Translation& GetTranslation(const size_t& id) {
 			if(m_translations.count(id) > 0)
 				return *m_translations.at(id);
-
+			
 			throw;
 		}
 
-		static Rotation& GetRotation(const uint32_t& id) {
+		static Rotation& GetRotation(const size_t& id) {
 			if(m_rotations.count(id) > 0)
 				return *m_rotations.at(id);
 
 			throw;
 		}
 
-		static Scale& GetScale(const uint32_t& id) {
+		static Scale& GetScale(const size_t& id) {
 			if(m_scales.count(id) > 0)
 				return *m_scales.at(id);
 
@@ -135,7 +163,7 @@ namespace Aen {
 
 		// ----------------- Spot Light Component ------------------ //
 
-		static const bool SpotLightExist(const uint32_t& id) {
+		static const bool SpotLightExist(const size_t& id) {
 			if(m_lights.count(id) > 0)
 				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<SpotLight*>(i->second))
@@ -144,11 +172,11 @@ namespace Aen {
 			return false;
 		}
 
-		static void CreateSpotLight(const uint32_t& id) {
-			m_lights.emplace(id, AEN_NEW SpotLight());
+		static void CreateSpotLight(const size_t& id) {
+			m_lights.emplace(id, AEN_NEW SpotLight(id));
 		}
 
-		static void RemoveSpotLight(const uint32_t& id) {
+		static void RemoveSpotLight(const size_t& id) {
 			if(m_lights.count(id) > 0)
 				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<SpotLight*>(i->second)) {
@@ -159,7 +187,7 @@ namespace Aen {
 					}
 		}
 
-		static SpotLight& GetSpotLight(const uint32_t& id) {
+		static SpotLight& GetSpotLight(const size_t& id) {
 			SpotLight* pSLight = nullptr;
 			if(m_lights.count(id) > 0)
 				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
@@ -172,7 +200,7 @@ namespace Aen {
 
 		// ----------------- Point Light Component ------------------ //
 
-		static const bool PointLightExist(const uint32_t& id) {
+		static const bool PointLightExist(const size_t& id) {
 			if(m_lights.count(id) > 0)
 				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<PointLight*>(i->second))
@@ -181,11 +209,11 @@ namespace Aen {
 			return false;
 		}
 
-		static void CreatePointLight(const uint32_t& id) {
-			m_lights.emplace(id, AEN_NEW PointLight());
+		static void CreatePointLight(const size_t& id) {
+			m_lights.emplace(id, AEN_NEW PointLight(id));
 		}
 
-		static void RemovePointLight(const uint32_t& id) {
+		static void RemovePointLight(const size_t& id) {
 			if(m_lights.count(id) > 0) 
 				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<PointLight*>(i->second)) {
@@ -196,7 +224,7 @@ namespace Aen {
 					}
 		}
 
-		static PointLight& GetPointLight(const uint32_t& id) {
+		static PointLight& GetPointLight(const size_t& id) {
 			PointLight* pPLight = nullptr;
 			if(m_lights.count(id) > 0)
 				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
@@ -209,7 +237,7 @@ namespace Aen {
 
 		// ----------------- Directional Light Component ------------------ //
 
-		static const bool DirectionalLightExist(const uint32_t& id) {
+		static const bool DirectionalLightExist(const size_t& id) {
 			if(m_lights.count(id) > 0)
 				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<DirectionalLight*>(i->second))
@@ -218,11 +246,11 @@ namespace Aen {
 			return false;
 		}
 
-		static void CreateDirectionalLight(const uint32_t& id) {
-			m_lights.emplace(id, AEN_NEW DirectionalLight());
+		static void CreateDirectionalLight(const size_t& id) {
+			m_lights.emplace(id, AEN_NEW DirectionalLight(id));
 		}
 
-		static void RemoveDirectionalLight(const uint32_t& id) {
+		static void RemoveDirectionalLight(const size_t& id) {
 			if(m_lights.count(id) > 0)
 				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
 					if(dynamic_cast<DirectionalLight*>(i->second)) {
@@ -233,7 +261,7 @@ namespace Aen {
 					}
 		}
 
-		static DirectionalLight& GetDirectionalLight(const uint32_t& id) {
+		static DirectionalLight& GetDirectionalLight(const size_t& id) {
 			DirectionalLight* pDLight = nullptr;
 			if(m_lights.count(id) > 0)
 				for(auto i = m_lights.lower_bound(id); i != m_lights.upper_bound(id); i++)
@@ -244,88 +272,173 @@ namespace Aen {
 			return *pDLight;
 		}
 
-		// ----------- Rigid Body Component ----------- //
+		// ----------- StaticBody Component ----------- //
 
-		static const bool RigidExist(const uint32_t& id) {
-			return m_rigids.count(id) > 0;
+		static const bool StaticBodyExist(const size_t& id) {
+			return m_staticBodies.count(id) > 0;
 		}
 
-		static void CreateRigid(const uint32_t& id) {
-			m_rigids.emplace(id, AEN_NEW RigidBody());
+		static void CreateStaticBody(const size_t& id) {
+			m_staticBodies.emplace(id, AEN_NEW StaticBody(id));
 		}
 
-		static void RemoveRigid(const uint32_t& id) {
-			if (m_rigids.count(id) > 0) {
-				delete m_rigids.at(id);
-				m_rigids.at(id) = nullptr;
-				m_rigids.erase(id);
+		static void RemoveStaticBody(const size_t& id) {
+			if (m_staticBodies.count(id) > 0) {
+				delete m_staticBodies.at(id);
+				m_staticBodies.at(id) = nullptr;
+				m_staticBodies.erase(id);
 			}
 		}
 
-		static RigidBody& GetRigid(const uint32_t& id) {
-			if (m_rigids.count(id) > 0)
-				return *m_rigids.at(id);
+		static StaticBody& GetStaticBody(const size_t& id) {
+			if (m_staticBodies.count(id) > 0)
+				return *m_staticBodies.at(id);
+			throw;
+		}
+
+		// ----------- DynamicBody Component ----------- //
+
+		static const bool DynamicBodyExist(const size_t& id) {
+			return m_dynamicBodies.count(id) > 0;
+		}
+
+		static void CreateDynamicBody(const size_t& id) {
+			m_dynamicBodies.emplace(id, AEN_NEW DynamicBody(id));
+		}
+
+		static void RemoveDynamicBody(const size_t& id) {
+			if (m_dynamicBodies.count(id) > 0) {
+				delete m_dynamicBodies.at(id);
+				m_dynamicBodies.at(id) = nullptr;
+				m_dynamicBodies.erase(id);
+			}
+		}
+
+		static DynamicBody& GetDynamicBody(const size_t& id) {
+			if (m_dynamicBodies.count(id) > 0)
+				return *m_dynamicBodies.at(id);
+			throw;
+		}
+
+		// ------ CharacterController Component ------- //
+
+		static const bool CharacterControllerExist(const size_t& id) {
+			return m_characterControllers.count(id) > 0;
+		}
+
+		static void CreateCharacterController(const size_t& id) {
+			m_characterControllers.emplace(id, AEN_NEW CharacterController(id));
+		}
+
+		static void RemoveCharacterController(const size_t& id) {
+			if (m_characterControllers.count(id) > 0) {
+				delete m_characterControllers.at(id);
+				m_characterControllers.at(id) = nullptr;
+				m_characterControllers.erase(id);
+			}
+		}
+
+		static CharacterController& GetCharacterController(const size_t& id) {
+			if (m_characterControllers.count(id) > 0)
+				return *m_characterControllers.at(id);
 			throw;
 		}
 
 		// -------------------------------------------- //
 
-		// ----------- Mesh Instance Layer ---------- //
+		// ----------- Axis Aligned Bounding Box ------------ //
 
-		static void SetRenderLayer(MeshInstance& mesh, const uint32_t id, const uint32_t& layer) {
+		static const bool AABBExist(const size_t& id) {
+			return m_AABBs.count(id) > 0;
+		}
+
+		static void CreateAABB(const size_t& id, const size_t& layer) {
+			m_AABBs.emplace(id, AEN_NEW AABoundBox(id));
+			m_meshLayer[6].emplace(id, m_AABBs.at(id));
+		}
+
+		static void RemoveAABB(const size_t& id) {
+			if (m_AABBs.count(id) > 0) {
+				delete m_AABBs.at(id);
+				m_AABBs.at(id) = nullptr;
+				m_AABBs.erase(id);
+			}
+		}
+
+		static AABoundBox& GetAABB(const size_t& id) {
+			if (m_AABBs.count(id) > 0)
+				return *m_AABBs.at(id);
+			throw;
+		}
+
+		// -------------------------------------------- //
+
+		// ----------- Axis Aligned Bounding Box ------------ //
+
+		static const bool OBBExist(const size_t& id) {
+			return m_OBBs.count(id) > 0;
+		}
+
+		static void CreateOBB(const size_t& id, const size_t& layer) {
+			m_OBBs.emplace(id, AEN_NEW OBBox(id));
+			m_meshLayer[6].emplace(id, m_OBBs.at(id));
+		}
+
+		static void RemoveOBB(const size_t& id) {
+			if (m_OBBs.count(id) > 0) {
+				delete m_OBBs.at(id);
+				m_OBBs.at(id) = nullptr;
+				m_OBBs.erase(id);
+			}
+		}
+
+		static OBBox& GetOBB(const size_t& id) {
+			if (m_OBBs.count(id) > 0)
+				return *m_OBBs.at(id);
+			throw;
+		}
+
+		// -------------------------------------------- //
+
+		// ----------- Mesh Instance Layer ------------ //
+
+		static void SetRenderLayer(MeshInstance& mesh, const size_t id, const size_t& layer) {
 			m_meshLayer[layer].emplace(id, &mesh);
 		}
 
-		static std::unordered_map<uint32_t, Drawable*>& GetLayer(const uint32_t& layer) {
+		static std::unordered_map<size_t, Drawable*>& GetLayer(const size_t& layer) {
 			return m_meshLayer[layer];
 		}
 
-		static void RemoveMeshFromLayer(const uint32_t id, const uint32_t& layer) {
+		static void RemoveMeshFromLayer(const size_t id, const size_t& layer) {
 			m_meshLayer[layer].erase(id);
 		}
 		// ------------------------------------------ //
 
-		// ------------------ Animator --------------------- //
-		static const bool AnimatorExists(const uint32_t& id) {
-			return m_animators.count(id) > 0;
-		}
-
-		static void CreateAnimator(const uint32_t& id) {
-			m_animators.emplace(id, AEN_NEW Animator());
-			m_meshLayer[5].emplace(id, m_animators.at(id));
-		}
-
-		static void RemoveAnimators(const uint32_t& id) {
-			if (m_animators.count(id) > 0) {
-				delete m_animators.at(id);
-				m_animators.at(id) = nullptr;
-				m_animators.erase(id);
-			}
-		}
-
-		static Animator& GetAnimator(const uint32_t& id) {
-			if (m_animators.count(id) > 0)
-				return *m_animators.at(id);
-		}
-		// --------------------------------------------------//
-
-
-		static std::unordered_map<uint32_t, Camera*> m_cameras;
-		static std::unordered_map<uint32_t, MeshInstance*> m_mesheInstances;
-		static std::unordered_map<uint32_t, Translation*> m_translations;
-		static std::unordered_map<uint32_t, Rotation*> m_rotations;
-		static std::unordered_map<uint32_t, Scale*> m_scales;
-		static std::unordered_map<uint32_t, RigidBody*> m_rigids;
-		static std::unordered_map<uint32_t, Animator*> m_animators;
-		static std::multimap<uint32_t, Light*> m_lights;
+		static std::unordered_map<size_t, Camera*> m_cameras;
+		static std::unordered_map<size_t, MeshInstance*> m_mesheInstances;
+		static std::unordered_map<size_t, Translation*> m_translations;
+		static std::unordered_map<size_t, Rotation*> m_rotations;
+		static std::unordered_map<size_t, Scale*> m_scales;
+		static std::unordered_map<size_t, StaticBody*> m_staticBodies;
+		static std::unordered_map<size_t, DynamicBody*> m_dynamicBodies;
+		static std::unordered_map<size_t, CharacterController*> m_characterControllers;
+		static std::unordered_map<size_t, AABoundBox*> m_AABBs;
+		static std::unordered_map<size_t, OBBox*> m_OBBs;
+		static std::unordered_map<size_t, UIComponent*> m_UI;
+		static std::multimap<size_t, Light*> m_lights;
 		
-		
-		static std::array<std::unordered_map<uint32_t, Drawable*>, 7> m_meshLayer;
+		static std::array<std::unordered_map<size_t, Drawable*>, 7> m_meshLayer;
 
 		friend class Entity;
 		friend class MeshInstance;
 		friend class Renderer;
 		friend class ImGuiHandler;
+		friend class AABoundBox;
+		friend class OBBox;
+		friend class Camera;
+		friend class LevelExporter;
+		friend class ImGuiImporter;
 	};
 
 }

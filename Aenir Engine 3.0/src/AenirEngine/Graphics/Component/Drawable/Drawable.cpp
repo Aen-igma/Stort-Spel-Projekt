@@ -3,8 +3,8 @@
 
 namespace Aen {
 
-	Drawable::Drawable() {
-	}
+	Drawable::Drawable(const size_t& id)
+		:Component(id) {}
 
 	Drawable::~Drawable() {
 	}

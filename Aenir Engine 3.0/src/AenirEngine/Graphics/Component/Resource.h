@@ -18,6 +18,7 @@ namespace Aen {
 		}
 
 		static ShaderModel& CreateShader(const std::string& name, Window& window) {
+			if (ShaderExist(name)) return *m_shaders.at(name);
 			m_shaders.emplace(name, AEN_NEW ShaderModel(window));
 			return *m_shaders.at(name);
 		}
@@ -28,6 +29,17 @@ namespace Aen {
 				m_shaders.at(name) = nullptr;
 				m_shaders.erase(name);
 			}
+		}
+
+		static void RemoveAllShaders() {
+			for (auto& s : m_shaders) {
+				if (s.second) {
+					delete s.second;
+					s.second = nullptr;
+				}
+			}
+
+			m_shaders.clear();
 		}
 
 		static ShaderModel& GetShader(const std::string& name) {
@@ -49,6 +61,7 @@ namespace Aen {
 		}
 
 		static Material& CreateMaterial(const std::string& name, const std::string& shaderName) {
+			if (MaterialExist(name)) return *m_materials.at(name);
 			if(m_shaders.count(shaderName) == 0) throw;
 			m_materials.emplace(name, AEN_NEW Material(*m_shaders.at(shaderName)));
 			return *m_materials.at(name);
@@ -60,6 +73,17 @@ namespace Aen {
 				m_materials.at(name) = nullptr;
 				m_materials.erase(name);
 			}
+		}
+
+		static void RemoveAllMaterials() {
+			for (auto& m : m_materials) {
+				if (m.second && m.first != "DefaultMaterial") {
+					delete m.second;
+					m.second = nullptr;
+				}
+			}
+
+			m_materials.clear();
 		}
 
 		static Material& GetMaterial(const std::string& name) {
@@ -76,6 +100,7 @@ namespace Aen {
 		}
 
 		static Texture& CreateTexture(const std::string& name) {
+			if (TextureExist(name)) return *m_textures.at(name);
 			m_textures.emplace(name, AEN_NEW Texture());
 			return *m_textures.at(name);
 		}
@@ -86,6 +111,17 @@ namespace Aen {
 				m_textures.at(name) = nullptr;
 				m_textures.erase(name);
 			}
+		}
+
+		static void RemoveAllTextures() {
+			for (auto& t : m_textures) {
+				if (t.second && t.first != "DefaultTexture") {
+					delete t.second;
+					t.second = nullptr;
+				}
+			}
+
+			m_textures.clear();
 		}
 
 		static Texture& GetTexture(const std::string& name) {
@@ -102,6 +138,7 @@ namespace Aen {
 		}
 
 		static Mesh& CreateMesh(const std::string& name) {
+			if (MeshExist(name)) return *m_meshes.at(name);
 			m_meshes.emplace(name, AEN_NEW Mesh());
 			return *m_meshes.at(name);
 		}
@@ -117,6 +154,17 @@ namespace Aen {
 				m_meshes.erase(name);
 
 			}
+		}
+
+		static void RemoveAllMeshes() {
+			for (auto& m : m_meshes) {
+				if (m.second) {
+					delete m.second;
+					m.second = nullptr;
+				}
+			}
+
+			m_meshes.clear();
 		}
 
 		static Mesh& GetMesh(const std::string& name) {
