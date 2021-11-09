@@ -29,8 +29,8 @@ void Victory::Update(const float& deltaTime)
 		if (m_toggleFullScreen) {
 			wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
 			wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
-			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
-			wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
+			wDesc.EXStyle = WS_EX_APPWINDOW;
+			wDesc.style = WS_POPUPWINDOW | WS_VISIBLE;
 			m_Window.LoadSettings(wDesc);
 		}
 		else {

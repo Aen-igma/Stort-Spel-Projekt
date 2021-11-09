@@ -34,9 +34,9 @@ namespace Aen {
 			if(!m_collisionPS.Create(L"CollisionPS.cso"))
 				throw;
 
-		if(!m_postProcessCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessCS.cso")))
-			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
-				throw;
+		//if(!m_postProcessCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessCS.cso")))
+		//	if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
+		//		throw;
 
 		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32_FLOAT);
 		m_opaqueLayout.Create(m_opaqueVS);

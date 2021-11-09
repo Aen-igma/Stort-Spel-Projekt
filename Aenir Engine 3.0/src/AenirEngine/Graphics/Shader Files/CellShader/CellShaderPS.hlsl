@@ -105,38 +105,38 @@ PS_Output main(PS_Input input) : SV_Target0 {
 	for(uint k = lightGrid.r; k < lightGrid.r + lightGrid.g != 0; k++) {
 		uint i = Aen_LightIndexList[k];
 
-		float3 pLightDir = normalize(Aen_SB_Light[i].pos - input.worldPos);
-		float3 cLightDir = normalize(camPos - input.worldPos);
-		float dotND = dot(Aen_SB_Light[i].dir, normal);
-		float dotNP = dot(pLightDir, normal);
-		float dotNC = dot(cLightDir, normal);
+		//float3 pLightDir = normalize(Aen_SB_Light[i].pos - input.worldPos);
+		//float3 cLightDir = normalize(camPos - input.worldPos);
+		//float dotND = dot(Aen_SB_Light[i].dir, normal);
+		//float dotNP = dot(pLightDir, normal);
+		//float dotNC = dot(cLightDir, normal);
 
-		float dist = distance(Aen_SB_Light[i].pos, input.worldPos);
-		float attenuation = 1.f / (Aen_SB_Light[i].dist.x + Aen_SB_Light[i].dist.y * dist + Aen_SB_Light[i].dist.z * dist * dist);
-		float3 dotDir = (Aen_SB_Light[i].type == 2) ? reflect(normalize(Aen_SB_Light[i].dir), normalize(normal)) : reflect(pLightDir, normalize(normal));
-		float theta = max(dot(cLightDir, -dotDir), 0.f);
-		float power = clamp(1.f - specularPower, 0.f, 1.f);
-		float specBlurr = pow(theta, clamp(power * 50.f, 1.f, 50.f));
-		float s1 = (theta > power - specBlurr + 1.f);
-		float s2 = (theta > power) * sqrt(specBlurr);
+		//float dist = distance(Aen_SB_Light[i].pos, input.worldPos);
+		//float attenuation = 1.f / (Aen_SB_Light[i].dist.x + Aen_SB_Light[i].dist.y * dist + Aen_SB_Light[i].dist.z * dist * dist);
+		//float3 dotDir = (Aen_SB_Light[i].type == 2) ? reflect(normalize(Aen_SB_Light[i].dir), normalize(normal)) : reflect(pLightDir, normalize(normal));
+		//float theta = max(dot(cLightDir, -dotDir), 0.f);
+		//float power = clamp(1.f - specularPower, 0.f, 1.f);
+		//float specBlurr = pow(theta, clamp(power * 50.f, 1.f, 50.f));
+		//float s1 = (theta > power - specBlurr + 1.f);
+		//float s2 = (theta > power) * sqrt(specBlurr);
 
 		float3 diffuse = Aen_SB_Light[i].color.rgb * Aen_SB_Light[i].strength;
-		float3 specular = specularColor.rgb * lerp(s1, s2, roughness) * specularStrength;
-		float3 rim = (max(1.f - dotNC, 0.f) > 1.f - rimLightSize) * max(dot(cLightDir, dotDir), 0.f) * rimLightColor * rimLightIntensity;
+		//float3 specular = specularColor.rgb * lerp(s1, s2, roughness) * specularStrength;
+		//float3 rim = (max(1.f - dotNC, 0.f) > 1.f - rimLightSize) * max(dot(cLightDir, dotDir), 0.f) * rimLightColor * rimLightIntensity;
 		
-		if(Aen_SB_Light[i].type == 0 && dotND > shadowOffset && dist < Aen_SB_Light[i].dist.w) {
-			float spot = pow(max(dot(pLightDir, Aen_SB_Light[i].dir), 0.f), Aen_SB_Light[i].ang);
-			float light = (spot > 0.1f) ? spot : 0.f;
-			finalPixel += (diffuse + specular) * light * attenuation;
-		}
+		//if(Aen_SB_Light[i].type == 0 && dotND > shadowOffset && dist < Aen_SB_Light[i].dist.w) {
+		//	float spot = pow(max(dot(pLightDir, Aen_SB_Light[i].dir), 0.f), Aen_SB_Light[i].ang);
+		//	float light = (spot > 0.1f) ? spot : 0.f;
+		//	finalPixel += (diffuse + specular) * light * attenuation;
+		//}
 		
-		if(Aen_SB_Light[i].type == 1 && dotNP > shadowOffset && dist < Aen_SB_Light[i].dist.w)
-			finalPixel += (diffuse + specular) * attenuation;
+		//if(Aen_SB_Light[i].type == 1 && dotNP > shadowOffset && dist < Aen_SB_Light[i].dist.w)
+		//	finalPixel += (diffuse + specular) * attenuation;
 
-		if(Aen_SB_Light[i].type == 2 && dotND > shadowOffset)
-			finalPixel += diffuse + specular;
+		if(Aen_SB_Light[i].type == 2/* && dotND > shadowOffset*/)
+			finalPixel += diffuse /*+ specular*/;
 
-		finalPixel += rim;
+		//finalPixel += rim;
 	}
 
 	output.diffuse = float4(saturate(finalPixel * diffuseM), 1.f);

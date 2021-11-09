@@ -17,13 +17,23 @@ namespace sm = DirectX::SimpleMath;
 
 namespace Aen {
 
+	class AdapterData
+	{
+	public:
+		AdapterData(IDXGIAdapter* pAdapter);
+		IDXGIAdapter* pAdapter = nullptr;
+		DXGI_ADAPTER_DESC description;
+	};
+
 	class GCore {
 		private:
-			
+		static std::vector<AdapterData> adapters;
 		struct Concealed {
 			static bool Initialize(const Window& window);
 			static void Release();
 		};
+
+
 
 		friend class GameLoop;
 

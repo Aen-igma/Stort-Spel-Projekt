@@ -1,1 +1,2 @@
-ifall programmet inte hittar dll filer, öppna lib/copy-dll.cmd
+First time install:
+	lib/lib-patcher.cmd
