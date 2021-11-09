@@ -80,7 +80,7 @@ namespace Aen {
 		PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
 	}
 
-	void StaticBody::SetBoundsToMesh(const bool& MakeTriangleMesh) {
+	void StaticBody::SetBoundsToMesh(const bool& MakeTriangleMesh, const bool& insert) {
 
 		Vec3f bounds;
 		if(ComponentHandler::MeshInstanceExist(m_id))
@@ -88,24 +88,21 @@ namespace Aen {
 				bounds.smVec = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_obb.Extents;
 
 		m_scale = bounds;
-		m_gType = StaticGeometryType::CUBE;
 		px::PxTransform t = mp_StaticBody->getGlobalPose();
 		RemoveRigid();
 
-		px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.z * 0.5f);
-		mp_StaticBody = PxCreateStatic(*mp_LocalPhysics, t, cube, *mp_Material);
-		
 		if (MakeTriangleMesh)
 		{
-			px::PxTriangleMesh *cookedTris = CookMesh();
-			px::PxMeshScale scaleForCooked = px::PxMeshScale(px::PxVec3(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.z * 0.5f));
-			px::PxShape* shape = mp_LocalPhysics->createShape(px::PxTriangleMeshGeometry(cookedTris, scaleForCooked), *mp_Material);
-			mp_StaticBody->attachShape(*shape);
+			m_gType = StaticGeometryType::TRIANGLEMESH;
+			px::PxTriangleMeshGeometry cookedTriangles = px::PxTriangleMeshGeometry(CookMesh(insert), px::PxMeshScale());
+			mp_StaticBody = px::PxCreateStatic(*mp_LocalPhysics, t, cookedTriangles, *mp_Material);
 			PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
-			shape->release();
 		}
 		else
 		{
+			m_gType = StaticGeometryType::CUBE;
+			px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.z * 0.5f);
+			mp_StaticBody = PxCreateStatic(*mp_LocalPhysics, t, cube, *mp_Material);
 			PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
 		}
 		
@@ -159,21 +156,22 @@ namespace Aen {
 		mp_StaticBody->setGlobalPose(t);
 	}
 
-	px::PxTriangleMesh* StaticBody::CookMesh()
+	px::PxTriangleMesh* StaticBody::CookMesh(const bool& insert)
 	{
 		std::vector<DirectX::XMFLOAT3> localvPos = ComponentHandler::GetMeshInstance(m_id).m_pMesh->GetvPos();
+		std::vector<DWORD> localIndices = ComponentHandler::GetMeshInstance(m_id).m_pMesh->GetIndices();
 
 		px::PxTriangleMeshDesc meshDesc;
 		meshDesc.points.count = localvPos.size();
 		meshDesc.points.stride = sizeof(DirectX::XMFLOAT3);
 		meshDesc.points.data = localvPos.data();
 
-		meshDesc.triangles.count = localvPos.size()/3;
-		meshDesc.triangles.stride = 3 * sizeof(px::PxU32);
-		//meshDesc.triangles.data = indices32;
+		meshDesc.triangles.count = localIndices.size();
+		meshDesc.triangles.stride = 3 * sizeof(uint32_t);
+		meshDesc.triangles.data = localIndices.data();
 
-		//if (!Insert)
-		//{
+		if(!insert)
+		{
 			px::PxDefaultMemoryOutputStream writeBuffer;
 			
 			bool status = PhysicsHandler::GetInstance()->GetCooking()->cookTriangleMesh(meshDesc, writeBuffer);
@@ -182,11 +180,11 @@ namespace Aen {
 			
 			px::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
 			return mp_LocalPhysics->createTriangleMesh(readBuffer);
-		/*}
+		}
 		else
 		{
 			return PhysicsHandler::GetInstance()->GetCooking()->createTriangleMesh(meshDesc, mp_LocalPhysics->getPhysicsInsertionCallback());
-		}*/
+		}
 	}
 
 	const Vec3f StaticBody::GetPos() {

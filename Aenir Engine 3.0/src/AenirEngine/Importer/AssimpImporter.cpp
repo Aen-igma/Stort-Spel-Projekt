@@ -4,13 +4,12 @@
 #undef min
 
 
-void Aen::AssimpImport::LoadFbx(IBuffer iBuffer, std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial)
+void Aen::AssimpImport::LoadFbx(IBuffer iBuffer, std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial, std::vector<DWORD>& invertIndices)
 {
 	std::vector<Vertex> mesh;
-	std::vector<DWORD> indices;
 	Assimp::Importer importer;
 
-	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_MakeLeftHanded);
+	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_MakeLeftHanded );
 	
 
 	if (pScene == NULL) {
@@ -18,7 +17,7 @@ void Aen::AssimpImport::LoadFbx(IBuffer iBuffer, std::vector<DirectX::XMFLOAT3>&
 		printf("Assimp failed or path to model does not exist");
 	}
 
-	AssimpImport::ProcessNode(pScene->mRootNode, pScene, vBuffer, mesh, indices, partitions, meshMaterial);
+	AssimpImport::ProcessNode(pScene->mRootNode, pScene, vBuffer, mesh, invertIndices, partitions, meshMaterial);
 
 	UINT meshSize = mesh.size();
 
@@ -33,14 +32,14 @@ void Aen::AssimpImport::LoadFbx(IBuffer iBuffer, std::vector<DirectX::XMFLOAT3>&
 		throw;
 		printf("Failed to create vbuffer");
 	}
-	if (!iBuffer.Create(indices.data(), (UINT)indices.size()))
+	if (!iBuffer.Create(invertIndices.data(), (UINT)invertIndices.size()))
 	{
 		throw;
 		printf("Failed to create ibuffer");
 	}
 }
 
-void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>&verts, std::vector<DWORD>& indices, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
+void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>&verts, std::vector<DWORD>& invertIndices, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
 	UINT numVerts = mesh->mNumVertices;
 
@@ -86,11 +85,12 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 			}
 			verts.emplace_back(vertex);
 		}
+
 		for (int i = 0; i < mesh->mNumFaces; i++)
 		{
 			aiFace face = mesh->mFaces[i];
-			for (int j = 0; j < face.mNumIndices; j++)
-				indices.push_back(face.mIndices[j]);
+			for (int j = 1; j <= face.mNumIndices; j++)
+				invertIndices.push_back(face.mIndices[face.mNumIndices - j]);
 		}
 		offset = numVerts;
 		printf("\n");
@@ -99,17 +99,17 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 }
 
 void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBuffer<Aen::Vertex>& vBuffer,
-	std::vector<Aen::Vertex>& verts, std::vector<DWORD>& indices, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
+	std::vector<Aen::Vertex>& verts, std::vector<DWORD>& invertIndices, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
 	UINT offset = 0;
 	UINT numMeshes = node->mNumMeshes;
 	for (UINT i = 0; i < numMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		AssimpImport::ProcessMesh(offset, mesh, scene, verts, indices, partsData, meshMaterial);
+		AssimpImport::ProcessMesh(offset, mesh, scene, verts, invertIndices, partsData, meshMaterial);
 	}
 
 	UINT numNodes = node->mNumChildren;
 	for (UINT i = 0; i < numNodes; i++)
-		AssimpImport::ProcessNode(node->mChildren[i], scene, vBuffer, verts, indices, partsData, meshMaterial);
+		AssimpImport::ProcessNode(node->mChildren[i], scene, vBuffer, verts, invertIndices, partsData, meshMaterial);
 }

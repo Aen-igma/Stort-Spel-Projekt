@@ -137,8 +137,7 @@ namespace Aen {
 
 								RenderSystem::ClearDepthStencilView(renderer.m_depthMap, false, true);
 								RenderSystem::SetDepthStencilState(renderer.m_writeStencil, 0xFF);
-								//m_pMesh->m_vertices.Draw(m_pMesh->m_partitions[i].size, m_pMesh->m_partitions[i].offset);
-								m_pMesh->m_ibuffer.DrawIndexed();
+								m_pMesh->m_vertices.Draw(m_pMesh->m_partitions[i].size, m_pMesh->m_partitions[i].offset);
 
 
 								// Per Object Post Process Pass
@@ -194,8 +193,7 @@ namespace Aen {
 					}
 
 					m_pMesh->m_vertices.BindBuffer();
-					//m_pMesh->m_vertices.Draw();
-					m_pMesh->m_ibuffer.DrawIndexed();
+					m_pMesh->m_vertices.Draw();
 				}
 		}
 	}

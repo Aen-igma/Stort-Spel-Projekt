@@ -24,10 +24,8 @@ private:
 
     Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
-    /* Aen::Entity* m_reimube1;
-     Aen::Entity* m_reimube2;
-     Aen::Entity* m_reimube3;
-     Aen::Entity* m_reimube4;*/
+    Aen::Entity* m_reimube1;
+
     Aen::Entity* m_UI;
     Aen::Entity* m_wall;
 

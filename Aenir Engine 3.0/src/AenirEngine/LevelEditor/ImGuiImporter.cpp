@@ -298,11 +298,8 @@ namespace Aen
 
 		if (model.rigidBody && model.rigidBodyType != IGH::HITBOXTYPE[0]) // Check if should have rigidbody
 		{
-			if (model.name.find("Wall") != std::string::npos)
-			{
-				entity->AddComponent<Aen::StaticBody>();
-				entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh();
-			}
+			entity->AddComponent<Aen::StaticBody>();
+			entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true, true);
 		}
 
 		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);

@@ -174,7 +174,6 @@ namespace Aen {
 		mp_DynamicBody->setGlobalPose(t);
 	}
 
-
 	const Vec3f DynamicBody::GetPos() {
 		px::PxTransform t = mp_DynamicBody->getGlobalPose();
 		return Vec3f(t.p.x, t.p.y, t.p.z);
