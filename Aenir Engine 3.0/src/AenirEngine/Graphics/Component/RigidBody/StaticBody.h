@@ -15,7 +15,7 @@ namespace Aen {
 		void SetRestitutionCombineMode(const CombineMode& mode);
 		void SetMaterialFlag(const MaterialFlag& flag);
 		void SetGeometry(const StaticGeometryType& geometry, const Vec3f& scale = Vec3f::one);
-		void SetBoundsToMesh();
+		void SetBoundsToMesh(const bool& MakeTriangleMesh = false);
 
 		const Vec3f GetPos();
 		const Vec3f GetRot();
@@ -32,7 +32,8 @@ namespace Aen {
 		void SetPos(const float& x, const float& y, const float& z);
 		void SetRot(const Vec3f& rot);
 		void SetRot(const float& p, const float& y, const float& r);
-		
+		px::PxTriangleMesh* CookMesh();
+
 		StaticGeometryType m_gType;
 		px::PxMaterial* mp_Material;
 		px::PxPhysics* mp_LocalPhysics;

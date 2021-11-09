@@ -18,6 +18,7 @@ namespace Aen {
 
 		px::PxPlane plane(px::PxVec3(0.f, 0.f, 0.f), px::PxVec3(0.f, 1.f, 0.f));
 		mp_StaticBody = PxCreatePlane(*mp_LocalPhysics, plane, *mp_Material);
+
 		PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
 	}
 
@@ -79,7 +80,7 @@ namespace Aen {
 		PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
 	}
 
-	void StaticBody::SetBoundsToMesh() {
+	void StaticBody::SetBoundsToMesh(const bool& MakeTriangleMesh) {
 
 		Vec3f bounds;
 		if(ComponentHandler::MeshInstanceExist(m_id))
@@ -93,8 +94,21 @@ namespace Aen {
 
 		px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.z * 0.5f);
 		mp_StaticBody = PxCreateStatic(*mp_LocalPhysics, t, cube, *mp_Material);
-
-		PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
+		
+		if (MakeTriangleMesh)
+		{
+			px::PxTriangleMesh *cookedTris = CookMesh();
+			px::PxMeshScale scaleForCooked = px::PxMeshScale(px::PxVec3(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.z * 0.5f));
+			px::PxShape* shape = mp_LocalPhysics->createShape(px::PxTriangleMeshGeometry(cookedTris, scaleForCooked), *mp_Material);
+			mp_StaticBody->attachShape(*shape);
+			PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
+			shape->release();
+		}
+		else
+		{
+			PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
+		}
+		
 	}
 
 
@@ -143,6 +157,36 @@ namespace Aen {
 		px::PxTransform t = mp_StaticBody->getGlobalPose();
 		t.q = px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w);
 		mp_StaticBody->setGlobalPose(t);
+	}
+
+	px::PxTriangleMesh* StaticBody::CookMesh()
+	{
+		std::vector<DirectX::XMFLOAT3> localvPos = ComponentHandler::GetMeshInstance(m_id).m_pMesh->GetvPos();
+
+		px::PxTriangleMeshDesc meshDesc;
+		meshDesc.points.count = localvPos.size();
+		meshDesc.points.stride = sizeof(DirectX::XMFLOAT3);
+		meshDesc.points.data = localvPos.data();
+
+		meshDesc.triangles.count = localvPos.size()/3;
+		meshDesc.triangles.stride = 3 * sizeof(px::PxU32);
+		meshDesc.triangles.data = indices32;
+
+		//if (!Insert)
+		//{
+			px::PxDefaultMemoryOutputStream writeBuffer;
+			
+			bool status = PhysicsHandler::GetInstance()->GetCooking()->cookTriangleMesh(meshDesc, writeBuffer);
+			if (!status)
+				return NULL;
+			
+			px::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+			return mp_LocalPhysics->createTriangleMesh(readBuffer);
+		/*}
+		else
+		{
+			return PhysicsHandler::GetInstance()->GetCooking()->createTriangleMesh(meshDesc, mp_LocalPhysics->getPhysicsInsertionCallback());
+		}*/
 	}
 
 	const Vec3f StaticBody::GetPos() {

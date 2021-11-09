@@ -110,6 +110,10 @@ namespace Aen {
 		return mp_Scene;
 	}
 
+	px::PxCooking*& PhysXWrap::GetCooking() {
+		return mp_Cooking;
+	}
+
 	void PhysXWrap::SetGravity(const Vec3f& force) {
 		mp_Scene->setGravity(px::PxVec3(force.x, force.y, force.z));
 	}

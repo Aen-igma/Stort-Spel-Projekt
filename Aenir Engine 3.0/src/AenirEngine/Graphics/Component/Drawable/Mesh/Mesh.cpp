@@ -35,12 +35,15 @@ namespace Aen {
 		size_t off = dir.find_last_of('.');
 		std::string format = dir.substr(off + 1);
 		if (format == "fbx") {
-			std::vector<DirectX::XMFLOAT3> vPos;
-			AssimpImport::LoadFbx(vPos, m_vertices, dir, m_partitions, m_meshMaterialName);
+			//std::vector<DirectX::XMFLOAT3> vPos;
+			//AssimpImport::LoadFbx(vPos, m_vertices, dir, m_partitions, m_meshMaterialName);
+			AssimpImport::LoadFbx(m_vPos, m_vertices, dir, m_partitions, m_meshMaterialName);
 
 			size_t vStride = sizeof(DirectX::XMFLOAT3);
-			m_aabb.CreateFromPoints(m_aabb, vPos.size(), vPos.data(), vStride);
-			m_obb.CreateFromPoints(m_obb, vPos.size(), vPos.data(), vStride);
+			m_aabb.CreateFromPoints(m_aabb, m_vPos.size(), m_vPos.data(), vStride);
+			m_obb.CreateFromPoints(m_obb, m_vPos.size(), m_vPos.data(), vStride);
+			/*m_aabb.CreateFromPoints(m_aabb, vPos.size(), vPos.data(), vStride);
+			m_obb.CreateFromPoints(m_obb, vPos.size(), vPos.data(), vStride);*/
 
 		} else {
 			throw;
@@ -48,6 +51,11 @@ namespace Aen {
 		}
 		
 
+	}
+
+	const std::vector<DirectX::XMFLOAT3>& Mesh::GetvPos()
+	{
+		return this->m_vPos;
 	}
 
 	Mesh::~Mesh() {

@@ -69,15 +69,15 @@ void Gameplay::Initialize()
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
-	Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
+	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
 
-	wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
+	/*wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
 	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
 
 	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
@@ -88,6 +88,14 @@ void Gameplay::Initialize()
 	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 
 	// -------------------------- Setup Entities -------------------------------- //
+
+	m_plane = &Aen::EntityHandler::CreateEntity();
+	m_plane->AddComponent<Aen::StaticBody>();
+	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
+	//m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
+	//m_plane->AddComponent<Aen::MeshInstance>();
+	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 
 	/*m_wall = &Aen::EntityHandler::CreateEntity();
 	m_wall->AddComponent<Aen::MeshInstance>();
@@ -129,13 +137,6 @@ void Gameplay::Initialize()
 
 	wallE = nullptr;*/
 
-	m_plane = &Aen::EntityHandler::CreateEntity();
-	m_plane->AddComponent<Aen::StaticBody>();
-	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
-	//m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
-	//m_plane->AddComponent<Aen::MeshInstance>();
-	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 
 	//m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	//m_reimube1->AddComponent<Aen::StaticBody>();

@@ -298,33 +298,16 @@ namespace Aen
 
 		if (model.rigidBody && model.rigidBodyType != IGH::HITBOXTYPE[0]) // Check if should have rigidbody
 		{
-
-			//if (model.name.find("Wall") != std::string::npos)
-			//{
+			if (model.name.find("Wall") != std::string::npos)
+			{
 				entity->AddComponent<Aen::StaticBody>();
 				entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh();
-				//entity->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(1.f, 22.f, 44.f));
-				//entity->GetComponent<Aen::StaticBody>().SetPos(Aen::Vec3f(model.translation[0], model.translation[1], model.translation[2]));
-				//entity->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
-		//	}
-		//	else if (model.name.find("Wall_Door") != std::string::npos)
-		//	{
-		//		entity->AddComponent<Aen::StaticBody>();
-		//		entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh();
-		//		//entity->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(1.f, 22.f, 22.f));
-		//		//entity->GetComponent<Aen::StaticBody>().SetPos(Aen::Vec3f(model.translation[0], model.translation[1], model.translation[2]));
-		//		//entity->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
-		//	}
-		//	
+			}
 		}
-	
-
 
 		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);
 		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);
 		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
-
-		//entity->GetPos();
 
 		size_t id = entity->GetID();
 		Aen::ComponentHandler::GetMeshInstance(static_cast<size_t>(id)).SetMaterial(material);
