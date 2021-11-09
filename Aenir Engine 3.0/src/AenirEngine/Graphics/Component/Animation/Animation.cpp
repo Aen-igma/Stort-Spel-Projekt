@@ -243,6 +243,21 @@ namespace Aen {
 		TransferNodeBoneData(ai_node_bones, m_boneArray, animation->mMeshes[0]);
 		MeshBoneData(animation->mMeshes[0], ai_bone_data);
 		//TransferBones(ai_bone_data, m_boneArray);
+		
+		std::vector<DWORD> indices;
+		std::vector<VertexAnimation> verts;
+		for (int i = 0; i < m_boneArray.size(); i++) {
+			indices.emplace_back(m_boneArray[i].boneID + 1);
+			indices.emplace_back(m_boneArray[i].parentID + 1);
+			VertexAnimation currentV;
+			currentV.boneId.x = m_boneArray[i].boneID;
+			currentV.boneWeights.x = 1.f;
+			verts.emplace_back(currentV);
+		}
+
+		m_indexBuffer.Create(indices.data(), indices.size());
+		if(!vBuff.Create(verts.data(), verts.size()))
+			throw;
 
 		//----------------------ANIMATION DATA--------------------------//
 		aiAnimation* ani = animation->mAnimations[0];

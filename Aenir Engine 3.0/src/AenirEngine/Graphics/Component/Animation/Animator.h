@@ -26,7 +26,7 @@ namespace Aen {
 		friend class Renderer;
 
 		// Inherited via Drawable
-		virtual void Draw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) override;
-		virtual void DepthDraw(Renderer& renderer, const uint32_t& id, const uint32_t& layer) override;
+		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
+		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
 	};
 }

@@ -12,6 +12,16 @@
 
 namespace Aen {
 
+	struct VertexAnimation {
+		Vec3f pos;
+		Vec3f norm;
+		Vec3f tan;
+		Vec3f bi;
+		Vec2f uv;
+		Vec4i boneId;
+		Vec4f boneWeights;
+	};
+
 	struct AssimpData {
 		Mat4f transform;
 		std::string name;
@@ -45,6 +55,9 @@ namespace Aen {
 		std::unordered_map<std::string, KeyFrameData> m_keyFrames;
 		Mat4f globalInverseTransformMatrix;
 		UINT boneCount;
+		VBuffer<VertexAnimation> vBuff;
+		IBuffer m_indexBuffer;
+
 	public:
 		Animation();
 		Animation(const std::string& animationPath);
