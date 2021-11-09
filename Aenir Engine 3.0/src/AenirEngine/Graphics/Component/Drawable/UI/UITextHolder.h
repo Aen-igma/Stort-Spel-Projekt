@@ -25,7 +25,7 @@ namespace Aen
 
 		std::vector<UITextData> GetData() const;
 		void Initialize();
-		void AddText(LPCWSTR text, LPCWSTR font);
+		void AddText(LPCWSTR text, float size);
 		void Draw(UITextData& data);
 
 		void setTextSize(float width, float height);

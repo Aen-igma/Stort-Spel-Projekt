@@ -27,7 +27,7 @@ namespace Aen {
 		bool Intersects(int index);
 
 		//----------------------	Text	----------------------------//
-		void AddText(LPCWSTR text, LPCWSTR font);
+		void AddText(LPCWSTR text, float size);
 		void SetTextSize(float width, float height);
 		void SetTextPos(float x, float y);
 

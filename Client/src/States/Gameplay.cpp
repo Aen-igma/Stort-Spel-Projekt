@@ -41,7 +41,7 @@ void Gameplay::Initialize()
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Kill All Enemies", L"Arial Black"); //0
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Kill All Enemies", 72.f); //0
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 100.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
 

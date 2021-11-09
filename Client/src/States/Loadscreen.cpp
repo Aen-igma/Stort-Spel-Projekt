@@ -50,11 +50,6 @@ void Loadscreen::Initialize()
 	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 150.f);
 	m_loading->GetComponent<Aen::UIComponent>().SaveButtonData();
 
-	//Text
-	//m_loading->GetComponent<Aen::UIComponent>().AddText();
-	//m_loading->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f);
-	//m_loading->GetComponent<Aen::UIComponent>().SetTextSize(300.f, 300);
-
 	if (!State::GetLoaded())
 		State::SetLoad(true);
 }

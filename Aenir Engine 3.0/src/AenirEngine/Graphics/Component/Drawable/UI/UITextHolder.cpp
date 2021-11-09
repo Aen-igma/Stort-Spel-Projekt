@@ -35,11 +35,11 @@ namespace Aen
 		ASSERT_HR(m_Format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
 	}
 
-	void UITextHolder::AddText(LPCWSTR text, LPCWSTR font)
+	void UITextHolder::AddText(LPCWSTR text, float size)
 	{
 		UITextData temp;
 		ASSERT_HR(m_target2D->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &temp.m_pBrush));
-		ASSERT_HR(m_pDWriteFactory->CreateTextFormat(font, NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 72.0f, L"en-us", &temp.m_pFormat));
+		ASSERT_HR(m_pDWriteFactory->CreateTextFormat(L"Arial", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, size, L"en-us", &temp.m_pFormat));
 		ASSERT_HR(temp.m_pFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
 		ASSERT_HR(temp.m_pFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
 		m_nr++;

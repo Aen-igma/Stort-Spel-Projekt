@@ -44,9 +44,9 @@ namespace Aen {
 
     //----------------------	Text	----------------------------//
 
-    void Aen::UIComponent::AddText(LPCWSTR text, LPCWSTR font)
+    void Aen::UIComponent::AddText(LPCWSTR text, float size)
     {
-        m_text.AddText(text, font);
+        m_text.AddText(text, size);
     }
 
     void UIComponent::SetTextSize(float width, float height)
