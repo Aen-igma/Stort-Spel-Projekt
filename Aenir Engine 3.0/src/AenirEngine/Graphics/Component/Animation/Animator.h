@@ -11,7 +11,11 @@ namespace Aen {
 		Animation* m_CurrentAnimation;
 		float m_CurrentTime;
 		float m_DeltaTime;*/
+		Animation* animation;
 	public:
+		Animator(const size_t& id);
+		void SetAnimation(Animation& anim);
+
 		/*Animator(Animation& animation);
 		void UpdateAnimation(float deltaTime);
 		void PlayAnimation(Animation* animation);

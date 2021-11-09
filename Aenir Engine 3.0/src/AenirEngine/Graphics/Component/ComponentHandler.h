@@ -292,6 +292,7 @@ namespace Aen {
 
 		static void CreateAnimator(const uint32_t& id) {
 			m_animators.emplace(id, AEN_NEW Animator());
+			m_meshLayer[5].emplace(id, m_animators.at(id));
 		}
 
 		static void RemoveAnimators(const uint32_t& id) {

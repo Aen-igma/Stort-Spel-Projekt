@@ -32,7 +32,6 @@ void Aen::AssimpImport::LoadFbx(VBuffer<Vertex>& vBuffer, const std::string path
 
 void Aen::AssimpImport::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>& verts, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
-	Animation animation(;
 	UINT numVerts = mesh->mNumVertices;
 	UINT numMats = scene->mNumMaterials;
 	aiMaterial* material;
