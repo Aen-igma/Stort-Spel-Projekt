@@ -118,8 +118,8 @@ void main(CS_Input input) {
 
 		float4 output = /*float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * */diffuse;
 
-		outputMap[uv] = output;
-		finalMap[uv] = output;
+		outputMap[uv] = output.x;
+		finalMap[uv] = output.x;
 		//uv2 += uint2(1, 0);
 		//outputMap[uv2] = output.y;
 		//finalMap[uv2] = output.y;
@@ -128,8 +128,8 @@ void main(CS_Input input) {
 		//finalMap[uv2] = output.z;
 	} else
 		if(length(outputMap[uv]) <= 0.f) {
-			outputMap[uv] = bgColor;
-			finalMap[uv] = bgColor;
+			outputMap[uv] = bgColor.x;
+			finalMap[uv] = bgColor.x;
 			//uv2 += uint2(1, 0);
 			//outputMap[uv2] = bgColor.y;
 			//finalMap[uv2] = bgColor.y;
