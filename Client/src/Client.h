@@ -1,11 +1,5 @@
 #pragma once
-#include "States\Gameplay.h"
-#include "States\Menu.h"
-#include "States\Loadscreen.h"
-#include "States\GameEnd.h"
-#include "States\Victory.h"
 #include "AenirEngine.h"
-
 #include<stack>
 
 class Client : public Aen::App {
@@ -16,14 +10,16 @@ class Client : public Aen::App {
 
 	void Start() override;
 	void Update(const float& deltaTime) override;
-	void ChangeState(const States& states);
+	//void ChangeState(const States& states);
 
-	private:
-	State* mp_state;
-	States m_typeState;
-	Gameplay* mp_gameplay;
-	GameEnd* mp_gameEnd;
-	Victory* mp_victory;
+private:
+	Aen::Entity* m_cube;
+	Aen::Entity* m_cam;
+	//State* mp_state;
+	//States m_typeState;
+	//Gameplay* mp_gameplay;
+	//GameEnd* mp_gameEnd;
+	//Victory* mp_victory;
 };
 
 Aen::App* Aen::CreateApp() {

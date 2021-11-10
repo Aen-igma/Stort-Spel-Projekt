@@ -1,6 +1,7 @@
 #pragma once
 #include"Shader.h"
-
+#include"Helper.h"
+#include"ThirdParty/WICLoader/Inc\WICTextureLoader.h"
 namespace Aen {
 
 	struct AEN_DECLSPEC ShaderResource : public GCore {

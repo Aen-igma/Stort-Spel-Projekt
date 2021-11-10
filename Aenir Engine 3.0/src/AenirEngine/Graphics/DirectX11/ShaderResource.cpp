@@ -2,7 +2,7 @@
 #include "ShaderResource.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include"..\..\ThirdParty\stb_image.h"
-#include"ThirdParty\WICLoader\WICTextureLoader.h"
+
 
 namespace Aen {
 
@@ -15,7 +15,11 @@ namespace Aen {
 
     void ShaderResource::LoadResource(const std::string& dir) {
 
-        //DirectX::CreateWICTextureFromFile(m_device, dir, )
+        //ComResource texture;
+
+        //DirectX::CreateWICTextureFromFile(m_device.Get(), Helper::StringToWide(dir).c_str(), texture.GetAddressOf(), m_srv.GetAddressOf());
+
+        
 
         stbi_set_flip_vertically_on_load(true);
         int width = 0, height = 0, channels = 4;

@@ -73,7 +73,7 @@ struct CS_Input {
 	uint gIndex : SV_GroupIndex;
 };
 
-[numthreads(32, 18, 1)]
+[numthreads(32, 32, 1)]
 void main(CS_Input input) {
 
 	uint2 uv = input.dtId.xy;
@@ -100,40 +100,41 @@ void main(CS_Input input) {
 		window.x -= 1;
 		window.y -= 1;
 
-		//for(uint i = 0; i < 9; i++) {
-		//	float3 sn = depthNormalMap[clamp(uv + sPoint[i] * innerEdgeThickness * depth, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
-		//	float sd = depthMap[clamp(uv + sPoint[i] * outerEdgeThickness, uint2(0u, 0u), window)].x;
-		//	float2 kernel = float2(hRow[i], vRow[i]);
-		//	sobelX += sn.x * kernel;
-		//	sobelY += sn.y * kernel;
-		//	sobelZ += sn.z * kernel;
-		//	sobelDepth += sd * kernel;
-		//}
+		for (uint i = 0; i < 9; i++)
+		{
+			float3 sn = depthNormalMap[clamp(uv + sPoint[i] * innerEdgeThickness * depth, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
+			float sd = depthMap[clamp(uv + sPoint[i] * outerEdgeThickness, uint2(0u, 0u), window)].x;
+			float2 kernel = float2(hRow[i], vRow[i]);
+			sobelX += sn.x * kernel;
+			sobelY += sn.y * kernel;
+			sobelZ += sn.z * kernel;
+			sobelDepth += sd * kernel;
+		}
 
-		//float finalNSobel = clamp(pow((length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f, 6.f), 0.f, 1.f);
-		//float finalDSobel = clamp(length(sobelDepth), 0.f, 1.f);
-		//float3 innerEdge = finalNSobel * innerEdgeColor;
-		//float3 outerEdge = finalDSobel * outerEdgeColor;
+		float finalNSobel = clamp(pow((length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f, 6.f), 0.f, 1.f);
+		float finalDSobel = clamp(length(sobelDepth), 0.f, 1.f);
+		float3 innerEdge = finalNSobel * innerEdgeColor;
+		float3 outerEdge = finalDSobel * outerEdgeColor;
 
-		float4 output = /*float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) **/ diffuse;
+		float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
 
-		outputMap[uv2] = output.x;
-		finalMap[uv2] = output.x;
-		uv2 += uint2(1, 0);
-		outputMap[uv2] = output.y;
-		finalMap[uv2] = output.y;
-		uv2 += uint2(1, 0);
-		outputMap[uv2] = output.z;
-		finalMap[uv2] = output.z;
+		outputMap[uv] = output;
+		finalMap[uv] = output;
+		//uv2 += uint2(1, 0);
+		//outputMap[uv2] = output.y;
+		//finalMap[uv2] = output.y;
+		//uv2 += uint2(1, 0);
+		//outputMap[uv2] = output.z;
+		//finalMap[uv2] = output.z;
 	} else
 		if(length(outputMap[uv]) <= 0.f) {
-			outputMap[uv2] = bgColor.x;
-			finalMap[uv2] = bgColor.x;
-			uv2 += uint2(1, 0);
-			outputMap[uv2] = bgColor.y;
-			finalMap[uv2] = bgColor.y;
-			uv2 += uint2(1, 0);
-			outputMap[uv2] = bgColor.z;
-			finalMap[uv2] = bgColor.z;
+			outputMap[uv] = bgColor;
+			finalMap[uv] = bgColor;
+			//uv2 += uint2(1, 0);
+			//outputMap[uv2] = bgColor.y;
+			//finalMap[uv2] = bgColor.y;
+			//uv2 += uint2(1, 0);
+			//outputMap[uv2] = bgColor.z;
+			//finalMap[uv2] = bgColor.z;
 		}
 }

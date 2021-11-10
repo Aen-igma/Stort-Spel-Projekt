@@ -253,6 +253,7 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\UAView.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Physics\Physics.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Physics\Raycast.cpp" />
+    <ClCompile Include="src\AenirEngine\Helper.cpp" />
     <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Importer\AssimpImporter.cpp" />
     <ClCompile Include="src\AenirEngine\LevelEditor\ImGuiImporter.cpp" />
@@ -335,6 +336,7 @@
     <ClInclude Include="src\AenirEngine\Graphics\Physics\Raycast.h" />
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
+    <ClInclude Include="src\AenirEngine\Helper.h" />
     <ClInclude Include="src\AenirEngine\ImGuiHandler.h" />
     <ClInclude Include="src\AenirEngine\Importer\AssimpImporter.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />

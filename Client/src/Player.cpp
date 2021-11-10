@@ -78,10 +78,14 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
 		{
-			if (!Aen::Input::GPGetActive(0u) && !lockedOn) {
+			if (!Aen::Input::GPGetActive(0u)) {
 				m_camera->Rotate(
+					.5,
+					.5, 0);
+				/*m_camera->Rotate(
 					-(float)me.GetPos().y * m_mouseSense * deltaTime,
 					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
+					*/
 			}
 		}
 		if (me.getInputType() == Aen::MouseEvent::SCROLL_UP) {
