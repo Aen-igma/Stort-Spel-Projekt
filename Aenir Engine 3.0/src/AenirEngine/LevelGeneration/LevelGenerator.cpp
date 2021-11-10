@@ -545,28 +545,37 @@ namespace Aen
 	{
 		for (int y = 0; y < mapSize; y++) {
 			for (int x = 0; x < mapSize; x++) {
-				if (y - 1 > 0) {
-					map[x][y - 1];
-					if ((map[x][y].connectionDirections / 1u) % 10u > 0 && map[x][y - 1].m_present) {
-						//North
+				bool n = true, e = true, s = true, w = true;
+				if (y - 1 > 0 && (map[x][y].connectionDirections / 1u) % 10u > 0) {
+					if (!map[x][y - 1].m_present) {
+						//North facing unconnected
+						n = false;
+					}
+					else {
+						if (!(map[x][y - 1].connectionDirections / 100u) % 10u > 0) {
+							n = false;
+						}
 					}
 				}
-				if (x + 1 < mapSize) {
+				if (x + 1 < mapSize && (map[x][y].connectionDirections / 10u) % 10u > 0) {
 					map[x + 1][y];
-					if ((map[x][y].connectionDirections / 10u) % 10u > 0 && map[x + 1][y].m_present) {
-						//East
+					if (!map[x + 1][y].m_present) {
+						//East facing unconnected
+						e = false;
 					}
 				}
-				if (y + 1 < mapSize) {
+				if (y + 1 < mapSize && (map[x][y].connectionDirections / 100u) % 10u > 0) {
 					map[x][y + 1];
-					if ((map[x][y].connectionDirections / 100u) % 10u > 0 && map[x][y + 1].m_present) {
-						//South
+					if (!map[x][y + 1].m_present) {
+						//South facing unconnected
+						s = false;
 					}
 				}
-				if (x - 1 > 0) {
+				if (x - 1 > 0 && (map[x][y].connectionDirections / 1000u) % 10u > 0) {
 					map[x - 1][y];
-					if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && map[x - 1][y].m_present) {
-						//West
+					if (!map[x - 1][y].m_present) {
+						//West facing unconnected
+						w = false;
 					}
 				}
 			}
