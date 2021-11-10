@@ -25,11 +25,11 @@ void Client::Update(const float& deltaTime)
 	if (mp_state)
 		mp_state->Update(deltaTime);
 
-	if (mp_gameplay->GetLoaded())
-	{
-		std::thread work(&Gameplay::Initialize, mp_gameplay); //Initialize Gameplay
-		work.join();
-	}
+	//if (mp_gameplay->GetLoaded())
+	//{
+	//	std::thread work(&Gameplay::Initialize, mp_gameplay); //Initialize Gameplay
+	//	work.join();
+	//}
 	//if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		//m_window.Exit();
 }

@@ -214,198 +214,198 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	//}
 	//else {
-	//	axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
-	//	axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S);
+		axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
+		axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S);
 
-	//	// Dash/Dodge
+		// Dash/Dodge
 
-	//	if (Aen::Input::KeyDown(Aen::Key::SPACE)) {
-	//		EventData data;
-	//		data.accell = 20.f;
-	//		data.duration = 0.4f;
-	//		data.type = EventType::Dash;
-	//		data.function = [&](float& accell, const float& attackDuration) {
-	//			m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
-	//			m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
-	//			accell -= 25.f * deltaTime;
-	//		};
+		if (Aen::Input::KeyDown(Aen::Key::SPACE)) {
+			EventData data;
+			data.accell = 20.f;
+			data.duration = 0.4f;
+			data.type = EventType::Dash;
+			data.function = [&](float& accell, const float& attackDuration) {
+				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+				accell -= 25.f * deltaTime;
+			};
 
-	//		AddEvent(data);
-	//	}
+			AddEvent(data);
+		}
 
-	//	// Attack
+		// Attack
 
-	//	if (Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
-	//		EventData data;
-	//		data.accell = m_LIGHTATTACKSPEED;
-	//		data.duration = m_LIGHTATTACKTIME;
-	//		data.type = EventType::Attack;
-	//		data.damage = 20.f;
-	//		data.function = [&](float& accell, const float& attackDuration) {
-	//			m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-	//			SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);
-	//			if (lockedOn) {
-	//				Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
-	//				Aen::Vec3f d(d2.x, 0.f, d2.y);
-	//				m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
-	//			}
-	//			m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
-	//			accell -= 12.f * deltaTime;
-	//		};
+		if (Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
+			EventData data;
+			data.accell = m_LIGHTATTACKSPEED;
+			data.duration = m_LIGHTATTACKTIME;
+			data.type = EventType::Attack;
+			data.damage = 20.f;
+			data.function = [&](float& accell, const float& attackDuration) {
+				m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
+				SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);
+				if (lockedOn) {
+					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
+					Aen::Vec3f d(d2.x, 0.f, d2.y);
+					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
+				}
+				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				accell -= 12.f * deltaTime;
+			};
 
-	//		AddEvent(data);
-	//	}
-	//	if (Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
-	//		EventData data;
-	//		data.accell = m_HEAVYATTACKSPEED;
-	//		data.duration = m_HEAVYATTACKTIME;
-	//		data.type = EventType::Attack;
-	//		data.damage = 40.f;
-	//		data.function = [&](float& accell, const float& attackDuration)
-	//		{
+			AddEvent(data);
+		}
+		if (Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
+			EventData data;
+			data.accell = m_HEAVYATTACKSPEED;
+			data.duration = m_HEAVYATTACKTIME;
+			data.type = EventType::Attack;
+			data.damage = 40.f;
+			data.function = [&](float& accell, const float& attackDuration)
+			{
 
-	//			if (lockedOn) {
-	//				Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
-	//				Aen::Vec3f d(d2.x, 0.f, d2.y);
-	//				m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
-	//			}
+				if (lockedOn) {
+					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
+					Aen::Vec3f d(d2.x, 0.f, d2.y);
+					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
+				}
 
-	//			m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
-	//			accell -= deltaTime * 2;
-	//			if (attackDuration < m_HEAVYCHARGETIME)
-	//			{
-	//				m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-	//				SwordSwing(5.f, m_HEAVYATTACKTIME, deltaTime);
-	//			}
-	//			else
-	//				m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
-	//		};
+				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				accell -= deltaTime * 2;
+				if (attackDuration < m_HEAVYCHARGETIME)
+				{
+					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
+					SwordSwing(5.f, m_HEAVYATTACKTIME, deltaTime);
+				}
+				else
+					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+			};
 
-	//		AddEvent(data);
-	//	}
+			AddEvent(data);
+		}
 
-	//	// Lock On Target
+		// Lock On Target
 
-	//	if(Aen::Input::KeyDown(Aen::Key::TAB))
-	//		if(m_targets.size() > 1u && lockedOn) {
-	//			m_targets.front().target->SetISTargeted(false);
-	//			TargetData temp = m_targets.front();
-	//			m_targets.pop_front();
-	//			m_targets.front().target->SetISTargeted(true);
-	//			m_targets.emplace_back(temp);
-	//		}
+		if(Aen::Input::KeyDown(Aen::Key::TAB))
+			if(m_targets.size() > 1u && lockedOn) {
+				m_targets.front().target->SetISTargeted(false);
+				TargetData temp = m_targets.front();
+				m_targets.pop_front();
+				m_targets.front().target->SetISTargeted(true);
+				m_targets.emplace_back(temp);
+			}
 
-	//	if (Aen::Input::KeyDown(Aen::Key::E)) {
-	//		lockedOn = !lockedOn;
+		if (Aen::Input::KeyDown(Aen::Key::E)) {
+			lockedOn = !lockedOn;
 
-	//		if (lockedOn) {
-	//			for(auto i : e)
-	//				i->SetISTargeted(false);
+			if (lockedOn) {
+				for(auto i : e)
+					i->SetISTargeted(false);
 
-	//			m_targets.clear();
-	//			for (auto i : e) {
-	//				TargetData data;
-	//				data.target = i;
-	//				Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
-	//				data.distance = eDir.Magnitude();
+				m_targets.clear();
+				for (auto i : e) {
+					TargetData data;
+					data.target = i;
+					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
+					data.distance = eDir.Magnitude();
 
-	//				if(data.distance < 20.f)
-	//					m_targets.emplace_back(data);
-	//			}
+					if(data.distance < 20.f)
+						m_targets.emplace_back(data);
+				}
 
-	//			for(uint32_t i = 0u; i < m_targets.size(); i++) {
+				for(uint32_t i = 0u; i < m_targets.size(); i++) {
 
-	//				uint32_t t(i);
+					uint32_t t(i);
 
-	//				for(uint32_t k = i + 1u; k < m_targets.size(); k++)
-	//					if(m_targets[t].distance > m_targets[k].distance)
-	//						t = k;
+					for(uint32_t k = i + 1u; k < m_targets.size(); k++)
+						if(m_targets[t].distance > m_targets[k].distance)
+							t = k;
 
-	//				TargetData temp = m_targets[i];
-	//				m_targets[i] = m_targets[t];
-	//				m_targets[t] = temp;
-	//			}
+					TargetData temp = m_targets[i];
+					m_targets[i] = m_targets[t];
+					m_targets[t] = temp;
+				}
 
-	//			if(!m_targets.empty())
-	//				m_targets.front().target->SetISTargeted(true);
-	//		}
-	//	}
-	////}
-
-	//if (!m_targets.empty() && lockedOn) { 
-	//	Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_targets.front().target->GetEntity()->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
-	//	float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
-	//	float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
-
-	//	m_camera->SetRot(pitch, yaw, 0.f);
-	//	Aen::Vec3f eDir = m_player->GetPos() - m_targets.front().target->GetEntity()->GetPos();
-	//	if (eDir.Magnitude() > 20.f) lockedOn = false;
-	//} else {
-	//	lockedOn = false;
-	//	for(auto i : e)
-	//		i->SetISTargeted(false);
-	//}
-	//
-	//float r = Aen::Clamp(m_camera->GetRot().x, -45.f, 45.f);
-	//m_camera->SetRot(r, m_camera->GetRot().y, m_camera->GetRot().z);
-	//camDir = Aen::Lerp(camDir, Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), targetDir).Normalized(), 0.6f).Normalized();
-
-	//m_ray.SetOrigin(m_player->GetPos() - camDir * 0.8f);
-	//m_ray.SetDirection(-camDir);
-	//m_ray.SetMaxDist(5.f);
-	//m_ray.Update();
-
-	//m_camera->SetPos(Aen::Lerp(m_camera->GetPos(), m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * (-m_ray.GetDistance() - side.y) + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 1.25f * side.x, 0.6f));
-	//m_camera->GetComponent<Aen::Camera>().LookTowards(camDir);
-
-	//Aen::Vec3f playerDir = m_camera->GetComponent<Aen::Camera>().GetForward() * axis.Normalized().z + m_camera->GetComponent<Aen::Camera>().GetRight() * axis.Normalized().x;
-	//Aen::Vec2f dir(playerDir.x, playerDir.z);
-
-	//Aen::Vec3f attackPos = m_player->GetPos() + m_finalDir * 2.f;
-
-	//m_hurtbox->SetPos(attackPos);
-
-	//float yaw = std::atan2(m_finalDir.x, m_finalDir.z);
-	//float swordYaw = std::atan2(playerDir.x, playerDir.z);
-
-	//m_hurtbox->GetComponent<Aen::OBBox>().SetRotation(0.f, yaw, 0.f);
-	//m_player->SetRot(0.f, Aen::RadToDeg(yaw), 0.f);
-
-	//if (!m_eventQueue.empty())
-	//	if (m_eventQueue.front().duration > 0.f) {
-	//		m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration);
-	//		m_eventQueue.front().duration -= deltaTime;
-	//	}
-	//	else {
-	//		if (axis.Magnitude() > 0.f) 
-	//			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-	//		else {
-	//			Aen::Vec2f dir(camDir.x, camDir.z);
-	//			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-	//		}
-
-	//		m_eventQueue.pop_front();
-	//	}
-
-	//if (m_eventQueue.empty()) {
-	//	if (axis.Magnitude() > 0.f) {
-	//		m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-	//		m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * m_movementSpeed * deltaTime, deltaTime);
-	//	}
-	//	else {
-	//		Aen::Vec2f dir(camDir.x, camDir.z);
-	//		m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-	//	}
+				if(!m_targets.empty())
+					m_targets.front().target->SetISTargeted(true);
+			}
+		}
 	//}
 
-	//if(!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Dash)
-	//	m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
-	//else
-	//	m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+	if (!m_targets.empty() && lockedOn) { 
+		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_targets.front().target->GetEntity()->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
+		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
+		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
 
-	//m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
-	//m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
-	//m_player->GetComponent<Aen::CharacterController>().Move(m_v * deltaTime, deltaTime);
+		m_camera->SetRot(pitch, yaw, 0.f);
+		Aen::Vec3f eDir = m_player->GetPos() - m_targets.front().target->GetEntity()->GetPos();
+		if (eDir.Magnitude() > 20.f) lockedOn = false;
+	} else {
+		lockedOn = false;
+		for(auto i : e)
+			i->SetISTargeted(false);
+	}
+	
+	float r = Aen::Clamp(m_camera->GetRot().x, -45.f, 45.f);
+	m_camera->SetRot(r, m_camera->GetRot().y, m_camera->GetRot().z);
+	camDir = Aen::Lerp(camDir, Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), targetDir).Normalized(), 0.6f).Normalized();
+
+	m_ray.SetOrigin(m_player->GetPos() - camDir * 0.8f);
+	m_ray.SetDirection(-camDir);
+	m_ray.SetMaxDist(5.f);
+	m_ray.Update();
+
+	m_camera->SetPos(Aen::Lerp(m_camera->GetPos(), m_player->GetPos() + Aen::Vec3f(0.f, 0.8f, 0.f) + camDir * (-m_ray.GetDistance() - side.y) + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * 1.25f * side.x, 0.6f));
+	m_camera->GetComponent<Aen::Camera>().LookTowards(camDir);
+
+	Aen::Vec3f playerDir = m_camera->GetComponent<Aen::Camera>().GetForward() * axis.Normalized().z + m_camera->GetComponent<Aen::Camera>().GetRight() * axis.Normalized().x;
+	Aen::Vec2f dir(playerDir.x, playerDir.z);
+
+	Aen::Vec3f attackPos = m_player->GetPos() + m_finalDir * 2.f;
+
+	m_hurtbox->SetPos(attackPos);
+
+	float yaw = std::atan2(m_finalDir.x, m_finalDir.z);
+	float swordYaw = std::atan2(playerDir.x, playerDir.z);
+
+	m_hurtbox->GetComponent<Aen::OBBox>().SetRotation(0.f, yaw, 0.f);
+	m_player->SetRot(0.f, Aen::RadToDeg(yaw), 0.f);
+
+	if (!m_eventQueue.empty())
+		if (m_eventQueue.front().duration > 0.f) {
+			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration);
+			m_eventQueue.front().duration -= deltaTime;
+		}
+		else {
+			if (axis.Magnitude() > 0.f) 
+				m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+			else {
+				Aen::Vec2f dir(camDir.x, camDir.z);
+				m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+			}
+
+			m_eventQueue.pop_front();
+		}
+
+	if (m_eventQueue.empty()) {
+		if (axis.Magnitude() > 0.f) {
+			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+			m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * m_movementSpeed * deltaTime, deltaTime);
+		}
+		else {
+			Aen::Vec2f dir(camDir.x, camDir.z);
+			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+		}
+	}
+
+	if(!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Dash)
+		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+	else
+		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+
+	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
+	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
+	m_player->GetComponent<Aen::CharacterController>().Move(m_v * deltaTime, deltaTime);
 }
 
 Aen::Entity*& Player::GetEntity() {
