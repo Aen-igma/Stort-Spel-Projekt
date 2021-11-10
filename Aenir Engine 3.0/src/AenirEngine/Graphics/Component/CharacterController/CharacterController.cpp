@@ -58,7 +58,7 @@ namespace Aen {
 
 	const Mat4f CharacterController::GetTranslate() {
 		px::PxExtendedVec3 p = m_controller->getPosition();
-		return MatTranslate(Vec3f(p.x, p.y, p.z));
+		return MatTranslate(Vec3f((float)p.x, (float)p.y, (float)p.z));
 	}
 
 	void CharacterController::SetPos(const Vec3f& pos) {
@@ -75,12 +75,12 @@ namespace Aen {
 
 	const Vec3f CharacterController::GetPos() {
 		px::PxExtendedVec3 p = m_controller->getPosition();
-		return Vec3f(p.x, p.y, p.z);
+		return Vec3f((float)p.x, (float)p.y, (float)p.z);
 	}
 
 	const bool CharacterController::IsGrounded() {
 		px::PxExtendedVec3 p = m_controller->getFootPosition();
-		m_ray.SetOrigin(Vec3f(p.x, p.y, p.z) + m_ray.GetDirection() * 0.08f);
+		m_ray.SetOrigin(Vec3f((float)p.x, (float)p.y, (float)p.z) + m_ray.GetDirection() * 0.08f);
 		m_ray.Update();
 		return m_ray.Hit();
 	}

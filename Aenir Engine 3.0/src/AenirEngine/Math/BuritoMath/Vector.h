@@ -9,8 +9,8 @@ namespace Aen {
 
 		template<class T>
 		struct TVecN<T, 2> {
-			TVecN<T, 2>() :smVec() {}
-			TVecN<T, 2>(const T& t) :smVec(t) {}
+			TVecN<T, 2>() :arr{0, 0} {}
+			TVecN<T, 2>(const T& t) :smVec(t, t) {}
 			TVecN<T, 2>(const T& x, const T& y) :x(x), y(y) {}
 			TVecN<T, 2>(const TVecN<T, 3>& rhs) :x(rhs.x), y(rhs.y) {}
 			union {
@@ -23,8 +23,8 @@ namespace Aen {
 
 		template<class T>
 		struct TVecN<T, 3> {
-			TVecN<T, 3>() :smVec() {}
-			TVecN<T, 3>(const T& t) :smVec(t) {}
+			TVecN<T, 3>() :arr{0, 0, 0} {}
+			TVecN<T, 3>(const T& t) :smVec(t, t, t) {}
 			TVecN<T, 3>(const T& x, const T& y, const T& z) :x(x), y(y), z(z) {}
 			TVecN<T, 3>(const TVecN<T, 2>& rhs, const T& z) :x(rhs.x), y(rhs.y), z(z) {}
 			TVecN<T, 3>(const T& x, const TVecN<T, 2>& rhs) :x(x), y(rhs.x), z(rhs.y) {}
@@ -39,8 +39,8 @@ namespace Aen {
 
 		template<class T>
 		struct TVecN<T, 4> {
-			TVecN<T, 4>() :smVec() {}
-			TVecN<T, 4>(const T& t) :smVec(t) {}
+			TVecN<T, 4>() :arr{0, 0, 0, 0} {}
+			TVecN<T, 4>(const T& t) :smVec(t, t, t, t) {}
 			TVecN<T, 4>(const T& x, const T& y, const T& z, const T& w) :x(x), y(y), z(z), w(w) {}
 			TVecN<T, 4>(const TVecN<T, 2>& rhs1, const TVecN<T, 2>& rhs2) :x(rhs1.x), y(rhs1.y), z(rhs2.x), w(rhs2.y) {}
 			TVecN<T, 4>(const TVecN<T, 2>& rhs, const T& z, const T& w) :x(rhs.x), y(rhs.y), z(z), w(w) {}
@@ -129,7 +129,7 @@ namespace Aen {
 
 		template<class T, uint32_t N>
 		template<class ...Ts>
-		inline TVec<T, N>::TVec(const T& t, const Ts & ...ts) noexcept
+		inline TVec<T, N>::TVec(const T& t, const Ts& ...ts) noexcept
 			:TVecN<T, N> {t, ts...} {}
 
 		template<class T, uint32_t N>

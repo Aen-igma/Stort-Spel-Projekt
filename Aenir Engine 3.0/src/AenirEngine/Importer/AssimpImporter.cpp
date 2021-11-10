@@ -19,10 +19,10 @@ void Aen::AssimpImport::LoadFbx(std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Ve
 
 	AssimpImport::ProcessNode(pScene->mRootNode, pScene, vBuffer, mesh, partitions, meshMaterial);
 
-	UINT meshSize = mesh.size();
+	UINT meshSize = (UINT)mesh.size();
 
 	vPos.resize(meshSize);
-	for (int i = 0; i < meshSize; i++)
+	for (UINT i = 0; i < meshSize; i++)
 	{
 		vPos[i] = mesh[i].pos.smVec;
 

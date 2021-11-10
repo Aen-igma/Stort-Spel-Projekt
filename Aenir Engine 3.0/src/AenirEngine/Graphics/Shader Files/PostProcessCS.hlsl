@@ -35,7 +35,8 @@ void main(CS_Input input) {
     uint2 c = fp[uv / 16];
     float d = c.y / 10.f;
     
-    outputMap[uv] += lerp(float4(0.f, 1.f, 0.f, 1.f), float4(1.f, 0.f, 0.f, 1.f), d); 
+    if(any(c.y))
+        outputMap[uv] += lerp(float4(0.f, 1.f, 0.f, 1.f), float4(1.f, 0.f, 0.f, 1.f), d); 
 
     /*const int radius = 8;
     float3 Glow = float3(0.f, 0.f, 0.f);

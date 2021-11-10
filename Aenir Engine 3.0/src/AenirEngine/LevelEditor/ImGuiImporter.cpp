@@ -514,7 +514,7 @@ namespace Aen
 		float posZ = ((model.translation[0]) * s) + ((model.translation[2]) * c);
 
 		entity->SetPos(posX + offset.x, model.translation[1], posZ + offset.y);
-		entity->SetRot(model.rotation[0], model.rotation[1] + (angle * 57.2957795), model.rotation[2]);
+		entity->SetRot(model.rotation[0], model.rotation[1] + (angle * 57.2957795f), model.rotation[2]);
 		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
 
 		AddModel(entity);
@@ -536,7 +536,7 @@ namespace Aen
 		float posY = (input.translation[0] * s) + (input.translation[2] * c);
 
 		light->SetPos(posX + offset.x, input.translation[1], posY + offset.y);
-		light->SetRot(input.rotation[0], input.rotation[1] + (angle * 57.2957795), input.rotation[2]);
+		light->SetRot(input.rotation[0], input.rotation[1] + (angle * 57.2957795f), input.rotation[2]);
 
 		AddLight(light);
 	}
@@ -558,7 +558,7 @@ namespace Aen
 		float posY = (input.translation[0] * s) + (input.translation[2] * c);
 
 		light->SetPos(posX + offset.x, input.translation[1], posY + offset.y);
-		light->SetRot(input.rotation[0], input.rotation[1] + (angle * 57.2957795), input.rotation[2]);
+		light->SetRot(input.rotation[0], input.rotation[1] + (angle * 57.2957795f), input.rotation[2]);
 
 		AddLight(light);
 	

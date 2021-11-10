@@ -40,10 +40,8 @@ namespace Aen {
 		}
 
 		static Camera& GetCamera(const size_t& id) {
-			if(m_cameras.count(id) > 0)
-				return *m_cameras.at(id);
-
-			throw;
+			if(m_cameras.count(id) <= 0) throw;
+			return *m_cameras.at(id);
 		}
 
 		// ----------- Mesh Instance Component ---------- //
@@ -66,8 +64,8 @@ namespace Aen {
 		}
 
 		static MeshInstance& GetMeshInstance(const size_t& id) {
-			if(m_mesheInstances.count(id) > 0)
-				return *m_mesheInstances.at(id);
+			if(m_mesheInstances.count(id) <= 0) throw;
+			return *m_mesheInstances.at(id);
 		}
 
 		// ----------- UI Component ---------- //
@@ -90,8 +88,8 @@ namespace Aen {
 		}
 
 		static UIComponent& GetUI(const size_t& id) {
-			if (m_UI.count(id) > 0)
-				return *m_UI.at(id);
+			if (m_UI.count(id) <= 0) throw;
+			return *m_UI.at(id);
 		}
 
 		// ------------ Transform Component ------------- //
@@ -141,24 +139,18 @@ namespace Aen {
 		}
 
 		static Translation& GetTranslation(const size_t& id) {
-			if(m_translations.count(id) > 0)
-				return *m_translations.at(id);
-			
-			throw;
+			if(m_translations.count(id) <= 0) throw;
+			return *m_translations.at(id);
 		}
 
 		static Rotation& GetRotation(const size_t& id) {
-			if(m_rotations.count(id) > 0)
-				return *m_rotations.at(id);
-
-			throw;
+			if(m_rotations.count(id) <= 0) throw;
+			return *m_rotations.at(id);
 		}
 
 		static Scale& GetScale(const size_t& id) {
-			if(m_scales.count(id) > 0)
-				return *m_scales.at(id);
-
-			throw;
+			if(m_scales.count(id) <= 0) throw;
+			return *m_scales.at(id);
 		}
 
 		// ----------------- Spot Light Component ------------------ //
@@ -291,9 +283,8 @@ namespace Aen {
 		}
 
 		static StaticBody& GetStaticBody(const size_t& id) {
-			if (m_staticBodies.count(id) > 0)
-				return *m_staticBodies.at(id);
-			throw;
+			if (m_staticBodies.count(id) <= 0) throw;
+			return *m_staticBodies.at(id);
 		}
 
 		// ----------- DynamicBody Component ----------- //
@@ -315,9 +306,8 @@ namespace Aen {
 		}
 
 		static DynamicBody& GetDynamicBody(const size_t& id) {
-			if (m_dynamicBodies.count(id) > 0)
-				return *m_dynamicBodies.at(id);
-			throw;
+			if (m_dynamicBodies.count(id) <= 0) throw;
+			return *m_dynamicBodies.at(id);
 		}
 
 		// ------ CharacterController Component ------- //
@@ -339,9 +329,8 @@ namespace Aen {
 		}
 
 		static CharacterController& GetCharacterController(const size_t& id) {
-			if (m_characterControllers.count(id) > 0)
-				return *m_characterControllers.at(id);
-			throw;
+			if (m_characterControllers.count(id) <= 0) throw;
+			return *m_characterControllers.at(id);
 		}
 
 		// -------------------------------------------- //
@@ -366,9 +355,8 @@ namespace Aen {
 		}
 
 		static AABoundBox& GetAABB(const size_t& id) {
-			if (m_AABBs.count(id) > 0)
-				return *m_AABBs.at(id);
-			throw;
+			if (m_AABBs.count(id) <= 0) throw;
+			return *m_AABBs.at(id);
 		}
 
 		// -------------------------------------------- //
@@ -393,9 +381,8 @@ namespace Aen {
 		}
 
 		static OBBox& GetOBB(const size_t& id) {
-			if (m_OBBs.count(id) > 0)
-				return *m_OBBs.at(id);
-			throw;
+			if (m_OBBs.count(id) <= 0) throw;
+			return *m_OBBs.at(id);
 		}
 
 		// -------------------------------------------- //

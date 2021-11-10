@@ -56,7 +56,7 @@ namespace Aen {
 
 		switch(geometry) {
 			case StaticGeometryType::SPHERE: {
-				float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5;
+				float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5f;
 				px::PxSphereGeometry sphere(r);
 				mp_StaticBody = PxCreateStatic(*mp_LocalPhysics, t, sphere, *mp_Material);
 			} break;

@@ -17,7 +17,7 @@ namespace Aen {
 	}
 
 	Data::Data()
-		:m_type(None), m_offset(0), m_size(0), m_data(nullptr) {}
+		:m_type(DBType::None), m_offset(0), m_size(0), m_data(nullptr) {}
 
 	Data::Data(const DBType& type, const uint32_t& byteSize)
 		:m_type(type), m_offset(0), m_size(GetDataSize(type)), m_data(AEN_NEW Byte[byteSize]) {}
@@ -30,10 +30,12 @@ namespace Aen {
 
 	const uint32_t Data::GetDataSize(const DBType& type) {
 		switch(type) {
-			#define X(el) case el: return DBMap<el>::size; break;
+			#define X(el) case DBType::el : return DBMap<DBType::el>::size; break;
 			Def_DBType
 				#undef X
 		}
+
+		return 0u;
 	}
 	
 

@@ -199,7 +199,7 @@ namespace AenIMP {
 			Aen::SectionHeader sectionHeader;
 			infile.read((char*)&sectionHeader, sizeof(Aen::SectionHeader));
 
-			if (sectionHeader.type == Aen::MODEL)
+			if (sectionHeader.type == Aen::TYPE::MODEL)
 			{
 				Model* model = new Model;
 				model->readFromFile(infile);
@@ -208,7 +208,7 @@ namespace AenIMP {
 				tempRoom.addModel(model);
 				delete model;
 			}
-			else if (sectionHeader.type == Aen::TEXTURE)
+			else if (sectionHeader.type == Aen::TYPE::TEXTURE)
 			{
 				Texture* texture = new Texture;
 				texture->readFromFile(infile);
@@ -217,7 +217,7 @@ namespace AenIMP {
 				tempRoom.addTexture(texture);
 				delete texture;
 			}
-			else if (sectionHeader.type == Aen::MATERIAL)
+			else if (sectionHeader.type == Aen::TYPE::MATERIAL)
 			{
 				Material* material = new Material;
 				material->readFromFile(infile);
@@ -226,7 +226,7 @@ namespace AenIMP {
 				tempRoom.addMaterial(material);
 				delete material;
 			}
-			else if (sectionHeader.type == Aen::LIGHT)
+			else if (sectionHeader.type == Aen::TYPE::LIGHT)
 			{
 				Light* light = new Light;
 				light->readFromFile(infile);
@@ -235,7 +235,7 @@ namespace AenIMP {
 				tempRoom.addLight(light);
 				delete light;
 			}
-			else if (sectionHeader.type == Aen::PARTICLE)
+			else if (sectionHeader.type == Aen::TYPE::PARTICLE)
 			{
 				Particle* particle = new Particle;
 				particle->readFromFile(infile);
@@ -244,7 +244,7 @@ namespace AenIMP {
 				tempRoom.addParticle(particle);
 				delete particle;
 			}
-			else if (sectionHeader.type == Aen::ROOM)
+			else if (sectionHeader.type == Aen::TYPE::ROOM)
 			{
 				Room* room = new Room;
 				room->readFromFile(infile);
@@ -253,7 +253,7 @@ namespace AenIMP {
 				tempRoom.addRoom(room);
 				delete room;
 			}
-			else if (sectionHeader.type == Aen::UNKNOWN)
+			else if (sectionHeader.type == Aen::TYPE::UNKNOWN)
 			{
 				std::cout << "Unkown Header Type" << endl;
 			}

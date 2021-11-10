@@ -23,6 +23,8 @@ cbuffer CB_CellShader {
 cbuffer Aen_CB_Transform {
 	float4x4 vMat;
 	float4x4 pMat;
+	float4x4 ivMat;
+	float4x4 ipMat;
 	float4x4 mdlMat;
 }
 
@@ -92,12 +94,12 @@ PS_Output main(PS_Input input) : SV_Target0 {
 
 	float3 finalPixel = float3(0.f, 0.f, 0.f);
 
-	float3 diffuseM = (useDiffuse) ? Aen_DiffuseMap.Sample(wrapSampler, input.uv) + shadowColor * 0.1f : baseColor;
+	float3 diffuseM = (useDiffuse) ? Aen_DiffuseMap.Sample(wrapSampler, input.uv).rgb + shadowColor.rgb * 0.1f : baseColor.rgb;
 	float3 normalM = normalize(Aen_NormalMap.Sample(wrapSampler, input.uv).rgb * 2.f - 1.f);
-	float3 emissionM = Aen_EmissionMap.Sample(wrapSampler, input.uv);
+	float3 emissionM = Aen_EmissionMap.Sample(wrapSampler, input.uv).rgb;
 
-	float3 normal = (useNormal) ? float4(mul(normalM, input.tbn), 1.f) : float4(normalize(input.tbn._m20_m21_m22), 1.f);
-	float3 ambient = shadowColor;
+	float3 normal = (useNormal) ? float4(mul(normalM, input.tbn), 1.f).rgb : float4(normalize(input.tbn._m20_m21_m22), 1.f).rgb;
+	float3 ambient = shadowColor.rgb;
 
 
 	finalPixel += ambient;
@@ -122,7 +124,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 
 		float3 diffuse = Aen_SB_Light[i].color.rgb * Aen_SB_Light[i].strength;
 		float3 specular = specularColor.rgb * lerp(s1, s2, roughness) * specularStrength;
-		float3 rim = (max(1.f - dotNC, 0.f) > 1.f - rimLightSize) * max(dot(cLightDir, dotDir), 0.f) * rimLightColor * rimLightIntensity;
+		float3 rim = (max(1.f - dotNC, 0.f) > 1.f - rimLightSize) * max(dot(cLightDir, dotDir), 0.f) * rimLightColor.rgb * rimLightIntensity;
 		
 		if(Aen_SB_Light[i].type == 0 && dotND > shadowOffset && dist < Aen_SB_Light[i].dist.w) {
 			float spot = pow(max(dot(pLightDir, Aen_SB_Light[i].dir), 0.f), Aen_SB_Light[i].ang);

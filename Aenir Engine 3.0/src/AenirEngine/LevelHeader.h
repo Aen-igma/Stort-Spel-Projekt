@@ -9,7 +9,7 @@
 
 namespace Aen 
 {
-	enum TYPE
+	enum class TYPE
 	{
 		UNKNOWN,
 		ROOM,
@@ -31,7 +31,7 @@ namespace Aen
 		}
 		SectionHeader()
 		{
-			type = UNKNOWN;
+			type = TYPE::UNKNOWN;
 		}
 	};
 
@@ -98,32 +98,32 @@ namespace Aen
 
 	struct RoomHeader : SectionHeader
 	{
-		RoomHeader() : SectionHeader(ROOM) {}
+		RoomHeader() : SectionHeader(TYPE::ROOM) {}
 	};
 
 	struct ModelHeader : SectionHeader
 	{
-		ModelHeader() : SectionHeader(MODEL) {}
+		ModelHeader() : SectionHeader(TYPE::MODEL) {}
 	};
 
 	struct TextureHeader : SectionHeader
 	{
-		TextureHeader() : SectionHeader(TEXTURE) {}
+		TextureHeader() : SectionHeader(TYPE::TEXTURE) {}
 	};
 
 	struct MaterialHeader : SectionHeader
 	{
-		MaterialHeader() : SectionHeader(MATERIAL) {}
+		MaterialHeader() : SectionHeader(TYPE::MATERIAL) {}
 	};
 
 	struct LightHeader : SectionHeader
 	{
-		LightHeader() : SectionHeader(LIGHT) {}
+		LightHeader() : SectionHeader(TYPE::LIGHT) {}
 	};
 
 	struct ParticleHeader : SectionHeader
 	{
-		ParticleHeader() : SectionHeader(PARTICLE) {}
+		ParticleHeader() : SectionHeader(TYPE::PARTICLE) {}
 	};
 
 }
