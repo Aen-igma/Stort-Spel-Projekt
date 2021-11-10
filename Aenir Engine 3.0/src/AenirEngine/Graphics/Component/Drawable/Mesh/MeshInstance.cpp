@@ -95,7 +95,7 @@ namespace Aen {
 					for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
 
 						m_pMesh->m_vertices.BindBuffer();
-						m_pMesh->m_ibuffer.BindBuffer();
+						//m_pMesh->m_ibuffer.BindBuffer();
 
 						// Opaque pass
 

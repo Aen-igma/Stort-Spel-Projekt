@@ -164,24 +164,29 @@ namespace Aen {
 		px::PxTriangleMeshDesc meshDesc;
 		meshDesc.points.count = localvPos.size();
 		meshDesc.points.stride = sizeof(DirectX::XMFLOAT3);
-		meshDesc.points.data = localvPos.data();
+		meshDesc.points.data = &localvPos[0];
 
-		meshDesc.triangles.count = localIndices.size();
-		meshDesc.triangles.stride = 3 * sizeof(uint32_t);
-		meshDesc.triangles.data = localIndices.data();
+		meshDesc.triangles.count = (px::PxU32)localIndices.size();
+		meshDesc.triangles.stride = 3 * sizeof(px::PxU32);
+		meshDesc.triangles.data = &localIndices[0];
 
-		if(!insert)
+		/*#ifdef _DEBUG
+		bool res = PhysicsHandler::GetInstance()->GetCooking()->validateTriangleMesh(meshDesc);
+		PX_ASSERT(res);
+		#endif*/
+
+		if(!insert) 
 		{
 			px::PxDefaultMemoryOutputStream writeBuffer;
-			
 			bool status = PhysicsHandler::GetInstance()->GetCooking()->cookTriangleMesh(meshDesc, writeBuffer);
 			if (!status)
 				return NULL;
 			
 			px::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
 			return mp_LocalPhysics->createTriangleMesh(readBuffer);
+			//return PhysicsHandler::GetInstance()->GetPxPhysics()->createTriangleMesh(readBuffer);
 		}
-		else
+		else // real time cooking
 		{
 			return PhysicsHandler::GetInstance()->GetCooking()->createTriangleMesh(meshDesc, mp_LocalPhysics->getPhysicsInsertionCallback());
 		}

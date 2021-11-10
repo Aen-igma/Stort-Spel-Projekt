@@ -15,6 +15,7 @@ namespace Aen {
 		void SetRestitutionCombineMode(const CombineMode& mode);
 		void SetMaterialFlag(const MaterialFlag& flag);
 		void SetGeometry(const StaticGeometryType& geometry, const Vec3f& scale = Vec3f::one);
+		/* MakeTriangleMesh = cook the rigidbody of this mesh, insert = do real time cooking */
 		void SetBoundsToMesh(const bool& MakeTriangleMesh = false, const bool& insert = false);
 
 		const Vec3f GetPos();

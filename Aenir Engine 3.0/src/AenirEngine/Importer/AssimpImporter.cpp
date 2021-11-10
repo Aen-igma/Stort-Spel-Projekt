@@ -32,11 +32,11 @@ void Aen::AssimpImport::LoadFbx(IBuffer iBuffer, std::vector<DirectX::XMFLOAT3>&
 		throw;
 		printf("Failed to create vbuffer");
 	}
-	if (!iBuffer.Create(invertIndices.data(), (UINT)invertIndices.size()))
-	{
-		throw;
-		printf("Failed to create ibuffer");
-	}
+	//if (!iBuffer.Create(invertIndices.data(), (UINT)invertIndices.size()))
+	//{
+	//	throw;
+	//	printf("Failed to create ibuffer");
+	//}
 }
 
 void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>&verts, std::vector<DWORD>& invertIndices, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
@@ -92,6 +92,12 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 			for (int j = 1; j <= face.mNumIndices; j++)
 				invertIndices.push_back(face.mIndices[face.mNumIndices - j]);
 		}
+		/*for (int i = 0; i < mesh->mNumFaces; i++)
+		{
+			aiFace face = mesh->mFaces[i];
+			for (int j = 0; j < face.mNumIndices; j++)
+				invertIndices.push_back(face.mIndices[j]);
+		}*/
 		offset = numVerts;
 		printf("\n");
 	}

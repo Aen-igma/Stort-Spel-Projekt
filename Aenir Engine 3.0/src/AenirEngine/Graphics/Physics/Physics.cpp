@@ -44,7 +44,12 @@ namespace Aen {
 		mp_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *mp_Foundation, m_ToleranceScale, true, mp_Pvd);
 		if (!mp_Physics) throw("PxCreatePhysics Failed!");
 
-		mp_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *mp_Foundation, px::PxCookingParams(m_ToleranceScale));
+		px::PxCookingParams params(m_ToleranceScale);
+		params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eWELD_VERTICES);
+		//params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
+
+
+		mp_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *mp_Foundation, params);
 		if (!mp_Cooking) throw("PxCreateCooking Failed!");
 
 

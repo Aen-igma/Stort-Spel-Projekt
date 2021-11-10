@@ -90,6 +90,7 @@ void Gameplay::Initialize()
 	m_plane->AddComponent<Aen::StaticBody>();
 	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
 
+
 	//m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
 	//m_plane->AddComponent<Aen::MeshInstance>();
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
@@ -100,8 +101,8 @@ void Gameplay::Initialize()
 	m_reimube1->AddComponent<Aen::MeshInstance>();
 	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(rimuru);
 	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(enemyMat);
-	m_reimube1->AddComponent<Aen::StaticBody>();
-	m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+	//m_reimube1->AddComponent<Aen::StaticBody>();
+	//m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
 	m_reimube1->SetPos(0.f, 1.f, 11.f);
 	m_reimube1->SetRot(10, 1, 1);
 
