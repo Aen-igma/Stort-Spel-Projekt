@@ -166,19 +166,20 @@ namespace Aen {
 		meshDesc.points.stride = sizeof(DirectX::XMFLOAT3);
 		meshDesc.points.data = &localvPos[0];
 
-		meshDesc.triangles.count = (px::PxU32)localIndices.size();
-		meshDesc.triangles.stride = 3 * sizeof(px::PxU32);
+		meshDesc.triangles.count = localIndices.size();
+		meshDesc.triangles.stride = 3 * sizeof(DWORD);
 		meshDesc.triangles.data = &localIndices[0];
 
-		/*#ifdef _DEBUG
+		#ifdef _DEBUG
 		bool res = PhysicsHandler::GetInstance()->GetCooking()->validateTriangleMesh(meshDesc);
 		PX_ASSERT(res);
-		#endif*/
+		#endif
 
 		if(!insert) 
 		{
 			px::PxDefaultMemoryOutputStream writeBuffer;
-			bool status = PhysicsHandler::GetInstance()->GetCooking()->cookTriangleMesh(meshDesc, writeBuffer);
+			px::PxTriangleMeshCookingResult::Enum result;
+			bool status = PhysicsHandler::GetInstance()->GetCooking()->cookTriangleMesh(meshDesc, writeBuffer, &result);
 			if (!status)
 				return NULL;
 			
