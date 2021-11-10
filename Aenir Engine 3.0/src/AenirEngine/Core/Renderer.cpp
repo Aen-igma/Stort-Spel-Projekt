@@ -9,7 +9,7 @@ namespace Aen {
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
-		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP) {}
+		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP){}
 
 	void Renderer::Initialize() {
 
@@ -37,6 +37,10 @@ namespace Aen {
 		if(!m_postProcessCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessCS.cso")))
 			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
 				throw;
+	
+
+
+
 
 		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32G32B32A32_FLOAT);
 		m_opaqueLayout.Create(m_opaqueVS);

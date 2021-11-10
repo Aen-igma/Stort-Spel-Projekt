@@ -3,6 +3,7 @@
 #include"../Graphics/Component/EntityHandler.h"
 #include<thread>
 
+
 namespace Aen {
 
 	struct CB_Collision
@@ -47,13 +48,17 @@ namespace Aen {
 		friend class MeshInstance;
 		friend class AABoundBox;
 		friend class OBBox;
+		friend class PSSystemcomponent;
 
 		private:
 		void Initialize();
 		void Render();
+		
+
+		
+	
 
 		Window& m_window;
-		
 		ScreenQuad m_screenQuad;
 
 		CBuffer<Color> m_cbBGColor;
@@ -89,6 +94,12 @@ namespace Aen {
 		RWTexture2D m_lGrid;
 		Vec2i m_dispatchCall;
 		const uint32_t m_avarageLights;
+
+		//ParticleSystem Shaders
+		VShader m_PSVShader;
+		GShader m_PSGShader;
+		CShader m_PSCShader;
+		PShader m_PSPShader;
 
 		CBuffer<CB_Collision> m_collisionBuffer;
 	};

@@ -1,4 +1,3 @@
-
 cbuffer CBInput : register(b0)
 {
     float4 runtime;

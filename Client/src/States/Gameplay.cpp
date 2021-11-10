@@ -41,6 +41,11 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
+
+	// -------------------------- Particle System ------------------------------- //
+	//m_PS = &Aen::EntityHandler::CreateEntity();
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize("healthbar.png");
+	
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	// ------------------------ Setup Directional Light ------------------------- //

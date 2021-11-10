@@ -36,6 +36,7 @@ namespace Aen {
 		
 		void SaveData();
 		bool Intersect(int index);
+
 		std::vector<ButtonData> GetData()const;
 
         friend class GameLoop;

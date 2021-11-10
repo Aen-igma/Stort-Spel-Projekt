@@ -29,6 +29,7 @@ class Gameplay : public State {
     Aen::Entity* m_reimube3;
     Aen::Entity* m_reimube4;
     Aen::Entity* m_UI;
+    Aen::Entity* m_PS;
     Aen::Entity* m_wall;
 
     Player m_player;

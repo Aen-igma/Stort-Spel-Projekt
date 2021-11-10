@@ -10,6 +10,7 @@ namespace Aen {
 
 		void LoadTexture(const std::string& dir);
 
+
 		private:
 		~Texture() = default;
 

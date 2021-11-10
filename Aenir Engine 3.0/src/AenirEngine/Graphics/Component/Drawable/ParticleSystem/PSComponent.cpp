@@ -1,7 +1,8 @@
 #include "PCH.h"
 #include "PSComponent.h"
 
-Aen::ParticleSystemComponent::ParticleSystemComponent()
+Aen::ParticleSystem::ParticleSystem(const size_t& id)
+	:Drawable(id)
 {
 	this->m_maxParticles = 0;
 	this->m_vertexBuffer = 0;
@@ -9,17 +10,18 @@ Aen::ParticleSystemComponent::ParticleSystemComponent()
 	this->cRuntimeBuffer = 0;
 	this->m_outputSRV = 0;
 	this->m_UAV = 0;
+	this->m_Texture = 0;
 	this->m_systemPos = { 0.0f,40.0f,0.0f };
 }
 
-Aen::ParticleSystemComponent::~ParticleSystemComponent()
+Aen::ParticleSystem::~ParticleSystem()
 {
 }
 
-bool Aen::ParticleSystemComponent::Initialize(ComDevice*& device, std::wstring textureFilename)
+bool Aen::ParticleSystem::Initialize(ComDevice*& device, std::string textureFilename)
 {
 	bool result;
-	result = LoadTexture(device,textureFilename);
+	result = LoadTexture(textureFilename);
 	if (!result)
 	{
 		std::cout << "Failed initialize Texture" << std::endl;
@@ -40,26 +42,27 @@ bool Aen::ParticleSystemComponent::Initialize(ComDevice*& device, std::wstring t
 	return result;
 }
 
-void Aen::ParticleSystemComponent::Shutdown()
+void Aen::ParticleSystem::Shutdown()
 {
 	ShutdownBuffers();
 	ShutdownParticleSystem();
+	ReleaseTexture();
 	return;
 }
 
-bool Aen::ParticleSystemComponent::Frame(float frameTime, ComDeviceContext*& deviceContext)
+bool Aen::ParticleSystem::Frame(float frameTime, ComDeviceContext*& deviceContext)
 {
 	EmitParticles(frameTime);
 	return true;
 }
 
-void Aen::ParticleSystemComponent::Render(ComDeviceContext*& deviceContext)
+void Aen::ParticleSystem::Render(ComDeviceContext*& deviceContext)
 {
 	RenderBuffers(deviceContext);
 	return;
 }
 
-void Aen::ParticleSystemComponent::Move(float x, float y, float z)
+void Aen::ParticleSystem::Move(float x, float y, float z)
 {
 	this->m_systemPos.x += x;
 	this->m_systemPos.y += x;
@@ -70,27 +73,27 @@ void Aen::ParticleSystemComponent::Move(float x, float y, float z)
 	}
 }
 
-int Aen::ParticleSystemComponent::GetVertexCount()
+int Aen::ParticleSystem::GetVertexCount()
 {
 	return this->m_vertexCount;
 }
 
-int Aen::ParticleSystemComponent::GetParticleCount()
+int Aen::ParticleSystem::GetParticleCount()
 {
 	return this->m_currentParticleCount;
 }
 
-int Aen::ParticleSystemComponent::GetMaxParticleCount()
+int Aen::ParticleSystem::GetMaxParticleCount()
 {
 	return this->m_maxParticles;
 }
 
-float Aen::ParticleSystemComponent::GetRunTime()
+float Aen::ParticleSystem::GetRunTime()
 {
 	return this->m_runTime;
 }
 
-bool Aen::ParticleSystemComponent::UpdateBuffers(ComDeviceContext*& deviceContext)
+bool Aen::ParticleSystem::UpdateBuffers(ComDeviceContext*& deviceContext)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedResource{};
 	HRESULT result;
@@ -107,32 +110,57 @@ bool Aen::ParticleSystemComponent::UpdateBuffers(ComDeviceContext*& deviceContex
 	return true;
 }
 
-ID3D11Buffer* Aen::ParticleSystemComponent::GetConstantRunTimeBufferPtr() const
+ID3D11Buffer* Aen::ParticleSystem::GetConstantRunTimeBufferPtr() const
 {
 	return this->cRuntimeBuffer;
 }
 
-ID3D11Buffer* const* Aen::ParticleSystemComponent::GetConstantRunTimeBufferReference() const
+ID3D11Buffer* const* Aen::ParticleSystem::GetConstantRunTimeBufferReference() const
 {
 	return &this->cRuntimeBuffer;
 }
 
-ID3D11ShaderResourceView* const* Aen::ParticleSystemComponent::GetOutputSRV() const
+ID3D11ShaderResourceView* const* Aen::ParticleSystem::GetOutputSRV() const
 {
 	return &this->m_outputSRV;
 }
 
-ID3D11UnorderedAccessView* const* Aen::ParticleSystemComponent::GetOutputUAV() const
+ID3D11UnorderedAccessView* const* Aen::ParticleSystem::GetOutputUAV() const
 {
 	return &this->m_UAV;
 }
 
-bool Aen::ParticleSystemComponent::LoadTexture(ComDevice*& device, std::wstring filename)
+ID3D11ShaderResourceView* Aen::ParticleSystem::GetTexture()
 {
-	return false;
+	return nullptr;
 }
 
-bool Aen::ParticleSystemComponent::InitializeParticleSystem()
+
+
+
+
+
+
+bool Aen::ParticleSystem::LoadTexture(std::string fileName)
+{
+	//Maybe wrong, idk
+	m_Texture = new Texture;
+	if (!m_Texture)
+		return false;
+
+	//Aen::Texture& PStexture = Aen::Resource::CreateTexture(fileName);
+	//std::string imageName = AEN_RESOURCE_DIR(m_Texture.name);
+
+	m_Texture->LoadTexture(fileName);
+	return true;
+}
+
+void Aen::ParticleSystem::ReleaseTexture()
+{
+
+}
+
+bool Aen::ParticleSystem::InitializeParticleSystem()
 {
 	int i;
 	this->m_particleDeviationX = 100.0f;
@@ -158,7 +186,7 @@ bool Aen::ParticleSystemComponent::InitializeParticleSystem()
 	return true;
 }
 
-void Aen::ParticleSystemComponent::ShutdownParticleSystem()
+void Aen::ParticleSystem::ShutdownParticleSystem()
 {
 	if (m_particleList)
 	{
@@ -168,7 +196,7 @@ void Aen::ParticleSystemComponent::ShutdownParticleSystem()
 	return;
 }
 
-bool Aen::ParticleSystemComponent::InitializeBuffers(ComDevice*& device)
+bool Aen::ParticleSystem::InitializeBuffers(ComDevice*& device)
 {
 	unsigned long* indices;
 	int i;
@@ -238,7 +266,7 @@ bool Aen::ParticleSystemComponent::InitializeBuffers(ComDevice*& device)
 	return true;
 }
 
-void Aen::ParticleSystemComponent::ShutdownBuffers()
+void Aen::ParticleSystem::ShutdownBuffers()
 {
 	if (m_vertexBuffer)
 	{
@@ -248,7 +276,7 @@ void Aen::ParticleSystemComponent::ShutdownBuffers()
 	return;
 }
 
-void Aen::ParticleSystemComponent::EmitParticles(float frameTime)
+void Aen::ParticleSystem::EmitParticles(float frameTime)
 {
 	this->m_runTime += frameTime;
 	bool emitParticle, found;
@@ -296,7 +324,7 @@ void Aen::ParticleSystemComponent::EmitParticles(float frameTime)
 	return;
 }
 
-void Aen::ParticleSystemComponent::UpdateParticles(float frameTime)
+void Aen::ParticleSystem::UpdateParticles(float frameTime)
 {
 	int i;
 	for (i = 0; i < m_currentParticleCount; i++)
@@ -306,7 +334,7 @@ void Aen::ParticleSystemComponent::UpdateParticles(float frameTime)
 	return;
 }
 
-void Aen::ParticleSystemComponent::RenderBuffers(ComDeviceContext*& deviceContext)
+void Aen::ParticleSystem::RenderBuffers(ComDeviceContext*& deviceContext)
 {
 	UpdateBuffers(deviceContext);
 	unsigned int stride = 0;
@@ -314,4 +342,13 @@ void Aen::ParticleSystemComponent::RenderBuffers(ComDeviceContext*& deviceContex
 	ID3D11Buffer* unbound[] = { NULL };
 	deviceContext->Get()->IASetVertexBuffers(4, 1, unbound, &stride, &offset);
 	return;
+}
+
+void Aen::ParticleSystem::Draw(Renderer& renderer, const uint32_t& layer)
+{
+}
+
+void Aen::ParticleSystem::DepthDraw(Renderer& renderer, const uint32_t& layer)
+{
+
 }
