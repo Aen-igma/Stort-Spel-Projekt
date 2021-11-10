@@ -175,7 +175,7 @@ void Gameplay::Initialize()
 	m_reimube4->SetPos(-22.f, 5.f, -65.f);
 
 	Aen::Animation& testAnim = Aen::Resource::CreateAnimation("TimDab");
-	testAnim.LoadAnimation("../Resource/AnimTimDab.fbx");
+	testAnim.LoadAnimation("AnimTimDab.fbx");
 	
 	Aen::Entity* testAnimObject = &Aen::EntityHandler::CreateEntity();
 	testAnimObject->AddComponent<Aen::Animator>();

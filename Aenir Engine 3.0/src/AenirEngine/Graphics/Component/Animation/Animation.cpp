@@ -9,8 +9,9 @@
 #include"../AenirEngine/ThirdParty/assimp/include/assimp/cimport.h"
 
 namespace Aen {
-	Assimp::Importer importer;
-	const aiScene* animation = importer.ReadFile("../Resource/AnimTimDab.fbx", aiProcess_Triangulate);
+
+	/*Assimp::Importer importer;
+	const aiScene* animation = importer.ReadFile("../Resource/SkelAniSkel.fbx", aiProcess_Triangulate);*/
 
 	void LoadingBones(Bones& bones, const aiNode* fromFile, std::vector<Bones>& boneArray) {
 		Bones currentBone;
@@ -29,11 +30,12 @@ namespace Aen {
 
 	Animation::Animation(const std::string& animationPath)
 	{
-		Assimp::Importer importer;
-		const aiScene* animTest = importer.ReadFile("../Resource/AnimTimDab.fbx", aiProcess_Triangulate);
-		assert(animTest && animTest->mRootNode);
-		m_Duration = animTest->mAnimations[0]->mDuration;
-		m_TicksPerSecond = animTest->mAnimations[0]->mTicksPerSecond;
+		//Assimp::Importer importer;
+		////importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+		//const aiScene* animTest = importer.ReadFile("../Resource/SkelAniSkel.fbx", aiProcess_Triangulate);
+		//assert(animTest && animTest->mRootNode);
+		//m_Duration = animTest->mAnimations[0]->mDuration;
+		//m_TicksPerSecond = animTest->mAnimations[0]->mTicksPerSecond;
 	}
 
 	void FindRootBone(Bones& bones, const aiScene* scene, std::vector<Bones>& boneArray) {
@@ -100,13 +102,20 @@ namespace Aen {
 			bone.boneName = nodeBoneArray[i]->mName.data;
 			bone.boneID = i;
 			for (size_t j = 0; j < nodeBoneArray.size(); j++) {
-				if (nodeBoneArray[i]->mParent[0].mParent[0].mParent[0].mParent[0].mParent[0].mName.data == nodeBoneArray[j]->mName.data) {
+				if (bone.boneID == 0) {
+					bone.parentID = -1;
+					break;
+				}
+				/*if (nodeBoneArray[i]->FindNode(nodeBoneArray[j]->mName.data)) {
+					OutputDebugString(std::to_string(j).c_str());
+					OutputDebugString("\n");
+				}*/
+				if (nodeBoneArray[i]->mParent[0].mName.data == nodeBoneArray[j]->mName.data) {
 					bone.parentID = j;
 					//bone.transformRelParent = nodeBoneArray[i]->mTransformation;					// Do we need this? If so, how do we get the transform..
 				}
 			}
-			if (bone.boneID == 0)
-				bone.parentID = -1;
+			
 
 			bone.offsetMatrix.a11 = mesh->mBones[i]->mOffsetMatrix.a1; bone.offsetMatrix.a12 = mesh->mBones[i]->mOffsetMatrix.a2; 
 			bone.offsetMatrix.a13 = mesh->mBones[i]->mOffsetMatrix.a3; bone.offsetMatrix.a14 = mesh->mBones[i]->mOffsetMatrix.a4;
@@ -124,28 +133,28 @@ namespace Aen {
 		}
 	}
 
-	void AnimProcess(std::unordered_map<std::string, KeyFrameData>& keyFrameData) {
-		if (animation->mNumAnimations == 0) {
+	void AnimProcess(std::unordered_map<std::string, KeyFrameData>& keyFrameData, const aiScene* scene) {
+		if (scene->mNumAnimations == 0) {
 			OutputDebugString("No Animations!");
 			return;
 		}
 		KeyFrameData data;
-		for (int i = 0; i < animation->mAnimations[0]->mNumChannels; i++) {
+		for (int i = 0; i < scene->mAnimations[0]->mNumChannels; i++) {
 			// Position key data
-			for (int j = 0; j < animation->mAnimations[0]->mChannels[i]->mNumPositionKeys; j++) {
-				data.timeStampPos.emplace_back(animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mTime);
+			for (int j = 0; j < scene->mAnimations[0]->mChannels[i]->mNumPositionKeys; j++) {
+				data.timeStampPos.emplace_back(scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mTime);
 				Vec3f posValues;
-				posValues.x = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.x;
-				posValues.y = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.y;
-				posValues.z = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.z;
+				posValues.x = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.x;
+				posValues.y = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.y;
+				posValues.z = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.z;
 				data.position.emplace_back(posValues);
 			}
 			
 			// Rotation key data
-			for (int j = 0; j < animation->mAnimations[0]->mChannels[i]->mNumRotationKeys; j++) {			// have a "vector" of each key - posiiton timestamps and mValue, same with rotation
-				data.timeStampRot.emplace_back(animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime);
+			for (int j = 0; j < scene->mAnimations[0]->mChannels[i]->mNumRotationKeys; j++) {			// have a "vector" of each key - posiiton timestamps and mValue, same with rotation
+				data.timeStampRot.emplace_back(scene->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime);
 				aiQuaternion orient;
-				orient = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mValue;
+				orient = scene->mAnimations[0]->mChannels[i]->mRotationKeys[j].mValue;
 				data.rotation.emplace_back(MatQuaternion(orient.x, orient.y, orient.z, orient.w));
 				/*float timeS = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime;
 				Mat4f rotation;
@@ -164,7 +173,7 @@ namespace Aen {
 				keyFrameData.emplace_back(data);*/
 			}																							// think about how to access the info, save for each channel name?
 			
-			keyFrameData[animation->mAnimations[0]->mChannels[i]->mNodeName.C_Str()] = data;
+			keyFrameData[scene->mAnimations[0]->mChannels[i]->mNodeName.C_Str()] = data;
 		}
 		/*for (int u = 0; u < keyFrameData.size(); u++){
 			OutputDebugString(std::to_string(keyFrameData[u].timeStamp).c_str());
@@ -219,6 +228,9 @@ namespace Aen {
 
 	void Animation::LoadAnimation(const std::string& animationPath)
 	{
+		Assimp::Importer importer;
+		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+		const aiScene* animation = importer.ReadFile("../Resource/" + animationPath, aiProcess_Triangulate);
 		//----------------------BONE DATA--------------------------//
 		Bones rootBone;
 		/*rootBone.boneID = 0;
@@ -246,7 +258,7 @@ namespace Aen {
 		boneCount = animation->mMeshes[0]->mNumBones;
 
 		RecursiveNodeProcess(animation->mRootNode);
-		AnimProcess(m_keyFrames);
+		AnimProcess(m_keyFrames, animation);
 		AssignBones(animation, ai_nodes, m_boneArray);
 		TransferNodeBoneData(ai_node_bones, m_boneArray, animation->mMeshes[0]);
 		MeshBoneData(animation->mMeshes[0], ai_bone_data);
@@ -291,8 +303,8 @@ namespace Aen {
 
 		m_Duration = ani->mDuration * ani->mTicksPerSecond;
 
-		Animation animation;
-		Bones skeleton;
+		/*Animation animation;
+		Bones skeleton;*/
 
 	}
 
