@@ -126,7 +126,7 @@ namespace Aen {
 
 		// Layered Rendering
 
-		for(uint32_t i = 0u; i < 7u; i++)
+		for(uint8_t i = 0u; i < 7u; i++)
 			if(ComponentHandler::m_meshLayer[i].size() > 0) {
 
 				RenderSystem::UnBindRenderTargets(1u);

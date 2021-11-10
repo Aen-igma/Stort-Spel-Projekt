@@ -87,10 +87,10 @@ void main(CS_Input input) {
 
 	if(length(diffuse) > 0.f) {
 
-		float2 sobelX = 0.f;
-		float2 sobelY = 0.f;
-		float2 sobelZ = 0.f;
-		float2 sobelDepth = 0.f;
+		//float2 sobelX = 0.f;
+		//float2 sobelY = 0.f;
+		//float2 sobelZ = 0.f;
+		//float2 sobelDepth = 0.f;
 
 		float3 cToP = normalize(worldPos - camPos);
 		float3 dotNP = dot(normal, cToP);
@@ -100,23 +100,23 @@ void main(CS_Input input) {
 		window.x -= 1;
 		window.y -= 1;
 
-		for (uint i = 0; i < 9; i++)
-		{
-			float3 sn = depthNormalMap[clamp(uv + sPoint[i] * innerEdgeThickness * depth, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
-			float sd = depthMap[clamp(uv + sPoint[i] * outerEdgeThickness, uint2(0u, 0u), window)].x;
-			float2 kernel = float2(hRow[i], vRow[i]);
-			sobelX += sn.x * kernel;
-			sobelY += sn.y * kernel;
-			sobelZ += sn.z * kernel;
-			sobelDepth += sd * kernel;
-		}
+		//for (uint i = 0; i < 9; i++)
+		//{
+		//	float3 sn = depthNormalMap[clamp(uv + sPoint[i] * innerEdgeThickness * depth, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
+		//	float sd = depthMap[clamp(uv + sPoint[i] * outerEdgeThickness, uint2(0u, 0u), window)].x;
+		//	float2 kernel = float2(hRow[i], vRow[i]);
+		//	sobelX += sn.x * kernel;
+		//	sobelY += sn.y * kernel;
+		//	sobelZ += sn.z * kernel;
+		//	sobelDepth += sd * kernel;
+		//}
 
-		float finalNSobel = clamp(pow((length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f, 6.f), 0.f, 1.f);
-		float finalDSobel = clamp(length(sobelDepth), 0.f, 1.f);
-		float3 innerEdge = finalNSobel * innerEdgeColor;
-		float3 outerEdge = finalDSobel * outerEdgeColor;
+		//float finalNSobel = clamp(pow((length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f, 6.f), 0.f, 1.f);
+		//float finalDSobel = clamp(length(sobelDepth), 0.f, 1.f);
+		//float3 innerEdge = finalNSobel * innerEdgeColor;
+		//float3 outerEdge = finalDSobel * outerEdgeColor;
 
-		float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
+		float4 output = /*float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * */diffuse;
 
 		outputMap[uv] = output;
 		finalMap[uv] = output;

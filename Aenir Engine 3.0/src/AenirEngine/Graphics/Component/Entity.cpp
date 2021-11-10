@@ -128,7 +128,7 @@ namespace Aen {
 	void Entity::Rotate(const float& p, const float& y, const float& r) {
 		ComponentHandler::GetRotation(m_id).Rotate(p, y, r);
 
-		if(ComponentHandler::CameraExist(m_id))
+		//if(ComponentHandler::CameraExist(m_id))
 			//ComponentHandler::GetCamera(m_id).LookTowards(Transform(MatRotate(p, y, r), Vec3f(0.f, 0.f, -1.f)).Normalized());
 	}
 
