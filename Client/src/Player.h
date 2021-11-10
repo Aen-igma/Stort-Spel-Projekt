@@ -45,6 +45,7 @@ private:
 	void AddEvent(EventData& event);
 
 	float m_health;
+	float m_potion;
 
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
