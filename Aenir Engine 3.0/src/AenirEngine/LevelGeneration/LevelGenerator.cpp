@@ -563,6 +563,11 @@ namespace Aen
 						//East facing unconnected
 						e = false;
 					}
+					else {
+						if (!(map[x + 1][y].connectionDirections / 1000u) % 10u > 0) {
+							e = false;
+						}
+					}
 				}
 				if (y + 1 < mapSize && (map[x][y].connectionDirections / 100u) % 10u > 0) {
 					map[x][y + 1];
@@ -570,12 +575,22 @@ namespace Aen
 						//South facing unconnected
 						s = false;
 					}
+					else {
+						if (!(map[x][y + 1].connectionDirections / 1u) % 10u > 0) {
+							s = false;
+						}
+					}
 				}
 				if (x - 1 > 0 && (map[x][y].connectionDirections / 1000u) % 10u > 0) {
 					map[x - 1][y];
 					if (!map[x - 1][y].m_present) {
 						//West facing unconnected
 						w = false;
+					}
+					else {
+						if (!(map[x - 1][y].connectionDirections / 10u) % 10u > 0) {
+							w = false;
+						}
 					}
 				}
 			}
