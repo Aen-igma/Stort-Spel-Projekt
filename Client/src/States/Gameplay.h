@@ -42,6 +42,7 @@ class Gameplay : public State {
 
     Aen::LevelGenerator m_levelGenerator;
     Aen::Room* mptr_map;
+    std::vector<Aen::Entity> rooms;
 
     public:
     Gameplay(Aen::Window& window);
