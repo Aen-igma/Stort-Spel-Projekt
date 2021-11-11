@@ -40,6 +40,9 @@ class Gameplay : public State {
 
     std::deque<Enemy*> m_enemyQueue;
 
+    Aen::LevelGenerator m_levelGenerator;
+    Aen::Room* mptr_map;
+
     public:
     Gameplay(Aen::Window& window);
     ~Gameplay() override;
