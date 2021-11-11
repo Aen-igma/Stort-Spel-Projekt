@@ -166,10 +166,18 @@ namespace Aen {
 		meshDesc.points.stride = sizeof(DirectX::XMFLOAT3);
 		meshDesc.points.data = localvPos.data();
 
-		meshDesc.triangles.count = localIndices.size();
-		meshDesc.triangles.stride = 3 * sizeof(DWORD);
+		meshDesc.triangles.count = localIndices.size() / 3;
+		meshDesc.triangles.stride = 3 * sizeof(DWORD); 
 		meshDesc.triangles.data = localIndices.data();
 
+		
+		for (auto& b : localvPos)
+		{
+			OutputDebugStringA((std::to_string(b.x + b.y + b.z) + " ").c_str());
+		}
+		
+		
+		
 		/*#ifdef _DEBUG
 		bool res = PhysicsHandler::GetInstance()->GetCooking()->validateTriangleMesh(meshDesc);
 		PX_ASSERT(res);
