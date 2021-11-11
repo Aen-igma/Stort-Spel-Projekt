@@ -159,7 +159,7 @@ namespace Aen {
 	px::PxTriangleMesh* StaticBody::CookMesh(const bool& insert)
 	{
 		std::vector<DirectX::XMFLOAT3> localvPos = ComponentHandler::GetMeshInstance(m_id).m_pMesh->GetvPos();
-		std::vector<DWORD> localIndices = ComponentHandler::GetMeshInstance(m_id).m_pMesh->GetIndices();
+		std::vector<uint32_t> localIndices = ComponentHandler::GetMeshInstance(m_id).m_pMesh->GetIndices();
 
 		px::PxTriangleMeshDesc meshDesc;
 		meshDesc.points.count = localvPos.size();
@@ -167,21 +167,13 @@ namespace Aen {
 		meshDesc.points.data = localvPos.data();
 
 		meshDesc.triangles.count = localIndices.size() / 3;
-		meshDesc.triangles.stride = 3 * sizeof(DWORD); 
+		meshDesc.triangles.stride = 3 * sizeof(uint32_t);
 		meshDesc.triangles.data = localIndices.data();
-
 		
-		for (auto& b : localvPos)
-		{
-			OutputDebugStringA((std::to_string(b.x + b.y + b.z) + " ").c_str());
-		}
-		
-		
-		
-		/*#ifdef _DEBUG
+		#ifdef _DEBUG
 		bool res = PhysicsHandler::GetInstance()->GetCooking()->validateTriangleMesh(meshDesc);
 		PX_ASSERT(res);
-		#endif*/
+		#endif
 
 		if(!insert) 
 		{

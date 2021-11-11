@@ -46,13 +46,11 @@ namespace Aen {
 		if (!mp_Physics) throw("PxCreatePhysics Failed!");
 
 		px::PxCookingParams params(m_ToleranceScale);
-		//params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eWELD_VERTICES);
+		params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eWELD_VERTICES);
 		//params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
-		//params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eFORCE_32BIT_INDICES);
 
 		mp_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *mp_Foundation, params);
 		if (!mp_Cooking) throw("PxCreateCooking Failed!");
-
 
 		px::PxSceneDesc sceneDesc(mp_Physics->getTolerancesScale());
 		sceneDesc.gravity = px::PxVec3(0.0f, -30.f, 0.0f);

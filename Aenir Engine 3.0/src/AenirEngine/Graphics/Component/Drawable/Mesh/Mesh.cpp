@@ -56,7 +56,7 @@ namespace Aen {
 		return this->m_vPos;
 	}
 
-	const std::vector<DWORD>& Mesh::GetIndices()
+	const std::vector<uint32_t>& Mesh::GetIndices()
 	{
 		return this->m_indices;
 	}
