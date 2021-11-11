@@ -58,7 +58,7 @@ namespace Aen {
 
 	const std::vector<DWORD>& Mesh::GetIndices()
 	{
-		return m_indices;
+		return this->m_indices;
 	}
 
 	Mesh::~Mesh() {

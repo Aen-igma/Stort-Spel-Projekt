@@ -2,16 +2,19 @@
 #include "CharacterController.h"
 
 namespace Aen {
-	
+
 	CollisionFilter::CollisionFilter() {}
 
 	CollisionFilter::~CollisionFilter() {}
 
 	bool CollisionFilter::filter(const px::PxController& a, const px::PxController& b) {
+
+		/*if (a.getUserData() == "Enemy" && b.getUserData() == "Enemy") 
+			return false;*/
 		return false;
 	}
 
-	CharacterController::CharacterController(const size_t& id) 
+	CharacterController::CharacterController(const size_t& id)
 		:Component(id), m_physics(PhysicsHandler::GetInstance()->GetPxPhysics()),
 		m_controller(nullptr), m_isGrounded(false) {
 
@@ -25,7 +28,7 @@ namespace Aen {
 		desc.contactOffset = 0.01f;
 		desc.upDirection = px::PxVec3(0.f, 1.f, 0.f);
 		desc.material = m_physics->createMaterial(0.f, 0.f, 0.f);
-		if(!desc.isValid())
+		if (!desc.isValid())
 			throw;
 
 		m_height = 0.99f;
@@ -84,4 +87,5 @@ namespace Aen {
 		m_ray.Update();
 		return m_ray.Hit();
 	}
+
 }

@@ -25,6 +25,7 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
+
 	m_enemy->SetPos(pos);
 	m_health = 100.f;
 }

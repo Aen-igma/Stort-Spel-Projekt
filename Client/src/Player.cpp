@@ -3,14 +3,13 @@
 
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
-	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f),
+	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), 
 	m_sword(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
 	m_LIGHTATTACKSPEED(6.0f), m_HEAVYATTACKSPEED(2.54f)
 {
-
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
 	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 200.f);
@@ -57,7 +56,7 @@ Player::~Player() {
 void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	static Aen::Vec3f axis;
-	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
+	static Aen::Vec3f targetDir(0.f, 0.f, -1.f);
 	static bool lockedOn = false;
 
 	static Aen::Vec3f camDir;

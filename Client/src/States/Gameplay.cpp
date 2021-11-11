@@ -202,7 +202,7 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 	}
 
-	// ------------------------------ Quick Exist Button -------------------------------- //
+	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		m_Window.Exit();

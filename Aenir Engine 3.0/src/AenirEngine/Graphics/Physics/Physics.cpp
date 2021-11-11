@@ -20,6 +20,7 @@ namespace Aen {
 			mp_Pvd = NULL;
 			transport->release();
 		}
+		
 		mp_Foundation->release(); // Always release last
 
 		mp_Dispatcher = nullptr;
@@ -46,8 +47,8 @@ namespace Aen {
 
 		px::PxCookingParams params(m_ToleranceScale);
 		//params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eWELD_VERTICES);
-		params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
-
+		//params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
+		//params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eFORCE_32BIT_INDICES);
 
 		mp_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *mp_Foundation, params);
 		if (!mp_Cooking) throw("PxCreateCooking Failed!");

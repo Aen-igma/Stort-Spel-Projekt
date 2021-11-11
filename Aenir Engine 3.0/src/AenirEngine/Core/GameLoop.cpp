@@ -18,7 +18,7 @@ namespace Aen {
 			exit(-1);
 
 		// Initialize physX
-		PhysicsHandler::Initialize(100, 981);
+		PhysicsHandler::Initialize(10, 981);
 
 		GlobalSettings::Initialize(m_app->m_window);
 
