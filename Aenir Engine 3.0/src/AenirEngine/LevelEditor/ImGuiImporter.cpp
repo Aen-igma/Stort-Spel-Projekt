@@ -487,6 +487,12 @@ namespace Aen
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
 
+		if (model.rigidBody && model.rigidBodyType != IGH::HITBOXTYPE[0]) // Check if should have rigidbody
+		{
+			entity->AddComponent<Aen::StaticBody>();
+			entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+		}
+
 		size_t id = entity->GetID();
 		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
 

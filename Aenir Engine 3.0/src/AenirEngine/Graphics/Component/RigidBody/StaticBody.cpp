@@ -185,7 +185,6 @@ namespace Aen {
 			
 			px::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
 			return mp_LocalPhysics->createTriangleMesh(readBuffer);
-			//return PhysicsHandler::GetInstance()->GetPxPhysics()->createTriangleMesh(readBuffer);
 		}
 		else // real time cooking
 		{
