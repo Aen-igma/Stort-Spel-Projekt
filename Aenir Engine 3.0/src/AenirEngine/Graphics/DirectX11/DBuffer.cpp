@@ -39,6 +39,11 @@ namespace Aen {
 
 	DBLayout::DBLayout() {}
 
+	std::vector<std::pair<std::string, Data>>& DBLayout::GetDataMap()
+	{
+		return m_dataMap;
+	}
+
 	ElRef DBLayout::operator[](const std::string& name) {
 		for(auto& i : m_dataMap)
 			if(i.first == name)

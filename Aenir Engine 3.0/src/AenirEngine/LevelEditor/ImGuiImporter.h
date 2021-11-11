@@ -38,7 +38,13 @@ namespace Aen
 
 		bool m_standAlone = false;
 
+		
+
+		void setMaterial(Aen::Material& materialOut,AenIF::Material materialIn);
+
 	public:
+		void Convert(const Aen::Vec4f inputVec, float* inputArray);
+		void Convert(float* inputArray, Aen::Vec4f& inputVec);
 
 		ImGuiImporter();
 		ImGuiImporter(vector<Aen::Entity*>* m_entityList, vector<string>* m_itemList, unordered_map< size_t, IGH::ModelContainer>* m_modelMap, unordered_map< size_t, Aen::Entity*>* m_lightMap, AenIMP::LevelImporter* m_levelImporter);
@@ -63,6 +69,7 @@ namespace Aen
 		// All add func here
 
 
+		size_t AddBase(AenIF::Model& model, AenIF::Texture& texture, AenIF::Material &materialIn);
 		size_t AddBase(AenIF::Model& model, AenIF::Texture& texture);
 		size_t AddBase(const string& meshName, const string& objName);
 

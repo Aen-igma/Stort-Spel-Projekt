@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "LevelEditor/ImguiType.h"
 #include "LevelEditor/ImGuiImporter.h"
+#include "Core/GlobalSettings.h"
 
 #include "ThirdParty/ImGui/imgui.h"
 #include "ThirdParty/ImGui/imfilebrowser.h"
@@ -44,7 +45,6 @@ namespace Aen {
 
 		// Display in scene list
 		vector<string> m_itemList;
-		//vector<bool> m_hitBoxList;
 
 		vector<string> m_objFileName;
 		vector<string> m_objName;
@@ -54,28 +54,49 @@ namespace Aen {
 
 		unordered_map< size_t, IGH::ModelContainer> m_modelMap;
 		unordered_map< size_t, Aen::Entity*> m_lightMap;
+		vector<IGH::MatTexName> m_materialList;
 
-		bool m_multiSelectActive = false;
+
+
+
 		int m_selectedEntity = 0;
-		//vector<bool> m_selected;
-		//vector<int> m_selectedEntities;
-
 
 		float m_xyzTranslation[3] = { 0,0,0 };
 		float m_xyzRotation[3] = { 0,0,0 };
 		float m_xyzScale[3] = { 1,1,1 };
+
+		float m_baseColor[4] = {0,0,0,0};
+		float m_shadowColor[4] = { 0,0,0,0 };
+		float m_specularColor[4] = { 0,0,0,0 };
+		float m_rimLightColor[4] = { 0,0,0,0 };
+		float m_innerEdgeColor[4] = { 0,0,0,0 };
+		float m_outerEdgeColor[4] = { 0,0,0,0 };
+
+		float m_glowColor[4] = {0,0,0,0};
+		float m_glowStr = 0;
+		float m_innerEdgeThickness = 0;
+		float m_outerEdgeThickness = 0;
+		float m_specularPower = 0;
+		float m_specularStrength = 0;
+		float m_roughness = 0;
+
+		float m_shadowOffset = 0;
+		float m_innerFalloff = 0;
+		float m_outerFalloff = 0;
+		float m_rimLightIntensity = 0;
+		float m_rimLightSize = 0;
+
+
 		
 		ImGui::FileBrowser m_fileDialog;
 
-		// Level exporter info
 		LevelExporter m_levelExporter;
-
-		// Level importer info
 		AenIMP::LevelImporter m_levelImporter;
 
 		bool m_saveWindowActive = false;
 		bool m_ImportWindowActive = false;
 		bool m_createEnemyWindowActive = false;
+		bool m_createMaterialActive = false;
 
 		// Counters
 		unsigned int m_enemyCount = 0;
@@ -83,22 +104,45 @@ namespace Aen {
 		int m_lightCount = 0;
 		int m_OriginalCount = 0;
 
+		void print(string input);
+
 	public:
 		// All Add func here
 
 
 		bool AddButton(const string& name);
 		void AddEnemyButton();
+		void AddMaterialButton();
 
 	public:
 		// All Set and Get here
 		AenIF::Room GetRoom(size_t index);
 
+		void MaterialDragFloats(float *baseColor, float* shadowColor, float* specularColor, 
+			float* rimLightColor, float* innerEdgeColor, float* outerEdgeColor, float* glowColor,
+			float & glowStr, float& innerEdgeThickness, float& outerEdgeThickness, float& specularPower,
+			float& specularStrength, float& roughness, float& shadowOffset, float& innerFalloff, 
+			float& outerFalloff, float& rimLightIntensity, float& rimLightSize
+			);
+
+		void SetMaterialValues(float* baseColor, float* shadowColor, float* specularColor,
+			float* rimLightColor, float* innerEdgeColor, float* outerEdgeColor, float* glowColor,
+			float& glowStr, float& innerEdgeThickness, float& outerEdgeThickness, float& specularPower,
+			float& specularStrength, float& roughness, float& shadowOffset, float& innerFalloff,
+			float& outerFalloff, float& rimLightIntensity, float& rimLightSize, Aen::Material &material
+		);
+
+		void SetMaterialValues(int selected);
+		void SetDefaultMaterialValue(int selected);
+
 		void SetValues();
+
 		void SetDefaultValue();
 		void ZeroValue();
 
-		void rotate(float angle);
+		void Rotate(float angle);
+
+
 
 
 	public: 
@@ -111,6 +155,7 @@ namespace Aen {
 		void SaveWindow();
 		void EnemyCreateWindow();
 		void ImportWindow();
+		void MaterialCreateWindow();
 
 	public:
 		ImGuiHandler();
@@ -137,18 +182,24 @@ namespace Aen {
 		void LightButtons();
 		const string CheckType(Aen::Entity* entity);
 
-		void CustomCombo(vector<string>& list, string name, string type, int &index);
+		bool CustomCombo(vector<string>& list, string name, int &index);
 
-		string CustomCombo(vector<string>& list, string name, int& index);
+		bool CustomCombo(vector<IGH::MatTexName>& list, string name, int& index);
 
-		void ChangeMaterial(int& currentIndex);
+		string CustomComboString(vector<string>& list, string name, int& index);
+
+		string CustomComboMap(unordered_map< string, AenIF::Material >& list, string name, string index);
+
+		void ChangeTexture(int& currentIndex, string materialName, string materialTextureName);
 
 		void update();
 
 		void DuplicateWindow(bool& active);
 
-		void lightTab();
+		void LightTab();
 		void RoomTab();
+		void MaterialTab();
+		void ModelTab();
 
 
 

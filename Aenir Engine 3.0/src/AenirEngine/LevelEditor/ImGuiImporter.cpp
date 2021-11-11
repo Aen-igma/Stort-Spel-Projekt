@@ -3,6 +3,42 @@
 namespace Aen
 {
 
+	void ImGuiImporter::Convert(const Aen::Vec4f inputVec, float* inputArray)
+	{
+		inputArray[0] = inputVec.x;
+		inputArray[1] = inputVec.y;
+		inputArray[2] = inputVec.z;
+		inputArray[3] = inputVec.w;
+	}
+
+	void ImGuiImporter::Convert(float* inputArray, Aen::Vec4f& inputVec)
+	{
+		inputVec = Color(inputArray[0], inputArray[1], inputArray[2], inputArray[3]);
+	}
+
+	void ImGuiImporter::setMaterial(Aen::Material& materialOut, AenIF::Material materialIn)
+	{
+		Convert(materialIn.baseColor, materialOut["BaseColor"]);
+		Convert(materialIn.shadowColor, materialOut["ShadowColor"]);
+		Convert(materialIn.specularColor, materialOut["SpecularColor"]);
+		Convert(materialIn.rimLightColor, materialOut["RimLightColor"]);
+		Convert(materialIn.innerEdgeColor, materialOut["InnerEdgeColor"]);
+		Convert(materialIn.outerEdgeColor, materialOut["OuterEdgeColor"]);
+		Convert(materialIn.glowColor, materialOut["GlowColor"]);
+
+		materialOut["GlowStr"] = materialIn.glowStr;
+		materialOut["InnerEdgeThickness"] = materialIn.innerEdgeThickness;
+		materialOut["OuterEdgeThickness"] = materialIn.outerEdgeThickness;
+		materialOut["SpecularPower"] = materialIn.specularPower;
+		materialOut["SpecularStrength"] = materialIn.specularStrength;
+		materialOut["Roughness"] = materialIn.roughness;
+		materialOut["ShadowOffset"] = materialIn.shadowOffset;
+		materialOut["InnerFalloff"] = materialIn.innerFalloff;
+		materialOut["OuterFalloff"] = materialIn.outerFalloff;
+		materialOut["RimLightIntensity"] = materialIn.rimLightIntensity;
+		materialOut["RimLightSize"] = materialIn.rimLightSize;
+	}
+
 	ImGuiImporter::ImGuiImporter()
 	{
 		this->m_entityList = new vector<Aen::Entity*>;
@@ -10,6 +46,7 @@ namespace Aen
 		this->m_modelMap = new unordered_map< size_t, IGH::ModelContainer>;
 		this->m_lightMap = new unordered_map< size_t, Aen::Entity*>;
 		this->m_levelImporter = new AenIMP::LevelImporter();
+
 		m_standAlone = true;
 	}
 
@@ -20,6 +57,7 @@ namespace Aen
 		this->m_modelMap = m_modelMap;
 		this->m_lightMap = m_lightMap;
 		this->m_levelImporter = m_levelImporter;
+
 		m_standAlone = false;
 	}
 
@@ -52,7 +90,6 @@ namespace Aen
 		}
 	}
 
-
 	bool ImGuiImporter::import(AenIMP::LevelImporter& m_levelImporter, string& levelPath, float* translation, float* rotation, float* scale)
 	{
 		m_levelImporter.ReadFromFile(levelPath);
@@ -60,7 +97,8 @@ namespace Aen
 		for (size_t i = 0; i < m_levelImporter.GetRoomVector()[0].GetModelVector().size(); i++)
 		{
 			//size_t id = AddBase(m_levelImporter.GetRoomVector()[0].GetModelVector()[i], m_levelImporter.GetRoomVector()[0].GetTextureVector()[i]);
-			size_t id = AddBase(m_levelImporter.GetRoomVector()[0].GetModelVector()[i], m_levelImporter.GetRoomVector()[0].GetTextureVector()[i]);
+			size_t id = AddBase(m_levelImporter.GetRoomVector()[0].GetModelVector()[i], 
+				m_levelImporter.GetRoomVector()[0].GetTextureVector()[i], m_levelImporter.GetRoomVector()[0].GetMaterialVector()[i]);
 
 			float tX = 0, tY = 0, tZ = 0;
 			float rX = 0, rY = 0, rZ = 0;
@@ -114,11 +152,19 @@ namespace Aen
 	bool ImGuiImporter::import(string& levelPath)
 	{
 		m_levelImporter->ReadFromFile(levelPath);
+		size_t id;
 
 		for (size_t i = 0; i < m_levelImporter->GetRoomVector()[0].GetModelVector().size(); i++)
 		{
-			//size_t id = AddBase(m_levelImporter->GetRoomVector()[0].GetModelVector()[i], m_levelImporter->GetRoomVector()[0].GetTextureVector()[i]);
-			size_t id = AddBase(m_levelImporter->GetRoomVector()[0].GetModelVector()[i], m_levelImporter->GetRoomVector()[0].GetTextureVector()[i]);
+			if(m_levelImporter->GetRoomVector()[0].GetMaterialVector().size() > 0)
+			{
+				id = AddBase(m_levelImporter->GetRoomVector()[0].GetModelVector()[i], m_levelImporter->GetRoomVector()[0].GetTextureVector()[i], m_levelImporter->GetRoomVector()[0].GetMaterialVector()[i]);
+			}
+			else
+			{
+				id = AddBase(m_levelImporter->GetRoomVector()[0].GetModelVector()[i], m_levelImporter->GetRoomVector()[0].GetTextureVector()[i]);
+
+			}
 
 			float tX = 0, tY = 0, tZ = 0;
 			float rX = 0, rY = 0, rZ = 0;
@@ -215,7 +261,7 @@ namespace Aen
 			return false;
 		for (size_t i = 0; i < m_levelImporter->GetRoomVector()[index].GetModelVector().size(); i++)
 		{
-			AddBase(m_levelImporter->GetRoomVector()[index].GetModelVector()[i], m_levelImporter->GetRoomVector()[index].GetTextureVector()[i]);
+			AddBase(m_levelImporter->GetRoomVector()[index].GetModelVector()[i], m_levelImporter->GetRoomVector()[index].GetTextureVector()[i], m_levelImporter->GetRoomVector()[index].GetMaterialVector()[index]);
 		}
 
 		for (size_t i = 0; i < m_levelImporter->GetRoomVector()[index].GetLightVector().size(); i++)
@@ -277,6 +323,40 @@ namespace Aen
 
 
 
+	size_t ImGuiImporter::AddBase(AenIF::Model& model, AenIF::Texture& texture, AenIF::Material& materialIn)
+	{
+		string imageName = AEN_RESOURCE_DIR(texture.name);
+		string materialName = materialIn.materialName;
+		string textureName = materialIn.materialTextureName;
+
+		Aen::Entity* entity = &mp_entityHandlerPtr->CreateEntity();
+
+		Aen::Mesh& mesh = Aen::Resource::CreateMesh(model.name);
+		mesh.Load(AEN_RESOURCE_DIR(model.mesh));
+
+		Aen::Texture& materialTexture = Aen::Resource::CreateTexture(textureName);
+		materialTexture.LoadTexture(imageName);
+		Aen::Material& material = Aen::Resource::CreateMaterial(materialName, true);
+		setMaterial(material, materialIn);
+		material.SetDiffuseMap(materialTexture);
+
+		entity->AddComponent<Aen::MeshInstance>();
+		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
+
+		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);
+		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);
+		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
+
+		size_t id = entity->GetID();
+		Aen::ComponentHandler::GetMeshInstance(static_cast<size_t>(id)).SetMaterial(material);
+
+		AddEnemy(entity, model);
+		AddModel(entity, model.name);
+		m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(material, texture.name, model.name, model.mesh, model.type, model.rigidBody, model.rigidBodyType)));
+
+		return id;
+	}
+
 	size_t ImGuiImporter::AddBase(AenIF::Model& model, AenIF::Texture& texture)
 	{
 		string imageName = AEN_RESOURCE_DIR(texture.name);
@@ -309,12 +389,12 @@ namespace Aen
 
 		return id;
 	}
+
 	size_t ImGuiImporter::AddBase(const string& meshName, const string& objName)
 	{
 		string imageName = AEN_RESOURCE_DIR("Missing_Textures.png");
 		string materialName = "Material" + to_string(m_entityCount);
 		string textureName = "Texture" + to_string(m_entityCount);
-
 
 		Aen::Entity* entity = &mp_entityHandlerPtr->CreateEntity();
 		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName + std::to_string(m_entityCount));
@@ -322,7 +402,6 @@ namespace Aen
 
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
-
 
 		//AddModel(entity, meshName);
 		AddModel(entity, meshName);

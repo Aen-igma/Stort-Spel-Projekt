@@ -69,10 +69,27 @@ namespace Aen
 	};
 	struct MaterialStruct
 	{
-		float diffuse[3];
-		float specular[3];
-		float emissive[3];
-		float opacity[3];
+		char materialName[MATERIAL_NAME_MAX_LENGTH];
+		char materialTextureName[MATERIAL_NAME_MAX_LENGTH];
+		float baseColor[4];
+		float shadowColor[4];
+		float specularColor[4];
+		float rimLightColor[4];
+		float innerEdgeColor[4];
+		float outerEdgeColor[4];
+		float glowColor[4];
+
+		float glowStr;
+		float innerEdgeThickness;
+		float outerEdgeThickness;
+		float specularPower;
+		float specularStrength;
+		float roughness;
+		float shadowOffset;
+		float innerFalloff;
+		float outerFalloff;
+		float rimLightIntensity;
+		float rimLightSize;
 	};
 
 	struct LightStruct

@@ -154,6 +154,8 @@ namespace Aen {
 		public:
 		DBLayout();
 
+		std::vector<std::pair<std::string, Data>> &GetDataMap();
+
 		template<DBType type>
 		void Add(const std::string& name);
 
@@ -161,6 +163,7 @@ namespace Aen {
 
 		private:
 		std::vector<std::pair<std::string, Data>> m_dataMap;
+
 
 		friend class DBuffer;
 	};
