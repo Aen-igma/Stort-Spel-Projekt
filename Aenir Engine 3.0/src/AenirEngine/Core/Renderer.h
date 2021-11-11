@@ -9,6 +9,8 @@ namespace Aen {
 	{
 		Vec3f color;
 		int switcher;
+
+		CB_Collision() :color(Vec3f::zero), switcher(0) {}
 	};
 
 	struct CB_DispatchInfo {
@@ -17,14 +19,18 @@ namespace Aen {
 		Vec2i windowSize;
 		uint32_t avarageLights;
 		uint32_t pad;
+
+		CB_DispatchInfo() :threadGroups(Vec2i::zero),	numThreads(Vec2i::zero),	windowSize(Vec2i::zero), avarageLights(0u), pad(0u) {}
 	};
 
 	struct CB_Transform {
 		Mat4f m_vMat;
 		Mat4f m_pMat;
+		Mat4f m_ivMat;
+		Mat4f m_ipMat;
 		Mat4f m_mdlMat;
 
-		CB_Transform() :m_vMat(Mat4f::identity), m_pMat(Mat4f::identity), m_mdlMat(Mat4f::identity) {}
+		CB_Transform() :m_vMat(Mat4f::identity), m_pMat(Mat4f::identity), m_ivMat(Mat4f::identity), m_ipMat(Mat4f::identity), m_mdlMat(Mat4f::identity) {}
 	};
 
 	struct CB_Camera {
@@ -47,6 +53,7 @@ namespace Aen {
 		friend class MeshInstance;
 		friend class AABoundBox;
 		friend class OBBox;
+		friend class GlobalSettings;
 
 		private:
 		bool m_toggleView;
@@ -87,7 +94,9 @@ namespace Aen {
 		CBuffer<CB_DispatchInfo> m_dispatchInfo;
 		CBuffer<uint32_t> m_heatMap;
 		CShader m_lightCullCS;
+		CShader m_frustumGridCS;
 		UAView m_lIndex;
+		UAView m_frustumGrid;
 		RWTexture2D m_lGrid;
 		Vec2i m_dispatchCall;
 		const uint32_t m_avarageLights;

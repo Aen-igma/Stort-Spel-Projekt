@@ -47,7 +47,8 @@ namespace Aen {
             if(mp_PhysXService)
                 delete mp_PhysXService;
 
-            m_cManager->release();
+            /*if(m_cManager)
+                m_cManager->release();*/
         }
 
         static PhysXWrap* mp_PhysXService;

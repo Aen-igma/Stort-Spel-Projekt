@@ -41,7 +41,7 @@ namespace Aen
 
 		this->m_text = text;
 		//this->m_Lenght = (UINT32)wcslen(this->m_text.c_str());
-		this->m_Lenght = m_text.size();
+		this->m_Lenght = (UINT32)m_text.size();
 	}
 
 	void Aen::UITextHolder::AddText()
@@ -52,7 +52,7 @@ namespace Aen
 		//ASSERT_HR(m_Format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
 
 		this->m_text = L"High Tower!";
-		this->m_Lenght = m_text.size();
+		this->m_Lenght = (UINT32)m_text.size();
 	}
 
 	void Aen::UITextHolder::Draw()

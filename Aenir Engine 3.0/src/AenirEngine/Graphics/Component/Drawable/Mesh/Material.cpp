@@ -25,7 +25,7 @@ namespace Aen {
 
         // GBuffer
 
-        uint32_t outputCount = m_PSReflect.GetOutputDesc().size();
+        uint32_t outputCount = (uint32_t)m_PSReflect.GetOutputDesc().size();
 
         if(outputCount > 8)
             throw;

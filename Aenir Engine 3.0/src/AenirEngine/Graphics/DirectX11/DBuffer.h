@@ -16,7 +16,7 @@ namespace Aen {
 			X(Int4)\
 			X(Bool)
 
-	enum DBType {
+	enum class DBType {
 		None,
 		#define X(el) el,
 		Def_DBType
@@ -26,43 +26,43 @@ namespace Aen {
 	template<DBType T> struct DBMap {
 		static constexpr bool valid = false;
 	};
-	template<> struct DBMap<Float> {
+	template<> struct DBMap<DBType::Float> {
 		using DType = float;
 		static constexpr uint32_t size = sizeof(DType);
 	};
-	template<> struct DBMap<Float2> {
+	template<> struct DBMap<DBType::Float2> {
 		using DType = Vec2f;
 		static constexpr size_t size = sizeof(DType);
 	};
-	template<> struct DBMap<Float3> {
+	template<> struct DBMap<DBType::Float3> {
 		using DType = Vec3f;
 		static constexpr size_t size = sizeof(DType);
 	};
-	template<> struct DBMap<Float4> {
+	template<> struct DBMap<DBType::Float4> {
 		using DType = Vec4f;
 		static constexpr size_t size = sizeof(DType);
 	};
-	template<> struct DBMap<Float4x4> {
+	template<> struct DBMap<DBType::Float4x4> {
 		using DType = Mat4f;
 		static constexpr size_t size = sizeof(DType);
 	};
-	template<> struct DBMap<Int> {
+	template<> struct DBMap<DBType::Int> {
 		using DType = int;
 		static constexpr size_t size = sizeof(DType);
 	};
-	template<> struct DBMap<Int2> {
+	template<> struct DBMap<DBType::Int2> {
 		using DType = Vec2i;
 		static constexpr size_t size = sizeof(DType);
 	};
-	template<> struct DBMap<Int3> {
+	template<> struct DBMap<DBType::Int3> {
 		using DType = Vec3i;
 		static constexpr size_t size = sizeof(DType);
 	};
-	template<> struct DBMap<Int4> {
+	template<> struct DBMap<DBType::Int4> {
 		using DType = Vec4i;
 		static constexpr size_t size = sizeof(DType);
 	};
-	template<> struct DBMap<Bool> {
+	template<> struct DBMap<DBType::Bool> {
 		using DType = bool;
 		static constexpr size_t size = 4U;
 	};
@@ -70,37 +70,37 @@ namespace Aen {
 	template<class T> struct DBRMap {
 	};
 	template<> struct DBRMap<float> {
-		static constexpr DBType type = Float;
+		static constexpr DBType type = DBType::Float;
 	};
 	template<> struct DBRMap<Vec2f> {
-		static constexpr DBType type = Float2;
+		static constexpr DBType type = DBType::Float2;
 	};
 	template<> struct DBRMap<Vec3f> {
-		static constexpr DBType type = Float3;
+		static constexpr DBType type = DBType::Float3;
 	};
 	template<> struct DBRMap<Vec4f> {
-		static constexpr DBType type = Float4;
+		static constexpr DBType type = DBType::Float4;
 	};
 	template<> struct DBRMap<Color> {
-		static constexpr DBType type = Float4;
+		static constexpr DBType type = DBType::Float4;
 	};
 	template<> struct DBRMap<Mat4f> {
-		static constexpr DBType type = Float4x4;
+		static constexpr DBType type = DBType::Float4x4;
 	};
 	template<> struct DBRMap<int> {
-		static constexpr DBType type = Int;
+		static constexpr DBType type = DBType::Int;
 	};
 	template<> struct DBRMap<Vec2i> {
-		static constexpr DBType type = Int2;
+		static constexpr DBType type = DBType::Int2;
 	};
 	template<> struct DBRMap<Vec3i> {
-		static constexpr DBType type = Int3;
+		static constexpr DBType type = DBType::Int3;
 	};
 	template<> struct DBRMap<Vec4i> {
-		static constexpr DBType type = Int4;
+		static constexpr DBType type = DBType::Int4;
 	};
 	template<> struct DBRMap<bool> {
-		static constexpr DBType type = Bool;
+		static constexpr DBType type = DBType::Bool;
 	};
 
 	class AEN_DECLSPEC ElRef {

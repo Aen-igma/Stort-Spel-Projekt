@@ -58,7 +58,7 @@ namespace Aen {
 
 		switch(geometry) {
 			case DynamicGeometryType::SPHERE: {
-			float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5;
+			float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5f;
 			px::PxSphereGeometry sphere(r);
 			mp_DynamicBody = PxCreateDynamic(*mp_LocalPhysics, t, sphere, *mp_Material, m_density);
 			} break;

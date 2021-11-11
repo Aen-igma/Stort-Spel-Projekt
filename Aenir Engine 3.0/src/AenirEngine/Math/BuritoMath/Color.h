@@ -6,15 +6,16 @@ namespace Aen {
 	namespace Concealed {
 
 		template<class T>
-		struct TColor : public TVecN<T, 4> {
+		struct TColor : public TVecN<T, 4u> {
 
-			using TVecN<T, 4>::r;
-			using TVecN<T, 4>::g;
-			using TVecN<T, 4>::b;
-			using TVecN<T, 4>::a;
-			using TVecN<T, 4>::h;
-			using TVecN<T, 4>::s;
-			using TVecN<T, 4>::v;
+			using TVecN<T, 4u>::r;
+			using TVecN<T, 4u>::g;
+			using TVecN<T, 4u>::b;
+			using TVecN<T, 4u>::a;
+			using TVecN<T, 4u>::h;
+			using TVecN<T, 4u>::s;
+			using TVecN<T, 4u>::v;
+			using TVecN<T, 4u>::arr;
 
 			TColor() noexcept;
 			TColor(const TColor<T>& rhs) = default;
@@ -72,20 +73,19 @@ namespace Aen {
 
 		template<class T>
 		template<class ...Ts>
-		inline TColor<T>::TColor(const T& t, const Ts & ...ts) noexcept
-			:TVecN<T, 4>{t, ts...} {}
+		inline TColor<T>::TColor(const T& t, const Ts& ...ts) noexcept
+			:TVecN<T, 4u>{t, ts...} {}
 
 		template<class T>
 		template<class ...Ts, uint32_t Ns>
 		inline TColor<T>::TColor(const TVec<T, Ns>& t, const Ts & ...ts) noexcept 
-			:TVecN<T, 4>{t, ts...} {}
+			:TVecN<T, 4u>{t, ts...} {}
+		
+		template<class T>
+		inline TColor<T>::TColor() noexcept 
+			:TVecN<T, 4u>() {}
 
 		// ------------------------------------------ Assignment Operators --------------------------------------------- //
-
-		template<class T>
-		inline TColor<T>::TColor() noexcept {
-			for(uint32_t i = 0; i < 4; i++) (*this)[i] = 0;
-		}
 
 		template<class T>
 		inline TColor<T>& TColor<T>::operator= (const TColor& rhs) noexcept {
@@ -117,12 +117,12 @@ namespace Aen {
 
 		template<class T>
 		inline T& TColor<T>::operator[](const uint32_t& i) throw() {
-			if(i < 4) return reinterpret_cast<T*>(this)[i];
+			return arr[i];
 		}
 
 		template<class T>
 		inline const T& TColor<T>::operator[](const uint32_t& i) const throw() {
-			if(i < 4) return reinterpret_cast<const T*>(this)[i];
+			return arr[i];
 		}
 
 		// -------------------------------------------- Cast Operators ------------------------------------------------- //

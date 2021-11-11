@@ -15,7 +15,7 @@ namespace Aen {
 	class AEN_DECLSPEC MouseEvent
 	{
 	public:
-		enum MouseInput {
+		enum class MouseInput {
 			SCROLL_UP, SCROLL_DOWN,
 			RAW_MOVE,
 			Invalid

@@ -75,7 +75,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	{
 		Aen::MouseEvent me = Aen::Input::ReadEvent();
 
-		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
+		if (me.getInputType() == Aen::MouseEvent::MouseInput::RAW_MOVE)
 		{
 			if (!Aen::Input::GPGetActive(0u) && !lockedOn) {
 				m_camera->Rotate(
@@ -83,11 +83,11 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
 			}
 		}
-		if (me.getInputType() == Aen::MouseEvent::SCROLL_UP) {
+		if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_UP) {
 			printf("scroll up\n");
 
 		}
-		else if (me.getInputType() == Aen::MouseEvent::SCROLL_DOWN) {
+		else if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_DOWN) {
 			printf("scroll down\n");
 
 		}

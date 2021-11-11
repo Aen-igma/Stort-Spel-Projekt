@@ -7,7 +7,11 @@ namespace Aen {
 
 		template<class T>
 		struct TMatN<T, 4, 4> {
-			TMatN<T, 4, 4>() :smMat() {}
+			TMatN<T, 4, 4>() :arr{
+				TVec<T, 4>(1, 0, 0, 0), 
+				TVec<T, 4>(0, 1, 0, 0), 
+				TVec<T, 4>(0, 0, 1, 0), 
+				TVec<T, 4>(0, 0, 0, 1)} {}
 			TMatN<T, 4, 4>(const TMatN<T, 4, 4>& rhs) = default;
 			TMatN<T, 4, 4>(const TVec<T, 4>& x, const TVec<T, 4>& y, const TVec<T, 4>& z, const TVec<T, 4>& w) 
 				:x(x), y(y), z(z), w(w) {}

@@ -40,8 +40,8 @@ namespace Aen {
 		px::PxPvdTransport* transport = px::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
 		mp_Pvd->connect(*transport, px::PxPvdInstrumentationFlag::eALL);
 
-		m_ToleranceScale.length = toleranceLength;
-		m_ToleranceScale.speed = toleranceSpeed;
+		m_ToleranceScale.length = (px::PxReal)toleranceLength;
+		m_ToleranceScale.speed = (px::PxReal)toleranceSpeed;
 		mp_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *mp_Foundation, m_ToleranceScale, true, mp_Pvd);
 		if (!mp_Physics) throw("PxCreatePhysics Failed!");
 

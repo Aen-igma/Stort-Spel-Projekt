@@ -30,8 +30,8 @@ namespace Aen {
 		GetCursorPos(&P);
 		ScreenToClient(Aen::GlobalSettings::GetWindow()->GetWHND() ,&P);
 
-		m_gameSize.x = Aen::GlobalSettings::GetWindow()->GetSize().x;
-		m_gameSize.y = Aen::GlobalSettings::GetWindow()->GetSize().y;
+		m_gameSize.x = (float)Aen::GlobalSettings::GetWindow()->GetSize().x;
+		m_gameSize.y = (float)Aen::GlobalSettings::GetWindow()->GetSize().y;
 
 		int X = GetSystemMetrics(SM_CXSCREEN);
 		int Y = GetSystemMetrics(SM_CYSCREEN);
@@ -155,8 +155,8 @@ namespace Aen {
 		ButtonData temp = m_tempData.at(index);
 
 		if (Intersect(index)) {
-			int addX = 20.f;
-			int addY = 5.f;
+			int addX = 20;
+			int addY = 5;
 
 			float buttonWidth = GetButtonSize(m_tempData.at(index).rect).x + addX;
 			float buttonHeight = GetButtonSize(m_tempData.at(index).rect).y + addY;

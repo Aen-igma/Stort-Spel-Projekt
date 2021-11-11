@@ -111,13 +111,13 @@ void Gameplay::Initialize()
 	m_levelImporter.import(path);
 
 	//---------ENEMIES----------//
-	int numEnemies = 20;
+	/*int numEnemies = 20;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
-	}
+	}*/
 
 	//m_attack->SetParent(*m_player);
 
@@ -166,8 +166,8 @@ void Gameplay::Update(const float& deltaTime) {
 	if(m_player.GetHealth() <= 0.f)
 		State::SetState(States::Gameover);
 
-	if(m_enemyQueue.empty())
-		State::SetState(States::Victory);
+	/*if(m_enemyQueue.empty())
+		State::SetState(States::Victory);*/
 
 	#ifdef _DEBUG
 		if(Aen::Input::KeyDown(Aen::Key::J))
