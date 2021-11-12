@@ -303,7 +303,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					data.target = i;
 					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
 					data.distance = eDir.Magnitude();
-
+					
 					if(data.distance < 20.f)
 						m_targets.emplace_back(data);
 				}
@@ -320,6 +320,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_targets[i] = m_targets[t];
 					m_targets[t] = temp;
 				}
+
+				
 
 				if(!m_targets.empty())
 					m_targets.front().target->SetISTargeted(true);
