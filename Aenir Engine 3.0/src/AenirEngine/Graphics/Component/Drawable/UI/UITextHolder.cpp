@@ -38,8 +38,9 @@ namespace Aen
 	void UITextHolder::AddText(LPCWSTR text, float size)
 	{
 		UITextData temp;
+		temp.m_font = L"Arial";
 		ASSERT_HR(m_target2D->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &temp.m_pBrush));
-		ASSERT_HR(m_pDWriteFactory->CreateTextFormat(L"Arial", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, size, L"en-us", &temp.m_pFormat));
+		ASSERT_HR(m_pDWriteFactory->CreateTextFormat(temp.m_font, NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, size, L"en-us", &temp.m_pFormat));
 		ASSERT_HR(temp.m_pFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
 		ASSERT_HR(temp.m_pFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
 		m_nr++;
@@ -51,7 +52,8 @@ namespace Aen
 
 	void UITextHolder::SetFont(LPCWSTR font)
 	{
-
+		//reminder changing the font is not done yet
+		ASSERT_HR(m_pDWriteFactory->CreateTextFormat(font, NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 30.f, L"en-us", &m_UITextData.at(m_nr).m_pFormat));
 	}
 
 	void UITextHolder::SetColor(D2D1::ColorF color)

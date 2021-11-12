@@ -14,6 +14,7 @@ struct UITextData
 	IDWriteTextFormat* m_pFormat;
 	ID2D1SolidColorBrush* m_pBrush;
 	D2D1_RECT_F rc;
+	LPCWSTR m_font;
 };
 
 namespace Aen

@@ -68,6 +68,11 @@ namespace Aen {
         m_text.SetColor(color);
     }
 
+    void UIComponent::SetFont(LPCWSTR font)
+    {
+        m_text.SetFont(font);
+    }
+
     //--------------------------------------------    	    Picutres        --------------------------------------------------//
 
     void UIComponent::AddPicture(const std::wstring& dir)

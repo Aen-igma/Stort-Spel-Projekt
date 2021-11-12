@@ -56,6 +56,7 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().AddText(L"5", 50.f); //1 - Amount of potion
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(120.f, 110.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(150.f, 150.f);
+	//m_UI->GetComponent<Aen::UIComponent>().SetFont(L"Verdana");
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
 	// ----------------------------- Setup Camera ------------------------------- //
