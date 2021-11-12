@@ -15,8 +15,7 @@ namespace Aen {
     {
     }
 
-    //----------------------	Button	----------------------------//
-
+    //--------------------------------------------    	    Button          --------------------------------------------------//
 	void UIComponent::SaveButtonData()
 	{
 		m_button.SaveData();
@@ -42,7 +41,7 @@ namespace Aen {
        return m_button.Intersect(index);
     }
 
-    //----------------------	Text	----------------------------//
+    //--------------------------------------------    	    Text            --------------------------------------------------//
 
     void Aen::UIComponent::AddText(LPCWSTR text, float size)
     {
@@ -59,7 +58,7 @@ namespace Aen {
         m_text.setTextPosition(x, y);
     }
 
-    //----------------------	Just pictures	----------------------------//
+    //--------------------------------------------    	    Picutres        --------------------------------------------------//
 
     void UIComponent::AddPicture(const std::wstring& dir)
     {
@@ -81,7 +80,7 @@ namespace Aen {
         m_picture.LessenPic(width, indX);
     }
 
-    //----------------------	General stuff   ----------------------------//
+    //--------------------------------------------    	General stuff       --------------------------------------------------//
 	void UIComponent::Update()
 	{
         for (int i = 0; i < m_button.GetData().size(); i++) {
