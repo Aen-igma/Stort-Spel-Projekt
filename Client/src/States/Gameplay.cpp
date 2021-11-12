@@ -43,8 +43,9 @@ void Gameplay::Initialize()
 
 
 	// -------------------------- Particle System ------------------------------- //
-	//m_PS = &Aen::EntityHandler::CreateEntity();
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize("healthbar.png");
+	m_PS = &Aen::EntityHandler::CreateEntity();
+	//m_PS->AddComponent<Aen::PSSystemcomponent>();
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize(m_device,L"healthbar.png");
 	
 	// ----------------------------- Setup Camera ------------------------------- //
 

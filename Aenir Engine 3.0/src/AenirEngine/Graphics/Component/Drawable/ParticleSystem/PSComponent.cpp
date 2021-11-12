@@ -346,6 +346,7 @@ void Aen::ParticleSystem::RenderBuffers(ComDeviceContext*& deviceContext)
 
 void Aen::ParticleSystem::Draw(Renderer& renderer, const uint32_t& layer)
 {
+
 }
 
 void Aen::ParticleSystem::DepthDraw(Renderer& renderer, const uint32_t& layer)
