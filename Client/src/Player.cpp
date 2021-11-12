@@ -95,12 +95,12 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	}
 	// ------------------------------		Health potion		---------------------------------- //
 	
-	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0) {
+	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0 && m_health < 200.f) {
 	
 		m_health += m_potion;
 		m_nrPotion--;
 
-		if (m_health > 200.f)
+		if (m_health > 200.f) // cap
 			m_health = 200.f;
 	}
 
@@ -467,6 +467,11 @@ void Player::Move(const Aen::Vec3f& dir) {
 
 const float& Player::GetHealth() {
 	return m_health;
+}
+
+ int Player::GetPotionNr()const
+{
+	return m_nrPotion;
 }
 
 const bool Player::IsAttacking() {

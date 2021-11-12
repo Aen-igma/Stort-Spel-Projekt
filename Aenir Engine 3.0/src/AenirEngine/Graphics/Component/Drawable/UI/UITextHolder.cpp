@@ -49,6 +49,16 @@ namespace Aen
 		m_UITextData.push_back(temp);
 	}
 
+	void UITextHolder::SetFont(LPCWSTR font)
+	{
+
+	}
+
+	void UITextHolder::SetColor(D2D1::ColorF color)
+	{
+		m_UITextData.at(m_nr).m_pBrush->SetColor(color);
+	}
+
 	void Aen::UITextHolder::Draw(UITextData& data)
 	{
 		this->m_target2D->BeginDraw();

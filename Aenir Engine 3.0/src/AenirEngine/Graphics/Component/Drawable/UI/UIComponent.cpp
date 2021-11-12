@@ -63,6 +63,11 @@ namespace Aen {
         m_text.TextNr(index, text);
     }
 
+    void UIComponent::SetColor(D2D1::ColorF color)
+    {
+        m_text.SetColor(color);
+    }
+
     //--------------------------------------------    	    Picutres        --------------------------------------------------//
 
     void UIComponent::AddPicture(const std::wstring& dir)

@@ -35,6 +35,7 @@ public:
 	void SubtractHealth(const float& damage);
 	void Move(const Aen::Vec3f& dir);
 	const float& GetHealth();
+	int GetPotionNr() const;
 
 	const bool IsAttacking();
 
