@@ -3,6 +3,7 @@
 #include <d2d1_1.h>
 #include <string>
 #include <wincodec.h>
+#include <sstream>
 #include "Graphics/Graphics.h"
 using namespace std;
 
@@ -27,6 +28,7 @@ namespace Aen
 		void Initialize();
 		void AddText(LPCWSTR text, float size);
 		void Draw(UITextData& data);
+		void TextNr(int index, LPCWSTR text);
 
 		void setTextSize(float width, float height);
 		void setTextPosition(float x, float y);

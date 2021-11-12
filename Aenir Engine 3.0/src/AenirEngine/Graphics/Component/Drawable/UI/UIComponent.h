@@ -30,12 +30,13 @@ namespace Aen {
 		void AddText(LPCWSTR text, float size);
 		void SetTextSize(float width, float height);
 		void SetTextPos(float x, float y);
+		void TextNr(int index, LPCWSTR text);
 
 		//----------------------	Just pictures	----------------------------//
 		void AddPicture(const std::wstring& dir);
 		void SetPicPos(float x, float y);
 		void SetPicSize(float width, float height);
-		void LessenPic(float width, int indX);
+		void UpdatePicture(float width, int indX);
 		
 		friend class ComponentHandler;
 		friend class Renderer;

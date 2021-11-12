@@ -32,7 +32,7 @@ namespace Aen {
 		void AddPicture(LPCWSTR path);
 		void SetPicPos(float x, float y);
 		void SetPicSize(float width, float height);
-		void LessenPic(float width, int indX);
+		void UpdatePicture(float width, int indX);
 
 		friend class GameLoop;
 

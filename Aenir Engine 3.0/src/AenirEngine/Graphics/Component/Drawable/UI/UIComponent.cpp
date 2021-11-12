@@ -58,6 +58,11 @@ namespace Aen {
         m_text.setTextPosition(x, y);
     }
 
+    void UIComponent::TextNr(int index, LPCWSTR text)
+    {
+        m_text.TextNr(index, text);
+    }
+
     //--------------------------------------------    	    Picutres        --------------------------------------------------//
 
     void UIComponent::AddPicture(const std::wstring& dir)
@@ -75,9 +80,9 @@ namespace Aen {
         m_picture.SetPicSize(width, height);
     }
 
-    void UIComponent::LessenPic(float width, int indX)
+    void UIComponent::UpdatePicture(float width, int indX)
     {
-        m_picture.LessenPic(width, indX);
+        m_picture.UpdatePicture(width, indX);
     }
 
     //--------------------------------------------    	General stuff       --------------------------------------------------//

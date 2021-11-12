@@ -56,6 +56,12 @@ namespace Aen
 		this->m_target2D->EndDraw();
 	}
 
+	void UITextHolder::TextNr(int index, LPCWSTR text)
+	{
+		m_UITextData.at(index).m_Text = text;
+		m_UITextData.at(index).m_Lenght = m_UITextData.at(index).m_Text.size();
+	}
+
 	void Aen::UITextHolder::setTextSize(float width, float height)
 	{
 		float l = getTextCenter(m_UITextData.at(m_nr).rc).x + (width / 2.0f);

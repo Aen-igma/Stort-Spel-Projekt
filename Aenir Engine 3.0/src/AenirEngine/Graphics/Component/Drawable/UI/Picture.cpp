@@ -66,7 +66,7 @@ namespace Aen {
         m_pictureData.at(m_nr).rect.bottom = bottom;
     }
 
-    void Picture::LessenPic(float width, int indX)
+    void Picture::UpdatePicture(float width, int indX)
     {
         m_pictureData.at(indX).rect.right -= width;
     }
