@@ -545,7 +545,16 @@ namespace Aen
 	{
 		for (int y = 0; y < mapSize; y++) {
 			for (int x = 0; x < mapSize; x++) {
-				bool n = true, e = true, s = true, w = true;
+				bool
+					on = (map[x][y].connectionDirections / 1u) % 10u > 0,
+					oe = (map[x][y].connectionDirections / 10u) % 10u > 0,
+					os = (map[x][y].connectionDirections / 100u) % 10u > 0,
+					ow = (map[x][y].connectionDirections / 1000u) % 10u > 0;
+				bool 
+					n = (map[x][y].connectionDirections / 1u) % 10u > 0,
+					e = (map[x][y].connectionDirections / 10u) % 10u > 0,
+					s = (map[x][y].connectionDirections / 100u) % 10u > 0,
+					w = (map[x][y].connectionDirections / 1000u) % 10u > 0;
 				if (y - 1 > 0 && (map[x][y].connectionDirections / 1u) % 10u > 0) {
 					if (!map[x][y - 1].m_present) {
 						//North facing unconnected
@@ -591,6 +600,34 @@ namespace Aen
 						if (!(map[x - 1][y].connectionDirections / 10u) % 10u > 0) {
 							w = false;
 						}
+					}
+				}
+				UINT32 numCon = (UINT32)on+(UINT32)oe+(UINT32)os+(UINT32)ow;
+				UINT32 numUnCon = (UINT32)n + (UINT32)e + (UINT32)s + (UINT32)w;
+				if (numUnCon == 0) {
+					continue;
+				}
+				if (numCon <= 2) {
+					//Add blockades
+					if (on && !n) {
+
+					}
+					if (oe && !e) {
+
+					}
+					if (os && !s) {
+
+					}
+					if (ow && !w) {
+
+					}
+				}
+				else {
+					//Replace room
+					switch (numCon)
+					{
+					default:
+						break;
 					}
 				}
 			}
