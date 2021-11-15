@@ -603,7 +603,7 @@ namespace Aen
 					}
 				}
 				UINT32 numCon = (UINT32)on+(UINT32)oe+(UINT32)os+(UINT32)ow;
-				UINT32 numUnCon = (UINT32)n + (UINT32)e + (UINT32)s + (UINT32)w;
+				UINT32 numUnCon = (UINT32)(on & !n) + (UINT32)(oe & !e) + (UINT32)(os & !s) + (UINT32)(ow & !w);
 				if (numUnCon == 0) {
 					continue;
 				}
@@ -631,6 +631,40 @@ namespace Aen
 							break;
 						case 1:
 							//reduce to corridor or bend
+							if (n & s || e & w) {
+								//Corridor
+								if (n) {
+									//North-South
+									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
+								}
+								else {
+									//East-West
+									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
+									map[x][y].rotateCCW();
+								}
+							}
+							else {
+								//Bend
+								switch (n + e * 10 + s * 100 + w *1000)
+								{
+								case 11:
+									//North-East
+									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
+									break;
+								case 110:
+									//South-East
+									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
+									break;
+								case 1100:
+									//South-West
+									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
+									break;
+								case 1001:
+									//North-West
+									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
+									break;
+								}
+							}
 							break;
 						case 2:
 							break;
