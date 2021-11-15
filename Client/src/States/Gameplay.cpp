@@ -44,8 +44,9 @@ void Gameplay::Initialize()
 
 	// -------------------------- Particle System ------------------------------- //
 	m_PS = &Aen::EntityHandler::CreateEntity();
-	//m_PS->AddComponent<Aen::PSSystemcomponent>();
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize(m_device,L"healthbar.png");
+	m_PS->AddComponent<Aen::PSSystemcomponent>();
+	m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize("healthbar.png");
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().
 	
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -238,6 +239,9 @@ void Gameplay::Update(const float& deltaTime) {
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
 	else
 		Aen::Input::SetMousePos(m_Window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_Window.GetSize() * 0.5f));
+
+	// ---------------------------- Particle System --------------------------------------- //
+	/*m_PS->GetComponent<Aen::PSSystemcomponent>().UpdateCSShader();*/
 
 	// ---------------------------------- Enemies --------------------------------------- //
 

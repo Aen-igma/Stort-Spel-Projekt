@@ -13,10 +13,10 @@ Aen::ParticleShaderComponent::~ParticleShaderComponent()
 {
 }
 
-bool Aen::ParticleShaderComponent::Initialize(ComDevice*& device)
+bool Aen::ParticleShaderComponent::Initialize()
 {
 	bool result;
-	result = InitializeShader(device);
+	result = InitializeShader();
 	if (!result)
 	{
 		return false;
@@ -32,7 +32,7 @@ void Aen::ParticleShaderComponent::Shutdown()
 
 
 
-bool Aen::ParticleShaderComponent::InitializeShader(ComDevice*& device)
+bool Aen::ParticleShaderComponent::InitializeShader()
 {
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
@@ -67,7 +67,7 @@ bool Aen::ParticleShaderComponent::InitializeShader(ComDevice*& device)
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 	numElements = sizeof(polyLayout) / sizeof(polyLayout[0]);
-	result = device->Get()->CreateInputLayout(polyLayout,numElements,m_vertexShader->m_byteCode->GetBufferPointer()
+	result = m_device.Get()->CreateInputLayout(polyLayout,numElements,m_vertexShader->m_byteCode->GetBufferPointer()
 		,m_vertexShader->m_byteCode->GetBufferSize()/*,m_layout->GetAddressOf()*/, &this->m_layout );
 	if (FAILED(result))
 	{
@@ -84,7 +84,7 @@ bool Aen::ParticleShaderComponent::InitializeShader(ComDevice*& device)
 	matrixBufferDesc.CPUAccessFlags = D3D11_BIND_CONSTANT_BUFFER;
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
-	result = device->Get()->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
+	result = m_device.Get()->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
 	if (FAILED(result))
 	{
 		std::cout << "Failed to create Buffer" << std::endl;
@@ -103,7 +103,7 @@ bool Aen::ParticleShaderComponent::InitializeShader(ComDevice*& device)
 	samplerDesc.BorderColor[3] = 0;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	result = device->Get()->CreateSamplerState(&samplerDesc, &m_samplerState);
+	result = m_device.Get()->CreateSamplerState(&samplerDesc, &m_samplerState);
 	if (FAILED(result))
 	{
 		return false;
@@ -151,11 +151,11 @@ void Aen::ParticleShaderComponent::OutputShaderErrorMessage(ID3D10Blob* errorMes
 {
 }
 
-bool Aen::ParticleShaderComponent::SetShaderParameters(ComDeviceContext*& deviceContext, ParticleSystem& ps, float runtime, const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix, const DirectX::XMMATRIX& projectionMatrix, ID3D11ShaderResourceView*& texture)
+bool Aen::ParticleShaderComponent::SetShaderParameters(ParticleSystem& ps, float runtime, const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix, const DirectX::XMMATRIX& projectionMatrix, ID3D11ShaderResourceView*& texture)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	result = deviceContext->Get()->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = m_dContext.Get()->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{
 		return false;
@@ -165,64 +165,63 @@ bool Aen::ParticleShaderComponent::SetShaderParameters(ComDeviceContext*& device
 	dataPtr->world = worldMatrix;
 	dataPtr->view = viewMatrix;
 	dataPtr->projection = projectionMatrix;
-	deviceContext->Get()->Unmap(m_matrixBuffer, 0);
+	m_dContext.Get()->Unmap(m_matrixBuffer, 0);
 
 	//____________________________ CS RUNTIME ____________________________//
 	CSInputBuffer inputData;
 	inputData.m_runtime = { runtime, 0.0f, 0.0f, 0.0f };
 	inputData.m_particleCount = { (float)ps.GetParticleCount(), 0.0f, 0.0f, 0.0f };
 	D3D11_MAPPED_SUBRESOURCE MS_DeltaTime;
-	deviceContext->Get()->Map(ps.GetConstantRunTimeBufferPtr(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MS_DeltaTime);
+	m_dContext.Get()->Map(ps.GetConstantRunTimeBufferPtr(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MS_DeltaTime);
 	CSInputBuffer* lInputDataPtr = (CSInputBuffer*)MS_DeltaTime.pData;
 	lInputDataPtr->m_runtime = inputData.m_runtime;
 	lInputDataPtr->m_particleCount = inputData.m_particleCount;
-	deviceContext->Get()->Unmap(ps.GetConstantRunTimeBufferPtr(), 0);
+	m_dContext.Get()->Unmap(ps.GetConstantRunTimeBufferPtr(), 0);
 	return true;
 }
 
-void Aen::ParticleShaderComponent::RenderShader(ComDeviceContext*& deviceContext)
+void Aen::ParticleShaderComponent::RenderShader()
 {
-	deviceContext->Get()->VSSetShader(this->m_vertexShader->m_shader.Get(), NULL, 0);
-	deviceContext->Get()->GSSetShader(this->m_geometryShader->m_shader.Get(), NULL, 0);
-	deviceContext->Get()->PSSetShader(this->m_pixelShader->m_shader.Get(),NULL,0);
+	m_dContext.Get()->VSSetShader(this->m_vertexShader->m_shader.Get(), NULL, 0);
+	m_dContext.Get()->GSSetShader(this->m_geometryShader->m_shader.Get(), NULL, 0);
+	m_dContext.Get()->PSSetShader(this->m_pixelShader->m_shader.Get(),NULL,0);
 	return;
 }
 
-bool Aen::ParticleShaderComponent::Render(ComDeviceContext*& deviceContext, 
+bool Aen::ParticleShaderComponent::Render( 
 	const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix, 
 	const DirectX::XMMATRIX& projectionMatrix, float runtime, ID3D11ShaderResourceView*& texture, ParticleSystem& ps)
 {
-	SetShaderParameters(deviceContext, ps, ps.GetRunTime(), worldMatrix, viewMatrix, projectionMatrix, texture);
-	deviceContext->Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	RenderShader(deviceContext);
+	SetShaderParameters(ps, ps.GetRunTime(), worldMatrix, viewMatrix, projectionMatrix, texture);
+	m_dContext.Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	RenderShader();
 
-	deviceContext->Get()->VSSetConstantBuffers(4, 1, &m_matrixBuffer);
-	deviceContext->Get()->VSSetShaderResources(0, 1, ps.GetOutputSRV());
-	deviceContext->Get()->GSSetConstantBuffers(0, 1, &m_matrixBuffer);
-	deviceContext->Get()->PSSetSamplers(0, 1, &m_samplerState);
-	deviceContext->Get()->PSSetShaderResources(0, 1, &texture);
+	m_dContext.Get()->VSSetConstantBuffers(4, 1, &m_matrixBuffer);
+	m_dContext.Get()->VSSetShaderResources(0, 1, ps.GetOutputSRV());
+	m_dContext.Get()->GSSetConstantBuffers(0, 1, &m_matrixBuffer);
+	m_dContext.Get()->PSSetSamplers(0, 1, &m_samplerState);
+	m_dContext.Get()->PSSetShaderResources(0, 1, &texture);
 
 	//Borde stämma med antal vertiser, måste verfiera det senare
-	deviceContext->Get()->Draw(ps.GetParticleCount(), 0);
-	deviceContext->Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_dContext.Get()->Draw(ps.GetParticleCount(), 0);
+	m_dContext.Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//Unbind
 	ID3D11ShaderResourceView* unboundSRV[] = { NULL };
-	deviceContext->Get()->VSSetShaderResources(0, 1, unboundSRV);
-	deviceContext->Get()->GSSetShader(NULL, NULL, 0);
-
+	m_dContext.Get()->VSSetShaderResources(0, 1, unboundSRV);
+	m_dContext.Get()->GSSetShader(NULL, NULL, 0);
 	return true;
 }
 
-void Aen::ParticleShaderComponent::UpdateComputeShader(ComDeviceContext*& deviceContext, ParticleSystem& particleSystem)
+void Aen::ParticleShaderComponent::UpdateComputeShader(ParticleSystem& particleSystem)
 {
-	deviceContext->Get()->CSSetShader(this->m_computeShader->m_shader.Get(),NULL,0);
-	deviceContext->Get()->CSSetConstantBuffers(0,1, particleSystem.GetConstantRunTimeBufferReference());
-	deviceContext->Get()->CSSetUnorderedAccessViews(0,1,particleSystem.GetOutputUAV(), NULL);
-	deviceContext->Get()->Dispatch((int)(particleSystem.GetMaxParticleCount() / 64.0f) + (particleSystem.GetMaxParticleCount() % 64 != 0), 1, 1);
+	m_dContext.Get()->CSSetShader(this->m_computeShader->m_shader.Get(),NULL,0);
+	m_dContext.Get()->CSSetConstantBuffers(0,1, particleSystem.GetConstantRunTimeBufferReference());
+	m_dContext.Get()->CSSetUnorderedAccessViews(0,1,particleSystem.GetOutputUAV(), NULL);
+	m_dContext.Get()->Dispatch((int)(particleSystem.GetMaxParticleCount() / 64.0f) + (particleSystem.GetMaxParticleCount() % 64 != 0), 1, 1);
 
 	//Unbinding
-	deviceContext->Get()->CSSetShader(NULL,NULL,0);
+	m_dContext.Get()->CSSetShader(NULL,NULL,0);
 	ID3D11UnorderedAccessView* unboundUAV[] = { NULL };
-	deviceContext->Get()->CSSetUnorderedAccessViews(0, 1, unboundUAV, NULL);
+	m_dContext.Get()->CSSetUnorderedAccessViews(0, 1, unboundUAV, NULL);
 }

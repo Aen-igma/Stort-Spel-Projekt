@@ -15,11 +15,11 @@ namespace Aen
 
 	}
 
-	bool Aen::PSSystemcomponent::Initialize(ComDevice*& device ,std::string fileName)
+	bool Aen::PSSystemcomponent::Initialize(std::string fileName)
 	{
-		if (!m_PSComponent->Initialize(device, fileName))
+		if (!m_PSComponent->Initialize(fileName))
 			throw;
-		if (!m_PSShader->Initialize(device))
+		if (!m_PSShader->Initialize())
 			throw;
 
 	}
@@ -29,9 +29,9 @@ namespace Aen
 	//
 	//}
 
-	void Aen::PSSystemcomponent::RenderFrame(float frameTime, ComDeviceContext*& deviceContext)
+	void Aen::PSSystemcomponent::RenderFrame(float frameTime)
 	{
-		m_PSComponent->Frame(frameTime,deviceContext);
+		m_PSComponent->Frame(frameTime);
 	
 	}
 
@@ -40,10 +40,10 @@ namespace Aen
 	//	m_PSComponent.Render(deviceContext);
 	//}
 
-	void Aen::PSSystemcomponent::UpdateCSShader(ComDeviceContext*& deviceContext)
+	void Aen::PSSystemcomponent::UpdateCSShader()
 	{
-	//m_PSShader->UpdateComputeShader(deviceContext,m_PSComponent);
-	//m_PSComponent->UpdateBuffers(deviceContext);
+		/*m_PSShader->UpdateComputeShader();*/
+		m_PSComponent->UpdateBuffers();
 	}
 
 	std::vector<PSSystemcomponent> PSSystemcomponent::GetData() const

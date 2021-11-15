@@ -24,16 +24,16 @@ namespace Aen
 		ParticleSystem(const size_t& id);
 		~ParticleSystem();
 		
-		bool Initialize(ComDevice*& device, std::string textureFilename);
+		bool Initialize(std::string textureFilename);
 		void Shutdown();
-		bool Frame(float frameTime, ComDeviceContext*& deviceContext);
-		void Render(ComDeviceContext*& deviceContext);
+		bool Frame(float frameTime);
+		void Render();
 		void Move(float x, float y, float z);
 		int GetVertexCount();
 		int GetParticleCount();
 		int GetMaxParticleCount();
 		float GetRunTime();
-		bool UpdateBuffers(ComDeviceContext*& deviceContext);
+		bool UpdateBuffers();
 
 
 		ID3D11Buffer* GetConstantRunTimeBufferPtr()const;
@@ -76,11 +76,11 @@ namespace Aen
 
 		bool InitializeParticleSystem();
 		void ShutdownParticleSystem();
-		bool InitializeBuffers(ComDevice*& device);
+		bool InitializeBuffers();
 		void ShutdownBuffers();
 		void EmitParticles(float frameTime);
 		void UpdateParticles(float frameTime);
-		void RenderBuffers(ComDeviceContext*& deviceContext);
+		void RenderBuffers();
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;

@@ -41,11 +41,11 @@ namespace Aen {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
-
+				m_renderer->Render(); //Vsync
 				PhysicsHandler::Update(m_deltaTime.count());
 			}
 
-			m_renderer->Render();
+			/*m_renderer->Render();*/
 		}
 
 		// Destroy imGui

@@ -10,10 +10,10 @@ namespace Aen
 		virtual ~PSSystemcomponent();
 
 		//För att inita allting
-		bool Initialize(ComDevice*& device, std::string fileName);
-		void RenderFrame(float frameTime, ComDeviceContext*& deviceContext);
+		bool Initialize(std::string fileName);
+		void RenderFrame(float frameTime);
 		/*void RenderParticlesBuffer(ComDeviceContext*& deviceContext);*/
-		void UpdateCSShader(ComDeviceContext*& deviceContext);
+		void UpdateCSShader();
 
 		std::vector<PSSystemcomponent> GetData()const;
 
@@ -30,7 +30,7 @@ namespace Aen
 	private:
 		ParticleShaderComponent* m_PSShader;
 		ParticleSystem* m_PSComponent;
-		ComDevice* m_Device;
+		/*ComDevice* m_Device;*/
 		/*ComDevice* m_Device;*/
 		friend class ComponentHandler;
 		friend class Renderer;
