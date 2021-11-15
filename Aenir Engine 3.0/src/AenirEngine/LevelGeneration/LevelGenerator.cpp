@@ -8,7 +8,7 @@ namespace Aen
 	Room LevelGenerator::RNGRoomFromVector(std::vector<uint16_t>* roomVec) {
 		//Todo implement weigths
 
-		//Om du inte är Andreas eller Filip och du får en div by zero krash här, så saknar du .Level filer
+		//Om du inte ï¿½r Andreas eller Filip och du fï¿½r en div by zero krash hï¿½r, sï¿½ saknar du .Level filer
 		auto temp = levelRoom[(*roomVec)[LehmerInt() % roomVec->size()]];
 		temp.m_present = true;
 		return temp;
