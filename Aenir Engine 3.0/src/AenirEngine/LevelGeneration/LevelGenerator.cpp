@@ -624,10 +624,30 @@ namespace Aen
 				}
 				else {
 					//Replace room
-					switch (numCon)
-					{
-					default:
-						break;
+					if (numCon == 3) {
+						switch (numUnCon)
+						{
+						case 0:
+							break;
+						case 1:
+							//reduce to corridor or bend
+							break;
+						case 2:
+							break;
+						}
+					}
+					else if (numCon == 4) {
+						switch (numUnCon)
+						{
+						case 0:
+							break;
+						case 1:
+							break;
+						case 2:
+							break;
+						case 3:
+							break;
+						}
 					}
 				}
 			}
