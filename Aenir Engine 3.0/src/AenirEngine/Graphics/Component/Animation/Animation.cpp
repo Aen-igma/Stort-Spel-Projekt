@@ -140,6 +140,9 @@ namespace Aen {
 		}
 		KeyFrameData data;
 		for (int i = 0; i < scene->mAnimations[0]->mNumChannels; i++) {
+			OutputDebugString((scene->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
+			OutputDebugString("\n");
+
 			// Position key data
 			for (int j = 0; j < scene->mAnimations[0]->mChannels[i]->mNumPositionKeys; j++) {
 				data.timeStampPos.emplace_back(scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mTime);
@@ -151,10 +154,10 @@ namespace Aen {
 			}
 			
 			// Rotation key data
-			for (int j = 0; j < scene->mAnimations[0]->mChannels[i]->mNumRotationKeys; j++) {			// have a "vector" of each key - posiiton timestamps and mValue, same with rotation
-				data.timeStampRot.emplace_back(scene->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime);
+			for (int r = 0; r < scene->mAnimations[0]->mChannels[i]->mNumRotationKeys; r++) {			// have a "vector" of each key - posiiton timestamps and mValue, same with rotation
+				data.timeStampRot.emplace_back(scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mTime);
 				aiQuaternion orient;
-				orient = scene->mAnimations[0]->mChannels[i]->mRotationKeys[j].mValue;
+				orient = scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mValue;
 				data.rotation.emplace_back(MatQuaternion(orient.x, orient.y, orient.z, orient.w));
 				/*float timeS = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime;
 				Mat4f rotation;
@@ -172,13 +175,23 @@ namespace Aen {
 				
 				keyFrameData.emplace_back(data);*/
 			}																							// think about how to access the info, save for each channel name?
+
+			// Scale key data
+			for (int s = 0; s < scene->mAnimations[0]->mChannels[i]->mNumScalingKeys; s++) {
+				data.timeStampScale.emplace_back(scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mTime);
+				Vec3f scaleValues;
+				scaleValues.x = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.x;
+				scaleValues.y = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.y;
+				scaleValues.z = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.z;
+				data.scale.emplace_back(scaleValues);
+			}
 			
 			keyFrameData[scene->mAnimations[0]->mChannels[i]->mNodeName.C_Str()] = data;
 		}
 		/*for (int u = 0; u < keyFrameData.size(); u++){
-			OutputDebugString(std::to_string(keyFrameData[u].timeStamp).c_str());
-			OutputDebugString("\n");					  
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a11).c_str());
+			OutputDebugString((keyFrameData.find("Head")).C_Str());
+			OutputDebugString("\n");		*/			  
+			/*OutputDebugString(std::to_string(keyFrameData[u].rotation.a11).c_str());
 			OutputDebugString(" : ");					  
 			OutputDebugString(std::to_string(keyFrameData[u].rotation.a12).c_str());
 			OutputDebugString(" : ");					  
@@ -308,46 +321,46 @@ namespace Aen {
 
 	}
 
-	void Animation::GetPose(Animation& anim, Bones& skele, float dt, std::vector<Mat4f>& output, Mat4f& parentTrans, Mat4f& globalInverseTrans)
-	{
-		KeyFrameData& keyFrameData = anim.m_keyFrames[skele.boneName];
-		dt = fmod(dt, anim.m_Duration);
+	//void Animation::GetPose(Animation& anim, Bones& skele, float dt, std::vector<Mat4f>& output, Mat4f& parentTrans, Mat4f& globalInverseTrans)
+	//{
+	//	KeyFrameData& keyFrameData = anim.m_keyFrames[skele.boneName];
+	//	dt = fmod(dt, anim.m_Duration);
 
-		std::pair<UINT, float> fp;
+	//	std::pair<UINT, float> fp;
 
-		// Position
-		fp.first = GetTimeFraction(keyFrameData.timeStampPos, dt).x;
-		fp.second = GetTimeFraction(keyFrameData.timeStampPos, dt).y;
+	//	// Position
+	//	fp.first = GetTimeFraction(keyFrameData.timeStampPos, dt).x;
+	//	fp.second = GetTimeFraction(keyFrameData.timeStampPos, dt).y;
 
-		Vec3f position1 = keyFrameData.position[fp.first - 1];
-		Vec3f position2 = keyFrameData.position[fp.first];
-		Vec3f position = position1 * (1.0 - fp.second) + position2 * fp.second;
+	//	Vec3f position1 = keyFrameData.position[fp.first - 1];
+	//	Vec3f position2 = keyFrameData.position[fp.first];
+	//	Vec3f position = position1 * (1.0 - fp.second) + position2 * fp.second;
 
-		 //Rotation
-		fp.first = GetTimeFraction(keyFrameData.timeStampRot, dt).x;
-		fp.second = GetTimeFraction(keyFrameData.timeStampRot, dt).y;
+	//	 //Rotation
+	//	fp.first = GetTimeFraction(keyFrameData.timeStampRot, dt).x;
+	//	fp.second = GetTimeFraction(keyFrameData.timeStampRot, dt).y;
 
-		Mat4f rotation1 = keyFrameData.rotation[fp.first - 1];
-		Mat4f rotation2 = keyFrameData.rotation[fp.first];
-		Mat4f rotation = rotation1 * (1.0 - fp.second) + rotation2 * fp.second;
+	//	Mat4f rotation1 = keyFrameData.rotation[fp.first - 1];
+	//	Mat4f rotation2 = keyFrameData.rotation[fp.first];
+	//	Mat4f rotation = rotation1 * (1.0 - fp.second) + rotation2 * fp.second;
 
-		Mat4f positionMatrix = positionMatrix.identity;
-		
-		positionMatrix.a14 = position.x;
-		positionMatrix.a24 = position.y;
-		positionMatrix.a34 = position.z;
-		positionMatrix.a44 = 1;
+	//	Mat4f positionMatrix = positionMatrix.identity;
+	//	
+	//	positionMatrix.a14 = position.x;
+	//	positionMatrix.a24 = position.y;
+	//	positionMatrix.a34 = position.z;
+	//	positionMatrix.a44 = 1;
 
-		Mat4f localTransform = positionMatrix * rotation;
-		Mat4f globalTransform = parentTrans * localTransform;
+	//	Mat4f localTransform = positionMatrix * rotation;
+	//	Mat4f globalTransform = parentTrans * localTransform;
 
-		output[skele.boneID] = globalInverseTrans * globalTransform * skele.offsetMatrix;
+	//	output[skele.boneID] = globalInverseTrans * globalTransform * skele.offsetMatrix;
 
-		for (Bones& child : m_boneArray) {
-			GetPose(anim, child, dt, output, globalTransform, globalInverseTrans);
-		}
+	//	for (Bones& child : m_boneArray) {
+	//		GetPose(anim, child, dt, output, globalTransform, globalInverseTrans);
+	//	}
 
-	}
+	//}
 
 	Animation::~Animation()
 	{

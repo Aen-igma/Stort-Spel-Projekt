@@ -45,9 +45,11 @@ namespace Aen {
 	struct KeyFrameData {
 		std::vector<float> timeStampPos;
 		std::vector<float> timeStampRot;
+		std::vector<float> timeStampScale;
 
 		std::vector<Vec3f> position;
 		std::vector<Mat4f> rotation;
+		std::vector<Vec3f> scale;
 	};
 
 	class AEN_DECLSPEC Animation {
