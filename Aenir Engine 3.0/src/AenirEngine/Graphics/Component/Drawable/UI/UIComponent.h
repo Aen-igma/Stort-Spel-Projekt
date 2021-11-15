@@ -42,7 +42,9 @@ namespace Aen {
 		friend class Renderer;
 		friend class Entity;
 		friend class GCore;
+
 		std::vector<ButtonData> GetData()const;
+
 		void Update();
 
 		// Inherited via Drawable

@@ -2,12 +2,12 @@
 #include "PSComponent.h"
 namespace Aen
 {
-	class ParticleShaderComponent: public GCore
+	class ParticleShaderComponent: public Drawable, GCore
 	{
 	public:
-		ParticleShaderComponent();
+		ParticleShaderComponent(const size_t& id);
 		virtual ~ParticleShaderComponent();
-		void UpdateComputeShader(ParticleSystem& ps);
+		void UpdateComputeShader(ParticleSystem* ps);
 		bool Initialize();
 		void Shutdown();
 		bool Render(const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix,
@@ -43,6 +43,12 @@ namespace Aen
 			const DirectX::XMMATRIX& projectionMatrix, ID3D11ShaderResourceView*& texture);
 		void RenderShader();
 
+
+
+		// Inherited via Drawable
+		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
+
+		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
 
 	};
 }

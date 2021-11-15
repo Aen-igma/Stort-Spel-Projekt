@@ -12,7 +12,6 @@ namespace Aen
 		float m_uv[2];
 		bool m_active;
 	};
-
 	struct CSInputBuffer
 	{
 		DirectX::XMFLOAT4 m_runtime;
@@ -35,6 +34,8 @@ namespace Aen
 		float GetRunTime();
 		bool UpdateBuffers();
 
+		//std::vector<m_Particle> GetData()const;
+		//std::vector<CSInputBuffer> GetBufferData()const;
 
 		ID3D11Buffer* GetConstantRunTimeBufferPtr()const;
 		ID3D11Buffer* const* GetConstantRunTimeBufferReference()const;
@@ -64,9 +65,15 @@ namespace Aen
 		ID3D11ShaderResourceView* m_outputSRV;
 		ID3D11UnorderedAccessView* m_UAV;
 
-
+		
+		
 		std::vector<ParticleSystem> m_PSData;
 		std::vector<ParticleSystem> m_PSTempData;
+
+		std::vector<m_Particle> m_PSParticleData;
+		std::vector<CSInputBuffer> m_PSBufferData;
+
+		void Draw(m_Particle& PSdata);
 
 		//Texture
 		Texture* m_Texture;

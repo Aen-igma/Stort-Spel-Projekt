@@ -33,8 +33,9 @@ class Gameplay : public State {
     Aen::Entity* m_wall;
 
     Player m_player;
+    
     bool m_beatBoss;
-
+  
     Aen::ImGuiImporter m_levelImporter;
 
     std::queue<EventData> m_eventQueue;

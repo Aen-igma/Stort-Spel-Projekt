@@ -12,7 +12,7 @@ namespace Aen
 		//För att inita allting
 		bool Initialize(std::string fileName);
 		void RenderFrame(float frameTime);
-		/*void RenderParticlesBuffer(ComDeviceContext*& deviceContext);*/
+		void RenderParticlesBuffer();
 		void UpdateCSShader();
 
 		std::vector<PSSystemcomponent> GetData()const;
@@ -39,6 +39,8 @@ namespace Aen
 
 		
 		std::vector<PSSystemcomponent> PSComponentData;
+		std::vector<ParticleShaderComponent> m_PSShaderData;
+		std::vector<ParticleSystem> m_PSSystemData;
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
 		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;

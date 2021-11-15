@@ -12,6 +12,7 @@ Aen::ParticleSystem::ParticleSystem(const size_t& id)
 	this->m_UAV = 0;
 	this->m_Texture = 0;
 	this->m_systemPos = { 0.0f,40.0f,0.0f };
+	this->m_Texture = 0;
 }
 
 Aen::ParticleSystem::~ParticleSystem()
@@ -21,6 +22,7 @@ Aen::ParticleSystem::~ParticleSystem()
 bool Aen::ParticleSystem::Initialize(std::string textureFilename)
 {
 	bool result;
+	
 	result = LoadTexture(textureFilename);
 	if (!result)
 	{
@@ -39,6 +41,7 @@ bool Aen::ParticleSystem::Initialize(std::string textureFilename)
 		std::cout << "Failed to initialize buffers" << std::endl;
 		return false;
 	}
+
 	return result;
 }
 
@@ -110,6 +113,8 @@ bool Aen::ParticleSystem::UpdateBuffers()
 	return true;
 }
 
+
+
 ID3D11Buffer* Aen::ParticleSystem::GetConstantRunTimeBufferPtr() const
 {
 	return this->cRuntimeBuffer;
@@ -136,28 +141,36 @@ ID3D11ShaderResourceView* Aen::ParticleSystem::GetTexture()
 }
 
 
+void Aen::ParticleSystem::Draw(m_Particle& PSdata)
+{
+	m_target2D.Get()->BeginDraw();
 
-
-
-
+	m_target2D.Get()->EndDraw();
+}
 
 bool Aen::ParticleSystem::LoadTexture(std::string fileName)
 {
 	//Maybe wrong, idk
-	m_Texture = new Texture;
-	if (!m_Texture)
-		return false;
+	//m_Texture = new Texture();
+	//if (!m_Texture)
+	//	return false;
+	
+	//Aen::Texture& matTexture = Aen::Resource::CreateTexture(texName);
+	//matTexture.LoadTexture(imageName);
+
+	std::string imageName = AEN_RESOURCE_DIR(fileName);
+	m_Texture->LoadTexture(imageName);
 
 	//Aen::Texture& PStexture = Aen::Resource::CreateTexture(fileName);
 	//std::string imageName = AEN_RESOURCE_DIR(m_Texture.name);
 
-	m_Texture->LoadTexture(fileName);
+	
 	return true;
 }
 
 void Aen::ParticleSystem::ReleaseTexture()
 {
-
+	this->m_Texture = 0;
 }
 
 bool Aen::ParticleSystem::InitializeParticleSystem()
@@ -193,6 +206,7 @@ void Aen::ParticleSystem::ShutdownParticleSystem()
 		delete[] m_particleList;
 		m_particleList = 0;
 	}
+
 	return;
 }
 

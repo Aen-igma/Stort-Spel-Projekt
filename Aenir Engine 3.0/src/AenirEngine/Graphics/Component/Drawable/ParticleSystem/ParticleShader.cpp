@@ -1,11 +1,16 @@
 #include "PCH.h"
 #include "ParticleShader.h"
 
-Aen::ParticleShaderComponent::ParticleShaderComponent()
+Aen::ParticleShaderComponent::ParticleShaderComponent(const size_t& id)
+	:Drawable(id)
 {
 	this->m_layout = 0;
 	this->m_matrixBuffer = 0;
 	this->m_samplerState = 0;
+	this->m_vertexShader = 0;
+	this->m_geometryShader = 0;
+	this->m_computeShader = 0;
+	this->m_pixelShader = 0;
 }
 
 
@@ -188,11 +193,20 @@ void Aen::ParticleShaderComponent::RenderShader()
 	return;
 }
 
+void Aen::ParticleShaderComponent::Draw(Renderer& renderer, const uint32_t& layer)
+{
+}
+
+void Aen::ParticleShaderComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)
+{
+}
+
 bool Aen::ParticleShaderComponent::Render( 
 	const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewMatrix, 
 	const DirectX::XMMATRIX& projectionMatrix, float runtime, ID3D11ShaderResourceView*& texture, ParticleSystem& ps)
 {
 	SetShaderParameters(ps, ps.GetRunTime(), worldMatrix, viewMatrix, projectionMatrix, texture);
+
 	m_dContext.Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	RenderShader();
 
@@ -213,12 +227,12 @@ bool Aen::ParticleShaderComponent::Render(
 	return true;
 }
 
-void Aen::ParticleShaderComponent::UpdateComputeShader(ParticleSystem& particleSystem)
+void Aen::ParticleShaderComponent::UpdateComputeShader(ParticleSystem* particleSystem)
 {
 	m_dContext.Get()->CSSetShader(this->m_computeShader->m_shader.Get(),NULL,0);
-	m_dContext.Get()->CSSetConstantBuffers(0,1, particleSystem.GetConstantRunTimeBufferReference());
-	m_dContext.Get()->CSSetUnorderedAccessViews(0,1,particleSystem.GetOutputUAV(), NULL);
-	m_dContext.Get()->Dispatch((int)(particleSystem.GetMaxParticleCount() / 64.0f) + (particleSystem.GetMaxParticleCount() % 64 != 0), 1, 1);
+	m_dContext.Get()->CSSetConstantBuffers(0,1, particleSystem->GetConstantRunTimeBufferReference());
+	m_dContext.Get()->CSSetUnorderedAccessViews(0,1,particleSystem->GetOutputUAV(), NULL);
+	m_dContext.Get()->Dispatch((int)(particleSystem->GetMaxParticleCount() / 64.0f) + (particleSystem->GetMaxParticleCount() % 64 != 0), 1, 1);
 
 	//Unbinding
 	m_dContext.Get()->CSSetShader(NULL,NULL,0);

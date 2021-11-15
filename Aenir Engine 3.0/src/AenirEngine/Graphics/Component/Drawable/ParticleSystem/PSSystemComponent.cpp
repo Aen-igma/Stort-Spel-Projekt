@@ -7,7 +7,8 @@ namespace Aen
 	Aen::PSSystemcomponent::PSSystemcomponent(const size_t& id)
 		:Drawable(id)
 	{
-
+		m_PSShader = new ParticleShaderComponent(id);
+		m_PSComponent = new ParticleSystem(id);
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
@@ -17,32 +18,27 @@ namespace Aen
 
 	bool Aen::PSSystemcomponent::Initialize(std::string fileName)
 	{
-		if (!m_PSComponent->Initialize(fileName))
-			throw;
+		bool suc = true;
 		if (!m_PSShader->Initialize())
-			throw;
-
+			suc = false;
+		if (!m_PSComponent->Initialize(fileName))
+			suc = false;
+		return false;
 	}
-
-	//void Aen::PSSystemcomponent::RenderParticlesBuffer(ComDeviceContext*& deviceContext)
-	//{
-	//
-	//}
 
 	void Aen::PSSystemcomponent::RenderFrame(float frameTime)
 	{
 		m_PSComponent->Frame(frameTime);
-	
 	}
 
-	//void Aen::PSSystemcomponent::RenderParticlesBuffer(ComDeviceContext*& deviceContext)
-	//{
-	//	m_PSComponent.Render(deviceContext);
-	//}
+	void Aen::PSSystemcomponent::RenderParticlesBuffer()
+	{
+		m_PSComponent->Render();
+	}
 
 	void Aen::PSSystemcomponent::UpdateCSShader()
 	{
-		/*m_PSShader->UpdateComputeShader();*/
+		m_PSShader->UpdateComputeShader(m_PSComponent);
 		m_PSComponent->UpdateBuffers();
 	}
 
@@ -58,10 +54,14 @@ namespace Aen
 
 	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer)
 	{
-		//for (auto &a : )
-		//{
+		for (auto &a : GetData())
+		{
 
-		//}
+		}
+		for (auto &b : GetData())
+		{
+
+		}
 	}
 	void PSSystemcomponent::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	{
