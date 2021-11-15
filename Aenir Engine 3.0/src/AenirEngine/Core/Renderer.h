@@ -1,7 +1,6 @@
 #pragma once
 #include"../Graphics/RenderSystem.h"
 #include"../Graphics/Component/EntityHandler.h"
-#include "../ImGuiHandler.h"
 #include<thread>
 
 namespace Aen {
@@ -39,7 +38,6 @@ namespace Aen {
 		CB_Camera() :pos(), pad(0.f), fDir(), pad1(0.f), uDir(), pad2(0.f) {}
 	};
 
-
 	class Renderer {
 		public:
 		Renderer() = delete;
@@ -50,14 +48,9 @@ namespace Aen {
 		friend class AABoundBox;
 		friend class OBBox;
 
-
-		
-
 		private:
 		void Initialize();
 		void Render();
-		
-		ImguiSwitchers* mp_swi;
 
 		Window& m_window;
 		

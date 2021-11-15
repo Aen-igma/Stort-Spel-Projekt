@@ -13,8 +13,6 @@ namespace Aen {
 
 	void Renderer::Initialize() {
 
-		if (!mp_swi) mp_swi = GlobalSettings::GetImGuiHandler()->mp_swi;
-
 		ZeroMemory(&m_viewPort, sizeof(D3D11_VIEWPORT));
 
 		m_viewPort.TopLeftX = 0.f;
@@ -167,13 +165,9 @@ namespace Aen {
 
 #ifdef _DEBUG
 		Aen::GlobalSettings::mp_guiHandler->NewFrame();
-		if (Input::KeyPress(Key::K))
-		{
-			ImGui::Begin("Mesh");
-			ImGui::DragFloat3("Shadow", nullptr, .1f);
-			ImGui::DragFloat3("RimLightColor", nullptr, .1f);
-			ImGui::End();
-		}
+		ImGui::Begin("Mesh");
+		ImGui::Text("deez nuts");
+		ImGui::End();
 		Aen::GlobalSettings::mp_guiHandler->Render();
 #endif
 

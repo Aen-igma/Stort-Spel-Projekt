@@ -27,8 +27,6 @@ namespace Aen
 		ImGui_ImplWin32_Init(hwnd);
 		ImGui_ImplDX11_Init(mp_device, mp_dContext);
 		ImGui::StyleColorsDark();
-
-		mp_swi = new ImguiSwitchers;
 	}
 
 	void ImGuiHandler::NewFrame()
