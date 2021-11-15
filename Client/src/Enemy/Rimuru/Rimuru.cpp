@@ -9,7 +9,9 @@ Rimuru::Rimuru()
 	m_rimuru->SetParent(*m_enemy);
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
-	m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
+	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.2f);
+	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
+	//m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
 	m_enemy->SetPos(-11.f, 1.5f, 0.f);
 
 	m_health = 100.f;
@@ -24,7 +26,9 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	m_rimuru->SetParent(*m_enemy);
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
-	m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
+	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.2f);
+	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
+	//m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
 
 	m_enemy->SetPos(pos);
 	m_health = 100.f;
