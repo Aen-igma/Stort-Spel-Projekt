@@ -57,16 +57,16 @@ Player::Player()
 
 	barMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("enemybar.png"));
 	barMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("opacBar.png"));
-	//barMat.SetEmissionMap("enemybar"); // emisison fix or smth
+	barMat.LoadeAndSetEmissionMap(AEN_RESOURCE_DIR("enemybar.png"));
 	barMat["InnerEdgeThickness"] = 0;
-	barMat["OuterEdgeColor"] = Aen::Color::Red;
+	barMat["GlowColor"] = Aen::Color::Red;
+	//barMat["OuterEdgeColor"] = Aen::Color::Red;
 
 	m_targetUI = &Aen::EntityHandler::CreateEntity();
 	m_targetUI->AddComponent<Aen::MeshInstance>();
 	m_targetUI->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
 	m_targetUI->GetComponent<Aen::MeshInstance>().SetMaterial("targetMat");
-	m_targetUI->SetRot(180, 0, 0);
-	m_targetUI->SetPos(0, -100.f, 0);
+	m_targetUI->SetScale(0, 0, 0);
 	m_targetUI->SetRenderLayer(2);
 }
 
@@ -330,11 +330,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		if (Aen::Input::KeyDown(Aen::Key::E)) {
 			lockedOn = !lockedOn;
 
-			if (!lockedOn) {
-				m_targetUI->SetPos(0, -100.f, 0);
-				m_targetUI->SetRot(180, 0, 0);
-			}
-
 			if (lockedOn) {
 				for(auto i : e)
 					i->SetISTargeted(false);
@@ -382,6 +377,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		Aen::Vec3f eDir = m_player->GetPos() - m_targets.front().target->GetEntity()->GetPos();
 		if (eDir.Magnitude() > 20.f) lockedOn = false;
 	} else {
+		m_targetUI->SetScale(0, 0, 0);
 		lockedOn = false;
 		for(auto i : e)
 			i->SetISTargeted(false);

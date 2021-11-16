@@ -11,6 +11,7 @@ Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, cons
 
 void Client::Start()
 {
+	Aen::GlobalSettings::SetVSync(true);
 	State::SetState(States::Gameplay);
 }
 
@@ -23,8 +24,6 @@ void Client::Update(const float& deltaTime)
 
 	if (mp_state)
 		mp_state->Update(deltaTime);
-
-	Aen::GlobalSettings::SetVSync(true);
 
 	//if (mp_gameplay->GetLoaded())
 	//{
