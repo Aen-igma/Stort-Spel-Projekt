@@ -25,7 +25,7 @@ namespace Aen
 		uint32_t weightS = 15;
 		uint32_t weightB = 15;
 		uint32_t weightT = 25;
-		uint32_t weightF = 10;
+		uint32_t weightF = 15;
 
 		uint32_t weightSum = weightS + weightB + weightT + weightF;
 
@@ -208,7 +208,7 @@ namespace Aen
 		//	map[4][3].m_present = true;
 		//	break;
 		default:
-			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
+			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
 			map[3][4].m_present = true;
 			break;
 		}
@@ -427,28 +427,28 @@ namespace Aen
 					if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
 					{																				//Prevents out of bounds
 						if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {	//Checks if region is clear
-							map[x][y - 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][101]);	//Insert random room
+							map[x][y - 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);	//Insert random room
 							AlignRoom( &map[x][y - 1], 1, type);
 							bossRoomPlaced = true;
 							break;																	
 							//North
 						}
 						else if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
-							map[x + 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][101]);
+							map[x + 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
 							AlignRoom(&map[x + 1][y], 10, type);
 							bossRoomPlaced = true;
 							break;
 							//East
 						}
 						else if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
-							map[x][y + 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][101]);
+							map[x][y + 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
 							AlignRoom(&map[x][y + 1], 100, type);
 							bossRoomPlaced = true;
 							break;
 							//South
 						}
 						else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
-							map[x - 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][101]);
+							map[x - 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
 							AlignRoom(&map[x - 1][y], 1000, type);
 							bossRoomPlaced = true;
 							break;
@@ -550,11 +550,21 @@ namespace Aen
 					oe = (map[x][y].connectionDirections / 10u) % 10u > 0,
 					os = (map[x][y].connectionDirections / 100u) % 10u > 0,
 					ow = (map[x][y].connectionDirections / 1000u) % 10u > 0;
+
+				UINT32 numCon = (UINT32)on + (UINT32)oe + (UINT32)os + (UINT32)ow;
+
+				if (numCon < 2) {
+					continue; //Early exit, if the number of exits is less than 2 then it cannot be simplified.
+				}
 				bool 
 					n = (map[x][y].connectionDirections / 1u) % 10u > 0,
 					e = (map[x][y].connectionDirections / 10u) % 10u > 0,
 					s = (map[x][y].connectionDirections / 100u) % 10u > 0,
 					w = (map[x][y].connectionDirections / 1000u) % 10u > 0;
+
+				UINT32 numUnCon = (UINT32)(on & !n) + (UINT32)(oe & !e) + (UINT32)(os & !s) + (UINT32)(ow & !w);
+				UINT32 conDir = n + 10 * e + 100 * s + 1000 * w;
+				UINT32 unConDir = !n + 10 * !e + 100 * !s + 1000 * !w;
 				if (y - 1 > 0 && (map[x][y].connectionDirections / 1u) % 10u > 0) {
 					if (!map[x][y - 1].m_present) {
 						//North facing unconnected
@@ -602,86 +612,141 @@ namespace Aen
 						}
 					}
 				}
-				UINT32 numCon = (UINT32)on+(UINT32)oe+(UINT32)os+(UINT32)ow;
-				UINT32 numUnCon = (UINT32)(on & !n) + (UINT32)(oe & !e) + (UINT32)(os & !s) + (UINT32)(ow & !w);
 				if (numUnCon == 0) {
-					continue;
+					continue; //Early exit; no unconnected exits to remove
 				}
-				if (numCon <= 2) {
-					//Add blockades
-					if (on && !n) {
-
+				
+				//Replace room
+				switch(numCon) {
+				case 2:
+					switch (conDir)
+					{
+					case 1:
+						break;
+					case 10:
+						break;
+					case 100:
+						break;
+					case 1000:
+						break;
 					}
-					if (oe && !e) {
-
-					}
-					if (os && !s) {
-
-					}
-					if (ow && !w) {
-
-					}
-				}
-				else {
-					//Replace room
-					if (numCon == 3) {
-						switch (numUnCon)
-						{
-						case 0:
-							break;
-						case 1:
-							//reduce to corridor or bend
-							if (n & s || e & w) {
-								//Corridor
-								if (n) {
-									//North-South
-									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
-								}
-								else {
-									//East-West
-									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
-									map[x][y].rotateCCW();
-								}
+				break;
+				case 3:
+					switch (numUnCon)
+					{
+					case 1:
+						//reduce to corridor or bend
+						if (n & s || e & w) {
+							//Corridor
+							if (n) {
+								//North-South
+								map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
 							}
 							else {
-								//Bend
-								switch (n + e * 10 + s * 100 + w *1000)
-								{
-								case 11:
-									//North-East
-									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
-									break;
-								case 110:
-									//South-East
-									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
-									break;
-								case 1100:
-									//South-West
-									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
-									break;
-								case 1001:
-									//North-West
-									map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
-									break;
-								}
+								//East-West
+								map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
+								map[x][y].rotateCCW();
+							}
+						}
+						else {
+							//Bend
+							switch (conDir)
+							{
+							case 11:
+								//North-East
+								map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
+								break;
+							case 110:
+								//South-East
+								map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
+								map[x][y].rotateCW();
+								break;
+							case 1100:
+								//South-West
+								map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
+								map[x][y].rotate180();
+								break;
+							case 1001:
+								//North-West
+								map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
+								map[x][y].rotateCCW();
+								break;
+							}
+						}
+						break;
+					case 2:
+						//Replace with dead end
+						break;
+					}
+				break;
+				case 4:
+					switch (numUnCon)
+					{
+					case 1:
+						//Replace with T-junction
+						switch (unConDir)
+						{
+						case 1:
+							map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 1011));
+							map[x][y].rotate180();
+							break;
+						case 10:
+							map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 1011));
+							map[x][y].rotateCCW();
+							break;
+						case 100:
+							map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 1011));
+							break;
+						case 1000:
+							map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 1011));
+							map[x][y].rotateCW();
+							break;
+						default:
+							break;
+						}
+						break;
+					case 2:
+						//Replace with corridor/bend
+						switch (unConDir)
+						{
+						//Straight through
+						case 101:
+						case 1010:
+							if (n) {
+								//North-South
+								map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
+							}
+							else {
+								//East-West
+								map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
+								map[x][y].rotateCCW();
 							}
 							break;
-						case 2:
+						//Bend
+						case 11:
+							//North-East
+							map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
+							break;
+						case 110:
+							//South-East
+							map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
+							map[x][y].rotateCW();
+							break;
+						case 1100:
+							//South-West
+							map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
+							map[x][y].rotate180();
+							break;
+						case 1001:
+							//North-West
+							map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
+							map[x][y].rotateCCW();
 							break;
 						}
-					}
-					else if (numCon == 4) {
-						switch (numUnCon)
-						{
-						case 0:
-							break;
-						case 1:
-							break;
-						case 2:
-							break;
-						case 3:
-							break;
-						}
+						break;
+					case 3:
+						//Replace with dead end
+						break;
 					}
 				}
 			}

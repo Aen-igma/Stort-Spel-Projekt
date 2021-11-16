@@ -32,8 +32,9 @@
 #define FOURWAY NORTH+EAST+SOUTH+WEST
 
 namespace Aen {
-	enum class SpecialRoom { NONE, ENTRANCE, EXIT, BOSS, ARENA, ITEM };
-	enum class RoomTheme { GENERIC, BONES, VAMP, JUNGLE, PLACEHOLDER };
+	enum class SpecialRoom { NONE = 0, ENTRANCE = 1, EXIT = 2, BOSS = 3, ARENA = 4, ITEM = 5};
+	enum class RoomTheme { GENERIC = 0, BONES, VAMP, JUNGLE, PLACEHOLDER };
+	enum class RoomDirections{END = 1, STRAIGHT = 101, BEND = 11, THREE = 1011, FOUR = 1111};
 
 	/*
 	|/////////|

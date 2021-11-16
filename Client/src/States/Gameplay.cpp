@@ -109,24 +109,24 @@ void Gameplay::Initialize()
 	//m_levelImporter.import(path);
 
 	// ------------------- Procedural generation testing staging grounds ------- //
-	//std::vector<string> levelPaths;
+	std::vector<string> levelPaths;
 
-	//m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
+	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
 
 
-	//m_levelGenerator.AddLoadedToGeneration();
+	m_levelGenerator.AddLoadedToGeneration();
 
-	//m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
+	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
 
 	//Match this value to the size of the rooms we are using
-	//m_levelGenerator.SetRoomDimension(88.00);
-	//mptr_map = m_levelGenerator.GenerationTestingFunction();
+	m_levelGenerator.SetRoomDimension(43.f);
+	mptr_map = m_levelGenerator.GenerationTestingFunction();
 
-	//for (UINT y = 0; y < Aen::mapSize; y++) {
-	//	for (UINT x = 0; x < Aen::mapSize; x++) {
-	//		m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
-	//	}
-	//}
+	for (UINT y = 0; y < Aen::mapSize; y++) {
+		for (UINT x = 0; x < Aen::mapSize; x++) {
+			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+		}
+	}
 
 	//---------ENEMIES----------//
 	int numEnemies = 20;

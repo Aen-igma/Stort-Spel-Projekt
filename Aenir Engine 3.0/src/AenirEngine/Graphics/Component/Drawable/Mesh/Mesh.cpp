@@ -16,9 +16,10 @@
 namespace Aen {
 	
 	Mesh::Mesh()
-		:m_vertices(), m_partitions(), m_meshMaterialName() {}
+		:m_vertices(), m_partitions(), m_meshMaterialName(), m_obb(), m_aabb() {}
 	
-	Mesh::Mesh(const std::string& dir) {
+	Mesh::Mesh(const std::string& dir)
+		: m_obb(), m_aabb() {
 		ImportObj(m_vertices, dir, m_partitions, m_meshMaterialName);
 	}
 	

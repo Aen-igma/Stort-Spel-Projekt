@@ -21,7 +21,7 @@ using std::unordered_map;
 namespace Aen 
 {
 
-	class ImGuiImporter
+	class AEN_DECLSPEC ImGuiImporter
 	{
 	private:
 

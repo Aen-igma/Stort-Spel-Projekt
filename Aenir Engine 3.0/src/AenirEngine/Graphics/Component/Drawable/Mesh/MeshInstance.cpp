@@ -84,7 +84,9 @@ namespace Aen {
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
-			DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
+			DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+
+			//DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
 			box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())
