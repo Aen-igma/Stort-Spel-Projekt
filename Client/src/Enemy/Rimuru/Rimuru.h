@@ -8,6 +8,8 @@ class Rimuru : public Enemy {
 	~Rimuru() override;
 
 	Aen::Entity*& GetEntity();
+	Aen::Entity* healthBar;
+
 
 	// Inherited via Enemy
 	virtual void Update(const float& deltaTime, Player& player) override;

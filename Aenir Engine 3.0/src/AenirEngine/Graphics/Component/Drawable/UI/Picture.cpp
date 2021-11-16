@@ -47,9 +47,9 @@ namespace Aen {
 
     void Aen::Picture::SetPicPos(float x, float y)
     {
-        m_pictureData.at(m_nr).rect.left        = x;
-        m_pictureData.at(m_nr).rect.right      = x;
-        m_pictureData.at(m_nr).rect.top        = y;
+        m_pictureData.at(m_nr).rect.left    = x;
+        m_pictureData.at(m_nr).rect.right   = x;
+        m_pictureData.at(m_nr).rect.top     = y;
         m_pictureData.at(m_nr).rect.bottom  = y;
     }
 

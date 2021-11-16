@@ -43,6 +43,27 @@ Player::Player()
 	m_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.0);
 	m_hurtbox->GetComponent<Aen::OBBox>().SetOffset(0.f, 0.f, 0.f);
 	m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+
+
+	Aen::Mesh& eBar = Aen::Resource::CreateMesh("eBar");
+	eBar.Load(AEN_RESOURCE_DIR("bar.fbx"));
+
+	Aen::Material& barMat = Aen::Resource::CreateMaterial("barMat");
+	Aen::Material& targetMat = Aen::Resource::CreateMaterial("targetMat");
+	targetMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("target.png"));
+
+	barMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("enemybar.png"));
+	//barMat.SetEmissionMap("enemybar"); // emisison fix or smth
+	barMat["InnerEdgeColor"] = Aen::Color::Red;
+	barMat["OuterEdgeColor"] = Aen::Color::Green;
+
+	m_targetUI = &Aen::EntityHandler::CreateEntity();
+	m_targetUI->AddComponent<Aen::MeshInstance>();
+	m_targetUI->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
+	m_targetUI->GetComponent<Aen::MeshInstance>().SetMaterial("targetMat");
+	m_targetUI->SetRot(180, 0, 0);
+	m_targetUI->SetPos(0, -100.f, 0);
+	m_targetUI->SetRenderLayer(2);
 }
 
 Player::~Player() {
@@ -304,6 +325,11 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		if (Aen::Input::KeyDown(Aen::Key::E)) {
 			lockedOn = !lockedOn;
 
+			if (!lockedOn) {
+				m_targetUI->SetPos(0, -100.f, 0);
+				m_targetUI->SetRot(180, 0, 0);
+			}
+
 			if (lockedOn) {
 				for(auto i : e)
 					i->SetISTargeted(false);
@@ -342,6 +368,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_targets.front().target->GetEntity()->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
+		//Create UI
+		m_targetUI->SetPos(m_targets.front().target->GetEntity()->GetPos());
+		m_targetUI->SetScale(5.f, 1.f,15.f);
+		m_targetUI->SetRot(-GetCamera()->GetRot().x - 90.f, GetCamera()->GetRot().y + 180.f, 0);
 
 		m_camera->SetRot(pitch, yaw, 0.f);
 		Aen::Vec3f eDir = m_player->GetPos() - m_targets.front().target->GetEntity()->GetPos();
@@ -420,6 +450,11 @@ Aen::Entity*& Player::GetEntity() {
 
 Aen::Entity*& Player::GetHurtBox() {
 	return m_hurtbox;
+}
+
+Aen::Entity*& Player::GetCamera()
+{
+	return m_camera;
 }
 
 void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {

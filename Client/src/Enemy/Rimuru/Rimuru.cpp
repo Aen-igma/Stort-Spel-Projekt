@@ -12,6 +12,16 @@ Rimuru::Rimuru()
 	m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
 	m_enemy->SetPos(-11.f, 1.5f, 0.f);
 
+	// -----------------------------	Floating healthbar		------------------------------- //
+	healthBar = &Aen::EntityHandler::CreateEntity();
+	healthBar->AddComponent<Aen::MeshInstance>();
+	healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
+	healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
+	healthBar->SetRot(180, 0, 0);
+	healthBar->SetPos(0, -100, 0);
+	healthBar->SetScale(2.5f, 2.5f, 2.5f);
+	healthBar->SetRenderLayer(1);
+
 	m_health = 100.f;
 }
 
@@ -26,6 +36,16 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
 	m_enemy->SetPos(pos);
+
+	healthBar = &Aen::EntityHandler::CreateEntity();
+	healthBar->AddComponent<Aen::MeshInstance>();
+	healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
+	healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
+	healthBar->SetRot(180, 0, 0);
+	healthBar->SetPos(0, -100, 0);
+	healthBar->SetScale(2.5f, 2.5f, 2.5f);
+	healthBar->SetRenderLayer(1);
+
 	m_health = 100.f;
 }
 
@@ -33,6 +53,7 @@ Rimuru::~Rimuru() {
 	m_rimuru->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_rimuru);
 	Aen::EntityHandler::RemoveEntity(*m_enemy);
+	Aen::EntityHandler::RemoveEntity(*healthBar);
 }
 
 Aen::Entity*& Rimuru::GetEntity() {
@@ -63,6 +84,10 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	}
 
 	if(dist < 20.f) {
+
+		healthBar->SetRot(-player.GetCamera()->GetRot().x - 90.f, player.GetCamera()->GetRot().y + 180.f, 0);
+		healthBar->SetPos(m_enemy->GetPos() + Aen::Vec3f(0, 2.f, 0));
+
 		m_lDir = Aen::Lerp(m_lDir, eDir.Normalized(), 0.03f);
 		float yaw = Aen::RadToDeg(std::atan2(m_lDir.x, m_lDir.z));
 		m_rimuru->SetRot(0.f, yaw + 180, 0.f);
@@ -89,6 +114,11 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 			m_dodge = false;
 		} else
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+	}
+	else {
+		healthBar->SetRot(180, 0, 0);
+		healthBar->SetPos(0, -100, 0);
+		
 	}
 
 	if(player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_enemy->GetComponent<Aen::AABoundBox>())) {

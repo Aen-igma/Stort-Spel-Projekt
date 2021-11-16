@@ -129,8 +129,8 @@ namespace Aen {
 	void ButtonUI::SetButtonPos(float x, float y)
 	{	
 		m_buttonData.at(m_nr).rect.left		= x;
-		m_buttonData.at(m_nr).rect.right		= x;
-		m_buttonData.at(m_nr).rect.top			= y;
+		m_buttonData.at(m_nr).rect.right	= x;
+		m_buttonData.at(m_nr).rect.top		= y;
 		m_buttonData.at(m_nr).rect.bottom	= y;
 	}
 
@@ -148,9 +148,9 @@ namespace Aen {
 		float top = GetButtonCenter(m_buttonData.at(m_nr).rect).y - (height / 2.f);
 		float bottom = GetButtonCenter(m_buttonData.at(m_nr).rect).y + (height / 2.f);
 
-		m_buttonData.at(m_nr).rect.left			= left;
-		m_buttonData.at(m_nr).rect.right		= right;
-		m_buttonData.at(m_nr).rect.top			= top;
+		m_buttonData.at(m_nr).rect.left		= left;
+		m_buttonData.at(m_nr).rect.right	= right;
+		m_buttonData.at(m_nr).rect.top		= top;
 		m_buttonData.at(m_nr).rect.bottom	= bottom;
 	}
 

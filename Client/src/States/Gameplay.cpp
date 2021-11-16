@@ -56,7 +56,6 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().AddText(L"5", 50.f); //1 - Amount of potion
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(120.f, 110.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(150.f, 150.f);
-	//m_UI->GetComponent<Aen::UIComponent>().SetFont(L"Verdana");
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
 	// ----------------------------- Setup Camera ------------------------------- //
@@ -104,6 +103,9 @@ void Gameplay::Initialize()
 	planeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+
+	//targetMat["InnerEdgeColor"] = Aen::Color::Red;
+	//targetMat["OuterEdgeColor"] = Aen::Color::Green;
 
 	// -------------------------- Setup Entities -------------------------------- //
 
@@ -238,6 +240,7 @@ void Gameplay::Initialize()
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
 
 void Gameplay::Update(const float& deltaTime) {
+
 
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
 		wstringstream potionNr;
