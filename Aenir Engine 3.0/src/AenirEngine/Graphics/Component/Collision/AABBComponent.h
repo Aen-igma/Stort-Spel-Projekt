@@ -29,6 +29,9 @@ namespace Aen
 
 		void ToggleActive(bool b);
 		void ToggleActive();
+
+		void SetCamBox(const bool& b);
+
 	private:
 		DirectX::BoundingBox m_aabb;
 
@@ -43,6 +46,8 @@ namespace Aen
 
 		bool m_isColliding;
 		bool m_isOn;
+
+		bool m_camBox;
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;

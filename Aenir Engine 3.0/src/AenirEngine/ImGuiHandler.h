@@ -29,9 +29,9 @@ namespace Aen {
 	class AEN_DECLSPEC ImGuiHandler {
 
 	private:
-		//void SaveThumbnail(string& destinationPath, string& filePathDestination,
-		//	string& sourcePath, string& filePathSource,
-		//	Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i);
+		/*void SaveThumbnail(string& destinationPath, string& filePathDestination,
+			string& sourcePath, string& filePathSource,
+			Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i);*/
 
 	private:
 

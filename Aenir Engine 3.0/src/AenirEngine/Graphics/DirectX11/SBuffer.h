@@ -22,7 +22,7 @@ namespace Aen {
 			ZeroMemory(&sDesc, sizeof(D3D11_BUFFER_DESC));
 
 			int mod = sizeof(T) % 16;
-			UINT byteSize = (mod == 0) ? static_cast<UINT>(sizeof(T)) : static_cast<UINT>(sizeof(T) + (16 - mod));
+			UINT byteSize = (mod == 0) ? static_cast<UINT>(sizeof(T)) : static_cast<UINT>((int)sizeof(T) + (16 - mod));
 
 			sDesc.Usage = D3D11_USAGE_DYNAMIC;
 			sDesc.ByteWidth = byteSize * size;

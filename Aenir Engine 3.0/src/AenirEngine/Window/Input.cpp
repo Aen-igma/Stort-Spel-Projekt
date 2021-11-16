@@ -156,7 +156,7 @@ namespace Aen {
 	{
 	
 		MouseEvent me = ReadEvent();
-		if (me.getInputType() == MouseEvent::RAW_MOVE)
+		if (me.getInputType() == MouseEvent::MouseInput::RAW_MOVE)
 			return me.GetPos();
 		else return {0,0};
 

@@ -24,6 +24,8 @@ void Client::Update(const float& deltaTime)
 	if (mp_state)
 		mp_state->Update(deltaTime);
 
+	Aen::GlobalSettings::SetVSync(true);
+
 	//if (mp_gameplay->GetLoaded())
 	//{
 	//	std::thread work(&Gameplay::Initialize, mp_gameplay); //Initialize Gameplay

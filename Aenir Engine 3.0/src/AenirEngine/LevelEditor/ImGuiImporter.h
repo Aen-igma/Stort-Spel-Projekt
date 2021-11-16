@@ -1,7 +1,8 @@
 #pragma once
 #include "Graphics/DirectX11/DX11Core.h"
-#include "Graphics/Component/Resource.h"
-#include <filesystem>
+#include"Graphics/Component/Resource.h"
+#include<filesystem>
+
 
 #include "LevelImporter.h"
 #include "Graphics/Component/Entity.h"
@@ -32,30 +33,32 @@ namespace Aen
 
 		unordered_map< size_t, IGH::ModelContainer> *m_modelMap;
 		unordered_map< size_t, Aen::Entity*> *m_lightMap;
-		vector<IGH::MatTexName> *m_materialList;
+		vector<IGH::MatTexName>* m_materialList;
 
 		unsigned int m_entityCount = 0;
 		unsigned int m_lightCount = 0;
 
 		bool m_standAlone = false;
 
-		
-
-		void setMaterial(Aen::Material& materialOut,AenIF::Material materialIn);
+		void setMaterial(Aen::Material& materialOut, AenIF::Material materialIn);
 		void addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, AenIF::Model& model, AenIF::Texture& texture, AenIF::Material& materialIn);
-
 	public:
 		void Convert(const Aen::Vec4f inputVec, float* inputArray);
 		void Convert(float* inputArray, Aen::Vec4f& inputVec);
 
+		void Convert(const Aen::Vec4f inputVec, float* inputArray);
+		void Convert(float* inputArray, Aen::Vec4f& inputVec);
+
 		ImGuiImporter();
-		ImGuiImporter(vector<Aen::Entity*>* m_entityList, vector<string>* m_itemList, unordered_map< size_t, IGH::ModelContainer>* m_modelMap, unordered_map< size_t, Aen::Entity*>* m_lightMap, AenIMP::LevelImporter* m_levelImporter, vector<IGH::MatTexName> *m_materialList);
+		ImGuiImporter(vector<Aen::Entity*>* m_entityList, vector<string>* m_itemList, unordered_map< size_t, IGH::ModelContainer>* m_modelMap, unordered_map< size_t, Aen::Entity*>* m_lightMap, AenIMP::LevelImporter* m_levelImporter, vector<IGH::MatTexName>* m_materialList);
 		~ImGuiImporter();
 
 
 
 		bool import(AenIMP::LevelImporter &m_levelImporter, string & levelPath, float* translation, float* rotation, float* scale);
 		bool import(string& levelPath);
+
+		bool IfExist(vector<IGH::MatTexName>& matList, AenIF::Material& value);
 
 		bool IfExist(vector<IGH::MatTexName>& matList, AenIF::Material& value);
 
@@ -71,7 +74,6 @@ namespace Aen
 
 	public:
 		// All add func here
-
 
 		size_t AddBase(AenIF::Model& model, AenIF::Texture& texture, AenIF::Material& materialIn);
 		//size_t AddBase(AenIF::Model& model, AenIF::Texture& texture);

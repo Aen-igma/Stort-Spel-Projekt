@@ -67,20 +67,20 @@ namespace Aen {
 		}
 	}
 
-	//void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
-	//	string& sourcePath, string& filePathSource,
-	//	Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i)
-	//{
-	//	destinationPath = filePathDestination + m_textureName[i] + "_Thumbnail.png";
-	//	sourcePath = filePathSource + m_textureFileName[i];
+	/*void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
+		string& sourcePath, string& filePathSource,
+		Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i)
+	{
+		destinationPath = filePathDestination + m_textureName[i] + "_Thumbnail.png";
+		sourcePath = filePathSource + m_textureFileName[i];
 
-	//	source.LoadImageThumb(sourcePath.c_str());
-	//	source.MakeThumbnail(&destination);
-	//	destination.SaveImage(destinationPath.c_str());
+		source.LoadImageThumb(sourcePath.c_str());
+		source.MakeThumbnail(&destination);
+		destination.SaveImage(destinationPath.c_str());
 
-	//	source.FreeData();
-	//	destination.FreeData();
-	//}
+		source.FreeData();
+		destination.FreeData();
+	}*/
 
 	void ImGuiHandler::StartUp()
 	{
@@ -468,55 +468,55 @@ namespace Aen {
 		}
 	}
 
-	//void ImGuiHandler::CreatePreviewTextureThumbnail()
-	//{
-	//	string filePathDestination = IGH::RESOURCEPATH + "Thumbnail/";
-	//	string filePathSource = IGH::RESOURCEPATH;
-	//	string destinationPath;
-	//	string sourcePath;
+	void ImGuiHandler::CreatePreviewTextureThumbnail()
+	{
+		/*string filePathDestination = IGH::RESOURCEPATH + "Thumbnail/";
+		string filePathSource = IGH::RESOURCEPATH;
+		string destinationPath;
+		string sourcePath;
 
-	//	string fileNameDestination = "";
+		string fileNameDestination = "";
 
-	//	Aen::ImageByteData destination;
-	//	destination.x = 50;
-	//	destination.y = 50;
-	//	destination.channels = 4;
+		Aen::ImageByteData destination;
+		destination.x = 50;
+		destination.y = 50;
+		destination.channels = 4;
 
-	//	Aen::ImageByteData source;
+		Aen::ImageByteData source;
 
-	//	if (std::filesystem::is_empty(filePathDestination))
-	//	{
-	//		for (int i = 0; i < m_textureFileName.size(); i++)
-	//		{
-	//			SaveThumbnail(destinationPath, filePathDestination,
-	//				sourcePath, filePathSource,
-	//				source, destination, i);
-	//		}
-	//	}
-	//	else
-	//	{
-	//		int numberOfFile = 0;
+		if (std::filesystem::is_empty(filePathDestination))
+		{
+			for (int i = 0; i < m_textureFileName.size(); i++)
+			{
+				SaveThumbnail(destinationPath, filePathDestination,
+					sourcePath, filePathSource,
+					source, destination, i);
+			}
+		}
+		else
+		{
+			int numberOfFile = 0;
 
-	//		for (int i = 0; i < m_textureFileName.size(); i++)
-	//		{
-	//			for (const auto& entryTwo : std::filesystem::directory_iterator(filePathDestination))
-	//			{
-	//				fileNameDestination = entryTwo.path().filename().string();
+			for (int i = 0; i < m_textureFileName.size(); i++)
+			{
+				for (const auto& entryTwo : std::filesystem::directory_iterator(filePathDestination))
+				{
+					fileNameDestination = entryTwo.path().filename().string();
 
-	//				if ((m_textureName[i] == fileNameDestination.substr(0, fileNameDestination.length() - (4 + 10))) != true)
-	//				{
-	//					SaveThumbnail(destinationPath, filePathDestination,
-	//						sourcePath, filePathSource,
-	//						source, destination, i);
-	//				}
-	//				else
-	//				{
-	//					cout << "Already exist" << endl;
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
+					if ((m_textureName[i] == fileNameDestination.substr(0, fileNameDestination.length() - (4 + 10))) != true)
+					{
+						SaveThumbnail(destinationPath, filePathDestination,
+							sourcePath, filePathSource,
+							source, destination, i);
+					}
+					else
+					{
+						cout << "Already exist" << endl;
+					}
+				}
+			}
+		}*/
+	}
 
 	void ImGuiHandler::SetDefaultValue()
 	{
