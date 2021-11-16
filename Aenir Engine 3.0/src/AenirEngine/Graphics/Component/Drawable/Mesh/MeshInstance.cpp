@@ -187,21 +187,8 @@ namespace Aen {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 						RenderSystem::BindShader(renderer.m_opaqueVS);
 						RenderSystem::BindShader(renderer.m_transparencyPS);
-						//RenderSystem::UnBindShader<PShader>();
 
 						renderer.m_cbTransform.BindBuffer<VShader>(0u);
-
-						uint32_t* slots = pMaterial->m_pShaderModel->m_slots;
-						if(pMaterial->m_textures[3] && slots[3] != UINT_MAX) {
-							RenderSystem::UnBindShaderResources<PShader>(0u, 1u);
-							RenderSystem::BindShaderResourceView<PShader>(0u, pMaterial->m_textures[3]->m_shaderResource);
-							renderer.m_cbUseTexture.GetData()[3] = (int)true;
-						} else
-							renderer.m_cbUseTexture.GetData()[3] = (int)false;
-
-						renderer.m_cbUseTexture.BindBuffer<PShader>(0u);
-						RenderSystem::BindSamplers<PShader>(0u, pMaterial->m_pShaderModel->m_samplerData.second);
-
 					}
 
 					m_pMesh->m_vertices.BindBuffer();
