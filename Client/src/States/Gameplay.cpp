@@ -85,8 +85,8 @@ void Gameplay::Initialize()
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
-	//enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
-	enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
+	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
+	//enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["BaseColor"] = Aen::Color::Cyan;

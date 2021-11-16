@@ -19,7 +19,7 @@ Rimuru::Rimuru()
 	healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
 	healthBar->SetRot(180, 0, 0);
 	healthBar->SetPos(0, -100, 0);
-	healthBar->SetScale(2.5f, 2.5f, 2.5f);
+	healthBar->SetScale(5.f, 5.f, 5.f);
 	healthBar->SetRenderLayer(1);
 
 	m_health = 100.f;
@@ -43,7 +43,7 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
 	healthBar->SetRot(180, 0, 0);
 	healthBar->SetPos(0, -100, 0);
-	healthBar->SetScale(2.5f, 2.5f, 2.5f);
+	healthBar->SetScale(5.f, 5.f, 5.f);
 	healthBar->SetRenderLayer(1);
 
 	m_health = 100.f;
