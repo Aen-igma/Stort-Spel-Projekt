@@ -78,6 +78,7 @@ namespace Aen {
 		Vec2i m_dispatchGroups;
 		VShader m_opaqueVS;
 		PShader m_collisionPS;
+		PShader m_transparencyPS;
 		UAView m_UAVBackBuffer;
 		RWTexture2D m_UAVFinal;
 		BBuffer m_backBuffer;

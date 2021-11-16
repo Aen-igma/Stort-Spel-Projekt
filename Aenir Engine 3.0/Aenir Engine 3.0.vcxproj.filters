@@ -603,6 +603,7 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CollisionPS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\FrustumGridCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\TransparencyPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">

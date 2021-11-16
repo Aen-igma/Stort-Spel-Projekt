@@ -64,6 +64,7 @@ Texture2D posMap			: POSMAP		: register(t1);
 Texture2D depthNormalMap	: NORMALMAP		: register(t2);
 Texture2D depthMap			: DEPTHMAP		: register(t3);
 Texture2D glowMap			: GLOWMAP		: register(t4);
+Texture2D opacityMap		: OPACITYMAP	: register(t5);
 
 RWTexture2D<unorm float4> outputMap : register(u0);
 RWTexture2D<float4> finalMap : register(u1);
@@ -84,9 +85,10 @@ void main(CS_Input input) {
 	float3 worldPos =	posMap[uv].rgb;
 	float4 depth =		depthMap[uv];
 	float4 glow =		glowMap[uv];
+	float opacity =		opacityMap[uv].r;
 
 
-	if(length(diffuse) > 0.f) {
+	if(length(diffuse) > 0.f && opacity > 0.f) {
 
 		float2 sobelX = 0.f;
 		float2 sobelY = 0.f;
@@ -115,10 +117,10 @@ void main(CS_Input input) {
 		float finalDSobel = clamp(length(sobelDepth), 0.f, 1.f);
 		float3 innerEdge = finalNSobel * innerEdgeColor.rgb;
 		float3 outerEdge = finalDSobel * outerEdgeColor.rgb;
-
+		
 		float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
 
-		outputMap[uv] = output;
+		outputMap[uv] = lerp(outputMap[uv], output, opacity);
 		finalMap[uv] = output;
 	} else
 		if(length(outputMap[uv]) <= 0.f) {

@@ -38,6 +38,10 @@ namespace Aen {
 			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
 				throw;
 
+		if(!m_transparencyPS.Create(AEN_OUTPUT_DIR_WSTR(L"TransparencyPS.cso")))
+			if(!m_transparencyPS.Create(L"TransparencyPS.cso"))
+				throw;
+
 		if(!m_frustumGridCS.Create(AEN_OUTPUT_DIR_WSTR(L"FrustumGridCS.cso")))
 			if(!m_frustumGridCS.Create(L"FrustumGridCS.cso"))
 				throw;
