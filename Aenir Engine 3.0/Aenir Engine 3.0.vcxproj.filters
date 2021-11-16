@@ -306,6 +306,12 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\DynamicBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelGeneration\LevelGenerator.cpp">
+      <Filter>Source Files\LevelGeneration</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.cpp">
+      <Filter>Source Files\LevelGeneration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AenirEngine\AenWindow.h">
@@ -589,6 +595,12 @@
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidEnums.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.h">
+      <Filter>Header Files\LevelGeneration</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelGeneration\LevelGenerator.h">
+      <Filter>Header Files\LevelGeneration</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

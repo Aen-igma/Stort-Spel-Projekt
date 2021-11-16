@@ -468,9 +468,9 @@ namespace Aen {
 		}
 	}
 
-	void ImGuiHandler::CreatePreviewTextureThumbnail()
+	/*void ImGuiHandler::CreatePreviewTextureThumbnail()
 	{
-		/*string filePathDestination = IGH::RESOURCEPATH + "Thumbnail/";
+		string filePathDestination = IGH::RESOURCEPATH + "Thumbnail/";
 		string filePathSource = IGH::RESOURCEPATH;
 		string destinationPath;
 		string sourcePath;
@@ -515,8 +515,8 @@ namespace Aen {
 					}
 				}
 			}
-		}*/
-	}
+		}
+	}*/
 
 	void ImGuiHandler::SetDefaultValue()
 	{

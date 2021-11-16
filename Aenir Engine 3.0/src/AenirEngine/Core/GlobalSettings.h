@@ -175,7 +175,7 @@ namespace Aen {
 		static Material* m_defaultMaterial;
 		static Texture* m_defaultTexture;
 
-		static ImGuiHandler* mp_guiHandler;
+		//static ImGuiHandler* mp_guiHandler;
 		static bool m_vSync;
 
 		static Renderer* m_pRenderer;
