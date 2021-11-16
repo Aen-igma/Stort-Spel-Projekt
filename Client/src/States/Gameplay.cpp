@@ -85,9 +85,11 @@ void Gameplay::Initialize()
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
-	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
+	//enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
+	enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
+	enemyMat["BaseColor"] = Aen::Color::Cyan;
 
 	/*wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
 	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
@@ -119,12 +121,13 @@ void Gameplay::Initialize()
 
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	m_reimube1->AddComponent<Aen::MeshInstance>();
-	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(rimuru);
+	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(enemyMat);
 	//m_reimube1->AddComponent<Aen::StaticBody>();
 	//m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
 	m_reimube1->SetPos(0.f, 1.f, 11.f);
 	m_reimube1->SetRot(10, 1, 1);
+	//m_reimube1->SetRenderLayer(1);
 
 	// ------ Level Importer ------ //
 	std::string path = AEN_LEVEL_DIR("nLevel.Level");
