@@ -30,6 +30,7 @@ namespace AenIF
 		//Material material;
 		bool rigidBody;
 		string rigidBodyType;
+		bool castShadow;
 	};
 
 	struct Texture

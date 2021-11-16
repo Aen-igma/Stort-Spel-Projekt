@@ -97,7 +97,7 @@ namespace AenIMP {
 		ptr = ptr + sizeof(Aen::SectionHeader);
 		infile.read(ptr, sizeof(Aen::MaterialHeader) - sizeof(Aen::SectionHeader));
 		this->material = new Aen::MaterialStruct;
-		infile.read((char*)&this->material->baseColor, sizeof(*material));
+		infile.read((char*)&this->material->materialName, sizeof(*material));
 	}
 
 	void Material::printMaterial()
@@ -387,6 +387,7 @@ namespace AenIMP {
 		temp.sound = input->model->sound;
 		temp.rigidBody = input->model->rigidBody;
 		temp.rigidBodyType = input->model->rigidBodyType;
+		temp.castShadow = input->model->castShadow;
 		
 		for (int i = 0; i < 3; i++)
 		{
@@ -409,6 +410,8 @@ namespace AenIMP {
 	void CompleteRoom::addMaterial(Material* input)
 	{
 		AenIF::Material temp;
+		temp.materialName = input->material->materialName;
+		temp.materialTextureName = input->material->materialTextureName;
 		for (int i = 0; i < 4; i++)
 		{
 			temp.baseColor[i] = input->material->baseColor[i];

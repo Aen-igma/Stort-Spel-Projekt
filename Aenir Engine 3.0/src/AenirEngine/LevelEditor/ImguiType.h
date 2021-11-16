@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include "RoomFormat.h"
 
 namespace IGH 
 {
@@ -48,9 +49,11 @@ namespace IGH
 	const string SPECULARSTRENGTH = "SpecularStrength";
 	const string ROUGHNESS = "Roughness";
 
-
+	const string DEFAULTMATERIAL = "DefaultMaterial";
+	const string PARTICLE = "Particle";
 
 	static const char* TAGS[] = { "Light","Model","Enemy", "Weapon","Chest"};
+	static const char* PARTICLETAG[] = {"torch"};
 
 	static const char* ROOMTHEME[] = { "Normal Dungeon", "Skeleton", "Gothic", "Aztec" };
 	static const char* ROOMTYPE[] = { "Straight", "Bend", "T Junction" ,"Four Way", "None" };
@@ -92,6 +95,7 @@ namespace IGH
 		string m_meshName = ""; // Obj name
 		bool rigidBody = false;
 		string rigidBodyType = "";
+		bool m_castShadow = false;
 	};
 
 	struct MaterialInfo
@@ -105,6 +109,7 @@ namespace IGH
 			inputArray[2] = inputVec.z;
 			inputArray[3] = inputVec.w;
 		}
+
 
 	public:
 		
@@ -249,6 +254,35 @@ namespace IGH
 			m_rimLightSize = material["RimLightSize"];
 		}
 
+		void set(AenIF::Material& material)
+		{
+			m_materialName = material.materialName;
+			m_materialTextureName = material.materialTextureName;
+
+			for (int i = 0; i < 4; i++)
+			{
+				m_baseColor[i] = material.baseColor[i];
+				m_shadowColor[i] = material.shadowColor[i];
+				m_specularColor[i] = material.specularColor[i];
+				m_rimLightColor[i] = material.rimLightColor[i];
+				m_innerEdgeColor[i] = material.innerEdgeColor[i];
+				m_outerEdgeColor[i] = material.outerEdgeColor[i];
+				m_glowColor[i] = material.glowColor[i];
+			}
+
+			m_glowStr = material.glowStr;
+			m_innerEdgeThickness = material.innerEdgeThickness;
+			m_outerEdgeThickness = material.outerEdgeThickness;
+			m_specularPower = material.specularPower;
+			m_specularStrength = material.specularStrength;
+			m_roughness = material.roughness;
+			m_shadowOffset = material.shadowOffset;
+			m_innerFalloff = material.innerFalloff;
+			m_outerFalloff = material.outerFalloff;
+			m_rimLightIntensity = material.rimLightIntensity;
+			m_rimLightSize = material.rimLightSize;
+		}
+
 	};
 
 	struct AnimationInfo
@@ -290,7 +324,7 @@ namespace IGH
 			this->m_model.rigidBodyType = rigidBodyType;
 		}
 
-		ModelContainer(Aen::Material &mat, string textureName, string modelName, string meshName, string type, bool rigidBody, string rigidBodyType) {
+		ModelContainer(AenIF::Material &mat, string textureName, string modelName, string meshName, string type, bool rigidBody, string rigidBodyType) {
 			this->m_material.set(mat);
 			this->m_texture.m_textureName = textureName;
 			this->m_model.m_name = modelName;

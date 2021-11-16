@@ -129,6 +129,7 @@ namespace Aen {
 			strcpy(modelStruct->sound, it->second.m_sound.c_str());
 			modelStruct->rigidBody = it->second.m_model.rigidBody;
 			strcpy(modelStruct->rigidBodyType, it->second.m_model.rigidBodyType.c_str());
+			modelStruct->castShadow = it->second.m_model.m_castShadow;
 
 			m_ModelVector.push_back(*modelStruct);
 		}
@@ -290,14 +291,6 @@ namespace Aen {
 
 		for (size_t i = 0; i < m_ModelVector.size(); i++)
 		{
-			cout << m_ModelVector[i].name << endl;
-			cout << m_ModelVector[i].mesh << endl;
-			cout << m_ModelVector[i].translation[0] << " " << m_ModelVector[i].translation[1] << " " << m_ModelVector[i].translation[2] << endl;
-			cout << m_ModelVector[i].rotation[0] << " " << m_ModelVector[i].rotation[1] << " " << m_ModelVector[i].rotation[2] << endl;
-			cout << m_ModelVector[i].scale[0] << " " << m_ModelVector[i].scale[1] << " " << m_ModelVector[i].scale[2] << endl;
-			cout << m_ModelVector[i].type << endl;
-			cout << m_ModelVector[i].sound << endl;
-
 			WriteToFile(modelHeader, m_outfile);
 			*modelStruct = m_ModelVector[i];
 			WriteToFile(modelStruct, m_outfile);

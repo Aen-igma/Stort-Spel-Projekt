@@ -20,8 +20,8 @@ namespace Aen {
 		ImGui::DragFloat4("Outer EdgeColor", outerEdgeColor, 0.02f);
 		ImGui::DragFloat4("Glow Color", glowColor, 0.02f);
 		ImGui::DragFloat("Glow GlowStr", &glowStr, 0.02f, 0.0f, 100.0f);
-		ImGui::DragFloat("InnerEdge Thickness", &innerEdgeThickness, 0.02f, 0.0f, 1.0f);
-		ImGui::DragFloat("OuterEdge Thickness", &outerEdgeThickness, 0.02f, 0.0f, 1.0f);
+		ImGui::DragFloat("InnerEdge Thickness", &innerEdgeThickness, 1.0f, 0.0f, 100.0f);
+		ImGui::DragFloat("OuterEdge Thickness", &outerEdgeThickness, 1.0f, 0.0f, 100.0f);
 		ImGui::DragFloat("Specular Power", &specularPower, 0.02f, 0.0f, 1.0f);
 		ImGui::DragFloat("Specular Strength", &specularStrength, 0.02f, 0.0f, 1.0f);
 		ImGui::DragFloat("Roughness", &roughness, 0.02f, 0.0f, 1.0f);
@@ -56,7 +56,7 @@ namespace Aen {
 
 	ImGuiHandler::ImGuiHandler()
 	{
-		imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter);
+		imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter, &m_materialList);
 	}
 
 	ImGuiHandler::~ImGuiHandler()
@@ -100,6 +100,7 @@ namespace Aen {
 		EnemyCreateWindow();
 		ImportWindow();
 		MaterialCreateWindow();
+		ParticleCreateWindow();
 
 	}
 
@@ -241,7 +242,12 @@ namespace Aen {
 			{
 				AddMaterialButton();
 				ImGui::EndTabItem();
-
+			} 
+			
+			if (ImGui::BeginTabItem("Particle"))
+			{
+				AddParticleButton();
+				ImGui::EndTabItem();
 			}
 
 			ImGui::EndTabBar();
@@ -397,8 +403,8 @@ namespace Aen {
 			static float glowColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 			static float glowStr = 100;
-			static float innerEdgeThickness = 0.001f;
-			static float outerEdgeThickness = 0.001f;
+			static float innerEdgeThickness = 2;
+			static float outerEdgeThickness = 2;
 			static float specularPower = 0.6f;
 			static float specularStrength = 1.0f;
 			static float roughness = 0.5f;
@@ -450,6 +456,37 @@ namespace Aen {
 					std::memset(materialName, '\0', sizeof(char) * MATERIAL_NAME_MAX_LENGTH);
 					m_createMaterialActive = false;
 				}
+			}
+			ImGui::End();
+		}
+	}
+
+	void ImGuiHandler::ParticleCreateWindow()
+	{
+		if (m_createParticleWindowActive == true)
+		{
+			static int selectedType = 0;
+			static int CurrentIndex = 0;
+			static char name[MESH_NAME_MAX_LENGTH];
+			static string mesh = "";
+
+			ImGui::Begin("Create Particle", nullptr);
+
+			ImGui::InputText("Name", name, MESH_NAME_MAX_LENGTH);
+			ImGui::Combo("Type", &selectedType, IGH::PARTICLETAG, IM_ARRAYSIZE(IGH::PARTICLETAG));
+
+			mesh = CustomComboString(m_objFileName, "Mesh", CurrentIndex);
+
+			if (ImGui::Button("Create"))
+			{
+				if (mesh != "")
+				{
+					size_t id = imguiImporter->AddBase(name, mesh);
+					m_modelMap.at(id).m_type = IGH::PARTICLETAG[selectedType];
+				}
+
+				m_createParticleWindowActive = false;
+				std::memset(name, '\0', sizeof(char) * MESH_NAME_MAX_LENGTH);
 			}
 			ImGui::End();
 		}
@@ -895,7 +932,11 @@ namespace Aen {
 					if (AddButton("Change Material"))
 					{
 						ChangeTexture(selectedTexture, m_materialList[selected].matName, m_materialList[selected].texName);
-						m_modelMap.at(id).m_material.set(Aen::Resource::GetMaterial(m_materialList[selected].matName));
+						if (m_modelMap.find(id) != m_modelMap.end())
+						{
+							m_modelMap.at(id).m_material.set(Aen::Resource::GetMaterial(m_materialList[selected].matName));
+						}
+						
 					}
 				}
 			}
@@ -906,6 +947,7 @@ namespace Aen {
 	void ImGuiHandler::ModelTab()
 	{
 		static bool hitBoxEnable = false;
+		static bool castShadow = false;
 
 		static int selectedHitBoxType = 0;
 
@@ -924,8 +966,9 @@ namespace Aen {
 			{
 				ImGui::Checkbox("Hit box", &hitBoxEnable);
 				ImGui::Combo("Hit box Type", &selectedHitBoxType, IGH::HITBOXTYPE, IM_ARRAYSIZE(IGH::HITBOXTYPE));
+				ImGui::Checkbox("Cast Shadow", &castShadow);
 
-				if (hitBoxEnable == true)
+				if (hitBoxEnable == true || castShadow == true)
 				{
 					unordered_map<size_t, IGH::ModelContainer>::iterator it = m_modelMap.find(id);
 
@@ -933,12 +976,19 @@ namespace Aen {
 					{
 						it->second.m_model.rigidBody = hitBoxEnable;
 						it->second.m_model.rigidBodyType = IGH::HITBOXTYPE[selectedHitBoxType];
+						it->second.m_model.m_castShadow = castShadow;
+
 					}
 				}
 				CustomCombo(m_itemList, "Parent", selectedParent);
 			}
 			ImGui::EndTabItem();
 		}
+	}
+
+	void ImGuiHandler::ParticleTab()
+	{
+
 	}
 
 	void ImGuiHandler::UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName)
@@ -1008,6 +1058,14 @@ namespace Aen {
 		if (AddButton(IGH::MATERIAL))
 		{
 			m_createMaterialActive = true;
+		}
+	}
+
+	void ImGuiHandler::AddParticleButton()
+	{
+		if (AddButton(IGH::PARTICLE))
+		{
+			m_createParticleWindowActive = true;
 		}
 	}
 

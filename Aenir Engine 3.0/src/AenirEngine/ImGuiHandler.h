@@ -97,6 +97,7 @@ namespace Aen {
 		bool m_ImportWindowActive = false;
 		bool m_createEnemyWindowActive = false;
 		bool m_createMaterialActive = false;
+		bool m_createParticleWindowActive = false;
 
 		// Counters
 		unsigned int m_enemyCount = 0;
@@ -113,6 +114,7 @@ namespace Aen {
 		bool AddButton(const string& name);
 		void AddEnemyButton();
 		void AddMaterialButton();
+		void AddParticleButton();
 
 	public:
 		// All Set and Get here
@@ -156,6 +158,8 @@ namespace Aen {
 		void EnemyCreateWindow();
 		void ImportWindow();
 		void MaterialCreateWindow();
+		void ParticleCreateWindow();
+
 
 	public:
 		ImGuiHandler();
@@ -200,7 +204,7 @@ namespace Aen {
 		void RoomTab();
 		void MaterialTab();
 		void ModelTab();
-
+		void ParticleTab();
 
 
 };
