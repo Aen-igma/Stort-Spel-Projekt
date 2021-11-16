@@ -34,23 +34,27 @@ namespace Aen {
 		std::vector<AssimpData> children;
 	};
 
-	struct Bones {
-		int boneID, parentID;
-		std::string boneName;
-		Mat4f offsetMatrix;			// Inverse bind pose
-		//Mat4f transformRelParent;
-		std::vector<Bones> children = {};
-	};
-
 	struct KeyFrameData {
-		std::vector<float> timeStampPos;
-		std::vector<float> timeStampRot;
-		std::vector<float> timeStampScale;
+		std::string boneName;
+		float timeStampPos;
+		float timeStampRot;
+		float timeStampScale;
 
 		std::vector<Vec3f> position;
 		std::vector<Mat4f> rotation;
 		std::vector<Vec3f> scale;
 	};
+
+	struct Bones {
+		int boneID, parentID;
+		std::string boneName;
+		Mat4f offsetMatrix;			// Inverse bind pose
+		//Mat4f transformRelParent;
+		//std::vector<Bones> children = {};
+		KeyFrameData keyFrameInfo;
+	};
+
+	
 
 	class AEN_DECLSPEC Animation {
 	private:
@@ -60,6 +64,7 @@ namespace Aen {
 		//std::map<std::string, BoneInfo> m_BoneInfoMap;
 		std::vector<Bones> m_boneArray;
 		std::unordered_map<std::string, KeyFrameData> m_keyFrames;
+		std::vector<KeyFrameData> m_keyFrameData;
 		Mat4f globalInverseTransformMatrix;
 		UINT boneCount;
 		VBuffer<VertexAnimation> vBuff;

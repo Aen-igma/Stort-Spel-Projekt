@@ -59,6 +59,10 @@ void Gameplay::Initialize()
 	rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
+	Aen::Mesh& pot = Aen::Resource::CreateMesh("Pot");
+	pot.Load(AEN_RESOURCE_DIR("Pot.fbx"));
+	Aen::Mesh& torch = Aen::Resource::CreateMesh("Torch");
+	torch.Load(AEN_RESOURCE_DIR("Torch.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
@@ -70,6 +74,8 @@ void Gameplay::Initialize()
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 	Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
+	Aen::Material& potMat = Aen::Resource::CreateMaterial("PotMat");
+	Aen::Material& torchMat = Aen::Resource::CreateMaterial("TorchMat");
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
@@ -86,6 +92,14 @@ void Gameplay::Initialize()
 	planeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+
+	potMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Pot_UV_DONE_2.png"));
+	potMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	potMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+
+	torchMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Torch_UV_DONE.png"));
+	torchMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	torchMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 
 	// -------------------------- Setup Entities -------------------------------- //
 
@@ -128,6 +142,18 @@ void Gameplay::Initialize()
 	wallE->SetPos(0.f, 22.f, 0.f);
 
 	wallE = nullptr;*/
+
+	m_pot = &Aen::EntityHandler::CreateEntity();
+	m_pot->AddComponent<Aen::MeshInstance>();
+	m_pot->GetComponent<Aen::MeshInstance>().SetMesh(pot);
+	m_pot->GetComponent<Aen::MeshInstance>().SetMaterial(potMat);
+	m_pot->SetPos(2.f, 2.f, 2.f);
+
+	m_torch = &Aen::EntityHandler::CreateEntity();
+	m_torch->AddComponent<Aen::MeshInstance>();
+	m_torch->GetComponent<Aen::MeshInstance>().SetMesh(torch);
+	m_torch->GetComponent<Aen::MeshInstance>().SetMaterial(torchMat);
+	m_torch->SetPos(-2.f, 2.f, -2.f);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();

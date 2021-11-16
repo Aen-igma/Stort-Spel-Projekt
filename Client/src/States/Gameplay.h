@@ -31,6 +31,8 @@ class Gameplay : public State {
     Aen::Entity* m_UI;
     Aen::Entity* m_wall;
     Aen::Entity* m_bones;
+    Aen::Entity* m_pot;
+    Aen::Entity* m_torch;
 
     Player m_player;
     bool m_beatBoss;

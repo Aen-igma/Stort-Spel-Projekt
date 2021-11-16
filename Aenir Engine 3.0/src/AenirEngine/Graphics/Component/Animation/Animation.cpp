@@ -133,60 +133,85 @@ namespace Aen {
 		}
 	}
 
-	void AnimProcess(std::unordered_map<std::string, KeyFrameData>& keyFrameData, const aiScene* scene) {
+	void AnimProcess(std::unordered_map<std::string, KeyFrameData>& keyFrameData, const aiScene* scene, std::vector<Bones>& boneArray) {
 		if (scene->mNumAnimations == 0) {
 			OutputDebugString("No Animations!");
 			return;
 		}
 		KeyFrameData data;
+		Bones boneData;
+
 		for (int i = 0; i < scene->mAnimations[0]->mNumChannels; i++) {
 			OutputDebugString((scene->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
 			OutputDebugString("\n");
 
-			// Position key data
-			for (int j = 0; j < scene->mAnimations[0]->mChannels[i]->mNumPositionKeys; j++) {
-				data.timeStampPos.emplace_back(scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mTime);
-				Vec3f posValues;
-				posValues.x = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.x;
-				posValues.y = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.y;
-				posValues.z = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.z;
-				data.position.emplace_back(posValues);
+			std::string nameOfChannel;
+			std::string temp((scene->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
+			int len2;
+			len2 = temp.find_first_of("$");
+			for (int l = 0; l < len2 - 1; l++) {
+				nameOfChannel += temp[l];
 			}
-			
-			// Rotation key data
-			for (int r = 0; r < scene->mAnimations[0]->mChannels[i]->mNumRotationKeys; r++) {			// have a "vector" of each key - posiiton timestamps and mValue, same with rotation
-				data.timeStampRot.emplace_back(scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mTime);
-				aiQuaternion orient;
-				orient = scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mValue;
-				data.rotation.emplace_back(MatQuaternion(orient.x, orient.y, orient.z, orient.w));
-				/*float timeS = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime;
-				Mat4f rotation;
-				Vec3f translation;
-				aiQuaternion orient;
-				orient = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mValue;
-				rotation = MatQuaternion(orient.x, orient.y, orient.z, orient.w);
-				translation.x = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.x;
-				translation.y = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.y;
-				translation.z = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.z;
 
-				data.rotation = rotation;
-				data.position = translation;
-				data.timeStamp = timeS;
-				
-				keyFrameData.emplace_back(data);*/
-			}																							// think about how to access the info, save for each channel name?
+			for (int b = 0; b < boneArray.size(); b++) {
+				if (boneArray[b].boneName == nameOfChannel) {
+					
+					// Position key data
+					for (int j = 0; j < scene->mAnimations[0]->mChannels[i]->mNumPositionKeys; j++) {
+						//data.timeStampPos.emplace_back(scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mTime);
+						data.timeStampPos = j;
+						Vec3f posValues;
+						posValues.x = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.x;
+						posValues.y = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.y;
+						posValues.z = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.z;
+						data.position.emplace_back(posValues);
+						boneArray[b].keyFrameInfo.position = data.position;
+						//boneData.keyFrameInfo.timeStampPos = j;
+						//boneData.keyFrameInfo.position.emplace_back(posValues);
+					}
 
-			// Scale key data
-			for (int s = 0; s < scene->mAnimations[0]->mChannels[i]->mNumScalingKeys; s++) {
-				data.timeStampScale.emplace_back(scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mTime);
-				Vec3f scaleValues;
-				scaleValues.x = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.x;
-				scaleValues.y = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.y;
-				scaleValues.z = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.z;
-				data.scale.emplace_back(scaleValues);
+					// Rotation key data
+					for (int r = 0; r < scene->mAnimations[0]->mChannels[i]->mNumRotationKeys; r++) {			// have a "vector" of each key - posiiton timestamps and mValue, same with rotation
+						//data.timeStampRot.emplace_back(scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mTime);
+						data.timeStampRot = r;
+						aiQuaternion orient;
+						orient = scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mValue;
+						data.rotation.emplace_back(MatQuaternion(orient.x, orient.y, orient.z, orient.w));
+						boneArray[b].keyFrameInfo = data;
+						/*float timeS = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime;
+					Mat4f rotation;
+					Vec3f translation;
+					aiQuaternion orient;
+					orient = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mValue;
+					rotation = MatQuaternion(orient.x, orient.y, orient.z, orient.w);
+					translation.x = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.x;
+					translation.y = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.y;
+					translation.z = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.z;
+
+					data.rotation = rotation;
+					data.position = translation;
+					data.timeStamp = timeS;
+
+					keyFrameData.emplace_back(data);*/
+					}																							// think about how to access the info, save for each channel name?
+				}
 			}
+			//// Scale key data
+			//for (int s = 0; s < scene->mAnimations[0]->mChannels[i]->mNumScalingKeys; s++) {
+			//	//data.timeStampScale.emplace_back(scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mTime);
+			//	data.timeStampScale = s;
+			//	Vec3f scaleValues;
+			//	scaleValues.x = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.x;
+			//	scaleValues.y = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.y;
+			//	scaleValues.z = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.z;
+			//	data.scale.emplace_back(scaleValues);
+			//}
 			
-			keyFrameData[scene->mAnimations[0]->mChannels[i]->mNodeName.C_Str()] = data;
+			
+			//data.position.clear();
+			//data.rotation.clear();
+
+			//keyFrameData[scene->mAnimations[0]->mChannels[i]->mNodeName.C_Str()] = data;
 		}
 		/*for (int u = 0; u < keyFrameData.size(); u++){
 			OutputDebugString((keyFrameData.find("Head")).C_Str());
@@ -271,9 +296,9 @@ namespace Aen {
 		boneCount = animation->mMeshes[0]->mNumBones;
 
 		RecursiveNodeProcess(animation->mRootNode);
-		AnimProcess(m_keyFrames, animation);
 		AssignBones(animation, ai_nodes, m_boneArray);
 		TransferNodeBoneData(ai_node_bones, m_boneArray, animation->mMeshes[0]);
+		AnimProcess(m_keyFrames, animation, m_boneArray);
 		MeshBoneData(animation->mMeshes[0], ai_bone_data);
 		//TransferBones(ai_bone_data, m_boneArray);
 		
