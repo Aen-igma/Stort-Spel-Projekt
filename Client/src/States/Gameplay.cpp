@@ -190,8 +190,8 @@ void Gameplay::Update(const float& deltaTime) {
 	if(m_player.GetHealth() <= 0.f)
 		State::SetState(States::Gameover);
 
-	if(m_enemyQueue.empty())
-		State::SetState(States::Victory);
+	//if(m_enemyQueue.empty())
+	//	State::SetState(States::Victory);
 
 	#ifdef _DEBUG
 		if(Aen::Input::KeyDown(Aen::Key::J))

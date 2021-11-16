@@ -72,6 +72,7 @@ Player::~Player() {
 	m_sword->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_sword);
 	Aen::EntityHandler::RemoveEntity(*m_hurtbox);
+	Aen::EntityHandler::RemoveEntity(*m_targetUI);
 }
 
 void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
