@@ -173,7 +173,7 @@ namespace Aen {
 
 
 		void ReadAllModelsFromHandler();
-		void CreatePreviewTextureThumbnail();
+		//void CreatePreviewTextureThumbnail();
 		void RemoveObject();
 		void ReadAllFilesFromResourceFolder();
 		void UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName);
