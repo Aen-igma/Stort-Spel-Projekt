@@ -377,7 +377,7 @@ namespace Aen
 
 	}
 
-	Aen::ImGuiHandler* LevelGenerator::GetHandlerPtr()
+	Aen::ImGuiImporter* LevelGenerator::GetHandlerPtr()
 	{
 		return &m_handler;
 	}

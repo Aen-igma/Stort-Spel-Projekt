@@ -125,7 +125,7 @@ namespace Aen {
 
 		Room map[mapSize][mapSize];
 		std::vector<Room> levelRoom;
-		Aen::ImGuiHandler m_handler;
+		Aen::ImGuiImporter m_handler;
 
 		std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< int, std::vector<uint16_t> > > > masterRoomMap;
 
@@ -137,7 +137,7 @@ namespace Aen {
 		
 		Vec2f m_mapOrigin;
 
-		Aen::ImGuiHandler* GetHandlerPtr();
+		Aen::ImGuiImporter* GetHandlerPtr();
 
 		Room* GenerateLevel();
 
