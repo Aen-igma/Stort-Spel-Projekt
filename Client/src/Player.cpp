@@ -10,7 +10,6 @@ Player::Player()
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
 	m_LIGHTATTACKSPEED(6.0f), m_HEAVYATTACKSPEED(2.54f)
 {
-
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
 	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 200.f);
@@ -78,7 +77,7 @@ Player::~Player() {
 void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	static Aen::Vec3f axis;
-	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
+	static Aen::Vec3f targetDir(0.f, 0.f, -1.f);
 	static bool lockedOn = false;
 
 	static Aen::Vec3f camDir;
@@ -97,7 +96,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	{
 		Aen::MouseEvent me = Aen::Input::ReadEvent();
 
-		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
+		if (me.getInputType() == Aen::MouseEvent::MouseInput::RAW_MOVE)
 		{
 			if (!Aen::Input::GPGetActive(0u) && !lockedOn) {
 				m_camera->Rotate(
@@ -105,11 +104,11 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
 			}
 		}
-		if (me.getInputType() == Aen::MouseEvent::SCROLL_UP) {
+		if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_UP) {
 			printf("scroll up\n");
 
 		}
-		else if (me.getInputType() == Aen::MouseEvent::SCROLL_DOWN) {
+		else if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_DOWN) {
 			printf("scroll down\n");
 
 		}

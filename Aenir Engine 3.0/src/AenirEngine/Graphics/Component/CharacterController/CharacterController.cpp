@@ -2,16 +2,19 @@
 #include "CharacterController.h"
 
 namespace Aen {
-	
+
 	CollisionFilter::CollisionFilter() {}
 
 	CollisionFilter::~CollisionFilter() {}
 
 	bool CollisionFilter::filter(const px::PxController& a, const px::PxController& b) {
+
+		/*if (a.getUserData() == "Enemy" && b.getUserData() == "Enemy") 
+			return false;*/
 		return false;
 	}
 
-	CharacterController::CharacterController(const size_t& id) 
+	CharacterController::CharacterController(const size_t& id)
 		:Component(id), m_physics(PhysicsHandler::GetInstance()->GetPxPhysics()),
 		m_controller(nullptr), m_isGrounded(false) {
 
@@ -25,7 +28,7 @@ namespace Aen {
 		desc.contactOffset = 0.01f;
 		desc.upDirection = px::PxVec3(0.f, 1.f, 0.f);
 		desc.material = m_physics->createMaterial(0.f, 0.f, 0.f);
-		if(!desc.isValid())
+		if (!desc.isValid())
 			throw;
 
 		m_height = 0.99f;
@@ -58,7 +61,7 @@ namespace Aen {
 
 	const Mat4f CharacterController::GetTranslate() {
 		px::PxExtendedVec3 p = m_controller->getPosition();
-		return MatTranslate(Vec3f(p.x, p.y, p.z));
+		return MatTranslate(Vec3f((float)p.x, (float)p.y, (float)p.z));
 	}
 
 	void CharacterController::SetPos(const Vec3f& pos) {
@@ -75,13 +78,14 @@ namespace Aen {
 
 	const Vec3f CharacterController::GetPos() {
 		px::PxExtendedVec3 p = m_controller->getPosition();
-		return Vec3f(p.x, p.y, p.z);
+		return Vec3f((float)p.x, (float)p.y, (float)p.z);
 	}
 
 	const bool CharacterController::IsGrounded() {
 		px::PxExtendedVec3 p = m_controller->getFootPosition();
-		m_ray.SetOrigin(Vec3f(p.x, p.y, p.z) + m_ray.GetDirection() * 0.08f);
+		m_ray.SetOrigin(Vec3f((float)p.x, (float)p.y, (float)p.z) + m_ray.GetDirection() * 0.08f);
 		m_ray.Update();
 		return m_ray.Hit();
 	}
+
 }

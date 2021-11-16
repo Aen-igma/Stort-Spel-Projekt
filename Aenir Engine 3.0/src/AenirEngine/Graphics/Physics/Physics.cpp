@@ -20,6 +20,7 @@ namespace Aen {
 			mp_Pvd = NULL;
 			transport->release();
 		}
+		
 		mp_Foundation->release(); // Always release last
 
 		mp_Dispatcher = nullptr;
@@ -39,12 +40,16 @@ namespace Aen {
 		px::PxPvdTransport* transport = px::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
 		mp_Pvd->connect(*transport, px::PxPvdInstrumentationFlag::eALL);
 
-		m_ToleranceScale.length = toleranceLength;
-		m_ToleranceScale.speed = toleranceSpeed;
+		m_ToleranceScale.length = (px::PxReal)toleranceLength;
+		m_ToleranceScale.speed = (px::PxReal)toleranceSpeed;
 		mp_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *mp_Foundation, m_ToleranceScale, true, mp_Pvd);
 		if (!mp_Physics) throw("PxCreatePhysics Failed!");
 
-		mp_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *mp_Foundation, px::PxCookingParams(m_ToleranceScale));
+		px::PxCookingParams params(m_ToleranceScale);
+		params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eWELD_VERTICES);
+		//params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
+
+		mp_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *mp_Foundation, params);
 		if (!mp_Cooking) throw("PxCreateCooking Failed!");
 
 		px::PxSceneDesc sceneDesc(mp_Physics->getTolerancesScale());
@@ -108,6 +113,10 @@ namespace Aen {
 
 	px::PxScene*& PhysXWrap::GetScene() {
 		return mp_Scene;
+	}
+
+	px::PxCooking*& PhysXWrap::GetCooking() {
+		return mp_Cooking;
 	}
 
 	void PhysXWrap::SetGravity(const Vec3f& force) {

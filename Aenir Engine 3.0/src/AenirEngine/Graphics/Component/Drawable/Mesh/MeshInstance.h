@@ -29,6 +29,8 @@ namespace Aen {
 		friend class Entity;
 		friend class AABoundBox;
 		friend class OBBox;
+		friend class StaticBody;
+		friend class DynamicBody;
 
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
 		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;

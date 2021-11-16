@@ -9,7 +9,7 @@ namespace Aen {
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
-		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP) {}
+		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP), m_toggleView(false) {}
 
 	void Renderer::Initialize() {
 
@@ -38,6 +38,10 @@ namespace Aen {
 			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
 				throw;
 
+		if(!m_frustumGridCS.Create(AEN_OUTPUT_DIR_WSTR(L"FrustumGridCS.cso")))
+			if(!m_frustumGridCS.Create(L"FrustumGridCS.cso"))
+				throw;
+
 		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32G32B32A32_FLOAT);
 		m_opaqueLayout.Create(m_opaqueVS);
 		m_UAVBackBuffer.Create(m_backBuffer);
@@ -57,6 +61,7 @@ namespace Aen {
 		uint32_t size = m_dispatchInfo.GetData().numThreads.x * m_dispatchInfo.GetData().numThreads.y;
 		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
 		m_lGrid.Create(m_dispatchInfo.GetData().numThreads, DXGI_FORMAT_R32G32_UINT);
+		m_frustumGrid.Create(128u, size);
 	}
 
 	void Renderer::Render() {
@@ -87,8 +92,30 @@ namespace Aen {
 			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
 			m_cbCamera.UpdateBuffer();
 
-			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
-			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+			#ifdef _DEBUG
+				if (Aen::Input::KeyDown(Aen::Key::M))
+					m_toggleView = !m_toggleView;
+
+				if (m_toggleView)
+				{
+					m_cbTransform.GetData().m_vMat = MatViewLH(Aen::Vec3f(0.f, 0.f, 0.f), Aen::Vec3f(0, 1.f, -1.f), Aen::Vec3f(0.f, 1.f, 0.f)).Transposed();
+					m_cbTransform.GetData().m_pMat = MatPerspective<float>(90.f, m_window.GetAspectRatio(), 0.01f, 200.f).Transposed();
+					m_cbTransform.GetData().m_ivMat = m_cbTransform.GetData().m_vMat.Inverse();
+					m_cbTransform.GetData().m_ipMat = m_cbTransform.GetData().m_pMat.Inverse();
+				}
+				else {
+					m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+					m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+					m_cbTransform.GetData().m_ivMat = m_cbTransform.GetData().m_vMat.Inverse();
+					m_cbTransform.GetData().m_ipMat = m_cbTransform.GetData().m_pMat.Inverse();
+				}
+			#else
+				m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+				m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+				m_cbTransform.GetData().m_ivMat = m_cbTransform.GetData().m_vMat.Inverse();
+				m_cbTransform.GetData().m_ipMat = m_cbTransform.GetData().m_pMat.Inverse();
+			#endif
+			
 		} else {
 			m_cbTransform.GetData().m_vMat = Mat4f::identity;
 			m_cbTransform.GetData().m_pMat = Mat4f::identity;
@@ -105,7 +132,7 @@ namespace Aen {
 		}
 
 		m_sbLight.UpdateBuffer();
-		m_cbLightCount.GetData() = ComponentHandler::m_lights.size();
+		m_cbLightCount.GetData() = (uint32_t)ComponentHandler::m_lights.size();
 		m_cbLightCount.UpdateBuffer();
 
 		// Layered Rendering
@@ -125,8 +152,9 @@ namespace Aen {
 
 				RenderSystem::UnBindRenderTargets(1u);
 
-				m_sbLight.BindSRV<CShader>(0u);
-				RenderSystem::BindShaderResourceView<CShader>(1u, m_depthMap);
+				RenderSystem::BindShaderResourceView<CShader>(0u, m_frustumGrid);
+				m_sbLight.BindSRV<CShader>(1u);
+				RenderSystem::BindShaderResourceView<CShader>(2u, m_depthMap);
 				RenderSystem::BindUnOrderedAccessView(0u, m_lIndex);
 				RenderSystem::BindUnOrderedAccessView(1u, m_lGrid);
 				RenderSystem::BindShader(m_lightCullCS);
@@ -138,7 +166,7 @@ namespace Aen {
 				
 				RenderSystem::UnBindShader<CShader>();
 				RenderSystem::UnBindUnOrderedAccessViews(0u, 3u);
-				RenderSystem::UnBindShaderResources<CShader>(0u, 3u);
+				RenderSystem::UnBindShaderResources<CShader>(0u, 4u);
 
 				// Draw pass
 
@@ -150,8 +178,7 @@ namespace Aen {
 		// PostProcess
 
 		/*m_dispatchInfo.BindBuffer<CShader>(0u);
-		RenderSystem::BindShaderResourceView<CShader>(0u, m_UAVFinal);
-		RenderSystem::BindSamplers<CShader>(0u, m_wrapSampler);
+		RenderSystem::BindShaderResourceView<CShader>(0u, m_lGrid);
 		RenderSystem::BindUnOrderedAccessView(0u, m_UAVBackBuffer);
 		RenderSystem::BindShader(m_postProcessCS);
 

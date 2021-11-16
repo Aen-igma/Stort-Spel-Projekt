@@ -19,6 +19,7 @@ namespace Aen {
 
 		static void SetMainCamera(Entity& camera) {
 			m_pMainCamera = &camera;
+			UpdateFrstumGrid();
 		}
 
 		static Entity* GetMainCamera() {
@@ -41,9 +42,9 @@ namespace Aen {
 			return m_defaultMaterial;
 		}
 
-		//static ImGuiHandler*& GetImGuiHandler() {
-		//	return mp_guiHandler;
-		//}
+		static void SetVSync(const bool& set) {
+			m_vSync = set;
+		}
 
 		static void RemoveMainCamera()
 		{
@@ -56,8 +57,32 @@ namespace Aen {
 
 		friend class GameLoop;
 		friend class Renderer;
+		friend class Camera;
 
 		private:
+
+		static void UpdateFrstumGrid() {
+			if(m_pMainCamera) {
+				RenderSystem::BindShader(m_pRenderer->m_frustumGridCS);
+				RenderSystem::BindUnOrderedAccessView(0u, m_pRenderer->m_frustumGrid);
+				m_pRenderer->m_dispatchInfo.BindBuffer<CShader>(0u);
+				m_pRenderer->m_cbTransform.BindBuffer<CShader>(1u);
+
+				m_pRenderer->m_cbTransform.GetData().m_vMat = m_pMainCamera->GetComponent<Camera>().GetView().Transposed();
+				m_pRenderer->m_cbTransform.GetData().m_pMat = m_pMainCamera->GetComponent<Camera>().GetProjecton().Transposed();
+				m_pRenderer->m_cbTransform.GetData().m_ivMat = m_pRenderer->m_cbTransform.GetData().m_vMat.Inverse();
+				m_pRenderer->m_cbTransform.GetData().m_ipMat = m_pRenderer->m_cbTransform.GetData().m_pMat.Inverse();
+				m_pRenderer->m_cbTransform.UpdateBuffer();
+
+				RenderSystem::Dispatch(m_pRenderer->m_dispatchInfo.GetData().threadGroups, 1u);
+
+				RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
+			}
+		}
+
+		static const bool GetVSync() {
+			return m_vSync;
+		}
 
 		static void Destroy() {
 			delete m_defaultMaterial;
@@ -66,8 +91,9 @@ namespace Aen {
 
 		GlobalSettings();
 
-		static void Initialize(Window& window) {
+		static void Initialize(Window& window, Renderer* renderer) {
 			m_pWindow = &window;
+			m_pRenderer = renderer;
 
 			// -------------------------- Initialize Default ShaderModel -------------------------- //
 
@@ -150,6 +176,9 @@ namespace Aen {
 		static Texture* m_defaultTexture;
 
 		static ImGuiHandler* mp_guiHandler;
+		static bool m_vSync;
+
+		static Renderer* m_pRenderer;
 
 	};
 
