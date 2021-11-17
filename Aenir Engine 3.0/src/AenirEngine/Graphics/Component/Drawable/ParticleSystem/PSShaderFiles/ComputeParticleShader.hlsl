@@ -16,46 +16,35 @@ struct ParticleStruct
     float2 uv;
 };
 
-struct RandomResult
+float hash(float n)
 {
-    uint4 state;
-    float value;
-};
-
-uint TausStep(uint z, int S1, int S2, int S3, uint M)
-{
-    uint b = (((z << S1) ^ z) >> S2);
-    return ((z & M) << S3) ^ b;
+    return frac(sin(n) * 43758.5453);
 }
-uint LCGStep(uint z, uint A, uint C)
-{
-    return A * z + C;
-}
-RandomResult HybridTaus(uint4 state)
-{
-    state.x = TausStep(state.x, 13, 19, 12, 4294967294);
-    state.y = TausStep(state.y, 2, 25, 4, 4294967288);
-    state.z = TausStep(state.z, 3, 11, 17, 4294967280);
-    state.w = LCGStep(state.w, 1664525, 1013904223);
 
-    RandomResult rand;
-    rand.state = state;
-    rand.value = 2.3283064365387e-10 * (state.x ^ state.y ^ state.z ^ state.w);
+float noise(float3 x)
+{
+    // The noise function returns a value in the range -1.0f -> 1.0f
 
-    return rand;
+    float3 p = floor(x);
+    float3 f = frac(x);
+
+    f = f * f * (3.0 - 2.0 * f);
+    float n = p.x + p.y * 57.0 + 113.0 * p.z;
+
+    return lerp(lerp(lerp(hash(n + 0.0), hash(n + 1.0), f.x),
+        lerp(hash(n + 57.0), hash(n + 58.0), f.x), f.y),
+        lerp(lerp(hash(n + 113.0), hash(n + 114.0), f.x),
+            lerp(hash(n + 170.0), hash(n + 171.0), f.x), f.y), f.z);
 }
 
 RWStructuredBuffer<ParticleStruct> OutputParticle : register(u0);
 [numthreads(64, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
-
-   /* RandomResult rand = HybridTaus();*/
-    
 	//Current particle
     int i = DTid.x;
 	//If particle it out of range
-    if (length(OutputParticle[i].pos) >= 3)
+    if (length(OutputParticle[i].pos) >= 5)
     {
         OutputParticle[i].pos.x = 0;
         OutputParticle[i].pos.y = 0;
@@ -63,11 +52,11 @@ void main(uint3 DTid : SV_DispatchThreadID)
         OutputParticle[i].color.x = 1;
         OutputParticle[i].color.y = 1;
         OutputParticle[i].color.z = 1;
-        OutputParticle[i].color.w = 1;
+        OutputParticle[i].color.w = 0;
         OutputParticle[i].uv.x = 0;
         OutputParticle[i].uv.y = 0;
     }
-    OutputParticle[i].pos += (vel * runtime ) %50;
+    OutputParticle[i].pos += (vel * runtime + noise(float3(DTid))) %50;
     //OutputParticle[i].pos.y += (vel.y * runtime) % 50;
     //OutputParticle[i].pos.z = pos.z;
     OutputParticle[i].color.x = OutputParticle[i].color.x;

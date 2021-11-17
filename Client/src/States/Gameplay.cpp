@@ -46,7 +46,7 @@ void Gameplay::Initialize()
 	// -------------------------- Particle System ------------------------------- //
 	m_PS = &Aen::EntityHandler::CreateEntity();
 	m_PS->AddComponent<Aen::PSSystemcomponent>();
-	m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("healthbar.png"));
+	m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("PikaFace.png"));
 	m_PS->SetPos(0,2,0);
 	
 	// ----------------------------- Setup Camera ------------------------------- //

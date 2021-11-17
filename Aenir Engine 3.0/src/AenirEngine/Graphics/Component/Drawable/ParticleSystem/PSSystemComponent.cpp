@@ -8,7 +8,8 @@ namespace Aen
 	Aen::PSSystemcomponent::PSSystemcomponent(const size_t& id)
 		:Drawable(id),m_UAView(sizeof(Particle),1024)
 	{
-		m_CSInputBuffer.m_particleCount = 100;
+		m_CSInputBuffer.m_particleCount = 10;
+		
 		m_CSInputBuffer.m_vel.x = 1;
 		m_CSInputBuffer.m_vel.y = 2;
 		m_CSInputBuffer.m_vel.z = 1;
@@ -62,7 +63,7 @@ namespace Aen
 		RenderSystem::BindUnOrderedAccessView(0,m_UAView);
 		RenderSystem::BindShader(renderer.m_PSCShader);
 
-		RenderSystem::Dispatch(16,1,1);
+		RenderSystem::Dispatch(int(std::ceil(m_CSInputBuffer.m_particleCount / 64.f)), 1, 1);
 
 		RenderSystem::UnBindShader<CShader>();
 		RenderSystem::UnBindUnOrderedAccessViews(0,1);
