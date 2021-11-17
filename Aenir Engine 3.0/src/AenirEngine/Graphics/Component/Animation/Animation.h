@@ -81,7 +81,7 @@ namespace Aen {
 		//inline const std::map<std::string, BondInfo>& GetBoneIDMap() { return m_BoneInfoMap; }
 		Vec2f GetTimeFraction(std::vector<float>& times, float& dt);
 		void LoadAnimation(const std::string& animationPath);
-		void GetPose(Animation& anim, Bones& skele, float dt, std::vector<Mat4f>& output, Mat4f& parentTrans, Mat4f& globalInverseTrans);
+		//void GetPose(Animation& anim, Bones& skele, float dt, std::vector<Mat4f>& output, Mat4f& parentTrans, Mat4f& globalInverseTrans);
 
 	private:
 		~Animation();

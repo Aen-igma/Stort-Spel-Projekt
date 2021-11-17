@@ -63,6 +63,12 @@ void Gameplay::Initialize()
 	pot.Load(AEN_RESOURCE_DIR("Pot.fbx"));
 	Aen::Mesh& torch = Aen::Resource::CreateMesh("Torch");
 	torch.Load(AEN_RESOURCE_DIR("Torch.fbx"));
+	Aen::Mesh& healingPot = Aen::Resource::CreateMesh("HealingPot");
+	healingPot.Load(AEN_RESOURCE_DIR("Healing_Pot_Soft.fbx"));
+	Aen::Mesh& skelLight = Aen::Resource::CreateMesh("Skel_Light");
+	skelLight.Load(AEN_RESOURCE_DIR("Skel_Light.fbx"));
+	Aen::Mesh& door = Aen::Resource::CreateMesh("Door");
+	door.Load(AEN_RESOURCE_DIR("Door.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
@@ -76,6 +82,9 @@ void Gameplay::Initialize()
 	Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 	Aen::Material& potMat = Aen::Resource::CreateMaterial("PotMat");
 	Aen::Material& torchMat = Aen::Resource::CreateMaterial("TorchMat");
+	Aen::Material& healingPotMat = Aen::Resource::CreateMaterial("HealingPotMat");
+	Aen::Material& skelLightMat = Aen::Resource::CreateMaterial("SkelLightMat");
+	Aen::Material& doorMat = Aen::Resource::CreateMaterial("DoorMat");
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
@@ -100,6 +109,19 @@ void Gameplay::Initialize()
 	torchMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Torch_UV_DONE.png"));
 	torchMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	torchMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+
+	healingPotMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Healing_Pot_UV_DONE.png"));
+	healingPotMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	healingPotMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+
+	//skelLightMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Healing_Pot_UV_DONE.png"));
+	skelLightMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	skelLightMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	skelLightMat["BaseColor"] = Aen::Color(0.8f, 0.8f, 0.5f, 1.f);
+
+	doorMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	doorMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	doorMat["BaseColor"] = Aen::Color(0.1f, 0.1f, 0.05f, 1.f);
 
 	// -------------------------- Setup Entities -------------------------------- //
 
@@ -154,6 +176,26 @@ void Gameplay::Initialize()
 	m_torch->GetComponent<Aen::MeshInstance>().SetMesh(torch);
 	m_torch->GetComponent<Aen::MeshInstance>().SetMaterial(torchMat);
 	m_torch->SetPos(-2.f, 2.f, -2.f);
+
+	m_healingPot = &Aen::EntityHandler::CreateEntity();
+	m_healingPot->AddComponent<Aen::MeshInstance>();
+	m_healingPot->GetComponent<Aen::MeshInstance>().SetMesh(healingPot);
+	m_healingPot->GetComponent<Aen::MeshInstance>().SetMaterial(healingPotMat);
+	m_healingPot->SetScale(0.3f, 0.3f, 0.3f);
+	m_healingPot->SetPos(-4.f, 2.f, -4.f);
+
+	m_skelLight = &Aen::EntityHandler::CreateEntity();
+	m_skelLight->AddComponent<Aen::MeshInstance>();
+	m_skelLight->GetComponent<Aen::MeshInstance>().SetMesh(skelLight);
+	m_skelLight->GetComponent<Aen::MeshInstance>().SetMaterial(skelLightMat);
+	m_skelLight->SetPos(-4.f, 1.f, 4.f);
+
+	m_door = &Aen::EntityHandler::CreateEntity();
+	m_door->AddComponent<Aen::MeshInstance>();
+	m_door->GetComponent<Aen::MeshInstance>().SetMesh(door);
+	m_door->GetComponent<Aen::MeshInstance>().SetMaterial(doorMat);
+	m_door->SetScale(0.5f, 0.5f, 0.5f);
+	m_door->SetPos(5.f, 4.f, 5.f);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();

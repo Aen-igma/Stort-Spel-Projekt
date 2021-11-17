@@ -47,6 +47,8 @@ namespace Aen {
 				if(GlobalSettings::GetVSync()) m_renderer->Render();
 			}
 
+			ComponentHandler::UpdateAnimation();
+
 			if(!GlobalSettings::GetVSync()) m_renderer->Render();
 		}
 

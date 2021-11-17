@@ -3,14 +3,40 @@
 #include"Core/Renderer.h"
 
 namespace Aen {
+	void Animator::Update()
+	{
+		/*if (animation) {
+			m_end = ResClock::now();
+			while (std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > frameRate) {
+				m_start = ResClock::now();
+
+
+
+
+
+
+
+
+
+			}
+		}*/
+	}
+
 	Animator::Animator(const size_t& id)
 		:Drawable(id), animation(nullptr)
 	{
+		m_start = m_end = ResClock::now();
 	}
 
 	void Animator::SetAnimation(Animation& anim)
 	{
 		this->animation = &anim;
+	}
+
+	void Animator::SetFrameRate(const int& frameRate)
+	{
+		int ft = (int)(((double)1 / (double)frameRate) * (double)pow(10, 9));
+		this->frameRate = std::chrono::nanoseconds{ ft };
 	}
 
 	void Animator::Draw(Renderer& renderer, const uint32_t& layer)

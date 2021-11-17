@@ -324,11 +324,8 @@ namespace Aen {
 			throw;
 
 		m_finalMatrix.Create(m_boneArray.size());
-		for (int i = 0; i < m_boneArray.size(); i++) {
-			m_finalMatrix.GetData(i) = Mat4f::identity;
-		}
-		//m_finalMatrix.GetData(10) = m_boneArray[10].offsetMatrix.Transposed().Inverse() * MatRotate(0.f, 0.f, 90.f) * m_boneArray[10].offsetMatrix.Transposed();
-		m_finalMatrix.UpdateBuffer();
+		
+		
 
 
 		//----------------------ANIMATION DATA--------------------------//

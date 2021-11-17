@@ -2,6 +2,7 @@
 #include"../../Graphics.h"
 #include"Animation.h"
 #include "../Drawable/Drawable.h"
+#include <chrono>
 
 namespace Aen {
 
@@ -11,10 +12,20 @@ namespace Aen {
 		Animation* m_CurrentAnimation;
 		float m_CurrentTime;
 		float m_DeltaTime;*/
+		using ResClock = std::chrono::high_resolution_clock;
+		using TimePoint = std::chrono::high_resolution_clock::time_point;
+		using DurationLD = std::chrono::duration<long double>;
+
+		TimePoint m_start;
+		TimePoint m_end;
+
 		Animation* animation;
+		DurationLD frameRate;
+		void Update();
 	public:
 		Animator(const size_t& id);
 		void SetAnimation(Animation& anim);
+		void SetFrameRate(const int& frameRate);
 
 		/*Animator(Animation& animation);
 		void UpdateAnimation(float deltaTime);

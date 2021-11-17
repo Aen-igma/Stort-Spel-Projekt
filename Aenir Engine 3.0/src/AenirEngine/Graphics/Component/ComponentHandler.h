@@ -437,6 +437,12 @@ namespace Aen {
 			if (m_animators.count(id) > 0)
 				return *m_animators.at(id);
 		}
+
+		static void UpdateAnimation() {
+			for (auto& ani : m_animators) {
+				ani.second->Update();
+			}
+		}
 		// --------------------------------------------------//
 
 		static std::unordered_map<size_t, Camera*> m_cameras;
@@ -464,6 +470,7 @@ namespace Aen {
 		friend class Camera;
 		friend class LevelExporter;
 		friend class ImGuiImporter;
+		friend class GameLoop;
 	};
 
 }
