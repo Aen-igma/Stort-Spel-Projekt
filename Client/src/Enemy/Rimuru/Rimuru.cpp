@@ -15,6 +15,10 @@ Rimuru::Rimuru()
 	m_enemy->SetPos(-11.f, 1.5f, 0.f);
 
 	m_health = 100.f;
+	m_wait = false;
+	m_dodge = false;
+	m_hurting = false;
+	m_toggleAttacked = false;
 }
 
 Rimuru::Rimuru(const Aen::Vec3f& pos)
@@ -31,6 +35,10 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 
 	m_enemy->SetPos(pos);
 	m_health = 100.f;
+	m_wait = false;
+	m_dodge = false;
+	m_hurting = false;
+	m_toggleAttacked = false;
 }
 
 Rimuru::~Rimuru() {
@@ -96,14 +104,6 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 	}
 
-	if (m_hurt)
-	{
-		m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterialHurt");
-	}
-	else
-	{
-		m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
-	}
 
 	if(player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_enemy->GetComponent<Aen::AABoundBox>())) {
 		if(!m_hurting) {
@@ -115,6 +115,19 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	} else
 		m_hurting = false;
 
+	if (IsHurt() && !m_wait)
+	{
+		m_wait = true;
+		m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterialHurt");
+		WaitEvent();
+	}
+	
+	if(!IsHurt() && m_wait)
+	{
+		m_wait = false;
+		m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
+	}
+
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
 	m_enemy->GetComponent<Aen::CharacterController>().Move(m_v * deltaTime, deltaTime);
@@ -122,7 +135,6 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 
 void Rimuru::RandomCombatEvent(const float& deltaTime) {
 	EventData data;
-
 	switch(rand() % 2) {
 		case 0:
 		data.duration = rand() % 2 + 1;
@@ -159,5 +171,17 @@ void Rimuru::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir) 
 		break;
 	}
 
+	m_eventQueue.emplace_back(data);
+}
+
+void Rimuru::WaitEvent()
+{
+	EventData data;
+
+	data.type = EventType::Wait;
+	data.duration = 2.f;
+	data.function = [&](float& accell, const float& attackDuration) {};
+
+	m_eventQueue.clear();
 	m_eventQueue.emplace_back(data);
 }
