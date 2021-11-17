@@ -11,7 +11,7 @@ Rimuru::Rimuru()
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
 	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.2f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
-	//m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
+	
 	m_enemy->SetPos(-11.f, 1.5f, 0.f);
 
 	m_health = 100.f;
@@ -28,7 +28,6 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
 	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.2f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
-	//m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
 
 	m_enemy->SetPos(pos);
 	m_health = 100.f;
@@ -75,6 +74,7 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		m_Dir = Aen::Lerp(m_Dir, eDir.Normalized(), 0.1f);
 		Aen::Vec2f nDir(m_Dir.x, m_Dir.z);
 		nDir = nDir.Normalized();
+
 		m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(nDir.x, 0.f, nDir.y) * 3.f * deltaTime, deltaTime);
 
 		static float d = 0.f;
@@ -94,6 +94,15 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 			m_dodge = false;
 		} else
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+	}
+
+	if (m_hurt)
+	{
+		m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterialHurt");
+	}
+	else
+	{
+		m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
 	}
 
 	if(player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_enemy->GetComponent<Aen::AABoundBox>())) {
