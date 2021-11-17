@@ -400,6 +400,13 @@ namespace Aen {
 			throw;
 		}
 
+		static void UpdatePS(const float& deltaTime)
+		{
+			for (auto a : m_PS)
+			{
+				a.second->updatePS(deltaTime);
+			}
+		}
 		// -------------------------------------------- //
 
 		// ----------- Mesh Instance Layer ------------ //
@@ -442,6 +449,7 @@ namespace Aen {
 		friend class Camera;
 		friend class LevelExporter;
 		friend class ImGuiImporter;
+		friend class GameLoop;
 	};
 
 }

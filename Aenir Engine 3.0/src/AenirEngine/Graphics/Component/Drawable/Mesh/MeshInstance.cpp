@@ -79,7 +79,7 @@ namespace Aen {
 		if(m_pMesh) {
 
 			// Transform
-
+			
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
@@ -87,6 +87,8 @@ namespace Aen {
 			DirectX::BoundingOrientedBox box;
 			box.Extents = m_pMesh->m_aabb.Extents;
 			box.Transform(box, m.smMat);
+
+			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
 			if(GlobalSettings::GetMainCamera())
 				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
@@ -180,6 +182,8 @@ namespace Aen {
 			DirectX::BoundingOrientedBox box;
 			box.Extents = m_pMesh->m_aabb.Extents;
 			box.Transform(box, m.smMat);
+
+			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
 			if(GlobalSettings::GetMainCamera())
 				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {

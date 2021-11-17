@@ -1,9 +1,8 @@
-cbuffer worldViewProjectionMatrixBuffer : register(b4)
-{
-    row_major matrix world;
-    row_major matrix view;
-    row_major matrix projection;
-};
+cbuffer Aen_CB_Transform {
+	float4x4 vMat;
+	float4x4 pMat;
+	float4x4 mdlMat;
+}
 
 struct Particle
 {
@@ -11,7 +10,6 @@ struct Particle
     float velocity;
     float4 color;
     float2 uv;
-    bool active;
 };
 
 struct VertexShaderOutput
@@ -28,11 +26,10 @@ VertexShaderOutput main(uint vertexID : SV_VertexID)
     VertexShaderOutput output;
     output.position.w = 1.0f;
 
-
     float4 VSInputPos = float4(Particles[vertexID].position, 1.0f);
-    output.position = mul(VSInputPos, world);
-    output.position = mul(output.position, view);
-    output.position = mul(output.position, projection);
+    output.position = mul(VSInputPos, mdlMat);
+    output.position = mul(output.position, vMat);
+    output.position = mul(output.position, pMat);
     output.uv = Particles[vertexID].uv;
     output.color = Particles[vertexID].color;
     return output;

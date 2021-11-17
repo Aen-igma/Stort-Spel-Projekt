@@ -1,9 +1,8 @@
-cbuffer CBInput : register(b0)
-{
-    row_major matrix M; //HÄMTAR CBUFFER FÖR M
-    row_major matrix V;
-    row_major matrix P;
-};
+cbuffer Aen_CB_Transform {
+    float4x4 vMat;
+    float4x4 pMat;
+    float4x4 mdlMat;
+}
 
 struct GeometryShaderInput
 {
@@ -21,12 +20,12 @@ struct GeometryShaderOutput
 
 [maxvertexcount(6)]
 void main(
-	point GeometryShaderInput input[1] : SV_POSITION, inout TriangleStream<GeometryShaderOutput> OutStream)
+	point GeometryShaderInput input[1] /*:SV_POSITION,*/, inout TriangleStream<GeometryShaderOutput> OutStream)
 {
     GeometryShaderOutput output;
    
     float particleSize = 1.0f;
-    float OffsetX = M._11 * particleSize;
+    float OffsetX = mdlMat._11 * particleSize;
     float OffsetY = OffsetX * (16.0f / 9.0f);
     
     output.position = input[0].position + float4(-OffsetX, OffsetY, 0, 0);

@@ -95,12 +95,19 @@ namespace Aen {
 		Vec2i m_dispatchCall;
 		const uint32_t m_avarageLights;
 
+		//Collsion
+		CBuffer<CB_Collision> m_collisionBuffer;
+
+
 		//ParticleSystem Shaders
 		VShader m_PSVShader;
 		GShader m_PSGShader;
 		CShader m_PSCShader;
 		PShader m_PSPShader;
+		ILayout m_PSLayout;
 
-		CBuffer<CB_Collision> m_collisionBuffer;
+		CBuffer<CSInputBuffer> m_PSInputBuffer;
+
+
 	};
 }

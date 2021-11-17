@@ -40,6 +40,7 @@ namespace Aen {
 				if(m_app->m_window.IsActive()) {
 					Input::Update();
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
+					ComponentHandler::UpdatePS(m_deltaTime.count());
 				}
 				m_renderer->Render(); //Vsync
 				PhysicsHandler::Update(m_deltaTime.count());

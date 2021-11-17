@@ -303,7 +303,7 @@
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSComponent.cpp">
+    <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\ParticleSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\ParticleShader.cpp">
@@ -590,7 +590,7 @@
     <ClInclude Include="src\AenirEngine\LevelExporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSComponent.h">
+    <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\ParticleShader.h">

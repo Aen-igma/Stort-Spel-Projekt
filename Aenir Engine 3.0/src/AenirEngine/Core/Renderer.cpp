@@ -38,9 +38,21 @@ namespace Aen {
 			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
 				throw;
 	
-
-
-
+		//Particle System
+		if (!m_PSVShader.Create(AEN_OUTPUT_DIR_WSTR(L"VertexParticleShader.cso")))
+			if (!m_PSVShader.Create(AEN_OUTPUT_DIR_WSTR(L"VertexParticleShader.cso")))
+				throw;
+		if (!m_PSGShader.Create(AEN_OUTPUT_DIR_WSTR(L"GeometryParticleShader.cso")))
+			if (!m_PSGShader.Create(AEN_OUTPUT_DIR_WSTR(L"GeometryParticleShader.cso")))
+				throw;
+		if (!m_PSCShader.Create(AEN_OUTPUT_DIR_WSTR(L"ComputeParticleShader.cso")))
+			if (!m_PSCShader.Create(AEN_OUTPUT_DIR_WSTR(L"ComputeParticleShader.cso")))
+				throw;
+		if (!m_PSPShader.Create(AEN_OUTPUT_DIR_WSTR(L"PixelParticleShader.cso")))
+			if (!m_PSPShader.Create(AEN_OUTPUT_DIR_WSTR(L"PixelParticleShader.cso")))
+				throw;
+		m_PSLayout.Create(m_PSVShader);
+		
 
 		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32G32B32A32_FLOAT);
 		m_opaqueLayout.Create(m_opaqueVS);
@@ -70,8 +82,9 @@ namespace Aen {
 		RenderSystem::SetRasteriserState(m_rasterizerState);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.f, 0.f, 0.f, 0.f));
 
-		// BackGround
 
+
+		// BackGround
 		m_cbBGColor.GetData() = GlobalSettings::GetBGColor();
 		m_cbBGColor.UpdateBuffer();
 
@@ -113,7 +126,6 @@ namespace Aen {
 		m_cbLightCount.UpdateBuffer();
 
 		// Layered Rendering
-
 		for(uint32_t i = 0u; i < 7u; i++)
 			if(ComponentHandler::m_meshLayer[i].size() > 0) {
 

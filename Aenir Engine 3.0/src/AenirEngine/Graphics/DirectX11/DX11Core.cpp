@@ -62,9 +62,9 @@ namespace Aen {
 
         
         UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-        //#ifdef _DEBUG
-        //flags |= D3D11_CREATE_DEVICE_DEBUG;
-        //#endif
+        #ifdef _DEBUG
+        flags |= D3D11_CREATE_DEVICE_DEBUG;
+        #endif
        
 
 
