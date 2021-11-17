@@ -19,7 +19,7 @@ Rimuru::Rimuru()
 	healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
 	healthBar->SetRot(180, 0, 0);
 	healthBar->SetPos(0, -100, 0);
-	healthBar->SetScale(5.f, 5.f, 5.f);
+	healthBar->SetScale(5.f, 0.f, 5.f);
 	healthBar->SetRenderLayer(1);
 
 	m_health = 100.f;
@@ -43,7 +43,7 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
 	healthBar->SetRot(180, 0, 0);
 	healthBar->SetPos(0, -100, 0);
-	healthBar->SetScale(5.f, 5.f, 5.f);
+	healthBar->SetScale(5.f, 0.f, 5.f);
 	healthBar->SetRenderLayer(1);
 
 	m_health = 100.f;
@@ -63,6 +63,8 @@ Aen::Entity*& Rimuru::GetEntity() {
 void Rimuru::Update(const float& deltaTime, Player& player) {
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float dist = eDir.Magnitude();
+
+	healthBar->SetScale(m_health/20.f, 0.f, 5.f);
 
 	/*if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
 		m_v.y = 0.f;*/
@@ -84,7 +86,6 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	}
 
 	if(dist < 20.f) {
-
 		healthBar->SetRot(-player.GetCamera()->GetRot().x - 90.f, player.GetCamera()->GetRot().y + 180.f, 0);
 		healthBar->SetPos(m_enemy->GetPos() + Aen::Vec3f(0, 2.f, 0));
 

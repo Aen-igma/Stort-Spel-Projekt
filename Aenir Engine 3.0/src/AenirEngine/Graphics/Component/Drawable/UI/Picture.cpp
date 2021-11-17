@@ -29,6 +29,7 @@ namespace Aen {
     {
         ASSERT_HR(CoInitializeEx(NULL, COINIT_MULTITHREADED));
         ASSERT_HR(CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)(&mp_WFactory)));
+
     }
 
     void Aen::Picture::AddPicture(LPCWSTR path)
@@ -64,10 +65,12 @@ namespace Aen {
         m_pictureData.at(m_nr).rect.right = right;
         m_pictureData.at(m_nr).rect.top = top;
         m_pictureData.at(m_nr).rect.bottom = bottom;
+
     }
 
     void Picture::UpdatePicture(float width, int indX)
     {
+        //change bmp
         m_pictureData.at(indX).rect.right -= width;
     }
 
