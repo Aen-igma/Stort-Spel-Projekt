@@ -151,7 +151,8 @@ void Gameplay::Initialize()
 	mptr_map = m_levelGenerator.GenerationTestingFunction();
 
 	//Use this value to set the start of the player / origin of the map
-	Aen::Vec3f playerStartPos;
+	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
+
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
@@ -162,7 +163,7 @@ void Gameplay::Initialize()
 			}
 		}
 	}
-	m_player.GetEntity()->SetPos(playerStartPos);
+	//m_player.GetEntity()->SetPos(playerStartPos);
 
 	//---------ENEMIES----------//
 	int numEnemies = 10;
