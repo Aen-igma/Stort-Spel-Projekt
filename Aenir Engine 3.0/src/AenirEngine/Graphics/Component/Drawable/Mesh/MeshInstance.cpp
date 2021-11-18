@@ -84,9 +84,15 @@ namespace Aen {
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
+#ifndef _DEBUG
+			DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
+#endif // !_DEBUG
+#ifdef _DEBUG
 			DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+			//After procedural generation, m_obb values become nan, this is a work around
+#endif // DEBUG
 
-			//DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
+
 			box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())

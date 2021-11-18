@@ -122,9 +122,16 @@ void Gameplay::Initialize()
 	m_levelGenerator.SetRoomDimension(43.f);
 	mptr_map = m_levelGenerator.GenerationTestingFunction();
 
+	//Use this value to set the start of the player / origin of the map
+	Aen::Vec2f playerStartPos;
+
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.x);
+			}
 		}
 	}
 

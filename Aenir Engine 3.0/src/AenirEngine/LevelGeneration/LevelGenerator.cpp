@@ -309,6 +309,7 @@ namespace Aen
 		placeBossRoom();
 
 		CleanMap();
+		CleanMap();
 		
 		return *map;
 	}
