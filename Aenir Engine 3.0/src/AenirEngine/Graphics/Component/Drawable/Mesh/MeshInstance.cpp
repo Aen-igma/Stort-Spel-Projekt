@@ -103,7 +103,6 @@ namespace Aen {
 					for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
 
 						m_pMesh->m_vertices.BindBuffer();
-						//m_pMesh->m_ibuffer.BindBuffer();
 
 						// Opaque pass
 
@@ -194,10 +193,10 @@ namespace Aen {
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
-						RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
-						RenderSystem::UnBindShader<PShader>();
+						RenderSystem::BindShader(renderer.m_opaqueVS);
+						RenderSystem::BindShader(renderer.m_transparencyPS);
 
-						renderer.m_cbTransform.BindBuffer<VShader>(0);
+						renderer.m_cbTransform.BindBuffer<VShader>(0u);
 					}
 
 					m_pMesh->m_vertices.BindBuffer();

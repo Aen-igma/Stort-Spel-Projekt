@@ -47,6 +47,7 @@ namespace Aen {
 
 		px::PxCookingParams params(m_ToleranceScale);
 		params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eWELD_VERTICES);
+		params.meshWeldTolerance = 0.1f;
 		//params.meshPreprocessParams.set(px::PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH);
 		mp_Cooking = PxCreateCooking(PX_PHYSICS_VERSION, *mp_Foundation, params);
 		if (!mp_Cooking) throw("PxCreateCooking Failed!");

@@ -425,9 +425,9 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 				e[i]->Hurt(true);
 
 				e[i]->SubtractHealth(m_eventQueue.front().damage);
-				Aen::Vec3f dir = Aen::Vec3f(0.f, 1.f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
+				Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
 				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage);
-
+				
 				if(e[i]->GetHealth() <= 0.f) {
 					for(uint32_t k = 0u; k < m_targets.size(); k++)
 						if(m_targets[k].target->GetEntity()->GetID() == e[i]->GetEntity()->GetID()) {
