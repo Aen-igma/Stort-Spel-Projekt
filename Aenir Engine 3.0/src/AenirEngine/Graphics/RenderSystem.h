@@ -224,6 +224,7 @@ namespace Aen {
         static void SetRasteriserState(RState& rState) {
             m_dContext->RSSetState(rState.m_rState.Get());
         }
+       
 
         static void Present() {
             m_sChain->Present(0, NULL);

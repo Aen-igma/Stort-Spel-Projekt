@@ -105,7 +105,7 @@ namespace Aen {
 		CShader m_PSCShader;
 		PShader m_PSPShader;
 		ILayout m_PSLayout;
-
+		ComDeviceContext m_PSDContext;
 		CBuffer<CSInputBuffer> m_PSInputBuffer;
 
 

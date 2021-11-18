@@ -35,9 +35,16 @@ namespace Aen
 		void SetMaterial(const std::string& name);
 
 		//Member vairables that we dont need yet
-		//void SetVelocity(float velocity);
-		//void SetParticleCount(int nrOfPS);
-		//void SetPos(Vec3f pos);
+		void SetVel(float x, float y, float z);
+		void SetNrOfPS(UINT nr);
+		void SetPos(float x, float y, float z);
+		void respawn(float x, float y, float z);
+
+		bool activate();
+		//void EnableBlending();
+		//void DisableBlending();
+		
+
 
 		//Friend class 
 		friend class ComponentHandler;
@@ -53,7 +60,7 @@ namespace Aen
 		friend class Entity;
 		friend class GCore;
 	
-
+		Particle m_ParticleList;
 		CSInputBuffer m_CSInputBuffer;
 		Texture* m_texture;
 		Material* m_material;
@@ -61,7 +68,16 @@ namespace Aen
 		UAView m_UAView;
 
 		void updatePS(const float& framerate);
+		void EmitRandom(const float& frameRate);
+		void DeviationAndVelocity();
+		float particleDeviationX, particleDeviationY, particleDeviationZ;
+		float particleVelocity, particleVelocityVariation;
 
+
+		ID3D11BlendState* alphaEnableBlendingState = NULL;
+		ID3D11BlendState* alphaDisableBlendingState = NULL;
+
+		int maxParticles;
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;

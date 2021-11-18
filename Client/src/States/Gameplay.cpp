@@ -46,9 +46,18 @@ void Gameplay::Initialize()
 	// -------------------------- Particle System ------------------------------- //
 	m_PS = &Aen::EntityHandler::CreateEntity();
 	m_PS->AddComponent<Aen::PSSystemcomponent>();
-	m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("PikaFace.png"));
-	m_PS->SetPos(0,2,0);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("Flame.png"));
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(20);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetVel(1,10,1);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetPos(10,2,0);
+	/*m_PS->GetComponent<Aen::PSSystemcomponent>().SetPos(10,0,0);*/
 	
+	//m_PS = &Aen::EntityHandler::CreateEntity();
+	//m_PS->AddComponent<Aen::PSSystemcomponent>();
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("PikaFace.png"));
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(20);
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetVel(1, 10, 1);
+
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	// ------------------------ Setup Directional Light ------------------------- //
