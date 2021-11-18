@@ -69,6 +69,8 @@ void Gameplay::Initialize()
 	skelLight.Load(AEN_RESOURCE_DIR("Skel_Light.fbx"));
 	Aen::Mesh& door = Aen::Resource::CreateMesh("Door");
 	door.Load(AEN_RESOURCE_DIR("Door.fbx"));
+	Aen::Mesh& chest = Aen::Resource::CreateMesh("Chest");
+	chest.Load(AEN_RESOURCE_DIR("chest_withAnimations.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
@@ -85,6 +87,7 @@ void Gameplay::Initialize()
 	Aen::Material& healingPotMat = Aen::Resource::CreateMaterial("HealingPotMat");
 	Aen::Material& skelLightMat = Aen::Resource::CreateMaterial("SkelLightMat");
 	Aen::Material& doorMat = Aen::Resource::CreateMaterial("DoorMat");
+	Aen::Material& chestMat = Aen::Resource::CreateMaterial("ChestMat");
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
@@ -122,6 +125,10 @@ void Gameplay::Initialize()
 	doorMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	doorMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	doorMat["BaseColor"] = Aen::Color(0.1f, 0.1f, 0.05f, 1.f);
+
+	chestMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	chestMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	//chestMat["BaseColor"] = Aen::Color(0.1f, 0.1f, 0.05f, 1.f);
 
 	// -------------------------- Setup Entities -------------------------------- //
 
@@ -197,6 +204,13 @@ void Gameplay::Initialize()
 	m_door->SetScale(0.5f, 0.5f, 0.5f);
 	m_door->SetPos(5.f, 4.f, 5.f);
 
+	m_chest = &Aen::EntityHandler::CreateEntity();
+	m_chest->AddComponent<Aen::MeshInstance>();
+	m_chest->GetComponent<Aen::MeshInstance>().SetMesh(chest);
+	m_chest->GetComponent<Aen::MeshInstance>().SetMaterial(chestMat);
+	m_chest->SetScale(0.5f, 0.5f, 0.5f);
+	m_chest->SetPos(6.f, 2.f, 6.f);
+
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();
 	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
@@ -243,12 +257,13 @@ void Gameplay::Initialize()
 	m_reimube4->SetPos(-22.f, 5.f, -65.f);
 
 	Aen::Animation& testAnim = Aen::Resource::CreateAnimation("TimDab");
-	testAnim.LoadAnimation("AnimTimDab.fbx");
+	testAnim.LoadAnimation("NewAnimTimDabLeft.fbx");
 	
 	Aen::Entity* testAnimObject = &Aen::EntityHandler::CreateEntity();
 	testAnimObject->AddComponent<Aen::Animator>();
 	testAnimObject->GetComponent<Aen::Animator>().SetAnimation(testAnim);
-		
+	testAnimObject->GetComponent<Aen::Animator>().SetAnimationScale(5);
+	testAnimObject->GetComponent<Aen::Animator>().SetFrameRate(24);
 
 
 	// ------ Level Importer ------ //

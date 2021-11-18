@@ -36,6 +36,7 @@ class Gameplay : public State {
     Aen::Entity* m_healingPot;
     Aen::Entity* m_skelLight;
     Aen::Entity* m_door;
+    Aen::Entity* m_chest;
 
     Player m_player;
     bool m_beatBoss;

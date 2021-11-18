@@ -8,30 +8,29 @@ namespace Aen {
 
 	class AEN_DECLSPEC Animator : public Drawable{
 	private:
-		/*std::vector<Mat4f> m_FinalBoneMatrices;
-		Animation* m_CurrentAnimation;
-		float m_CurrentTime;
-		float m_DeltaTime;*/
+		
 		using ResClock = std::chrono::high_resolution_clock;
 		using TimePoint = std::chrono::high_resolution_clock::time_point;
 		using DurationLD = std::chrono::duration<long double>;
 
 		TimePoint m_start;
 		TimePoint m_end;
+		TimePoint m_currentTime;
+		TimePoint m_frameTime;
 
 		Animation* animation;
 		DurationLD frameRate;
+		int m_currentFrame;
+		float m_scale;
 		void Update();
+		void GetAnimation(std::vector<Mat4f>& mat);
+
 	public:
 		Animator(const size_t& id);
 		void SetAnimation(Animation& anim);
 		void SetFrameRate(const int& frameRate);
+		void SetAnimationScale(const float& newScale);
 
-		/*Animator(Animation& animation);
-		void UpdateAnimation(float deltaTime);
-		void PlayAnimation(Animation* animation);
-		void CalculateBoneTransform(const AssimpData* node, Mat4f parentTransform);
-		inline std::vector<Mat4f> GetFinalBoneMatrices() { return m_FinalBoneMatrices; }*/
 
 		friend class ComponentHandler;
 		friend class Renderer;

@@ -112,11 +112,24 @@ namespace Aen {
 				}*/
 				if (nodeBoneArray[i]->mParent[0].mName.data == nodeBoneArray[j]->mName.data) {
 					bone.parentID = j;
-					//bone.transformRelParent = nodeBoneArray[i]->mTransformation;					// Do we need this? If so, how do we get the transform..
 				}
 			}
-			
+			//bone.localMatrix = nodeBoneArray[i]->mTransformation;
+			// 
+			// --------- LOCAL MATRIX ----------- //
+			bone.localMatrix.a11 = nodeBoneArray[i]->mTransformation.a1; bone.localMatrix.a12 = nodeBoneArray[i]->mTransformation.a2;
+			bone.localMatrix.a13 = nodeBoneArray[i]->mTransformation.a3; bone.localMatrix.a14 = nodeBoneArray[i]->mTransformation.a4;
 
+			bone.localMatrix.a21 = nodeBoneArray[i]->mTransformation.b1; bone.localMatrix.a22 = nodeBoneArray[i]->mTransformation.b2;
+			bone.localMatrix.a23 = nodeBoneArray[i]->mTransformation.b3; bone.localMatrix.a24 = nodeBoneArray[i]->mTransformation.b4;
+
+			bone.localMatrix.a31 = nodeBoneArray[i]->mTransformation.c1; bone.localMatrix.a32 = nodeBoneArray[i]->mTransformation.c2;
+			bone.localMatrix.a33 = nodeBoneArray[i]->mTransformation.c3; bone.localMatrix.a34 = nodeBoneArray[i]->mTransformation.c4;
+
+			bone.localMatrix.a41 = nodeBoneArray[i]->mTransformation.d1; bone.localMatrix.a42 = nodeBoneArray[i]->mTransformation.d2;
+			bone.localMatrix.a43 = nodeBoneArray[i]->mTransformation.d3; bone.localMatrix.a44 = nodeBoneArray[i]->mTransformation.d4;
+
+			// --------- OFFSET MATRIX ----------- //
 			bone.offsetMatrix.a11 = mesh->mBones[i]->mOffsetMatrix.a1; bone.offsetMatrix.a12 = mesh->mBones[i]->mOffsetMatrix.a2; 
 			bone.offsetMatrix.a13 = mesh->mBones[i]->mOffsetMatrix.a3; bone.offsetMatrix.a14 = mesh->mBones[i]->mOffsetMatrix.a4;
 
@@ -133,17 +146,23 @@ namespace Aen {
 		}
 	}
 
-	void AnimProcess(std::unordered_map<std::string, KeyFrameData>& keyFrameData, const aiScene* scene, std::vector<Bones>& boneArray) {
+	void AnimProcess(std::unordered_map<std::string, std::vector<KeyFrameData>>& keyFrameData, const aiScene* scene, float& duration, std::vector<float>& timeStamp) {
 		if (scene->mNumAnimations == 0) {
 			OutputDebugString("No Animations!");
 			return;
 		}
-		KeyFrameData data;
-		Bones boneData;
+		//OutputDebugString(std::to_string(scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mTime).c_str());
+		//OutputDebugString("\n");
 
-		for (int i = 0; i < scene->mAnimations[0]->mNumChannels; i++) {
+		duration = (scene->mAnimations[0]->mDuration + 1.f) / scene->mAnimations[0]->mTicksPerSecond;
+
+		for (int i = 0; i < scene->mAnimations[0]->mNumChannels; i+=3) {
 			OutputDebugString((scene->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
 			OutputDebugString("\n");
+
+			int i1 = i;
+			int i2 = i + 1;
+			int i3 = i + 2;
 
 			std::string nameOfChannel;
 			std::string temp((scene->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
@@ -153,102 +172,55 @@ namespace Aen {
 				nameOfChannel += temp[l];
 			}
 
-			for (int b = 0; b < boneArray.size(); b++) {
-				if (boneArray[b].boneName == nameOfChannel) {
-					
-					// Position key data
-					for (int j = 0; j < scene->mAnimations[0]->mChannels[i]->mNumPositionKeys; j++) {
-						//data.timeStampPos.emplace_back(scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mTime);
-						data.timeStampPos = j;
-						Vec3f posValues;
-						posValues.x = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.x;
-						posValues.y = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.y;
-						posValues.z = scene->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.z;
-						data.position.emplace_back(posValues);
-						boneArray[b].keyFrameInfo.position = data.position;
-						//boneData.keyFrameInfo.timeStampPos = j;
-						//boneData.keyFrameInfo.position.emplace_back(posValues);
-					}
+			UINT posCount = scene->mAnimations[0]->mChannels[i1]->mNumPositionKeys;
+			UINT rotCount = scene->mAnimations[0]->mChannels[i2]->mNumRotationKeys;
+			UINT scaleCount = scene->mAnimations[0]->mChannels[i3]->mNumScalingKeys;
 
-					// Rotation key data
-					for (int r = 0; r < scene->mAnimations[0]->mChannels[i]->mNumRotationKeys; r++) {			// have a "vector" of each key - posiiton timestamps and mValue, same with rotation
-						//data.timeStampRot.emplace_back(scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mTime);
-						data.timeStampRot = r;
-						aiQuaternion orient;
-						orient = scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mValue;
-						data.rotation.emplace_back(MatQuaternion(orient.x, orient.y, orient.z, orient.w));
-						boneArray[b].keyFrameInfo = data;
-						/*float timeS = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mTime;
-					Mat4f rotation;
-					Vec3f translation;
-					aiQuaternion orient;
-					orient = animation->mAnimations[0]->mChannels[i]->mRotationKeys[j].mValue;
-					rotation = MatQuaternion(orient.x, orient.y, orient.z, orient.w);
-					translation.x = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.x;
-					translation.y = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.y;
-					translation.z = animation->mAnimations[0]->mChannels[i]->mPositionKeys[j].mValue.z;
+			UINT keys = posCount;
+			keys = (keys < rotCount) ? rotCount : keys;
+			keys = (keys < scaleCount) ? scaleCount : keys;
 
-					data.rotation = rotation;
-					data.position = translation;
-					data.timeStamp = timeS;
+			std::vector<KeyFrameData> data(keys);
+			timeStamp.resize(keys);
+			float keysPerSec = duration / keys;
 
-					keyFrameData.emplace_back(data);*/
-					}																							// think about how to access the info, save for each channel name?
+			// Position key data
+			for (int j = 0; j < posCount; j++) {
+				int index = scene->mAnimations[0]->mChannels[i1]->mPositionKeys[j].mTime;
+				if (index >= 0) {
+					Vec3f posValues;
+					posValues.x = scene->mAnimations[0]->mChannels[i1]->mPositionKeys[j].mValue.x;
+					posValues.y = scene->mAnimations[0]->mChannels[i1]->mPositionKeys[j].mValue.y;
+					posValues.z = scene->mAnimations[0]->mChannels[i1]->mPositionKeys[j].mValue.z;
+					data[index].position = MatTranslate(posValues);
+					timeStamp[index] = keysPerSec * (float)index;
 				}
 			}
-			//// Scale key data
-			//for (int s = 0; s < scene->mAnimations[0]->mChannels[i]->mNumScalingKeys; s++) {
-			//	//data.timeStampScale.emplace_back(scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mTime);
-			//	data.timeStampScale = s;
-			//	Vec3f scaleValues;
-			//	scaleValues.x = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.x;
-			//	scaleValues.y = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.y;
-			//	scaleValues.z = scene->mAnimations[0]->mChannels[i]->mScalingKeys[s].mValue.z;
-			//	data.scale.emplace_back(scaleValues);
-			//}
-			
-			
-			//data.position.clear();
-			//data.rotation.clear();
 
-			//keyFrameData[scene->mAnimations[0]->mChannels[i]->mNodeName.C_Str()] = data;
+			 //Rotation key data
+			for (int r = 0; r < rotCount; r++) {
+				int index = scene->mAnimations[0]->mChannels[i2]->mRotationKeys[r].mTime;
+				if (index >= 0) {
+					aiQuaternion orient;
+					orient = scene->mAnimations[0]->mChannels[i2]->mRotationKeys[r].mValue;
+					data[index].rotation = MatQuaternion(orient.x, orient.y, orient.z, orient.w);
+				}
+			}	
+			
+			//// Scale key data
+			for (int s = 0; s < scaleCount; s++) {
+				int index = scene->mAnimations[0]->mChannels[i3]->mScalingKeys[s].mTime;
+				if (index >= 0) {
+					Vec3f scaleValues;
+					scaleValues.x = scene->mAnimations[0]->mChannels[i3]->mScalingKeys[s].mValue.x;
+					scaleValues.y = scene->mAnimations[0]->mChannels[i3]->mScalingKeys[s].mValue.y;
+					scaleValues.z = scene->mAnimations[0]->mChannels[i3]->mScalingKeys[s].mValue.z;
+					data[index].scale = MatScale(scaleValues);
+				}
+			}
+
+			keyFrameData.emplace(nameOfChannel, data);
 		}
-		/*for (int u = 0; u < keyFrameData.size(); u++){
-			OutputDebugString((keyFrameData.find("Head")).C_Str());
-			OutputDebugString("\n");		*/			  
-			/*OutputDebugString(std::to_string(keyFrameData[u].rotation.a11).c_str());
-			OutputDebugString(" : ");					  
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a12).c_str());
-			OutputDebugString(" : ");					  
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a13).c_str());
-			OutputDebugString(" : ");					  
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a14).c_str());
-			OutputDebugString("\n");
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a21).c_str());
-			OutputDebugString(" : ");								   
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a22).c_str());
-			OutputDebugString(" : ");								   
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a23).c_str());
-			OutputDebugString(" : ");								   
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a24).c_str());
-			OutputDebugString("\n");
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a31).c_str());
-			OutputDebugString(" : ");								   
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a32).c_str());
-			OutputDebugString(" : ");								   
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a33).c_str());
-			OutputDebugString(" : ");								   
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a34).c_str());
-			OutputDebugString("\n");
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a41).c_str());
-			OutputDebugString(" : ");								   
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a42).c_str());
-			OutputDebugString(" : ");								   
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a43).c_str());
-			OutputDebugString(" : ");								   
-			OutputDebugString(std::to_string(keyFrameData[u].rotation.a44).c_str());
-			OutputDebugString("\n");
-		}*/
 	}
 
 	Vec2f Animation::GetTimeFraction(std::vector<float>& times, float& dt)
@@ -268,7 +240,7 @@ namespace Aen {
 	{
 		Assimp::Importer importer;
 		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
-		const aiScene* animation = importer.ReadFile("../Resource/" + animationPath, aiProcess_Triangulate);
+		const aiScene* animation = importer.ReadFile("../Resource/" + animationPath, aiProcess_Triangulate | aiProcess_MakeLeftHanded);
 		//----------------------BONE DATA--------------------------//
 		Bones rootBone;
 		/*rootBone.boneID = 0;
@@ -298,7 +270,7 @@ namespace Aen {
 		RecursiveNodeProcess(animation->mRootNode);
 		AssignBones(animation, ai_nodes, m_boneArray);
 		TransferNodeBoneData(ai_node_bones, m_boneArray, animation->mMeshes[0]);
-		AnimProcess(m_keyFrames, animation, m_boneArray);
+		AnimProcess(m_keyFrames, animation, m_Duration, m_timeStamp);
 		MeshBoneData(animation->mMeshes[0], ai_bone_data);
 		//TransferBones(ai_bone_data, m_boneArray);
 		
@@ -325,18 +297,16 @@ namespace Aen {
 
 		m_finalMatrix.Create(m_boneArray.size());
 		
-		
-
 
 		//----------------------ANIMATION DATA--------------------------//
-		aiAnimation* ani = animation->mAnimations[0];
+		/*aiAnimation* ani = animation->mAnimations[0];
 
 		if (ani->mTicksPerSecond != 0.0f)
 			m_TicksPerSecond = ani->mTicksPerSecond;
 		else
 			m_TicksPerSecond = 1;
 
-		m_Duration = ani->mDuration * ani->mTicksPerSecond;
+		m_Duration = ani->mDuration * ani->mTicksPerSecond;*/
 
 		/*Animation animation;
 		Bones skeleton;*/
