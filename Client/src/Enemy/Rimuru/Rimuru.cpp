@@ -103,6 +103,10 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		} else
 			m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 	}
+	else
+	{
+		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+	}
 
 
 	if(player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_enemy->GetComponent<Aen::AABoundBox>())) {
