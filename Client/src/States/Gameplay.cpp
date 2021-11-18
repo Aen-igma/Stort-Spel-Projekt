@@ -65,6 +65,7 @@ void Gameplay::Initialize()
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
+	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
@@ -74,6 +75,8 @@ void Gameplay::Initialize()
 	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["BaseColor"] = Aen::Color::Cyan;
 
+	// Material to switch to when enemy is hurt
+	enemyMatHurt["BaseColor"] = Aen::Color::Red;
 	/*wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
 	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
@@ -114,13 +117,13 @@ void Gameplay::Initialize()
 	m_levelImporter.import(path);
 
 	//---------ENEMIES----------//
-	/*int numEnemies = 20;
+	int numEnemies = 10;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
-	}*/
+	}
 
 	//m_attack->SetParent(*m_player);
 
