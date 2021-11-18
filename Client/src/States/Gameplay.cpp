@@ -45,7 +45,7 @@ void Gameplay::Initialize()
 	m_PS->AddComponent<Aen::PSSystemcomponent>();
 	m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("Flame.png"));
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(20);
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetVel(1,10,1);
+	
 
 	//m_PS = &Aen::EntityHandler::CreateEntity();
 	//m_PS->AddComponent<Aen::PSSystemcomponent>();

@@ -175,7 +175,6 @@ namespace Aen
 		RenderSystem::BindShader(renderer.m_PSGShader);
 		RenderSystem::BindShader(renderer.m_PSPShader);
 
-		
 		RenderSystem::Draw(m_CSInputBuffer.m_particleCount,0);
 
 
