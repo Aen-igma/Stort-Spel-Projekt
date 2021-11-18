@@ -5,6 +5,10 @@
 #include<fcntl.h>
 #include<io.h>
 
+#pragma warning(push)
+#pragma warning(disable:4251)
+#pragma warning(pop)
+
 #ifdef AEN_PLATFORM_WINDOWS
 #ifdef _DEBUG
 

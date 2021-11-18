@@ -8,7 +8,7 @@
 namespace Aen {
 
 	AABoundBox::AABoundBox(const size_t& id)
-		:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false), m_isOn(false)
+		:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false), m_isOn(false), m_camBox(false)
 		#ifdef _DEBUG
 		, m_canDraw(false)
 		#endif 
@@ -83,6 +83,10 @@ namespace Aen {
 
 	void AABoundBox::ToggleActive() {
 		m_isOn = !m_isOn;
+	}
+
+	void AABoundBox::SetCamBox(const bool& b) {
+		m_camBox = b;
 	}
 
 	void AABoundBox::SetBoundsToMesh() {
@@ -177,21 +181,22 @@ namespace Aen {
 	void AABoundBox::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 
 		Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
-
 		m_aabb.Center = transformation.smVec;
-		if (ComponentHandler::RigidExist(m_id))
-			m_aabb.Center = ComponentHandler::GetRigid(m_id).GetPos().smVec + m_offset.smVec;
-		else if (ComponentHandler::CharacterControllerExist(m_id))
-			m_aabb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
-		
-
 
 			#ifdef _DEBUG
 			
+
+			if(m_camBox) {
+				DirectX::XMFLOAT3 points[8u];
+				GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().GetCorners(points);
+				for(uint32_t i = 0u; i < 8u; i++)
+					m_verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
+			}
+
 			if(m_canDraw) {
 				m_vBuffer.UpdateBuffer(m_verts, 8);
 				Vec3f p = Vec3f(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z);
-				renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(p).Transposed();
+				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(m_id).GetScaleMat() * MatTranslate(p)).Transposed();
 				renderer.m_cbTransform.UpdateBuffer();
 				renderer.m_cbTransform.BindBuffer<VShader>(0u);
 				RenderSystem::SetInputLayout(renderer.m_opaqueLayout);

@@ -255,9 +255,6 @@
     <ClCompile Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Physics\Physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -293,6 +290,27 @@
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\Picture.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelEditor\ImGuiImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\StaticBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\DynamicBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelGeneration\LevelGenerator.cpp">
+      <Filter>Source Files\LevelGeneration</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.cpp">
+      <Filter>Source Files\LevelGeneration</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\LevelImporter.cpp">
       <Filter>Source Files</Filter>
@@ -524,9 +542,6 @@
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -584,6 +599,36 @@
     <ClInclude Include="src\AenirEngine\LevelExporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\StaticBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\DynamicBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.h">
+      <Filter>Header Files\LevelGeneration</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelGeneration\LevelGenerator.h">
+      <Filter>Header Files\LevelGeneration</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\RoomFormat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelEditor\ImGuiImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelEditor\ImguiType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSSystemComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -603,6 +648,8 @@
     <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\GeometryParticleShader.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\ComputeParticleShader.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\PixelParticleShader.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\FrustumGridCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\TransparencyPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">

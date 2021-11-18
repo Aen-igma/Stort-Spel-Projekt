@@ -8,9 +8,6 @@ Gameplay::~Gameplay() {
 	//Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_reimube1);
-	Aen::EntityHandler::RemoveEntity(*m_reimube2);
-	Aen::EntityHandler::RemoveEntity(*m_reimube3);
-	Aen::EntityHandler::RemoveEntity(*m_reimube4);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	
 	for (auto& b : *m_levelImporter.GetEntityList()) {
@@ -85,16 +82,21 @@ void Gameplay::Initialize()
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
+	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
-	Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
+	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
-	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
+	//enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
+	enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
+	enemyMat["BaseColor"] = Aen::Color::Cyan;
 
-	wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
+	// Material to switch to when enemy is hurt
+	enemyMatHurt["BaseColor"] = Aen::Color::Red;
+	/*wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
 	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
 
 	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
@@ -106,108 +108,60 @@ void Gameplay::Initialize()
 
 	// -------------------------- Setup Entities -------------------------------- //
 
-	/*m_wall = &Aen::EntityHandler::CreateEntity();
-	m_wall->AddComponent<Aen::MeshInstance>();
-	m_wall->GetComponent<Aen::MeshInstance>().SetMesh(wallDoor);
-	m_wall->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
-	m_wall->SetPos(22.f, 0.f, 0.f);*/
-
-	/*Aen::Entity* wallE = &Aen::EntityHandler::CreateEntity();
-	wallE->AddComponent<Aen::MeshInstance>();
-	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
-	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
-	wallE->SetPos(-22.f, 0.f, 0.f);
-
-	wallE = nullptr;
-
-	wallE = &Aen::EntityHandler::CreateEntity();
-	wallE->AddComponent<Aen::MeshInstance>();
-	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
-	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
-	wallE->SetPos(0.f, 0.f, 22.f);
-	wallE->SetRot(0.f, 90.f, 0.f);
-
-	wallE = nullptr;
-
-	wallE = &Aen::EntityHandler::CreateEntity();
-	wallE->AddComponent<Aen::MeshInstance>();
-	wallE->GetComponent<Aen::MeshInstance>().SetMesh(wall);
-	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(wallMat);
-	wallE->SetPos(0.f, 0.f, -22.f);
-	wallE->SetRot(0.f, 90.f, 0.f);
-
-	wallE = nullptr;
-
-	wallE = &Aen::EntityHandler::CreateEntity();
-	wallE->AddComponent<Aen::MeshInstance>();
-	wallE->GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	wallE->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
-	wallE->SetPos(0.f, 22.f, 0.f);
-
-	wallE = nullptr;*/
-
 	m_plane = &Aen::EntityHandler::CreateEntity();
-	m_plane->AddComponent<Aen::RigidBody>();
-	m_plane->GetComponent<Aen::RigidBody>().SetOffset(0.f, -0.5f, 0.f);
-	m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::PLANE);
-	//m_plane->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
+	m_plane->AddComponent<Aen::StaticBody>();
+	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
+
+
+	//m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
 	//m_plane->AddComponent<Aen::MeshInstance>();
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 
+
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
-	m_reimube1->AddComponent<Aen::RigidBody>();
-	m_reimube1->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(50.f, 10.f, 2.f));
-	/*m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
 	m_reimube1->AddComponent<Aen::MeshInstance>();
-	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
-	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube1->AddComponent<Aen::AABoundBox>();
-	m_reimube1->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
-	m_reimube1->SetPos(0.f, 5.f, 22.f);
-
-	m_reimube2 = &Aen::EntityHandler::CreateEntity();
-	m_reimube2->AddComponent<Aen::RigidBody>();
-	m_reimube2->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(50.f, 10.f, 2.f));
-	/*m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
-	m_reimube2->AddComponent<Aen::MeshInstance>();
-	//m_reimube2->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
-	//m_reimube2->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube2->AddComponent<Aen::AABoundBox>();
-	m_reimube2->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
-	m_reimube2->SetPos(0.f, 5.f, -154.f);
-
-
-	m_reimube3 = &Aen::EntityHandler::CreateEntity();
-	m_reimube3->AddComponent<Aen::RigidBody>();
-	m_reimube3->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
-	/*m_reimu3e->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
-	m_reimube3->AddComponent<Aen::MeshInstance>();
-	//m_reimube3->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
-	//m_reimube3->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube3->AddComponent<Aen::AABoundBox>();
-	m_reimube3->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
-	m_reimube3->SetPos(22.f, 5.f, -65.f);
-
-	m_reimube4 = &Aen::EntityHandler::CreateEntity();
-	m_reimube4->AddComponent<Aen::RigidBody>();
-	m_reimube4->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
-	/*m_reimu4e->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
-	m_reimube4->AddComponent<Aen::MeshInstance>();
-	//m_reimube4->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
-	//m_reimube4->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_reimube4->AddComponent<Aen::AABoundBox>();
-	m_reimube4->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
-	m_reimube4->SetPos(-22.f, 5.f, -65.f);
-
+	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
+	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(enemyMat);
+	//m_reimube1->AddComponent<Aen::StaticBody>();
+	//m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+	m_reimube1->SetPos(0.f, 1.f, 11.f);
+	m_reimube1->SetRot(10, 1, 1);
+	//m_reimube1->SetRenderLayer(1);
 
 	// ------ Level Importer ------ //
-	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
-	m_levelImporter.import(path);
+	//std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
+	//m_levelImporter.import(path);
 
+	// ------------------- Procedural generation testing staging grounds ------- //
+	std::vector<string> levelPaths;
+
+	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
+
+
+	m_levelGenerator.AddLoadedToGeneration();
+
+	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
+
+	//Match this value to the size of the rooms we are using
+	m_levelGenerator.SetRoomDimension(43.f);
+	mptr_map = m_levelGenerator.GenerationTestingFunction();
+
+	//Use this value to set the start of the player / origin of the map
+	Aen::Vec2f playerStartPos;
+
+	for (UINT y = 0; y < Aen::mapSize; y++) {
+		for (UINT x = 0; x < Aen::mapSize; x++) {
+			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.x);
+			}
+		}
+	}
 
 	//---------ENEMIES----------//
-	int numEnemies = 20;
+	int numEnemies = 10;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
@@ -238,7 +192,7 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
-	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
+	if (m_hp != m_player.GetHealth()) { //ersï¿½tt collision med enemy i if satsen
 		float hp = (m_hp - m_player.GetHealth());
 
 		m_UI->GetComponent<Aen::UIComponent>().LessenPic(hp * 2.f, 0);
@@ -269,8 +223,8 @@ void Gameplay::Update(const float& deltaTime) {
 	if(m_player.GetHealth() <= 0.f)
 		State::SetState(States::Gameover);
 
-	if(m_enemyQueue.empty())
-		State::SetState(States::Victory);
+	/*if(m_enemyQueue.empty())
+		State::SetState(States::Victory);*/
 
 	#ifdef _DEBUG
 		if(Aen::Input::KeyDown(Aen::Key::J))
@@ -305,7 +259,7 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 	}
 
-	// ------------------------------ Quick Exist Button -------------------------------- //
+	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		m_Window.Exit();

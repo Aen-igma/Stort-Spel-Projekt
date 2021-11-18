@@ -6,7 +6,8 @@ class Enemy;
 
 enum class EventType {
 	Dash,
-	Attack
+	Attack,
+	Wait
 };
 
 struct EventData {
@@ -15,11 +16,15 @@ struct EventData {
 	float damage;
 	EventType type;
 	std::function<void(float& accell, const float& attackDuration)> function;
+
+	EventData() :duration(0.f), accell(0.f), damage(0.f), type(), function() {}
 };
 
 struct TargetData {
 	float distance;
 	Enemy* target;
+
+	TargetData() :distance(0.f), target(nullptr) {}
 };
 
 class Player {

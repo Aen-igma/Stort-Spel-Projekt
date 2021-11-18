@@ -8,7 +8,7 @@
 #include<functional>
 
 class Gameplay : public State {
-    private:
+private:
     float m_hp;
     float m_sub;
 
@@ -25,9 +25,7 @@ class Gameplay : public State {
     Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
     Aen::Entity* m_reimube1;
-    Aen::Entity* m_reimube2;
-    Aen::Entity* m_reimube3;
-    Aen::Entity* m_reimube4;
+
     Aen::Entity* m_UI;
     Aen::Entity* m_PS;
     Aen::Entity* m_wall;
@@ -35,12 +33,16 @@ class Gameplay : public State {
     Player m_player;
     
     bool m_beatBoss;
-  
+
     Aen::ImGuiImporter m_levelImporter;
 
     std::queue<EventData> m_eventQueue;
 
     std::deque<Enemy*> m_enemyQueue;
+
+    Aen::LevelGenerator m_levelGenerator;
+    Aen::Room* mptr_map;
+    Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
 
     public:
     Gameplay(Aen::Window& window);

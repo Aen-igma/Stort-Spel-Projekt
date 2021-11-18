@@ -3,14 +3,13 @@
 
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
-	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f),
+	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), 
 	m_sword(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
 	m_LIGHTATTACKSPEED(6.0f), m_HEAVYATTACKSPEED(2.54f)
 {
-
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
 	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 200.f);
@@ -57,7 +56,7 @@ Player::~Player() {
 void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	static Aen::Vec3f axis;
-	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
+	static Aen::Vec3f targetDir(0.f, 0.f, -1.f);
 	static bool lockedOn = false;
 
 	static Aen::Vec3f camDir;
@@ -76,7 +75,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	{
 		Aen::MouseEvent me = Aen::Input::ReadEvent();
 
-		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
+		if (me.getInputType() == Aen::MouseEvent::MouseInput::RAW_MOVE)
 		{
 			if (!Aen::Input::GPGetActive(0u) && !lockedOn) {
 				m_camera->Rotate(
@@ -84,11 +83,11 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
 			}
 		}
-		if (me.getInputType() == Aen::MouseEvent::SCROLL_UP) {
+		if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_UP) {
 			printf("scroll up\n");
 
 		}
-		else if (me.getInputType() == Aen::MouseEvent::SCROLL_DOWN) {
+		else if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_DOWN) {
 			printf("scroll down\n");
 
 		}
@@ -304,7 +303,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					data.target = i;
 					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
 					data.distance = eDir.Magnitude();
-
+					
 					if(data.distance < 20.f)
 						m_targets.emplace_back(data);
 				}
@@ -321,6 +320,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_targets[i] = m_targets[t];
 					m_targets[t] = temp;
 				}
+
+				
 
 				if(!m_targets.empty())
 					m_targets.front().target->SetISTargeted(true);
@@ -424,9 +425,9 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 				e[i]->Hurt(true);
 
 				e[i]->SubtractHealth(m_eventQueue.front().damage);
-				Aen::Vec3f dir = Aen::Vec3f(0.f, 1.f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
+				Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
 				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage);
-
+				
 				if(e[i]->GetHealth() <= 0.f) {
 					for(uint32_t k = 0u; k < m_targets.size(); k++)
 						if(m_targets[k].target->GetEntity()->GetID() == e[i]->GetEntity()->GetID()) {

@@ -14,12 +14,16 @@ cbuffer lightCount : register(b1) {
 cbuffer Aen_CB_Transform : register(b2) {
     float4x4 vMat;
     float4x4 pMat;
+    float4x4 ivMat;
+    float4x4 ipMat;
     float4x4 mdlMat;
 }
 
 struct Plane {
     float3 normal;
+    float pad;
     float3 pos;
+    float pad1;
 };
 
 struct Sphere {
@@ -59,52 +63,9 @@ struct CS_Input {
 RWStructuredBuffer<uint> LightIndexList : register(u0);
 RWTexture2D<uint2> LightGrid : register(u1);
 
-StructuredBuffer<Light> Aen_SB_Light : register(t0);
-Texture2D depthMap : DEPTHMAP : register(t1);
-
-float4x4 inverse(float4x4 m) {
-    float n11 = m[0][0], n12 = m[1][0], n13 = m[2][0], n14 = m[3][0];
-    float n21 = m[0][1], n22 = m[1][1], n23 = m[2][1], n24 = m[3][1];
-    float n31 = m[0][2], n32 = m[1][2], n33 = m[2][2], n34 = m[3][2];
-    float n41 = m[0][3], n42 = m[1][3], n43 = m[2][3], n44 = m[3][3];
-
-    float t11 = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44;
-    float t12 = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44;
-    float t13 = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44;
-    float t14 = n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34;
-
-    float det = n11 * t11 + n21 * t12 + n31 * t13 + n41 * t14;
-    float idet = 1.0f / det;
-
-    float4x4 ret;
-
-    ret[0][0] = t11 * idet;
-    ret[0][1] = (n24 * n33 * n41 - n23 * n34 * n41 - n24 * n31 * n43 + n21 * n34 * n43 + n23 * n31 * n44 - n21 * n33 * n44) * idet;
-    ret[0][2] = (n22 * n34 * n41 - n24 * n32 * n41 + n24 * n31 * n42 - n21 * n34 * n42 - n22 * n31 * n44 + n21 * n32 * n44) * idet;
-    ret[0][3] = (n23 * n32 * n41 - n22 * n33 * n41 - n23 * n31 * n42 + n21 * n33 * n42 + n22 * n31 * n43 - n21 * n32 * n43) * idet;
-
-    ret[1][0] = t12 * idet;
-    ret[1][1] = (n13 * n34 * n41 - n14 * n33 * n41 + n14 * n31 * n43 - n11 * n34 * n43 - n13 * n31 * n44 + n11 * n33 * n44) * idet;
-    ret[1][2] = (n14 * n32 * n41 - n12 * n34 * n41 - n14 * n31 * n42 + n11 * n34 * n42 + n12 * n31 * n44 - n11 * n32 * n44) * idet;
-    ret[1][3] = (n12 * n33 * n41 - n13 * n32 * n41 + n13 * n31 * n42 - n11 * n33 * n42 - n12 * n31 * n43 + n11 * n32 * n43) * idet;
-
-    ret[2][0] = t13 * idet;
-    ret[2][1] = (n14 * n23 * n41 - n13 * n24 * n41 - n14 * n21 * n43 + n11 * n24 * n43 + n13 * n21 * n44 - n11 * n23 * n44) * idet;
-    ret[2][2] = (n12 * n24 * n41 - n14 * n22 * n41 + n14 * n21 * n42 - n11 * n24 * n42 - n12 * n21 * n44 + n11 * n22 * n44) * idet;
-    ret[2][3] = (n13 * n22 * n41 - n12 * n23 * n41 - n13 * n21 * n42 + n11 * n23 * n42 + n12 * n21 * n43 - n11 * n22 * n43) * idet;
-
-    ret[3][0] = t14 * idet;
-    ret[3][1] = (n13 * n24 * n31 - n14 * n23 * n31 + n14 * n21 * n33 - n11 * n24 * n33 - n13 * n21 * n34 + n11 * n23 * n34) * idet;
-    ret[3][2] = (n14 * n22 * n31 - n12 * n24 * n31 - n14 * n21 * n32 + n11 * n24 * n32 + n12 * n21 * n34 - n11 * n22 * n34) * idet;
-    ret[3][3] = (n12 * n23 * n31 - n13 * n22 * n31 + n13 * n21 * n32 - n11 * n23 * n32 - n12 * n21 * n33 + n11 * n22 * n33) * idet;
-
-    return ret;
-}
-
-float4 ScreenToView(float4 screen) {
-    float2 uv = screen.xy / float2(windowSize);
-    return float4(float2(uv.x, 1.f - uv.y) * 2.f - 1.f, screen.zw);
-}
+StructuredBuffer<Frustum> frustumGrid : register(t0);
+StructuredBuffer<Light> Aen_SB_Light : register(t1);
+Texture2D depthMap : DEPTHMAP : register(t2);
 
 bool SphereInsidePlane(Sphere sphere, Plane plane) {
     return dot(plane.normal, plane.pos - sphere.pos) < -sphere.radius;
@@ -125,16 +86,14 @@ bool ConeInsidePlane(Cone cone, Plane plane) {
     return PointInsidePlane(cone.pos, plane) && PointInsidePlane(Q, plane);
 }
 
-Plane CreatePlane(float3 p0, float3 p1, float3 p2) {
+Frustum FrustumTransform(in Frustum frustum, in float4x4 mat) {
+    Frustum nFrustum;
+    for(uint i = 0u; i < 4; i++) {
+        nFrustum.planes[i].pos = mul(float4(frustum.planes[i].pos, 1.f), mat).xyz;
+        nFrustum.planes[i].normal = mul(float4(frustum.planes[i].normal, 0.f), mat).xyz;
+    }
 
-    Plane plane;
-    float3 v0 = p1 - p0;
-    float3 v1 = p2 - p0;
-
-    plane.normal = normalize(cross(v0, v1));
-    plane.pos = p0;
-
-    return plane;
+    return nFrustum;
 }
 
 bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zPos, float zFar) {
@@ -175,40 +134,21 @@ void main(CS_Input input) {
     
     uint count = 0;
     uint offset = id.x * avarageLights + id.y * numThreads.x * avarageLights;
+    uint index = id.x + id.y * numThreads.x;
 
-    float4x4 ivpMat = inverse(mul(vMat, pMat));
-    float4 camPos = mul(ScreenToView(float4(id * 16u, 0.f, 1.f)), ivpMat);
-    camPos.xyz = camPos.xyz / camPos.w;
+    float4x4 ivpMat = mul(ipMat, ivMat);
+    float4 camPos = ivMat._m30_m31_m32_m33;
 
-    float4 corners[4];
-    corners[0] = float4(id * 16, -1.f, 1.f);
-    corners[1] = float4(float2(id.x + 1, id.y) * 16, -1.f, 1.f );
-    corners[2] = float4(float2(id.x, id.y + 1) * 16, -1.f, 1.f );
-    corners[3] = float4(float2(id.x + 1, id.y + 1) * 16, -1.f, 1.f );
-
-    for(uint i = 0u; i < 4; i++) {
-        corners[i] = ScreenToView(corners[i]);
-        corners[i] = mul(corners[i], ivpMat);
-        corners[i].xyz = corners[i].xyz / corners[i].w;
-    }
-
-    Frustum frustum;
-    frustum.planes[0] = CreatePlane(camPos.xyz, corners[0].xyz, corners[2].xyz);
-    frustum.planes[1] = CreatePlane(camPos.xyz, corners[1].xyz, corners[0].xyz);
-    frustum.planes[2] = CreatePlane(camPos.xyz, corners[2].xyz, corners[3].xyz);
-    frustum.planes[3] = CreatePlane(camPos.xyz, corners[3].xyz, corners[1].xyz);
-
-    float4 middle = mul(ScreenToView(float4(id * 16 + 8, 0.f, 1.f)), ivpMat);
-    middle.xyz = middle.xyz / middle.w;
+    Frustum frustum = FrustumTransform(frustumGrid[index], ivMat);
 
     for(uint i = 0; i < lCount; i++) {
         Light light = Aen_SB_Light[i];
 
         float3 p = light.pos;
         float3 n = light.dir;
-        float d = light.dist.w + 1.f;
+        float d = light.dist.w + 5.f;
 
-        float3 dir = normalize(middle.xyz - p);
+        float3 dir = normalize(camPos.xyz - p);
         Sphere sphere;
         float lDepth = 0.f;
         float4 vPos = float4(0.f, 0.f, 0.f, 0.f);

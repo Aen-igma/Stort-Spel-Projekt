@@ -58,6 +58,7 @@ namespace Aen {
 
 		friend class Renderer;
 		friend class MeshInstance;
+		friend class AABoundBox;
 		friend class EntityHandler;
 	};
 
@@ -150,13 +151,15 @@ namespace Aen {
 	}
 
 	template<>
-	inline void Entity::AddComponent<RigidBody>() {
-		if (!ComponentHandler::RigidExist(m_id))
-			ComponentHandler::CreateRigid(m_id);
+	inline void Entity::AddComponent<StaticBody>() {
+		if (!ComponentHandler::StaticBodyExist(m_id))
+			ComponentHandler::CreateStaticBody(m_id);
+	}
 
-		AddComponent<Translation>();
-		AddComponent<Rotation>();
-		AddComponent<Scale>();
+	template<>
+	inline void Entity::AddComponent<DynamicBody>() {
+		if (!ComponentHandler::DynamicBodyExist(m_id))
+			ComponentHandler::CreateDynamicBody(m_id);
 	}
 
 	template<>
@@ -172,22 +175,18 @@ namespace Aen {
 
 	template<>
 	inline void Entity::AddComponent<AABoundBox>(){
-		//AddComponent<MeshInstance>();
 		if (!ComponentHandler::AABBExist(m_id))
 			ComponentHandler::CreateAABB(m_id, m_layer + 3);
 		
-		if (!ComponentHandler::TranslationExist(m_id))
-			AddComponent<Translation>();
+		AddComponent<Translation>();
 	}
 
 	template<>
 	inline void Entity::AddComponent<OBBox>() {
-		AddComponent<MeshInstance>();
 		if (!ComponentHandler::OBBExist(m_id))
 			ComponentHandler::CreateOBB(m_id, m_layer + 3);
 
-		if (!ComponentHandler::TranslationExist(m_id))
-			AddComponent<Translation>();
+		AddComponent<Translation>();
 	}
 	// --------------- GetComponent -----------------
 
@@ -232,8 +231,13 @@ namespace Aen {
 	}
 
 	template<>
-	inline RigidBody& Entity::GetComponent() {
-		return ComponentHandler::GetRigid(m_id);
+	inline StaticBody& Entity::GetComponent() {
+		return ComponentHandler::GetStaticBody(m_id);
+	}
+
+	template<>
+	inline DynamicBody& Entity::GetComponent() {
+		return ComponentHandler::GetDynamicBody(m_id);
 	}
 
 	template<>

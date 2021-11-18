@@ -24,7 +24,7 @@ namespace Aen
 		/// <summary>
 		/// Creates OBB based on mesh. If mesh is NULL it will throw.
 		/// </summary>
-		void SetBoundToMesh();
+		void SetBoundsToMesh();
 		void SetBoundingBox(const Vec3f& extents);
 		void SetBoundingBox(const float& x, const float& y, const float& z);
 

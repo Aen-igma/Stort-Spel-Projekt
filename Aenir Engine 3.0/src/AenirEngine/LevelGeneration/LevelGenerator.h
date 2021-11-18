@@ -32,8 +32,9 @@
 #define FOURWAY NORTH+EAST+SOUTH+WEST
 
 namespace Aen {
-	enum class SpecialRoom { NONE, ENTRANCE, EXIT, BOSS, ARENA, ITEM };
-	enum class RoomTheme { GENERIC, BONES, VAMP, JUNGLE, PLACEHOLDER };
+	enum class SpecialRoom { NONE = 0, ENTRANCE = 1, EXIT = 2, BOSS = 3, ARENA = 4, ITEM = 5};
+	enum class RoomTheme { GENERIC = 0, BONES, VAMP, JUNGLE, PLACEHOLDER };
+	enum class RoomDirections{END = 1, STRAIGHT = 101, BEND = 11, THREE = 1011, FOUR = 1111};
 
 	/*
 	|/////////|
@@ -72,7 +73,7 @@ namespace Aen {
 		float m_dynamic3 = 0;
 		float m_dynamic4 = 0;
 
-		double rotation = 3.14159265;
+		double rotation =  0; //3.14159265;
 
 		void rotateCW() { //Clockwise rotation
 			rotate180();
@@ -84,7 +85,7 @@ namespace Aen {
 			//TODO rotate associated model
 		}
 		void rotateCCW() { //count clockwise rotation
-			rotation += -1.57079633;
+			rotation += 1.57079633;
 			int temp = connectionDirections % 10;
 			connectionDirections /= 10;
 			connectionDirections += 1000 * temp;
@@ -125,7 +126,7 @@ namespace Aen {
 
 		Room map[mapSize][mapSize];
 		std::vector<Room> levelRoom;
-		Aen::ImGuiHandler m_handler;
+		Aen::ImGuiImporter m_handler;
 
 		std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< int, std::vector<uint16_t> > > > masterRoomMap;
 
@@ -137,7 +138,7 @@ namespace Aen {
 		
 		Vec2f m_mapOrigin;
 
-		Aen::ImGuiHandler* GetHandlerPtr();
+		Aen::ImGuiImporter* GetHandlerPtr();
 
 		Room* GenerateLevel();
 
@@ -164,5 +165,7 @@ namespace Aen {
 		void AddLoadedToGeneration();
 
 		void SetMapTheme(RoomTheme theme);
+
+		void CleanMap();
 	};
 }

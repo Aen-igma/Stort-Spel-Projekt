@@ -19,11 +19,11 @@ namespace Aen {
 
 		// Initialize physX
 		PhysicsHandler::Initialize(100, 981);
-
-		GlobalSettings::Initialize(m_app->m_window);
-
+		
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
+
+		GlobalSettings::Initialize(m_app->m_window, m_renderer);
 
 		m_app->Start();
 	}
@@ -42,11 +42,13 @@ namespace Aen {
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 					ComponentHandler::UpdatePS(m_deltaTime.count());
 				}
-				m_renderer->Render(); //Vsync
-				PhysicsHandler::Update(m_deltaTime.count());
+
+				PhysicsHandler::Update(static_cast<float>(m_deltaTime.count()));
+
+				if(GlobalSettings::GetVSync()) m_renderer->Render();
 			}
 
-			/*m_renderer->Render();*/
+			if(!GlobalSettings::GetVSync()) m_renderer->Render();
 		}
 
 		// Destroy imGui
@@ -56,8 +58,8 @@ namespace Aen {
 		Resource::Destroy();
 		EntityHandler::Destroy();
 		GCore::Concealed::Release();
-		PhysicsHandler::Destroy;
-		GlobalSettings::Destroy;
+		PhysicsHandler::Destroy();
+		GlobalSettings::Destroy();
 		delete m_app;
 		delete m_renderer;
 	}

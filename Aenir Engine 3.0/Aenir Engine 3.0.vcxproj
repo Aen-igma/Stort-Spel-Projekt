@@ -233,6 +233,8 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Mesh.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Resource.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\DynamicBody.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\StaticBody.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\BBuffer.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\DepthMap.cpp" />
@@ -258,6 +260,8 @@
     <ClCompile Include="src\AenirEngine\Importer\AssimpImporter.cpp" />
     <ClCompile Include="src\AenirEngine\LevelEditor\ImGuiImporter.cpp" />
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp" />
+    <ClCompile Include="src\AenirEngine\LevelGeneration\LevelGenerator.cpp" />
+    <ClCompile Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.cpp" />
     <ClCompile Include="src\AenirEngine\LevelImporter.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
@@ -266,7 +270,6 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.cpp" />
-    <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp" />
     <ClCompile Include="src\PCH\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -311,6 +314,9 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Mesh.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\MeshInstance.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Resource.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\DynamicBody.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidEnums.h" />
+    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\StaticBody.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\BBuffer.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\CBuffer.h" />
@@ -343,6 +349,8 @@
     <ClInclude Include="src\AenirEngine\LevelEditor\ImGuiImporter.h" />
     <ClInclude Include="src\AenirEngine\LevelEditor\ImguiType.h" />
     <ClInclude Include="src\AenirEngine\LevelExporter.h" />
+    <ClInclude Include="src\AenirEngine\LevelGeneration\LevelGenerator.h" />
+    <ClInclude Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.h" />
     <ClInclude Include="src\AenirEngine\LevelHeader.h" />
     <ClInclude Include="src\AenirEngine\LevelImporter.h" />
     <ClInclude Include="src\AenirEngine\Math\BuritoMath\Color.h" />
@@ -361,7 +369,6 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysX.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.h" />
-    <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidBody.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h" />
     <ClInclude Include="src\PCH\PCH.h" />
     <ClInclude Include="src\AenirEngine\Graphics\DirectX11\VBuffer.h" />
@@ -432,6 +439,16 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\FrustumGridCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CollisionPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -470,6 +487,16 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\TransparencyPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>

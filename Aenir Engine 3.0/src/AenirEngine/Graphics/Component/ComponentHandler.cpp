@@ -8,7 +8,8 @@ namespace Aen {
 	std::unordered_map<size_t, Translation*> ComponentHandler::m_translations;
 	std::unordered_map<size_t, Rotation*>	ComponentHandler::m_rotations;
 	std::unordered_map<size_t, Scale*> ComponentHandler::m_scales;
-	std::unordered_map<size_t, RigidBody*> ComponentHandler::m_rigids;
+	std::unordered_map<size_t, StaticBody*> ComponentHandler::m_staticBodies;
+	std::unordered_map<size_t, DynamicBody*> ComponentHandler::m_dynamicBodies;
 	std::unordered_map<size_t, CharacterController*> ComponentHandler::m_characterControllers;
 	std::unordered_map<size_t, AABoundBox*> ComponentHandler::m_AABBs;
 	std::unordered_map<size_t, OBBox*> ComponentHandler::m_OBBs;

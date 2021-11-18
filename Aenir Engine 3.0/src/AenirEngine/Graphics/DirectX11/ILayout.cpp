@@ -56,5 +56,7 @@ namespace Aen {
                 case D3D_REGISTER_COMPONENT_FLOAT32: return DXGI_FORMAT_R32G32B32A32_FLOAT;
             }
         }
+
+        return DXGI_FORMAT_R32_UINT;
     }
 }

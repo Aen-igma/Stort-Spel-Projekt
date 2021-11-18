@@ -4,12 +4,12 @@
 #undef min
 
 
-void Aen::AssimpImport::LoadFbx(std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial)
+void Aen::AssimpImport::LoadFbx(IBuffer iBuffer, std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial, std::vector<uint32_t>& invertIndices)
 {
 	std::vector<Vertex> mesh;
 	Assimp::Importer importer;
 
-	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_MakeLeftHanded);
+	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_MakeLeftHanded );
 	
 
 	if (pScene == NULL) {
@@ -17,29 +17,31 @@ void Aen::AssimpImport::LoadFbx(std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Ve
 		printf("Assimp failed or path to model does not exist");
 	}
 
-	AssimpImport::ProcessNode(pScene->mRootNode, pScene, vBuffer, mesh, partitions, meshMaterial);
+	AssimpImport::ProcessNode(pScene->mRootNode, pScene, vBuffer, mesh, invertIndices, partitions, meshMaterial);
 
-	UINT meshSize = mesh.size();
+	UINT meshSize = (UINT)mesh.size();
 
 	vPos.resize(meshSize);
-	for (int i = 0; i < meshSize; i++)
+	for (UINT i = 0; i < meshSize; i++)
 	{
 		vPos[i] = mesh[i].pos.smVec;
-
-		//pPosV[i] = mesh[i].pos.smVec;
 	}
 
-	if (!vBuffer.Create(mesh.data(), (UINT)mesh.size())) {
+	if (!vBuffer.Create(mesh.data(), (UINT)mesh.size())) 
+	{
 		throw;
 		printf("Failed to create vbuffer");
 	}
+	//if (!iBuffer.Create(invertIndices.data(), (UINT)invertIndices.size()))
+	//{
+	//	throw;
+	//	printf("Failed to create ibuffer");
+	//}
 }
 
-void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>& verts, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
+void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>&verts, std::vector<uint32_t>& invertIndices, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
 	UINT numVerts = mesh->mNumVertices;
-
-	
 
 	aiMaterial* material;
 	material = scene->mMaterials[mesh->mMaterialIndex];
@@ -83,6 +85,19 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 			}
 			verts.emplace_back(vertex);
 		}
+
+		for (int i = 0; i < mesh->mNumFaces; i++)
+		{
+			aiFace face = mesh->mFaces[i];
+			for (int j = 1; j <= face.mNumIndices; j++)
+				invertIndices.push_back(face.mIndices[face.mNumIndices - j]);
+		}
+		/*for (int i = 0; i < mesh->mNumFaces; i++)
+		{
+			aiFace face = mesh->mFaces[i];
+			for (int j = 0; j < face.mNumIndices; j++)
+				invertIndices.push_back(face.mIndices[j]);
+		}*/
 		offset = numVerts;
 		printf("\n");
 	}
@@ -90,17 +105,17 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 }
 
 void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBuffer<Aen::Vertex>& vBuffer,
-	std::vector<Aen::Vertex>& verts, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
+	std::vector<Aen::Vertex>& verts, std::vector<uint32_t>& invertIndices, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
 {
 	UINT offset = 0;
 	UINT numMeshes = node->mNumMeshes;
 	for (UINT i = 0; i < numMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		AssimpImport::ProcessMesh(offset, mesh, scene, verts, partsData, meshMaterial);
+		AssimpImport::ProcessMesh(offset, mesh, scene, verts, invertIndices, partsData, meshMaterial);
 	}
 
 	UINT numNodes = node->mNumChildren;
 	for (UINT i = 0; i < numNodes; i++)
-		AssimpImport::ProcessNode(node->mChildren[i], scene, vBuffer, verts, partsData, meshMaterial);
+		AssimpImport::ProcessNode(node->mChildren[i], scene, vBuffer, verts, invertIndices, partsData, meshMaterial);
 }
