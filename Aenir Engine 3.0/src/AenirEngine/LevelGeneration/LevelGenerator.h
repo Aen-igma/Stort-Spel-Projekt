@@ -73,7 +73,7 @@ namespace Aen {
 		float m_dynamic3 = 0;
 		float m_dynamic4 = 0;
 
-		double rotation = 3.14159265;
+		double rotation =  0; //3.14159265;
 
 		void rotateCW() { //Clockwise rotation
 			rotate180();
@@ -85,7 +85,7 @@ namespace Aen {
 			//TODO rotate associated model
 		}
 		void rotateCCW() { //count clockwise rotation
-			rotation += -1.57079633;
+			rotation += 1.57079633;
 			int temp = connectionDirections % 10;
 			connectionDirections /= 10;
 			connectionDirections += 1000 * temp;
