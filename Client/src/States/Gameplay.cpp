@@ -64,7 +64,7 @@ void Gameplay::Initialize()
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
 	//wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
 	Aen::Mesh& skullPile = Aen::Resource::CreateMesh("Skullpile");
-	skullPile.Load(AEN_RESOURCE_DIR("SkullPileMesh.fbx"));
+	skullPile.Load(AEN_RESOURCE_DIR("Models/Skeleton/skBoss_test.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -72,14 +72,19 @@ void Gameplay::Initialize()
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 	Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
-	Aen::Material& skullPileMat = Aen::Resource::CreateMaterial("SkullPileMat");
 
-	Aen::Texture& skullPileDiff = Aen::Resource::CreateTexture("skullPileDiff");
+	Aen::Material& skeleboiMat = Aen::Resource::CreateMaterial("SkeleboiMat");
 
-	skullPileDiff.LoadTexture(AEN_RESOURCE_DIR("SkullpileDiff2.png"));
-	skullPileMat.SetDiffuseMap(skullPileDiff);
+	skeleboiMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Models/Skeleton/SkeletonBoss_diffuse.png"));
 
-	skullPileMat["ShadowColor"] = Aen::Color(.3f,.2f,0.f, 1.f);
+	
+	//Aen::Texture& skullPileDiff = Aen::Resource::CreateTexture("skullPileDiff");
+
+	//skullPileDiff.LoadTexture(AEN_RESOURCE_DIR("Models/Skeleton/SkullBoss.png"));
+	//skullPileMat.SetDiffuseMap(skullPileDiff);
+
+	//skullPileMat["ShadowColor"] = Aen::Color(.3f,.2f,0.f, 1.f);
+	//skullPileMat["InnerEdgeThickness"] = 1;
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
@@ -196,12 +201,12 @@ void Gameplay::Initialize()
 	m_skullPile = &Aen::EntityHandler::CreateEntity();
 	m_skullPile->AddComponent<Aen::MeshInstance>();
 	m_skullPile->GetComponent<Aen::MeshInstance>().SetMesh(skullPile);
-	m_skullPile->GetComponent<Aen::MeshInstance>().SetMaterial(skullPileMat);
+	m_skullPile->GetComponent<Aen::MeshInstance>().SetMaterial(skeleboiMat);
 	m_skullPile->AddComponent<Aen::RigidBody>();
 	m_skullPile->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
 	m_skullPile->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
-	m_skullPile->SetPos(3.f, .5f, 0.f);
-	m_skullPile->SetScale(1.5f,1.5f,1.5f);
+	m_skullPile->SetPos(7.f, 0.f, 4.f);
+	m_skullPile->SetScale(.4f,.4f,.4f);
 
 	// ------ Level Importer ------ //
 	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
