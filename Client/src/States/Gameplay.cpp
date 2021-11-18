@@ -7,7 +7,7 @@ Gameplay::Gameplay(Aen::Window& window)
 Gameplay::~Gameplay() {
 	//Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
-	//Aen::EntityHandler::RemoveEntity(*m_reimube1);
+	Aen::EntityHandler::RemoveEntity(*m_reimube1);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	
 	for (auto& b : *m_levelImporter.GetEntityList()) {
@@ -65,15 +65,14 @@ void Gameplay::Initialize()
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
-	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
-	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
+	//enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
+	enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
-	// Material to switch to when enemy is hurt
-	enemyMatHurt["BaseColor"] = Aen::Color::Red;
+	enemyMat["BaseColor"] = Aen::Color::Cyan;
 
 	/*wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
 	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
@@ -93,27 +92,35 @@ void Gameplay::Initialize()
 	m_plane->AddComponent<Aen::StaticBody>();
 	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
 
-	//m_reimube1 = &Aen::EntityHandler::CreateEntity();
-	//m_reimube1->AddComponent<Aen::MeshInstance>();
-	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(rimuru);
-	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(enemyMat);
-	////m_reimube1->AddComponent<Aen::StaticBody>();
-	////m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
-	//m_reimube1->SetPos(0.f, 1.f, 11.f);
-	//m_reimube1->SetRot(10, 1, 1);
+
+	//m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
+	//m_plane->AddComponent<Aen::MeshInstance>();
+	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
+
+
+	m_reimube1 = &Aen::EntityHandler::CreateEntity();
+	m_reimube1->AddComponent<Aen::MeshInstance>();
+	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
+	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(enemyMat);
+	//m_reimube1->AddComponent<Aen::StaticBody>();
+	//m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+	m_reimube1->SetPos(0.f, 1.f, 11.f);
+	m_reimube1->SetRot(10, 1, 1);
+	//m_reimube1->SetRenderLayer(1);
 
 	// ------ Level Importer ------ //
 	std::string path = AEN_LEVEL_DIR("nLevel.Level");
 	m_levelImporter.import(path);
 
 	//---------ENEMIES----------//
-	int numEnemies = 20;
+	/*int numEnemies = 20;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
-	}
+	}*/
 
 	//m_attack->SetParent(*m_player);
 
