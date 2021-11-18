@@ -320,6 +320,7 @@ namespace Aen
 		for (int k = 0; k < 1; k++) {
 			LevelGenerator::GenerateLevel();
 
+
 			for (int i = 0; i < 3 * mapSize; i++) {
 				for (int j = 0; j < 3 * mapSize; j++) {
 					cmap[i][j] = ' ';
@@ -403,8 +404,8 @@ namespace Aen
 
 	void LevelGenerator::GetRoomPos(const int& x, const int& y, float* xf, float* yf)
 	{
-		*xf = x * roomDimension;
-		*yf = y * roomDimension;
+		*xf = y * roomDimension;
+		*yf = x * roomDimension;
 	}
 
 	//Floors each coordinates and calculate index for the room most closely matched
