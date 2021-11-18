@@ -113,8 +113,35 @@ void Gameplay::Initialize()
 	//m_reimube1->SetRenderLayer(1);
 
 	// ------ Level Importer ------ //
-	std::string path = AEN_LEVEL_DIR("nLevel.Level");
-	m_levelImporter.import(path);
+	//std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
+	//m_levelImporter.import(path);
+
+	// ------------------- Procedural generation testing staging grounds ------- //
+	std::vector<string> levelPaths;
+
+	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
+
+
+	m_levelGenerator.AddLoadedToGeneration();
+
+	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
+
+	//Match this value to the size of the rooms we are using
+	m_levelGenerator.SetRoomDimension(43.f);
+	mptr_map = m_levelGenerator.GenerationTestingFunction();
+
+	//Use this value to set the start of the player / origin of the map
+	Aen::Vec2f playerStartPos;
+
+	for (UINT y = 0; y < Aen::mapSize; y++) {
+		for (UINT x = 0; x < Aen::mapSize; x++) {
+			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.x);
+			}
+		}
+	}
 
 	//---------ENEMIES----------//
 	int numEnemies = 10;
@@ -148,7 +175,7 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
-	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
+	if (m_hp != m_player.GetHealth()) { //ersï¿½tt collision med enemy i if satsen
 		float hp = (m_hp - m_player.GetHealth());
 
 		m_UI->GetComponent<Aen::UIComponent>().LessenPic(hp * 2.f, 0);

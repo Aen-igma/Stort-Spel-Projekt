@@ -38,7 +38,11 @@ private:
 
     std::deque<Enemy*> m_enemyQueue;
 
-public:
+    Aen::LevelGenerator m_levelGenerator;
+    Aen::Room* mptr_map;
+    Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
+
+    public:
     Gameplay(Aen::Window& window);
     ~Gameplay() override;
 

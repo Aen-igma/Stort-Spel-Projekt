@@ -43,19 +43,22 @@ namespace Aen
 		void setMaterial(Aen::Material& materialOut, AenIF::Material materialIn);
 		void addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, AenIF::Model& model, AenIF::Texture& texture, AenIF::Material& materialIn);
 	public:
-
 		void Convert(const Aen::Vec4f inputVec, float* inputArray);
 		void Convert(float* inputArray, Aen::Vec4f& inputVec);
+
+
 
 		ImGuiImporter();
 		ImGuiImporter(vector<Aen::Entity*>* m_entityList, vector<string>* m_itemList, unordered_map< size_t, IGH::ModelContainer>* m_modelMap, unordered_map< size_t, Aen::Entity*>* m_lightMap, AenIMP::LevelImporter* m_levelImporter, vector<IGH::MatTexName>* m_materialList);
 		~ImGuiImporter();
 
-		bool import(string& levelPath);
+
 
 		bool import(AenIMP::LevelImporter &m_levelImporter, string & levelPath, float* translation, float* rotation, float* scale);
+		bool import(string& levelPath);
 
 		bool IfExist(vector<IGH::MatTexName>& matList, AenIF::Material& value);
+
 
 		void GetFloatArray(float* inputArray, float& x, float& y, float& z);
 
@@ -67,7 +70,6 @@ namespace Aen
 		bool LoadLevel(int index);
 		bool LoadLevel(AenIMP::CompleteRoom* roomPtr, Aen::Vec2f offset, float angle);
 
-
 	public:
 		// All add func here
 
@@ -77,7 +79,6 @@ namespace Aen
 
 		void AddLight(Aen::Entity* entity);
 		void AddLight(Aen::Entity* entity, string type);
-
 		
 		void AddEnemy(Aen::Entity* entity, AenIF::Model& model); // Write import code here
 
