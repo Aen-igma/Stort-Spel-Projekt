@@ -56,7 +56,7 @@ namespace Aen
 
 
 		bool import(AenIMP::LevelImporter &m_levelImporter, string & levelPath, float* translation, float* rotation, float* scale);
-		bool import(string& levelPath);
+		/*bool import(string& levelPath);*/
 
 		bool IfExist(vector<IGH::MatTexName>& matList, AenIF::Material& value);
 

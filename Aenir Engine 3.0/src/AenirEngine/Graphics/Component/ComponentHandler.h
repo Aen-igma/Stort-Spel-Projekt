@@ -464,6 +464,7 @@ namespace Aen {
 		friend class ImGuiImporter;
 		friend class StaticBody;
 		friend class DynamicBody;
+		friend class GameLoop;
 	};
 
 }
