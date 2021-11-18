@@ -343,7 +343,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					data.target = i;
 					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
 					data.distance = eDir.Magnitude();
-
+					
 					if(data.distance < 20.f)
 						m_targets.emplace_back(data);
 				}
@@ -360,6 +360,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_targets[i] = m_targets[t];
 					m_targets[t] = temp;
 				}
+
+				
 
 				if(!m_targets.empty())
 					m_targets.front().target->SetISTargeted(true);
@@ -473,9 +475,9 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 				e[i]->Hurt(true);
 
 				e[i]->SubtractHealth(m_eventQueue.front().damage);
-				Aen::Vec3f dir = Aen::Vec3f(0.f, 1.f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
+				Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
 				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage);
-
+				
 				if(e[i]->GetHealth() <= 0.f) {
 					for(uint32_t k = 0u; k < m_targets.size(); k++)
 						if(m_targets[k].target->GetEntity()->GetID() == e[i]->GetEntity()->GetID()) {

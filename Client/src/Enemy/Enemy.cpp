@@ -1,7 +1,7 @@
 #include"Enemy.h"
 
 Enemy::Enemy()
-	:m_enemy(&Aen::EntityHandler::CreateEntity()), m_targeted(false) {
+	:m_enemy(&Aen::EntityHandler::CreateEntity()), m_targeted(false), m_hurt(false) {
 	m_enemy->SetTag("Enemy");
 	m_enemy->AddComponent<Aen::AABoundBox>();
 	m_enemy->AddComponent<Aen::CharacterController>();

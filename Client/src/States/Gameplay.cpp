@@ -82,6 +82,7 @@ void Gameplay::Initialize()
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
+	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
@@ -91,6 +92,8 @@ void Gameplay::Initialize()
 	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["BaseColor"] = Aen::Color::Cyan;
 
+	// Material to switch to when enemy is hurt
+	enemyMatHurt["BaseColor"] = Aen::Color::Red;
 	/*wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
 	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
@@ -130,17 +133,44 @@ void Gameplay::Initialize()
 	//m_reimube1->SetRenderLayer(1);
 
 	// ------ Level Importer ------ //
-	std::string path = AEN_LEVEL_DIR("nLevel.Level");
-	m_levelImporter.import(path);
+	//std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
+	//m_levelImporter.import(path);
+
+	// ------------------- Procedural generation testing staging grounds ------- //
+	std::vector<string> levelPaths;
+
+	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
+
+
+	m_levelGenerator.AddLoadedToGeneration();
+
+	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
+
+	//Match this value to the size of the rooms we are using
+	m_levelGenerator.SetRoomDimension(43.f);
+	mptr_map = m_levelGenerator.GenerationTestingFunction();
+
+	//Use this value to set the start of the player / origin of the map
+	Aen::Vec2f playerStartPos;
+
+	for (UINT y = 0; y < Aen::mapSize; y++) {
+		for (UINT x = 0; x < Aen::mapSize; x++) {
+			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.x);
+			}
+		}
+	}
 
 	//---------ENEMIES----------//
-	/*int numEnemies = 20;
+	int numEnemies = 10;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
-	}*/
+	}
 
 	//m_attack->SetParent(*m_player);
 
@@ -166,7 +196,7 @@ void Gameplay::Initialize()
 void Gameplay::Update(const float& deltaTime) {
 
 
-	if (m_hp != m_player.GetHealth()) { //ers‰tt collision med enemy i if satsen
+	if (m_hp != m_player.GetHealth()) { //ers√§tt collision med enemy i if satsen
 		wstringstream potionNr;
 		float hp = (m_hp - m_player.GetHealth());
 		potionNr << m_player.GetPotionNr();

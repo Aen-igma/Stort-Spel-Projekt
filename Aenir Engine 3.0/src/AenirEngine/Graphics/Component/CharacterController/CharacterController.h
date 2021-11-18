@@ -9,7 +9,10 @@ namespace Aen {
 		public:
 		CharacterController(const size_t& id);
 
-		void SetHeight(const float& height);
+		//resizes capsule and adjusts it to the new height
+		void Resize(const float& resize);
+		//sets new radius of capsule
+		void SetRadius(const float& radius);
 		void SetSlopeLimit(const float& ang);
 		void Move(const Vec3f& dir, const float& deltaTime);
 		void SetUpDirection(const Vec3f& up);
@@ -32,7 +35,7 @@ namespace Aen {
 		Raycast m_ray;
 		bool m_isGrounded;
 		float m_height;
-
+		
 		friend class Entity;
 		friend class MeshInstance;
 		friend class ComponentHandler;

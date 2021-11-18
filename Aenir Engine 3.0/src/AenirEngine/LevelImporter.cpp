@@ -97,15 +97,15 @@ namespace AenIMP {
 		ptr = ptr + sizeof(Aen::SectionHeader);
 		infile.read(ptr, sizeof(Aen::MaterialHeader) - sizeof(Aen::SectionHeader));
 		this->material = new Aen::MaterialStruct;
-		infile.read((char*)&this->material->diffuse, sizeof(*material));
+		infile.read((char*)&this->material->materialName, sizeof(*material));
 	}
 
 	void Material::printMaterial()
 	{
-		cout << "diffuse: " << material->diffuse[0] << " " << material->diffuse[1] << " " << material->diffuse[2] << endl;
-		cout << "specular: " << material->specular[0] << " " << material->specular[1] << " " << material->specular[2] << endl;
-		cout << "emissive: " << material->emissive[0] << " " << material->emissive[1] << " " << material->emissive[2] << endl;
-		cout << "opacity: " << material->opacity[0] << " " << material->opacity[1] << " " << material->opacity[2] << endl;
+		//cout << "diffuse: " << material->diffuse[0] << " " << material->diffuse[1] << " " << material->diffuse[2] << endl;
+		//cout << "specular: " << material->specular[0] << " " << material->specular[1] << " " << material->specular[2] << endl;
+		//cout << "emissive: " << material->emissive[0] << " " << material->emissive[1] << " " << material->emissive[2] << endl;
+		//cout << "opacity: " << material->opacity[0] << " " << material->opacity[1] << " " << material->opacity[2] << endl;
 	}
 
 	Material::Material()
@@ -199,7 +199,7 @@ namespace AenIMP {
 			Aen::SectionHeader sectionHeader;
 			infile.read((char*)&sectionHeader, sizeof(Aen::SectionHeader));
 
-			if (sectionHeader.type == Aen::TYPE::MODEL)
+			if (sectionHeader.type == Aen::MODEL)
 			{
 				Model* model = new Model;
 				model->readFromFile(infile);
@@ -208,7 +208,7 @@ namespace AenIMP {
 				tempRoom.addModel(model);
 				delete model;
 			}
-			else if (sectionHeader.type == Aen::TYPE::TEXTURE)
+			else if (sectionHeader.type == Aen::TEXTURE)
 			{
 				Texture* texture = new Texture;
 				texture->readFromFile(infile);
@@ -217,7 +217,7 @@ namespace AenIMP {
 				tempRoom.addTexture(texture);
 				delete texture;
 			}
-			else if (sectionHeader.type == Aen::TYPE::MATERIAL)
+			else if (sectionHeader.type == Aen::MATERIAL)
 			{
 				Material* material = new Material;
 				material->readFromFile(infile);
@@ -226,7 +226,7 @@ namespace AenIMP {
 				tempRoom.addMaterial(material);
 				delete material;
 			}
-			else if (sectionHeader.type == Aen::TYPE::LIGHT)
+			else if (sectionHeader.type == Aen::LIGHT)
 			{
 				Light* light = new Light;
 				light->readFromFile(infile);
@@ -235,7 +235,7 @@ namespace AenIMP {
 				tempRoom.addLight(light);
 				delete light;
 			}
-			else if (sectionHeader.type == Aen::TYPE::PARTICLE)
+			else if (sectionHeader.type == Aen::PARTICLE)
 			{
 				Particle* particle = new Particle;
 				particle->readFromFile(infile);
@@ -244,7 +244,7 @@ namespace AenIMP {
 				tempRoom.addParticle(particle);
 				delete particle;
 			}
-			else if (sectionHeader.type == Aen::TYPE::ROOM)
+			else if (sectionHeader.type == Aen::ROOM)
 			{
 				Room* room = new Room;
 				room->readFromFile(infile);
@@ -253,7 +253,7 @@ namespace AenIMP {
 				tempRoom.addRoom(room);
 				delete room;
 			}
-			else if (sectionHeader.type == Aen::TYPE::UNKNOWN)
+			else if (sectionHeader.type == Aen::UNKNOWN)
 			{
 				std::cout << "Unkown Header Type" << endl;
 			}
@@ -336,11 +336,11 @@ namespace AenIMP {
 
 		for (size_t i = 0; i < materialVector.size(); i++)
 		{
-			cout << "diffuse: " << materialVector[i].diffuse[0] << " " << materialVector[i].diffuse[1] << " " << materialVector[i].diffuse[2] << endl;
+			/*cout << "diffuse: " << materialVector[i].diffuse[0] << " " << materialVector[i].diffuse[1] << " " << materialVector[i].diffuse[2] << endl;
 			cout << "specular: " << materialVector[i].specular[0] << " " << materialVector[i].specular[1] << " " << materialVector[i].specular[2] << endl;
 			cout << "emissive: " << materialVector[i].emissive[0] << " " << materialVector[i].emissive[1] << " " << materialVector[i].emissive[2] << endl;
 			cout << "opacity: " << materialVector[i].opacity[0] << " " << materialVector[i].opacity[1] << " " << materialVector[i].opacity[2] << endl;
-			cout << endl << "-----------------------------------" << endl;
+			cout << endl << "-----------------------------------" << endl;*/
 		}
 
 		for (size_t i = 0; i < lightVector.size(); i++)
@@ -387,7 +387,8 @@ namespace AenIMP {
 		temp.sound = input->model->sound;
 		temp.rigidBody = input->model->rigidBody;
 		temp.rigidBodyType = input->model->rigidBodyType;
-
+		temp.castShadow = input->model->castShadow;
+		
 		for (int i = 0; i < 3; i++)
 		{
 			temp.translation[i] = input->model->translation[i];
@@ -409,14 +410,31 @@ namespace AenIMP {
 	void CompleteRoom::addMaterial(Material* input)
 	{
 		AenIF::Material temp;
-		for (int i = 0; i < 3; i++)
+		temp.materialName = input->material->materialName;
+		temp.materialTextureName = input->material->materialTextureName;
+		for (int i = 0; i < 4; i++)
 		{
-			temp.diffuse[i] = input->material->diffuse[i];
-			temp.specular[i] = input->material->specular[i];
-			temp.emissive[i] = input->material->emissive[i];
-			temp.opacity[i] = input->material->opacity[i];
-
+			temp.baseColor[i] = input->material->baseColor[i];
+			temp.shadowColor[i] = input->material->shadowColor[i];
+			temp.specularColor[i] = input->material->specularColor[i];
+			temp.rimLightColor[i] = input->material->rimLightColor[i];
+			temp.innerEdgeColor[i] = input->material->innerEdgeColor[i];
+			temp.outerEdgeColor[i] = input->material->outerEdgeColor[i];
+			temp.glowColor[i] = input->material->glowColor[i];
 		}
+
+		temp.glowStr = input->material->glowStr;
+		temp.innerEdgeThickness = input->material->innerEdgeThickness;
+		temp.outerEdgeThickness = input->material->outerEdgeThickness;
+		temp.specularPower = input->material->specularPower;
+		temp.specularStrength = input->material->specularStrength;
+		temp.roughness = input->material->roughness;
+		temp.shadowOffset = input->material->shadowOffset;
+		temp.innerFalloff = input->material->innerFalloff;
+		temp.outerFalloff = input->material->outerFalloff;
+		temp.rimLightIntensity = input->material->rimLightIntensity;
+		temp.rimLightSize = input->material->rimLightSize;
+
 		materialVector.push_back(temp);
 	}
 

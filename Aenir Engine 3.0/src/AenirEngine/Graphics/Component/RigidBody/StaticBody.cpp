@@ -18,7 +18,8 @@ namespace Aen {
 
 		px::PxPlane plane(px::PxVec3(0.f, 0.f, 0.f), px::PxVec3(0.f, 1.f, 0.f));
 		mp_StaticBody = PxCreatePlane(*mp_LocalPhysics, plane, *mp_Material);
-
+		mp_StaticBody->setActorFlag(px::PxActorFlag::eDISABLE_GRAVITY, true);
+		mp_StaticBody->setActorFlag(px::PxActorFlag::eDISABLE_SIMULATION, true);
 		PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
 	}
 
