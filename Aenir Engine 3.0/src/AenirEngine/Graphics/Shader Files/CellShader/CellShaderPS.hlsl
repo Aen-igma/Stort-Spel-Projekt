@@ -148,6 +148,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 		finalPixel += rim;
 	}
 
+	finalPixel += emissionM * glowColor * glowStr;
 	output.diffuse = float4(saturate(finalPixel * diffuseM), 1.f);
 	output.pos = float4(input.worldPos, 1.f);
 
