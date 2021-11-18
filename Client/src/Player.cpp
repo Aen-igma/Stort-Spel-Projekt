@@ -50,10 +50,12 @@ Player::Player()
 	Aen::Material& barMat = Aen::Resource::CreateMaterial("barMat");
 	Aen::Material& targetMat = Aen::Resource::CreateMaterial("targetMat");
 
-	targetMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("target.png"));
-	targetMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("target.png"));
+	targetMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("target1.png"));
+	targetMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("target1.png"));
+	targetMat.LoadeAndSetEmissionMap(AEN_RESOURCE_DIR("target1.png"));
 	targetMat["InnerEdgeThickness"] = 0;
-	targetMat["OuterEdgeColor"] = Aen::Color::Yellow;
+	targetMat["OuterEdgeColor"] = Aen::Color::Red;
+	targetMat["GlowColor"] = Aen::Color::Red;
 
 	barMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("enemybar.png"));
 	barMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("opacBar.png"));
