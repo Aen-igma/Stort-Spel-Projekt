@@ -12,7 +12,8 @@ namespace Aen
 		//m_Particle.m_pos.x = 10;
 		//m_Particle.m_pos.y = 10;
 		//m_Particle.m_pos.z = 10;
-		m_ParticleList.m_velocity = m_CSInputBuffer.m_vel.y;
+		/*m_CSInputBuffer.m_particleCount = 10;*/
+		/*m_ParticleList.m_velocity = m_CSInputBuffer.m_vel.y;*/
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
@@ -149,8 +150,9 @@ namespace Aen
 		renderer.m_PSInputBuffer.BindBuffer<CShader>(0);
 		RenderSystem::BindUnOrderedAccessView(0,m_UAView);
 		RenderSystem::BindShader(renderer.m_PSCShader);
+
 		RenderSystem::Dispatch(int(std::ceil(m_CSInputBuffer.m_particleCount / 64.f)), 1, 1);
-	
+
 	
 		RenderSystem::UnBindShader<CShader>();
 		RenderSystem::UnBindUnOrderedAccessViews(0,1);

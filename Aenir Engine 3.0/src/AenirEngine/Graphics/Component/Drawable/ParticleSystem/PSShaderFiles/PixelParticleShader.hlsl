@@ -25,4 +25,5 @@ float4 main(PixelShaderInput input) : SV_TARGET
     textureColor = shaderTexture.Sample(SampleType, output.uv);
     finalColor = textureColor * output.color;
     return finalColor;
+
 }
