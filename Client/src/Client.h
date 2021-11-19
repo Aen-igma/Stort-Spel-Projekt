@@ -22,8 +22,6 @@ class Client : public Aen::App {
 	State* mp_state;
 	States m_typeState;
 	Gameplay* mp_gameplay;
-	GameEnd* mp_gameEnd;
-	Victory* mp_victory;
 };
 
 Aen::App* Aen::CreateApp() {

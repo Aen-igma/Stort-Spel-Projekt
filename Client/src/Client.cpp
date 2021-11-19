@@ -3,10 +3,15 @@
 Client::~Client() {
 
 	delete mp_state;
+
+	if (mp_gameplay) {
+		delete mp_gameplay;
+		mp_gameplay = nullptr;
+	}
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
-	:Aen::App(desc, windowName, className), mp_state(nullptr), m_typeState(States::None), mp_gameplay(nullptr), mp_gameEnd(nullptr), mp_victory(nullptr)
+	:Aen::App(desc, windowName, className), mp_state(nullptr), m_typeState(States::None), mp_gameplay(nullptr)
 {}
 
 void Client::Start()

@@ -53,13 +53,12 @@ namespace Aen {
 		// Destroy imGui
 
 		//delete Aen::GlobalSettings::GetImGuiHandler();
-		
+		delete m_app;
 		Resource::Destroy();
 		EntityHandler::Destroy();
 		GCore::Concealed::Release();
 		PhysicsHandler::Destroy();
 		GlobalSettings::Destroy();
-		delete m_app;
 		delete m_renderer;
 	}
 }

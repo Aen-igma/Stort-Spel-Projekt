@@ -1,7 +1,7 @@
 #include "Menu.h"
 
 MainMenu::MainMenu(Aen::Window& window)
-	:State(window)
+	:State(window), m_UI(nullptr)
 {
 
 }
