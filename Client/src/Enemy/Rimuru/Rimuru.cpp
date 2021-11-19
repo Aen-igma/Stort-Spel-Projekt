@@ -3,9 +3,9 @@
 Rimuru::Rimuru()
 	:Enemy(), m_rimuru(&Aen::EntityHandler::CreateEntity()), m_lDir(0.f, 0.f, -1.f) {
 	m_rimuru->AddComponent<Aen::MeshInstance>();
-	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
-	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
-	m_rimuru->SetScale(5.f);
+	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Reimube");
+	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("ReimubeMat");
+	m_rimuru->SetScale(1.f);
 	//m_rimuru->SetScale(0.8f, 0.8f, 0.8f);
 	m_rimuru->SetParent(*m_enemy);
 
@@ -19,9 +19,9 @@ Rimuru::Rimuru()
 Rimuru::Rimuru(const Aen::Vec3f& pos)
 	:Enemy(), m_rimuru(&Aen::EntityHandler::CreateEntity()) {
 	m_rimuru->AddComponent<Aen::MeshInstance>();
-	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
-	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
-	m_rimuru->SetScale(6.f);
+	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Reimube");
+	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("ReimubeMat");
+	m_rimuru->SetScale(5.f);
 	m_rimuru->SetParent(*m_enemy);
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);

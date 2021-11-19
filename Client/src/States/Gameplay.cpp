@@ -56,7 +56,7 @@ void Gameplay::Initialize()
 	//Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	//plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
-	rimuru.Load(AEN_RESOURCE_DIR("Models/chest/chestOpen_mesh.fbx"));
+	rimuru.Load(AEN_RESOURCE_DIR("Models/Skeleton/skBoss_test.fbx"));
 	//rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
@@ -65,7 +65,7 @@ void Gameplay::Initialize()
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
 	//wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
 	Aen::Mesh& skullPile = Aen::Resource::CreateMesh("Skullpile");
-	skullPile.Load(AEN_RESOURCE_DIR("Models/chest/chestOpen_mesh.fbx"));
+	skullPile.Load(AEN_RESOURCE_DIR("Models/Wall/wallLP3.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -76,7 +76,7 @@ void Gameplay::Initialize()
 
 	Aen::Material& skeleboiMat = Aen::Resource::CreateMaterial("SkeleboiMat");
 
-	skeleboiMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Models/chest/chest_diffuse.png"));
+	skeleboiMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Models/Wall/sampledDiffuseColor.png"));
 
 	
 	//Aen::Texture& skullPileDiff = Aen::Resource::CreateTexture("skullPileDiff");
@@ -95,9 +95,10 @@ void Gameplay::Initialize()
 	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 
-	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
-	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
-	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
+	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Models/Wall/sampledDiffuseColor.png"));
+	reimubeMat.LoadeAndSetNormalMap(AEN_RESOURCE_DIR("NormalMapTEsting/Brick_NormalMap.jpg"));
+	reimubeMat["InnerEdgeThickness"] = 0;
+	reimubeMat["OuterEdgeThickness"] = 0;
 
 	planeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
@@ -157,6 +158,7 @@ void Gameplay::Initialize()
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	m_reimube1->AddComponent<Aen::RigidBody>();
 	m_reimube1->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(50.f, 10.f, 2.f));
+	m_reimube1->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(50.f, 10.f, 2.f));
 	/*m_reimube->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);*/
 	m_reimube1->AddComponent<Aen::MeshInstance>();
 	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
@@ -201,13 +203,13 @@ void Gameplay::Initialize()
 
 	m_skullPile = &Aen::EntityHandler::CreateEntity();
 	m_skullPile->AddComponent<Aen::MeshInstance>();
-	m_skullPile->GetComponent<Aen::MeshInstance>().SetMesh(skullPile);
-	m_skullPile->GetComponent<Aen::MeshInstance>().SetMaterial(skeleboiMat);
+	m_skullPile->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
+	m_skullPile->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
 	m_skullPile->AddComponent<Aen::RigidBody>();
 	m_skullPile->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
 	m_skullPile->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
-	m_skullPile->SetPos(7.f, 0.f, 4.f);
-	m_skullPile->SetScale(4.f);
+	m_skullPile->SetPos(7.f, 2.f, 4.f);
+	m_skullPile->SetScale(1.f);
 
 	// ------ Level Importer ------ //
 	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
