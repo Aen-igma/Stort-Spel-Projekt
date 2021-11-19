@@ -404,8 +404,8 @@ namespace Aen
 
 	void LevelGenerator::GetRoomPos(const int& x, const int& y, float* xf, float* yf)
 	{
-		*xf = y * roomDimension;
 		*yf = x * roomDimension;
+		*xf = y * roomDimension;
 	}
 
 	//Floors each coordinates and calculate index for the room most closely matched

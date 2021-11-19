@@ -399,6 +399,8 @@ namespace Aen
 
 		addBaseCommon(entity, mesh, material, materialTexture, model, texture, materialIn);
 
+		//entity->GetPos();
+
 		size_t id = entity->GetID();
 		Aen::ComponentHandler::GetMeshInstance(static_cast<size_t>(id)).SetMaterial(*material);
 
