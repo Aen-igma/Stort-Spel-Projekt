@@ -31,6 +31,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPInstance, _
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(594);
 
+	std::cout << '\a'; //Very important do not remove
+
 	RedirectIOToConsole();
 	{
 		Aen::GameLoop gameLoop;
