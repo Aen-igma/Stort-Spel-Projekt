@@ -496,7 +496,7 @@ namespace Aen
 						}
 						else if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
 							map[x + 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
-							map[x + 1][y].rotateCW();
+							map[x + 1][y].rotateCCW();
 							bossRoomPlaced = true;
 							break;
 							//East
@@ -509,7 +509,7 @@ namespace Aen
 						}
 						else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
 							map[x - 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
-							map[x - 1][y].rotateCCW();
+							map[x - 1][y].rotateCW();
 							bossRoomPlaced = true;
 							break;
 							//West
