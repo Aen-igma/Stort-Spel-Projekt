@@ -16,7 +16,7 @@ namespace Aen {
 				std::vector<Mat4f> modelTran(animation->m_boneArray.size());
 
 				for (int i = 0; i < animation->m_boneArray.size(); i++) {
-					localTran[i] = anim[i].Transposed() * animation->m_boneArray[i].localMatrix;
+					localTran[i] = anim[i].Transposed() * animation->m_boneArray[i].localMatrix ;
 				}
 
 				modelTran[0] = localTran[0];
@@ -27,7 +27,7 @@ namespace Aen {
 				}
 
 				for (int i = 0; i < animation->m_boneArray.size(); i++) {
-					animation->m_finalMatrix.GetData(i) = modelTran[i] * animation->m_boneArray[i].offsetMatrix;
+					animation->m_finalMatrix.GetData(i) =   animation->m_boneArray[i].offsetMatrix.Transposed() * modelTran[i].Transposed();
 				}
 
 				animation->m_finalMatrix.UpdateBuffer();
@@ -62,6 +62,8 @@ namespace Aen {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].scale * animation->m_keyFrames.at(bName)[m_currentFrame].rotation * animation->m_keyFrames.at(bName)[m_currentFrame].position;
 				Mat4f nextFrame = animation->m_keyFrames.at(bName)[m_currentFrame + 1].scale * animation->m_keyFrames.at(bName)[m_currentFrame + 1].rotation * animation->m_keyFrames.at(bName)[m_currentFrame + 1].position;
+				//currentFrame.Transposed();
+				//nextFrame.Transposed();
 
 				mat.emplace_back(Lerp(currentFrame, nextFrame, t));
 			}
@@ -70,7 +72,7 @@ namespace Aen {
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].scale * animation->m_keyFrames.at(bName)[m_currentFrame].rotation * animation->m_keyFrames.at(bName)[m_currentFrame].position;
-
+				//currentFrame.Transposed();
 				mat.emplace_back(currentFrame);
 			}
 		}
