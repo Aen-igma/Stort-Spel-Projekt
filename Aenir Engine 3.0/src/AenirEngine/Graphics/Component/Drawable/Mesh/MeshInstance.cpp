@@ -85,6 +85,7 @@ namespace Aen {
 			renderer.m_cbTransform.UpdateBuffer();
 
 #ifndef _DEBUG
+			//Funkar inte i debug
 			DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
 #endif // !_DEBUG
 #ifdef _DEBUG
