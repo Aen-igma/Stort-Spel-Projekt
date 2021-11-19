@@ -140,6 +140,10 @@ namespace Aen {
 		ComponentHandler::GetScale(m_id).SetScale(x, y, z);
 	}
 
+	void Entity::SetScale(const float& xyz) {
+		ComponentHandler::GetScale(m_id).SetScale(xyz, xyz, xyz);
+	}
+
 	const Vec3f Entity::GetPos() {
 
 		Vec3f pos;

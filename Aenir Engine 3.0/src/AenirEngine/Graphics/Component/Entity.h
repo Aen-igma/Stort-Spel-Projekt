@@ -31,6 +31,7 @@ namespace Aen {
 
 		void SetScale(const Vec3f& scale);
 		void SetScale(const float& x, const float& y, const float& z);
+		void SetScale(const float& xyz);
 
 		const Vec3f GetPos();
 		const Vec3f GetRot();

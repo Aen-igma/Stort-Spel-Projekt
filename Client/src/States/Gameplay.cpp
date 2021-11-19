@@ -56,7 +56,8 @@ void Gameplay::Initialize()
 	//Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	//plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
-	rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
+	rimuru.Load(AEN_RESOURCE_DIR("Models/chest/chestOpen_mesh.fbx"));
+	//rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
@@ -64,7 +65,7 @@ void Gameplay::Initialize()
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
 	//wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
 	Aen::Mesh& skullPile = Aen::Resource::CreateMesh("Skullpile");
-	skullPile.Load(AEN_RESOURCE_DIR("Models/Skeleton/skBoss_test.fbx"));
+	skullPile.Load(AEN_RESOURCE_DIR("Models/chest/chestOpen_mesh.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -75,7 +76,7 @@ void Gameplay::Initialize()
 
 	Aen::Material& skeleboiMat = Aen::Resource::CreateMaterial("SkeleboiMat");
 
-	skeleboiMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Models/Skeleton/SkeletonBoss_diffuse.png"));
+	skeleboiMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Models/chest/chest_diffuse.png"));
 
 	
 	//Aen::Texture& skullPileDiff = Aen::Resource::CreateTexture("skullPileDiff");
@@ -206,7 +207,7 @@ void Gameplay::Initialize()
 	m_skullPile->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
 	m_skullPile->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
 	m_skullPile->SetPos(7.f, 0.f, 4.f);
-	m_skullPile->SetScale(.4f,.4f,.4f);
+	m_skullPile->SetScale(4.f);
 
 	// ------ Level Importer ------ //
 	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
