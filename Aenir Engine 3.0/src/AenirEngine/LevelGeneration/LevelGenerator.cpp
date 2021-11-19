@@ -191,22 +191,22 @@ namespace Aen
 		int r = LehmerInt() % 4;
 		switch (r)
 		{
-		//case 0:
-		//	map[3][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-		//	map[3][3].m_present = true;
-		//	break;
-		//case 1:
-		//	map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-		//	map[3][4].m_present = true;
-		//	break;
-		//case 2:
-		//	map[4][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-		//	map[4][4].m_present = true;
-		//	break;
-		//case 3:
-		//	map[4][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-		//	map[4][3].m_present = true;
-		//	break;
+		case 0:
+			map[3][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[3][3].m_present = true;
+			break;
+		case 1:
+			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[3][4].m_present = true;
+			break;
+		case 2:
+			map[4][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[4][4].m_present = true;
+			break;
+		case 3:
+			map[4][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[4][3].m_present = true;
+			break;
 		default:
 			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
 			map[3][4].m_present = true;
@@ -215,27 +215,27 @@ namespace Aen
 
 
 		r = LehmerInt() % 4;
-		//switch (r)
-		//{
-		//case 1:
-		//	map[3][3].rotateCW();
-		//	map[3][4].rotateCW();
-		//	map[4][4].rotateCW();
-		//	map[4][3].rotateCW();
-		//	break;
-		//case 2:
-		//	map[3][3].rotateCCW();
-		//	map[3][4].rotateCCW();
-		//	map[4][4].rotateCCW();
-		//	map[4][3].rotateCCW();
-		//	break;
-		//case 3:
-		//	map[3][3].rotate180();
-		//	map[3][4].rotate180();
-		//	map[4][4].rotate180();
-		//	map[4][3].rotate180();
-		//	break;
-		//}
+		switch (r)
+		{
+		case 1:
+			map[3][3].rotateCW();
+			map[3][4].rotateCW();
+			map[4][4].rotateCW();
+			map[4][3].rotateCW();
+			break;
+		case 2:
+			map[3][3].rotateCCW();
+			map[3][4].rotateCCW();
+			map[4][4].rotateCCW();
+			map[4][3].rotateCCW();
+			break;
+		case 3:
+			map[3][3].rotate180();
+			map[3][4].rotate180();
+			map[4][4].rotate180();
+			map[4][3].rotate180();
+			break;
+		}
 
 		bool openConnections = true;
 		int maxRooms = 16; //Soft limit
