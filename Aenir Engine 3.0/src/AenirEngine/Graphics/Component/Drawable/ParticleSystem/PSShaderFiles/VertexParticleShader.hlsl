@@ -12,6 +12,7 @@ struct Particle
     float velocity;
     float4 color;
     float2 uv;
+    //bool alive;
 };
 
 struct VertexShaderOutput

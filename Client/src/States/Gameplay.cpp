@@ -44,7 +44,14 @@ void Gameplay::Initialize()
 	m_PS = &Aen::EntityHandler::CreateEntity();
 	m_PS->AddComponent<Aen::PSSystemcomponent>();
 	m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("Flame.png"));
+
+	/*Aen::Material& PSMaterial = Aen::Resource::CreateMaterial("EnemyMaterial");*/
+	/*m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(PSMaterial);*/
+
+	m_PS->GetComponent<Aen::PSSystemcomponent>().InitParticleVariables();
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(10);
+
+
 	
 
 	//m_PS = &Aen::EntityHandler::CreateEntity();
@@ -206,7 +213,7 @@ void Gameplay::Update(const float& deltaTime) {
 	//m_PS->GetComponent<Aen::PSSystemcomponent>().Emit(); //On CPU side wrong but need to check something
 	//m_PS->GetComponent<Aen::PSSystemcomponent>().UpdateCSShader();
 	//m_PS->GetComponent<Aen::PSSystemcomponent>().RenderParticlesBuffer();
-	
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().EmitRandom();
 	
 
 	// ---------------------------------- Enemies --------------------------------------- //
