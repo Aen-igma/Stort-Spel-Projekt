@@ -30,13 +30,30 @@ void Gameplay::Initialize()
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png"), 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(220.f, 60.f, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f, 0);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png")); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(350.f, 100.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"bar.png")); //1
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(350.f, 100.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"potion.png")); //2
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(125.f, 100.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(150.f, 150.f);
+
+	//m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
+	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
+	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Kill All Enemies", 72.f); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 100.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"5", 50.f); //1 - Amount of potion
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(120.f, 110.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(150.f, 150.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -89,6 +106,9 @@ void Gameplay::Initialize()
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 
+	//targetMat["InnerEdgeColor"] = Aen::Color::Red;
+	//targetMat["OuterEdgeColor"] = Aen::Color::Green;
+
 	// -------------------------- Setup Entities -------------------------------- //
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
@@ -133,6 +153,7 @@ void Gameplay::Initialize()
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
 
+
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
@@ -142,22 +163,15 @@ void Gameplay::Initialize()
 			}
 		}
 	}
-
-	m_player.GetEntity()->SetPos(playerStartPos);
+	//m_player.GetEntity()->SetPos(playerStartPos);
 
 	//---------ENEMIES----------//
-	/*int numEnemies = 10;
+	int numEnemies = 10;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
-	}*/
-
-	std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
-	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
-	{
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
 	}
 
 	//m_attack->SetParent(*m_player);
@@ -183,10 +197,14 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
-	if (m_hp != m_player.GetHealth()) { //ers�tt collision med enemy i if satsen
-		float hp = (m_hp - m_player.GetHealth());
 
-		m_UI->GetComponent<Aen::UIComponent>().LessenPic(hp * 2.f, 0);
+	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
+		wstringstream potionNr;
+		float hp = (m_hp - m_player.GetHealth());
+		potionNr << m_player.GetPotionNr();
+
+		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(hp * 2.f, 0);
+		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
 		m_hp = m_player.GetHealth();
 	}
 
@@ -207,8 +225,8 @@ void Gameplay::Update(const float& deltaTime) {
 	if(m_player.GetHealth() <= 0.f)
 		State::SetState(States::Gameover);
 
-	/*if(m_enemyQueue.empty())
-		State::SetState(States::Victory);*/
+	//if(m_enemyQueue.empty())
+	//	State::SetState(States::Victory);
 
 	#ifdef _DEBUG
 		if(Aen::Input::KeyDown(Aen::Key::J))

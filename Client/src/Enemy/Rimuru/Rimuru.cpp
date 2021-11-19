@@ -14,6 +14,16 @@ Rimuru::Rimuru()
 	
 	m_enemy->SetPos(-11.f, 1.5f, 0.f);
 
+	// -----------------------------	Floating m_healthBar		------------------------------- //
+	m_healthBar = &Aen::EntityHandler::CreateEntity();
+	m_healthBar->AddComponent<Aen::MeshInstance>();
+	m_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
+	m_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
+	m_healthBar->SetRot(180, 0, 0);
+	m_healthBar->SetPos(0, -100, 0);
+	m_healthBar->SetScale(5.f, 0.f, 5.f);
+	m_healthBar->SetRenderLayer(1);
+
 	m_health = 100.f;
 	m_wait = false;
 	m_dodge = false;
@@ -32,8 +42,17 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
 	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.2f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
-
 	m_enemy->SetPos(pos);
+
+	m_healthBar = &Aen::EntityHandler::CreateEntity();
+	m_healthBar->AddComponent<Aen::MeshInstance>();
+	m_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
+	m_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
+	m_healthBar->SetRot(180, 0, 0);
+	m_healthBar->SetPos(0, -100, 0);
+	m_healthBar->SetScale(5.f, 0.f, 5.f);
+	m_healthBar->SetRenderLayer(1);
+
 	m_health = 100.f;
 	m_wait = false;
 	m_dodge = false;
@@ -45,6 +64,7 @@ Rimuru::~Rimuru() {
 	m_rimuru->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_rimuru);
 	Aen::EntityHandler::RemoveEntity(*m_enemy);
+	Aen::EntityHandler::RemoveEntity(*m_healthBar);
 }
 
 Aen::Entity*& Rimuru::GetEntity() {
@@ -54,6 +74,8 @@ Aen::Entity*& Rimuru::GetEntity() {
 void Rimuru::Update(const float& deltaTime, Player& player) {
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float dist = eDir.Magnitude();
+
+	m_healthBar->SetScale(m_health / 20.f, 0.f, 5.f);
 
 	/*if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
 		m_v.y = 0.f;*/
@@ -75,6 +97,9 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	}
 
 	if(dist < 20.f) {
+		m_healthBar->SetRot(-player.GetCamera()->GetRot().x - 90.f, player.GetCamera()->GetRot().y + 180.f, 0);
+		m_healthBar->SetPos(m_enemy->GetPos() + Aen::Vec3f(0, 2.f, 0));
+
 		m_lDir = Aen::Lerp(m_lDir, eDir.Normalized(), 0.03f);
 		float yaw = Aen::RadToDeg(std::atan2(m_lDir.x, m_lDir.z));
 		m_rimuru->SetRot(0.f, yaw + 180, 0.f);
@@ -106,6 +131,8 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	else
 	{
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+		m_healthBar->SetRot(180, 0, 0);
+		m_healthBar->SetPos(0, -100, 0);
 	}
 
 
