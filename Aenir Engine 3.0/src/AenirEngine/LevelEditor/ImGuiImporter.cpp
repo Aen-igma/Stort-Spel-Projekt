@@ -380,7 +380,7 @@ namespace Aen
 
 				AddSpotLight(roomPtr->GetLightVector()[i], offset, angle);
 			}
-			else if (roomPtr->GetLightVector()[i].type == "Point light")
+			else if (roomPtr->GetLightVector()[i].type == IGH::POINTLIGHT)
 			{
 				cout << "p Light " << endl;
 

@@ -161,6 +161,7 @@ void Gameplay::Initialize()
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
+			mptr_map[x + y * Aen::mapSize].mptr_parent;
 		}
 	}
 	m_player.GetEntity()->SetPos(playerStartPos);

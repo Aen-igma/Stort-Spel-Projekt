@@ -308,8 +308,6 @@ namespace Aen
 		
 		placeBossRoom();
 
-		CleanMap();
-		CleanMap();
 		
 		return *map;
 	}
@@ -373,6 +371,59 @@ namespace Aen
 			OutputDebugStringA(LPCSTR("///////////////////////////////////"));
 			OutputDebugStringA(LPCSTR("\n"));
 		}
+		CleanMap();
+		for (int i = 0; i < 3 * mapSize; i++) {
+			for (int j = 0; j < 3 * mapSize; j++) {
+				cmap[i][j] = ' ';
+				if (1 == (i % 3) && 1 == (j % 3)) {
+					cmap[i][j] = '.';
+				}
+			}
+		}
+
+		for (int y = 0; y < mapSize; y++) {
+			for (int x = 0; x < mapSize; x++) {
+				if (map[x][y].m_present) {
+					cmap[3 * y + 1][3 * x + 1] = ((int)'0' + (int)map[x][y].m_roomSpecial);
+					if (map[x][y].connectionDirections % 10u)
+					{
+						cmap[3 * y + 0][3 * x + 1] = '|'; //North
+					}
+					if ((map[x][y].connectionDirections / 10u) % 10u)
+					{
+						cmap[3 * y + 1][3 * x + 2] = '-'; //East
+					}
+					if ((map[x][y].connectionDirections / 100u) % 10u)
+					{
+						cmap[3 * y + 2][3 * x + 1] = '|'; //South
+					}
+					if ((map[x][y].connectionDirections / 1000u) % 10u)
+					{
+						cmap[3 * y + 1][3 * x + 0] = '-'; //West
+					}
+				}
+				cmap[3 * y + 0][3 * mapSize] = 0;
+				cmap[3 * y + 1][3 * mapSize] = 0;
+				cmap[3 * y + 2][3 * mapSize] = 0;
+			}
+		}
+		OutputDebugStringA(LPCSTR("\n"));
+		OutputDebugStringA(LPCSTR("///////////////////////////////////"));
+		OutputDebugStringA(LPCSTR("\n"));
+		for (int i = 0; i < 3 * mapSize; i++) {
+			//for (int j = 0; j < 3 * mapSize; j++) {
+			//	std::cout << cmap[i][j];
+			//}
+			LPCSTR out = cmap[i];
+			OutputDebugStringA(out);
+			OutputDebugStringA(LPCSTR("\n"));
+			//std::cout << std::endl;
+		}
+		//std::cout << std::endl;
+		OutputDebugStringA(LPCSTR("\n"));
+		OutputDebugStringA(LPCSTR("///////////////////////////////////"));
+		OutputDebugStringA(LPCSTR("\n"));
+	
 		return *map;
 	}
 
@@ -437,29 +488,28 @@ namespace Aen
 					if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
 					{																				//Prevents out of bounds
 						if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {	//Checks if region is clear
-							map[x][y - 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);	//Insert random room
-							AlignRoom( &map[x][y - 1], 1, type);
+							map[x][y - 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);	//
+							map[x][y - 1].rotate180();
 							bossRoomPlaced = true;
 							break;																	
 							//North
 						}
 						else if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
 							map[x + 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
-							AlignRoom(&map[x + 1][y], 10, type);
+							map[x + 1][y].rotateCW();
 							bossRoomPlaced = true;
 							break;
 							//East
 						}
 						else if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
 							map[x][y + 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
-							AlignRoom(&map[x][y + 1], 100, type);
 							bossRoomPlaced = true;
 							break;
 							//South
 						}
 						else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
 							map[x - 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
-							AlignRoom(&map[x - 1][y], 1000, type);
+							map[x - 1][y].rotateCCW();
 							bossRoomPlaced = true;
 							break;
 							//West
@@ -538,6 +588,7 @@ namespace Aen
 			temp.mptr_parent	=	strRoom;
 			temp.m_CRIndex		=	i;
 			temp.m_present		= true;
+
 			temp.rotation = 3.14159265;
 			if (temp.connectionDirections == 11) {
 				temp.rotation += 1.57079633;
@@ -555,6 +606,9 @@ namespace Aen
 	{
 		for (int y = 0; y < mapSize; y++) {
 			for (int x = 0; x < mapSize; x++) {
+				if (!map[x][y].m_present) {
+					continue;
+				}
 				bool
 					on = (map[x][y].connectionDirections / 1u) % 10u > 0,
 					oe = (map[x][y].connectionDirections / 10u) % 10u > 0,
@@ -568,57 +622,76 @@ namespace Aen
 					s = (map[x][y].connectionDirections / 100u) % 10u > 0,
 					w = (map[x][y].connectionDirections / 1000u) % 10u > 0;
 
-				if (y - 1 > 0 && (map[x][y].connectionDirections / 1u) % 10u > 0) {
-					if (!map[x][y - 1].m_present) {
-						//North facing unconnected
-						n = false;
-					}
-					else {
-						if (!(map[x][y - 1].connectionDirections / 100u) % 10u > 0) {
+				if(y - 1 >= 0){
+					if ((map[x][y].connectionDirections / 1u) % 10u > 0) {
+						if (!map[x][y - 1].m_present) {
+							//North facing unconnected
 							n = false;
 						}
+						else {
+							if (!((map[x][y - 1].connectionDirections / 100u) % 10u) > 0) {
+								n = false;
+							}
+						}
 					}
 				}
-				if (x + 1 < mapSize && (map[x][y].connectionDirections / 10u) % 10u > 0) {
-					map[x + 1][y];
-					if (!map[x + 1][y].m_present) {
-						//East facing unconnected
-						e = false;
-					}
-					else {
-						if (!(map[x + 1][y].connectionDirections / 1000u) % 10u > 0) {
+				else{
+					n = false;
+				}
+				if(x + 1 < mapSize){
+					if ((map[x][y].connectionDirections / 10u) % 10u > 0) {
+						if (!map[x + 1][y].m_present) {
+							//East facing unconnected
 							e = false;
 						}
+						else {
+							if (!((map[x + 1][y].connectionDirections / 1000u) % 10u > 0)) {
+								e = false;
+							}
+						}
 					}
 				}
-				if (y + 1 < mapSize && (map[x][y].connectionDirections / 100u) % 10u > 0) {
-					map[x][y + 1];
-					if (!map[x][y + 1].m_present) {
-						//South facing unconnected
-						s = false;
-					}
-					else {
-						if (!(map[x][y + 1].connectionDirections / 1u) % 10u > 0) {
+				else {
+					e = false;
+				}
+				
+				if(y + 1 < mapSize){
+					if ((map[x][y].connectionDirections / 100u) % 10u > 0) {
+						if (!map[x][y + 1].m_present) {
+							//South facing unconnected
 							s = false;
 						}
-					}
-				}
-				if (x - 1 > 0 && (map[x][y].connectionDirections / 1000u) % 10u > 0) {
-					map[x - 1][y];
-					if (!map[x - 1][y].m_present) {
-						//West facing unconnected
-						w = false;
-					}
-					else {
-						if (!(map[x - 1][y].connectionDirections / 10u) % 10u > 0) {
-							w = false;
+						else {
+							if (!((map[x][y + 1].connectionDirections / 1u) % 10u > 0)) {
+								s = false;
+							}
 						}
 					}
+				}
+				else {
+					s = false;
+				}
+				if(x - 1 >= 0)
+				{
+					if ((map[x][y].connectionDirections / 1000u) % 10u > 0) {
+						if (!map[x - 1][y].m_present) {
+							//West facing unconnected
+							w = false;
+						}
+						else {
+							if (!((map[x - 1][y].connectionDirections / 10u) % 10u > 0)) {
+								w = false;
+							}
+						}
+					}
+				}
+				else {
+					w = false;
 				}
 				UINT32 numCon = (UINT32)(on & n) + (UINT32)(oe & e) + (UINT32)(os & s) + (UINT32)(ow & w);
 				UINT32 numUnCon = (UINT32)(on & !n) + (UINT32)(oe & !e) + (UINT32)(os & !s) + (UINT32)(ow & !w);
 				UINT32 conDir = n + 10 * e + 100 * s + 1000 * w;
-				UINT32 unConDir = !n + 10 * !e + 100 * !s + 1000 * !w;
+				UINT32 unConDir = (on & !n) + 10 * (oe & !e) + 100 * (os & !s) + 1000 * (ow & !w);
 				if (numUnCon == 0) {
 					continue; //Early exit; no unconnected exits to remove
 				}
