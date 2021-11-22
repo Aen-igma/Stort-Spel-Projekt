@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "Picture.h"
+#include "Core\GlobalSettings.h"
 
 namespace Aen {
 
@@ -54,6 +55,14 @@ namespace Aen {
         m_pictureData.at(m_nr).rect.bottom  = y;
     }
 
+    void Picture::SetPicPos(float x, float y, int indX)
+    {
+        m_pictureData.at(indX).rect.left = x;
+        m_pictureData.at(indX).rect.right = x;
+        m_pictureData.at(indX).rect.top = y;
+        m_pictureData.at(indX).rect.bottom = y;
+    }
+
     void Aen::Picture::SetPicSize(float width, float height)
     {
         float left = GetPicCenter(m_pictureData.at(m_nr).rect).x - (width / 2.f);
@@ -65,13 +74,55 @@ namespace Aen {
         m_pictureData.at(m_nr).rect.right = right;
         m_pictureData.at(m_nr).rect.top = top;
         m_pictureData.at(m_nr).rect.bottom = bottom;
+    }
 
+    void Picture::SetPicSize(float width, float height, int indX)
+    {
+        float left = GetPicCenter(m_pictureData.at(indX).rect).x - (width / 2.f);
+        float right = GetPicCenter(m_pictureData.at(indX).rect).x + (width / 2.f);
+        float top = GetPicCenter(m_pictureData.at(indX).rect).y - (height / 2.f);
+        float bottom = GetPicCenter(m_pictureData.at(indX).rect).y + (height / 2.f);
+
+        m_pictureData.at(indX).rect.left = left;
+        m_pictureData.at(indX).rect.right = right;
+        m_pictureData.at(indX).rect.top = top;
+        m_pictureData.at(indX).rect.bottom = bottom;
     }
 
     void Picture::UpdatePicture(float width, int indX)
     {
         //change bmp
         m_pictureData.at(indX).rect.right -= width;
+    }
+
+    bool Picture::Intersect(int index)
+    {
+        //Get mouse pos, cuz right now its dumb af
+        POINT P;
+        GetCursorPos(&P);
+        ScreenToClient(Aen::GlobalSettings::GetWindow()->GetWHND(), &P);
+
+        m_gameSize.x = (float)Aen::GlobalSettings::GetWindow()->GetSize().x;
+        m_gameSize.y = (float)Aen::GlobalSettings::GetWindow()->GetSize().y;
+
+        int X = GetSystemMetrics(SM_CXSCREEN);
+        int Y = GetSystemMetrics(SM_CYSCREEN);
+        float xSize = m_gameSize.x / X;
+        float ySize = m_gameSize.y / Y;
+
+        float x = P.x / xSize;
+        float y = P.y / ySize;
+
+        //OutputDebugStringA(("Mouse X: " + std::to_string(x) + "	Mouse Y: " + std::to_string(y) + "\n").c_str());
+        //OutputDebugStringA(("Rect.x: " + std::to_string(GetButtonCenter(m_buttonData.at(0).rect).y) + "\n").c_str());
+
+        if (x < m_pictureData.at(index).rect.right && x > m_pictureData.at(index).rect.left && y > m_pictureData.at(index).rect.top && y < m_pictureData.at(index).rect.bottom)
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     Vec2f Aen::Picture::GetPicSize(D2D1_RECT_F& rect)

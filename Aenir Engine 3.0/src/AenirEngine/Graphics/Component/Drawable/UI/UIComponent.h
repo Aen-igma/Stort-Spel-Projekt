@@ -37,8 +37,11 @@ namespace Aen {
 		//----------------------	Just pictures	----------------------------//
 		void AddPicture(const std::wstring& dir);
 		void SetPicPos(float x, float y);
+		void SetPicPos(float x, float y, int indX);
 		void SetPicSize(float width, float height);
+		void SetPicSize(float width, float height, int indX);
 		void UpdatePicture(float width, int indX);
+		bool Check(int index);
 		
 		friend class ComponentHandler;
 		friend class Renderer;

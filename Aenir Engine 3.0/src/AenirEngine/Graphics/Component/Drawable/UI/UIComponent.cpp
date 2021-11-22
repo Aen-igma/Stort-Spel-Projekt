@@ -85,14 +85,29 @@ namespace Aen {
         m_picture.SetPicPos(x, y);
     }
 
+    void UIComponent::SetPicPos(float x, float y, int indX)
+    {
+        m_picture.SetPicPos(x, y, indX);
+    }
+
     void UIComponent::SetPicSize(float width, float height)
     {
         m_picture.SetPicSize(width, height);
     }
 
+    void UIComponent::SetPicSize(float width, float height, int indX)
+    {
+        m_picture.SetPicSize(width, height, indX);
+    }
+
     void UIComponent::UpdatePicture(float width, int indX)
     {
         m_picture.UpdatePicture(width, indX);
+    }
+
+    bool UIComponent::Check(int index)
+    {
+        return m_picture.Intersect(index);
     }
 
     //--------------------------------------------    	General stuff       --------------------------------------------------//

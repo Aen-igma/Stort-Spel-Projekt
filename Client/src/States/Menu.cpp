@@ -23,6 +23,9 @@ void MainMenu::Update(const float& deltaTime)
 		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(1)) {
 			m_Window.Exit();
 		}
+		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(2)) {
+			State::SetState(States::Options);
+		}
 	}
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
 		m_Window.Exit();
@@ -59,11 +62,11 @@ void MainMenu::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 200.f);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Quit.png")); //1
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 900);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(1500.f, 900);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 200.f);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Options.png")); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(1500.f, 900);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 900);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 200.f);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 	

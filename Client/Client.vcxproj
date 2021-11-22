@@ -179,6 +179,7 @@
     <ClInclude Include="src\States\Gameplay.h" />
     <ClInclude Include="src\States\Loadscreen.h" />
     <ClInclude Include="src\States\Menu.h" />
+    <ClInclude Include="src\States\Options.h" />
     <ClInclude Include="src\States\States.h" />
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +191,7 @@
     <ClCompile Include="src\States\Gameplay.cpp" />
     <ClCompile Include="src\States\Loadscreen.cpp" />
     <ClCompile Include="src\States\Menu.cpp" />
+    <ClCompile Include="src\States\Options.cpp" />
     <ClCompile Include="src\States\States.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

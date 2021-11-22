@@ -161,7 +161,7 @@ void Gameplay::Initialize()
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
-			//m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+			//m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y)); //something ain't being deleted, causes crash, new fix from later
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 				//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
