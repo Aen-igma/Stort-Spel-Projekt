@@ -10,9 +10,9 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_reimube1);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	
-	for (auto& b : *m_levelImporter.GetEntityList()) {
-		Aen::EntityHandler::RemoveEntity(*b);
-	}
+	//for (auto& b : *m_levelImporter.GetEntityList()) {
+	//	Aen::EntityHandler::RemoveEntity(*b);
+	//}
 
 	for (auto& d : m_enemyQueue) {
 		delete d;
@@ -25,6 +25,8 @@ Gameplay::~Gameplay() {
 
 void Gameplay::Initialize()
 {
+
+
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
 	// -----------------------------	UI	------------------------------- //
@@ -111,6 +113,7 @@ void Gameplay::Initialize()
 
 	// -------------------------- Setup Entities -------------------------------- //
 
+
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();
 	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
@@ -137,46 +140,38 @@ void Gameplay::Initialize()
 	//m_levelImporter.import(path);
 
 	// ------------------- Procedural generation testing staging grounds ------- //
-	std::vector<string> levelPaths;
+	//std::vector<string> levelPaths;
 
-	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
-
-
-	m_levelGenerator.AddLoadedToGeneration();
-
-	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
-
-	//Match this value to the size of the rooms we are using
-	m_levelGenerator.SetRoomDimension(43.f);
-	mptr_map = m_levelGenerator.GenerationTestingFunction();
-
-	//Use this value to set the start of the player / origin of the map
-	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
+	//m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
 
 
-	for (UINT y = 0; y < Aen::mapSize; y++) {
-		for (UINT x = 0; x < Aen::mapSize; x++) {
-			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+	//m_levelGenerator.AddLoadedToGeneration();
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
-				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
-			}
-		}
-	}
+	//m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
+
+	////Match this value to the size of the rooms we are using
+	//m_levelGenerator.SetRoomDimension(43.f);
+	//mptr_map = m_levelGenerator.GenerationTestingFunction();
+
+	////Use this value to set the start of the player / origin of the map
+	//Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
+
+
+	//for (UINT y = 0; y < Aen::mapSize; y++) {
+	//	for (UINT x = 0; x < Aen::mapSize; x++) {
+	//		m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+
+	//		if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+	//			m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+	//		}
+	//	}
+	//}
 	//m_player.GetEntity()->SetPos(playerStartPos);
 
-	//---------ENEMIES----------//
-	int numEnemies = 10;
-	int offset = -10;
-	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
-	for (int u = 0; u < numEnemies; u++) {
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
-		offset -= 5;
-	}
+	Aen::GlobalSettings::mp_guiHandler->StartUp();
 
-	//m_attack->SetParent(*m_player);
 
-	//printf("");
+	
 
 	// --------------------------- Setup Window --------------------------------- //
 
@@ -198,15 +193,15 @@ void Gameplay::Initialize()
 void Gameplay::Update(const float& deltaTime) {
 
 
-	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
-		wstringstream potionNr;
-		float hp = (m_hp - m_player.GetHealth());
-		potionNr << m_player.GetPotionNr();
+	//if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
+	//	wstringstream potionNr;
+	//	float hp = (m_hp - m_player.GetHealth());
+	//	potionNr << m_player.GetPotionNr();
 
-		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(hp * 2.f, 0);
-		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
-		m_hp = m_player.GetHealth();
-	}
+	//	m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(hp * 2.f, 0);
+	//	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
+	//	m_hp = m_player.GetHealth();
+	//}
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -217,8 +212,8 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.Update(m_enemyQueue, deltaTime);
 
-	for(auto& i : m_enemyQueue)
-		i->Update(deltaTime, m_player);
+	/*for(auto& i : m_enemyQueue)
+		i->Update(deltaTime, m_player);*/
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
 
@@ -228,10 +223,10 @@ void Gameplay::Update(const float& deltaTime) {
 	//if(m_enemyQueue.empty())
 	//	State::SetState(States::Victory);
 
-	#ifdef _DEBUG
+	/*#ifdef _DEBUG
 		if(Aen::Input::KeyDown(Aen::Key::J))
 			m_enemyQueue.emplace_back(AEN_NEW Rimuru());
-	#endif
+	#endif*/
 
 
 	//if (Aen::Input::KeyDown(Aen::Key::O)) {

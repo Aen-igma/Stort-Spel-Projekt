@@ -24,6 +24,8 @@ namespace Aen {
 		m_renderer->Initialize();
 
 		GlobalSettings::Initialize(m_app->m_window, m_renderer);
+		GlobalSettings::mp_guiHandler->Initialize(m_app->m_window.GetWHND(), GCore::m_device.Get(), GCore::m_dContext.Get());
+
 
 		m_app->Start();
 	}
@@ -51,8 +53,8 @@ namespace Aen {
 		}
 
 		// Destroy imGui
-
-		//delete Aen::GlobalSettings::GetImGuiHandler();
+		Aen::GlobalSettings::mp_guiHandler->Release();
+		delete Aen::GlobalSettings::mp_guiHandler;
 		
 		Resource::Destroy();
 		EntityHandler::Destroy();

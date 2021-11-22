@@ -192,6 +192,9 @@ namespace Aen {
 		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
 		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);*/
 
+		Aen::GlobalSettings::mp_guiHandler->NewFrame();
+		Aen::GlobalSettings::mp_guiHandler->RenderAllWindows();
+		Aen::GlobalSettings::mp_guiHandler->Render();
 		// Present
 		RenderSystem::Present();
 		RenderSystem::ClearState();

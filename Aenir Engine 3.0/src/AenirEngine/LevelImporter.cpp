@@ -58,7 +58,6 @@ namespace AenIMP {
 
 	Model::~Model()
 	{
-		cout << "D modelStruct" << endl;
 		if (model != nullptr)
 		{
 			delete this->model;
@@ -87,7 +86,6 @@ namespace AenIMP {
 
 	Texture::~Texture()
 	{
-		cout << "D textureStruct" << endl;
 		delete this->texture;
 	}
 
@@ -115,7 +113,6 @@ namespace AenIMP {
 
 	Material::~Material()
 	{
-		cout << "D materialStruct" << endl;
 		delete this->material;
 	}
 
@@ -140,8 +137,6 @@ namespace AenIMP {
 		cout << "range :" << light->range << endl;
 		cout << "attenuation :" << light->attenuation[0] << " " << light->attenuation[1] << " " << light->attenuation[2] << endl;
 		cout << "angle :" << light->angle << endl;
-
-		cout << endl;
 	}
 
 	Light::Light()
@@ -174,7 +169,6 @@ namespace AenIMP {
 
 	Particle::~Particle()
 	{
-		cout << "D particleStruct" << endl;
 		delete particle;
 	}
 
@@ -189,93 +183,93 @@ namespace AenIMP {
 
 	void LevelImporter::ReadFromFile(string filePath)
 	{
-		OpenFile(filePath);
-		std::cout << "-------------" << endl;
-
-		CompleteRoom tempRoom;
-
-		while (infile.eof() == false)
+		if (OpenFile(filePath) == true)
 		{
-			Aen::SectionHeader sectionHeader;
-			infile.read((char*)&sectionHeader, sizeof(Aen::SectionHeader));
+			CompleteRoom tempRoom;
 
-			if (sectionHeader.type == Aen::MODEL)
+			while (infile.eof() == false)
 			{
-				Model* model = new Model;
-				model->readFromFile(infile);
-				model->printModel();
+				Aen::SectionHeader sectionHeader;
+				infile.read((char*)&sectionHeader, sizeof(Aen::SectionHeader));
 
-				tempRoom.addModel(model);
-				delete model;
-			}
-			else if (sectionHeader.type == Aen::TEXTURE)
-			{
-				Texture* texture = new Texture;
-				texture->readFromFile(infile);
-				texture->printTexture();
+				if (sectionHeader.type == Aen::MODEL)
+				{
+					Model* model = new Model;
+					model->readFromFile(infile);
+					model->printModel();
 
-				tempRoom.addTexture(texture);
-				delete texture;
-			}
-			else if (sectionHeader.type == Aen::MATERIAL)
-			{
-				Material* material = new Material;
-				material->readFromFile(infile);
-				material->printMaterial();
+					tempRoom.addModel(model);
+					delete model;
+				}
+				else if (sectionHeader.type == Aen::TEXTURE)
+				{
+					Texture* texture = new Texture;
+					texture->readFromFile(infile);
+					texture->printTexture();
 
-				tempRoom.addMaterial(material);
-				delete material;
-			}
-			else if (sectionHeader.type == Aen::LIGHT)
-			{
-				Light* light = new Light;
-				light->readFromFile(infile);
-				light->printLight();
+					tempRoom.addTexture(texture);
+					delete texture;
+				}
+				else if (sectionHeader.type == Aen::MATERIAL)
+				{
+					Material* material = new Material;
+					material->readFromFile(infile);
+					material->printMaterial();
 
-				tempRoom.addLight(light);
-				delete light;
-			}
-			else if (sectionHeader.type == Aen::PARTICLE)
-			{
-				Particle* particle = new Particle;
-				particle->readFromFile(infile);
-				particle->printParticle();
+					tempRoom.addMaterial(material);
+					delete material;
+				}
+				else if (sectionHeader.type == Aen::LIGHT)
+				{
+					Light* light = new Light;
+					light->readFromFile(infile);
+					light->printLight();
 
-				tempRoom.addParticle(particle);
-				delete particle;
-			}
-			else if (sectionHeader.type == Aen::ROOM)
-			{
-				Room* room = new Room;
-				room->readFromFile(infile);
-				room->printRoom();
+					tempRoom.addLight(light);
+					delete light;
+				}
+				else if (sectionHeader.type == Aen::PARTICLE)
+				{
+					Particle* particle = new Particle;
+					particle->readFromFile(infile);
+					particle->printParticle();
 
-				tempRoom.addRoom(room);
-				delete room;
-			}
-			else if (sectionHeader.type == Aen::UNKNOWN)
-			{
-				std::cout << "Unkown Header Type" << endl;
+					tempRoom.addParticle(particle);
+					delete particle;
+				}
+				else if (sectionHeader.type == Aen::ROOM)
+				{
+					Room* room = new Room;
+					room->readFromFile(infile);
+					room->printRoom();
+
+					tempRoom.addRoom(room);
+					delete room;
+				}
+				else if (sectionHeader.type == Aen::UNKNOWN)
+				{
+					std::cout << "Unkown Header Type" << endl;
+				}
 			}
 
-			cout << endl;
+			roomVector.push_back(tempRoom);
+			CloseFile();
 		}
-
-		roomVector.push_back(tempRoom);
-
-		std::cout << "-------------------" << endl;
-		CloseFile();
-
+		
 	}
 
-	void LevelImporter::OpenFile(string filePath)
+	bool LevelImporter::OpenFile(string filePath)
 	{
 		infile.open(filePath, std::ios::in | std::ios::binary);
 		if (!infile)
 		{
 			cout << "Cannot open file!" << endl;
+			return false;
+		} else
+		{
+			cout << "File is Open" << endl;
+			return true;
 		}
-		cout << "File is Open" << endl;
 	}
 
 	void LevelImporter::CloseFile()

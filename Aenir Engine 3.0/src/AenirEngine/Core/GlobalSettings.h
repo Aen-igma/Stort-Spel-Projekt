@@ -9,6 +9,9 @@ namespace Aen {
 	class AEN_DECLSPEC GlobalSettings {
 		public:
 		
+		static ImGuiHandler* mp_guiHandler;
+
+
 		static void SetDefaultShader(const std::string& name) {
 			m_pDefaultShader = &Resource::GetShader(name);
 		}
@@ -36,6 +39,10 @@ namespace Aen {
 
 		static const Color& GetBGColor() {
 			return m_BGColor;
+		}
+
+		static ImGuiHandler*& GetImGuiHandler() {
+			return mp_guiHandler;
 		}
 
 		static Material* GetDefaultMaterial() {
@@ -175,7 +182,6 @@ namespace Aen {
 		static Material* m_defaultMaterial;
 		static Texture* m_defaultTexture;
 
-		//static ImGuiHandler* mp_guiHandler;
 		static bool m_vSync;
 
 		static Renderer* m_pRenderer;

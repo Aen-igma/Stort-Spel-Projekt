@@ -20,8 +20,8 @@ namespace Aen {
 		ImGui::DragFloat4("Outer EdgeColor", outerEdgeColor, 0.02f);
 		ImGui::DragFloat4("Glow Color", glowColor, 0.02f);
 		ImGui::DragFloat("Glow GlowStr", &glowStr, 0.02f, 0.0f, 100.0f);
-		ImGui::DragFloat("InnerEdge Thickness", &innerEdgeThickness, 0.02f, 0.0f, 1.0f);
-		ImGui::DragFloat("OuterEdge Thickness", &outerEdgeThickness, 0.02f, 0.0f, 1.0f);
+		ImGui::DragFloat("InnerEdge Thickness", &innerEdgeThickness, 1.0f, 0.0f, 100.0f);
+		ImGui::DragFloat("OuterEdge Thickness", &outerEdgeThickness, 1.0f, 0.0f, 100.0f);
 		ImGui::DragFloat("Specular Power", &specularPower, 0.02f, 0.0f, 1.0f);
 		ImGui::DragFloat("Specular Strength", &specularStrength, 0.02f, 0.0f, 1.0f);
 		ImGui::DragFloat("Roughness", &roughness, 0.02f, 0.0f, 1.0f);
@@ -56,31 +56,31 @@ namespace Aen {
 
 	ImGuiHandler::ImGuiHandler()
 	{
-		imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter, &m_materialList);
+		m_imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter, &m_materialList);
 	}
 
 	ImGuiHandler::~ImGuiHandler()
 	{
-		if (imguiImporter != nullptr)
+		if (m_imguiImporter != nullptr)
 		{
-			delete imguiImporter;
+			delete m_imguiImporter;
 		}
 	}
 
-	/*void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
-		string& sourcePath, string& filePathSource,
-		Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i)
-	{
-		destinationPath = filePathDestination + m_textureName[i] + "_Thumbnail.png";
-		sourcePath = filePathSource + m_textureFileName[i];
+	//void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
+	//	string& sourcePath, string& filePathSource,
+	//	Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i)
+	//{
+	//	/*destinationPath = filePathDestination + m_textureName[i] + "_Thumbnail.png";
+	//	sourcePath = filePathSource + m_textureFileName[i];
 
-		source.LoadImageThumb(sourcePath.c_str());
-		source.MakeThumbnail(&destination);
-		destination.SaveImage(destinationPath.c_str());
+	//	source.LoadImageThumb(sourcePath.c_str());
+	//	source.MakeThumbnail(&destination);
+	//	destination.SaveImage(destinationPath.c_str());
 
-		source.FreeData();
-		destination.FreeData();
-	}*/
+	//	source.FreeData();
+	//	destination.FreeData();*/
+	//}
 
 	void ImGuiHandler::StartUp()
 	{
@@ -91,15 +91,19 @@ namespace Aen {
 
 	void ImGuiHandler::RenderAllWindows()
 	{
-		SceneListWindow();
-		update();
-		AssetWindow();
-		PropertyWindow();
-		ToolWindow();
-		SaveWindow();
-		EnemyCreateWindow();
-		ImportWindow();
-		MaterialCreateWindow();
+		if (m_entityList.size() > 0)
+		{
+			SceneListWindow();
+			update();
+			AssetWindow();
+			PropertyWindow();
+			ToolWindow();
+			SaveWindow();
+			EnemyCreateWindow();
+			ImportWindow();
+			MaterialCreateWindow();
+			ParticleCreateWindow();
+		}
 
 	}
 
@@ -241,7 +245,12 @@ namespace Aen {
 			{
 				AddMaterialButton();
 				ImGui::EndTabItem();
-
+			} 
+			
+			if (ImGui::BeginTabItem("Particle"))
+			{
+				AddParticleButton();
+				ImGui::EndTabItem();
 			}
 
 			ImGui::EndTabBar();
@@ -282,24 +291,24 @@ namespace Aen {
 		static int mode = -1;
 		static std::string currentMode = "";
 
-		ImGui::Begin("a", nullptr);
+		ImGui::Begin("Tools", nullptr);
 		for (int i = 0; i < 3; i++)
 		{
-			if (ImGui::Button(IGH::TOOLS[i]))
+			if (ImGui::Button(m_imguiTypes.TOOLS[i]))
 			{
 				mode = i;
 
 				if (mode == 0)
 				{
-					currentMode = IGH::TOOLS[i];
+					currentMode = m_imguiTypes.TOOLS[i];
 				}
 				else if (mode == 1)
 				{
-					currentMode = IGH::TOOLS[i];
+					currentMode = m_imguiTypes.TOOLS[i];
 				}
 				else if (mode == 2)
 				{
-					currentMode = IGH::TOOLS[i];
+					currentMode = m_imguiTypes.TOOLS[i];
 				}
 			}
 		}
@@ -343,7 +352,7 @@ namespace Aen {
 			ImGui::Begin("Create Enemy", nullptr);
 
 			ImGui::InputText("Name", name, MESH_NAME_MAX_LENGTH);
-			ImGui::Combo("Type", &selectedType, IGH::ENEMYTYPE, IM_ARRAYSIZE(IGH::ENEMYTYPE));
+			ImGui::Combo("Type", &selectedType, m_imguiTypes.ENEMYTYPE, IM_ARRAYSIZE(m_imguiTypes.ENEMYTYPE));
 
 			mesh = CustomComboString(m_objFileName, "Mesh", CurrentIndex);
 
@@ -351,8 +360,8 @@ namespace Aen {
 			{
 				if (mesh != "")
 				{
-					size_t id = imguiImporter->AddBase(name, mesh);
-					m_modelMap.at(id).m_type = IGH::ENEMYTYPE[selectedType];
+					size_t id = m_imguiImporter->AddBase(name, mesh);
+					m_modelMap.at(id).m_type = m_imguiTypes.ENEMYTYPE[selectedType];
 				}
 			
 				m_createEnemyWindowActive = false;
@@ -378,7 +387,8 @@ namespace Aen {
 
 			if (ImGui::Button("Import"))
 			{
-				m_ImportWindowActive = imguiImporter->import(m_levelImporter,levelPath,tempTranslation,tempRotation,tempScale);
+				m_ImportWindowActive = m_imguiImporter->import(m_levelImporter,levelPath,tempTranslation,tempRotation,tempScale, m_roomProperty);
+				m_imported = true;
 			}
 			ImGui::End();
 		}
@@ -397,8 +407,8 @@ namespace Aen {
 			static float glowColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 			static float glowStr = 100;
-			static float innerEdgeThickness = 0.001f;
-			static float outerEdgeThickness = 0.001f;
+			static float innerEdgeThickness = 0;
+			static float outerEdgeThickness = 0;
 			static float specularPower = 0.6f;
 			static float specularStrength = 1.0f;
 			static float roughness = 0.5f;
@@ -455,6 +465,37 @@ namespace Aen {
 		}
 	}
 
+	void ImGuiHandler::ParticleCreateWindow()
+	{
+		if (m_createParticleWindowActive == true)
+		{
+			static int selectedType = 0;
+			static int CurrentIndex = 0;
+			static char name[MESH_NAME_MAX_LENGTH];
+			static string mesh = "";
+
+			ImGui::Begin("Create Particle", nullptr);
+
+			ImGui::InputText("Name", name, MESH_NAME_MAX_LENGTH);
+			ImGui::Combo("Type", &selectedType, m_imguiTypes.PARTICLETAG, IM_ARRAYSIZE(m_imguiTypes.PARTICLETAG));
+
+			mesh = CustomComboString(m_objFileName, "Mesh", CurrentIndex);
+
+			if (ImGui::Button("Create"))
+			{
+				if (mesh != "")
+				{
+					size_t id = m_imguiImporter->AddBase(name, mesh);
+					m_modelMap.at(id).m_type = m_imguiTypes.PARTICLETAG[selectedType];
+				}
+
+				m_createParticleWindowActive = false;
+				std::memset(name, '\0', sizeof(char) * MESH_NAME_MAX_LENGTH);
+			}
+			ImGui::End();
+		}
+	}
+
 	void ImGuiHandler::ReadAllModelsFromHandler()
 	{
 		if (m_entityList.size() < mp_entityHandlerPtr->m_entities.size())
@@ -463,7 +504,6 @@ namespace Aen {
 			{
 				m_entityList.push_back(element.second);
 				m_itemList.push_back(CheckType(element.second));
-				m_OriginalCount++;
 			}
 		}
 	}
@@ -614,13 +654,13 @@ namespace Aen {
 	{
 		Aen::Material& material = Aen::Resource::GetMaterial((m_materialList[selected].matName));
 
-		imguiImporter->Convert(m_baseColor, material["BaseColor"]);
-		imguiImporter->Convert(m_shadowColor, material["ShadowColor"]);
-		imguiImporter->Convert(m_specularColor, material["SpecularColor"]);
-		imguiImporter->Convert(m_rimLightColor, material["RimLightColor"]);
-		imguiImporter->Convert(m_innerEdgeColor, material["InnerEdgeColor"]);
-		imguiImporter->Convert(m_outerEdgeColor, material["OuterEdgeColor"]);
-		imguiImporter->Convert(m_glowColor, material["GlowColor"]);
+		m_imguiImporter->Convert(m_baseColor, material["BaseColor"]);
+		m_imguiImporter->Convert(m_shadowColor, material["ShadowColor"]);
+		m_imguiImporter->Convert(m_specularColor, material["SpecularColor"]);
+		m_imguiImporter->Convert(m_rimLightColor, material["RimLightColor"]);
+		m_imguiImporter->Convert(m_innerEdgeColor, material["InnerEdgeColor"]);
+		m_imguiImporter->Convert(m_outerEdgeColor, material["OuterEdgeColor"]);
+		m_imguiImporter->Convert(m_glowColor, material["GlowColor"]);
 
 		material["GlowStr"] = m_glowStr;
 		material["InnerEdgeThickness"] = m_innerEdgeThickness;
@@ -638,13 +678,13 @@ namespace Aen {
 	void ImGuiHandler::SetDefaultMaterialValue(int selected)
 	{
 		Aen::Material& material = Aen::Resource::GetMaterial((m_materialList[selected].matName));
-		imguiImporter->Convert(material["BaseColor"], m_baseColor);
-		imguiImporter->Convert(material["ShadowColor"], m_shadowColor);
-		imguiImporter->Convert(material["SpecularColor"], m_specularColor);
-		imguiImporter->Convert(material["RimLightColor"], m_rimLightColor);
-		imguiImporter->Convert(material["InnerEdgeColor"], m_innerEdgeColor);
-		imguiImporter->Convert(material["OuterEdgeColor"], m_outerEdgeColor);
-		imguiImporter->Convert(material["GlowColor"], m_glowColor);
+		m_imguiImporter->Convert(material["BaseColor"], m_baseColor);
+		m_imguiImporter->Convert(material["ShadowColor"], m_shadowColor);
+		m_imguiImporter->Convert(material["SpecularColor"], m_specularColor);
+		m_imguiImporter->Convert(material["RimLightColor"], m_rimLightColor);
+		m_imguiImporter->Convert(material["InnerEdgeColor"], m_innerEdgeColor);
+		m_imguiImporter->Convert(material["OuterEdgeColor"], m_outerEdgeColor);
+		m_imguiImporter->Convert(material["GlowColor"], m_glowColor);
 
 		m_glowStr = material["GlowStr"];
 		m_innerEdgeThickness = material["InnerEdgeThickness"];
@@ -742,97 +782,101 @@ namespace Aen {
 
 	void ImGuiHandler::LightTab()
 	{
-		if (ImGui::BeginTabItem(IGH::LIGHT.c_str()))
+		if(m_entityList.size() > 0) 
 		{
-			size_t id = m_entityList[m_selectedEntity]->GetID();
-			static float color[4];
-			static float attenuation[3];
-			static float intensity;
-			static float range;
-			static float angle;
-
-			if (Aen::ComponentHandler::DirectionalLightExist(id))
+			if (ImGui::BeginTabItem(IGH::LIGHT.c_str()))
 			{
-				Aen::DirectionalLight& lightPtr = Aen::ComponentHandler::GetDirectionalLight(id);
+				size_t id = m_entityList[m_selectedEntity]->GetID();
+				static float color[4];
+				static float attenuation[3];
+				static float intensity;
+				static float range;
+				static float angle;
 
-				color[0] = lightPtr.m_light.m_color.r;
-				color[1] = lightPtr.m_light.m_color.g;
-				color[2] = lightPtr.m_light.m_color.b;
-				color[3] = lightPtr.m_light.m_color.a;
-				intensity = lightPtr.m_light.m_strength;
+				if (Aen::ComponentHandler::DirectionalLightExist(id))
+				{
+					Aen::DirectionalLight& lightPtr = Aen::ComponentHandler::GetDirectionalLight(id);
 
-				SetValues();
+					color[0] = lightPtr.m_light.m_color.r;
+					color[1] = lightPtr.m_light.m_color.g;
+					color[2] = lightPtr.m_light.m_color.b;
+					color[3] = lightPtr.m_light.m_color.a;
+					intensity = lightPtr.m_light.m_strength;
 
-				ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
-				ImGui::DragFloat("Intensity", &intensity, 0.02f);
+					SetValues();
 
-				lightPtr.SetColor(color[0], color[1], color[2], color[3]);
-				lightPtr.SetStrength(intensity);
+					ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
+					ImGui::DragFloat("Intensity", &intensity, 0.02f);
+
+					lightPtr.SetColor(color[0], color[1], color[2], color[3]);
+					lightPtr.SetStrength(intensity);
+				}
+
+				if (Aen::ComponentHandler::PointLightExist(id))
+				{
+					Aen::PointLight& lightPtr = Aen::ComponentHandler::GetPointLight(id);
+
+					color[0] = lightPtr.m_light.m_color.r;
+					color[1] = lightPtr.m_light.m_color.g;
+					color[2] = lightPtr.m_light.m_color.b;
+					color[3] = lightPtr.m_light.m_color.a;
+
+					intensity = lightPtr.m_light.m_strength;
+
+					attenuation[0] = lightPtr.m_light.m_dist.x;
+					attenuation[1] = lightPtr.m_light.m_dist.y;
+					attenuation[2] = lightPtr.m_light.m_dist.z;
+
+					range = lightPtr.m_light.m_dist.w;
+
+					SetValues();
+
+					ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
+					ImGui::DragFloat("Intensity", &intensity, 0.02f);
+					ImGui::DragFloat3("Attenuation", attenuation, 0.02f);
+					ImGui::DragFloat("Range", &range, 0.02f);
+
+					lightPtr.SetColor(color[0], color[1], color[2], color[3]);
+					lightPtr.SetStrength(intensity);
+					lightPtr.SetLightDist(attenuation[0], attenuation[1], attenuation[2], range);
+				}
+
+				if (Aen::ComponentHandler::SpotLightExist(id))
+				{
+					Aen::SpotLight& lightPtr = Aen::ComponentHandler::GetSpotLight(id);
+
+					color[0] = lightPtr.m_light.m_color.r;
+					color[1] = lightPtr.m_light.m_color.g;
+					color[2] = lightPtr.m_light.m_color.b;
+					color[3] = lightPtr.m_light.m_color.a;
+
+					intensity = lightPtr.m_light.m_strength;
+
+					attenuation[0] = lightPtr.m_light.m_dist.x;
+					attenuation[1] = lightPtr.m_light.m_dist.y;
+					attenuation[2] = lightPtr.m_light.m_dist.z;
+
+					range = lightPtr.m_light.m_dist.w;
+					angle = lightPtr.m_light.m_angle;
+
+					SetValues();
+
+					ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
+					ImGui::DragFloat("Intensity", &intensity, 0.02f);
+					ImGui::DragFloat3("Attenuation", attenuation, 0.02f);
+					ImGui::DragFloat("Range", &range, 0.02f);
+					ImGui::DragFloat("angle", &angle, 0.02f);
+
+					lightPtr.SetColor(color[0], color[1], color[2], color[3]);
+					lightPtr.SetStrength(intensity);
+					lightPtr.SetLightDist(attenuation[0], attenuation[1], attenuation[2], range);
+					lightPtr.SetConeSize(angle);
+				}
+				ImGui::EndTabItem();
 			}
-
-			if (Aen::ComponentHandler::PointLightExist(id))
-			{
-				Aen::PointLight& lightPtr = Aen::ComponentHandler::GetPointLight(id);
-
-				color[0] = lightPtr.m_light.m_color.r;
-				color[1] = lightPtr.m_light.m_color.g;
-				color[2] = lightPtr.m_light.m_color.b;
-				color[3] = lightPtr.m_light.m_color.a;
-
-				intensity = lightPtr.m_light.m_strength;
-
-				attenuation[0] = lightPtr.m_light.m_dist.x;
-				attenuation[1] = lightPtr.m_light.m_dist.y;
-				attenuation[2] = lightPtr.m_light.m_dist.z;
-
-				range = lightPtr.m_light.m_dist.w;
-
-				SetValues();
-
-				ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
-				ImGui::DragFloat("Intensity", &intensity, 0.02f);
-				ImGui::DragFloat3("Attenuation", attenuation, 0.02f);
-				ImGui::DragFloat("Range", &range, 0.02f);
-
-				lightPtr.SetColor(color[0], color[1], color[2], color[3]);
-				lightPtr.SetStrength(intensity);
-				lightPtr.SetLightDist(attenuation[0], attenuation[1], attenuation[2], range);
-			}
-
-			if (Aen::ComponentHandler::SpotLightExist(id))
-			{
-				Aen::SpotLight& lightPtr = Aen::ComponentHandler::GetSpotLight(id);
-
-				color[0] = lightPtr.m_light.m_color.r;
-				color[1] = lightPtr.m_light.m_color.g;
-				color[2] = lightPtr.m_light.m_color.b;
-				color[3] = lightPtr.m_light.m_color.a;
-
-				intensity = lightPtr.m_light.m_strength;
-
-				attenuation[0] = lightPtr.m_light.m_dist.x;
-				attenuation[1] = lightPtr.m_light.m_dist.y;
-				attenuation[2] = lightPtr.m_light.m_dist.z;
-
-				range = lightPtr.m_light.m_dist.w;
-				angle = lightPtr.m_light.m_angle;
-
-				SetValues();
-
-				ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
-				ImGui::DragFloat("Intensity", &intensity, 0.02f);
-				ImGui::DragFloat3("Attenuation", attenuation, 0.02f);
-				ImGui::DragFloat("Range", &range, 0.02f);
-				ImGui::DragFloat("angle", &angle, 0.02f);
-
-				lightPtr.SetColor(color[0], color[1], color[2], color[3]);
-				lightPtr.SetStrength(intensity);
-				lightPtr.SetLightDist(attenuation[0], attenuation[1], attenuation[2], range);
-				lightPtr.SetConeSize(angle);
-			}
-			ImGui::EndTabItem();
+			ImGui::EndTabBar();
 		}
-		ImGui::EndTabBar();
+		
 	}
 
 	void ImGuiHandler::RoomTab()
@@ -844,17 +888,32 @@ namespace Aen {
 		static int roomSize = 0;
 		static float rotateRoom = 0;
 
-		m_roomProperty[0] = IGH::ROOMTYPE[selectedType];
-		m_roomProperty[1] = IGH::SPECIALROOM[selectedSpecial];
-		m_roomProperty[2] = IGH::ROOMTHEME[selectedTheme];
-		m_roomProperty[3] = to_string(probability);
-		m_roomProperty[4] = to_string(roomSize);
+		
 
 		if (ImGui::BeginTabItem("Room"))
 		{
-			ImGui::Combo("Room Theme", &selectedTheme, IGH::ROOMTHEME, IM_ARRAYSIZE(IGH::ROOMTHEME));
-			ImGui::Combo("Room Type", &selectedType, IGH::ROOMTYPE, IM_ARRAYSIZE(IGH::ROOMTYPE));
-			ImGui::Combo("Special Room", &selectedSpecial, IGH::SPECIALROOM, IM_ARRAYSIZE(IGH::SPECIALROOM));
+			if (m_imported == true)
+			{
+				selectedTheme = stoi(m_roomProperty[0]);
+				selectedType = stoi(m_roomProperty[1]);
+				selectedSpecial = stoi(m_roomProperty[2]);
+				probability = stoi(m_roomProperty[3]);
+				roomSize = stoi(m_roomProperty[4]);
+
+			}
+			else
+			{
+				m_roomProperty[0] = m_imguiTypes.ROOMTYPE[selectedType];
+				m_roomProperty[1] = m_imguiTypes.SPECIALROOM[selectedSpecial];
+				m_roomProperty[2] = m_imguiTypes.ROOMTHEME[selectedTheme];
+				m_roomProperty[3] = to_string(probability);
+				m_roomProperty[4] = to_string(roomSize);
+			}
+
+
+			ImGui::Combo("Room Theme", &selectedTheme, m_imguiTypes.ROOMTHEME, IM_ARRAYSIZE(m_imguiTypes.ROOMTHEME));
+			ImGui::Combo("Room Type", &selectedType, m_imguiTypes.ROOMTYPE, IM_ARRAYSIZE(m_imguiTypes.ROOMTYPE));
+			ImGui::Combo("Special Room", &selectedSpecial, m_imguiTypes.SPECIALROOM, IM_ARRAYSIZE(m_imguiTypes.SPECIALROOM));
 			ImGui::DragInt("Probability", &probability, 1, 0, 100, "%.d", 0);
 			ImGui::DragInt("Room Size", &roomSize, 1);
 			ImGui::DragFloat("Rotate Room", &rotateRoom, 1);
@@ -872,38 +931,41 @@ namespace Aen {
 	{
 		static int selected = 0;
 		static int selectedTexture = 0;
-		if (ImGui::BeginTabItem(IGH::MATERIAL.c_str()))
-		{
-			size_t id = m_entityList[m_selectedEntity]->GetID();
+		if (m_entityList.size() > 0) {
 
-			if (Aen::ComponentHandler::MeshInstanceExist(id) && m_materialList.size() > 0)
+			if (ImGui::BeginTabItem(IGH::MATERIAL.c_str()))
 			{
-				if (ImGui::CollapsingHeader("Common Material Properties"))
+				size_t id = m_entityList[m_selectedEntity]->GetID();
+
+				if (Aen::ComponentHandler::MeshInstanceExist(id) && m_materialList.size() > 0)
 				{
-
-					CustomCombo(m_materialList, (IGH::MATERIAL + " List"), selected);
-					SetDefaultMaterialValue(selected);
-
-					MaterialDragFloats(m_baseColor, m_shadowColor, m_specularColor, m_rimLightColor,
-						m_innerEdgeColor, m_outerEdgeColor, m_glowColor, m_glowStr,
-						m_innerEdgeThickness, m_outerEdgeThickness, m_specularPower, m_specularStrength,
-						m_roughness, m_shadowOffset, m_innerFalloff, m_outerFalloff, m_rimLightIntensity, m_rimLightSize);
-				
-					SetMaterialValues(selected);
-					CustomCombo(m_textureFileName, IGH::TEXTURE.c_str(), selectedTexture);
-
-					if (AddButton("Change Material"))
+					if (ImGui::CollapsingHeader("Common Material Properties"))
 					{
-						ChangeTexture(selectedTexture, m_materialList[selected].matName, m_materialList[selected].texName);
-						if (m_modelMap.find(id) != m_modelMap.end())
+
+						CustomCombo(m_materialList, (IGH::MATERIAL + " List"), selected);
+						SetDefaultMaterialValue(selected);
+
+						MaterialDragFloats(m_baseColor, m_shadowColor, m_specularColor, m_rimLightColor,
+							m_innerEdgeColor, m_outerEdgeColor, m_glowColor, m_glowStr,
+							m_innerEdgeThickness, m_outerEdgeThickness, m_specularPower, m_specularStrength,
+							m_roughness, m_shadowOffset, m_innerFalloff, m_outerFalloff, m_rimLightIntensity, m_rimLightSize);
+
+						SetMaterialValues(selected);
+						CustomCombo(m_textureFileName, IGH::TEXTURE.c_str(), selectedTexture);
+
+						if (AddButton("Change Material"))
 						{
-							m_modelMap.at(id).m_material.set(Aen::Resource::GetMaterial(m_materialList[selected].matName));
+							ChangeTexture(selectedTexture, m_materialList[selected].matName, m_materialList[selected].texName);
+							if (m_modelMap.find(id) != m_modelMap.end())
+							{
+								m_modelMap.at(id).m_material.set(Aen::Resource::GetMaterial(m_materialList[selected].matName));
+							}
+
 						}
-						
 					}
 				}
+				ImGui::EndTabItem();
 			}
-			ImGui::EndTabItem();
 		}
 	}
 
@@ -915,38 +977,45 @@ namespace Aen {
 		static int selectedHitBoxType = 0;
 
 		static int selectedParent = 0;
-
-		if (ImGui::BeginTabItem(IGH::MODEL.c_str()))
+		if (m_entityList.size() > 0)
 		{
-			size_t id = m_entityList[m_selectedEntity]->GetID();
-
-			if (ImGui::CollapsingHeader("Transform Attributes"))
+			if (ImGui::BeginTabItem(IGH::MODEL.c_str()))
 			{
-				SetValues();
-			}
+				size_t id = m_entityList[m_selectedEntity]->GetID();
 
-			if (Aen::ComponentHandler::MeshInstanceExist(id))
-			{
-				ImGui::Checkbox("Hit box", &hitBoxEnable);
-				ImGui::Combo("Hit box Type", &selectedHitBoxType, IGH::HITBOXTYPE, IM_ARRAYSIZE(IGH::HITBOXTYPE));
-				ImGui::Checkbox("Cast Shadow", &castShadow);
-
-				if (hitBoxEnable == true || castShadow == true)
+				if (ImGui::CollapsingHeader("Transform Attributes"))
 				{
-					unordered_map<size_t, IGH::ModelContainer>::iterator it = m_modelMap.find(id);
-
-					if (it != m_modelMap.end())
-					{
-						it->second.m_model.rigidBody = hitBoxEnable;
-						it->second.m_model.rigidBodyType = IGH::HITBOXTYPE[selectedHitBoxType];
-						it->second.m_model.m_castShadow = castShadow;
-
-					}
+					SetValues();
 				}
-				CustomCombo(m_itemList, "Parent", selectedParent);
+
+				if (Aen::ComponentHandler::MeshInstanceExist(id))
+				{
+					ImGui::Checkbox("Hit box", &hitBoxEnable);
+					ImGui::Combo("Hit box Type", &selectedHitBoxType, m_imguiTypes.HITBOXTYPE, IM_ARRAYSIZE(m_imguiTypes.HITBOXTYPE));
+					ImGui::Checkbox("Cast Shadow", &castShadow);
+
+					if (hitBoxEnable == true || castShadow == true)
+					{
+						unordered_map<size_t, IGH::ModelContainer>::iterator it = m_modelMap.find(id);
+
+						if (it != m_modelMap.end())
+						{
+							it->second.m_model.rigidBody = hitBoxEnable;
+							it->second.m_model.rigidBodyType = m_imguiTypes.HITBOXTYPE[selectedHitBoxType];
+							it->second.m_model.m_castShadow = castShadow;
+
+						}
+					}
+					CustomCombo(m_itemList, "Parent", selectedParent);
+				}
+				ImGui::EndTabItem();
 			}
-			ImGui::EndTabItem();
-		}
+		}		
+	}
+
+	void ImGuiHandler::ParticleTab()
+	{
+
 	}
 
 	void ImGuiHandler::UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName)
@@ -1019,6 +1088,14 @@ namespace Aen {
 		}
 	}
 
+	void ImGuiHandler::AddParticleButton()
+	{
+		if (AddButton(IGH::PARTICLE))
+		{
+			m_createParticleWindowActive = true;
+		}
+	}
+
 	void ImGuiHandler::ModelButtons()
 	{
 		for (size_t i = 0; i < m_objFileName.size(); i++)
@@ -1026,7 +1103,7 @@ namespace Aen {
 			ImGui::Columns(4, nullptr);
 			if (AddButton(m_objName[i]))
 			{
-				imguiImporter->AddBase(m_objName[i], m_objFileName[i]);
+				m_imguiImporter->AddBase(m_objName[i], m_objFileName[i]);
 			}
 			ImGui::NextColumn();
 		}
@@ -1036,17 +1113,17 @@ namespace Aen {
 	{
 		if (AddButton(IGH::POINTLIGHT.c_str()))
 		{
-			imguiImporter->AddPointLight();
+			m_imguiImporter->AddPointLight();
 		}
 
 		if (AddButton(IGH::SPOTLIGHT.c_str()))
 		{
-			imguiImporter->AddSpotLight();
+			m_imguiImporter->AddSpotLight();
 		}
 
 		if (AddButton(IGH::DIRECTIONALLIGHT.c_str()))
 		{
-			imguiImporter->AddDirectional();
+			m_imguiImporter->AddDirectional();
 		}
 	}
 

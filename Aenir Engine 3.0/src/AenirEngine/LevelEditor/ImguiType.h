@@ -7,7 +7,6 @@ namespace IGH
 {
 	using std::string;
 	using std::unordered_map;
-
 	const string OPEN = "Open";
 	const string CLOSE = "Close";
 	const string SAVE = "Save";
@@ -16,9 +15,6 @@ namespace IGH
 	const string TRANSLATION = "Translate";
 	const string ROTATION = "Rotate";
 	const string SCALE = "Scale";
-
-	const string TYPE = "Type";
-
 
 	const string FBX = "fbx";
 	const string OBJ = "obj";
@@ -39,29 +35,76 @@ namespace IGH
 	const string MODEL = "Model";
 	const string MATERIAL = "Material";
 	const string TEXTURE = "Texture";
-	const string BOSS = "Boss Enemy";
-	const string NORMALENEMY = "Normal Enemy";
+
 	const string COLOR = "Color";
 
-	const string BASECOLOR = "BaseColor";
-	const string SPECULARCOLOR = "SpecularColor";
-	const string SPECULARPOWER = "SpecularPower";
-	const string SPECULARSTRENGTH = "SpecularStrength";
-	const string ROUGHNESS = "Roughness";
+	// Tags
+	const string NORMALENEMY = "Normal Enemy";
+	const string BOSS = "Boss Enemy";
+	const string TORCH = "Torch";
 
 	const string DEFAULTMATERIAL = "DefaultMaterial";
+	const string PARTICLE = "Particle";
+
+	class ImguiTypes {
+
+	public:
 
 
+		const char* TAGS[5] = { "Light","Model","Enemy", "Weapon","Chest" };
+		const char* PARTICLETAG[1] = { "Torch" };
 
-	static const char* TAGS[] = { "Light","Model","Enemy", "Weapon","Chest"};
 
-	static const char* ROOMTHEME[] = { "Normal Dungeon", "Skeleton", "Gothic", "Aztec" };
-	static const char* ROOMTYPE[] = { "Straight", "Bend", "T Junction" ,"Four Way", "None" };
-	static const char* SPECIALROOM[] = { "Normal", "Entrance", "Exit", "Boss", "Arena", "Item" };
-	static const char* HITBOXTYPE[] = { "None","Static", "Dynamic" };
-	static const char* ENEMYTYPE[] = { "Normal Enemy", "Boss Enemy" };
-	static const char* ModelType[] = { "Prop", "Walls" };
-	static const char* TOOLS[] = { "Move","Rotate","Scale" };
+		const char* HITBOXTYPE[3] = { "None","Static", "Dynamic" };
+		const char* ENEMYTYPE[2] = { "Normal Enemy", "Boss Enemy" };
+		const char* ModelType[2] = { "Prop", "Walls" };
+		const char* TOOLS[3] = { "Move","Rotate","Scale" };
+
+		const char* SPECIALROOM[6] = { "None", "Entrance", "Exit", "Boss", "Arena", "Item" };
+		int SPECIALROOMVALUE[6] ={0,1,2,3,4,5};
+
+		const char* ROOMTYPE[5] = { "End", "Straight", "Bend", "T Junction" ,"Four Way" };
+		int ROOMTYPEVALUE[5] = { 1	,101		,11			,1011		,1111 };
+
+		const char* ROOMTHEME[4] = { "Normal Dungeon", "Skeleton", "Gothic", "Aztec" };
+		int ROOMTHEMEVALUE[4] = { 0,1,2,3};
+
+		int GetRoomTypeValue(int input)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				if (ROOMTYPEVALUE[i] == input)
+				{
+					return i;
+				}
+			}
+		}
+
+		int GetRoomThemeValue(int input)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				if (ROOMTHEMEVALUE[i] == input)
+				{
+					return i;
+				}
+			}
+		}
+
+		int GetRoomSpecialValue(int input)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				if (SPECIALROOMVALUE[i] == input)
+				{
+					return i;
+				}
+			}
+		}
+
+	};
+
+
 
 	struct MatTexName
 	{
