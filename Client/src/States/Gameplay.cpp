@@ -96,7 +96,7 @@ void Gameplay::Initialize()
 	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 
 	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Models/Wall/sampledDiffuseColor.png"));
-	reimubeMat.LoadeAndSetNormalMap(AEN_RESOURCE_DIR("NormalMapTEsting/Brick_NormalMap.jpg"));
+	reimubeMat.LoadeAndSetNormalMap(AEN_RESOURCE_DIR("Models/Wall/WallNormal.png"));
 	reimubeMat["InnerEdgeThickness"] = 0;
 	reimubeMat["OuterEdgeThickness"] = 0;
 
@@ -203,13 +203,14 @@ void Gameplay::Initialize()
 
 	m_skullPile = &Aen::EntityHandler::CreateEntity();
 	m_skullPile->AddComponent<Aen::MeshInstance>();
-	m_skullPile->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
+	m_skullPile->GetComponent<Aen::MeshInstance>().SetMesh(skullPile);
 	m_skullPile->GetComponent<Aen::MeshInstance>().SetMaterial(reimubeMat);
-	m_skullPile->AddComponent<Aen::RigidBody>();
-	m_skullPile->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
-	m_skullPile->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
-	m_skullPile->SetPos(7.f, 2.f, 4.f);
-	m_skullPile->SetScale(1.f);
+	//m_skullPile->AddComponent<Aen::RigidBody>();
+	//m_skullPile->GetComponent<Aen::RigidBody>().SetGeometry(Aen::GeometryType::CUBE, Aen::Vec3f(2.f, 10.f, 176.f));
+	//m_skullPile->GetComponent<Aen::RigidBody>().SetRigidType(Aen::RigidType::STATIC);
+	m_skullPile->SetPos(7.f, 5.f, 4.f);
+	
+	//m_skullPile->SetScale(1.f);
 
 	// ------ Level Importer ------ //
 	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
@@ -247,6 +248,9 @@ void Gameplay::Initialize()
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
 
 void Gameplay::Update(const float& deltaTime) {
+
+	//m_skullPile->Rotate(0, 1, 0);
+	m_skullPile->SetScale(2.f);
 
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
 		float hp = (m_hp - m_player.GetHealth());

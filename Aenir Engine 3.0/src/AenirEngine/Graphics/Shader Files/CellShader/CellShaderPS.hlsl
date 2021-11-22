@@ -59,7 +59,8 @@ struct Light {
 
 struct PS_Input {
 	float4 pos : SV_Position;
-	float3x3 tbn : TBN;
+	float3 normal : NORMAL;
+	float3 tangent : TANGENT;
 	float2 uv : TEXCOORD;
 	float3 worldPos : WORLD_POSITION;
 };
@@ -96,7 +97,11 @@ PS_Output main(PS_Input input) : SV_Target0 {
 	float3 normalM = normalize(Aen_NormalMap.Sample(wrapSampler, input.uv).rgb * 2.f - 1.f);
 	float3 emissionM = Aen_EmissionMap.Sample(wrapSampler, input.uv);
 
-	float3 normal = (useNormal) ? float4(mul(normalM, input.tbn), 1.f) : float4(normalize(input.tbn._m20_m21_m22), 1.f);
+	float3 binormal = normalize(cross(input.tangent, input.normal));
+
+	float3x3 TBN = float3x3(input.tangent, binormal, input.normal);
+
+	float3 normal = (useNormal) ? float4(mul(normalM, TBN), 1.f) : float4(normalize(input.normal), 1.f);
 	float3 ambient = shadowColor;
 
 
