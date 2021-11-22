@@ -72,7 +72,7 @@ void Options::Initialize()
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Back.png")); //0
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(400.f, 900);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 200.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 150.f);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Vsync", 128.f); //0

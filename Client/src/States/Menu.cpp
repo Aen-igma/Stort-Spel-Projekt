@@ -59,15 +59,15 @@ void MainMenu::Initialize()
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Play.png")); //0
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(400.f, 900);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 200.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 150.f);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Quit.png")); //1
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(1500.f, 900);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 200.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 150.f);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Options.png")); //2
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 900);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 200.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 150.f);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 	
 	//Text
