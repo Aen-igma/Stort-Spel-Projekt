@@ -98,6 +98,14 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
 
 
+#ifdef _DEBUG
+	if (Aen::Input::KeyPress(Aen::Key::SHIFT)) m_movementSpeed = 24.f;
+	else m_movementSpeed = 8.f;
+#endif // _DEBUG
+
+
+
+
 
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
 
