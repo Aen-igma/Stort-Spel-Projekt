@@ -23,6 +23,7 @@ using std::cout;
 using std::endl;
 using std::to_string;
 using std::unordered_map;
+using std::stoi;
 
 namespace Aen {
 
@@ -41,7 +42,9 @@ namespace Aen {
 		Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> m_entityList;
 
-		Aen::ImGuiImporter* imguiImporter;
+		Aen::ImGuiImporter* m_imguiImporter;
+
+		IGH::ImguiTypes m_imguiTypes;
 
 		// Display in scene list
 		vector<string> m_itemList;
@@ -55,9 +58,6 @@ namespace Aen {
 		unordered_map< size_t, IGH::ModelContainer> m_modelMap;
 		unordered_map< size_t, Aen::Entity*> m_lightMap;
 		vector<IGH::MatTexName> m_materialList;
-
-
-
 
 		int m_selectedEntity = 0;
 
@@ -85,8 +85,6 @@ namespace Aen {
 		float m_outerFalloff = 0;
 		float m_rimLightIntensity = 0;
 		float m_rimLightSize = 0;
-
-
 		
 		ImGui::FileBrowser m_fileDialog;
 
@@ -98,12 +96,11 @@ namespace Aen {
 		bool m_createEnemyWindowActive = false;
 		bool m_createMaterialActive = false;
 		bool m_createParticleWindowActive = false;
-
+		bool m_imported = false;
 		// Counters
 		unsigned int m_enemyCount = 0;
 		int m_entityCount = 0;
 		int m_lightCount = 0;
-		int m_OriginalCount = 0;
 
 		void print(string input);
 
@@ -153,6 +150,8 @@ namespace Aen {
 		void AssetWindow();
 		void ColorWheel();
 		void PropertyWindow();
+
+		// Only delete works
 		void ToolWindow();
 		void SaveWindow();
 		void EnemyCreateWindow();

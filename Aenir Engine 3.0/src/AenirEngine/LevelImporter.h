@@ -134,7 +134,7 @@ namespace AenIMP
 		void ReadFromFile(string filePath);
 
 		// Opens a binary file at input [filepath].
-		void OpenFile(string filePath);
+		bool OpenFile(string filePath);
 
 		// Closes the currently opened binary file.
 		void CloseFile();
