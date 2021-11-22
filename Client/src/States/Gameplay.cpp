@@ -9,6 +9,7 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_reimube1);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
+	Aen::EntityHandler::RemoveEntity(*m_chest);
 	//Aen::EntityHandler::RemoveEntity(*m_wall);
 	
 	for (auto& b : *m_levelImporter.GetEntityList()) {
@@ -74,6 +75,8 @@ void Gameplay::Initialize()
 	rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
+	Aen::Mesh& chest = Aen::Resource::CreateMesh("Chest");
+	chest.Load(AEN_RESOURCE_DIR("chest.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
@@ -121,7 +124,10 @@ void Gameplay::Initialize()
 	//m_plane->AddComponent<Aen::MeshInstance>();
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
-
+	m_chest = &Aen::EntityHandler::CreateEntity();
+	m_chest->AddComponent<Aen::MeshInstance>();
+	m_chest->GetComponent<Aen::MeshInstance>().SetMesh(chest);
+	m_chest->SetPos(0.f, 0.f, 5.f);
 
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	m_reimube1->AddComponent<Aen::MeshInstance>();
@@ -141,7 +147,6 @@ void Gameplay::Initialize()
 	std::vector<string> levelPaths;
 
 	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
-
 
 	m_levelGenerator.AddLoadedToGeneration();
 
@@ -196,17 +201,17 @@ void Gameplay::Initialize()
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
 
 void Gameplay::Update(const float& deltaTime) {
-
+	
+	wstringstream potionNr;
+	potionNr << m_player.GetPotionNr();
 
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
-		wstringstream potionNr;
 		float hp = (m_hp - m_player.GetHealth());
-		potionNr << m_player.GetPotionNr();
 
 		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(hp * 2.f, 0);
-		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
 		m_hp = m_player.GetHealth();
 	}
+	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));

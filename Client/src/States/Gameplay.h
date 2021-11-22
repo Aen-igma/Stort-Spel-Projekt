@@ -28,6 +28,7 @@ private:
 
     Aen::Entity* m_UI;
     Aen::Entity* m_wall;
+    Aen::Entity* m_chest;
 
     Player m_player;
     bool m_beatBoss;
