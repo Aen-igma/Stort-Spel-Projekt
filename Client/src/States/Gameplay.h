@@ -30,6 +30,8 @@ private:
     Aen::Entity* m_wall;
 
     Player m_player;
+    NecroBoss m_skeleBoss;
+
     bool m_beatBoss;
 
     Aen::ImGuiImporter m_levelImporter;
