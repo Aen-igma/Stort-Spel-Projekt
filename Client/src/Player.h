@@ -53,6 +53,7 @@ private:
 
 	float m_health;
 	float m_potion;
+	int m_potionCap;
 	int m_nrPotion;
 
 	Aen::Entity* m_hurtbox;

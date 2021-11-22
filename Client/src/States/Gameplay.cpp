@@ -57,6 +57,11 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(150.f, 150.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
+	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
+
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	// ------------------------ Setup Directional Light ------------------------- //
@@ -128,6 +133,7 @@ void Gameplay::Initialize()
 	m_chest->AddComponent<Aen::MeshInstance>();
 	m_chest->GetComponent<Aen::MeshInstance>().SetMesh(chest);
 	m_chest->SetPos(0.f, 0.f, 5.f);
+	m_chest->SetScale(0.8f);
 
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	m_reimube1->AddComponent<Aen::MeshInstance>();
@@ -231,10 +237,10 @@ void Gameplay::Update(const float& deltaTime) {
 		SetWin(false);
 		State::SetState(States::Gameover);
 	}
-	if (m_enemyQueue.empty()) {
-		SetWin(true);
-		State::SetState(States::Gameover);
-	}
+	//if (m_enemyQueue.empty()) {
+	//	SetWin(true);
+	//	State::SetState(States::Gameover);
+	//}
 
 	#ifdef _DEBUG
 		if(Aen::Input::KeyDown(Aen::Key::J))
