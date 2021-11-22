@@ -303,17 +303,6 @@ namespace Aen {
 		
 
 		//----------------------ANIMATION DATA--------------------------//
-		/*aiAnimation* ani = animation->mAnimations[0];
-
-		if (ani->mTicksPerSecond != 0.0f)
-			m_TicksPerSecond = ani->mTicksPerSecond;
-		else
-			m_TicksPerSecond = 1;
-
-		m_Duration = ani->mDuration * ani->mTicksPerSecond;*/
-
-		/*Animation animation;
-		Bones skeleton;*/
 
 	}
 
