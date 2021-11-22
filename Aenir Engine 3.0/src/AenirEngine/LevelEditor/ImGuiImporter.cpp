@@ -403,8 +403,8 @@ namespace Aen
 
 
 			propertiesArray[0] = to_string(m_imguiTypes.GetRoomTypeValue(room->type));
-			propertiesArray[1] = to_string(room->special);
-			propertiesArray[2] = to_string(room->theme);
+			propertiesArray[1] = to_string(m_imguiTypes.GetRoomSpecialValue(room->special));
+			propertiesArray[2] = to_string(m_imguiTypes.GetRoomThemeValue(room->theme));
 			propertiesArray[3] = to_string(room->probability);
 			propertiesArray[4] = to_string(room->size);
 		}

@@ -54,18 +54,20 @@ namespace IGH
 		const char* TAGS[5] = { "Light","Model","Enemy", "Weapon","Chest" };
 		const char* PARTICLETAG[1] = { "Torch" };
 
-		const char* ROOMTHEME[5] = { "Normal Dungeon", "Skeleton", "Gothic", "Aztec" };
-		const char* ROOMTYPE[5] = { "End", "Straight", "Bend", "T Junction" ,"Four Way" };
 
-		const char* SPECIALROOM[6] = { "None", "Entrance", "Exit", "Boss", "Arena", "Item" };
 		const char* HITBOXTYPE[3] = { "None","Static", "Dynamic" };
 		const char* ENEMYTYPE[2] = { "Normal Enemy", "Boss Enemy" };
 		const char* ModelType[2] = { "Prop", "Walls" };
 		const char* TOOLS[3] = { "Move","Rotate","Scale" };
 
+		const char* SPECIALROOM[6] = { "None", "Entrance", "Exit", "Boss", "Arena", "Item" };
+		int SPECIALROOMVALUE[6] ={0,1,2,3,4,5};
 
+		const char* ROOMTYPE[5] = { "End", "Straight", "Bend", "T Junction" ,"Four Way" };
 		int ROOMTYPEVALUE[5] = { 1	,101		,11			,1011		,1111 };
-		int ROOMTHEMEVALUE[5] = { 1,2,3,4,5 };
+
+		const char* ROOMTHEME[4] = { "Normal Dungeon", "Skeleton", "Gothic", "Aztec" };
+		int ROOMTHEMEVALUE[4] = { 0,1,2,3};
 
 		int GetRoomTypeValue(int input)
 		{
@@ -83,6 +85,17 @@ namespace IGH
 			for (int i = 0; i < 5; i++)
 			{
 				if (ROOMTHEMEVALUE[i] == input)
+				{
+					return i;
+				}
+			}
+		}
+
+		int GetRoomSpecialValue(int input)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				if (SPECIALROOMVALUE[i] == input)
 				{
 					return i;
 				}
