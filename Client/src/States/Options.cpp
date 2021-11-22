@@ -56,11 +56,11 @@ void Options::Initialize()
 
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"checkbox.png")); //1
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(1100.f, 100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(150.f, 150.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(50.f, 50.f);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"checkbox.png")); //2
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(1300.f, 100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(150.f, 150.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(50.f, 50.f);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"check.png")); //3
 	if (Aen::GlobalSettings::GetVSync())
