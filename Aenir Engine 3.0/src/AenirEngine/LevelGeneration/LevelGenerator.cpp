@@ -471,7 +471,6 @@ namespace Aen
 	{
 		bool bossRoomPlaced = false;
 		Vec2i entrancePos;
-		unsigned char type = 1;
 
 		for (int y = 0; y < mapSize; y++) {
 			for (int x = 0; x < mapSize; x++) {
@@ -480,6 +479,7 @@ namespace Aen
 				}
 			}
 		}
+
 		for (int y = 0; y < mapSize; y++) {
 
 			for (int x = 0; x < mapSize; x++) {
@@ -520,6 +520,11 @@ namespace Aen
 		}
 	}
 
+	LevelGenerator::~LevelGenerator()
+	{
+
+	}
+
 	const Room* LevelGenerator::GetMapPointer()
 	{
 		return *map;
@@ -536,7 +541,7 @@ namespace Aen
 		temp.m_roomSpecial = SpecialRoom::NONE;
 		temp.m_roomTheme = RoomTheme::PLACEHOLDER;
 		temp.connectionDirections = 101;
-		temp.mptr_mesh = &cube;
+		//temp.mptr_modelVector = &cube;
 		AddRoomToGeneration(temp);
 		temp.connectionDirections = 11;
 		AddRoomToGeneration(temp);
@@ -552,16 +557,17 @@ namespace Aen
 	}
 
 
-	void LevelGenerator::constructRoom(Entity** container, Vec2i pos)
+	void LevelGenerator::constructRoom(Vec2i pos)
 	{
 		m_handler.LoadLevel(map[pos.x][pos.y].mptr_parent, (Vec2f(pos) * roomDimension) - m_mapOrigin, map[pos.x][pos.y].rotation);
+		map[pos.x][pos.y].mptr_modelVector = &map[pos.x][pos.y].mptr_parent->GetModelVector();
 	}
 
 
-	void LevelGenerator::SpawnRoom(Entity** container, Vec2i pos)
+	void LevelGenerator::SpawnRoom(Vec2i pos)
 	{
 		if (map[pos.x][pos.y].m_present) {
-			constructRoom(container, pos);
+			constructRoom(pos);
 		}
 	}
 
@@ -570,7 +576,7 @@ namespace Aen
 		//m_handler.GetImporterPtr()->ReadFromFile(filePath);
 	}
 
-	inline void LevelGenerator::LoadMutipleRoomFiles(const std::vector<string>& filePaths)
+	inline void LevelGenerator::LoadMutipleRoomFiles()
 	{
 		m_handler.ReadAllFilesFromResourceFolder();
 	}
@@ -861,7 +867,7 @@ namespace Aen
 		m_roomSpecial = SpecialRoom::NONE;
 		m_roomIndex = MAXUINT16;
 
-		mptr_mesh = nullptr;
+		mptr_modelVector = nullptr;
 		mptr_parent = nullptr;
 
 		//connection location

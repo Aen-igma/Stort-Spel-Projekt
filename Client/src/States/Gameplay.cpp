@@ -137,9 +137,7 @@ void Gameplay::Initialize()
 	//m_levelImporter.import(path);
 
 	// ------------------- Procedural generation testing staging grounds ------- //
-	std::vector<string> levelPaths;
-
-	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
+	m_levelGenerator.LoadMutipleRoomFiles();
 
 
 	m_levelGenerator.AddLoadedToGeneration();
@@ -156,7 +154,7 @@ void Gameplay::Initialize()
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
-			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
