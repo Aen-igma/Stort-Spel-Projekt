@@ -176,40 +176,42 @@ void Gameplay::Initialize()
 	m_pot->AddComponent<Aen::MeshInstance>();
 	m_pot->GetComponent<Aen::MeshInstance>().SetMesh(pot);
 	m_pot->GetComponent<Aen::MeshInstance>().SetMaterial(potMat);
-	m_pot->SetPos(2.f, 2.f, 2.f);
+	m_pot->SetPos(-12.f, 2.f, 2.f);
 
 	m_torch = &Aen::EntityHandler::CreateEntity();
 	m_torch->AddComponent<Aen::MeshInstance>();
 	m_torch->GetComponent<Aen::MeshInstance>().SetMesh(torch);
 	m_torch->GetComponent<Aen::MeshInstance>().SetMaterial(torchMat);
-	m_torch->SetPos(-2.f, 2.f, -2.f);
+	m_torch->SetPos(-12.f, 2.f, -2.f);
 
 	m_healingPot = &Aen::EntityHandler::CreateEntity();
 	m_healingPot->AddComponent<Aen::MeshInstance>();
 	m_healingPot->GetComponent<Aen::MeshInstance>().SetMesh(healingPot);
 	m_healingPot->GetComponent<Aen::MeshInstance>().SetMaterial(healingPotMat);
 	m_healingPot->SetScale(0.3f, 0.3f, 0.3f);
-	m_healingPot->SetPos(-4.f, 2.f, -4.f);
+	m_healingPot->SetPos(-12.f, 2.f, -4.f);
 
 	m_skelLight = &Aen::EntityHandler::CreateEntity();
 	m_skelLight->AddComponent<Aen::MeshInstance>();
 	m_skelLight->GetComponent<Aen::MeshInstance>().SetMesh(skelLight);
 	m_skelLight->GetComponent<Aen::MeshInstance>().SetMaterial(skelLightMat);
-	m_skelLight->SetPos(-4.f, 1.f, 4.f);
+	m_skelLight->SetPos(-12.f, 1.f, 6.f);
 
 	m_door = &Aen::EntityHandler::CreateEntity();
 	m_door->AddComponent<Aen::MeshInstance>();
 	m_door->GetComponent<Aen::MeshInstance>().SetMesh(door);
 	m_door->GetComponent<Aen::MeshInstance>().SetMaterial(doorMat);
 	m_door->SetScale(0.5f, 0.5f, 0.5f);
-	m_door->SetPos(5.f, 4.f, 5.f);
+	m_door->SetPos(-12.f, 4.f, 12.f);
+	m_door->SetRot(0.f, 90.f, 0.f);
 
 	m_chest = &Aen::EntityHandler::CreateEntity();
 	m_chest->AddComponent<Aen::MeshInstance>();
 	m_chest->GetComponent<Aen::MeshInstance>().SetMesh(chest);
 	m_chest->GetComponent<Aen::MeshInstance>().SetMaterial(chestMat);
 	m_chest->SetScale(0.5f, 0.5f, 0.5f);
-	m_chest->SetPos(6.f, 2.f, 6.f);
+	m_chest->SetPos(-12.f, 2.f, 16.f);
+	m_chest->SetRot(0.f, -90.f, 0.f);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();
@@ -257,7 +259,7 @@ void Gameplay::Initialize()
 	m_reimube4->SetPos(-22.f, 5.f, -65.f);
 
 	Aen::Animation& testAnim = Aen::Resource::CreateAnimation("TimDab");
-	testAnim.LoadAnimation("AnimWave.fbx");
+	testAnim.LoadAnimation("AnimWaveNew.fbx");
 	
 	Aen::Entity* testAnimObject = &Aen::EntityHandler::CreateEntity();
 	testAnimObject->AddComponent<Aen::Animator>();

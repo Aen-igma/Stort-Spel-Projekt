@@ -51,7 +51,9 @@ namespace Aen {
 	void RecursiveNodeProcess(aiNode* node) {
 		ai_nodes.emplace_back(node);
 		for (int i = 0; i < node->mNumChildren; i++) {
-			RecursiveNodeProcess(node->mChildren[i]);
+			if (node->mNumChildren > 0) {
+				RecursiveNodeProcess(node->mChildren[i]);
+			}
 		}
 	}
 
@@ -116,6 +118,7 @@ namespace Aen {
 			}
 			//bone.localMatrix = nodeBoneArray[i]->mTransformation;
 			// 
+
 			// --------- LOCAL MATRIX ----------- //
 			bone.localMatrix.a11 = nodeBoneArray[i]->mTransformation.a1; bone.localMatrix.a12 = nodeBoneArray[i]->mTransformation.a2;
 			bone.localMatrix.a13 = nodeBoneArray[i]->mTransformation.a3; bone.localMatrix.a14 = nodeBoneArray[i]->mTransformation.a4;
@@ -128,6 +131,7 @@ namespace Aen {
 
 			bone.localMatrix.a41 = nodeBoneArray[i]->mTransformation.d1; bone.localMatrix.a42 = nodeBoneArray[i]->mTransformation.d2;
 			bone.localMatrix.a43 = nodeBoneArray[i]->mTransformation.d3; bone.localMatrix.a44 = nodeBoneArray[i]->mTransformation.d4;
+			
 
 			// --------- OFFSET MATRIX ----------- //
 			bone.offsetMatrix.a11 = mesh->mBones[i]->mOffsetMatrix.a1; bone.offsetMatrix.a12 = mesh->mBones[i]->mOffsetMatrix.a2; 
@@ -252,7 +256,7 @@ namespace Aen {
 		//m_boneArray.emplace_back(rootBone);
 		FindRootBone(rootBone, animation, m_boneArray);
 		
-		globalInverseTransformMatrix.a11 = animation->mRootNode->mTransformation.a1; globalInverseTransformMatrix.a12 = animation->mRootNode->mTransformation.a2;
+		/*globalInverseTransformMatrix.a11 = animation->mRootNode->mTransformation.a1; globalInverseTransformMatrix.a12 = animation->mRootNode->mTransformation.a2;
 		globalInverseTransformMatrix.a13 = animation->mRootNode->mTransformation.a3; globalInverseTransformMatrix.a14 = animation->mRootNode->mTransformation.a4;
 
 		globalInverseTransformMatrix.a21 = animation->mRootNode->mTransformation.b1; globalInverseTransformMatrix.a22 = animation->mRootNode->mTransformation.b2;
@@ -264,7 +268,7 @@ namespace Aen {
 		globalInverseTransformMatrix.a41 = animation->mRootNode->mTransformation.d1; globalInverseTransformMatrix.a42 = animation->mRootNode->mTransformation.d2;
 		globalInverseTransformMatrix.a43 = animation->mRootNode->mTransformation.d3; globalInverseTransformMatrix.a44 = animation->mRootNode->mTransformation.d4;
 
-		globalInverseTransformMatrix.Inverse();
+		globalInverseTransformMatrix.Inverse();*/
 		boneCount = animation->mMeshes[0]->mNumBones;
 
 		RecursiveNodeProcess(animation->mRootNode);

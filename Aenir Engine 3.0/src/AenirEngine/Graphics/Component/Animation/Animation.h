@@ -47,7 +47,7 @@ namespace Aen {
 		Mat4f offsetMatrix;			// Inverse bind pose
 		//Mat4f transformRelParent;
 		//std::vector<Bones> children = {};
-		KeyFrameData keyFrameInfo;
+		//KeyFrameData keyFrameInfo;
 	};
 
 	

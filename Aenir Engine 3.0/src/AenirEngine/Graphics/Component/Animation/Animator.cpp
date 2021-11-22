@@ -13,10 +13,11 @@ namespace Aen {
 				GetAnimation(anim);
 
 				std::vector<Mat4f> localTran(animation->m_boneArray.size());
+				//std::vector<Mat4f> parentTran(animation->m_boneArray.size());
 				std::vector<Mat4f> modelTran(animation->m_boneArray.size());
 
 				for (int i = 0; i < animation->m_boneArray.size(); i++) {
-					localTran[i] = anim[i].Transposed() * animation->m_boneArray[i].localMatrix ;
+					localTran[i] = anim[i].Transposed() * animation->m_boneArray[i].localMatrix;
 				}
 
 				modelTran[0] = localTran[0];
@@ -27,7 +28,7 @@ namespace Aen {
 				}
 
 				for (int i = 0; i < animation->m_boneArray.size(); i++) {
-					animation->m_finalMatrix.GetData(i) =   animation->m_boneArray[i].offsetMatrix.Transposed() * modelTran[i].Transposed();
+					animation->m_finalMatrix.GetData(i) = modelTran[i] * animation->m_boneArray[i].offsetMatrix;
 				}
 
 				animation->m_finalMatrix.UpdateBuffer();
