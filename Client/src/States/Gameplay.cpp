@@ -161,17 +161,17 @@ void Gameplay::Initialize()
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
-			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+			//m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
-				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+				//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
 		}
 	}
 	//m_player.GetEntity()->SetPos(playerStartPos);
 
 	//---------ENEMIES----------//
-	int numEnemies = 10;
+	int numEnemies = 1;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
@@ -227,11 +227,14 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
 
-	if(m_player.GetHealth() <= 0.f)
+	if (m_player.GetHealth() <= 0.f) {
+		SetWin(false);
 		State::SetState(States::Gameover);
-
-	//if(m_enemyQueue.empty())
-	//	State::SetState(States::Victory);
+	}
+	if (m_enemyQueue.empty()) {
+		SetWin(true);
+		State::SetState(States::Gameover);
+	}
 
 	#ifdef _DEBUG
 		if(Aen::Input::KeyDown(Aen::Key::J))
@@ -268,9 +271,10 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
-	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
+	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
+		//State::SetState(States::Gameover);
 		m_Window.Exit();
-
+	}
 	// ------------------------------------- States -------------------------------------- //
 	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)
 	{

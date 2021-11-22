@@ -58,9 +58,6 @@ void Client::ChangeState(const States& states)
 		case States::Gameover:
 			mp_state = AEN_NEW GameEnd(m_window);
 			break;
-		case States::Victory:
-			mp_state = AEN_NEW Victory(m_window);
-			break;
 	}
 
 	//if (mp_state && mp_state->GetCurrentState() != States::Gameplay)
