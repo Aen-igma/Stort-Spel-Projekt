@@ -62,8 +62,8 @@ Player::Player()
 	barMat.LoadeAndSetEmissionMap(AEN_RESOURCE_DIR("enemybar.png"));
 	//barMat["InnerEdgeThickness"] = 0;
 	barMat["GlowColor"] = Aen::Color::Red;
-	//barMat["InnerEdgeColor"] = Aen::Color::Red;
-	//barMat["OuterEdgeColor"] = Aen::Color::Red;
+	barMat["InnerEdgeColor"] = Aen::Color::Red;
+	barMat["OuterEdgeColor"] = Aen::Color::Yellow;
 
 	m_targetUI = &Aen::EntityHandler::CreateEntity();
 	m_targetUI->AddComponent<Aen::MeshInstance>();

@@ -163,7 +163,7 @@ void Gameplay::Initialize()
 			}
 		}
 	}
-	m_player.GetEntity()->SetPos(playerStartPos);
+	//m_player.GetEntity()->SetPos(playerStartPos);
 
 	//---------ENEMIES----------//
 	int numEnemies = 10;
