@@ -1,7 +1,7 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f),
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f), m_timer(0),
 	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
@@ -183,7 +183,7 @@ void Gameplay::Initialize()
 
 	// --------------------------- Setup Window --------------------------------- //
 
-	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.6f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.6f));
+	//m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.6f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.7f));
 	//Aen::WindowDesc wDesc;
 	//wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
 	//wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
@@ -203,13 +203,32 @@ void Gameplay::Update(const float& deltaTime) {
 	wstringstream potionNr;
 	potionNr << m_player.GetPotionNr();
 
-	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
+	if (m_player.GetHealth() > m_hp) { //ersätt collision med enemy i if satsen
+		float hp = (m_player.GetHealth() - m_hp);
+		m_timer += 1.f;
+
+		if (m_timer < hp) {
+			m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(-2.f, 0);
+		}
+		else {
+			m_timer = 0;
+			m_hp = m_player.GetHealth();
+		}
+	}
+	if (m_hp > m_player.GetHealth()) {
 		float hp = (m_hp - m_player.GetHealth());
-		
-		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture((hp * 2.f), 0);
-		m_hp = m_player.GetHealth();
+		m_timer += 1.f;
+
+		if (m_timer < hp) {
+			m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(2.f, 0);
+		}
+		else {
+			m_timer = 0;
+			m_hp = m_player.GetHealth();
+		}
 	}
 	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
+	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -235,7 +254,7 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
 
-	if (m_player.GetHealth() <= 0.f) {
+	if (m_UI->GetComponent<Aen::UIComponent>().GetPicSize(0).x <= 0.f) {
 		SetWin(false);
 		State::SetState(States::Gameover);
 	}

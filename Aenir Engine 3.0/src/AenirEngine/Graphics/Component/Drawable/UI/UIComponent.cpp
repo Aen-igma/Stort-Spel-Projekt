@@ -115,6 +115,11 @@ namespace Aen {
         m_picture.UpdatePicture(width, indX);
     }
 
+    Vec2f UIComponent::GetPicSize(int indX)
+    {
+        return m_picture.GetPicSize(m_picture.GetData().at(indX).rect);
+    }
+
     bool UIComponent::Check(int index)
     {
         return m_picture.Intersect(index);

@@ -43,6 +43,7 @@ namespace Aen {
 		void SetPicSize(float width, float height);
 		void SetPicSize(float width, float height, int indX);
 		void UpdatePicture(float width, int indX);
+		Vec2f GetPicSize(int indX);
 		bool Check(int index);
 		
 		friend class ComponentHandler;
