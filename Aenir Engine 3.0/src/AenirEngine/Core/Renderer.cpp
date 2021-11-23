@@ -149,13 +149,21 @@ namespace Aen {
 				RenderSystem::SetDepthStencilState(m_offStencil, 0xFF);
 				
 				// Pre Depth Pass
+				
+				for (auto& k : m_drawTable[i])
+				{
+					k->DepthDraw(*this);
+				}
 
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, i);
-
+				/*for (auto& k : ComponentHandler::m_meshLayer[i])
+				{
+					k.second->DepthDraw(*this, i);
+				}*/
+				
 				// Light Cull Pass
-
+				
 				RenderSystem::UnBindRenderTargets(1u);
-
+				
 				RenderSystem::BindShaderResourceView<CShader>(0u, m_frustumGrid);
 				m_sbLight.BindSRV<CShader>(1u);
 				RenderSystem::BindShaderResourceView<CShader>(2u, m_depthMap);
@@ -174,8 +182,19 @@ namespace Aen {
 
 				// Draw pass
 
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, i);
+				for (auto& k : m_drawTable[i])
+				{
+					k->Draw(*this);
+				}
 
+				/*for (auto& k : ComponentHandler::m_meshLayer[i])
+				{
+					k.second->Draw(*this, i);
+				}*/
+
+			
+				m_drawTable[i].clear();
+				
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}
 
@@ -195,5 +214,19 @@ namespace Aen {
 		// Present
 		RenderSystem::Present();
 		RenderSystem::ClearState();
+	}
+
+	void Renderer::Culling()
+	{
+		for (uint32_t i = 0u; i < 7u; i++)
+		{
+			for (auto& k : ComponentHandler::m_meshLayer[i])
+			{
+				if (k.second->FrustumCull(*this))
+				{
+					m_drawTable[i].emplace_back(k.second);
+				}
+			}
+		}
 	}
 }

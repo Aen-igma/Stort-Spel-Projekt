@@ -238,3 +238,8 @@ void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	}
 #endif
 }
+
+bool Aen::OBBox::FrustumCull(Renderer& renderer)
+{
+	return false;
+}

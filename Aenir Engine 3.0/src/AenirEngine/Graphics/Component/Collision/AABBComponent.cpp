@@ -208,4 +208,8 @@ namespace Aen {
 			}
 			#endif
 	}
+	bool AABoundBox::FrustumCull(Renderer& renderer)
+	{
+		return false;
+	}
 }

@@ -60,6 +60,9 @@ namespace Aen {
 
 		void Initialize();
 		void Render();
+		void Culling();
+		
+		std::array<std::vector<Drawable*>, 7> m_drawTable;
 
 		Window& m_window;
 		
