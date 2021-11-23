@@ -57,7 +57,9 @@ namespace Aen {
 		inline void erase(const size_t& key){
 			for (int i = 0; i < m_storage.size(); i++) {
 				if (key == m_storage[i].first) {
+					//TODO: Swap with last element, and pop it
 					m_storage.erase(m_storage.begin() + i);
+					break;
 				}
 			}
 		};
@@ -464,6 +466,7 @@ namespace Aen {
 		static std::unordered_map<size_t, AABoundBox*> m_AABBs;
 		static std::unordered_map<size_t, OBBox*> m_OBBs;
 		static std::unordered_map<size_t, UIComponent*> m_UI;
+
 		static std::multimap<size_t, Light*> m_lights;
 		
 		static std::array<std::unordered_map<size_t, Drawable*>, 7> m_meshLayer;
