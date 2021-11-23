@@ -17,8 +17,8 @@ Player::Player()
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
-	//Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
-	//sword.Load(AEN_RESOURCE_DIR("SwordOffset.fbx"));
+	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
+	sword.Load(AEN_RESOURCE_DIR("SwordOffset.fbx"));
 
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
 	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
@@ -35,7 +35,7 @@ Player::Player()
 	m_player->SetPos(0.f, 1.2f, 0.f);
 
 	m_sword->AddComponent<Aen::MeshInstance>();
-	//m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
+	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
 	//m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);
 	m_sword->SetParent(*m_player);
 
@@ -80,12 +80,9 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		{
 			if (!Aen::Input::GPGetActive(0u)) {
 				m_camera->Rotate(
-					.5,
-					.5, 0);
-				/*m_camera->Rotate(
 					-(float)me.GetPos().y * m_mouseSense * deltaTime,
 					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
-					*/
+					
 			}
 		}
 		if (me.getInputType() == Aen::MouseEvent::SCROLL_UP) {
@@ -330,6 +327,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_targets.front().target->SetISTargeted(true);
 			}
 		}
+		 
+	
+		
+		
 	//}
 
 	if (!m_targets.empty() && lockedOn) { 

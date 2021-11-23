@@ -89,7 +89,7 @@ namespace Aen {
 			box.Transform(box, m.smMat);
 
 			if (GlobalSettings::GetMainCamera())
-				if (box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())); {
+				if (box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
 
 			// Mesh and Material
 
@@ -103,9 +103,9 @@ namespace Aen {
 						Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
 						if(pMaterial) {
 
-							RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
+							//RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 
-							RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
+							//RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
 							RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShader);
 
 							uint32_t* slots = pMaterial->m_pShaderModel->m_slots;
@@ -120,6 +120,8 @@ namespace Aen {
 
 								pMaterial->m_dBuffer.UpdateBuffer();
 								renderer.m_cbUseTexture.UpdateBuffer();
+
+								
 
 								if(slots[4] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<PShader>(slots[4]);
 								if(slots[5] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<PShader>(slots[5]);
@@ -145,12 +147,12 @@ namespace Aen {
 								RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
 								RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
 								RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
-								if(slots[12] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<CShader>(slots[12]);
-								if(slots[13] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<CShader>(slots[13]);
-								if(slots[14] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<CShader>(slots[14]);
-								if(slots[15] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<CShader>(slots[15]);
+								//if(slots[12] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<CShader>(slots[12]);
+								//if(slots[13] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<CShader>(slots[13]);
+								//if(slots[14] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<CShader>(slots[14]);
+								//if(slots[15] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<CShader>(slots[15]);
 								if(slots[16] != UINT_MAX)	renderer.m_sbLight.BindSRV<CShader>(slots[16]);
-								if(slots[17] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<CShader>(slots[17]);
+								//if(slots[17] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<CShader>(slots[17]);
 								if(slots[18] != UINT_MAX)	renderer.m_cbBGColor.BindBuffer<CShader>(slots[18]);
 
 								RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer);
@@ -182,7 +184,7 @@ namespace Aen {
 			box.Transform(box, m.smMat);
 
 			if (GlobalSettings::GetMainCamera())
-				if (box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())); {
+				if (box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);

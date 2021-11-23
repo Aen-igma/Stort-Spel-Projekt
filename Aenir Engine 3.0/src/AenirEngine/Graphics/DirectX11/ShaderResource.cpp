@@ -22,8 +22,8 @@ namespace Aen {
         
 
         stbi_set_flip_vertically_on_load(true);
-        int width = 0, height = 0, channels = 4;
-        unsigned char* image = stbi_load(dir.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+        int width, height;
+        unsigned char* image = stbi_load(dir.c_str(), &width, &height, nullptr, STBI_rgb_alpha);
 
         std::vector<unsigned char> tData;
         tData.resize(width * height * 4);

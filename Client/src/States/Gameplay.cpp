@@ -13,9 +13,9 @@ Gameplay::~Gameplay() {
 	//Aen::EntityHandler::RemoveEntity(*m_reimube4);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	
-	for (auto& b : *m_levelImporter.GetEntityList()) {
-		Aen::EntityHandler::RemoveEntity(*b);
-	}
+	//for (auto& b : *m_levelImporter.GetEntityList()) {
+	//	Aen::EntityHandler::RemoveEntity(*b);
+	//}
 
 	for (auto& d : m_enemyQueue) {
 		delete d;
@@ -65,9 +65,9 @@ void Gameplay::Initialize()
 	//wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
-
-	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
+	/*Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
+	
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 	Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
@@ -85,7 +85,7 @@ void Gameplay::Initialize()
 
 	planeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
 
 	// -------------------------- Setup Entities -------------------------------- //
 
@@ -186,11 +186,11 @@ void Gameplay::Initialize()
 
 	// ------ Level Importer ------ //
 	std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
-	m_levelImporter.import(path);
+	//m_levelImporter.import(path);
 
 
 	//---------ENEMIES----------//
-	int numEnemies = 1;
+	int numEnemies = 3;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {

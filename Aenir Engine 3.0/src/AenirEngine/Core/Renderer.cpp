@@ -38,7 +38,7 @@ namespace Aen {
 		//	if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
 		//		throw;
 
-		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32_FLOAT);
+		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R8G8B8A8_UNORM);
 		m_opaqueLayout.Create(m_opaqueVS);
 		m_UAVBackBuffer.Create(m_backBuffer);
 
@@ -137,6 +137,7 @@ namespace Aen {
 
 				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, i);
 
+
 				// Light Cull Pass
 
 				RenderSystem::UnBindRenderTargets(1u);
@@ -157,7 +158,8 @@ namespace Aen {
 				RenderSystem::UnBindShaderResources<CShader>(0u, 3u);
 
 				// Draw pass
-
+				RenderSystem::SetInputLayout(m_opaqueLayout);
+				RenderSystem::BindShader<VShader>(m_opaqueVS);
 				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, i);
 
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);

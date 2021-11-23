@@ -24,7 +24,7 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	m_rimuru->SetParent(*m_enemy);
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
-	m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
+	//m_enemy->GetComponent<Aen::CharacterController>().SetHeight(0.2f);
 	m_enemy->SetPos(pos);
 	m_health = 100.f;
 }
@@ -43,8 +43,8 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float dist = eDir.Magnitude();
 
-	/*if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
-		m_v.y = 0.f;*/
+	//if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
+		//m_v.y = 0.f;
 
 	//if(!m_eventQueue.empty()) {
 	//	if(m_eventQueue.front().duration > 0.f) {
@@ -70,7 +70,7 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	//	m_Dir = Aen::Lerp(m_Dir, eDir.Normalized(), 0.1f);
 	//	Aen::Vec2f nDir(m_Dir.x, m_Dir.z);
 	//	nDir = nDir.Normalized();
-	//	m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(nDir.x, 0.f, nDir.y) * 3.f * deltaTime, deltaTime);
+	//	//m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(nDir.x, 0.f, nDir.y) * 3.f * deltaTime, deltaTime);
 
 	//	static float d = 0.f;
 	//	if(m_targeted && player.IsAttacking() && !m_toggleAttacked) {
@@ -109,7 +109,7 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 void Rimuru::RandomCombatEvent(const float& deltaTime) {
 	EventData data;
 
-	switch(rand() % 2) {
+	/*switch(rand() % 2) {
 		case 0:
 		data.duration = rand() % 2 + 1;
 		data.function = [&](float& accell, const float& attackDuration) {};
@@ -122,28 +122,28 @@ void Rimuru::RandomCombatEvent(const float& deltaTime) {
 		break;
 	}
 
-	m_eventQueue.emplace_back(data);
+	m_eventQueue.emplace_back(data);*/
 }
 
 void Rimuru::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir) {
 	EventData data;
 
-	switch(rand() % 2) {
-		case 0:
-		data.duration = rand() % 3 + 3;
-		data.function = [&](float& accell, const float& attackDuration) {};
-		break;
-		case 1:
-		data.duration = rand() % 3 + 1;
-		data.function = [&](float& accell, const float& attackDuration) {
-			m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized() * 3.f * deltaTime, deltaTime);
+	//switch(rand() % 2) {
+	//	case 0:
+	//	data.duration = rand() % 3 + 3;
+	//	data.function = [&](float& accell, const float& attackDuration) {};
+	//	break;
+	//	case 1:
+	//	data.duration = rand() % 3 + 1;
+	//	data.function = [&](float& accell, const float& attackDuration) {
+	//		//m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized() * 3.f * deltaTime, deltaTime);
 
-			m_lDir = Aen::Lerp(m_lDir, Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized(), 0.03f);
-			float yaw = Aen::RadToDeg(std::atan2(m_lDir.x, m_lDir.z));
-			m_rimuru->SetRot(0.f, yaw + 180, 0.f);
-		};
-		break;
-	}
+	//		m_lDir = Aen::Lerp(m_lDir, Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized(), 0.03f);
+	//		float yaw = Aen::RadToDeg(std::atan2(m_lDir.x, m_lDir.z));
+	//		m_rimuru->SetRot(0.f, yaw + 180, 0.f);
+	//	};
+	//	break;
+	//}
 
-	m_eventQueue.emplace_back(data);
+	//m_eventQueue.emplace_back(data);
 }
