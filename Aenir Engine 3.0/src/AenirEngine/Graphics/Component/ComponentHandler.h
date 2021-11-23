@@ -81,8 +81,8 @@ namespace Aen {
 		inline void erase(const size_t& key){
 			for (int i = 0; i < m_storage.size(); i++) {
 				if (key == m_storage[i].first) {
-					//TODO: Swap with last element, and pop it
-					m_storage.erase(m_storage.begin() + i);
+					std::iter_swap(m_storage.begin() + i, m_storage.end());
+					m_storage.erase(m_storage.end());
 					break;
 				}
 			}
