@@ -20,9 +20,16 @@ namespace Aen {
 	private:
 		std::vector<std::pair<size_t, Component*>> m_storage;
 	public:
-		size_t& count(size_t key);
+		inline size_t count(const size_t& key){
+			for (auto k : m_storage) {
+				if (k.first == key) {
+					return 1;
+				}
+			}
+			return 0;
+		};
 
-		void emplace(size_t key, Component* val){
+		inline void emplace(const size_t& key, Component* val){
 			std::pair<size_t, Component*>* comp_ptr = nullptr;
 			for (auto& comp : m_storage) {
 				if (comp.first == key) {
@@ -38,7 +45,7 @@ namespace Aen {
 			}
 		};
 
-		Component* at(size_t key){
+		inline Component* at(const size_t& key){
 			for (auto& comp : m_storage) {
 				if (comp.first == key) {
 					return comp.second;
@@ -47,7 +54,17 @@ namespace Aen {
 			return nullptr;
 		};
 
-		void erase(size_t key);
+		inline void erase(const size_t& key){
+			for (int i = 0; i < m_storage.size(); i++) {
+				if (key == m_storage[i].first) {
+					m_storage.erase(m_storage.begin() + i);
+				}
+			}
+		};
+
+		inline size_t size() {
+			return m_storage.size();
+		};
 	};
 
 	class AEN_DECLSPEC ComponentHandler {
