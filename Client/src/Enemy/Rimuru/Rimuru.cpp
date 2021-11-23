@@ -147,11 +147,6 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	} else
 		m_hurting = false;
 
-
-	//float m_subHealth = 0;
-	//float m_timer = 0;
-	//bool m_hit = false;
-
 	if (m_hit) {
 
 		m_subHealth += deltaTime;
