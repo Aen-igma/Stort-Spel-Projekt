@@ -87,12 +87,33 @@ namespace Aen
 		m_UITextData.at(m_nr).rc.bottom = b;
 	}
 
+	void UITextHolder::setTextSize(float width, float height, int indX)
+	{
+		float l = getTextCenter(m_UITextData.at(indX).rc).x + (width / 2.0f);
+		float r = getTextCenter(m_UITextData.at(indX).rc).x - (width / 2.0f);
+		float b = getTextCenter(m_UITextData.at(indX).rc).y + (height / 2.0f);
+		float t = getTextCenter(m_UITextData.at(indX).rc).y - (height / 2.0f);
+
+		m_UITextData.at(indX).rc.left = l;
+		m_UITextData.at(indX).rc.right = r;
+		m_UITextData.at(indX).rc.top = t;
+		m_UITextData.at(indX).rc.bottom = b;
+	}
+
 	void Aen::UITextHolder::setTextPosition(float x, float y)
 	{
 		m_UITextData.at(m_nr).rc.left = x;
 		m_UITextData.at(m_nr).rc.right = x;
 		m_UITextData.at(m_nr).rc.top = y;
 		m_UITextData.at(m_nr).rc.bottom = y;
+	}
+
+	void UITextHolder::setTextPosition(float x, float y, int indX)
+	{
+		m_UITextData.at(indX).rc.left = x;
+		m_UITextData.at(indX).rc.right = x;
+		m_UITextData.at(indX).rc.top = y;
+		m_UITextData.at(indX).rc.bottom = y;
 	}
 
 	Vec2f Aen::UITextHolder::getTextCenter(D2D1_RECT_F& rect) const

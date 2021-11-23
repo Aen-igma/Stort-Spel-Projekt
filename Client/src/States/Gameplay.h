@@ -4,6 +4,7 @@
 #include "AenirEngine/ThirdParty/ImGui/imgui.h"
 #include "AenirEngine\Graphics\Component\EntityHandler.h"
 #include"../Enemy/Enemies.h"
+#include "../Actors/Chest.h"
 #include"AenirEngine\LevelEditor\ImGuiImporter.h"
 #include<functional>
 
@@ -28,9 +29,9 @@ private:
 
     Aen::Entity* m_UI;
     Aen::Entity* m_wall;
-    Aen::Entity* m_chest;
-
+ 
     Player m_player;
+    Chest chest;
     bool m_beatBoss;
 
     Aen::ImGuiImporter m_levelImporter;

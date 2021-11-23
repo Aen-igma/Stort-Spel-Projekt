@@ -53,9 +53,19 @@ namespace Aen {
         m_text.setTextSize(width,height);
     }
 
+    void UIComponent::SetTextSize(float width, float height, int indX)
+    {
+        m_text.setTextSize(width, height, indX);
+    }
+
     void UIComponent::SetTextPos(float x, float y)
     {
         m_text.setTextPosition(x, y);
+    }
+
+    void UIComponent::SetTextPos(float x, float y, int indX)
+    {
+        m_text.setTextPosition(x, y, indX);
     }
 
     void UIComponent::TextNr(int index, LPCWSTR text)

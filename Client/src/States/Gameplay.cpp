@@ -9,7 +9,6 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_reimube1);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
-	Aen::EntityHandler::RemoveEntity(*m_chest);
 	//Aen::EntityHandler::RemoveEntity(*m_wall);
 	
 	for (auto& b : *m_levelImporter.GetEntityList()) {
@@ -57,7 +56,7 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(150.f, 150.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //0
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //2
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
@@ -80,8 +79,6 @@ void Gameplay::Initialize()
 	rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
-	Aen::Mesh& chest = Aen::Resource::CreateMesh("Chest");
-	chest.Load(AEN_RESOURCE_DIR("chest.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
@@ -129,11 +126,6 @@ void Gameplay::Initialize()
 	//m_plane->AddComponent<Aen::MeshInstance>();
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
-	m_chest = &Aen::EntityHandler::CreateEntity();
-	m_chest->AddComponent<Aen::MeshInstance>();
-	m_chest->GetComponent<Aen::MeshInstance>().SetMesh(chest);
-	m_chest->SetPos(0.f, 0.f, 5.f);
-	m_chest->SetScale(0.8f);
 
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	m_reimube1->AddComponent<Aen::MeshInstance>();
@@ -191,13 +183,13 @@ void Gameplay::Initialize()
 
 	// --------------------------- Setup Window --------------------------------- //
 
-	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
-	Aen::WindowDesc wDesc;
-	wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
-	wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
-	wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
-	wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
-	m_Window.LoadSettings(wDesc);
+	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.6f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.6f));
+	//Aen::WindowDesc wDesc;
+	//wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
+	//wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
+	//wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
+	//wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
+	//m_Window.LoadSettings(wDesc);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
@@ -213,8 +205,8 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
 		float hp = (m_hp - m_player.GetHealth());
-
-		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(hp * 2.f, 0);
+		
+		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture((hp * 2.f), 0);
 		m_hp = m_player.GetHealth();
 	}
 	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
@@ -227,6 +219,16 @@ void Gameplay::Update(const float& deltaTime) {
 	// ---------------------------------- Enemies --------------------------------------- //
 
 	m_player.Update(m_enemyQueue, deltaTime);
+
+	chest.Update(deltaTime, m_player.GetEntity());
+	if (chest.GetNear()) {
+		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f, 2);
+		m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300.f, 2);
+	}
+	else {
+		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, 0.f, 2);
+	}
+
 
 	for(auto& i : m_enemyQueue)
 		i->Update(deltaTime, m_player);
