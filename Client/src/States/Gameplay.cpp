@@ -162,7 +162,7 @@ void Gameplay::Initialize()
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 		}
 	}
-	m_player.GetEntity()->SetPos(playerStartPos);
+	//m_player.GetEntity()->SetPos(playerStartPos);
 
 	//---------ENEMIES----------//
 	int numEnemies = 10;

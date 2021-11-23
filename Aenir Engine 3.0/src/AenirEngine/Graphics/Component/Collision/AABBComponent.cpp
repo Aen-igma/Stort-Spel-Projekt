@@ -210,6 +210,6 @@ namespace Aen {
 	}
 	bool AABoundBox::FrustumCull(Renderer& renderer)
 	{
-		return false;
+		return true;
 	}
 }
