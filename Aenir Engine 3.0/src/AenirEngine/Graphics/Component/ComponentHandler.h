@@ -21,8 +21,14 @@ namespace Aen {
 		std::vector<std::pair<size_t, Component*>> m_storage;
 	public:
 		inline size_t count(const size_t& key){
-			for (auto k : m_storage) {
+			/*for (auto k : m_storage) {
 				if (k.first == key) {
+					return 1;
+				}
+			}
+			return 0;*/
+			for (size_t i = 0; i < m_storage.size(); i++) {
+				if (m_storage[i].first == key) {
 					return 1;
 				}
 			}
@@ -31,7 +37,7 @@ namespace Aen {
 
 		inline void emplace(const size_t& key, Component* val){
 			std::pair<size_t, Component*>* comp_ptr = nullptr;
-			for (auto& comp : m_storage) {
+			/*for (auto& comp : m_storage) {
 				if (comp.first == key) {
 					comp_ptr = &comp;
 					break;
@@ -42,13 +48,31 @@ namespace Aen {
 			}
 			else {
 				comp_ptr->second = val;
+			}*/
+			for (size_t i = 0; i < m_storage.size(); i++) {
+				if (m_storage[i].first == key) {
+					comp_ptr = &m_storage[i];
+					break;
+				}
+			}
+			if (comp_ptr == nullptr) {
+				m_storage.push_back({ key, val });
+			}
+			else {
+				comp_ptr->second = val;
 			}
 		};
 
 		inline Component* at(const size_t& key){
-			for (auto& comp : m_storage) {
+			/*for (auto& comp : m_storage) {
 				if (comp.first == key) {
 					return comp.second;
+				}
+			}
+			return nullptr;*/
+			for (size_t i = 0; i < m_storage.size(); i++) {
+				if (m_storage[i].first == key) {
+					return m_storage[i].second;
 				}
 			}
 			return nullptr;
