@@ -26,8 +26,6 @@ namespace Aen {
 	{
 	private:
 
-
-
 		int typeValue[15] = {101,11,1011,1111,1,0,1,2,3,4,5,0,1,2,3};
 		string validType[15] = { "Straight","Bend","T Junction","Four Way", "None", "Normal","Entrance", "Exit", "Boss", "Arena", "Item", "Normal Dungeon", "Skeleton", "Gothic", "Aztec"};
 
@@ -44,6 +42,9 @@ namespace Aen {
 		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap,size_t& index);
 		void roomFunc(RoomStruct*& roomStruct, string array[]);
 		void textureFunc(TextureStruct*& textureStruct, string& textureFileName);
+		void materialFunc(MaterialStruct*& materialStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index);
+
+
 		int CheckValidType(string& check);
 
 	public:

@@ -49,13 +49,12 @@ namespace Aen {
 
         if(FAILED(pFactory6->EnumAdapterByGpuPreference(0, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(pAdapter.GetAddressOf())))) {
             pFactory2->EnumAdapters1(0, pAdapter.GetAddressOf());
-       }
+        }
 
         DXGI_ADAPTER_DESC1 desc;
         pAdapter->GetDesc1(&desc);
 
         D3D_FEATURE_LEVEL featureLvl[] = {
-            D3D_FEATURE_LEVEL_11_1,
             D3D_FEATURE_LEVEL_11_0
         };
 
@@ -64,8 +63,7 @@ namespace Aen {
         #ifdef _DEBUG
         flags |= D3D11_CREATE_DEVICE_DEBUG;
         #endif
-       
-
+        
         HRESULT hr = D3D11CreateDeviceAndSwapChain(
             pAdapter.Get(),
             D3D_DRIVER_TYPE_UNKNOWN,

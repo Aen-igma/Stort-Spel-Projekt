@@ -6,7 +6,8 @@ class Enemy;
 
 enum class EventType {
 	Dash,
-	Attack
+	Attack,
+	Wait
 };
 
 struct EventData {
@@ -15,11 +16,15 @@ struct EventData {
 	float damage;
 	EventType type;
 	std::function<void(float& accell, const float& attackDuration)> function;
+
+	EventData() :duration(0.f), accell(0.f), damage(0.f), type(), function() {}
 };
 
 struct TargetData {
 	float distance;
 	Enemy* target;
+
+	TargetData() :distance(0.f), target(nullptr) {}
 };
 
 class Player {
@@ -30,11 +35,13 @@ public:
 	void Update(std::deque<Enemy*>& e,const float& deltaTime);
 	Aen::Entity*& GetEntity();
 	Aen::Entity*& GetHurtBox();
+	Aen::Entity*& GetCamera();
 
 	void UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime);
 	void SubtractHealth(const float& damage);
 	void Move(const Aen::Vec3f& dir);
 	const float& GetHealth();
+	int GetPotionNr() const;
 
 	const bool IsAttacking();
 
@@ -45,11 +52,14 @@ private:
 	void AddEvent(EventData& event);
 
 	float m_health;
+	float m_potion;
+	int m_nrPotion;
 
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
 	Aen::Entity* m_camera;
 	Aen::Entity* m_sword;
+	Aen::Entity* m_targetUI;
 	Aen::Raycast m_ray;
 
 	float m_mouseSense;

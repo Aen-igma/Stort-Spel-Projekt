@@ -27,7 +27,8 @@ namespace Aen {
 		SPHERE,
 		CAPSULE,
 		PLANE,
-		CUBE
+		CUBE,
+		TRIANGLEMESH
 	};
 
 	enum class ForceMode {

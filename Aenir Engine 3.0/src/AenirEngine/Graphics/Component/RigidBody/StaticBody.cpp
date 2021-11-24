@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include"StaticBody.h"
+#include"../ComponentHandler.h"
 
 namespace Aen {
 
@@ -17,6 +18,8 @@ namespace Aen {
 
 		px::PxPlane plane(px::PxVec3(0.f, 0.f, 0.f), px::PxVec3(0.f, 1.f, 0.f));
 		mp_StaticBody = PxCreatePlane(*mp_LocalPhysics, plane, *mp_Material);
+		mp_StaticBody->setActorFlag(px::PxActorFlag::eDISABLE_GRAVITY, true);
+		mp_StaticBody->setActorFlag(px::PxActorFlag::eDISABLE_SIMULATION, true);
 		PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
 	}
 
@@ -56,7 +59,7 @@ namespace Aen {
 
 		switch(geometry) {
 			case StaticGeometryType::SPHERE: {
-				float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5;
+				float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5f;
 				px::PxSphereGeometry sphere(r);
 				mp_StaticBody = PxCreateStatic(*mp_LocalPhysics, t, sphere, *mp_Material);
 			} break;
@@ -76,6 +79,34 @@ namespace Aen {
 		}
 
 		PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
+	}
+
+	void StaticBody::SetBoundsToMesh(const bool& MakeTriangleMesh, const bool& insert) {
+
+		Vec3f bounds;
+		if(ComponentHandler::MeshInstanceExist(m_id))
+			if(ComponentHandler::GetMeshInstance(m_id).m_pMesh)
+				bounds.smVec = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_obb.Extents;
+
+		m_scale = bounds;
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		RemoveRigid();
+
+		if (MakeTriangleMesh)
+		{
+			m_gType = StaticGeometryType::TRIANGLEMESH;
+			px::PxTriangleMeshGeometry cookedTriangles = px::PxTriangleMeshGeometry(CookMesh(insert), px::PxMeshScale());
+			mp_StaticBody = px::PxCreateStatic(*mp_LocalPhysics, t, cookedTriangles, *mp_Material);
+			PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
+		}
+		else
+		{
+			m_gType = StaticGeometryType::CUBE;
+			px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.z * 0.5f);
+			mp_StaticBody = PxCreateStatic(*mp_LocalPhysics, t, cube, *mp_Material);
+			PhysicsHandler::GetInstance()->AddActor(mp_StaticBody);
+		}
+		
 	}
 
 
@@ -101,25 +132,65 @@ namespace Aen {
 	}
 
 	void StaticBody::SetPos(const Vec3f& pos) {
-		px::PxTransform t(pos.x, pos.y, pos.z);
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		t.p = px::PxVec3(pos.x, pos.y, pos.z);
 		mp_StaticBody->setGlobalPose(t);
 	}
 
 	void StaticBody::SetPos(const float& x, const float& y, const float& z) {
-		px::PxTransform t(px::PxVec3(x, y, z));
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		t.p = px::PxVec3(x, y, z);
 		mp_StaticBody->setGlobalPose(t);
 	}
 
 	void StaticBody::SetRot(const Vec3f& rot) {
 		Vec4f tempRot = EulerToQuat(rot);
-		px::PxTransform t(px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w));
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		t.q = px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w);
 		mp_StaticBody->setGlobalPose(t);
 	}
 
 	void StaticBody::SetRot(const float& p, const float& y, const float& r) {
 		Vec4f tempRot = EulerToQuat(p, y, r);
-		px::PxTransform t(px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w));
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		t.q = px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w);
 		mp_StaticBody->setGlobalPose(t);
+	}
+
+	px::PxTriangleMesh* StaticBody::CookMesh(const bool& insert)
+	{
+		std::vector<DirectX::XMFLOAT3> localvPos = ComponentHandler::GetMeshInstance(m_id).m_pMesh->GetvPos();
+		std::vector<uint32_t> localIndices = ComponentHandler::GetMeshInstance(m_id).m_pMesh->GetIndices();
+
+		px::PxTriangleMeshDesc meshDesc;
+		meshDesc.points.count = localvPos.size();
+		meshDesc.points.stride = sizeof(DirectX::XMFLOAT3);
+		meshDesc.points.data = localvPos.data();
+
+		meshDesc.triangles.count = localIndices.size() / 3;
+		meshDesc.triangles.stride = 3 * sizeof(uint32_t);
+		meshDesc.triangles.data = localIndices.data();
+		
+		#ifdef _DEBUG
+		bool res = PhysicsHandler::GetInstance()->GetCooking()->validateTriangleMesh(meshDesc);
+		PX_ASSERT(res);
+		#endif
+
+		if(!insert) 
+		{
+			px::PxDefaultMemoryOutputStream writeBuffer;
+			px::PxTriangleMeshCookingResult::Enum result;
+			bool status = PhysicsHandler::GetInstance()->GetCooking()->cookTriangleMesh(meshDesc, writeBuffer, &result);
+			if (!status)
+				return NULL;
+			
+			px::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+			return mp_LocalPhysics->createTriangleMesh(readBuffer);
+		}
+		else // real time cooking
+		{
+			return PhysicsHandler::GetInstance()->GetCooking()->createTriangleMesh(meshDesc, mp_LocalPhysics->getPhysicsInsertionCallback());
+		}
 	}
 
 	const Vec3f StaticBody::GetPos() {

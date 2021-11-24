@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include"DynamicBody.h"
+#include"../ComponentHandler.h"
 
 namespace Aen {
 	
@@ -57,7 +58,7 @@ namespace Aen {
 
 		switch(geometry) {
 			case DynamicGeometryType::SPHERE: {
-			float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5;
+			float r = Max(m_scale.x, Max(m_scale.y, m_scale.x)) * 0.5f;
 			px::PxSphereGeometry sphere(r);
 			mp_DynamicBody = PxCreateDynamic(*mp_LocalPhysics, t, sphere, *mp_Material, m_density);
 			} break;
@@ -75,6 +76,24 @@ namespace Aen {
 		mp_DynamicBody->setMass(m_mass);
 		mp_DynamicBody->setAngularDamping(m_aDamp);
 		mp_DynamicBody->setSleepThreshold(m_sleep);
+		PhysicsHandler::GetInstance()->AddActor(mp_DynamicBody);
+	}
+
+	void DynamicBody::SetBoundsToMesh() {
+
+		Vec3f bounds;
+		if(ComponentHandler::MeshInstanceExist(m_id))
+			if(ComponentHandler::GetMeshInstance(m_id).m_pMesh)
+				bounds.smVec = ComponentHandler::GetMeshInstance(m_id).m_pMesh->m_obb.Extents;
+
+		m_scale = bounds;
+		m_gType = DynamicGeometryType::CUBE;
+		px::PxTransform t = mp_DynamicBody->getGlobalPose();
+		RemoveRigid();
+
+		px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.z * 0.5f);
+		mp_DynamicBody = PxCreateDynamic(*mp_LocalPhysics, t, cube, *mp_Material, m_density);
+
 		PhysicsHandler::GetInstance()->AddActor(mp_DynamicBody);
 	}
 
@@ -130,24 +149,28 @@ namespace Aen {
 	}
 
 	void DynamicBody::SetPos(const Vec3f& pos) {
-		px::PxTransform t(pos.x, pos.y, pos.z);
+		px::PxTransform t = mp_DynamicBody->getGlobalPose();
+		t.p = px::PxVec3(pos.x, pos.y, pos.z);
 		mp_DynamicBody->setGlobalPose(t);
 	}
 
 	void DynamicBody::SetPos(const float& x, const float& y, const float& z) {
-		px::PxTransform t(px::PxVec3(x, y, z));
+		px::PxTransform t = mp_DynamicBody->getGlobalPose();
+		t.p = px::PxVec3(x, y, z);
 		mp_DynamicBody->setGlobalPose(t);
 	}
 
 	void DynamicBody::SetRot(const Vec3f& rot) {
 		Vec4f tempRot = EulerToQuat(rot);
-		px::PxTransform t(px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w));
+		px::PxTransform t = mp_DynamicBody->getGlobalPose();
+		t.q = px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w);
 		mp_DynamicBody->setGlobalPose(t);
 	}
 
 	void DynamicBody::SetRot(const float& p, const float& y, const float& r) {
 		Vec4f tempRot = EulerToQuat(p, y, r);
-		px::PxTransform t(px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w));
+		px::PxTransform t = mp_DynamicBody->getGlobalPose();
+		t.q = px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w);
 		mp_DynamicBody->setGlobalPose(t);
 	}
 

@@ -2,6 +2,8 @@
 cbuffer Aen_CB_Transform {
 	float4x4 vMat;
 	float4x4 pMat;
+	float4x4 ivMat;
+	float4x4 ipMat;
 	float4x4 mdlMat;
 }
 
@@ -54,7 +56,7 @@ VS_Output main(VS_Input input) {
 	output.tbn._m10_m11_m12 = normalize(mul(float4(input.biTangent, 0.f), mdlMat)).xyz;
 	output.tbn._m20_m21_m22 = normalize(mul(float4(input.normal, 0.f), mdlMat)).xyz;
 	output.uv = input.uv;
-	output.worldPos = mul(float4(input.pos, 1.f), mdlMat);
-
+	output.worldPos = mul(float4(input.pos, 1.f), mdlMat).xyz;
+	
 	return output;
 }

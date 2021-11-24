@@ -306,8 +306,11 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\RigidBody\DynamicBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animator.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\AenirEngine\LevelGeneration\LevelGenerator.cpp">
+      <Filter>Source Files\LevelGeneration</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.cpp">
+      <Filter>Source Files\LevelGeneration</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -593,8 +596,11 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\RigidBody\RigidEnums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animator.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\AenirEngine\LevelGeneration\RandomNumberGenerator.h">
+      <Filter>Header Files\LevelGeneration</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\LevelGeneration\LevelGenerator.h">
+      <Filter>Header Files\LevelGeneration</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -608,6 +614,8 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CollisionPS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\FrustumGridCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\TransparencyPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">

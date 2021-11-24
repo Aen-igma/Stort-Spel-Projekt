@@ -63,8 +63,8 @@ namespace Aen {
 	}
 
 	void Entity::RemoveParent() {
-		m_hasParent = false;
-		m_parentId = UINT_MAX;
+	m_hasParent = false;
+	m_parentId = UINT_MAX;
 	}
 
 	void Entity::SetPos(const Vec3f& pos) {

@@ -129,6 +129,7 @@ namespace Aen {
 			strcpy(modelStruct->sound, it->second.m_sound.c_str());
 			modelStruct->rigidBody = it->second.m_model.rigidBody;
 			strcpy(modelStruct->rigidBodyType, it->second.m_model.rigidBodyType.c_str());
+			modelStruct->castShadow = it->second.m_model.m_castShadow;
 
 			m_ModelVector.push_back(*modelStruct);
 		}
@@ -151,6 +152,46 @@ namespace Aen {
 		strcpy(textureStruct->textureType, "test");
 		m_TextureVector.push_back(*textureStruct);
 	}
+
+	void LevelExporter::materialFunc(MaterialStruct*& materialStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index)
+	{
+		size_t id = entityList[index]->GetID();
+
+		unordered_map<size_t, IGH::ModelContainer>::iterator it = modelMap.find(id);
+
+		if (modelMap.find(id) != modelMap.end())
+		{
+			strcpy(materialStruct->materialName, it->second.m_material.m_materialName.c_str());
+			strcpy(materialStruct->materialTextureName, it->second.m_material.m_materialTextureName.c_str());
+
+			for (int i = 0; i < 4; i++)
+			{
+				materialStruct->baseColor[i] = it->second.m_material.m_baseColor[i];
+				materialStruct->shadowColor[i] = it->second.m_material.m_shadowColor[i];
+				materialStruct->specularColor[i] = it->second.m_material.m_specularColor[i];
+				materialStruct->rimLightColor[i] = it->second.m_material.m_rimLightColor[i];
+				materialStruct->innerEdgeColor[i] = it->second.m_material.m_innerEdgeColor[i];
+				materialStruct->outerEdgeColor[i] = it->second.m_material.m_outerEdgeColor[i];
+				materialStruct->glowColor[i] = it->second.m_material.m_glowColor[i];
+			}
+
+			materialStruct->glowStr = it->second.m_material.m_glowStr;
+			materialStruct->innerEdgeThickness = it->second.m_material.m_innerEdgeThickness;
+			materialStruct->outerEdgeThickness = it->second.m_material.m_outerEdgeThickness;
+			materialStruct->specularPower = it->second.m_material.m_specularPower;
+			materialStruct->specularStrength = it->second.m_material.m_specularStrength;
+			materialStruct->roughness = it->second.m_material.m_roughness;
+			materialStruct->shadowOffset = it->second.m_material.m_roughness;
+			materialStruct->innerFalloff = it->second.m_material.m_innerFalloff;
+			materialStruct->outerFalloff = it->second.m_material.m_roughness;
+			materialStruct->rimLightIntensity = it->second.m_material.m_rimLightIntensity;
+			materialStruct->rimLightSize = it->second.m_material.m_rimLightSize;
+
+			m_MaterialVector.push_back(*materialStruct);
+		}
+	}
+
+
 
 	int LevelExporter::CheckValidType(string& check)
 	{
@@ -228,6 +269,7 @@ namespace Aen {
 			if (Aen::ComponentHandler::MeshInstanceExist(id))
 			{
 				modelFunc(modelStruct, entityList, modelMap, i);
+				materialFunc(materialStruct, entityList, modelMap, i);
 			}
 			else if ((Aen::ComponentHandler::DirectionalLightExist(id) || Aen::ComponentHandler::SpotLightExist(id) || Aen::ComponentHandler::PointLightExist(id)))
 			{
@@ -249,17 +291,13 @@ namespace Aen {
 
 		for (size_t i = 0; i < m_ModelVector.size(); i++)
 		{
-			cout << m_ModelVector[i].name << endl;
-			cout << m_ModelVector[i].mesh << endl;
-			cout << m_ModelVector[i].translation[0] << " " << m_ModelVector[i].translation[1] << " " << m_ModelVector[i].translation[2] << endl;
-			cout << m_ModelVector[i].rotation[0] << " " << m_ModelVector[i].rotation[1] << " " << m_ModelVector[i].rotation[2] << endl;
-			cout << m_ModelVector[i].scale[0] << " " << m_ModelVector[i].scale[1] << " " << m_ModelVector[i].scale[2] << endl;
-			cout << m_ModelVector[i].type << endl;
-			cout << m_ModelVector[i].sound << endl;
-
 			WriteToFile(modelHeader, m_outfile);
 			*modelStruct = m_ModelVector[i];
 			WriteToFile(modelStruct, m_outfile);
+
+			WriteToFile(materialHeader, m_outfile);
+			*materialStruct = m_MaterialVector[i];
+			WriteToFile(materialStruct, m_outfile);
 		}
 
 		for (size_t i = 0; i < m_TextureVector.size(); i++)

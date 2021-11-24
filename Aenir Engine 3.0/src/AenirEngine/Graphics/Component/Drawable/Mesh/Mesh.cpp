@@ -10,19 +10,10 @@
 namespace Aen {
 	
 	Mesh::Mesh()
-		:m_vertices(), m_partitions(), m_meshMaterialName() {
-
-		/*const aiScene* animTest = aiImportFile("../Resource/rectAnirectAni.fbx", aiProcessPreset_TargetRealtime_MaxQuality);
-		std::cout << "Number of meshes: " << animTest->mNumMeshes << std::endl;
-		std::cout << "Number of verts: " << animTest->mMeshes[0]->mNumVertices << std::endl;
-		std::cout << "Does mesh have Animations?: " << animTest->HasAnimations() << std::endl;
-		std::cout << "Name of Animation: " << (animTest->mAnimations[0]->mName).C_Str() << std::endl;
-		std::cout << "Duration of Ani: " << animTest->mAnimations[0]->mDuration << std::endl;
-		std::cout << "Number of Ani: " << animTest->mNumAnimations << std::endl;
-		std::cout << "mBones: " << (animTest->mMeshes[0]->mBones[0]->mName).C_Str() << std::endl;*/
-	}
+		:m_vertices(), m_partitions(), m_meshMaterialName(), m_obb(), m_aabb() {}
 	
-	Mesh::Mesh(const std::string& dir) {
+	Mesh::Mesh(const std::string& dir)
+		: m_obb(), m_aabb() {
 		ImportObj(m_vertices, dir, m_partitions, m_meshMaterialName);
 	}
 	
@@ -39,12 +30,13 @@ namespace Aen {
 		size_t off = dir.find_last_of('.');
 		std::string format = dir.substr(off + 1);
 		if (format == "fbx") {
-			std::vector<DirectX::XMFLOAT3> vPos;
-			AssimpImport::LoadFbx(vPos, m_vertices, dir, m_partitions, m_meshMaterialName);
+			AssimpImport::LoadFbx(m_ibuffer, m_vPos, m_vertices, dir, m_partitions, m_meshMaterialName, m_indices);
 
 			size_t vStride = sizeof(DirectX::XMFLOAT3);
-			m_aabb.CreateFromPoints(m_aabb, vPos.size(), vPos.data(), vStride);
-			m_obb.CreateFromPoints(m_obb, vPos.size(), vPos.data(), vStride);
+			m_aabb.CreateFromPoints(m_aabb, m_vPos.size(), m_vPos.data(), vStride);
+			m_obb.CreateFromPoints(m_obb, m_vPos.size(), m_vPos.data(), vStride);
+			/*m_aabb.CreateFromPoints(m_aabb, vPos.size(), vPos.data(), vStride);
+			m_obb.CreateFromPoints(m_obb, vPos.size(), vPos.data(), vStride);*/
 
 		} else {
 			throw;
@@ -52,6 +44,16 @@ namespace Aen {
 		}
 		
 
+	}
+
+	const std::vector<DirectX::XMFLOAT3>& Mesh::GetvPos()
+	{
+		return this->m_vPos;
+	}
+
+	const std::vector<uint32_t>& Mesh::GetIndices()
+	{
+		return this->m_indices;
 	}
 
 	Mesh::~Mesh() {

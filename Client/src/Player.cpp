@@ -3,17 +3,16 @@
 
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
-	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f),
+	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(15.f), m_nrPotion(5),
 	m_sword(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
 	m_LIGHTATTACKSPEED(6.0f), m_HEAVYATTACKSPEED(2.54f)
 {
-
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
-	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 200.f);
+	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 50.f);
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
@@ -43,6 +42,35 @@ Player::Player()
 	m_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.0);
 	m_hurtbox->GetComponent<Aen::OBBox>().SetOffset(0.f, 0.f, 0.f);
 	m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+
+
+	Aen::Mesh& eBar = Aen::Resource::CreateMesh("eBar");
+	eBar.Load(AEN_RESOURCE_DIR("bar.fbx"));
+
+	Aen::Material& barMat = Aen::Resource::CreateMaterial("barMat");
+	Aen::Material& targetMat = Aen::Resource::CreateMaterial("targetMat");
+
+	targetMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("target1.png"));
+	targetMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("target1.png"));
+	targetMat.LoadeAndSetEmissionMap(AEN_RESOURCE_DIR("target1.png"));
+	targetMat["InnerEdgeThickness"] = 0;
+	targetMat["OuterEdgeColor"] = Aen::Color::Red;
+	targetMat["GlowColor"] = Aen::Color::Red;
+
+	barMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("enemybar.png"));
+	barMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("opacBar.png"));
+	barMat.LoadeAndSetEmissionMap(AEN_RESOURCE_DIR("enemybar.png"));
+	//barMat["InnerEdgeThickness"] = 0;
+	barMat["GlowColor"] = Aen::Color::Red;
+	//barMat["InnerEdgeColor"] = Aen::Color::Red;
+	//barMat["OuterEdgeColor"] = Aen::Color::Red;
+
+	m_targetUI = &Aen::EntityHandler::CreateEntity();
+	m_targetUI->AddComponent<Aen::MeshInstance>();
+	m_targetUI->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
+	m_targetUI->GetComponent<Aen::MeshInstance>().SetMaterial("targetMat");
+	m_targetUI->SetScale(0, 0, 0);
+	m_targetUI->SetRenderLayer(2);
 }
 
 Player::~Player() {
@@ -52,12 +80,13 @@ Player::~Player() {
 	m_sword->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_sword);
 	Aen::EntityHandler::RemoveEntity(*m_hurtbox);
+	Aen::EntityHandler::RemoveEntity(*m_targetUI);
 }
 
 void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	static Aen::Vec3f axis;
-	Aen::Vec3f targetDir(0.f, 0.f, -1.f);
+	static Aen::Vec3f targetDir(0.f, 0.f, -1.f);
 	static bool lockedOn = false;
 
 	static Aen::Vec3f camDir;
@@ -76,7 +105,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	{
 		Aen::MouseEvent me = Aen::Input::ReadEvent();
 
-		if (me.getInputType() == Aen::MouseEvent::RAW_MOVE)
+		if (me.getInputType() == Aen::MouseEvent::MouseInput::RAW_MOVE)
 		{
 			if (!Aen::Input::GPGetActive(0u) && !lockedOn) {
 				m_camera->Rotate(
@@ -84,14 +113,24 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
 			}
 		}
-		if (me.getInputType() == Aen::MouseEvent::SCROLL_UP) {
+		if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_UP) {
 			printf("scroll up\n");
 
 		}
-		else if (me.getInputType() == Aen::MouseEvent::SCROLL_DOWN) {
+		else if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_DOWN) {
 			printf("scroll down\n");
 
 		}
+	}
+	// ------------------------------		Health potion		---------------------------------- //
+	
+	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0 && m_health < 200.f) {
+	
+		m_health += m_potion;
+		m_nrPotion--;
+
+		if (m_health > 200.f) // cap
+			m_health = 200.f;
 	}
 
 	// ------------------------------ Player Controler ---------------------------------- //
@@ -304,7 +343,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					data.target = i;
 					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
 					data.distance = eDir.Magnitude();
-
+					
 					if(data.distance < 20.f)
 						m_targets.emplace_back(data);
 				}
@@ -322,6 +361,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_targets[t] = temp;
 				}
 
+				
+
 				if(!m_targets.empty())
 					m_targets.front().target->SetISTargeted(true);
 			}
@@ -332,11 +373,16 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_targets.front().target->GetEntity()->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
+		//Create UI
+		m_targetUI->SetPos(m_targets.front().target->GetEntity()->GetPos());
+		m_targetUI->SetScale(5.f, 1.f,15.f);
+		m_targetUI->SetRot(-GetCamera()->GetRot().x - 90.f, GetCamera()->GetRot().y + 180.f, 0);
 
 		m_camera->SetRot(pitch, yaw, 0.f);
 		Aen::Vec3f eDir = m_player->GetPos() - m_targets.front().target->GetEntity()->GetPos();
 		if (eDir.Magnitude() > 20.f) lockedOn = false;
 	} else {
+		m_targetUI->SetScale(0, 0, 0);
 		lockedOn = false;
 		for(auto i : e)
 			i->SetISTargeted(false);
@@ -412,6 +458,11 @@ Aen::Entity*& Player::GetHurtBox() {
 	return m_hurtbox;
 }
 
+Aen::Entity*& Player::GetCamera()
+{
+	return m_camera;
+}
+
 void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 	// Attacking -------------------------------------------------------------------------------------
 
@@ -424,9 +475,9 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 				e[i]->Hurt(true);
 
 				e[i]->SubtractHealth(m_eventQueue.front().damage);
-				Aen::Vec3f dir = Aen::Vec3f(0.f, 1.f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
+				Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
 				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage);
-
+				
 				if(e[i]->GetHealth() <= 0.f) {
 					for(uint32_t k = 0u; k < m_targets.size(); k++)
 						if(m_targets[k].target->GetEntity()->GetID() == e[i]->GetEntity()->GetID()) {
@@ -457,6 +508,11 @@ void Player::Move(const Aen::Vec3f& dir) {
 
 const float& Player::GetHealth() {
 	return m_health;
+}
+
+ int Player::GetPotionNr()const
+{
+	return m_nrPotion;
 }
 
 const bool Player::IsAttacking() {

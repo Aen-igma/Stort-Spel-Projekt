@@ -85,7 +85,15 @@ namespace Aen {
 			renderer.m_cbTransform.UpdateBuffer();
 			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
+#ifndef _DEBUG
 			DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
+#endif // !_DEBUG
+#ifdef _DEBUG
+			DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+			//After procedural generation, m_obb values become nan, this is a work around
+#endif // DEBUG
+
+
 			box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())
@@ -187,10 +195,10 @@ namespace Aen {
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
-						RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
-						RenderSystem::UnBindShader<PShader>();
+						RenderSystem::BindShader(renderer.m_opaqueVS);
+						RenderSystem::BindShader(renderer.m_transparencyPS);
 
-						renderer.m_cbTransform.BindBuffer<VShader>(0);
+						renderer.m_cbTransform.BindBuffer<VShader>(0u);
 					}
 
 					m_pMesh->m_vertices.BindBuffer();

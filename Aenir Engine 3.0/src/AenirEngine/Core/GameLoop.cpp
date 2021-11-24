@@ -19,11 +19,11 @@ namespace Aen {
 
 		// Initialize physX
 		PhysicsHandler::Initialize(100, 981);
-
-		GlobalSettings::Initialize(m_app->m_window);
-
+		
 		m_renderer = AEN_NEW Renderer(m_app->m_window);
 		m_renderer->Initialize();
+
+		GlobalSettings::Initialize(m_app->m_window, m_renderer);
 
 		m_app->Start();
 	}
@@ -42,7 +42,7 @@ namespace Aen {
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
 
-				PhysicsHandler::Update(m_deltaTime.count());
+				PhysicsHandler::Update(static_cast<float>(m_deltaTime.count()));
 
 				if(GlobalSettings::GetVSync()) m_renderer->Render();
 			}
@@ -56,12 +56,12 @@ namespace Aen {
 
 		//delete Aen::GlobalSettings::GetImGuiHandler();
 		
+		delete m_app;
 		Resource::Destroy();
 		EntityHandler::Destroy();
 		GCore::Concealed::Release();
-		PhysicsHandler::Destroy;
-		GlobalSettings::Destroy;
-		delete m_app;
+		GlobalSettings::Destroy();
+		PhysicsHandler::Destroy();
 		delete m_renderer;
 	}
 }

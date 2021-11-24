@@ -6,6 +6,8 @@ cbuffer Aen_BackGround {
 cbuffer Aen_CB_Transform {
 	float4x4 vMat;
 	float4x4 pMat;
+	float4x4 ivMat;
+	float4x4 ipMat;
 	float4x4 mdlMat;
 }
 
@@ -40,9 +42,9 @@ cbuffer Aen_CB_Camera {
 }
 
 static float2 sPoint[9] = {
-	float2(-1.f, 1.f), float2(0.f, 1.f), float2(1.f, 1.f),
-	float2(-1.f, 0.f), float2(0.f, 0.f), float2(1.f, 0.f),
-	float2(-1.f, -1.f), float2(0.f, -1.f), float2(1.f, -1.f)
+	int2(-1, 1),	int2(0, 1),		int2(1, 1),
+	int2(-1, 0),	int2(0, 0),		int2(1, 0),
+	int2(-1, -1),	int2(0, -1),	int2(1, -1)
 };
 
 static int hRow[9] = {
@@ -62,6 +64,7 @@ Texture2D posMap			: POSMAP		: register(t1);
 Texture2D depthNormalMap	: NORMALMAP		: register(t2);
 Texture2D depthMap			: DEPTHMAP		: register(t3);
 Texture2D glowMap			: GLOWMAP		: register(t4);
+Texture2D opacityMap		: OPACITYMAP	: register(t5);
 
 RWTexture2D<unorm float4> outputMap : register(u0);
 RWTexture2D<float4> finalMap : register(u1);
@@ -78,13 +81,14 @@ void main(CS_Input input) {
 
 	uint2 uv = input.dtId.xy;
 	float4 diffuse =	diffuseMap[uv];
-	float3 normal =		depthNormalMap[uv];
-	float3 worldPos =	posMap[uv];
+	float3 normal =		depthNormalMap[uv].rgb;
+	float3 worldPos =	posMap[uv].rgb;
 	float4 depth =		depthMap[uv];
 	float4 glow =		glowMap[uv];
+	float opacity =		opacityMap[uv].r;
 
 
-	if(length(diffuse) > 0.f) {
+	if(length(diffuse) > 0.f && opacity > 0.f) {
 
 		float2 sobelX = 0.f;
 		float2 sobelY = 0.f;
@@ -100,8 +104,8 @@ void main(CS_Input input) {
 		window.y -= 1;
 
 		for(uint i = 0; i < 9; i++) {
-			float3 sn = depthNormalMap[clamp(uv + sPoint[i] * innerEdgeThickness * depth, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
-			float sd = depthMap[clamp(uv + sPoint[i] * outerEdgeThickness, uint2(0u, 0u), window)].x;
+			float3 sn = depthNormalMap[clamp((int2)uv + sPoint[i] * innerEdgeThickness * depth.r, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
+			float sd = depthMap[clamp((int2)uv + sPoint[i] * outerEdgeThickness, uint2(0u, 0u), window)].x;
 			float2 kernel = float2(hRow[i], vRow[i]);
 			sobelX += sn.x * kernel;
 			sobelY += sn.y * kernel;
@@ -111,12 +115,12 @@ void main(CS_Input input) {
 
 		float finalNSobel = clamp(pow((length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f, 6.f), 0.f, 1.f);
 		float finalDSobel = clamp(length(sobelDepth), 0.f, 1.f);
-		float3 innerEdge = finalNSobel * innerEdgeColor;
-		float3 outerEdge = finalDSobel * outerEdgeColor;
-
+		float3 innerEdge = finalNSobel * innerEdgeColor.rgb;
+		float3 outerEdge = finalDSobel * outerEdgeColor.rgb;
+		
 		float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
 
-		outputMap[uv] = output;
+		outputMap[uv] = lerp(outputMap[uv], output, opacity);
 		finalMap[uv] = output;
 	} else
 		if(length(outputMap[uv]) <= 0.f) {
