@@ -154,18 +154,24 @@ void Gameplay::Initialize()
 
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos;
+	Aen::Vec3f ChestPos;
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
-				//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
+				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
+			}
 		}
 	}
 	m_player.GetEntity()->SetPos(playerStartPos);
+	chest.GetEntity()->SetPos(ChestPos);
 
 	//---------ENEMIES----------//
 	int numEnemies = 1;

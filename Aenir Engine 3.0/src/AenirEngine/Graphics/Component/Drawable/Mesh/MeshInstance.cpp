@@ -177,6 +177,7 @@ namespace Aen {
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
+			/*
 			DirectX::BoundingOrientedBox box;
 			box.Extents = m_pMesh->m_aabb.Extents;
 			box.Transform(box, m.smMat);
