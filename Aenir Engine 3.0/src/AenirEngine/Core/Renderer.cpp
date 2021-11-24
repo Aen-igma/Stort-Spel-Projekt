@@ -45,6 +45,9 @@ namespace Aen {
 		if (!m_PSGShader.Create(AEN_OUTPUT_DIR_WSTR(L"GeometryParticleShader.cso")))
 			if (!m_PSGShader.Create(AEN_OUTPUT_DIR_WSTR(L"GeometryParticleShader.cso")))
 				throw;
+		if (!m_PSCShader.Create(AEN_OUTPUT_DIR_WSTR(L"EmitCS.cso")))
+			if (!m_PSCShader.Create(AEN_OUTPUT_DIR_WSTR(L"EmitCS.cso")))
+				throw;
 		if (!m_PSCShader.Create(AEN_OUTPUT_DIR_WSTR(L"ComputeParticleShader.cso")))
 			if (!m_PSCShader.Create(AEN_OUTPUT_DIR_WSTR(L"ComputeParticleShader.cso")))
 				throw;

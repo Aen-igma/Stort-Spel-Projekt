@@ -1,19 +1,32 @@
+//cbuffer CBInput : register(b0)
+//{
+//    float runtime;
+//    uint particleCount;
+//    double padding;
+//    float3 vel;
+//    float padding2;
+
+//}
+
+#include "SimplexNoise.hlsl"
 cbuffer CBInput : register(b0)
 {
-    float runtime;
-    uint particleCount;
-    double padding;
-    float3 vel;
-    float padding2;
-
+    float3 velocity;
+    float lifeTime;
+    float3 acceleration;
+    int maxParticles;
+    int emitCount;
+    float deltaTime;
 }
-
 struct ParticleStruct
 {
-    float3 pos;
-    float velocity;
-    float4 color;
-    float2 uv;
+    float3 Pos;
+    float3 Velocity;
+    float4 Color;
+    float2 UV;
+    float Alive;
+    float Age;
+    float2 padding;
     //bool alive;
 };
 
@@ -39,28 +52,36 @@ float noise(float3 x)
 }
 
 RWStructuredBuffer<ParticleStruct> OutputParticle : register(u0);
+
 [numthreads(64, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
-	//Current particl
-
     int i = DTid;
-    float velo = 10;
-    /*noise(DTid);*/
+	//Current particl
+    //if (DTid.x >= (uint)maxParticles)
+    //    return;
+    //ParticleStruct particle = OutputParticle[i];
+    //if (particle.Alive == 0.0f)
+    //    return;
 
-    OutputParticle[i].velocity = vel;
+    //particle.Age = deltaTime;
+    //particle.Alive = (float) (particle.Age < lifeTime);
+    //particle.Pos += particle.Velocity * deltaTime;
+    //particle.Velocity = particle.Velocity *= 2;
+
+    //OutputParticle[i].velocity = vel;
 	//If particle it out of range
-    if (length(OutputParticle[i].pos) >= 5)
+    if (length(OutputParticle[i].Pos) >= 6)
     {
-        OutputParticle[i].pos.x = 0;
-        OutputParticle[i].pos.y = 0;
-        OutputParticle[i].pos.z = 0;
-        OutputParticle[i].color.x = 1;
-        OutputParticle[i].color.y = 1;
-        OutputParticle[i].color.z = 1;
-        OutputParticle[i].color.w = 0;
-        OutputParticle[i].uv.x = 0;
-        OutputParticle[i].uv.y = 0;
+        OutputParticle[i].Pos.x = 0;
+        OutputParticle[i].Pos.y = 0;
+        OutputParticle[i].Pos.z = 0;
+        OutputParticle[i].Color.x = 1;
+        OutputParticle[i].Color.y = 1;
+        OutputParticle[i].Color.z = 1;
+        OutputParticle[i].Color.w = 1;
+        OutputParticle[i].UV.x = 0;
+        OutputParticle[i].UV.y = 0;
         //OutputParticle[i].alive = false;
         /*OutputParticle[i].velocity = 1;*/
     }
@@ -71,16 +92,24 @@ void main(uint3 DTid : SV_DispatchThreadID)
     //OutputParticle[i].pos.y = 1;
     //OutputParticle[i].pos.y += (vel * runtime + noise(float3(DTid))) % 50;
    
-    OutputParticle[i].pos.x = OutputParticle[i].pos.x;
-    OutputParticle[i].pos.y += (OutputParticle[i].velocity
-    * runtime + noise(float3(DTid))) % 50;
+
+    //OutputParticle[i].Pos.y += (OutputParticle[i].Velocity
+    //* deltaTime + noise(float3(DTid))) % 50;
     //OutputParticle[i].pos.y = OutputParticle[i].pos.y += (10 * runtime) % 50;
-    OutputParticle[i].pos.z = OutputParticle[i].pos.z;
-    OutputParticle[i].color.x = OutputParticle[i].color.x;
-    OutputParticle[i].color.y = OutputParticle[i].color.y;
-    OutputParticle[i].color.z = OutputParticle[i].color.z;
-    OutputParticle[i].color.w = OutputParticle[i].color.w;
-    OutputParticle[i].uv.x = OutputParticle[i].uv.x;
-    OutputParticle[i].uv.y = OutputParticle[i].uv.y;
+
+    //OutputParticle[i].Pos.x = (10 * deltaTime + noise(float3(DTid))) % 50;
+    //OutputParticle[i].Pos.y += (10 * deltaTime + noise(float3(DTid))) % 50;
+    //OutputParticle[i].Pos.z = (10 * deltaTime + noise(float3(DTid))) % 50;
+
+    OutputParticle[i].Pos.x = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+    OutputParticle[i].Pos.y += (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+    OutputParticle[i].Pos.z = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+
+    OutputParticle[i].Color.x = OutputParticle[i].Color.x;
+    OutputParticle[i].Color.y = OutputParticle[i].Color.y;
+    OutputParticle[i].Color.z = OutputParticle[i].Color.z;
+    OutputParticle[i].Color.w = OutputParticle[i].Color.w;
+    OutputParticle[i].UV.x = OutputParticle[i].UV.x;
+    OutputParticle[i].UV.y = OutputParticle[i].UV.y;
     //OutputParticle[i].alive = true;
 }

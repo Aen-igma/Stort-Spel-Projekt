@@ -650,10 +650,12 @@
     <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\PixelParticleShader.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\FrustumGridCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\TransparencyPS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\EmitCS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\SimplexNoise.hlsl" />
   </ItemGroup>
 </Project>

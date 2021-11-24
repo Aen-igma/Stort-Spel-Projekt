@@ -16,11 +16,10 @@ namespace Aen
 		/*m_ParticleList.m_velocity = m_CSInputBuffer.m_vel.y;*/
 		//m_ParticleList.m_pos[1] = 0.0f;
 		//m_ParticleList = 0;
-	/*	this->m_ParticleList->m_velocity = 0;*/
 
-		this->m_ParticleList = 0;
-		/*InitParticleVariables();*/
-
+		this->m_CSInputBuffer.m_velocity.x = 1.0f;
+		this->m_CSInputBuffer.m_velocity.y = 2.0f;
+		this->m_CSInputBuffer.m_velocity.z = 1.0f;
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
@@ -85,29 +84,34 @@ namespace Aen
 
 	void PSSystemcomponent::updatePS(const float& framerate)
 	{
-		m_CSInputBuffer.m_runtime = framerate;
+		m_CSInputBuffer.deltaTime = framerate;
 	}
 
 	void PSSystemcomponent::InitParticleVariables()
 	{
-		this->particleDeviationX = 100.0f;
-		this->particleDeviationY = 10.0f;
-		this->particleDeviationZ = 100.0f;
-		this->particleVelocity = 10.0f;
-		this->particleVelocityVariation = 1.0f;
-		this->particleSize = 0.12f;
-		this->particlesPerSecond = 2500.0f;
-		this->maxParticles = 1024;
-		this->m_ParticleList = new Particle[maxParticles];
-		if (!m_ParticleList)
-			throw;
-		//Initalizing all particles at start
-		//for (i = 0; i < maxParticles; i++)
-		//{
-		//	m_ParticleList[i].active = true;
-		//}
-		this->currentNrPS = 0;
-		this->accumulatedTime = 0.0f;
+		//this->particleDeviationX = 100.0f;
+		//this->particleDeviationY = 10.0f;
+		//this->particleDeviationZ = 100.0f;
+		//this->particleVelocity = 10.0f;
+		//this->particleVelocityVariation = 1.0f;
+		//this->particleSize = 0.12f;
+		//this->particlesPerSecond = 2500.0f;
+		//this->maxParticles = 1024;
+		//this->m_ParticleList = new Particle[maxParticles];
+		//if (!m_ParticleList)
+		//	throw;
+		////Initalizing all particles at start
+		////for (i = 0; i < maxParticles; i++)
+		////{
+		////	m_ParticleList[i].active = true;
+		////}
+		//this->currentNrPS = 0;
+		//this->accumulatedTime = 0.0f;
+	}
+
+	void PSSystemcomponent::activatePS()
+	{
+
 	}
 
 	void PSSystemcomponent::EmitRandom(float frameTime)
@@ -136,9 +140,9 @@ namespace Aen
 			};
 			float randVelocity = this->particleVelocity + (((float)rand() 
 				- (float)rand())/ RAND_MAX) * this->particleVelocityVariation;
-			m_ParticleList[this->currentNrPS].m_pos[0] = randPosPS.x;
-			m_ParticleList[this->currentNrPS].m_pos[1] = randPosPS.y;
-			m_ParticleList[this->currentNrPS].m_pos[2] = randPosPS.z;
+			//m_ParticleList[this->currentNrPS].m_pos[0] = randPosPS.x;
+			//m_ParticleList[this->currentNrPS].m_pos[1] = randPosPS.y;
+			//m_ParticleList[this->currentNrPS].m_pos[2] = randPosPS.z;
 			found = false;
 		}
 		return;
@@ -155,17 +159,17 @@ namespace Aen
 
 	void PSSystemcomponent::SetNrOfPS(UINT nr)
 	{
-		this->m_CSInputBuffer.m_particleCount = nr;
-		this->currentNrPS = this->m_CSInputBuffer.m_particleCount;
+		this->m_CSInputBuffer.m_emitCount = nr;
+		this->currentNrPS = this->m_CSInputBuffer.m_emitCount;
 	}
 
 	void PSSystemcomponent::SetPos(float x, float y, float z)
 	{
 		for (int i = 0; i < this->currentNrPS; i++)
 		{
-			this->m_ParticleList[i].m_pos.x = x;
-			this->m_ParticleList[i].m_pos.y = y;
-			this->m_ParticleList[i].m_pos.z = z;
+			//this->m_ParticleList[i].m_pos.x = x;
+			//this->m_ParticleList[i].m_pos.y = y;
+			//this->m_ParticleList[i].m_pos.z = z;
 		}
 	}
 
@@ -211,31 +215,12 @@ namespace Aen
 	void PSSystemcomponent::SetVel(float dir)
 	{
 
-		this->m_ParticleList[currentNrPS].m_velocity = dir;
+		//this->m_ParticleList[currentNrPS].m_velocity = dir;
 		//this->m_CSInputBuffer[currentNrPS].m_vel.y = y;
 		//this->m_CSInputBuffer[currentNrPS].m_vel.z = z;
 	}
 
-	//void PSSystemcomponent::EnableBlending()
-	//{
-	//	float blendFactor[4];
-	//	blendFactor[0] = 0.0f;
-	//	blendFactor[1] = 0.0f;
-	//	blendFactor[2] = 0.0f;
-	//	blendFactor[3] = 0.0f;
-	//	m_CDevice->Get()->OMSetBlendState(alphaEnableBlendingState, blendFactor, 0xfffffff);
-	//	return;
-	//}
-	//void PSSystemcomponent::DisableBlending()
-	//{
-	//	float blendFactor[4];
-	//	blendFactor[0] = 0.0f;
-	//	blendFactor[1] = 0.0f;
-	//	blendFactor[2] = 0.0f;
-	//	blendFactor[3] = 0.0f;
-	//	m_CDevice->Get()->OMSetBlendState(alphaDisableBlendingState,blendFactor,0xfffffff);
-	//	return;
-	//}
+
 
 	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer)
 	{
@@ -248,8 +233,8 @@ namespace Aen
 		RenderSystem::BindUnOrderedAccessView(0,m_UAView);
 		RenderSystem::BindShader(renderer.m_PSCShader);
 
-		RenderSystem::Dispatch((int)(this->maxParticles / 64.f)+ (this->maxParticles % 64 != 0), 1, 1);
-
+		/*RenderSystem::Dispatch((int)(this->maxParticles / 64.f)+ (this->maxParticles % 64 != 0), 1, 1);*/
+		RenderSystem::Dispatch(16, 1, 1);
 	
 		RenderSystem::UnBindShader<CShader>();
 		RenderSystem::UnBindUnOrderedAccessViews(0,1);

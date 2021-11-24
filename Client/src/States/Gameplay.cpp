@@ -48,9 +48,8 @@ void Gameplay::Initialize()
 	/*Aen::Material& PSMaterial = Aen::Resource::CreateMaterial("EnemyMaterial");*/
 	/*m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(PSMaterial);*/
 
-	m_PS->GetComponent<Aen::PSSystemcomponent>().InitParticleVariables();
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().InitParticleVariables();
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(10);
-
 
 	
 
