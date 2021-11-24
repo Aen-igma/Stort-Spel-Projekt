@@ -15,8 +15,8 @@ class Enemy {
 
 	void Hurt(const bool& hurt);
 	const bool IsHurt();
-
 	protected:
+	Aen::AABoundBox* mp_hitbox;
 	Aen::Entity* m_enemy;
 	std::deque<EventData> m_eventQueue;
 	bool m_targeted;

@@ -42,6 +42,7 @@ Player::Player()
 	m_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.0);
 	m_hurtbox->GetComponent<Aen::OBBox>().SetOffset(0.f, 0.f, 0.f);
 	m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+	m_hurtbox->SetParent(*m_player);
 
 
 	Aen::Mesh& eBar = Aen::Resource::CreateMesh("eBar");
@@ -79,6 +80,7 @@ Player::~Player() {
 	Aen::EntityHandler::RemoveEntity(*m_camera);
 	m_sword->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_sword);
+	m_hurtbox->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_hurtbox);
 	Aen::EntityHandler::RemoveEntity(*m_targetUI);
 }
@@ -131,9 +133,9 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		}
 	}
 	// ------------------------------		Health potion		---------------------------------- //
-	
+
 	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0 && m_health < 200.f) {
-	
+
 		m_health += m_potion;
 		m_nrPotion--;
 
@@ -201,8 +203,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 		// Lock On Target
 
-		if(Aen::Input::GPKeyDown(0u, Aen::GP::DPAD_LEFT))
-			if(m_targets.size() > 1u && lockedOn) {
+		if (Aen::Input::GPKeyDown(0u, Aen::GP::DPAD_LEFT))
+			if (m_targets.size() > 1u && lockedOn) {
 				m_targets.front().target->SetISTargeted(false);
 				TargetData temp = m_targets.front();
 				m_targets.pop_front();
@@ -210,8 +212,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				m_targets.emplace_back(temp);
 			}
 
-		if(Aen::Input::GPKeyDown(0u, Aen::GP::DPAD_RIGHT))
-			if(m_targets.size() > 1u && lockedOn) {
+		if (Aen::Input::GPKeyDown(0u, Aen::GP::DPAD_RIGHT))
+			if (m_targets.size() > 1u && lockedOn) {
 				TargetData temp = m_targets.back();
 				m_targets.pop_back();
 				m_targets.front().target->SetISTargeted(false);
@@ -223,7 +225,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			lockedOn = !lockedOn;
 
 			if (lockedOn) {
-				for(auto i : e)
+				for (auto i : e)
 					i->SetISTargeted(false);
 
 				m_targets.clear();
@@ -233,16 +235,16 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
 					data.distance = eDir.Magnitude();
 
-					if(data.distance < 20.f)
+					if (data.distance < 20.f)
 						m_targets.emplace_back(data);
 				}
 
-				for(uint32_t i = 0u; i < m_targets.size(); i++) {
+				for (uint32_t i = 0u; i < m_targets.size(); i++) {
 
 					uint32_t t(i);
 
-					for(uint32_t k = i + 1u; k < m_targets.size(); k++)
-						if(m_targets[t].distance > m_targets[k].distance)
+					for (uint32_t k = i + 1u; k < m_targets.size(); k++)
+						if (m_targets[t].distance > m_targets[k].distance)
 							t = k;
 
 					TargetData temp = m_targets[i];
@@ -250,7 +252,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_targets[t] = temp;
 				}
 
-				if(!m_targets.empty())
+				if (!m_targets.empty())
 					m_targets.front().target->SetISTargeted(true);
 			}
 		}
@@ -329,8 +331,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 		// Lock On Target
 
-		if(Aen::Input::KeyDown(Aen::Key::TAB))
-			if(m_targets.size() > 1u && lockedOn) {
+		if (Aen::Input::KeyDown(Aen::Key::TAB))
+			if (m_targets.size() > 1u && lockedOn) {
 				m_targets.front().target->SetISTargeted(false);
 				TargetData temp = m_targets.front();
 				m_targets.pop_front();
@@ -342,7 +344,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			lockedOn = !lockedOn;
 
 			if (lockedOn) {
-				for(auto i : e)
+				for (auto i : e)
 					i->SetISTargeted(false);
 
 				m_targets.clear();
@@ -351,17 +353,17 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					data.target = i;
 					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
 					data.distance = eDir.Magnitude();
-					
-					if(data.distance < 20.f)
+
+					if (data.distance < 20.f)
 						m_targets.emplace_back(data);
 				}
 
-				for(uint32_t i = 0u; i < m_targets.size(); i++) {
+				for (uint32_t i = 0u; i < m_targets.size(); i++) {
 
 					uint32_t t(i);
 
-					for(uint32_t k = i + 1u; k < m_targets.size(); k++)
-						if(m_targets[t].distance > m_targets[k].distance)
+					for (uint32_t k = i + 1u; k < m_targets.size(); k++)
+						if (m_targets[t].distance > m_targets[k].distance)
 							t = k;
 
 					TargetData temp = m_targets[i];
@@ -369,33 +371,34 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_targets[t] = temp;
 				}
 
-				
 
-				if(!m_targets.empty())
+
+				if (!m_targets.empty())
 					m_targets.front().target->SetISTargeted(true);
 			}
 		}
 	}
 
-	if (!m_targets.empty() && lockedOn) { 
+	if (!m_targets.empty() && lockedOn) {
 		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_targets.front().target->GetEntity()->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
 		//Create UI
 		m_targetUI->SetPos(m_targets.front().target->GetEntity()->GetPos());
-		m_targetUI->SetScale(5.f, 1.f,15.f);
+		m_targetUI->SetScale(5.f, 1.f, 15.f);
 		m_targetUI->SetRot(-GetCamera()->GetRot().x - 90.f, GetCamera()->GetRot().y + 180.f, 0);
 
 		m_camera->SetRot(pitch, yaw, 0.f);
 		Aen::Vec3f eDir = m_player->GetPos() - m_targets.front().target->GetEntity()->GetPos();
 		if (eDir.Magnitude() > 20.f) lockedOn = false;
-	} else {
+	}
+	else {
 		m_targetUI->SetScale(0, 0, 0);
 		lockedOn = false;
-		for(auto i : e)
+		for (auto i : e)
 			i->SetISTargeted(false);
 	}
-	
+
 	float r = Aen::Clamp(m_camera->GetRot().x, -45.f, 45.f);
 	m_camera->SetRot(r, m_camera->GetRot().y, m_camera->GetRot().z);
 	camDir = Aen::Lerp(camDir, Aen::Transform(m_camera->GetComponent<Aen::Rotation>().GetTranform(), targetDir).Normalized(), 0.6f).Normalized();
@@ -411,14 +414,14 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	Aen::Vec3f playerDir = m_camera->GetComponent<Aen::Camera>().GetForward() * axis.Normalized().z + m_camera->GetComponent<Aen::Camera>().GetRight() * axis.Normalized().x;
 	Aen::Vec2f dir(playerDir.x, playerDir.z);
 
-	Aen::Vec3f attackPos = m_player->GetPos() + m_finalDir * 2.f;
+	Aen::Vec3f attackPos =/* m_player->GetPos() +*/ m_finalDir * 2.f;
 
 	m_hurtbox->SetPos(attackPos);
 
 	float yaw = std::atan2(m_finalDir.x, m_finalDir.z);
 	float swordYaw = std::atan2(playerDir.x, playerDir.z);
 
-	m_hurtbox->GetComponent<Aen::OBBox>().SetRotation(0.f, yaw, 0.f);
+	m_hurtbox->GetComponent<Aen::OBBox>().SetOrientation(0.f, yaw, 0.f);
 	m_player->SetRot(0.f, Aen::RadToDeg(yaw), 0.f);
 
 	if (!m_eventQueue.empty())
@@ -427,7 +430,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			m_eventQueue.front().duration -= deltaTime;
 		}
 		else {
-			if (axis.Magnitude() > 0.f) 
+			if (axis.Magnitude() > 0.f)
 				m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 			else {
 				Aen::Vec2f dir(camDir.x, camDir.z);
@@ -448,7 +451,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		}
 	}
 
-	if(!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Dash)
+	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Dash)
 		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 	else
 		m_player->GetComponent<Aen::AABoundBox>().ToggleActive(true);
@@ -485,10 +488,10 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 				e[i]->SubtractHealth(m_eventQueue.front().damage);
 				Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
 				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage);
-				
-				if(e[i]->GetHealth() <= 0.f) {
-					for(uint32_t k = 0u; k < m_targets.size(); k++)
-						if(m_targets[k].target->GetEntity()->GetID() == e[i]->GetEntity()->GetID()) {
+
+				if (e[i]->GetHealth() <= 0.f) {
+					for (uint32_t k = 0u; k < m_targets.size(); k++)
+						if (m_targets[k].target->GetEntity()->GetID() == e[i]->GetEntity()->GetID()) {
 							m_targets.erase(m_targets.begin() + k);
 							break;
 						}
@@ -499,8 +502,9 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 			}
 		}
 
-	} else {
-		for(auto& i : e) i->Hurt(false);
+	}
+	else {
+		for (auto& i : e) i->Hurt(false);
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
 		ResetSword();
 	}
@@ -518,13 +522,20 @@ const float& Player::GetHealth() {
 	return m_health;
 }
 
- int Player::GetPotionNr()const
+int Player::GetPotionNr()const
 {
 	return m_nrPotion;
 }
 
+void Player::Hurt(float dmg, float force, Aen::Vec3f dir)
+{
+	m_health -= std::abs(dmg);
+	Aen::Vec3f launchDirection(dir + Aen::Vec3f(0.f,.3f, 0.f));
+	Move(launchDirection * force);
+}
+
 const bool Player::IsAttacking() {
-	if(!m_eventQueue.empty())
+	if (!m_eventQueue.empty())
 		return (m_eventQueue.front().type == EventType::Attack);
 	return false;
 }
@@ -547,7 +558,7 @@ void Player::ResetSword()
 }
 
 void Player::AddEvent(EventData& event) {
-	if(m_eventQueue.size() > 1u)
+	if (m_eventQueue.size() > 1u)
 		m_eventQueue.pop_back();
 
 	m_eventQueue.emplace_back(event);

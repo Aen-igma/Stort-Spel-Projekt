@@ -5,9 +5,11 @@ Enemy::Enemy()
 	m_enemy->SetTag("Enemy");
 	m_enemy->AddComponent<Aen::AABoundBox>();
 	m_enemy->AddComponent<Aen::CharacterController>();
+	mp_hitbox = &m_enemy->GetComponent<Aen::AABoundBox>();
 }
 
 Enemy::~Enemy() {
+	Aen::EntityHandler::RemoveEntity(*m_enemy);
 }
 
 Aen::Entity*& Enemy::GetEntity()

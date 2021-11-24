@@ -14,10 +14,11 @@ struct EventData {
 	float duration;
 	float accell;
 	float damage;
+	float knockbackForce;
 	EventType type;
 	std::function<void(float& accell, const float& attackDuration)> function;
 
-	EventData() :duration(0.f), accell(0.f), damage(0.f), type(), function() {}
+	EventData() :duration(0.f), accell(0.f), damage(0.f), knockbackForce(1.f), type(), function() {}
 };
 
 struct TargetData {
@@ -42,6 +43,8 @@ public:
 	void Move(const Aen::Vec3f& dir);
 	const float& GetHealth();
 	int GetPotionNr() const;
+
+	void Hurt(float dmg, float force, Aen::Vec3f dir);
 
 	const bool IsAttacking();
 
@@ -74,6 +77,7 @@ private:
 	const float m_HEAVYCHARGETIME;
 	const float m_LIGHTATTACKSPEED;
 	const float m_HEAVYATTACKSPEED;
+
 	
 	Aen::Vec3f m_v;
 	std::deque<EventData> m_eventQueue;

@@ -30,7 +30,7 @@ private:
     Aen::Entity* m_wall;
 
     Player m_player;
-    NecroBoss m_skeleBoss;
+    Boss m_skeleBoss;
 
     bool m_beatBoss;
 
