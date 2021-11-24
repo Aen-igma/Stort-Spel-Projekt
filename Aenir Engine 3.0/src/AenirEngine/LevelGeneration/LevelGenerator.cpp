@@ -307,6 +307,7 @@ namespace Aen
 
 		
 		placeBossRoom();
+		placeLootRoom();
 
 		
 		return *map;
@@ -382,7 +383,7 @@ namespace Aen
 		}
 
 		for (int y = 0; y < mapSize; y++) {
-			for (int x = 0; x < mapSize; x++) {
+			for (int x = mapSize - 2; x >= 0; x--) {
 				if (map[x][y].m_present) {
 					cmap[3 * y + 1][3 * x + 1] = ((int)'0' + (int)map[x][y].m_roomSpecial);
 					if (map[x][y].connectionDirections % 10u)
