@@ -208,4 +208,13 @@ namespace Aen {
 			}
 			#endif
 	}
+	bool AABoundBox::FrustumCull(Renderer& renderer)
+	{
+		Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
+		m_aabb.Center = transformation.smVec;
+#ifdef _DEBUG
+		return true;
+#endif
+		return false;
+	}
 }

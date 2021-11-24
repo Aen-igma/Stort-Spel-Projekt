@@ -24,6 +24,7 @@ namespace Aen {
 		m_renderer->Initialize();
 
 		GlobalSettings::Initialize(m_app->m_window, m_renderer);
+		GlobalSettings::SetVSync(true);
 
 		m_app->Start();
 	}
@@ -44,10 +45,18 @@ namespace Aen {
 
 				PhysicsHandler::Update(static_cast<float>(m_deltaTime.count()));
 
-				if(GlobalSettings::GetVSync()) m_renderer->Render();
+				if (GlobalSettings::GetVSync())
+				{
+					m_renderer->Culling();
+					m_renderer->Render();
+				}
 			}
 
-			if(!GlobalSettings::GetVSync()) m_renderer->Render();
+			if (!GlobalSettings::GetVSync())
+			{
+				m_renderer->Culling();
+				m_renderer->Render();
+			}
 		}
 
 		// Destroy imGui

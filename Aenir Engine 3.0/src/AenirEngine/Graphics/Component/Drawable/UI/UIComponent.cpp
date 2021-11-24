@@ -156,4 +156,8 @@ namespace Aen {
 	{
 
     }
+    bool UIComponent::FrustumCull(Renderer& renderer)
+    {
+        return true;
+    }
 }
