@@ -59,8 +59,8 @@ namespace Aen {
 		bool m_toggleView;
 
 		void Initialize();
-		void Render();
 		void Culling();
+		void Render();
 		
 		std::array<std::vector<Drawable*>, 7> m_drawTable;
 

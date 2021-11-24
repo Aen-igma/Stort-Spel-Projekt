@@ -241,5 +241,17 @@ void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 
 bool Aen::OBBox::FrustumCull(Renderer& renderer)
 {
+	Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
+
+	m_obb.Center = transformation.smVec;
+	if (ComponentHandler::DynamicBodyExist(m_id))
+		m_obb.Center = ComponentHandler::GetDynamicBody(m_id).GetPos().smVec + m_offset.smVec;
+	else if (ComponentHandler::StaticBodyExist(m_id))
+		m_obb.Center = ComponentHandler::GetStaticBody(m_id).GetPos().smVec + m_offset.smVec;
+	else if (ComponentHandler::CharacterControllerExist(m_id))
+		m_obb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
+#ifdef _DEBUG
 	return true;
+#endif
+	return false;
 }
