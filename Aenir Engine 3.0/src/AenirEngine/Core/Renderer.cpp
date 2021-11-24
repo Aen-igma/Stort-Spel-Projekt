@@ -168,11 +168,6 @@ namespace Aen {
 				{
 					k->DepthDraw(*this);
 				}
-
-				/*for (auto& k : ComponentHandler::m_meshLayer[i])
-				{
-					k.second->DepthDraw(*this, i);
-				}*/
 				
 				// Light Cull Pass
 				
@@ -201,14 +196,7 @@ namespace Aen {
 					k->Draw(*this);
 				}
 
-				/*for (auto& k : ComponentHandler::m_meshLayer[i])
-				{
-					k.second->Draw(*this, i);
-				}*/
-
-			
 				m_drawTable[i].clear();
-				
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}
 
