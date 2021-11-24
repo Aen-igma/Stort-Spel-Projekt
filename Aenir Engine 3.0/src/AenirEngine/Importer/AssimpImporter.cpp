@@ -92,6 +92,49 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 			verts.emplace_back(vertex);
 		}
 
+		std::vector<UINT> boneCount;
+		boneCount.resize(verts.size(), 0);
+
+		for (int k = 0; k < mesh->mNumBones; k++) {
+			aiBone* bone = mesh->mBones[k];
+
+			for (int j = 0; j < bone->mNumWeights; j++) {
+				UINT id = bone->mWeights[j].mVertexId;
+				float weight = bone->mWeights[j].mWeight;
+
+				boneCount[id]++;
+				switch (boneCount[id]) {
+				case 1:
+					verts[id].boneId.x = k;
+					verts[id].boneWeights.x = weight;
+					break;
+				case 2:
+					verts[id].boneId.y = k;
+					verts[id].boneWeights.y = weight;
+					break;
+				case 3:
+					verts[id].boneId.z = k;
+					verts[id].boneWeights.z = weight;
+					break;
+				case 4:
+					verts[id].boneId.w = k;
+					verts[id].boneWeights.w = weight;
+					break;
+				default:
+					std::cout << "ERROR: UNABLE TO ALLOCATE BONE TO VERTEX" << std::endl;
+					break;
+				}
+			}
+		}
+
+		for (int i = 0; i < verts.size(); i++) {
+			Vec4f& boneWeights = verts[i].boneWeights;
+			float totalWeight = boneWeights.x + boneWeights.y + boneWeights.z + boneWeights.w;
+			if (totalWeight > 0.0f) {
+				verts[i].boneWeights = Vec4f(boneWeights.x / totalWeight, boneWeights.y / totalWeight, boneWeights.z / totalWeight, boneWeights.w / totalWeight);
+			}
+		}
+
 		for (int i = 0; i < mesh->mNumFaces; i++)
 		{
 			aiFace face = mesh->mFaces[i];
@@ -106,6 +149,13 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 		}*/
 		offset = numVerts;
 		printf("\n");
+
+		/*std::vector<UINT> boneCount;
+		boneCount.resize(verts.size(), 0);*/
+
+		
+
+		
 	}
 	
 }
