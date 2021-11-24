@@ -83,6 +83,12 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 				vertex.bi.y = (float)mesh[m].mBitangents[i].y;
 				vertex.bi.z = (float)mesh[m].mBitangents[i].z;
 			}
+			if (mesh->HasBones()) 
+			{
+				vertex.boneId = { 0, 0, 0, 0 };
+				vertex.boneWeights = { 0.f, 0.f, 0.f, 0.f };
+			}
+
 			verts.emplace_back(vertex);
 		}
 
