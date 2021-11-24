@@ -228,7 +228,7 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 	}
 	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
-	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
+	cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -254,7 +254,7 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
 
-	if (m_UI->GetComponent<Aen::UIComponent>().GetPicSize(0).x <= 0.f) {
+	if (m_hp <= 0.f) {
 		SetWin(false);
 		State::SetState(States::Gameover);
 	}
