@@ -133,6 +133,7 @@ namespace Aen {
 		std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
 
 		void placeBossRoom();
+		void placeLootRoom();
 	public:
 		~LevelGenerator();
 
