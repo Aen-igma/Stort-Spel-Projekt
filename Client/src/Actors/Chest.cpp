@@ -29,6 +29,11 @@ void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 		m_near = false;
 }
 
+Aen::Entity*& Chest::GetObjectEntity()
+{
+	return mp_object;
+}
+
 Aen::Entity*& Chest::GetEntity()
 {
 	return m_chest;

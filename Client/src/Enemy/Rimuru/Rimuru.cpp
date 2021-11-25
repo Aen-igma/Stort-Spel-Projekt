@@ -139,7 +139,7 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	if(player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_enemy->GetComponent<Aen::AABoundBox>())) {
 		if(!m_hurting) {
 			m_hurting = true;
-			player.SubtractHealth(10.f);
+			player.SubtractHealth(180.f);
 			Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + m_lDir.Normalized();
 			player.Move(dir.Normalized() * 20.f);
 		}

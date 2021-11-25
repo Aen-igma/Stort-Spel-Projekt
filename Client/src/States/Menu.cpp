@@ -43,9 +43,6 @@ void MainMenu::Initialize()
 	wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
 	m_Window.LoadSettings(wDesc);
 
-	cout << "Main Menu\n";
-	cout << "Press Enter to Play\n";
-
 	// ----------------------------- UI -------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();

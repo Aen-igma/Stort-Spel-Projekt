@@ -3,7 +3,7 @@
 
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
-	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(15.f), m_potionCap(5), m_nrPotion(m_potionCap),
+	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(80.f), m_potionCap(3), m_nrPotion(m_potionCap),
 	m_sword(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),

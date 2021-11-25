@@ -1,7 +1,7 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f), m_timer(0),
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f), m_timer(0),m_deathTimer(0),
 	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
@@ -155,32 +155,38 @@ void Gameplay::Initialize()
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos;
 	Aen::Vec3f ChestPos;
+	Aen::Vec3f EnemyPos;
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
-			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
+			//m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
 			}
+
+			//if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE) {
+
+			//	m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+			//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+			//}
+
+			//if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
+
+			//	int index = m_enemyQueue.size();
+			//	m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+			//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+			//	m_enemyQueue.at(index)->GetEntity()->SetScale(2.f);
+			//}
 		}
 	}
-	m_player.GetEntity()->SetPos(playerStartPos);
-	chest.GetEntity()->SetPos(ChestPos);
-
-	//---------ENEMIES----------//
-	int numEnemies = 1;
-	int offset = -10;
-	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
-	for (int u = 0; u < numEnemies; u++) {
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((LehmerInt() % 38) - 19.f, 0.f, offset)));
-		offset -= 5;
-	}
+	//m_player.GetEntity()->SetPos(playerStartPos);
+	//chest.GetObjectEntity()->SetPos(playerStartPos);
 
 	//m_attack->SetParent(*m_player);
 
@@ -204,7 +210,6 @@ void Gameplay::Initialize()
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
-	cout << "Press Enter To Continue\n";
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -214,7 +219,7 @@ void Gameplay::Update(const float& deltaTime) {
 	wstringstream potionNr;
 	potionNr << m_player.GetPotionNr();
 
-	if (m_player.GetHealth() > m_hp) { //ersätt collision med enemy i if satsen
+	if (m_player.GetHealth() > m_hp) {
 		float hp = (m_player.GetHealth() - m_hp);
 		m_timer += 1.f;
 
@@ -226,17 +231,10 @@ void Gameplay::Update(const float& deltaTime) {
 			m_hp = m_player.GetHealth();
 		}
 	}
-	if (m_hp > m_player.GetHealth()) {
+	if (m_hp >= m_player.GetHealth()) {
 		float hp = (m_hp - m_player.GetHealth());
-		m_timer += 1.f;
-
-		if (m_timer < hp) {
-			m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(2.f, 0);
-		}
-		else {
-			m_timer = 0;
-			m_hp = m_player.GetHealth();
-		}
+		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(hp * 2.f, 0);
+		m_hp = m_player.GetHealth();
 	}
 	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
 	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
@@ -265,10 +263,17 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
 
+
 	if (m_hp <= 0.f) {
 		SetWin(false);
-		State::SetState(States::Gameover);
+		m_UI->GetComponent<Aen::UIComponent>().SetPicPos(0.f, 0.f, 0);
+		m_deathTimer += deltaTime;
+
+		if (m_deathTimer > 0.1f) {
+			State::SetState(States::Gameover);
+		}
 	}
+
 	//if (m_enemyQueue.empty()) {
 	//	SetWin(true);
 	//	State::SetState(States::Gameover);

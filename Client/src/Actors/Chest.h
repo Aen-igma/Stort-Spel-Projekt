@@ -12,6 +12,7 @@ public:
 
 	// Inherited via Interact
 	virtual void Update(const float& deltaTime, Aen::Entity*& e) override;
+	virtual Aen::Entity*& GetObjectEntity() override;
 private:
 	Aen::Entity* m_chest;
 	bool m_near;

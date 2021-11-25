@@ -13,6 +13,7 @@ private:
     float m_hp;
     float m_sub;
     float m_timer;
+    float m_deathTimer;
 
     float m_iFrames;
     const float IFRAMEMAX;

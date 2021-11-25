@@ -27,7 +27,6 @@ void Loadscreen::Update(const float& deltaTime)
 
 void Loadscreen::Initialize()
 {
-	cout << "Loadstate\n";
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
 	Aen::WindowDesc wDesc;
 	wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;

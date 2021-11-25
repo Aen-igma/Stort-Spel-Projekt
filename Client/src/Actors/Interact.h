@@ -24,6 +24,7 @@ public:
 	Aen::Entity*& GetEntity();
 
 	virtual void Update(const float& deltaTime, Aen::Entity*& e) = 0;
+	virtual Aen::Entity*& GetObjectEntity() = 0;
 protected:
 	Aen::Entity* mp_object;
 	static bool m_near;

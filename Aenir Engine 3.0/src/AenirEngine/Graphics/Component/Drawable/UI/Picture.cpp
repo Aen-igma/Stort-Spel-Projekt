@@ -93,6 +93,10 @@ namespace Aen {
     {
         //change bmp
         m_pictureData.at(indX).rect.right -= width;
+        if (m_pictureData.at(indX).rect.right < 0.f) {
+            m_pictureData.at(indX).rect.right = m_pictureData.at(indX).rect.left;
+        }
+
     }
 
     bool Picture::Intersect(int index)
