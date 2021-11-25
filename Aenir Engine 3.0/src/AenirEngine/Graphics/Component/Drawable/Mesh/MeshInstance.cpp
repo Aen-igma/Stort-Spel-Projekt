@@ -29,8 +29,8 @@ namespace Aen {
 	void MeshInstance::SetMesh(Mesh& mesh) {
 		m_pMesh = &mesh;
 		//m_boundBox = mesh.getAABB();
-		m_boundBox.center = m_pMesh->getAABB().Center;
-		m_boundBox.extents = m_pMesh->getAABB().Extents;
+		//m_boundBox.center = m_pMesh->getAABB().Center;
+		//m_boundBox.extents = m_pMesh->getAABB().Extents;
 		//DirectX::BoundingOrientedBox box(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 
 		if(m_pMesh->m_meshMaterialName.size() > 0) {
@@ -43,8 +43,8 @@ namespace Aen {
 		if(!Resource::MeshExist(meshName)) throw;
 		m_pMesh = &Resource::GetMesh(meshName);
 
-		m_boundBox.center = m_pMesh->getAABB().Center;
-		m_boundBox.extents = m_pMesh->getAABB().Extents;
+		//m_boundBox.center = m_pMesh->getAABB().Center;
+		//m_boundBox.extents = m_pMesh->getAABB().Extents;
 
 		//m_boundBox = DirectX::BoundingOrientedBox(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 
@@ -95,8 +95,8 @@ namespace Aen {
 			renderer.m_cbTransform.UpdateBuffer();
 
 
-			//DirectX::BoundingOrientedBox box(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
-			DirectX::BoundingOrientedBox box(m_boundBox.center, m_boundBox.extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+			DirectX::BoundingOrientedBox box(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+			//DirectX::BoundingOrientedBox box(m_boundBox.center, m_boundBox.extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 			//After procedural generation, m_obb values become nan, this is a work around
 
 			//box.Transform(box, m.smMat);
@@ -195,9 +195,9 @@ namespace Aen {
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
-			DirectX::BoundingOrientedBox box(m_boundBox.center, m_boundBox.extents, DirectX::XMFLOAT4(0, 0, 0, 1));
-			//box.Extents = m_pMesh->m_aabb.Extents;
-			//box.Transform(box, m.smMat);
+			DirectX::BoundingOrientedBox box/*(m_boundBox.center, m_boundBox.extents, DirectX::XMFLOAT4(0, 0, 0, 1))*/;
+			box.Extents = m_pMesh->m_aabb.Extents;
+			box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())
 				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {

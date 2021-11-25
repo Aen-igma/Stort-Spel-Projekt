@@ -4,10 +4,10 @@
 
 namespace Aen {
 
-	struct BoundBoxStoreable
-	{
-		DirectX::XMFLOAT3 center, extents;
-	};
+	//struct BoundBoxStoreable
+	//{
+	//	DirectX::XMFLOAT3 center, extents;
+	//};
 
 	class AEN_DECLSPEC MeshInstance : public Drawable{
 		public:
@@ -27,7 +27,7 @@ namespace Aen {
 		~MeshInstance();
 
 		Mesh* m_pMesh;
-		BoundBoxStoreable m_boundBox;
+		//BoundBoxStoreable m_boundBox;
 		std::vector<Material*> m_pMaterials;
 
 

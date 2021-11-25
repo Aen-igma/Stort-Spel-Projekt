@@ -1,5 +1,5 @@
 #pragma once
-#include"../Enemy.h"
+#include"../Rimuru/Rimuru.h"
 
 class Boss : public Enemy
 {
@@ -22,7 +22,7 @@ private:
 	void BigAttack();
 	void DashAttack();
 	void GoToThrone();
-	void SummonSlimes();
+	void SummonSlimes(float& timer, int amountOfSLimes);
 
 	void UpdateAttack();
 
@@ -33,11 +33,13 @@ private:
 	Aen::Vec3f m_direction;
 
 	Player* mp_player;
+	std::vector<Rimuru*> m_pEnemies;
 
 	float m_hp;
 	bool m_isEngaged;
 	bool m_isHurting;
 	bool m_isCasting;
+	bool m_areSlimesSummoned;
 
 	float m_knockBackForce;
 	float m_attackDamage;

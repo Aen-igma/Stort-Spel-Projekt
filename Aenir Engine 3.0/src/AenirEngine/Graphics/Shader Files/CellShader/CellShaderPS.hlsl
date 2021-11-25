@@ -60,11 +60,11 @@ struct Light {
 };
 
 struct PS_Input {
-	float3 pos : POSITION;
+	float4 pos : SV_Position;
 	float3 normal : NORMAL;
 	float3 tangent : TANGENT;
-	float3 biTangent : BITANGENT;
-	float2 uv : UV;
+	float2 uv : TEXCOORD;
+	float3 worldPos : WORLD_POSITION;
 };
 
 struct PS_Output {
@@ -106,7 +106,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 		clip((opacityM <= 0.1f) ? -1 : 1);
 	}
 
-	float3 binormal
+	float3 binormal = normalize(cross(input.tangent, input.normal));
 
 	float3x3 TBN = float3x3(input.tangent, binormal, input.normal);
 

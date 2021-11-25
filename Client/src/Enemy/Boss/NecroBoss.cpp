@@ -5,7 +5,7 @@ Boss::Boss(float hp) :
 	mE_hurtBox(&Aen::EntityHandler::CreateEntity()),
 	Enemy(), m_direction(0.f, 0.f, 1.f),
 
-	m_isEngaged(false), m_hp(hp), m_isHurting(false),
+	m_isEngaged(false), m_hp(hp), m_isHurting(false), m_areSlimesSummoned(false),
 	LIGHTDMG(20.f), HEAVYDMG(50.f), LIGHTFORCE(20.f), HEAVYFORCE(100.f),
 	m_speed(2.f)
 {
@@ -75,12 +75,14 @@ void Boss::Update(const float& deltaTime, Player& player)
 
 	}
 
-
+	float zero = 0;
 	if (Aen::Input::KeyDown(Aen::Key::G))
 		LightAttack();
 
 	if (Aen::Input::KeyDown(Aen::Key::H))
 		BigAttack();
+	if (Aen::Input::KeyDown(Aen::Key::J))
+		SummonSlimes(zero, 3);
 
 	m_v += m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
@@ -134,6 +136,34 @@ void Boss::BigAttack()
 	m_eventQueue.emplace_back(data);
 }
 
+void Boss::SummonSlimes(float& timer, int amountOfSLimes)
+{
+	EventData data;
+	data.duration = .1f;
+	data.type = EventType::Wait;
+	data.damage = 0;
+	data.knockbackForce = 0;
+	data.accell = 0.f;
+	data.function = [&](float& accell, const float& attackDuration) {
+
+		if (m_areSlimesSummoned)
+		{
+			float yPos = 1.f;
+			m_pEnemies.resize(amountOfSLimes, nullptr);
+			for (int i = 0; i < amountOfSLimes; i++)
+			{
+				m_pEnemies[i] = AEN_NEW Rimuru(Aen::Vec3f(1.f, yPos, 2.f));
+				yPos += 2.f;
+			}
+			m_areSlimesSummoned = true;
+		}
+
+	};
+
+	m_eventQueue.emplace_back(data);
+
+}
+
 void Boss::UpdateAttack()
 {
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack)
@@ -153,5 +183,8 @@ void Boss::UpdateAttack()
 	}
 	else
 		mp_hurtBox->ToggleActive(false);
+
+	//if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Wait)
+		//printf("e");
 
 }

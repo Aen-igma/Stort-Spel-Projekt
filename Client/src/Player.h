@@ -7,7 +7,8 @@ class Enemy;
 enum class EventType {
 	Dash,
 	Attack,
-	Wait
+	Wait,
+	Summon,
 };
 
 struct EventData {
