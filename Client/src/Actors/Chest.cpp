@@ -15,7 +15,10 @@ Chest::Chest()
 }
 
 Chest::~Chest()
-{}
+{
+	m_chest->RemoveParent();
+	Aen::EntityHandler::RemoveEntity(*m_chest);
+}
 
 void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 {
@@ -32,6 +35,16 @@ void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 Aen::Entity*& Chest::GetObjectEntity()
 {
 	return mp_object;
+}
+
+Type Chest::GetType()
+{
+	return m_type;
+}
+
+void Chest::SetType(const Type& type)
+{
+	m_type = type;
 }
 
 Aen::Entity*& Chest::GetEntity()

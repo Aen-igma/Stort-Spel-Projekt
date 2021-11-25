@@ -187,16 +187,19 @@ void Gameplay::Initialize()
 	}
 	//m_player.GetEntity()->SetPos(playerStartPos);
 	//chest.GetObjectEntity()->SetPos(playerStartPos);
+	m_chest.SetType(Type::Locked);
 
 	//m_attack->SetParent(*m_player);
 
 	//printf("");
 
-	std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
-	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
-	{
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
-	}
+	//std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
+	//for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
+	//{
+	//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
+	//}
+	m_enemyQueue.emplace_back(AEN_NEW Rimuru(Aen::Vec3f(0,0,0)));
+
 
 	// --------------------------- Setup Window --------------------------------- //
 
@@ -225,7 +228,7 @@ void Gameplay::Update(const float& deltaTime) {
 		m_hp = m_player.GetHealth();
 	}
 	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
-	cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
+	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -236,13 +239,17 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.Update(m_enemyQueue, deltaTime);
 
-	chest.Update(deltaTime, m_player.GetEntity());
-	if (chest.GetNear()) {
+	m_chest.Update(deltaTime, m_player.GetEntity());
+	if (m_chest.GetNear()) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f, 2);
 		m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300.f, 2);
 
-		if (Aen::Input::KeyDown(Aen::Key::F)) {
+		if (m_enemyQueue.empty())
+			m_chest.SetType(Type::Closed);
+
+		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() != Type::Locked) {
 			m_player.IncreaseHealthCap();
+			m_chest.SetType(Type::Locked);
 		}
 	}
 	else {
@@ -307,8 +314,8 @@ void Gameplay::Update(const float& deltaTime) {
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
-		//State::SetState(States::Gameover);
-		m_Window.Exit();
+		State::SetState(States::Gameover);
+		//m_Window.Exit();
 	}
 	// ------------------------------------- States -------------------------------------- //
 	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)

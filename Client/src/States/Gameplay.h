@@ -33,7 +33,7 @@ private:
     Aen::Entity* m_wall;
  
     Player m_player;
-    Chest chest;
+    Chest m_chest;
     bool m_beatBoss;
 
     Aen::ImGuiImporter m_levelImporter;

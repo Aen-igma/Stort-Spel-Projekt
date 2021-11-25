@@ -1,5 +1,6 @@
 #include "Interact.h"
 
+
 Interact::Interact()
 	:mp_object(&Aen::EntityHandler::CreateEntity())
 {
