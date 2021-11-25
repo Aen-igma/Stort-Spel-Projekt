@@ -41,6 +41,7 @@ namespace Aen
 
 	void ImGuiImporter::addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, AenIF::Model& model, AenIF::Texture& texture, AenIF::Material& materialIn)
 	{
+		//Aen::Texture* materialNormal;
 		string imageName = AEN_RESOURCE_DIR(texture.name);
 		entity = &mp_entityHandlerPtr->CreateEntity();
 		mesh = &Aen::Resource::CreateMesh(model.name);
@@ -56,9 +57,13 @@ namespace Aen
 			materialTexture = &Aen::Resource::CreateTexture(textureName);
 			materialTexture->LoadTexture(imageName);
 
+			//materialNormal = &Aen::Resource::CreateTexture("NormalMap");
+			//materialNormal->LoadTexture(AEN_RESOURCE_DIR("NormalTesting.jpg"));
+
 			material = &Aen::Resource::CreateMaterial(materialName, true);
 			setMaterial(*material, materialIn);
 			material->SetDiffuseMap(*materialTexture);
+			//material->SetNormalMap(*materialNormal);
 		}
 		else
 		{
@@ -398,7 +403,7 @@ namespace Aen
 		Aen::Texture* materialTexture;
 
 		addBaseCommon(entity, mesh, material, materialTexture, model, texture, materialIn);
-
+		
 		//entity->GetPos();
 
 		size_t id = entity->GetID();

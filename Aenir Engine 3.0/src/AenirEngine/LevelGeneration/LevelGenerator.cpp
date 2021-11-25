@@ -307,6 +307,7 @@ namespace Aen
 
 		
 		placeBossRoom();
+		placeLootRoom();
 
 		
 		return *map;
@@ -382,7 +383,7 @@ namespace Aen
 		}
 
 		for (int y = 0; y < mapSize; y++) {
-			for (int x = 0; x < mapSize; x++) {
+			for (int x = mapSize - 2; x >= 0; x--) {
 				if (map[x][y].m_present) {
 					cmap[3 * y + 1][3 * x + 1] = ((int)'0' + (int)map[x][y].m_roomSpecial);
 					if (map[x][y].connectionDirections % 10u)
@@ -509,6 +510,59 @@ namespace Aen
 						}
 						else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
 							map[x - 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
+							map[x - 1][y].rotateCW();
+							bossRoomPlaced = true;
+							break;
+							//West
+						}
+					}
+				}
+			}
+		}
+	}
+
+	void LevelGenerator::placeLootRoom()
+	{
+		bool bossRoomPlaced = false;
+		Vec2i entrancePos;
+
+		for (int y = 0; y < mapSize; y++) {
+			for (int x = 0; x < mapSize; x++) {
+				if (map[x][y].m_present && map[x][y].m_roomSpecial == SpecialRoom::ENTRANCE) {
+					entrancePos = Vec2i(x, y);
+				}
+			}
+		}
+
+		for (int y = mapSize - 1; y >= 0; y--) {
+
+			for (int x = mapSize - 1; x >= 0; x--) {
+				if (map[x][y].m_present && !bossRoomPlaced) {
+
+					if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
+					{																				//Prevents out of bounds
+						if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {	//Checks if region is clear
+							map[x][y - 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::ITEM][1]);	//
+							map[x][y - 1].rotate180();
+							bossRoomPlaced = true;
+							break;
+							//North
+						}
+						else if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
+							map[x + 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::ITEM][1]);
+							map[x + 1][y].rotateCCW();
+							bossRoomPlaced = true;
+							break;
+							//East
+						}
+						else if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
+							map[x][y + 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::ITEM][1]);
+							bossRoomPlaced = true;
+							break;
+							//South
+						}
+						else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
+							map[x - 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::ITEM][1]);
 							map[x - 1][y].rotateCW();
 							bossRoomPlaced = true;
 							break;
