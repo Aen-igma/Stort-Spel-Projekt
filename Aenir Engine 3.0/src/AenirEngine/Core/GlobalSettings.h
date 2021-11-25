@@ -26,6 +26,8 @@ namespace Aen {
 			return m_pMainCamera;
 		}
 
+		static Camera* m_rCam;
+
 		static void SetBGColor(const Color& color) {
 			m_BGColor = color;
 		}

@@ -27,33 +27,37 @@ void Gameplay::Initialize()
 {
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
+
+	
+
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png")); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(350.f, 100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f);
+	mp_uicomp = &m_UI->GetComponent<Aen::UIComponent>();
+	mp_uicomp->AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png")); //0
+	mp_uicomp->SetPicPos(350.f, 100.f);
+	mp_uicomp->SetPicSize(m_hp * 2.f, 150.f);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"bar.png")); //1
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(350.f, 100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f);
+	mp_uicomp->AddPicture(AEN_RESOURCE_DIR_W(L"bar.png")); //1
+	mp_uicomp->SetPicPos(350.f, 100.f);
+	mp_uicomp->SetPicSize(m_hp * 2.f, 150.f);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"potion.png")); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(125.f, 100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(150.f, 150.f);
+	mp_uicomp->AddPicture(AEN_RESOURCE_DIR_W(L"potion.png")); //2
+	mp_uicomp->SetPicPos(125.f, 100.f);
+	mp_uicomp->SetPicSize(150.f, 150.f);
 
 	//m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Kill All Enemies", 72.f); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
+	mp_uicomp->AddText(L"Kill All Enemies", 72.f); //0
+	mp_uicomp->SetTextPos(965.f, 100.f);
+	mp_uicomp->SetTextSize(900.f, 300);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"5", 50.f); //1 - Amount of potion
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(120.f, 110.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(150.f, 150.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
+	mp_uicomp->AddText(L"5", 50.f); //1 - Amount of potion
+	mp_uicomp->SetTextPos(120.f, 110.f);
+	mp_uicomp->SetTextSize(150.f, 150.f);
+	mp_uicomp->SetColor(D2D1::ColorF::Black);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -191,6 +195,8 @@ void Gameplay::Initialize()
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	cout << "Press Enter To Continue\n";
+
+	
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -203,8 +209,8 @@ void Gameplay::Update(const float& deltaTime) {
 		float hp = (m_hp - m_player.GetHealth());
 		potionNr << m_player.GetPotionNr();
 
-		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(hp * 2.f, 0);
-		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
+		mp_uicomp->UpdatePicture(hp * 2.f, 0);
+		mp_uicomp->TextNr(1, potionNr.str().c_str());
 		m_hp = m_player.GetHealth();
 	}
 

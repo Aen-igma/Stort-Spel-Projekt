@@ -46,7 +46,7 @@ namespace Aen {
 			if(!m_frustumGridCS.Create(L"FrustumGridCS.cso"))
 				throw;
 
-		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32G32B32A32_FLOAT);
+		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R8G8B8A8_UNORM);
 		m_opaqueLayout.Create(m_opaqueVS);
 		m_UAVBackBuffer.Create(m_backBuffer);
 
@@ -64,7 +64,7 @@ namespace Aen {
 
 		uint32_t size = m_dispatchInfo.GetData().numThreads.x * m_dispatchInfo.GetData().numThreads.y;
 		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
-		m_lGrid.Create(m_dispatchInfo.GetData().numThreads, DXGI_FORMAT_R32G32_UINT);
+		m_lGrid.Create(m_dispatchInfo.GetData().numThreads, DXGI_FORMAT_R32_UINT);
 		m_frustumGrid.Create(128u, size);
 	}
 
@@ -89,11 +89,14 @@ namespace Aen {
 			Vec3f pos = pCam->GetPos();
 			Vec3f rot = pCam->GetRot();
 
-			pCam->GetComponent<Camera>().UpdateView(pos, rot);
+			Camera& rCam = pCam->GetComponent<Camera>();
+
+			rCam.UpdateView(pos, rot);
+			//pCam->GetComponent<Camera>().UpdateView(pos, rot);
 
 			m_cbCamera.GetData().pos = pos;
-			m_cbCamera.GetData().fDir = pCam->GetComponent<Camera>().GetForward();
-			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
+			m_cbCamera.GetData().fDir = rCam.GetForward();
+			m_cbCamera.GetData().uDir = rCam.GetUp();
 			m_cbCamera.UpdateBuffer();
 
 			#ifdef _DEBUG
@@ -108,14 +111,14 @@ namespace Aen {
 					m_cbTransform.GetData().m_ipMat = m_cbTransform.GetData().m_pMat.Inverse();
 				}
 				else {
-					m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
-					m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+					m_cbTransform.GetData().m_vMat = rCam.GetView().Transposed();
+					m_cbTransform.GetData().m_pMat = rCam.GetProjecton().Transposed();
 					m_cbTransform.GetData().m_ivMat = m_cbTransform.GetData().m_vMat.Inverse();
 					m_cbTransform.GetData().m_ipMat = m_cbTransform.GetData().m_pMat.Inverse();
 				}
 			#else
-				m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
-				m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+				m_cbTransform.GetData().m_vMat = rCam.GetView().Transposed();
+				m_cbTransform.GetData().m_pMat = rCam.GetProjecton().Transposed();
 				m_cbTransform.GetData().m_ivMat = m_cbTransform.GetData().m_vMat.Inverse();
 				m_cbTransform.GetData().m_ipMat = m_cbTransform.GetData().m_pMat.Inverse();
 			#endif

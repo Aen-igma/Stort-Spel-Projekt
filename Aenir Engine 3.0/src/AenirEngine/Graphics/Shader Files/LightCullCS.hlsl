@@ -61,7 +61,7 @@ struct CS_Input {
 };
 
 RWStructuredBuffer<uint> LightIndexList : register(u0);
-RWTexture2D<uint2> LightGrid : register(u1);
+RWTexture2D<uint> LightGrid : register(u1);
 
 StructuredBuffer<Frustum> frustumGrid : register(t0);
 StructuredBuffer<Light> Aen_SB_Light : register(t1);

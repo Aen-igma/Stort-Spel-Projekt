@@ -149,8 +149,8 @@ namespace Aen {
 
 								// Per Object Post Process Pass
 
-								RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
-								RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
+								if (slots[9] != UINT_MAX) RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
+								if (slots[10] != UINT_MAX )RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
 								RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
 								if(slots[12] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<CShader>(slots[12]);
 								if(slots[13] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<CShader>(slots[13]);

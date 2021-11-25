@@ -46,7 +46,6 @@ public:
 	const bool IsAttacking();
 
 private:
-
 	void SwordSwing(float speed, float time, const float& deltaTime);
 	void ResetSword();
 	void AddEvent(EventData& event);
@@ -78,4 +77,12 @@ private:
 	Aen::Vec3f m_v;
 	std::deque<EventData> m_eventQueue;
 	std::deque<TargetData> m_targets;
+
+	// pointers
+
+	Aen::CharacterController* mp_playerCont;
+	Aen::AABoundBox* mp_playerHitbox;
+
+	Aen::OBBox* mp_playerHurtbox;
+	
 };

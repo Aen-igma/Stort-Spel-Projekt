@@ -13,4 +13,5 @@ namespace Aen {
 
 	Material* GlobalSettings::m_defaultMaterial(nullptr);
 	Texture* GlobalSettings::m_defaultTexture(nullptr);
+	Camera* GlobalSettings::m_rCam(nullptr);
 }

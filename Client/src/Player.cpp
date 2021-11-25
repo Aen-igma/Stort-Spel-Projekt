@@ -26,11 +26,14 @@ Player::Player()
 	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
 
 	m_player->AddComponent<Aen::CharacterController>();
+
 	m_player->AddComponent<Aen::MeshInstance>();
-	m_player->GetComponent<Aen::MeshInstance>().SetMesh(capsule);
-	m_player->GetComponent<Aen::MeshInstance>().SetMaterial(playerMat);
+	Aen::MeshInstance* pmeshinstance = &m_player->GetComponent<Aen::MeshInstance>();
+	pmeshinstance->SetMesh(capsule);
+	pmeshinstance->SetMaterial(playerMat);
 	m_player->AddComponent<Aen::AABoundBox>();
-	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
+	Aen::AABoundBox* pAAPlayer = &m_player->GetComponent<Aen::AABoundBox>();
+	pAAPlayer->SetBoundsToMesh();
 	m_player->SetPos(0.f, 1.2f, 0.f);
 
 	m_sword->AddComponent<Aen::MeshInstance>();
@@ -71,6 +74,8 @@ Player::Player()
 	m_targetUI->GetComponent<Aen::MeshInstance>().SetMaterial("targetMat");
 	m_targetUI->SetScale(0, 0, 0);
 	m_targetUI->SetRenderLayer(2);
+
+	mp_playerCont = &m_player->GetComponent<Aen::CharacterController>();
 }
 
 Player::~Player() {
@@ -162,7 +167,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.duration = 0.3f;
 			data.type = EventType::Dash;
 			data.function = [&](float& accell, const float& attackDuration) {
-				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				mp_playerCont->Move(m_finalDir * accell * deltaTime, deltaTime);
 				accell -= 25.f * deltaTime;
 			};
 
@@ -184,7 +189,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
 				}
 
-				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				mp_playerCont->Move(m_finalDir * accell * deltaTime, deltaTime);
 				accell -= 12.f * deltaTime;
 			};
 
@@ -260,7 +265,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.duration = 0.4f;
 			data.type = EventType::Dash;
 			data.function = [&](float& accell, const float& attackDuration) {
-				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				mp_playerCont->Move(m_finalDir * accell * deltaTime, deltaTime);
 				m_player->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 				accell -= 25.f * deltaTime;
 			};
@@ -284,7 +289,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					Aen::Vec3f d(d2.x, 0.f, d2.y);
 					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
 				}
-				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				mp_playerCont->Move(m_finalDir * accell * deltaTime, deltaTime);
 				accell -= 12.f * deltaTime;
 			};
 
@@ -305,7 +310,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
 				}
 
-				m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * accell * deltaTime, deltaTime);
+				mp_playerCont->Move(m_finalDir * accell * deltaTime, deltaTime);
 				accell -= deltaTime * 2;
 				if (attackDuration < m_HEAVYCHARGETIME)
 				{
@@ -432,7 +437,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	if (m_eventQueue.empty()) {
 		if (axis.Magnitude() > 0.f) {
 			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-			m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * m_movementSpeed * deltaTime, deltaTime);
+			mp_playerCont->Move(m_finalDir * m_movementSpeed * deltaTime, deltaTime);
 		}
 		else {
 			Aen::Vec2f dir(camDir.x, camDir.z);
@@ -447,7 +452,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
-	m_player->GetComponent<Aen::CharacterController>().Move(m_v * deltaTime, deltaTime);
+	mp_playerCont->Move(m_v * deltaTime, deltaTime);
 }
 
 Aen::Entity*& Player::GetEntity() {

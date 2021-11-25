@@ -66,8 +66,8 @@ Texture2D depthMap			: DEPTHMAP		: register(t3);
 Texture2D glowMap			: GLOWMAP		: register(t4);
 Texture2D opacityMap		: OPACITYMAP	: register(t5);
 
-RWTexture2D<unorm float4> outputMap : register(u0);
-RWTexture2D<float4> finalMap : register(u1);
+RWTexture2D<float> outputMap : register(u0);
+RWTexture2D<float> finalMap : register(u1);
 
 struct CS_Input {
 	uint3 gId : SV_GroupID;
@@ -81,44 +81,44 @@ void main(CS_Input input) {
 
 	uint2 uv = input.dtId.xy;
 	float4 diffuse =	diffuseMap[uv];
-	float3 normal =		depthNormalMap[uv].rgb;
-	float3 worldPos =	posMap[uv].rgb;
-	float4 depth =		depthMap[uv];
+	//float3 normal =		depthNormalMap[uv].rgb;
+	//float3 worldPos =	posMap[uv].rgb;
+	//float4 depth =		depthMap[uv];
 	float4 glow =		glowMap[uv];
 	float opacity =		opacityMap[uv].r;
 
 
 	if(length(diffuse) > 0.f && opacity > 0.f) {
 
-		float2 sobelX = 0.f;
-		float2 sobelY = 0.f;
-		float2 sobelZ = 0.f;
-		float2 sobelDepth = 0.f;
+		//float2 sobelX = 0.f;
+		//float2 sobelY = 0.f;
+		//float2 sobelZ = 0.f;
+		//float2 sobelDepth = 0.f;
 
-		float3 cToP = normalize(worldPos - camPos);
-		float3 dotNP = dot(normal, cToP);
+		//float3 cToP = normalize(worldPos - camPos);
+		//float3 dotNP = dot(normal, cToP);
 
-		uint2 window;
-		outputMap.GetDimensions(window.x, window.y);
-		window.x -= 1;
-		window.y -= 1;
+		//uint2 window;
+		//outputMap.GetDimensions(window.x, window.y);
+		//window.x -= 1;
+		//window.y -= 1;
 
-		for(uint i = 0; i < 9; i++) {
-			float3 sn = depthNormalMap[clamp((int2)uv + sPoint[i] * innerEdgeThickness * depth.r, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
-			float sd = depthMap[clamp((int2)uv + sPoint[i] * outerEdgeThickness, uint2(0u, 0u), window)].x;
-			float2 kernel = float2(hRow[i], vRow[i]);
-			sobelX += sn.x * kernel;
-			sobelY += sn.y * kernel;
-			sobelZ += sn.z * kernel;
-			sobelDepth += sd * kernel;
-		}
+		//for(uint i = 0; i < 9; i++) {
+		//	float3 sn = depthNormalMap[clamp((int2)uv + sPoint[i] * innerEdgeThickness * depth.r, uint2(0u, 0u), window)].xyz * 2.f - 1.f;
+		//	float sd = depthMap[clamp((int2)uv + sPoint[i] * outerEdgeThickness, uint2(0u, 0u), window)].x;
+		//	float2 kernel = float2(hRow[i], vRow[i]);
+		//	sobelX += sn.x * kernel;
+		//	sobelY += sn.y * kernel;
+		//	sobelZ += sn.z * kernel;
+		//	sobelDepth += sd * kernel;
+		//}
 
-		float finalNSobel = clamp(pow((length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f, 6.f), 0.f, 1.f);
-		float finalDSobel = clamp(length(sobelDepth), 0.f, 1.f);
-		float3 innerEdge = finalNSobel * innerEdgeColor.rgb;
-		float3 outerEdge = finalDSobel * outerEdgeColor.rgb;
+		//float finalNSobel = clamp(pow((length(sobelX) + length(sobelY) + length(sobelZ)) / 3.f, 6.f), 0.f, 1.f);
+		//float finalDSobel = clamp(length(sobelDepth), 0.f, 1.f);
+		//float3 innerEdge = finalNSobel * innerEdgeColor.rgb;
+		//float3 outerEdge = finalDSobel * outerEdgeColor.rgb;
 		
-		float4 output = float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) * diffuse;
+		float4 output = /*float4(innerEdge, 1.f) + float4(outerEdge, 1.f) + (1.f - finalNSobel) * (1.f - finalDSobel) **/ diffuse;
 
 		outputMap[uv] = lerp(outputMap[uv], output, opacity);
 		finalMap[uv] = output;

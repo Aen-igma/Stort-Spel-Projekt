@@ -26,6 +26,7 @@ private:
     Aen::Entity* m_plane;
     Aen::Entity* m_reimube1;
 
+    Aen::UIComponent* mp_uicomp;
     Aen::Entity* m_UI;
     Aen::Entity* m_wall;
 
