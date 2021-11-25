@@ -259,8 +259,8 @@ void Gameplay::Update(const float& deltaTime) {
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
-		m_Window.Exit();
-
+		State::SetState(States::Gameover);
+		//m_Window.Exit();
 	// ------------------------------------- States -------------------------------------- //
 	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)
 	{

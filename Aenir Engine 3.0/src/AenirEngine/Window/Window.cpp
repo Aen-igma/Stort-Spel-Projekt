@@ -7,15 +7,15 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 namespace Aen {
 
-	int Window::idIt(0);
+	//int Window::idIt(0);
 
 	Window::~Window() {
 		Exit();
-		WindowHandle::GetWindows().erase(id);
+		//WindowHandle::GetWindows().erase(id);
 	}
 
 	Window::Window(const std::wstring& windowName, const std::wstring& className)
-		:m_cName(className), m_wName(windowName), id(idIt) {
+		:m_cName(className), m_wName(windowName)/*,id(idIt)*/ {
 		hInstance = GetModuleHandle(NULL);
 		lpfnWndProc = MsgRouter;
 		lpszClassName = className.c_str();
@@ -48,12 +48,13 @@ namespace Aen {
 			throw;
 		}
 		
-		WindowHandle::GetWindows().insert(std::pair<int, Window*>(id, this));
-		idIt++;
+		//WindowHandle::GetWindows().insert(std::pair<int, Window*>(id, this));
+		WindowHandle::GetWindows() = this;
+		//idIt++;
 	}
 
 	Window::Window(const WindowDesc& desc, const std::wstring& windowName, const std::wstring& className) 
-		:m_cName(className), m_wName(windowName), id(idIt) {
+		:m_cName(className), m_wName(windowName) /*,id(idIt)*/ {
 		hInstance = GetModuleHandle(NULL);
 		lpfnWndProc = MsgRouter;
 		lpszClassName = className.c_str();
@@ -86,8 +87,9 @@ namespace Aen {
 			throw;
 		}
 
-		WindowHandle::GetWindows().insert(std::pair<int, Window*>(id, this));
-		idIt++;
+		//WindowHandle::GetWindows().insert(std::pair<int, Window*>(id, this));
+		WindowHandle::GetWindows() = this;
+		//idIt++;
 	}
 
 	void Window::Exit() {

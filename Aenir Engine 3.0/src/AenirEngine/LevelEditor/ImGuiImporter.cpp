@@ -41,7 +41,6 @@ namespace Aen
 
 	void ImGuiImporter::addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, AenIF::Model& model, AenIF::Texture& texture, AenIF::Material& materialIn)
 	{
-		//Aen::Texture* materialNormal;
 		string imageName = AEN_RESOURCE_DIR(texture.name);
 		entity = &mp_entityHandlerPtr->CreateEntity();
 		mesh = &Aen::Resource::CreateMesh(model.name);
@@ -576,6 +575,7 @@ namespace Aen
 		Aen::Mesh* mesh;
 		Aen::Material* material;
 		Aen::Texture* materialTexture;
+		Aen::Texture* materialNormal;
 
 		float s = sin(angle);
 		float c = cos(angle);
