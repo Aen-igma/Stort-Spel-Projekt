@@ -1,9 +1,11 @@
 #include"Player.h"
 #include "Enemy/Enemy.h"
 
+bool Player::m_healing{ false };
+
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
-	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(80.f), m_potionCap(10), m_nrPotion(m_potionCap),
+	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(80.f), m_potionCap(10), m_nrPotion(m_potionCap),m_timer(0),
 	m_sword(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
@@ -121,20 +123,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			printf("scroll down\n");
 
 		}
-	}
-	// ------------------------------		Health potion		---------------------------------- //
-	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0 && m_health < 200.f) {
-	
-		m_health += m_potion;
-		m_nrPotion--;
-
-		if (m_health > 200.f) // cap
-			m_health = 200.f;
-	}
-
-	if (Aen::Input::KeyDown(Aen::Key::NUM2)) {
-		m_potionCap += 5;
-		m_nrPotion = m_potionCap;
 	}
 
 	// ------------------------------ Player Controler ---------------------------------- //
@@ -510,6 +498,35 @@ void Player::Move(const Aen::Vec3f& dir) {
 	m_v = dir;
 }
 
+void Player::PotionUpdate()
+{
+	// ------------------------------		Health potion		---------------------------------- //
+	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0 && m_health < 200.f) {
+
+		//m_health += m_potion;
+		m_healing = true;
+		m_nrPotion--;
+	}
+
+	if (m_healing) {
+		m_timer += 1.f;
+		if (m_timer <= m_potion) {
+			m_health += 1.f;
+		}
+	}
+	else if(!m_healing) {
+		m_timer = 0;
+	}
+
+	if (Aen::Input::KeyDown(Aen::Key::NUM2)) {
+		m_potionCap += 5;
+		m_nrPotion = m_potionCap;
+	}
+
+	if (m_health > 200.f) // cap
+		m_health = 200.f;
+}
+
 const float& Player::GetHealth() {
 	return m_health;
 }
@@ -519,7 +536,17 @@ const float& Player::GetHealth() {
 	return m_nrPotion;
 }
 
-const bool Player::IsAttacking() {
+ void Player::SetHealing(const bool& b)
+ {
+	 m_healing = b;
+ }
+
+ bool& Player::IsHealing() const
+ {
+	 return m_healing;
+ }
+
+ const bool Player::IsAttacking() {
 	if(!m_eventQueue.empty())
 		return (m_eventQueue.front().type == EventType::Attack);
 	return false;

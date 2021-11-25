@@ -218,24 +218,8 @@ void Gameplay::Update(const float& deltaTime) {
 	
 	wstringstream potionNr;
 	potionNr << m_player.GetPotionNr();
-
-	if (m_player.GetHealth() > m_hp) {
-		float hp = (m_player.GetHealth() - m_hp);
-		m_timer += 1.f;
-
-		if (m_timer < hp) {
-			m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(-2.f, 0);
-
-			if (m_hp >= 200.f) {
-				m_UI->GetComponent<Aen::UIComponent>().SetPicSize(hp * 2.f, 150.f, 0);
-			}
-		}
-		else {
-			m_timer = 0;
-			m_hp = m_player.GetHealth();
-		}
-	}
-	if (m_hp >= m_player.GetHealth()) {
+	m_player.PotionUpdate();
+	if (m_hp != m_player.GetHealth()) {
 		float hp = (m_hp - m_player.GetHealth());
 		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(hp * 2.f, 0);
 		m_hp = m_player.GetHealth();
