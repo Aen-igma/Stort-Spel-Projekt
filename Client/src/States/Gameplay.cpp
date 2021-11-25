@@ -225,7 +225,7 @@ void Gameplay::Update(const float& deltaTime) {
 		m_hp = m_player.GetHealth();
 	}
 	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
-	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
+	cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -240,6 +240,10 @@ void Gameplay::Update(const float& deltaTime) {
 	if (chest.GetNear()) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f, 2);
 		m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300.f, 2);
+
+		if (Aen::Input::KeyDown(Aen::Key::F)) {
+			m_player.IncreaseHealthCap();
+		}
 	}
 	else {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, 0.f, 2);

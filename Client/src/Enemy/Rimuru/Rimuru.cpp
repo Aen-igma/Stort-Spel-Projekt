@@ -142,10 +142,10 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 
 			if (player.IsHealing()) {
 				player.SetHealing(false);
-				player.SubtractHealth(40.f);
+				player.SubtractHealth(m_damage);
 			}
 			else {
-				player.SubtractHealth(40.f);
+				player.SubtractHealth(m_damage);
 			}
 			Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + m_lDir.Normalized();
 			player.Move(dir.Normalized() * 20.f);
