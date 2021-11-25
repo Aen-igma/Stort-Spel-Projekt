@@ -165,6 +165,12 @@ void Gameplay::Initialize()
 	}
 	//m_player.GetEntity()->SetPos(playerStartPos);
 
+	std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
+	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
+	{
+		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
+	}
+
 	//---------ENEMIES----------//
 	int numEnemies = 10;
 	int offset = -10;
