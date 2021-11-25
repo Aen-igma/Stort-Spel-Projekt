@@ -28,6 +28,8 @@ namespace Aen {
 
 	void MeshInstance::SetMesh(Mesh& mesh) {
 		m_pMesh = &mesh;
+		m_boundBox = mesh.getAABB();
+		//DirectX::BoundingOrientedBox box(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 
 		if(m_pMesh->m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_pMesh->m_meshMaterialName.size());
@@ -38,6 +40,8 @@ namespace Aen {
 	void MeshInstance::SetMesh(const std::string& meshName) {
 		if(!Resource::MeshExist(meshName)) throw;
 		m_pMesh = &Resource::GetMesh(meshName);
+
+		m_boundBox = m_pMesh->getAABB();
 
 		if(m_pMesh->m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_pMesh->m_meshMaterialName.size());
@@ -84,22 +88,14 @@ namespace Aen {
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
-#ifndef _DEBUG
-			//DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+
 			//DirectX::BoundingOrientedBox box(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
-			//DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
-#endif // !_DEBUG
-#ifdef _DEBUG
-			DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
-			//DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 			//After procedural generation, m_obb values become nan, this is a work around
-#endif // DEBUG
 
-
-			box.Transform(box, m.smMat);
+			//box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())
-				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
+				if(m_boundBox.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
 
 			// Mesh and Material
 
@@ -192,12 +188,12 @@ namespace Aen {
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
 
-			DirectX::BoundingOrientedBox box;
-			box.Extents = m_pMesh->m_aabb.Extents;
-			box.Transform(box, m.smMat);
+			//DirectX::BoundingOrientedBox box;
+			//box.Extents = m_pMesh->m_aabb.Extents;
+			//box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())
-				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
+				if(m_boundBox.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);

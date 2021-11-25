@@ -21,6 +21,8 @@ private:
 	void LightAttack();
 	void BigAttack();
 	void DashAttack();
+	void GoToThrone();
+	void SummonSlimes();
 
 	void UpdateAttack();
 

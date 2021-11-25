@@ -22,6 +22,7 @@ namespace Aen {
 		~MeshInstance();
 
 		Mesh* m_pMesh;
+		DirectX::BoundingBox m_boundBox;
 		std::vector<Material*> m_pMaterials;
 
 		friend class ComponentHandler;
