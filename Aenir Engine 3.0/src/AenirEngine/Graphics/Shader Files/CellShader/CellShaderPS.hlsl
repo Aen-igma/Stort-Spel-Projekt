@@ -60,10 +60,11 @@ struct Light {
 };
 
 struct PS_Input {
-	float4 pos : SV_Position;
-	float3x3 tbn : TBN;
-	float2 uv : TEXCOORD;
-	float3 worldPos : WORLD_POSITION;
+	float3 pos : POSITION;
+	float3 normal : NORMAL;
+	float3 tangent : TANGENT;
+	float3 biTangent : BITANGENT;
+	float2 uv : UV;
 };
 
 struct PS_Output {
@@ -104,6 +105,8 @@ PS_Output main(PS_Input input) : SV_Target0 {
 		opacityM = Aen_OpacityMap.Sample(wrapSampler, input.uv).r;
 		clip((opacityM <= 0.1f) ? -1 : 1);
 	}
+
+	float3 binormal
 
 	float3x3 TBN = float3x3(input.tangent, binormal, input.normal);
 

@@ -6,7 +6,7 @@ namespace Aen {
 
 	struct BoundBoxStoreable
 	{
-		sm::Vector3 center, extents;
+		DirectX::XMFLOAT3 center, extents;
 	};
 
 	class AEN_DECLSPEC MeshInstance : public Drawable{
