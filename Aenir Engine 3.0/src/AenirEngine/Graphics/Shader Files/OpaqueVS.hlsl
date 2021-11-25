@@ -36,8 +36,8 @@ void skin(inout float3 pos, inout float3 normal, int4 id, float4 weights)
 
 		for (int i = 0; i < 4; i++) {
 			if (id[i] > -1) {
-				worldPos += mul(float4(pos, 1.f), sBuffer[id[i]]) * weights[i];
-				worldNorm += mul(float4(normal, 0.f), sBuffer[id[i]]) * weights[i];
+				worldPos += mul(mul(float4(pos, 1.f), sBuffer[id[i]]), weights[i]);
+				worldNorm += mul(mul(float4(normal, 0.f), sBuffer[id[i]]), weights[i]);
 			}
 		}
 

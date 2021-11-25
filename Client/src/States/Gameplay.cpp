@@ -215,7 +215,7 @@ void Gameplay::Initialize()
 	m_tim->AddComponent<Aen::MeshInstance>();
 	m_tim->GetComponent<Aen::MeshInstance>().SetMesh(tim);
 	m_tim->GetComponent<Aen::MeshInstance>().SetMaterial(timMat);
-	m_tim->SetPos(2.f, 2.f, 2.f);
+	//m_tim->SetPos(2.f, 2.f, 2.f);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();

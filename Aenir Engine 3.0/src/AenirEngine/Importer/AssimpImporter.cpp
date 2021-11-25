@@ -92,7 +92,7 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 			verts.emplace_back(vertex);
 		}
 
-		/*std::vector<UINT> vertCount;
+		std::vector<UINT> vertCount;
 		vertCount.resize(verts.size(), 0);
 
 		for (int k = 0; k < mesh->mNumBones; k++) {
@@ -125,7 +125,7 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 					break;
 				}
 			}
-		}*/
+		}
 
 		/*for (int i = 0; i < verts.size(); i++) {
 			Vec4f& boneWeights = verts[i].boneWeights;
