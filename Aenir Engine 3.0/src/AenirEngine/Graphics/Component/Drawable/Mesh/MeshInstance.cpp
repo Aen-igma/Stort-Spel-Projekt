@@ -99,6 +99,10 @@ namespace Aen {
 			if(GlobalSettings::GetMainCamera())
 				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
 
+					if (ComponentHandler::AnimatorExists(m_id)) {
+						ComponentHandler::GetAnimator(m_id).BindBuffer();
+					}
+
 			// Mesh and Material
 
 					for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
@@ -150,6 +154,8 @@ namespace Aen {
 
 								// Per Object Post Process Pass
 
+
+								RenderSystem::UnBindShaderResources<VShader>(0, 1);
 								RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
 								RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
 								RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
@@ -193,6 +199,10 @@ namespace Aen {
 			if(GlobalSettings::GetMainCamera())
 				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
+
+					if (ComponentHandler::AnimatorExists(m_id)) {
+						ComponentHandler::GetAnimator(m_id).BindBuffer();
+					}
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 						RenderSystem::BindShader(renderer.m_opaqueVS);
@@ -203,6 +213,7 @@ namespace Aen {
 
 					m_pMesh->m_vertices.BindBuffer();
 					m_pMesh->m_vertices.Draw();
+					RenderSystem::UnBindShaderResources<VShader>(0, 1);
 				}
 		}
 	}

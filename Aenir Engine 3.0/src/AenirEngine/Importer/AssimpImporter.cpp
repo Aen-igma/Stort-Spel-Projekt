@@ -85,15 +85,15 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 			}
 			if (mesh->HasBones()) 
 			{
-				vertex.boneId = { 0, 0, 0, 0 };
+				vertex.boneId = { -1, -1, -1, -1 };
 				vertex.boneWeights = { 0.f, 0.f, 0.f, 0.f };
 			}
 
 			verts.emplace_back(vertex);
 		}
 
-		std::vector<UINT> boneCount;
-		boneCount.resize(verts.size(), 0);
+		/*std::vector<UINT> vertCount;
+		vertCount.resize(verts.size(), 0);
 
 		for (int k = 0; k < mesh->mNumBones; k++) {
 			aiBone* bone = mesh->mBones[k];
@@ -102,8 +102,8 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 				UINT id = bone->mWeights[j].mVertexId;
 				float weight = bone->mWeights[j].mWeight;
 
-				boneCount[id]++;
-				switch (boneCount[id]) {
+				vertCount[id]++;
+				switch (vertCount[id]) {
 				case 1:
 					verts[id].boneId.x = k;
 					verts[id].boneWeights.x = weight;
@@ -125,15 +125,15 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 					break;
 				}
 			}
-		}
+		}*/
 
-		for (int i = 0; i < verts.size(); i++) {
+		/*for (int i = 0; i < verts.size(); i++) {
 			Vec4f& boneWeights = verts[i].boneWeights;
 			float totalWeight = boneWeights.x + boneWeights.y + boneWeights.z + boneWeights.w;
 			if (totalWeight > 0.0f) {
 				verts[i].boneWeights = Vec4f(boneWeights.x / totalWeight, boneWeights.y / totalWeight, boneWeights.z / totalWeight, boneWeights.w / totalWeight);
 			}
-		}
+		}*/
 
 		for (int i = 0; i < mesh->mNumFaces; i++)
 		{

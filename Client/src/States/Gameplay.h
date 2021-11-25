@@ -35,6 +35,8 @@ private:
     Aen::Entity* m_skelLight;
     Aen::Entity* m_door;
     Aen::Entity* m_chest;
+    Aen::Entity* m_tim;
+
 
     Player m_player;
     bool m_beatBoss;

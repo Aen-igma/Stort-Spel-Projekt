@@ -24,6 +24,7 @@ namespace Aen {
 		float m_scale;
 		void Update();
 		void GetAnimation(std::vector<Mat4f>& mat);
+		void BindBuffer();
 
 	public:
 		Animator(const size_t& id);
@@ -35,6 +36,7 @@ namespace Aen {
 		friend class ComponentHandler;
 		friend class Renderer;
 		friend class Entity;
+		friend class MeshInstance;
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;

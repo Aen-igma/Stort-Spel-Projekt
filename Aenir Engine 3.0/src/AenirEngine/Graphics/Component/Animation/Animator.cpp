@@ -79,6 +79,13 @@ namespace Aen {
 		}
 	}
 
+	void Animator::BindBuffer()
+	{
+		if (animation) {
+			animation->m_finalMatrix.BindSRV<VShader>(0);
+		}
+	}
+
 	void Animator::SetAnimationScale(const float& newScale)
 	{
 		m_scale = newScale;

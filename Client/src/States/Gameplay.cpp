@@ -85,6 +85,8 @@ void Gameplay::Initialize()
 	door.Load(AEN_RESOURCE_DIR("Door.fbx"));
 	Aen::Mesh& chest = Aen::Resource::CreateMesh("Chest");
 	chest.Load(AEN_RESOURCE_DIR("chest_withAnimations.fbx"));
+	Aen::Mesh& tim = Aen::Resource::CreateMesh("TimJ");
+	tim.Load(AEN_RESOURCE_DIR("AnimWaveHead.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
@@ -103,6 +105,7 @@ void Gameplay::Initialize()
 	Aen::Material& skelLightMat = Aen::Resource::CreateMaterial("SkelLightMat");
 	Aen::Material& doorMat = Aen::Resource::CreateMaterial("DoorMat");
 	Aen::Material& chestMat = Aen::Resource::CreateMaterial("ChestMat");
+	Aen::Material& timMat = Aen::Resource::CreateMaterial("TimMat");
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
 	//enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
@@ -207,6 +210,12 @@ void Gameplay::Initialize()
 	m_chest->SetScale(0.5f, 0.5f, 0.5f);
 	m_chest->SetPos(-12.f, 2.f, 16.f);
 	m_chest->SetRot(0.f, -90.f, 0.f);
+
+	m_tim = &Aen::EntityHandler::CreateEntity();
+	m_tim->AddComponent<Aen::MeshInstance>();
+	m_tim->GetComponent<Aen::MeshInstance>().SetMesh(tim);
+	m_tim->GetComponent<Aen::MeshInstance>().SetMaterial(timMat);
+	m_tim->SetPos(2.f, 2.f, 2.f);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();
