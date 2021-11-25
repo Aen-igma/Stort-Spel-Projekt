@@ -36,6 +36,7 @@ private:
     Aen::Entity* m_door;
     Aen::Entity* m_chest;
     Aen::Entity* m_tim;
+    Aen::Entity* m_web;
 
 
     Player m_player;

@@ -87,6 +87,8 @@ void Gameplay::Initialize()
 	chest.Load(AEN_RESOURCE_DIR("chest_withAnimations.fbx"));
 	Aen::Mesh& tim = Aen::Resource::CreateMesh("TimJ");
 	tim.Load(AEN_RESOURCE_DIR("AnimWaveHead.fbx"));
+	Aen::Mesh& web = Aen::Resource::CreateMesh("Web");
+	web.Load(AEN_RESOURCE_DIR("Web.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
@@ -106,6 +108,7 @@ void Gameplay::Initialize()
 	Aen::Material& doorMat = Aen::Resource::CreateMaterial("DoorMat");
 	Aen::Material& chestMat = Aen::Resource::CreateMaterial("ChestMat");
 	Aen::Material& timMat = Aen::Resource::CreateMaterial("TimMat");
+	Aen::Material& webMat = Aen::Resource::CreateMaterial("WebMat");
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
 	//enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
@@ -151,6 +154,10 @@ void Gameplay::Initialize()
 	chestMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	chestMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	//chestMat["BaseColor"] = Aen::Color(0.1f, 0.1f, 0.05f, 1.f);
+
+	webMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("Web_UV.png"));
+	/*webMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	webMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
 
 	// -------------------------- Setup Entities -------------------------------- //
 
@@ -216,6 +223,13 @@ void Gameplay::Initialize()
 	m_tim->GetComponent<Aen::MeshInstance>().SetMesh(tim);
 	m_tim->GetComponent<Aen::MeshInstance>().SetMaterial(timMat);
 	//m_tim->SetPos(2.f, 2.f, 2.f);
+
+	m_web = &Aen::EntityHandler::CreateEntity();
+	m_web->AddComponent<Aen::MeshInstance>();
+	m_web->GetComponent<Aen::MeshInstance>().SetMesh(web);
+	m_web->GetComponent<Aen::MeshInstance>().SetMaterial(webMat);
+	m_web->SetPos(4.f, 2.f, 4.f);
+	m_web->SetScale(3.f, 1.f, 2.f);
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();
