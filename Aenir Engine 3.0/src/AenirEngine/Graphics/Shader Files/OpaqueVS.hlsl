@@ -17,7 +17,8 @@ struct VS_Input {
 
 struct VS_Output {
 	float4 pos : SV_Position;
-	float3x3 tbn : TBN;
+	float3	outNormal : NORMAL;
+	float3 outTangent : TANGENT;
 	float2 uv : TEXCOORD;
 	float3 worldPos : WORLD_POSITION;
 };
@@ -25,14 +26,14 @@ struct VS_Output {
 VS_Output main(VS_Input input) {
 	VS_Output output;
 
+	VS_Output output;
+
 	output.pos = mul(float4(input.pos, 1.f), mul(mul(mdlMat, vMat), pMat));
-	//output.tbn._m00_m01_m02 = normalize(mul(float4(input.tangent, 0.f), mdlMat)).xyz;
-	//output.tbn._m10_m11_m12 = normalize(mul(float4(input.biTangent, 0.f), mdlMat)).xyz;
-	//output.tbn._m20_m21_m22 = normalize(mul(float4(input.normal, 0.f), mdlMat)).xyz;
-	float3 normTan = normalize(input.tangent);
-	output.tbn = float3x3(normTan, input.biTangent, input.normal);
+	output.outNormal = normalize(mul(input.normal, mdlMat));
+	output.outTangent = normalize(mul(input.tangent, mdlMat));
+
 	output.uv = input.uv;
-	output.worldPos = mul(float4(input.pos, 1.f), mdlMat).xyz;
+	output.worldPos = mul(float4(input.pos, 1.f), mdlMat);
 	
 	return output;
 }

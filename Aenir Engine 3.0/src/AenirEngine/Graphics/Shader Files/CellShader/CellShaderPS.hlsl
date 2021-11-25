@@ -105,7 +105,9 @@ PS_Output main(PS_Input input) : SV_Target0 {
 		clip((opacityM <= 0.1f) ? -1 : 1);
 	}
 
-	float3 normal = (useNormal) ? float4(mul(normalM, input.tbn), 1.f).rgb : float4(normalize(input.tbn._m20_m21_m22), 1.f).rgb;
+	float3x3 TBN = float3x3(input.tangent, binormal, input.normal);
+
+	float3 normal = (useNormal) ? float4(mul(normalM, TBN), 1.f) : float4(normalize(input.normal), 1.f);
 	float3 ambient = shadowColor.rgb;
 
 
