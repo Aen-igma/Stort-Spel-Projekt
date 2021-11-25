@@ -137,9 +137,9 @@ void Gameplay::Initialize()
 	//m_levelImporter.import(path);
 
 	// ------------------- Procedural generation testing staging grounds ------- //
-	std::vector<string> levelPaths;
+	//std::vector<string> levelPaths;
 
-	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
+	m_levelGenerator.LoadMutipleRoomFiles();
 
 
 	m_levelGenerator.AddLoadedToGeneration();
@@ -156,33 +156,24 @@ void Gameplay::Initialize()
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
-			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
 		}
 	}
-	//m_player.GetEntity()->SetPos(playerStartPos);
+	m_player.GetEntity()->SetPos(playerStartPos);
 
-	std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
-	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
-	{
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
-	}
 
 	//---------ENEMIES----------//
-	int numEnemies = 10;
+	/*int numEnemies = 10;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
-	}
-
-	//m_attack->SetParent(*m_player);
-
-	//printf("");
+	}*/
 
 	std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
@@ -190,6 +181,10 @@ void Gameplay::Initialize()
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
 	}
 
+	//m_attack->SetParent(*m_player);
+
+	//printf("");
+	// 
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
