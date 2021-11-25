@@ -170,23 +170,23 @@ void Gameplay::Initialize()
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
 			}
 
-			//if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE) {
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE) {
 
-			//	m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-			//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			//}
+				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+			}
 
-			//if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
 
-			//	int index = m_enemyQueue.size();
-			//	m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-			//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			//	m_enemyQueue.at(index)->GetEntity()->SetScale(2.f);
-			//}
+				int index = m_enemyQueue.size();
+				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+				m_enemyQueue.at(index)->GetEntity()->SetScale(2.f);
+			}
 		}
 	}
-	//m_player.GetEntity()->SetPos(playerStartPos);
-	//chest.GetObjectEntity()->SetPos(playerStartPos);
+	m_player.GetEntity()->SetPos(playerStartPos);
+	m_chest.GetObjectEntity()->SetPos(ChestPos);
 	m_chest.SetType(Type::Locked);
 
 	//m_attack->SetParent(*m_player);
@@ -198,7 +198,7 @@ void Gameplay::Initialize()
 	//{
 	//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
 	//}
-	m_enemyQueue.emplace_back(AEN_NEW Rimuru(Aen::Vec3f(0,0,0)));
+	//m_enemyQueue.emplace_back(AEN_NEW Rimuru(Aen::Vec3f(0,0,0)));
 
 
 	// --------------------------- Setup Window --------------------------------- //
