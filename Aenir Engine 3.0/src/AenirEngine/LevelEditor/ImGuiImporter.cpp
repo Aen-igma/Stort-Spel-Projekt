@@ -380,7 +380,7 @@ namespace Aen
 
 				AddSpotLight(roomPtr->GetLightVector()[i], offset, angle);
 			}
-			else if (roomPtr->GetLightVector()[i].type == "Point light")
+			else if (roomPtr->GetLightVector()[i].type == IGH::POINTLIGHT)
 			{
 				cout << "p Light " << endl;
 
@@ -398,6 +398,8 @@ namespace Aen
 		Aen::Texture* materialTexture;
 
 		addBaseCommon(entity, mesh, material, materialTexture, model, texture, materialIn);
+
+		//entity->GetPos();
 
 		size_t id = entity->GetID();
 		Aen::ComponentHandler::GetMeshInstance(static_cast<size_t>(id)).SetMaterial(*material);
@@ -603,8 +605,8 @@ namespace Aen
 
 		light->AddComponent<Aen::PointLight>();
 		light->GetComponent<Aen::PointLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
-		light->GetComponent<Aen::PointLight>().SetLightDist(1, 1, 1, 5);
-		light->GetComponent<Aen::PointLight>().SetStrength(100);
+		light->GetComponent<Aen::PointLight>().SetLightDist(input.attenuation[0], input.attenuation[1], input.attenuation[2], input.range);
+		light->GetComponent<Aen::PointLight>().SetStrength(input.intensity);
 
 		float s = sin(angle);
 		float c = cos(angle);

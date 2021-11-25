@@ -61,13 +61,13 @@ namespace Aen {
 		bool m_toggleView;
 
 		void Initialize();
+		void Culling();
 		void Render();
 		
-
-		
-	
+		std::array<std::vector<Drawable*>, 7> m_drawTable;
 
 		Window& m_window;
+		
 		ScreenQuad m_screenQuad;
 
 		CBuffer<Color> m_cbBGColor;

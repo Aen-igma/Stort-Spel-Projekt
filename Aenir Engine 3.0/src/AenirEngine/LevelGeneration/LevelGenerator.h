@@ -11,7 +11,6 @@
 #include <unordered_map>
 #include "RandomNumberGenerator.h"
 
-
 #include "../Graphics/Component/Entity.h"
 #include "../Graphics/Component/EntityHandler.h"
 #include "../AenDefines.h"
@@ -49,7 +48,7 @@ namespace Aen {
 		bool m_enclosed = false; //Var used in level generation, true when room is surrounded
 		bool m_present = false;
 
-		Mesh* mptr_mesh;
+		std::vector<AenIF::Model>* mptr_modelVector;
 		AenIMP::CompleteRoom* mptr_parent;
 		int m_CRIndex = 0;
 
@@ -78,10 +77,10 @@ namespace Aen {
 		void rotateCW() { //Clockwise rotation
 			rotate180();
 			rotateCCW();
-			//rotation += 1.57079633;
+			//rotation += -1.57079633;
 			//connectionDirections *= 10;
 			//if (connectionDirections > 1111)
-			//	connectionDirections += connectionDirections - 9999;
+			//	connectionDirections += connectionDirections - 10000;
 			//TODO rotate associated model
 		}
 		void rotateCCW() { //count clockwise rotation
@@ -130,12 +129,14 @@ namespace Aen {
 
 		std::unordered_map< RoomTheme, std::unordered_map< SpecialRoom, std::unordered_map< int, std::vector<uint16_t> > > > masterRoomMap;
 
-		void constructRoom(Entity** container, Vec2i pos);
+		void constructRoom(Vec2i pos);
 		std::vector<uint16_t>* GetIndexVector(RoomTheme theme, SpecialRoom special, std::uint16_t connectionDir);
 
 		void placeBossRoom();
+		void placeLootRoom();
 	public:
-		
+		~LevelGenerator();
+
 		Vec2f m_mapOrigin;
 
 		Aen::ImGuiImporter* GetHandlerPtr();
@@ -157,10 +158,10 @@ namespace Aen {
 
 		void InitPlaceholderRooms();
 
-		void SpawnRoom(Entity** container,const Vec2i pos);
+		inline void SpawnRoom(const Vec2i pos);
 
 		void LoadRoomFiles(const string& filePath);
-		inline void LoadMutipleRoomFiles( const std::vector<string>& filePaths);
+		inline void LoadMutipleRoomFiles();
 
 		void AddLoadedToGeneration();
 

@@ -18,5 +18,5 @@ namespace Aen {
 	std::multimap<size_t, Light*> ComponentHandler::m_lights;
 
 	std::array<std::unordered_map<size_t, Drawable*>, 7> ComponentHandler::m_meshLayer;
-
+	
 }

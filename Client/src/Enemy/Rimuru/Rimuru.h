@@ -9,6 +9,7 @@ class Rimuru : public Enemy {
 
 	Aen::Entity*& GetEntity();
 
+
 	// Inherited via Enemy
 	virtual void Update(const float& deltaTime, Player& player) override;
 
@@ -18,6 +19,7 @@ class Rimuru : public Enemy {
 	void RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir);
 	void WaitEvent();
 
+	Aen::Entity* m_healthBar;
 	Aen::Entity* m_rimuru;
 	Aen::Vec3f m_lDir;
 	Aen::Vec3f m_Dir;

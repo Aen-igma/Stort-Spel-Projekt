@@ -21,34 +21,34 @@ namespace Aen {
 
 		//----------------------	Button	----------------------------//
 		void SaveButtonData();
-		void AddButton(const std::wstring& dir, int indX);
-		void SetButtonPos(float x, float y, int indX);
-		void SetButtonSize(float width, float height, int indX);
-		bool Intersects(int indX);
+		void AddButton(const std::wstring& dir);
+		void SetButtonPos(float x, float y);
+		void SetButtonSize(float width, float height);
+		bool Intersects(int index);
 
 		//----------------------	Text	----------------------------//
-		void AddText(std::wstring text);
-		void AddText();
+		void AddText(LPCWSTR text, float size);
 		void SetTextSize(float width, float height);
 		void SetTextPos(float x, float y);
+		void TextNr(int index, LPCWSTR text);
+		void SetColor(D2D1::ColorF color);
+		void SetFont(LPCWSTR font);
 
 		//----------------------	Just pictures	----------------------------//
-		void AddPicture(const std::wstring& dir, int indX);
-		void SetPicPos(float x, float y, int indX);
-		void SetPicSize(float width, float height, int indX);
-		void LessenPic(float width, int indX);
+		void AddPicture(const std::wstring& dir);
+		void SetPicPos(float x, float y);
+		void SetPicSize(float width, float height);
+		void UpdatePicture(float width, int indX);
 		
 		friend class ComponentHandler;
 		friend class Renderer;
 		friend class Entity;
 		friend class GCore;
-
-		std::vector<ButtonData> GetData()const;
-
 		void Update();
 
 		// Inherited via Drawable
-		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
-		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
+		virtual void Draw(Renderer& renderer, const uint32_t& layer = 0) override;
+		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer = 0) override;
+		virtual bool FrustumCull(Renderer& renderer) override;
 	};
 }

@@ -15,43 +15,37 @@ namespace Aen {
     {
     }
 
-    //----------------------	Button	----------------------------//
-
+    //--------------------------------------------    	    Button          --------------------------------------------------//
 	void UIComponent::SaveButtonData()
 	{
 		m_button.SaveData();
 	}
 
-	void Aen::UIComponent::AddButton(const std::wstring& dir, int indX)
+	void Aen::UIComponent::AddButton(const std::wstring& dir)
 	{
-		m_button.AddButton(dir.c_str(), indX);
+		m_button.AddButton(dir.c_str());
 	}
 
-    void UIComponent::SetButtonSize(float width, float height, int indX)
+    void UIComponent::SetButtonSize(float width, float height)
     {
-        m_button.SetButtonSize(width, height, indX);
+        m_button.SetButtonSize(width, height);
     }
 
-    void UIComponent::SetButtonPos(float x, float y, int indX)
+    void UIComponent::SetButtonPos(float x, float y)
     {
-        m_button.SetButtonPos(x, y, indX);
+        m_button.SetButtonPos(x, y);
     }
 
-    bool UIComponent::Intersects(int indX)
+    bool UIComponent::Intersects(int index)
     {
-       return m_button.Intersect(indX);
+       return m_button.Intersect(index);
     }
 
-    //----------------------	Text	----------------------------//
+    //--------------------------------------------    	    Text            --------------------------------------------------//
 
-    void Aen::UIComponent::AddText(std::wstring text)
+    void Aen::UIComponent::AddText(LPCWSTR text, float size)
     {
-        m_text.TextAdd(text);
-    }
-
-    void Aen::UIComponent::AddText()
-    {
-        m_text.AddText();
+        m_text.AddText(text, size);
     }
 
     void UIComponent::SetTextSize(float width, float height)
@@ -61,44 +55,53 @@ namespace Aen {
 
     void UIComponent::SetTextPos(float x, float y)
     {
-        m_text.setTextPosition(x,y);
+        m_text.setTextPosition(x, y);
     }
 
-    //----------------------	Just pictures	----------------------------//
-
-    void UIComponent::AddPicture(const std::wstring& dir, int indX)
+    void UIComponent::TextNr(int index, LPCWSTR text)
     {
-        m_picture.AddPicture(dir.c_str(), indX);
+        m_text.TextNr(index, text);
     }
 
-    void UIComponent::SetPicPos(float x, float y, int indX)
+    void UIComponent::SetColor(D2D1::ColorF color)
     {
-        m_picture.SetPicPos(x, y, indX);
+        m_text.SetColor(color);
     }
 
-    void UIComponent::SetPicSize(float width, float height, int indX)
+    void UIComponent::SetFont(LPCWSTR font)
     {
-        m_picture.SetPicSize(width, height, indX);
+        m_text.SetFont(font);
     }
 
-    void UIComponent::LessenPic(float width, int indX)
+    //--------------------------------------------    	    Picutres        --------------------------------------------------//
+
+    void UIComponent::AddPicture(const std::wstring& dir)
     {
-        m_picture.LessenPic(width, indX);
+        m_picture.AddPicture(dir.c_str());
     }
 
-    //----------------------	General stuff   ----------------------------//
+    void UIComponent::SetPicPos(float x, float y)
+    {
+        m_picture.SetPicPos(x, y);
+    }
+
+    void UIComponent::SetPicSize(float width, float height)
+    {
+        m_picture.SetPicSize(width, height);
+    }
+
+    void UIComponent::UpdatePicture(float width, int indX)
+    {
+        m_picture.UpdatePicture(width, indX);
+    }
+
+    //--------------------------------------------    	General stuff       --------------------------------------------------//
 	void UIComponent::Update()
 	{
-		for (auto& b : GetData()) {
-
-            m_button.Update(b.index);
+        for (int i = 0; i < m_button.GetData().size(); i++) {
+            m_button.Update(i);
 		}
 	}
-
-    std::vector<ButtonData> UIComponent::GetData() const
-    {
-        return m_button.GetData();
-    }
 
 	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& layer)
 	{
@@ -108,15 +111,23 @@ namespace Aen {
             m_picture.Draw(b);
         }
 		//Draw button
-		for (auto& b : GetData()) {
+		for (auto& b : m_button.GetData()) {
 
             m_button.Draw(b);
         }
-		//m_text.Draw();
+        //Draw Text
+        for (auto& b :m_text.GetData()) {
+
+            m_text.Draw(b);
+        }
     }
 
 	void Aen::UIComponent::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	{
 
+    }
+    bool UIComponent::FrustumCull(Renderer& renderer)
+    {
+        return true;
     }
 }
