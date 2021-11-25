@@ -70,5 +70,11 @@ namespace Aen {
 		GlobalSettings::Destroy();
 		PhysicsHandler::Destroy();
 		delete m_renderer;
+		
+	}
+
+	void GameLoop::InitApp(Aen::App* app)
+	{
+		m_app = app;
 	}
 }

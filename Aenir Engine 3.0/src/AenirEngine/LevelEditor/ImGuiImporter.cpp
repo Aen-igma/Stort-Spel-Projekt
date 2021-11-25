@@ -16,6 +16,11 @@ namespace Aen
 		inputVec = Color(inputArray[0], inputArray[1], inputArray[2], inputArray[3]);
 	}
 
+	Aen::Vec3f ImGuiImporter::Convert(float input[3])
+	{
+		return Aen::Vec3f(input[0], input[1], input[2]);
+	}
+
 	void ImGuiImporter::setMaterial(Aen::Material& materialOut, AenIF::Material materialIn)
 	{
 		Convert(materialIn.baseColor, materialOut["BaseColor"]);
@@ -41,6 +46,7 @@ namespace Aen
 
 	void ImGuiImporter::addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, AenIF::Model& model, AenIF::Texture& texture, AenIF::Material& materialIn)
 	{
+		
 		string imageName = AEN_RESOURCE_DIR(texture.name);
 		entity = &mp_entityHandlerPtr->CreateEntity();
 		mesh = &Aen::Resource::CreateMesh(model.name);
@@ -82,7 +88,6 @@ namespace Aen
 		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);
 		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);
 		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
-
 
 	}
 
@@ -287,6 +292,16 @@ namespace Aen
 		return result;
 	}
 
+	vector<Vec3f>& ImGuiImporter::GetEnemyPos()
+	{
+		return m_enemyPos;
+	}
+
+	Aen::Entity* ImGuiImporter::GetBossPos()
+	{
+		return mp_bossPtr;
+	}
+
 
 	void ImGuiImporter::GetFloatArray(float* inputArray, float& x, float& y, float& z)
 	{
@@ -462,12 +477,30 @@ namespace Aen
 	{
 		if (model.type == IGH::NORMALENEMY)
 		{
-			OutputDebugStringA(IGH::NORMALENEMY.c_str());
+			//OutputDebugStringA(IGH::NORMALENEMY.c_str());
+			m_enemyPos.push_back(entity->GetPos());
+
 		}
 		else if (model.type == IGH::BOSS.c_str())
 		{
-			OutputDebugStringA(IGH::NORMALENEMY.c_str());
+			mp_bossPtr = entity;
+			//OutputDebugStringA(IGH::NORMALENEMY.c_str());
 		}
+	}
+
+	void ImGuiImporter::AddEnemy(AenIF::Model& model)
+	{
+		if (model.type == IGH::NORMALENEMY)
+		{
+			//OutputDebugStringA(IGH::NORMALENEMY.c_str());
+			m_enemyPos.push_back(Convert(model.translation));
+
+		}
+		//else if (model.type == IGH::BOSS.c_str())
+		//{
+		//	mp_bossPtr = entity;
+		//	//OutputDebugStringA(IGH::NORMALENEMY.c_str());
+		//}
 	}
 
 	void ImGuiImporter::AddLight(Aen::Entity* entity)
@@ -589,16 +622,20 @@ namespace Aen
 		temp.translation[2] = posZ + offset.y;
 		temp.rotation[1] = model.rotation[1] + (angle * 57.2957795);
 
-		addBaseCommon(entity, mesh, material, materialTexture, temp, texture, materialIn);
+		if (model.type.size() != IGH::NORMALENEMY.size())
+		{
+			addBaseCommon(entity, mesh, material, materialTexture, temp, texture, materialIn);
 
-		size_t id = entity->GetID();
-		Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(*material);
+			size_t id = entity->GetID();
 
-		AddModel(entity);
-		AddModel(entity, model.name);
+			Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(*material);
+		
+			AddModel(entity, model.name);
 
-		m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(materialIn, texture.name, model.name, model.mesh, model.type, model.rigidBody, model.rigidBodyType)));
-		m_modelMap->at(id).m_model.m_castShadow = model.castShadow;
+			m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(materialIn, texture.name, model.name, model.mesh, model.type, model.rigidBody, model.rigidBodyType)));
+			m_modelMap->at(id).m_model.m_castShadow = model.castShadow;
+		}
+		AddEnemy(temp);
 
 	}
 
