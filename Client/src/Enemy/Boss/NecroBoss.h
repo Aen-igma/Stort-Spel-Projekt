@@ -19,7 +19,7 @@ protected:
 
 private:
 	void LightAttack();
-	void FleeAttack();
+	void BigAttack();
 	void DashAttack();
 
 	void UpdateAttack();
@@ -34,9 +34,12 @@ private:
 
 	float m_hp;
 	bool m_isEngaged;
-	bool m_hurting;
+	bool m_isHurting;
+	bool m_isCasting;
 
 	float m_knockBackForce;
 	float m_attackDamage;
+
+	float m_speed;
 };
 

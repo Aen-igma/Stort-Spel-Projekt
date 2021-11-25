@@ -85,10 +85,13 @@ namespace Aen {
 			renderer.m_cbTransform.UpdateBuffer();
 
 #ifndef _DEBUG
-			DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
+			//DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+			//DirectX::BoundingOrientedBox box(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+			//DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
 #endif // !_DEBUG
 #ifdef _DEBUG
 			DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+			//DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 			//After procedural generation, m_obb values become nan, this is a work around
 #endif // DEBUG
 
@@ -100,13 +103,15 @@ namespace Aen {
 
 			// Mesh and Material
 
-					for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
+					UINT partSize = m_pMesh->getPartitions().size();
+
+					for(uint32_t i = 0; i < partSize; i++) {
 
 						m_pMesh->m_vertices.BindBuffer();
 
 						// Opaque pass
 
-						uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
+						uint32_t materialIndex = m_pMesh->getPartitions()[i].materialIndex;
 						Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
 						if(pMaterial) {
 
@@ -147,7 +152,7 @@ namespace Aen {
 
 								RenderSystem::ClearDepthStencilView(renderer.m_depthMap, false, true);
 								RenderSystem::SetDepthStencilState(renderer.m_writeStencil, 0xFF);
-								m_pMesh->m_vertices.Draw(m_pMesh->m_partitions[i].size, m_pMesh->m_partitions[i].offset);
+								m_pMesh->m_vertices.Draw(m_pMesh->getPartitions()[i].size, m_pMesh->getPartitions()[i].offset);
 
 
 								// Per Object Post Process Pass

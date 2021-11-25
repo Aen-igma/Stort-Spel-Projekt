@@ -5,8 +5,9 @@ Boss::Boss(float hp) :
 	mE_hurtBox(&Aen::EntityHandler::CreateEntity()),
 	Enemy(), m_direction(0.f, 0.f, 1.f),
 
-	m_isEngaged(false), m_hp(hp), m_hurting(false),
-	LIGHTDMG(20.f), HEAVYDMG(50.f), LIGHTFORCE(20.f), HEAVYFORCE(100.f)
+	m_isEngaged(false), m_hp(hp), m_isHurting(false),
+	LIGHTDMG(20.f), HEAVYDMG(50.f), LIGHTFORCE(20.f), HEAVYFORCE(100.f),
+	m_speed(2.f)
 {
 	m_health = 100.f;
 
@@ -77,8 +78,21 @@ void Boss::Update(const float& deltaTime, Player& player)
 
 	if (Aen::Input::KeyDown(Aen::Key::G))
 		LightAttack();
+
+	if (Aen::Input::KeyDown(Aen::Key::H))
+		BigAttack();
+
 	m_v += m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
+
+	if (Aen::Input::KeyDown(Aen::Key::K))
+		m_isEngaged = !m_isEngaged;
+
+	if (m_isEngaged)
+	{
+		m_v += m_direction * 1.3;
+	}
+
 	m_enemy->GetComponent<Aen::CharacterController>().Move(m_v * m_deltatime, m_deltatime);
 
 	UpdateAttack();
@@ -90,14 +104,32 @@ void Boss::LightAttack()
 	data.function = [&](float& accell, const float& attackDuration) {
 
 		mp_hurtBox->ToggleActive(true);
-		m_v = m_direction * 4.f;
-
+		m_v = m_direction * accell;
 	};
+	data.accell = 4.f;
 	data.duration = .3f;
 	data.type = EventType::Attack;
 	data.damage = LIGHTDMG;
 	data.knockbackForce = LIGHTFORCE;
 
+
+	m_eventQueue.emplace_back(data);
+}
+
+void Boss::BigAttack()
+{
+	EventData data;
+	data.duration = .5f;
+	data.type = EventType::Attack;
+	data.damage = HEAVYDMG;
+	data.knockbackForce = HEAVYFORCE;
+	data.accell = .1f;
+	data.function = [&](float& accell, const float& attackDuration) {
+
+		mp_hurtBox->ToggleActive(true);
+		m_v = m_direction * 4.f * accell;
+
+	};
 
 	m_eventQueue.emplace_back(data);
 }
@@ -108,16 +140,16 @@ void Boss::UpdateAttack()
 	{
 		if (mp_hurtBox->Intersects(mp_player->GetEntity()->GetComponent<Aen::AABoundBox>()))
 		{
-			if (!m_hurting)
+			if (!m_isHurting)
 			{
 				EventData currentEvent(m_eventQueue.front());
-				m_hurting = true;
+				m_isHurting = true;
 				mp_player->Hurt(currentEvent.damage, currentEvent.knockbackForce, m_direction.Normalized());
 			}
 
 
 		}
-		else m_hurting = false;
+		else m_isHurting = false;
 	}
 	else
 		mp_hurtBox->ToggleActive(false);
