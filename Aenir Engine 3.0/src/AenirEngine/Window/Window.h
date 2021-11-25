@@ -43,8 +43,6 @@ namespace Aen {
 		DWORD m_style;
 		HWND m_hwndParent;
 		HMENU m_hMenu;
-		//static int idIt;
-		//int id;
 
 		Vec2i wPos;
 
