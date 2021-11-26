@@ -27,33 +27,6 @@ void Gameplay::Initialize()
 {
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
-	// -----------------------------	UI	------------------------------- //
-	m_UI = &Aen::EntityHandler::CreateEntity();
-	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png")); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(350.f, 100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f);
-
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"bar.png")); //1
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(350.f, 100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f);
-
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"potion.png")); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(125.f, 100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(150.f, 150.f);
-
-	//m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
-	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
-	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
-
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Kill All Enemies", 72.f); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 100.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
-
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"5", 50.f); //1 - Amount of potion
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(120.f, 110.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(150.f, 150.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -145,7 +118,8 @@ void Gameplay::Initialize()
 
 	//Match this value to the size of the rooms we are using
 	m_levelGenerator.SetRoomDimension(43.f);
-	mptr_map = m_levelGenerator.GenerationTestingFunction();
+	mptr_map = m_levelGenerator.GenerateLevel();
+	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
@@ -185,10 +159,42 @@ void Gameplay::Initialize()
 	wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 	wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
 	m_Window.LoadSettings(wDesc);
+	screenWidth = wDesc.width;
+
+	// -----------------------------	UI	------------------------------- //
+	m_UI = &Aen::EntityHandler::CreateEntity();
+	m_UI->AddComponent<Aen::UIComponent>();
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png")); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((350.f / 1920)* wDesc.width, (100.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(((m_hp * 2.f) / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"bar.png")); //1
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((350.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(((m_hp * 2.f) / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"potion.png")); //2
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((125.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+
+	//m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
+	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
+	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Kill All Enemies", 72.f); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
+
+		m_UI->GetComponent<Aen::UIComponent>().AddText(L"5", 50.f); //1 - Amount of potion
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((120.f / 1920) * wDesc.width, (110.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
+#ifdef _DEBUG
 	cout << "Press Enter To Continue\n";
+#endif // _DEBUG
+
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -201,7 +207,7 @@ void Gameplay::Update(const float& deltaTime) {
 		float hp = (m_hp - m_player.GetHealth());
 		potionNr << m_player.GetPotionNr();
 
-		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(hp * 2.f, 0);
+		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture((hp * 2.f) * (1.f/1920.f) * screenWidth, 0);
 		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
 		m_hp = m_player.GetHealth();
 	}
@@ -245,6 +251,7 @@ void Gameplay::Update(const float& deltaTime) {
 
 		if (m_toggleFullScreen) {
 			wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
+			screenWidth = wDesc.width;
 			wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
@@ -252,6 +259,7 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 		else {
 			wDesc.width = static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f);
+			screenWidth = wDesc.width;
 			wDesc.height = static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f);
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_OVERLAPPEDWINDOW | AEN_WS_VISIBLE;

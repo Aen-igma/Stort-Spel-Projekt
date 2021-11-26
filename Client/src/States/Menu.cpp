@@ -33,34 +33,37 @@ void MainMenu::Initialize()
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f)); //Windowed
 
 	//Fullscreen
-	//Aen::WindowDesc wDesc;
-	//wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
-	//wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
-	//wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
-	//wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
-	//m_Window.LoadSettings(wDesc);
+	Aen::WindowDesc wDesc;
+	wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
+	wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
+	wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
+	wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
+	m_Window.LoadSettings(wDesc);
 
+#ifdef _DEBUG
 	cout << "Main Menu\n";
 	cout << "Press Enter to Play\n";
+#endif // _DEBUG
+
 
 	// ----------------------------- UI -------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"PathToTheTower.png"));
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 520.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((961.f / 1920.f) * wDesc.width, (516.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(wDesc.width, wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"Title.png"));
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(900.f, 400.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1200.f, 300.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((900.f / 1920.f) * wDesc.width, (400.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize((1200.f / 1920.f) * wDesc.width, (300.f / 1024.f) * wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Play.png")); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(500.f, 900);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((1.f / 3.f) * wDesc.width, (880 / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920.f) * wDesc.width, (200.f / 1024.f) * wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Quit.png")); //1
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 900);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(300.f, 200.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((2.f / 3.f) * wDesc.width, (880.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920.f) * wDesc.width, (200.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 	
 	//Text
