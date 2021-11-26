@@ -1,7 +1,7 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f),
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f), m_timer(0),m_deathTimer(0),
 	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
@@ -9,6 +9,7 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	Aen::EntityHandler::RemoveEntity(*m_reimube1);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
+	//Aen::EntityHandler::RemoveEntity(*m_wall);
 	
 	for (auto& b : *m_levelImporter.GetEntityList()) {
 		Aen::EntityHandler::RemoveEntity(*b);
@@ -27,6 +28,11 @@ void Gameplay::Initialize()
 {
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //2
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
+	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -94,7 +100,6 @@ void Gameplay::Initialize()
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 
-
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	m_reimube1->AddComponent<Aen::MeshInstance>();
 	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
@@ -122,8 +127,9 @@ void Gameplay::Initialize()
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
-	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
-
+	Aen::Vec3f playerStartPos;
+	Aen::Vec3f ChestPos;
+	Aen::Vec3f EnemyPos;
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
@@ -133,22 +139,46 @@ void Gameplay::Initialize()
 				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
+
+				for (int i = 0; i < 2; i++) {
+					m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+					m_enemyQueue.at(i)->GetEntity()->SetTag("ItemEnemy");
+				}
+				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
+			}
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE) {
+				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+			}
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
+
+				int index = m_enemyQueue.size();
+				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+				m_enemyQueue.at(index)->GetEntity()->SetScale(2.f);
+			}
 		}
 	}
-	m_player.GetEntity()->SetPos(playerStartPos);
-
-	//---------ENEMIES----------//
-	int numEnemies = 10;
-	int offset = -10;
-	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
-	for (int u = 0; u < numEnemies; u++) {
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((LehmerInt() % 38) - 19.f, 0.f, offset)));
-		offset -= 5;
-	}
+	m_chest.GetObjectEntity()->SetPos(ChestPos);
+	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y, ChestPos.z);
+	m_chest.SetType(Type::Locked);
 
 	//m_attack->SetParent(*m_player);
 
 	//printf("");
+
+	//std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
+	//for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
+	//{
+	//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
+	//}
+	//m_enemyQueue.emplace_back(AEN_NEW Rimuru(Aen::Vec3f(0,0,0)));
+
 
 	// --------------------------- Setup Window --------------------------------- //
 
@@ -200,10 +230,11 @@ void Gameplay::Initialize()
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
 
 void Gameplay::Update(const float& deltaTime) {
-
-
-	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
-		wstringstream potionNr;
+	
+	wstringstream potionNr;
+	potionNr << m_player.GetPotionNr();
+	m_player.PotionUpdate();
+	if (m_hp != m_player.GetHealth()) {
 		float hp = (m_hp - m_player.GetHealth());
 		potionNr << m_player.GetPotionNr();
 
@@ -211,6 +242,8 @@ void Gameplay::Update(const float& deltaTime) {
 		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
 		m_hp = m_player.GetHealth();
 	}
+	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
+	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -221,16 +254,46 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.Update(m_enemyQueue, deltaTime);
 
-	for(auto& i : m_enemyQueue)
+	m_chest.Update(deltaTime, m_player.GetEntity());
+	if (m_chest.GetNear()) {
+		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f, 2);
+		m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300.f, 2);
+
+		//if (m_enemyQueue.empty())
+		//	m_chest.SetType(Type::Closed);
+
+		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open) {
+			m_player.IncreaseHealthCap();
+			m_chest.SetType(Type::Closed);
+		}
+	}
+	else {
+		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, 0.f, 2);
+	}
+
+
+	for (auto& i : m_enemyQueue) {
 		i->Update(deltaTime, m_player);
+		m_chest.Update(deltaTime, i->GetEntity());
+	}
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
 
-	if(m_player.GetHealth() <= 0.f)
-		State::SetState(States::Gameover);
 
-	//if(m_enemyQueue.empty())
-	//	State::SetState(States::Victory);
+	if (m_hp <= 0.f) {
+		SetWin(false);
+		m_UI->GetComponent<Aen::UIComponent>().SetPicPos(0.f, 0.f, 0);
+		m_deathTimer += deltaTime;
+
+		if (m_deathTimer > 0.1f) {
+			State::SetState(States::Gameover);
+		}
+	}
+
+	//if (m_enemyQueue.empty()) {
+	//	SetWin(true);
+	//	State::SetState(States::Gameover);
+	//}
 
 	#ifdef _DEBUG
 		if(Aen::Input::KeyDown(Aen::Key::J))
@@ -269,9 +332,10 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
-	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
+	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
+		//State::SetState(States::Gameover);
 		m_Window.Exit();
-
+	}
 	// ------------------------------------- States -------------------------------------- //
 	//if (m_hp <= 0 && m_enemyQueue.size() == 0)
 	//{

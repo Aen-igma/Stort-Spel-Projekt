@@ -36,7 +36,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPInstance, _
 	RedirectIOToConsole();
 	{
 		Aen::GameLoop gameLoop;
-		gameLoop.m_app = Aen::CreateApp(); //    remove this
+		//gameLoop.m_app = Aen::CreateApp(); //    remove this
+		gameLoop.InitApp(Aen::CreateApp());
 		gameLoop.Initialize();
 		gameLoop.Run();
 	}
@@ -48,7 +49,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPInstance, _
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPInstance, _In_ LPWSTR lpCmdLine, _In_ int cmdShow) {
 	Aen::GameLoop gameLoop;
-	gameLoop.m_app = Aen::CreateApp(); //    remove this
+	//gameLoop.m_app = Aen::CreateApp(); //    remove this
+	gameLoop.InitApp(Aen::CreateApp());
 	gameLoop.Initialize();
 	gameLoop.Run();
 	return 0;

@@ -83,23 +83,14 @@ namespace Aen {
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
-//
-//#ifndef _DEBUG
-//			//Funkar inte i debug
-//			DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
-//#endif // !_DEBUG
-//#ifdef _DEBUG
-//			DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
-//			//After procedural generation, m_obb values become nan, this is a work around
-//#endif // DEBUG
-//
-//
-//			box.Transform(box, m.smMat);
-//
-//			if(GlobalSettings::GetMainCamera())
-//				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) 
-			if (GlobalSettings::GetMainCamera())
-			    {
+
+			//DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
+			DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+
+			box.Transform(box, m.smMat);
+
+			if(GlobalSettings::GetMainCamera())
+				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
 
 			// Mesh and Material
 				for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
@@ -185,6 +176,7 @@ namespace Aen {
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
+
 			/*
 			DirectX::BoundingOrientedBox box;
 			box.Extents = m_pMesh->m_aabb.Extents;

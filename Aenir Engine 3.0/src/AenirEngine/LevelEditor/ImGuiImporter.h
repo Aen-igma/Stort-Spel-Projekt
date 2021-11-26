@@ -11,6 +11,7 @@
 #include "LevelEditor/ImguiType.h"
 #include <vector>
 
+
 using std::string;
 using std::vector;
 using std::cout;
@@ -31,6 +32,9 @@ namespace Aen
 		vector<Aen::Entity*> *m_entityList;
 		vector<string> *m_itemList;
 
+		Aen::Entity* mp_bossPtr;
+		vector<Vec3f> m_enemyPos;
+
 		unordered_map< size_t, IGH::ModelContainer> *m_modelMap;
 		unordered_map< size_t, Aen::Entity*> *m_lightMap;
 		vector<IGH::MatTexName>* m_materialList;
@@ -45,21 +49,20 @@ namespace Aen
 	public:
 		void Convert(const Aen::Vec4f inputVec, float* inputArray);
 		void Convert(float* inputArray, Aen::Vec4f& inputVec);
-
+		Aen::Vec3f Convert(float input[3]);
 
 
 		ImGuiImporter();
 		ImGuiImporter(vector<Aen::Entity*>* m_entityList, vector<string>* m_itemList, unordered_map< size_t, IGH::ModelContainer>* m_modelMap, unordered_map< size_t, Aen::Entity*>* m_lightMap, AenIMP::LevelImporter* m_levelImporter, vector<IGH::MatTexName>* m_materialList);
 		~ImGuiImporter();
 
-
-
 		bool import(AenIMP::LevelImporter &m_levelImporter, string & levelPath, float* translation, float* rotation, float* scale);
 		bool import(string& levelPath);
 
 		bool IfExist(vector<IGH::MatTexName>& matList, AenIF::Material& value);
 
-
+		vector<Vec3f>& GetEnemyPos();
+		Aen::Entity* GetBossPos();
 		void GetFloatArray(float* inputArray, float& x, float& y, float& z);
 
 		void ReadAllFilesFromResourceFolder();
@@ -81,6 +84,7 @@ namespace Aen
 		void AddLight(Aen::Entity* entity, string type);
 		
 		void AddEnemy(Aen::Entity* entity, AenIF::Model& model); // Write import code here
+		void AddEnemy(AenIF::Model& model);
 
 		size_t AddPointLight(AenIF::Light& input);
 		void AddPointLight();

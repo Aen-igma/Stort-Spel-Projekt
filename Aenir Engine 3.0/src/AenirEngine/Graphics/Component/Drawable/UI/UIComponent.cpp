@@ -53,9 +53,19 @@ namespace Aen {
         m_text.setTextSize(width,height);
     }
 
+    void UIComponent::SetTextSize(float width, float height, int indX)
+    {
+        m_text.setTextSize(width, height, indX);
+    }
+
     void UIComponent::SetTextPos(float x, float y)
     {
         m_text.setTextPosition(x, y);
+    }
+
+    void UIComponent::SetTextPos(float x, float y, int indX)
+    {
+        m_text.setTextPosition(x, y, indX);
     }
 
     void UIComponent::TextNr(int index, LPCWSTR text)
@@ -85,14 +95,34 @@ namespace Aen {
         m_picture.SetPicPos(x, y);
     }
 
+    void UIComponent::SetPicPos(float x, float y, int indX)
+    {
+        m_picture.SetPicPos(x, y, indX);
+    }
+
     void UIComponent::SetPicSize(float width, float height)
     {
         m_picture.SetPicSize(width, height);
     }
 
+    void UIComponent::SetPicSize(float width, float height, int indX)
+    {
+        m_picture.SetPicSize(width, height, indX);
+    }
+
     void UIComponent::UpdatePicture(float width, int indX)
     {
         m_picture.UpdatePicture(width, indX);
+    }
+
+    Vec2f UIComponent::GetPicSize(int indX)
+    {
+        return m_picture.GetPicSize(m_picture.GetData().at(indX).rect);
+    }
+
+    bool UIComponent::Check(int index)
+    {
+        return m_picture.Intersect(index);
     }
 
     //--------------------------------------------    	General stuff       --------------------------------------------------//

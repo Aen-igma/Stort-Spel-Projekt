@@ -40,8 +40,13 @@ public:
 	void UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime);
 	void SubtractHealth(const float& damage);
 	void Move(const Aen::Vec3f& dir);
+	void PotionUpdate();
+	void IncreaseHealthCap();
 	const float& GetHealth();
 	int GetPotionNr() const;
+
+	static void SetHealing(const bool& b);
+	bool& IsHealing()const;
 
 	const bool IsAttacking();
 
@@ -53,7 +58,10 @@ private:
 
 	float m_health;
 	float m_potion;
+	int m_potionCap;
 	int m_nrPotion;
+	float m_timer;
+	static bool m_healing;
 
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;

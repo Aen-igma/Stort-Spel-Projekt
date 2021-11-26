@@ -55,6 +55,10 @@ namespace Aen {
 			return m_pWindow;
 		}
 
+		static const bool GetVSync() {
+			return m_vSync;
+		}
+
 		friend class GameLoop;
 		friend class Renderer;
 		friend class Camera;
@@ -80,9 +84,6 @@ namespace Aen {
 			}
 		}
 
-		static const bool GetVSync() {
-			return m_vSync;
-		}
 
 		static void Destroy() {
 			delete m_defaultMaterial;

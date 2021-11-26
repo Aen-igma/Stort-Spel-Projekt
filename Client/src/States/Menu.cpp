@@ -1,7 +1,7 @@
 #include "Menu.h"
 
 MainMenu::MainMenu(Aen::Window& window)
-	:State(window)
+	:State(window), m_UI(nullptr)
 {
 
 }
@@ -23,8 +23,10 @@ void MainMenu::Update(const float& deltaTime)
 		else if (m_UI->GetComponent<Aen::UIComponent>().Intersects(1)) {
 			m_Window.Exit();
 		}
-		else if (m_UI->GetComponent<Aen::UIComponent>().Intersects(2)) {
+		else if (m_UI->GetComponent<Aen::UIComponent>().Intersects(3)) {
 			State::SetState(States::Credits);
+		else if (m_UI->GetComponent<Aen::UIComponent>().Intersects(2)) {
+			State::SetState(States::Options);
 		}
 	}
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
@@ -33,7 +35,7 @@ void MainMenu::Update(const float& deltaTime)
 
 void MainMenu::Initialize()
 {
-	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f)); //Windowed
+	//m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f)); //Windowed
 
 	//Fullscreen
 	Aen::WindowDesc wDesc;
@@ -68,7 +70,11 @@ void MainMenu::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((2.f / 3.f) * wDesc.width, (880.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920.f) * wDesc.width, (200.f / 1024.f) * wDesc.height);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Credits.png")); //2
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Options.png")); //2
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 900);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 150.f);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Credits.png")); //3
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((2.f / 4.f) * wDesc.width, (880.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920.f) * wDesc.width, (200.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
