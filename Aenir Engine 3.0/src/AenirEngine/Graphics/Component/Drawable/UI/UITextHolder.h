@@ -31,7 +31,7 @@ namespace Aen
 		void SetFont(LPCWSTR font);
 		void SetColor(D2D1::ColorF color);
 		void Draw(UITextData& data);
-		void TextNr(int index, LPCWSTR text);
+		void ChangeText(int index, LPCWSTR text);
 
 		void setTextSize(float width, float height);
 		void setTextSize(float width, float height, int indX);

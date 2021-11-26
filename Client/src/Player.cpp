@@ -505,7 +505,7 @@ void Player::PotionUpdate()
 	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0 && m_health < 200.f && !m_healing) {
 
 		m_healing = true;
-		m_nrPotion--;
+		m_nrPotion -= 1;
 	}
 
 	if (m_healing) {

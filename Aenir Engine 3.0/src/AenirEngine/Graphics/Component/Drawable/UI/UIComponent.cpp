@@ -68,9 +68,9 @@ namespace Aen {
         m_text.setTextPosition(x, y, indX);
     }
 
-    void UIComponent::TextNr(int index, LPCWSTR text)
+    void UIComponent::ChangeText(int index, LPCWSTR text)
     {
-        m_text.TextNr(index, text);
+        m_text.ChangeText(index, text);
     }
 
     void UIComponent::SetColor(D2D1::ColorF color)

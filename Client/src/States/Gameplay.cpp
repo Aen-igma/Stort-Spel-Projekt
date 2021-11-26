@@ -209,7 +209,7 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
-		m_UI->GetComponent<Aen::UIComponent>().AddText(L"5", 50.f); //1 - Amount of potion
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"", 50.f); //1 - Amount of potion
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((120.f / 1920) * wDesc.width, (110.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
@@ -219,13 +219,8 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
 
-
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
-#ifdef _DEBUG
-	cout << "Press Enter To Continue\n";
-#endif // _DEBUG
-
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -237,13 +232,11 @@ void Gameplay::Update(const float& deltaTime) {
 	m_player.PotionUpdate();
 	if (m_hp != m_player.GetHealth()) {
 		float hp = (m_hp - m_player.GetHealth());
-		potionNr << m_player.GetPotionNr();
 
 		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture((hp * 2.f) * (1.f/1920.f) * screenWidth, 0);
-		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
 		m_hp = m_player.GetHealth();
 	}
-	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
+	m_UI->GetComponent<Aen::UIComponent>().ChangeText(1, potionNr.str().c_str());
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
