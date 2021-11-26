@@ -2,7 +2,9 @@
 
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f),
-	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
+	IFRAMEMAX(1.5f), m_iFrames(0.f) {
+	
+}
 
 Gameplay::~Gameplay() {
 	//Aen::EntityHandler::RemoveEntity(*m_dLight);
@@ -27,6 +29,7 @@ void Gameplay::Initialize()
 {
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
+
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
@@ -84,19 +87,13 @@ void Gameplay::Initialize()
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
-	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
-	//enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["BaseColor"] = Aen::Color::Cyan;
-
 	// Material to switch to when enemy is hurt
 	enemyMatHurt["BaseColor"] = Aen::Color::Red;
-	/*wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
-	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
 
 	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
@@ -184,7 +181,7 @@ void Gameplay::Initialize()
 	//m_attack->SetParent(*m_player);
 
 	//printf("");
-	// 
+
 	// --------------------------- Setup Window --------------------------------- //
 
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
@@ -203,7 +200,6 @@ void Gameplay::Initialize()
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
 
 void Gameplay::Update(const float& deltaTime) {
-
 
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
 		wstringstream potionNr;
@@ -240,7 +236,6 @@ void Gameplay::Update(const float& deltaTime) {
 			m_enemyQueue.emplace_back(AEN_NEW Rimuru());
 	#endif
 
-
 	//if (Aen::Input::KeyDown(Aen::Key::O)) {
 	//	delete m_enemyQueue.front();
 	//	m_enemyQueue.pop_front();
@@ -271,7 +266,10 @@ void Gameplay::Update(const float& deltaTime) {
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
-		m_Window.Exit();
+	{
+		State::SetState(States::Gameover);
+		//m_Window.Exit();
+	}
 
 	// ------------------------------------- States -------------------------------------- //
 	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)

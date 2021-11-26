@@ -43,10 +43,10 @@ namespace Aen {
 					m_app->Update(static_cast<float>(m_deltaTime.count()));
 				}
 
-				PhysicsHandler::Update(static_cast<float>(m_deltaTime.count()));
-
+				
 				if (GlobalSettings::GetVSync())
 				{
+					PhysicsHandler::Update(static_cast<float>(m_deltaTime.count()));
 					m_renderer->Culling();
 					m_renderer->Render();
 				}
@@ -54,6 +54,7 @@ namespace Aen {
 
 			if (!GlobalSettings::GetVSync())
 			{
+				PhysicsHandler::Update(static_cast<float>(m_deltaTime.count()));
 				m_renderer->Culling();
 				m_renderer->Render();
 			}
