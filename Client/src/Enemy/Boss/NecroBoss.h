@@ -9,7 +9,7 @@ private:
 	const float LIGHTFORCE;
 	const float HEAVYFORCE;
 public:
-	Boss(float hp = 10);
+	Boss(float hp = 100.f);
 	virtual~Boss();
 	// Inherited via Enemy
 	virtual void Update(const float& deltaTime, Player& player) override;
@@ -35,7 +35,7 @@ private:
 	Player* mp_player;
 	std::vector<Rimuru*> m_pMinions;
 
-	sm::Vector3 m_thronePosition; // TODO: Pair with procedual generation
+	Aen::Vec3f m_thronePosition; // TODO: Pair with procedual generation
 
 	float m_hp;
 	bool m_isEngaged;
@@ -47,5 +47,9 @@ private:
 	float m_attackDamage;
 
 	float m_speed;
+	const float BASESPEED;
+
+	uint8_t m_stage = 0;
+
 };
 

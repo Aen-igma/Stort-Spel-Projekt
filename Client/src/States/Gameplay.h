@@ -30,7 +30,9 @@ private:
     Aen::Entity* m_wall;
 
     Player m_player;
-    Boss m_skeleBoss;
+    Boss* m_skeleBoss;
+
+    Aen::UIComponent* mp_uiComp;
 
     bool m_beatBoss;
 

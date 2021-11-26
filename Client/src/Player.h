@@ -9,17 +9,21 @@ enum class EventType {
 	Attack,
 	Wait,
 	Summon,
+	Hit,
 };
+
 
 struct EventData {
 	float duration;
 	float accell;
 	float damage;
 	float knockbackForce;
+	int nrOfAttacks;
 	EventType type;
-	std::function<void(float& accell, const float& attackDuration)> function;
+	std::function<void(float& accell, const float& attackDuration, const int& nrOfAttacks)> function;
 
-	EventData() :duration(0.f), accell(0.f), damage(0.f), knockbackForce(1.f), type(), function() {}
+
+	EventData() :duration(0.f), accell(0.f), damage(0.f), knockbackForce(1.f), nrOfAttacks(0), type(EventType::Wait), function() {}
 };
 
 struct TargetData {
@@ -49,8 +53,9 @@ public:
 
 	const bool IsAttacking();
 
-private:
+	Aen::AABoundBox* GetHitBoxP() const;
 
+private:
 	void SwordSwing(float speed, float time, const float& deltaTime);
 	void ResetSword();
 	void AddEvent(EventData& event);
@@ -66,6 +71,8 @@ private:
 	Aen::Entity* m_targetUI;
 	Aen::Raycast m_ray;
 
+
+
 	float m_mouseSense;
 	float m_movementSpeed;
 	Aen::Vec3f m_finalDir;
@@ -79,8 +86,12 @@ private:
 	const float m_LIGHTATTACKSPEED;
 	const float m_HEAVYATTACKSPEED;
 
-	
 	Aen::Vec3f m_v;
 	std::deque<EventData> m_eventQueue;
 	std::deque<TargetData> m_targets;
+
+	Aen::CharacterController* mp_charCont;
+	Aen::AABoundBox* mp_hitBox;
+	Aen::OBBox* mp_hurtBox;
+	Aen::Rotation* m_rot;
 };

@@ -4,10 +4,11 @@ Boss::Boss(float hp) :
 	//m_hurtbox(&Aen::EntityHandler::CreateEntity()),
 	mE_hurtBox(&Aen::EntityHandler::CreateEntity()),
 	Enemy(), m_direction(0.f, 0.f, 1.f),
+	m_thronePosition(m_enemy->GetPos() + Aen::Vec3f(0.f, 4.f, 0.f)),
 
 	m_isEngaged(false), m_hp(hp), m_isHurting(false), m_areMinionsSummoned(false),
-	LIGHTDMG(20.f), HEAVYDMG(50.f), LIGHTFORCE(20.f), HEAVYFORCE(100.f),
-	m_speed(2.f)
+	LIGHTDMG(20.f), HEAVYDMG(50.f), LIGHTFORCE(20.f), HEAVYFORCE(100.f), BASESPEED(3.f),
+	m_speed(BASESPEED), m_stage(0)
 {
 	m_health = 100.f;
 
@@ -29,6 +30,8 @@ Boss::Boss(float hp) :
 
 	m_enemy->SetPos(1, 0, 3);
 	mE_hurtBox->SetParent(*m_enemy);
+
+	mp_hitbox->ToggleActive(true);
 
 	//mE_hurtBox->SetPos(1, 1, 1);
 	//phurtbox->SetBoundingBox(2, 7, 2);
@@ -68,7 +71,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 	{
 		if (m_eventQueue.front().duration > 0.f)
 		{
-			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration);
+			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration, m_eventQueue.front().nrOfAttacks);
 			m_eventQueue.front().duration -= deltaTime;
 		}
 		else
@@ -76,18 +79,17 @@ void Boss::Update(const float& deltaTime, Player& player)
 			m_eventQueue.pop_front();
 		}
 
-
-
 	}
 
 	float zero = 0;
 	if (Aen::Input::KeyDown(Aen::Key::G))
 		LightAttack();
-
 	if (Aen::Input::KeyDown(Aen::Key::H))
 		BigAttack();
 	if (Aen::Input::KeyDown(Aen::Key::J))
-		SummonSlimes(3);
+		SummonSlimes(6);
+	if (Aen::Input::KeyDown(Aen::Key::L))
+		GoToThrone();
 
 	m_v += m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
@@ -99,16 +101,16 @@ void Boss::Update(const float& deltaTime, Player& player)
 	{
 		m_v += m_direction * 1.3;
 	}
-
+	//m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
+	UpdateAttack();
 	m_enemy->GetComponent<Aen::CharacterController>().Move(m_v * m_deltatime, m_deltatime);
 
-	UpdateAttack();
 }
 
 void Boss::LightAttack()
 {
 	EventData data;
-	data.function = [&](float& accell, const float& attackDuration) {
+	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
 
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * accell;
@@ -131,7 +133,7 @@ void Boss::BigAttack()
 	data.damage = HEAVYDMG;
 	data.knockbackForce = HEAVYFORCE;
 	data.accell = .1f;
-	data.function = [&](float& accell, const float& attackDuration) {
+	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
 
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * 4.f * accell;
@@ -145,10 +147,9 @@ void Boss::GoToThrone()
 {
 	EventData data;
 	data.duration = .5f;
-	data.type = EventType::Dash;
-	data.accell = .1f;
-	data.function = [&](float& accell, const float& attackDuration) {
-
+	data.type = EventType::Wait;
+	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
+		m_enemy->SetPos(m_thronePosition);
 	};
 
 	m_eventQueue.emplace_back(data);
@@ -159,28 +160,30 @@ void Boss::SummonSlimes(int amountOfSLimes)
 	if (!m_areMinionsSummoned)
 	{
 		m_areMinionsSummoned = true;
-		float bengt = 0.f;
-		for (int i = 0; i < amountOfSLimes; i++)
-		{
-			bengt += 3.f;
-			EventData data;
+		float minionPos = 0.f;
+		EventData data;
 
-			data.duration = .01f;
-			data.type = EventType::Wait;
-			data.damage = 0;
-			data.knockbackForce = 0;
-			data.accell = 0.f;
-			data.function = [&](float& accell, const float& attackDuration) {
+		data.nrOfAttacks = amountOfSLimes;
+		data.duration = .01f;
+		data.type = EventType::Summon;
+		data.damage = amountOfSLimes;
+		data.knockbackForce = 0;
+		data.accell = 0.f;
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
 
-				m_pMinions.emplace_back(new Rimuru({ -11.f, bengt, bengt }));
+			float bengt = 0.f;
+			for (int i = 0; i < nrOf; i++)
+			{
+				m_pMinions.emplace_back(new Rimuru({ -11.f + minionPos, 3, minionPos }));
+				minionPos += 3.f;
+			}
 
 
-			};
+		};
 
-			m_eventQueue.emplace_back(data);
-		}
+		m_eventQueue.emplace_back(data);
 	}
-	
+
 
 
 }
@@ -205,12 +208,7 @@ void Boss::UpdateAttack()
 	else
 		mp_hurtBox->ToggleActive(false);
 
-	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Summon)
-	{
-
-	}
-
-	//if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Wait)
+	//if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Hit)
 		//printf("e");
 
 }

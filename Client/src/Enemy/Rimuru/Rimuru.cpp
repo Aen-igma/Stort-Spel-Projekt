@@ -82,7 +82,7 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 
 	if(!m_eventQueue.empty()) {
 		if(m_eventQueue.front().duration > 0.f) {
-			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration);
+			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration, m_eventQueue.front().nrOfAttacks);
 			m_eventQueue.front().duration -= deltaTime;
 		} else {
 			m_eventQueue.pop_front();
@@ -135,8 +135,7 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		m_healthBar->SetPos(0, -100, 0);
 	}
 
-
-	if(player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_enemy->GetComponent<Aen::AABoundBox>())) {
+	if(player.GetHitBoxP()->Intersects(m_enemy->GetComponent<Aen::AABoundBox>())) {
 		if(!m_hurting) {
 			m_hurting = true;
 			player.Hurt(10.f, 20.f, m_lDir.Normalized());
@@ -167,11 +166,11 @@ void Rimuru::RandomCombatEvent(const float& deltaTime) {
 	switch(rand() % 2) {
 		case 0:
 		data.duration = rand() % 2 + 1;
-		data.function = [&](float& accell, const float& attackDuration) {};
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks) {};
 		break;
 		case 1:
 		data.duration = 0.01f;
-		data.function = [&](float& accell, const float& attackDuration) {
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks) {
 			m_v = Aen::Vec3f(0.f, 8.f, 0.f) + m_lDir * 14.f;
 		};
 		break;
@@ -186,11 +185,11 @@ void Rimuru::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir) 
 	switch(rand() % 2) {
 		case 0:
 		data.duration = rand() % 3 + 3;
-		data.function = [&](float& accell, const float& attackDuration) {};
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks) {};
 		break;
 		case 1:
 		data.duration = rand() % 3 + 1;
-		data.function = [&](float& accell, const float& attackDuration) {
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks) {
 			m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized() * 3.f * deltaTime, deltaTime);
 
 			m_lDir = Aen::Lerp(m_lDir, Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized(), 0.03f);
@@ -209,7 +208,7 @@ void Rimuru::WaitEvent()
 
 	data.type = EventType::Wait;
 	data.duration = 2.f;
-	data.function = [&](float& accell, const float& attackDuration) {};
+	data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks) {};
 
 	m_eventQueue.clear();
 	m_eventQueue.emplace_back(data);

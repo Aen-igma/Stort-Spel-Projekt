@@ -17,8 +17,8 @@ Aen::Entity*& Enemy::GetEntity()
 	return m_enemy;
 }
 
-void Enemy::Update(const float& deltaTime, Player& player) {
-}
+//void Enemy::Update(const float& deltaTime, Player& player) {
+//}
 
 void Enemy::SetISTargeted(const bool& targeted) {
 	m_targeted = targeted;
