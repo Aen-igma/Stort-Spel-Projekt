@@ -28,18 +28,27 @@ void Credits::Initialize()
 	m_Window.LoadSettings(wDesc);
 
 	// ----------------------------- UI -------------------------------- //
-	// keyboard
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"KeyboardLayout.png"));
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((965.f / 1920) * wDesc.width, (520.f / 1024) * wDesc.height); //Divide by standard size, mul with wDesc size
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(1700.f, 900.f);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"PathToTheTower.png"));
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((961.f / 1920.f) * wDesc.width, (516.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(wDesc.width, wDesc.height);
 
 	// continue
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Continue.png"));
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((950.f / 1920) * wDesc.width, (900.f / 1024) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Back.png"));
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((3.f / 6.f) * wDesc.width, (880.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (75.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
+
+	const wchar_t credits[10][27] = {{L"Credits"}, {L"Adam Levin"}, {L"Andreas Johansson"}, {L"Christian Falk"}, {L"Filip Michael"}, {L"Julian Agonoy"}, {L"Linus Dorell"}, {L"Matthew Pettersson"}, {L"Oskar Nyman"},{L"\nIn collaboration\nwith BTH"} };
+
+	for (int i = 0; i < 10; i++) {
+
+		m_UI->GetComponent<Aen::UIComponent>().AddText(credits[i], 30.f); //1
+		m_UI->GetComponent<Aen::UIComponent>().SetTextPos((1.f / 2.f) * wDesc.width, ((200.f + 50.f * i + ((i < 1) * -50.f))/ 1024.f) * wDesc.height);
+		m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * wDesc.width, (300 / 1024.f) * wDesc.height);
+		m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
+	};
 }
 
 Credits::Credits(Aen::Window& window)

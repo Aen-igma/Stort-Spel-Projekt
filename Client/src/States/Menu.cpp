@@ -25,6 +25,7 @@ void MainMenu::Update(const float& deltaTime)
 		}
 		else if (m_UI->GetComponent<Aen::UIComponent>().Intersects(3)) {
 			State::SetState(States::Credits);
+			}
 		else if (m_UI->GetComponent<Aen::UIComponent>().Intersects(2)) {
 			State::SetState(States::Options);
 		}
@@ -59,24 +60,24 @@ void MainMenu::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(wDesc.width, wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"Title.png"));
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((900.f / 1920.f) * wDesc.width, (400.f / 1024.f) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize((1200.f / 1920.f) * wDesc.width, (300.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((1.f / 2.f) * wDesc.width,(400.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize((2.f / 3.f) * (1200.f / 1920.f) * wDesc.width, (2.f / 3.f) * (300.f / 1024.f) * wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Play.png")); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((1.f / 3.f) * wDesc.width, (880 / 1024.f) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920.f) * wDesc.width, (200.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((3.f / 6.f) * wDesc.width, (680 / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (75.f / 1024.f) * wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Quit.png")); //1
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((2.f / 3.f) * wDesc.width, (880.f / 1024.f) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920.f) * wDesc.width, (200.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((3.f / 6.f) * wDesc.width, (880.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (75.f / 1024.f) * wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Options.png")); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos(950.f, 900);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(400.f, 150.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((4.f / 9.f) * wDesc.width, (780.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f)* wDesc.width, (75.f / 1024.f)* wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Credits.png")); //3
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((2.f / 4.f) * wDesc.width, (880.f / 1024.f) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920.f) * wDesc.width, (200.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((5.f / 9.f) * wDesc.width, (780.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (75.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	
