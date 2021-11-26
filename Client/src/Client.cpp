@@ -61,6 +61,9 @@ void Client::ChangeState(const States& states)
 		case States::Options:
 			mp_state = AEN_NEW Options(m_window);
 			break;
+		case States::Credits:
+			mp_state = AEN_NEW Credits(m_window);
+			break;
 	}
 
 	//if (mp_state && mp_state->GetCurrentState() != States::Gameplay)

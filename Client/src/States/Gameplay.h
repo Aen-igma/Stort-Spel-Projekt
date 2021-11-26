@@ -23,6 +23,8 @@ private:
     float m_fSpeed;
     bool m_toggleFullScreen;
 
+    float screenWidth;
+
     Aen::Raycast m_ray;
 
     Aen::Entity* m_dLight;
