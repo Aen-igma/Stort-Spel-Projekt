@@ -60,13 +60,13 @@ void Gameplay::Initialize()
 	// -------------------------- Particle System ------------------------------- //
 	m_PS = &Aen::EntityHandler::CreateEntity();
 	m_PS->AddComponent<Aen::PSSystemcomponent>();
-	m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("Flame.png"));
-
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("Flame.png"));
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(10);
 	/*Aen::Material& PSMaterial = Aen::Resource::CreateMaterial("EnemyMaterial");*/
-	/*m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(PSMaterial);*/
+
 
 	//m_PS->GetComponent<Aen::PSSystemcomponent>().InitParticleVariables();
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(10);
+
 
 	
 
@@ -105,6 +105,12 @@ void Gameplay::Initialize()
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
+
+	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
+	psMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Flames1.png"));
+	psMat["InnerEdgeColor"] = Aen::Color::White;
+	psMat["OuterEdgeColor"] = Aen::Color::White;
+	psMat["BaseColor"] = Aen::Color::White;
 	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
@@ -153,6 +159,8 @@ void Gameplay::Initialize()
 	m_reimube1->SetRot(10, 1, 1);
 	//m_reimube1->SetRenderLayer(1);
 
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
+
 	// ------ Level Importer ------ //
 
 
@@ -182,7 +190,8 @@ void Gameplay::Initialize()
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 		}
 	}
-	m_player.GetEntity()->SetPos(playerStartPos);
+	//Comment thingy
+	//m_player.GetEntity()->SetPos(playerStartPos);
 
 	//---------ENEMIES----------//
 	int numEnemies = 10;

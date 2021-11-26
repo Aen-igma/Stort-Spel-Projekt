@@ -1,6 +1,7 @@
 #pragma once
 #include "..\Drawable.h"
 #include "..\Mesh\Material.h"
+#include "..\Mesh\Mesh.h"
 
 
 namespace Aen 
@@ -56,24 +57,25 @@ namespace Aen
 		//void DisableBlending();
 		
 
-		//Material and texture
+		//Texture
 		void LoadAndSetTexture(const std::string& dir);
 		void SetTexture(Texture& texture);
 		void SetTexture(const std::string& name);
-		void LoadAndSetMaterial(const std::string& dir);
+
+		//Material
 		void SetMaterial(Material& material);
-		void SetMaterial(const std::string& name);
-		//void SetMaterial(Material& material);
-		//void SetMaterial(const std::string& materialName);
-		//void SetMaterial(const std::string& materialSlotName, Material& material);
-		//void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
-		//void SetMaterial(const UINT& index, Material& material);
+		void SetMaterial(const std::string& materialName);
+		void SetMaterial(const std::string& materialSlotName, Material& material);
+		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
+		void SetMaterial(const UINT& index, Material& material);
 
 		//Friend class 
 		friend class ComponentHandler;
 		friend class Renderer;
 		friend class Entity;
 		friend class GCore;
+
+
 
 	private:
 
@@ -82,13 +84,18 @@ namespace Aen
 		friend class Renderer;
 		friend class Entity;
 		friend class GCore;
+
+
 	
 		//Particle* m_ParticleList;
 		CSInputBuffer m_CSInputBuffer;
 		Texture* m_texture;
-		Material* m_material;
+
 		ShaderModel* m_shader;
 		UAView m_UAView;
+
+		Mesh* m_pMesh;
+		Material* m_pMaterials;
 
 		void updatePS(const float& framerate);
 		
@@ -109,6 +116,9 @@ namespace Aen
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
 		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
+
+		// Inherited via Drawable
+		virtual bool FrustumCull(Renderer& renderer) override;
 	};
 
 }

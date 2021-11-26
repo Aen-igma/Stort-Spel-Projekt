@@ -41,7 +41,7 @@ VertexShaderOutput main(uint vertexID : SV_VertexID)
     output.position = mul(output.position, vMat);
     output.position = mul(output.position, pMat);
     output.uv = Particles[vertexID].UV;
-    
-    output.color = Particles[vertexID].Color;
+    output.color = float4(1.0f,1.0f,1.0f,opacity / a);
+    //output.color = Particles[vertexID].Color;
     return output;
 }

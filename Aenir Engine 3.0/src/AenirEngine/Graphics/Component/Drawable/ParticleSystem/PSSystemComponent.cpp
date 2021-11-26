@@ -2,6 +2,9 @@
 #include "PSSystemComponent.h"
 #include "Core/Renderer.h"
 #include"Importer/ObjImporter.h"
+#include "../Mesh/MeshInstance.h"
+#include"Core/GlobalSettings.h"
+
 
 namespace Aen 
 {
@@ -12,18 +15,20 @@ namespace Aen
 		//m_Particle.m_pos.x = 10;
 		//m_Particle.m_pos.y = 10;
 		//m_Particle.m_pos.z = 10;
-		/*m_CSInputBuffer.m_particleCount = 10;*/
-		/*m_ParticleList.m_velocity = m_CSInputBuffer.m_vel.y;*/
+		//m_CSInputBuffer.m_particleCount = 10;
+		//m_ParticleList.m_velocity = m_CSInputBuffer.m_vel.y;
 		//m_ParticleList.m_pos[1] = 0.0f;
 		//m_ParticleList = 0;
 
 		this->m_CSInputBuffer.m_velocity.x = 1.0f;
 		this->m_CSInputBuffer.m_velocity.y = 2.0f;
 		this->m_CSInputBuffer.m_velocity.z = 1.0f;
+
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
 	{
+
 	}
 
 	void PSSystemcomponent::LoadAndSetTexture(const std::string& dir)
@@ -43,44 +48,35 @@ namespace Aen
 		m_texture = &Aen::Resource::GetTexture(name);
 	}
 
-	void PSSystemcomponent::LoadAndSetMaterial(const std::string& dir)
-	{
-		m_material = &Aen::Resource::CreateMaterial(GetNameFromPath(dir));
-		m_material->LoadeAndSetDiffuseMap(dir);
-	}
-
 	void PSSystemcomponent::SetMaterial(Material& material)
 	{
-		m_material[0] = material;
+		m_pMaterials = &material;
 	}
 
-
-	void PSSystemcomponent::SetMaterial(const std::string& name)
+	void PSSystemcomponent::SetMaterial(const std::string& materialName)
 	{
-		if (!Resource::MaterialExist(name))throw;
-		m_material[0] = Resource::GetMaterial(name);
+		if (!Resource::MaterialExist(materialName))throw;
+		m_pMaterials = &Resource::GetMaterial(materialName);
 	}
 
-	//void PSSystemcomponent::SetMaterial(const std::string& materialSlotName, Material& material)
-	//{
-	//	if (m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
-	//	m_material[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &material;
-	//}
 
-	//void PSSystemcomponent::SetMaterial(const std::string& materialSlotName, const std::string& materialName)
-	//{
-	//	if (m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
-	//	if (!Resource::MaterialExist(materialName)) throw;
-	//	m_material[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
-	//}
+	void PSSystemcomponent::SetMaterial(const std::string& materialSlotName, Material& material)
+	{
+		if (m_pMesh->m_meshMaterialName.count(materialSlotName) == 0)throw;
+		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName) == 0] = &material;
+	}
 
-	//void PSSystemcomponent::SetMaterial(const UINT& index, Material& material)
-	//{
-	//}
+	void PSSystemcomponent::SetMaterial(const std::string& materialSlotName, const std::string& materialName)
+	{
+		if (m_pMesh->m_meshMaterialName.count(materialSlotName) == 0)throw;
+		if (!Resource::MaterialExist(materialName))throw;
+		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
+	}
 
-	//void MeshInstance::SetMaterial(const UINT& index, Material& material) {
-	//	m_material[index] = &material;
-	//}
+	void PSSystemcomponent::SetMaterial(const UINT& index, Material& material)
+	{
+		m_pMaterials[index] = &material;
+	}
 
 	void PSSystemcomponent::updatePS(const float& framerate)
 	{
@@ -89,24 +85,7 @@ namespace Aen
 
 	void PSSystemcomponent::InitParticleVariables()
 	{
-		//this->particleDeviationX = 100.0f;
-		//this->particleDeviationY = 10.0f;
-		//this->particleDeviationZ = 100.0f;
-		//this->particleVelocity = 10.0f;
-		//this->particleVelocityVariation = 1.0f;
-		//this->particleSize = 0.12f;
-		//this->particlesPerSecond = 2500.0f;
-		//this->maxParticles = 1024;
-		//this->m_ParticleList = new Particle[maxParticles];
-		//if (!m_ParticleList)
-		//	throw;
-		////Initalizing all particles at start
-		////for (i = 0; i < maxParticles; i++)
-		////{
-		////	m_ParticleList[i].active = true;
-		////}
-		//this->currentNrPS = 0;
-		//this->accumulatedTime = 0.0f;
+
 	}
 
 	void PSSystemcomponent::activatePS()
@@ -167,57 +146,31 @@ namespace Aen
 	{
 		for (int i = 0; i < this->currentNrPS; i++)
 		{
-			//this->m_ParticleList[i].m_pos.x = x;
-			//this->m_ParticleList[i].m_pos.y = y;
-			//this->m_ParticleList[i].m_pos.z = z;
+
 		}
 	}
 
 	void PSSystemcomponent::respawn(float x, float y, float z)
 	{
-		//if (this->m_Particle.m_pos.y >= 10)
-		//{
-		//	this->m_Particle.m_pos.x = x;
-		//	this->m_Particle.m_pos.y = y;
-		//	this->m_Particle.m_pos.z = z;
-		//	this->m_Particle.m_color.x = 1;
-		//	this->m_Particle.m_color.y = 1;
-		//	this->m_Particle.m_color.z = 1;
-		//	this->m_Particle.m_color.w = 1;
-		//	this->m_Particle.m_uv.x = 0;
-		//	this->m_Particle.m_uv.y = 0;
-		//}
+	
 	}
 
 	bool PSSystemcomponent::activate()
 	{
-		//int i;
-		//this->maxParticles = 1024;
-		//this->m_ParticleList = new Particle[maxParticles];
-		//if (!m_ParticleList)
-		//	return false;
-		//for (int i = 0; i < maxParticles; i++)
-		//	m_ParticleList[i].active = true;
-		//return true;
-		return false;
+		return true;
 	}
 
 
 
 	void PSSystemcomponent::SetVelo(float x)
 	{
-		//for (int i = 0; i < this->currentNrPS; i++)
-		//{
-		//	this->m_ParticleList[i].m_velocity = x;
-		//}
+	
 	}
 
 	void PSSystemcomponent::SetVel(float dir)
 	{
 
-		//this->m_ParticleList[currentNrPS].m_velocity = dir;
-		//this->m_CSInputBuffer[currentNrPS].m_vel.y = y;
-		//this->m_CSInputBuffer[currentNrPS].m_vel.z = z;
+		
 	}
 
 
@@ -245,15 +198,48 @@ namespace Aen
 		renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation();
 		renderer.m_cbTransform.UpdateBuffer();
 		renderer.m_cbTransform.BindBuffer<VShader>(0);
-	
+
 		RenderSystem::BindShaderResourceView<VShader>(0, m_UAView);
 
 		renderer.m_cbTransform.BindBuffer<GShader>(0);
-		RenderSystem::BindShaderResourceView<PShader>(0,m_texture->m_shaderResource);
 		RenderSystem::BindSamplers<PShader>(0,renderer.m_wrapSampler);
+
+
+
+		////Material
+		//for (uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++)
+		//{
+		//	uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
+		//	Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
+		//	if (pMaterial)
+		//	{
+		//		RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
+		//		RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
+		//		RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShader);
+		//		uint32_t* slots = pMaterial->m_pShaderModel->m_slots;
+		//		for (UINT k = 0; k < 4; i++)
+		//		{
+		//			if (pMaterial->m_textures[k] && slots[k] != UINT_MAX)
+		//			{
+		//				RenderSystem::UnBindShaderResources<PShader>(slots[k],1u);
+		//				RenderSystem::BindShaderResourceView<PShader>(slots[k],pMaterial->m_textures[k]->m_shaderResource);
+		//				renderer.m_cbUseTexture.GetData()[k] = (int)true;
+		//			}
+		//			else
+		//				renderer.m_cbUseTexture.GetData()[k] = (int)false;
+		//			pMaterial->m_dBuffer.UpdateBuffer();
+		//			renderer.m_cbUseTexture.UpdateBuffer();
+		//		}
+		//	}
+		//}
+
+		
+
+
 
 		RenderSystem::BindRenderTargetView(renderer.m_backBuffer);
 		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
+		//RenderSystem::SetRasteriserState(renderer.m_wireFrameState);
 
 		RenderSystem::BindShader(renderer.m_PSVShader);
 		RenderSystem::BindShader(renderer.m_PSGShader);
@@ -272,6 +258,38 @@ namespace Aen
 
 	void PSSystemcomponent::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	{
-		
+		/*if (m_pMesh)
+		{
+			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
+			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
+			renderer.m_cbTransform.UpdateBuffer();
+			if (GlobalSettings::GetMainCamera())
+			{
+				Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
+				if (pMaterial) {
+					RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
+					RenderSystem::BindShader(renderer.m_opaqueVS);
+					RenderSystem::BindShader(renderer.m_transparencyPS);
+
+					renderer.m_cbTransform.BindBuffer<VShader>(0u);
+				}
+				m_pMesh->m_vertices.BindBuffer();
+				m_pMesh->m_vertices.Draw();
+			}
+		}*/
+	}
+	bool PSSystemcomponent::FrustumCull(Renderer& renderer)
+	{
+		//if (m_pMesh)
+		//{
+		//	Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
+		//	DirectX::BoundingOrientedBox box;
+		//	box.Extents = m_pMesh->m_aabb.Extents;
+		//	box.Transform(box, m.smMat);
+		//	if (GlobalSettings::GetMainCamera())
+		//		if (box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum()))
+		//			return true;
+		//}
+		return true;
 	}
 }

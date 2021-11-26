@@ -65,6 +65,7 @@ namespace Aen {
 
 	void MeshInstance::SetMaterial(const std::string& materialSlotName, Material& material) {
 		if(m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
+	
 		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &material;
 	}
 
@@ -76,6 +77,7 @@ namespace Aen {
 
 	void MeshInstance::Draw(Renderer& renderer, const uint32_t& layer) {
 
+		
 		if(m_pMesh) {
 
 			// Transform
@@ -118,6 +120,7 @@ namespace Aen {
 						RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShader);
 
 						uint32_t* slots = pMaterial->m_pShaderModel->m_slots;
+
 
 						for(UINT k = 0; k < 4; k++)
 							if(pMaterial->m_textures[k] && slots[k] != UINT_MAX) {

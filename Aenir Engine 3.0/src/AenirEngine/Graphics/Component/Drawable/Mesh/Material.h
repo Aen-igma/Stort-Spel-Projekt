@@ -40,7 +40,10 @@ namespace Aen {
 		friend class Resource;
 		friend class Renderer;
 		friend class MeshInstance;
+		friend class PSSystemcomponent;
 	};
+
+
 
 	class AEN_DECLSPEC Material {
 		public:
@@ -68,7 +71,6 @@ namespace Aen {
 		void LoadeAndSetOpacityMap(const std::string& dir);
 
 		ElRef operator[] (const std::string& name);
-
 		private:
 		~Material() = default;
 
@@ -80,5 +82,6 @@ namespace Aen {
 		friend class Renderer;
 		friend class MeshInstance;
 		friend class GlobalSettings;
+		friend class PSSystemcomponent;
 	};
 }
