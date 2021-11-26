@@ -22,7 +22,7 @@ private:
 	void BigAttack();
 	void DashAttack();
 	void GoToThrone();
-	void SummonSlimes(float& timer, int amountOfSLimes);
+	void SummonSlimes(int amountOfSLimes);
 
 	void UpdateAttack();
 
@@ -33,13 +33,15 @@ private:
 	Aen::Vec3f m_direction;
 
 	Player* mp_player;
-	std::vector<Rimuru*> m_pEnemies;
+	std::vector<Rimuru*> m_pMinions;
+
+	sm::Vector3 m_thronePosition; // TODO: Pair with procedual generation
 
 	float m_hp;
 	bool m_isEngaged;
 	bool m_isHurting;
 	bool m_isCasting;
-	bool m_areSlimesSummoned;
+	bool m_areMinionsSummoned;
 
 	float m_knockBackForce;
 	float m_attackDamage;

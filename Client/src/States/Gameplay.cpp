@@ -235,10 +235,10 @@ void Gameplay::Update(const float& deltaTime) {
 	//if(m_enemyQueue.empty())
 	//	State::SetState(States::Victory);
 
-	#ifdef _DEBUG
-		if(Aen::Input::KeyDown(Aen::Key::J))
-			m_enemyQueue.emplace_back(AEN_NEW Rimuru());
-	#endif
+	//#ifdef _DEBUG
+	//	if(Aen::Input::KeyDown(Aen::Key::J))
+	//		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
+	//#endif
 
 
 	//if (Aen::Input::KeyDown(Aen::Key::O)) {

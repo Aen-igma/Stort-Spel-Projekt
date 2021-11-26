@@ -157,6 +157,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 	output.diffuse = float4(saturate(finalPixel * diffuseM), 1.f);
 	output.pos = float4(input.worldPos, 1.f);
 
+	//finalPixel = normal;
 
 	if(opacityM > 0.f || !useOpacity) {
 		output.depthNormal = mul(float4(normal, 0.f), vMat);

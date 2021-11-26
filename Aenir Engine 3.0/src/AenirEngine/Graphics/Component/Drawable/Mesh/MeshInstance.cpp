@@ -95,11 +95,11 @@ namespace Aen {
 			renderer.m_cbTransform.UpdateBuffer();
 
 
-			DirectX::BoundingOrientedBox box(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+			DirectX::BoundingBox box(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents);
 			//DirectX::BoundingOrientedBox box(m_boundBox.center, m_boundBox.extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 			//After procedural generation, m_obb values become nan, this is a work around
 
-			//box.Transform(box, m.smMat);
+			box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())
 				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
