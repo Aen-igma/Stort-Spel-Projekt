@@ -34,13 +34,6 @@ void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 			m_near = false;
 		}
 	}
-
-	//Enemy
-	if (e->GetTag() == "ItemEnemy") {
-		if (dist < 20.f) {	
-			m_type = Type::Locked;
-		}
-	}
 }
 
 Aen::Entity*& Chest::GetObjectEntity()

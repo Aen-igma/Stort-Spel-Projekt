@@ -171,7 +171,6 @@ void Gameplay::Initialize()
 				for (int i = 0; i < 2; i++) {
 					m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
 					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-					m_enemyQueue.at(i)->GetEntity()->SetTag("ItemEnemy");
 				}
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
 			}
@@ -192,7 +191,7 @@ void Gameplay::Initialize()
 	}
 	m_chest.GetObjectEntity()->SetPos(ChestPos);
 	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y, ChestPos.z);
-	m_chest.SetType(Type::Locked);
+	m_chest.SetType(Type::Open);
 
 	//m_attack->SetParent(*m_player);
 
@@ -208,7 +207,7 @@ void Gameplay::Initialize()
 
 	// --------------------------- Setup Window --------------------------------- //
 
-	//m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.6f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.7f));
+	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.6f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.7f));
 	//Aen::WindowDesc wDesc;
 	//wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
 	//wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
@@ -233,7 +232,6 @@ void Gameplay::Update(const float& deltaTime) {
 		m_hp = m_player.GetHealth();
 	}
 	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
-	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -254,17 +252,15 @@ void Gameplay::Update(const float& deltaTime) {
 
 		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open) {
 			m_player.IncreaseHealthCap();
-			m_chest.SetType(Type::Closed);
+			m_chest.SetType(Type::Locked);
 		}
 	}
 	else {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, 0.f, 2);
 	}
 
-
 	for (auto& i : m_enemyQueue) {
 		i->Update(deltaTime, m_player);
-		m_chest.Update(deltaTime, i->GetEntity());
 	}
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
