@@ -127,13 +127,13 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 			}
 		}
 
-		/*for (int i = 0; i < verts.size(); i++) {
+		for (int i = 0; i < verts.size(); i++) {
 			Vec4f& boneWeights = verts[i].boneWeights;
 			float totalWeight = boneWeights.x + boneWeights.y + boneWeights.z + boneWeights.w;
 			if (totalWeight > 0.0f) {
 				verts[i].boneWeights = Vec4f(boneWeights.x / totalWeight, boneWeights.y / totalWeight, boneWeights.z / totalWeight, boneWeights.w / totalWeight);
 			}
-		}*/
+		}
 
 		for (int i = 0; i < mesh->mNumFaces; i++)
 		{
@@ -152,9 +152,6 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 
 		/*std::vector<UINT> boneCount;
 		boneCount.resize(verts.size(), 0);*/
-
-		
-
 		
 	}
 	

@@ -24,7 +24,7 @@ struct VS_Output {
 	float3 worldPos : WORLD_POSITION;
 };
 
-StructuredBuffer<float4x4> sBuffer;
+StructuredBuffer<float4x4> sBuffer : register(t0);
 
 void skin(inout float3 pos, inout float3 normal, int4 id, float4 weights)
 {

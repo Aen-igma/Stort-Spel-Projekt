@@ -244,7 +244,7 @@ namespace Aen {
 	{
 		Assimp::Importer importer;
 		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
-		const aiScene* animation = importer.ReadFile("../Resource/" + animationPath, aiProcess_Triangulate | aiProcess_MakeLeftHanded);
+		const aiScene* animation = importer.ReadFile("../Resource/" + animationPath, /*aiProcess_Triangulate | */aiProcess_MakeLeftHanded);
 		//----------------------BONE DATA--------------------------//
 		Bones rootBone;
 		/*rootBone.boneID = 0;

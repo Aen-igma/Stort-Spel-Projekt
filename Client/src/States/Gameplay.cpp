@@ -69,26 +69,42 @@ void Gameplay::Initialize()
 
 	//Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	//plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
-	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
-	rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
-	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
+	/*Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
+	rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));*/
+	/*Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
-	Aen::Mesh& pot = Aen::Resource::CreateMesh("Pot");
-	pot.Load(AEN_RESOURCE_DIR("Pot.fbx"));
+	Aen::Mesh& pot = Aen::Resource::CreateMesh("Pot");*/
+	/*pot.Load(AEN_RESOURCE_DIR("Pot.fbx"));
 	Aen::Mesh& torch = Aen::Resource::CreateMesh("Torch");
 	torch.Load(AEN_RESOURCE_DIR("Torch.fbx"));
 	Aen::Mesh& healingPot = Aen::Resource::CreateMesh("HealingPot");
-	healingPot.Load(AEN_RESOURCE_DIR("Healing_Pot_Soft.fbx"));
-	Aen::Mesh& skelLight = Aen::Resource::CreateMesh("Skel_Light");
+	healingPot.Load(AEN_RESOURCE_DIR("Healing_Pot_Soft.fbx"));*/
+	/*Aen::Mesh& skelLight = Aen::Resource::CreateMesh("Skel_Light");
 	skelLight.Load(AEN_RESOURCE_DIR("Skel_Light.fbx"));
 	Aen::Mesh& door = Aen::Resource::CreateMesh("Door");
 	door.Load(AEN_RESOURCE_DIR("Door.fbx"));
 	Aen::Mesh& chest = Aen::Resource::CreateMesh("Chest");
-	chest.Load(AEN_RESOURCE_DIR("chest_withAnimations.fbx"));
+	chest.Load(AEN_RESOURCE_DIR("chest_withAnimations.fbx"));*/
+	m_tim = &Aen::EntityHandler::CreateEntity();
+	Aen::Animation& testAnim = Aen::Resource::CreateAnimation("TimDab");
+	testAnim.LoadAnimation("AnimTri3.fbx");
+
+	Aen::Entity* testAnimObject = &Aen::EntityHandler::CreateEntity();
+	m_tim->AddComponent<Aen::Animator>();
+	m_tim->GetComponent<Aen::Animator>().SetAnimation(testAnim);
+	m_tim->GetComponent<Aen::Animator>().SetAnimationScale(5);
+	m_tim->GetComponent<Aen::Animator>().SetFrameRate(24);
+
 	Aen::Mesh& tim = Aen::Resource::CreateMesh("TimJ");
-	tim.Load(AEN_RESOURCE_DIR("AnimWaveHead.fbx"));
-	Aen::Mesh& web = Aen::Resource::CreateMesh("Web");
-	web.Load(AEN_RESOURCE_DIR("Web.fbx"));
+	tim.Load(AEN_RESOURCE_DIR("AnimTri3.fbx"));
+
+	m_tim->AddComponent<Aen::MeshInstance>();
+	m_tim->GetComponent<Aen::MeshInstance>().SetMesh(tim);
+	//m_tim->GetComponent<Aen::MeshInstance>().SetMaterial(timMat);
+
+	//m_tim->AddComponent<Aen::Animator>();
+	/*Aen::Mesh& web = Aen::Resource::CreateMesh("Web");
+	web.Load(AEN_RESOURCE_DIR("Web.fbx"));*/
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
@@ -97,40 +113,40 @@ void Gameplay::Initialize()
 	// -------------------------- Setup Material -------------------------------- //
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
-	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
-	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
-	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
-	Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
-	Aen::Material& potMat = Aen::Resource::CreateMaterial("PotMat");
+	/*Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");*/
+	/*Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");*/
+	/*Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");*/
+	/*Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");*/
+	/*Aen::Material& potMat = Aen::Resource::CreateMaterial("PotMat");
 	Aen::Material& torchMat = Aen::Resource::CreateMaterial("TorchMat");
-	Aen::Material& healingPotMat = Aen::Resource::CreateMaterial("HealingPotMat");
-	Aen::Material& skelLightMat = Aen::Resource::CreateMaterial("SkelLightMat");
+	Aen::Material& healingPotMat = Aen::Resource::CreateMaterial("HealingPotMat");*/
+	/*Aen::Material& skelLightMat = Aen::Resource::CreateMaterial("SkelLightMat");
 	Aen::Material& doorMat = Aen::Resource::CreateMaterial("DoorMat");
-	Aen::Material& chestMat = Aen::Resource::CreateMaterial("ChestMat");
+	Aen::Material& chestMat = Aen::Resource::CreateMaterial("ChestMat");*/
 	Aen::Material& timMat = Aen::Resource::CreateMaterial("TimMat");
-	Aen::Material& webMat = Aen::Resource::CreateMaterial("WebMat");
+	//Aen::Material& webMat = Aen::Resource::CreateMaterial("WebMat");
 
-	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
-	//enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
-	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
-	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
-	enemyMat["BaseColor"] = Aen::Color::Cyan;
+	//enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
+	////enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
+	//enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
+	//enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
+	//enemyMat["BaseColor"] = Aen::Color::Cyan;
 
 	// Material to switch to when enemy is hurt
-	enemyMatHurt["BaseColor"] = Aen::Color::Red;
+	/*enemyMatHurt["BaseColor"] = Aen::Color::Red;*/
 	/*wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
 	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
 
-	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
+	/*reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
-	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
+	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;*/
 
 	planeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 
-	potMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Pot_UV_DONE_2.png"));
+	/*potMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Pot_UV_DONE_2.png"));
 	potMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	potMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 
@@ -140,22 +156,22 @@ void Gameplay::Initialize()
 
 	healingPotMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Healing_Pot_UV_DONE.png"));
 	healingPotMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	healingPotMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	healingPotMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
 
 	//skelLightMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Healing_Pot_UV_DONE.png"));
-	skelLightMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	skelLightMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	skelLightMat["BaseColor"] = Aen::Color(0.8f, 0.8f, 0.5f, 1.f);
+	//skelLightMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	//skelLightMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	//skelLightMat["BaseColor"] = Aen::Color(0.8f, 0.8f, 0.5f, 1.f);
 
-	doorMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	doorMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	doorMat["BaseColor"] = Aen::Color(0.1f, 0.1f, 0.05f, 1.f);
+	//doorMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	//doorMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	//doorMat["BaseColor"] = Aen::Color(0.1f, 0.1f, 0.05f, 1.f);
 
-	chestMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	chestMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	//chestMat["BaseColor"] = Aen::Color(0.1f, 0.1f, 0.05f, 1.f);
+	//chestMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	//chestMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	////chestMat["BaseColor"] = Aen::Color(0.1f, 0.1f, 0.05f, 1.f);
 
-	webMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("Web_UV.png"));
+	//webMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("Web_UV.png"));
 	/*webMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	webMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
 
@@ -177,7 +193,7 @@ void Gameplay::Initialize()
 
 	// -------------------------- Setup Entities -------------------------------- //
 
-	m_pot = &Aen::EntityHandler::CreateEntity();
+	/*m_pot = &Aen::EntityHandler::CreateEntity();
 	m_pot->AddComponent<Aen::MeshInstance>();
 	m_pot->GetComponent<Aen::MeshInstance>().SetMesh(pot);
 	m_pot->GetComponent<Aen::MeshInstance>().SetMaterial(potMat);
@@ -194,9 +210,9 @@ void Gameplay::Initialize()
 	m_healingPot->GetComponent<Aen::MeshInstance>().SetMesh(healingPot);
 	m_healingPot->GetComponent<Aen::MeshInstance>().SetMaterial(healingPotMat);
 	m_healingPot->SetScale(0.3f, 0.3f, 0.3f);
-	m_healingPot->SetPos(-12.f, 2.f, -4.f);
+	m_healingPot->SetPos(-12.f, 2.f, -4.f);*/
 
-	m_skelLight = &Aen::EntityHandler::CreateEntity();
+	/*m_skelLight = &Aen::EntityHandler::CreateEntity();
 	m_skelLight->AddComponent<Aen::MeshInstance>();
 	m_skelLight->GetComponent<Aen::MeshInstance>().SetMesh(skelLight);
 	m_skelLight->GetComponent<Aen::MeshInstance>().SetMaterial(skelLightMat);
@@ -216,20 +232,17 @@ void Gameplay::Initialize()
 	m_chest->GetComponent<Aen::MeshInstance>().SetMaterial(chestMat);
 	m_chest->SetScale(0.5f, 0.5f, 0.5f);
 	m_chest->SetPos(-12.f, 2.f, 16.f);
-	m_chest->SetRot(0.f, -90.f, 0.f);
+	m_chest->SetRot(0.f, -90.f, 0.f);*/
 
-	m_tim = &Aen::EntityHandler::CreateEntity();
-	m_tim->AddComponent<Aen::MeshInstance>();
-	m_tim->GetComponent<Aen::MeshInstance>().SetMesh(tim);
-	m_tim->GetComponent<Aen::MeshInstance>().SetMaterial(timMat);
+	
 	//m_tim->SetPos(2.f, 2.f, 2.f);
 
-	m_web = &Aen::EntityHandler::CreateEntity();
+	/*m_web = &Aen::EntityHandler::CreateEntity();
 	m_web->AddComponent<Aen::MeshInstance>();
 	m_web->GetComponent<Aen::MeshInstance>().SetMesh(web);
 	m_web->GetComponent<Aen::MeshInstance>().SetMaterial(webMat);
 	m_web->SetPos(4.f, 2.f, 4.f);
-	m_web->SetScale(3.f, 1.f, 2.f);
+	m_web->SetScale(3.f, 1.f, 2.f);*/
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();
@@ -242,24 +255,19 @@ void Gameplay::Initialize()
 	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
 
 
-	m_reimube1 = &Aen::EntityHandler::CreateEntity();
-	m_reimube1->AddComponent<Aen::MeshInstance>();
-	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
-	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(enemyMat);
-	//m_reimube1->AddComponent<Aen::StaticBody>();
-	//m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
-	m_reimube1->SetPos(0.f, 1.f, 11.f);
-	m_reimube1->SetRot(10, 1, 1);
+	//m_reimube1 = &Aen::EntityHandler::CreateEntity();
+	//m_reimube1->AddComponent<Aen::MeshInstance>();
+	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
+	//m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(enemyMat);
+	////m_reimube1->AddComponent<Aen::StaticBody>();
+	////m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+	//m_reimube1->SetPos(0.f, 1.f, 11.f);
+	//m_reimube1->SetRot(10, 1, 1);
 	//m_reimube1->SetRenderLayer(1);
 
-	Aen::Animation& testAnim = Aen::Resource::CreateAnimation("TimDab");
-	testAnim.LoadAnimation("AnimWaveHead.fbx");
 	
-	Aen::Entity* testAnimObject = &Aen::EntityHandler::CreateEntity();
-	testAnimObject->AddComponent<Aen::Animator>();
-	testAnimObject->GetComponent<Aen::Animator>().SetAnimation(testAnim);
-	testAnimObject->GetComponent<Aen::Animator>().SetAnimationScale(5);
-	testAnimObject->GetComponent<Aen::Animator>().SetFrameRate(24);
+	
+	
 
 
 	// ------ Level Importer ------ //
@@ -267,42 +275,42 @@ void Gameplay::Initialize()
 	//m_levelImporter.import(path);
 
 	// ------------------- Procedural generation testing staging grounds ------- //
-	std::vector<string> levelPaths;
+	//std::vector<string> levelPaths;
 
-	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
-
-
-	m_levelGenerator.AddLoadedToGeneration();
-
-	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
-
-	//Match this value to the size of the rooms we are using
-	m_levelGenerator.SetRoomDimension(43.f);
-	mptr_map = m_levelGenerator.GenerationTestingFunction();
-
-	//Use this value to set the start of the player / origin of the map
-	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
+	//m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
 
 
-	for (UINT y = 0; y < Aen::mapSize; y++) {
-		for (UINT x = 0; x < Aen::mapSize; x++) {
-			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+	//m_levelGenerator.AddLoadedToGeneration();
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
-				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
-			}
-		}
-	}
+	//m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
+
+	////Match this value to the size of the rooms we are using
+	//m_levelGenerator.SetRoomDimension(43.f);
+	//mptr_map = m_levelGenerator.GenerationTestingFunction();
+
+	////Use this value to set the start of the player / origin of the map
+	//Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
+
+
+	//for (UINT y = 0; y < Aen::mapSize; y++) {
+	//	for (UINT x = 0; x < Aen::mapSize; x++) {
+	//		m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+
+	//		if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+	//			m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+	//		}
+	//	}
+	//}
 	//m_player.GetEntity()->SetPos(playerStartPos);
 
 	//---------ENEMIES----------//
-	int numEnemies = 10;
+	/*int numEnemies = 10;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
-	}
+	}*/
 
 	//m_attack->SetParent(*m_player);
 
