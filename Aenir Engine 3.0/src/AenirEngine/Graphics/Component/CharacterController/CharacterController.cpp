@@ -8,10 +8,10 @@ namespace Aen {
 	CollisionFilter::~CollisionFilter() {}
 
 	bool CollisionFilter::filter(const px::PxController& a, const px::PxController& b) {
-
-		/*if (a.getUserData() == "Enemy" && b.getUserData() == "Enemy") 
+		
+		/*if (a.getActor() == b.getActor())
 			return false;*/
-		return false;
+		return true;
 	}
 
 	CharacterController::CharacterController(const size_t& id)
@@ -34,17 +34,24 @@ namespace Aen {
 		m_height = 0.99f;
 
 		m_controller = PhysicsHandler::GetCManager()->createController(desc);
-
 		px::PxVec3 d = -m_controller->getUpDirection();
+
 		m_ray.SetDirection(d.x, d.y, d.z);
 		m_ray.SetMaxDist(0.01f);
 
 		m_filter.mCCTFilterCallback = &m_callback;
 	}
 
-	void CharacterController::SetHeight(const float& height) {
-		m_height = height;
-		m_controller->resize(height);
+	void CharacterController::Resize(const float& resize)
+	{
+		m_controller->resize(resize);
+	}
+
+	void CharacterController::SetRadius(const float& radius)
+	{
+		px::PxCapsuleController* capController = reinterpret_cast<px::PxCapsuleController*>(m_controller);
+		capController->setRadius(radius);
+		capController = nullptr;
 	}
 
 	void CharacterController::SetSlopeLimit(const float& ang) {
@@ -56,6 +63,7 @@ namespace Aen {
 	}
 
 	CharacterController::~CharacterController() {
+
 		m_controller->release();
 	}
 

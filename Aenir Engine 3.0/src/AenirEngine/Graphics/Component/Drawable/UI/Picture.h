@@ -11,13 +11,14 @@ namespace Aen {
 	{
 		D2D1_RECT_F rect;
 		ID2D1Bitmap* bmp;
-		int index;
 	};
 
 	class Picture : public GCore
 	{
 	private:
 		std::vector<PictureData> m_pictureData;
+		Vec2f m_gameSize;
+		int m_nr;
 
 		IWICImagingFactory* mp_WFactory;
 		IWICBitmapDecoder* mp_BCoder;
@@ -28,10 +29,10 @@ namespace Aen {
 		~Picture();
 
 		void Initialize();
-		void AddPicture(LPCWSTR path, int indX);
-		void SetPicPos(float x, float y, int indX);
-		void SetPicSize(float width, float height, int indX);
-		void LessenPic(float width,int indX);
+		void AddPicture(LPCWSTR path);
+		void SetPicPos(float x, float y);
+		void SetPicSize(float width, float height);
+		void UpdatePicture(float width, int indX);
 
 		friend class GameLoop;
 
