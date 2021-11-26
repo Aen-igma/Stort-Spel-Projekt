@@ -7,16 +7,16 @@ Gameplay::Gameplay(Aen::Window& window)
 Gameplay::~Gameplay() {
 	//Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
-	Aen::EntityHandler::RemoveEntity(*m_reimube1);
+	/*Aen::EntityHandler::RemoveEntity(*m_reimube1);*/
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	
-	for (auto& b : *m_levelImporter.GetEntityList()) {
+	/*for (auto& b : *m_levelImporter.GetEntityList()) {
 		Aen::EntityHandler::RemoveEntity(*b);
-	}
+	}*/
 
-	for (auto& d : m_enemyQueue) {
+	/*for (auto& d : m_enemyQueue) {
 		delete d;
-	}
+	}*/
 
 	Aen::Resource::RemoveAllMaterials();
 	Aen::Resource::RemoveAllMeshes();
@@ -87,7 +87,7 @@ void Gameplay::Initialize()
 	chest.Load(AEN_RESOURCE_DIR("chest_withAnimations.fbx"));*/
 	m_tim = &Aen::EntityHandler::CreateEntity();
 	Aen::Animation& testAnim = Aen::Resource::CreateAnimation("TimDab");
-	testAnim.LoadAnimation("AnimTri3.fbx");
+	testAnim.LoadAnimation("ChestOpen.fbx");
 
 	Aen::Entity* testAnimObject = &Aen::EntityHandler::CreateEntity();
 	m_tim->AddComponent<Aen::Animator>();
@@ -96,7 +96,7 @@ void Gameplay::Initialize()
 	m_tim->GetComponent<Aen::Animator>().SetFrameRate(24);
 
 	Aen::Mesh& tim = Aen::Resource::CreateMesh("TimJ");
-	tim.Load(AEN_RESOURCE_DIR("AnimTri3.fbx"));
+	tim.Load(AEN_RESOURCE_DIR("ChestOpen.fbx"));
 
 	m_tim->AddComponent<Aen::MeshInstance>();
 	m_tim->GetComponent<Aen::MeshInstance>().SetMesh(tim);

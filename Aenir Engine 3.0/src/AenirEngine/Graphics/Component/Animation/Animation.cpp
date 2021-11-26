@@ -120,17 +120,33 @@ namespace Aen {
 			// 
 
 			// --------- LOCAL MATRIX ----------- //
-			bone.localMatrix.a11 = nodeBoneArray[i]->mTransformation.a1; bone.localMatrix.a12 = nodeBoneArray[i]->mTransformation.a2;
-			bone.localMatrix.a13 = nodeBoneArray[i]->mTransformation.a3; bone.localMatrix.a14 = nodeBoneArray[i]->mTransformation.a4;
-
-			bone.localMatrix.a21 = nodeBoneArray[i]->mTransformation.b1; bone.localMatrix.a22 = nodeBoneArray[i]->mTransformation.b2;
-			bone.localMatrix.a23 = nodeBoneArray[i]->mTransformation.b3; bone.localMatrix.a24 = nodeBoneArray[i]->mTransformation.b4;
-
-			bone.localMatrix.a31 = nodeBoneArray[i]->mTransformation.c1; bone.localMatrix.a32 = nodeBoneArray[i]->mTransformation.c2;
-			bone.localMatrix.a33 = nodeBoneArray[i]->mTransformation.c3; bone.localMatrix.a34 = nodeBoneArray[i]->mTransformation.c4;
-
-			bone.localMatrix.a41 = nodeBoneArray[i]->mTransformation.d1; bone.localMatrix.a42 = nodeBoneArray[i]->mTransformation.d2;
-			bone.localMatrix.a43 = nodeBoneArray[i]->mTransformation.d3; bone.localMatrix.a44 = nodeBoneArray[i]->mTransformation.d4;
+			if (bone.parentID != -1) {
+				bone.localMatrix.a11 = nodeBoneArray[bone.parentID]->mTransformation.a1; bone.localMatrix.a12 = nodeBoneArray[bone.parentID]->mTransformation.a2;
+				bone.localMatrix.a13 = nodeBoneArray[bone.parentID]->mTransformation.a3; bone.localMatrix.a14 = nodeBoneArray[bone.parentID]->mTransformation.a4;
+																															 
+				bone.localMatrix.a21 = nodeBoneArray[bone.parentID]->mTransformation.b1; bone.localMatrix.a22 = nodeBoneArray[bone.parentID]->mTransformation.b2;
+				bone.localMatrix.a23 = nodeBoneArray[bone.parentID]->mTransformation.b3; bone.localMatrix.a24 = nodeBoneArray[bone.parentID]->mTransformation.b4;
+																															
+				bone.localMatrix.a31 = nodeBoneArray[bone.parentID]->mTransformation.c1; bone.localMatrix.a32 = nodeBoneArray[bone.parentID]->mTransformation.c2;
+				bone.localMatrix.a33 = nodeBoneArray[bone.parentID]->mTransformation.c3; bone.localMatrix.a34 = nodeBoneArray[bone.parentID]->mTransformation.c4;
+																														
+				bone.localMatrix.a41 = nodeBoneArray[bone.parentID]->mTransformation.d1; bone.localMatrix.a42 = nodeBoneArray[bone.parentID]->mTransformation.d2;
+				bone.localMatrix.a43 = nodeBoneArray[bone.parentID]->mTransformation.d3; bone.localMatrix.a44 = nodeBoneArray[bone.parentID]->mTransformation.d4;
+			}
+			else
+			{
+				bone.localMatrix.a11 = nodeBoneArray[i]->mTransformation.a1; bone.localMatrix.a12 = nodeBoneArray[i]->mTransformation.a2;
+				bone.localMatrix.a13 = nodeBoneArray[i]->mTransformation.a3; bone.localMatrix.a14 = nodeBoneArray[i]->mTransformation.a4;
+													 															
+				bone.localMatrix.a21 = nodeBoneArray[i]->mTransformation.b1; bone.localMatrix.a22 = nodeBoneArray[i]->mTransformation.b2;
+				bone.localMatrix.a23 = nodeBoneArray[i]->mTransformation.b3; bone.localMatrix.a24 = nodeBoneArray[i]->mTransformation.b4;
+													 															
+				bone.localMatrix.a31 = nodeBoneArray[i]->mTransformation.c1; bone.localMatrix.a32 = nodeBoneArray[i]->mTransformation.c2;
+				bone.localMatrix.a33 = nodeBoneArray[i]->mTransformation.c3; bone.localMatrix.a34 = nodeBoneArray[i]->mTransformation.c4;
+													 														
+				bone.localMatrix.a41 = nodeBoneArray[i]->mTransformation.d1; bone.localMatrix.a42 = nodeBoneArray[i]->mTransformation.d2;
+				bone.localMatrix.a43 = nodeBoneArray[i]->mTransformation.d3; bone.localMatrix.a44 = nodeBoneArray[i]->mTransformation.d4;
+			}
 			
 
 			// --------- OFFSET MATRIX ----------- //
@@ -286,6 +302,7 @@ namespace Aen {
 				indices.emplace_back(m_boneArray[i].parentID);
 				indices.emplace_back(m_boneArray[i].boneID);
 			}
+			// ----- Wire Frame ---- //
 			VertexAnimation currentV;
 			currentV.pos = m_boneArray[i].offsetMatrix.Transposed().Inverse().a;
 			currentV.boneId.x = m_boneArray[i].boneID;
