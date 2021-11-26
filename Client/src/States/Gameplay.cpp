@@ -29,10 +29,6 @@ void Gameplay::Initialize()
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
-	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
@@ -218,6 +214,12 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((120.f / 1920) * wDesc.width, (110.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //2
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
+	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
+
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
