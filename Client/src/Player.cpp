@@ -34,6 +34,7 @@ Player::Player()
 	m_player->AddComponent<Aen::AABoundBox>();
 	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 	m_player->SetPos(0.f, 1.2f, 0.f);
+	m_player->SetTag("Player");
 
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
@@ -267,7 +268,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.accell = m_LIGHTATTACKSPEED;
 			data.duration = m_LIGHTATTACKTIME;
 			data.type = EventType::Attack;
-			data.damage = 20.f;
+			data.damage = 100.f;
 			data.function = [&](float& accell, const float& attackDuration) {
 				m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 				SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);

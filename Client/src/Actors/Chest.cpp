@@ -1,7 +1,7 @@
 #include "Chest.h"
 
 Chest::Chest()
-	:Interact(), m_chest(&Aen::EntityHandler::CreateEntity())
+	:Interact(), m_chest(&Aen::EntityHandler::CreateEntity()), m_near(false)
 {
 	Aen::Mesh& chest = Aen::Resource::CreateMesh("Chest");
 	chest.Load(AEN_RESOURCE_DIR("chest.fbx"));
@@ -25,11 +25,22 @@ void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 	Aen::Vec3f eDir = e->GetPos() - mp_object->GetPos();
 	float dist = eDir.Magnitude();
 
-	if (dist < 3.f) {
-		m_near = true;
+	//player
+	if (e->GetTag() == "Player") {
+		if (dist < 3.f) {
+			m_near = true;
+		}
+		else {
+			m_near = false;
+		}
 	}
-	else
-		m_near = false;
+
+	//Enemy
+	if (e->GetTag() == "ItemEnemy") {
+		if (dist < 20.f) {	
+			m_type = Type::Locked;
+		}
+	}
 }
 
 Aen::Entity*& Chest::GetObjectEntity()

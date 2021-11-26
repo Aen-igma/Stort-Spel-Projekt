@@ -168,30 +168,30 @@ void Gameplay::Initialize()
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
 
-				for (int i = 0; i < 3; i++) {
+				for (int i = 0; i < 2; i++) {
 					m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
 					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+					m_enemyQueue.at(i)->GetEntity()->SetTag("ItemEnemy");
 				}
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
 			}
 
-			//if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE) {
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE) {
+				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+			}
 
-			//	m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-			//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			//}
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
 
-			//if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
-
-			//	int index = m_enemyQueue.size();
-			//	m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-			//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			//	m_enemyQueue.at(index)->GetEntity()->SetScale(2.f);
-			//}
+				int index = m_enemyQueue.size();
+				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+				m_enemyQueue.at(index)->GetEntity()->SetScale(2.f);
+			}
 		}
 	}
-	m_player.GetEntity()->SetPos(playerStartPos);
 	m_chest.GetObjectEntity()->SetPos(ChestPos);
+	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y, ChestPos.z);
 	m_chest.SetType(Type::Locked);
 
 	//m_attack->SetParent(*m_player);
@@ -249,12 +249,12 @@ void Gameplay::Update(const float& deltaTime) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f, 2);
 		m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300.f, 2);
 
-		if (m_enemyQueue.empty())
-			m_chest.SetType(Type::Closed);
+		//if (m_enemyQueue.empty())
+		//	m_chest.SetType(Type::Closed);
 
-		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() != Type::Locked) {
+		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open) {
 			m_player.IncreaseHealthCap();
-			m_chest.SetType(Type::Locked);
+			m_chest.SetType(Type::Closed);
 		}
 	}
 	else {
@@ -262,8 +262,10 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 
 
-	for(auto& i : m_enemyQueue)
+	for (auto& i : m_enemyQueue) {
 		i->Update(deltaTime, m_player);
+		m_chest.Update(deltaTime, i->GetEntity());
+	}
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
 
@@ -319,8 +321,8 @@ void Gameplay::Update(const float& deltaTime) {
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
-		State::SetState(States::Gameover);
-		//m_Window.Exit();
+		//State::SetState(States::Gameover);
+		m_Window.Exit();
 	}
 	// ------------------------------------- States -------------------------------------- //
 	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)

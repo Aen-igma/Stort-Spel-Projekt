@@ -2,6 +2,7 @@
 #include "AenirEngine\AenCore.h"
 
 enum class Type{
+	Open,
 	Closed,
 	Locked
 };
