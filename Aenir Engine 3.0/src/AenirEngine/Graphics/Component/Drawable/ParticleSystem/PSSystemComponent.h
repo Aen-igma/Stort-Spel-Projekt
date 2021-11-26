@@ -120,5 +120,4 @@ namespace Aen
 		// Inherited via Drawable
 		virtual bool FrustumCull(Renderer& renderer) override;
 	};
-
 }

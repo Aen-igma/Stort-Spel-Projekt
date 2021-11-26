@@ -292,4 +292,8 @@ namespace Aen
 		//}
 		return true;
 	}
+	bool PSSystemcomponent::FrustumCull(Renderer& renderer)
+	{
+		return true;
+	}
 }
