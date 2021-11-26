@@ -170,6 +170,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\States\Credits.h" />
     <ClInclude Include="src\Client.h" />
     <ClInclude Include="src\Enemy\Enemies.h" />
     <ClInclude Include="src\Enemy\Enemy.h" />
@@ -183,6 +184,7 @@
     <ClInclude Include="src\States\Victory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\States\Credits.cpp" />
     <ClCompile Include="src\Client.cpp" />
     <ClCompile Include="src\Enemy\Enemy.cpp" />
     <ClCompile Include="src\Enemy\Rimuru\Rimuru.cpp" />

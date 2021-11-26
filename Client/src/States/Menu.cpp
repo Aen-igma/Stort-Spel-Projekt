@@ -20,8 +20,11 @@ void MainMenu::Update(const float& deltaTime)
 		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(0)) {
 			State::SetState(States::Loadscreen);
 		}
-		if (m_UI->GetComponent<Aen::UIComponent>().Intersects(1)) {
+		else if (m_UI->GetComponent<Aen::UIComponent>().Intersects(1)) {
 			m_Window.Exit();
+		}
+		else if (m_UI->GetComponent<Aen::UIComponent>().Intersects(2)) {
+			State::SetState(States::Credits);
 		}
 	}
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
@@ -64,7 +67,12 @@ void MainMenu::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Quit.png")); //1
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((2.f / 3.f) * wDesc.width, (880.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920.f) * wDesc.width, (200.f / 1024.f) * wDesc.height);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Credits.png")); //2
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((2.f / 4.f) * wDesc.width, (880.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920.f) * wDesc.width, (200.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
+
 	
 	//Text
 	//m_UI->GetComponent<Aen::UIComponent>().AddText(L"test", 72.f);

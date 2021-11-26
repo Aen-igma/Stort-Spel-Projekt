@@ -273,8 +273,8 @@ void Gameplay::Update(const float& deltaTime) {
 		m_Window.Exit();
 
 	// ------------------------------------- States -------------------------------------- //
-	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)
-	{
-		State::SetState(States::Gameover);
-	}*/
+	//if (m_hp <= 0 && m_enemyQueue.size() == 0)
+	//{
+	//	State::SetState(States::Gameover);
+	//}
 }
