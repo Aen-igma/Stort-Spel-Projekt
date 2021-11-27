@@ -133,13 +133,10 @@ void Gameplay::Initialize()
 	//m_reimube1->SetRenderLayer(1);
 
 	// ------ Level Importer ------ //
-	//std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
-	//m_levelImporter.import(path);
+
 
 	// ------------------- Procedural generation testing staging grounds ------- //
-	std::vector<string> levelPaths;
-
-	m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
+	m_levelGenerator.LoadMutipleRoomFiles();
 
 
 	m_levelGenerator.AddLoadedToGeneration();
@@ -156,21 +153,22 @@ void Gameplay::Initialize()
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
-			m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
+			mptr_map[x + y * Aen::mapSize].mptr_parent;
 		}
 	}
-	//m_player.GetEntity()->SetPos(playerStartPos);
+	m_player.GetEntity()->SetPos(playerStartPos);
 
 	//---------ENEMIES----------//
 	int numEnemies = 10;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
+		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((LehmerInt() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
 	}
 
