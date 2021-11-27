@@ -11,8 +11,14 @@ private:
 public:
 	Boss(float hp = 100.f);
 	virtual~Boss();
+
 	// Inherited via Enemy
 	virtual void Update(const float& deltaTime, Player& player) override;
+
+	void SetThronePosition(Aen::Vec3f v);
+	void SetThronePosition(float x, float y, float z);
+
+	std::vector<Rimuru*>& GetEnemies();
 
 protected:
 	//Aen::Entity* m_hurtbox;
@@ -20,7 +26,7 @@ protected:
 private:
 	void LightAttack();
 	void BigAttack();
-	void DashAttack();
+	//void DashAttack();
 	void GoToThrone();
 	void SummonSlimes(int amountOfSLimes);
 

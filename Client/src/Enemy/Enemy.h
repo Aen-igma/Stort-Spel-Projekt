@@ -14,7 +14,7 @@ class Enemy {
 	const float& GetHealth();
 
 	void Hurt(const bool& hurt);
-	const bool IsHurt();
+	const bool IsHurt() const;
 	protected:
 	Aen::AABoundBox* mp_hitbox;
 	Aen::Entity* m_enemy;
@@ -23,4 +23,6 @@ class Enemy {
 	float m_health;
 	bool m_hurt;
 	Aen::Vec3f m_v;
+
+	Aen::CharacterController* mp_charCont;
 };

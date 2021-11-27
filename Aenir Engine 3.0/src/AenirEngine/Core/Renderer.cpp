@@ -193,7 +193,7 @@ namespace Aen {
 		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);*/
 
 		// Present
-		RenderSystem::Present();
+		RenderSystem::Present(1);
 		RenderSystem::ClearState();
 	}
 }

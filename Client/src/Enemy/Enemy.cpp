@@ -6,6 +6,7 @@ Enemy::Enemy()
 	m_enemy->AddComponent<Aen::AABoundBox>();
 	m_enemy->AddComponent<Aen::CharacterController>();
 	mp_hitbox = &m_enemy->GetComponent<Aen::AABoundBox>();
+	mp_charCont = &m_enemy->GetComponent<Aen::CharacterController>();
 }
 
 Enemy::~Enemy() {
@@ -40,6 +41,6 @@ void Enemy::Hurt(const bool& hurt) {
 	m_hurt = hurt;
 }
 
-const bool Enemy::IsHurt() {
+const bool Enemy::IsHurt() const {
 	return m_hurt;
 }

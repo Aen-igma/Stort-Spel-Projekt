@@ -291,7 +291,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.damage = 20.f;
 			data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
 				mp_hurtBox->ToggleActive(true);
-				SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);
+				SwordSwing(500.f, m_LIGHTATTACKTIME, deltaTime);
 				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
 					Aen::Vec3f d(d2.x, 0.f, d2.y);
@@ -323,7 +323,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				if (attackDuration < m_HEAVYCHARGETIME)
 				{
 					mp_hurtBox->ToggleActive(true);
-					SwordSwing(5.f, m_HEAVYATTACKTIME, deltaTime);
+					SwordSwing(250.f, m_HEAVYATTACKTIME, deltaTime);
 				}
 				else
 					mp_hurtBox->ToggleActive(false);
@@ -558,7 +558,8 @@ void Player::SwordSwing(float speed, float time, const float& deltaTime)
 		m_sword->SetRot(0, 0, 0);
 		timer = 0.f;
 	}
-	m_sword->Rotate(-speed, -speed, 0.f);
+	float deltaSpeed = speed * deltaTime;
+	m_sword->Rotate(-deltaSpeed, -deltaSpeed, 0.f);
 }
 
 void Player::ResetSword()

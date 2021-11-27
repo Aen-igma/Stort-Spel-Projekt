@@ -11,15 +11,16 @@ Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, cons
 
 void Client::Start()
 {
-	State::SetState(States::Main_Menu);
+	State::SetState(States::Gameplay);
+	ChangeState(States::Gameplay);
 }
 
 void Client::Update(const float& deltaTime) 
 {
-	if (m_typeState != mp_state->GetCurrentState()){
+	//if (m_typeState != mp_state->GetCurrentState()){
 
-		ChangeState(mp_state->GetCurrentState());
-	}
+	//	ChangeState(mp_state->GetCurrentState());
+	//}
 
 	if (mp_state)
 		mp_state->Update(deltaTime);

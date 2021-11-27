@@ -225,8 +225,8 @@ namespace Aen {
             m_dContext->RSSetState(rState.m_rState.Get());
         }
 
-        static void Present() {
-            m_sChain->Present(0, NULL);
+        static void Present(UINT SyncIntyerval) {
+            m_sChain->Present(SyncIntyerval, NULL);
         }
 
         static void Dispatch(const uint32_t& x, const uint32_t& y, const uint32_t& z) {
