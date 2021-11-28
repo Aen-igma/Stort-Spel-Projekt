@@ -181,6 +181,8 @@ void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
 #ifdef _DEBUG
 	if (m_canDraw)
 	{
+		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
+
 		Vec3f p = Vec3f(m_obb.Center.x, m_obb.Center.y, m_obb.Center.z);
 		renderer.m_cbTransform.GetData().m_mdlMat = Mat4f::identity;
 		renderer.m_cbTransform.UpdateBuffer();
@@ -224,6 +226,8 @@ void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 
 #ifdef _DEBUG
 	if (m_canDraw) {
+		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
+
 		m_vBuffer.UpdateBuffer(m_verts, 8);
 		Vec3f p = Vec3f(m_obb.Center.x, m_obb.Center.y, m_obb.Center.z);
 		renderer.m_cbTransform.GetData().m_mdlMat = Mat4f::identity;

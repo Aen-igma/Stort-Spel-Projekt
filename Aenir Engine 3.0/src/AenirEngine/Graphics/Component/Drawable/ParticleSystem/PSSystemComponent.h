@@ -95,7 +95,7 @@ namespace Aen
 		UAView m_UAView;
 
 		Mesh* m_pMesh;
-		Material* m_pMaterials;
+		Material* m_pMaterial;
 
 		void updatePS(const float& framerate);
 		
@@ -116,8 +116,6 @@ namespace Aen
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
 		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
-
-		// Inherited via Drawable
 		virtual bool FrustumCull(Renderer& renderer) override;
 	};
 }

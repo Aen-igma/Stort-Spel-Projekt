@@ -50,32 +50,32 @@ namespace Aen
 
 	void PSSystemcomponent::SetMaterial(Material& material)
 	{
-		m_pMaterials = &material;
+		m_pMaterial = &material;
 	}
 
 	void PSSystemcomponent::SetMaterial(const std::string& materialName)
 	{
 		if (!Resource::MaterialExist(materialName))throw;
-		m_pMaterials = &Resource::GetMaterial(materialName);
+		m_pMaterial = &Resource::GetMaterial(materialName);
 	}
 
 
 	void PSSystemcomponent::SetMaterial(const std::string& materialSlotName, Material& material)
 	{
 		if (m_pMesh->m_meshMaterialName.count(materialSlotName) == 0)throw;
-		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName) == 0] = &material;
+		m_pMaterial[m_pMesh->m_meshMaterialName.at(materialSlotName) == 0] = &material;
 	}
 
 	void PSSystemcomponent::SetMaterial(const std::string& materialSlotName, const std::string& materialName)
 	{
 		if (m_pMesh->m_meshMaterialName.count(materialSlotName) == 0)throw;
 		if (!Resource::MaterialExist(materialName))throw;
-		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
+		m_pMaterial[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
 	}
 
 	void PSSystemcomponent::SetMaterial(const UINT& index, Material& material)
 	{
-		m_pMaterials[index] = &material;
+		m_pMaterial[index] = &material;
 	}
 
 	void PSSystemcomponent::updatePS(const float& framerate)
@@ -175,24 +175,11 @@ namespace Aen
 
 
 
-	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer)
-	{
-		//Binding everything
-		//Here is dispatch and CS part
+	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer) {
 
-		renderer.m_PSInputBuffer.GetData() = m_CSInputBuffer;
-		renderer.m_PSInputBuffer.UpdateBuffer();
-		renderer.m_PSInputBuffer.BindBuffer<CShader>(0);
-		RenderSystem::BindUnOrderedAccessView(0,m_UAView);
-		RenderSystem::BindShader(renderer.m_PSCShader);
+		// First Pass
 
-		/*RenderSystem::Dispatch((int)(this->maxParticles / 64.f)+ (this->maxParticles % 64 != 0), 1, 1);*/
-		RenderSystem::Dispatch(16, 1, 1);
-	
-		RenderSystem::UnBindShader<CShader>();
-		RenderSystem::UnBindUnOrderedAccessViews(0,1);
-
-		//Here is draw part of PS
+		RenderSystem::ClearRenderTargetView(renderer.m_particleOut, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
 		RenderSystem::SetInputLayout(renderer.m_PSLayout);
 		renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation();
@@ -204,42 +191,31 @@ namespace Aen
 		renderer.m_cbTransform.BindBuffer<GShader>(0);
 		RenderSystem::BindSamplers<PShader>(0,renderer.m_wrapSampler);
 
+		if(m_pMaterial) {
 
+			RenderSystem::UnBindShaderResources<PShader>(0u, 3u);
+			if(m_pMaterial->m_textures[0]) {
+				RenderSystem::BindShaderResourceView<PShader>(0, m_pMaterial->m_textures[0]->m_shaderResource);
+				renderer.m_cbUseTexture.GetData()[0] = (int)true;
+			}
 
-		////Material
-		//for (uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++)
-		//{
-		//	uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
-		//	Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
-		//	if (pMaterial)
-		//	{
-		//		RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
-		//		RenderSystem::BindShader<VShader>(renderer.m_opaqueVS);
-		//		RenderSystem::BindShader<PShader>(pMaterial->m_pShaderModel->m_PShader);
-		//		uint32_t* slots = pMaterial->m_pShaderModel->m_slots;
-		//		for (UINT k = 0; k < 4; i++)
-		//		{
-		//			if (pMaterial->m_textures[k] && slots[k] != UINT_MAX)
-		//			{
-		//				RenderSystem::UnBindShaderResources<PShader>(slots[k],1u);
-		//				RenderSystem::BindShaderResourceView<PShader>(slots[k],pMaterial->m_textures[k]->m_shaderResource);
-		//				renderer.m_cbUseTexture.GetData()[k] = (int)true;
-		//			}
-		//			else
-		//				renderer.m_cbUseTexture.GetData()[k] = (int)false;
-		//			pMaterial->m_dBuffer.UpdateBuffer();
-		//			renderer.m_cbUseTexture.UpdateBuffer();
-		//		}
-		//	}
-		//}
+			if(m_pMaterial->m_textures[2]) {
+				RenderSystem::BindShaderResourceView<PShader>(1, m_pMaterial->m_textures[2]->m_shaderResource);
+				renderer.m_cbUseTexture.GetData()[2] = (int)true;
+			}
 
-		
+			if(m_pMaterial->m_textures[3]) {
+				RenderSystem::BindShaderResourceView<PShader>(2, m_pMaterial->m_textures[3]->m_shaderResource);
+				renderer.m_cbUseTexture.GetData()[3] = (int)true;
+			}
 
+			renderer.m_cbUseTexture.UpdateBuffer();
+		}
 
+		renderer.m_cbUseTexture.BindBuffer<PShader>(0u);
 
-		RenderSystem::BindRenderTargetView(renderer.m_backBuffer);
+		RenderSystem::BindRenderTargetView(renderer.m_particleOut, renderer.m_depthMap);
 		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
-		//RenderSystem::SetRasteriserState(renderer.m_wireFrameState);
 
 		RenderSystem::BindShader(renderer.m_PSVShader);
 		RenderSystem::BindShader(renderer.m_PSGShader);
@@ -247,53 +223,66 @@ namespace Aen
 
 		RenderSystem::Draw(this->currentNrPS,0);
 
+		// Second Pass
 
 		RenderSystem::UnBindShader<VShader>();
 		RenderSystem::UnBindShader<GShader>();
 		RenderSystem::UnBindShader<PShader>();
 		RenderSystem::UnBindShaderResources<VShader>(0,1);
+		RenderSystem::UnBindShaderResources<PShader>(0,2);
+		RenderSystem::UnBindRenderTargets(renderer.m_particleOut.GetCount());
 
+		renderer.m_cbBGColor.BindBuffer<CShader>(0);
+		RenderSystem::BindShader<CShader>(renderer.m_PostPatricleCS);
+		RenderSystem::BindUnOrderedAccessView(0u, renderer.m_UAVBackBuffer);
+		RenderSystem::BindShaderResourceView<CShader>(0u, renderer.m_particleOut);
+
+		RenderSystem::Dispatch(renderer.m_dispatchGroups, 1u);
+
+		RenderSystem::UnBindShader<CShader>();
+		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
+		RenderSystem::UnBindShaderResources<CShader>(0u, renderer.m_particleOut.GetCount());
 	}
 
 
-	void PSSystemcomponent::DepthDraw(Renderer& renderer, const uint32_t& layer)
-	{
-		/*if (m_pMesh)
-		{
-			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
-			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
-			renderer.m_cbTransform.UpdateBuffer();
-			if (GlobalSettings::GetMainCamera())
-			{
-				Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
-				if (pMaterial) {
-					RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
-					RenderSystem::BindShader(renderer.m_opaqueVS);
-					RenderSystem::BindShader(renderer.m_transparencyPS);
+	void PSSystemcomponent::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 
-					renderer.m_cbTransform.BindBuffer<VShader>(0u);
-				}
-				m_pMesh->m_vertices.BindBuffer();
-				m_pMesh->m_vertices.Draw();
-			}
-		}*/
+		renderer.m_PSInputBuffer.GetData() = m_CSInputBuffer;
+		renderer.m_PSInputBuffer.UpdateBuffer();
+		renderer.m_PSInputBuffer.BindBuffer<CShader>(0);
+		RenderSystem::BindUnOrderedAccessView(0,m_UAView);
+		RenderSystem::BindShader(renderer.m_PSCShader);
+
+		RenderSystem::Dispatch(16, 1, 1);
+
+		RenderSystem::UnBindShader<CShader>();
+		RenderSystem::UnBindUnOrderedAccessViews(0,1);
+
+		RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
+		RenderSystem::SetInputLayout(renderer.m_PSLayout);
+		renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation();
+		renderer.m_cbTransform.UpdateBuffer();
+		renderer.m_cbTransform.BindBuffer<VShader>(0);
+
+		RenderSystem::BindShaderResourceView<VShader>(0, m_UAView);
+
+		renderer.m_cbTransform.BindBuffer<GShader>(0);
+
+		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
+
+		RenderSystem::BindShader(renderer.m_PSVShader);
+		RenderSystem::BindShader(renderer.m_PSGShader);
+		RenderSystem::BindShader(renderer.m_transparencyPS);
+
+		RenderSystem::Draw(this->currentNrPS, 0);
+
+		RenderSystem::UnBindShader<VShader>();
+		RenderSystem::UnBindShader<GShader>();
+		RenderSystem::UnBindShader<PShader>();
+		RenderSystem::UnBindShaderResources<VShader>(0,1);
 	}
-	bool PSSystemcomponent::FrustumCull(Renderer& renderer)
-	{
-		//if (m_pMesh)
-		//{
-		//	Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
-		//	DirectX::BoundingOrientedBox box;
-		//	box.Extents = m_pMesh->m_aabb.Extents;
-		//	box.Transform(box, m.smMat);
-		//	if (GlobalSettings::GetMainCamera())
-		//		if (box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum()))
-		//			return true;
-		//}
-		return true;
-	}
-	bool PSSystemcomponent::FrustumCull(Renderer& renderer)
-	{
+
+	bool PSSystemcomponent::FrustumCull(Renderer& renderer) {
 		return true;
 	}
 }

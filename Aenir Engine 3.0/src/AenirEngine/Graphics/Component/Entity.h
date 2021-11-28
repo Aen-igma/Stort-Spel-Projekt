@@ -110,7 +110,6 @@ namespace Aen {
 
 	template<>
 	inline void Entity::AddComponent<PSSystemcomponent>() {
-		m_layer = 3;
 		if (!ComponentHandler::PSExist(m_id))
 			ComponentHandler::CreatePS(m_id, m_layer + 3);
 	}

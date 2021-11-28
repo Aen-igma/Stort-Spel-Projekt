@@ -9,7 +9,8 @@ namespace Aen {
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
-		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP), m_toggleView(false) {}
+		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP), m_toggleView(false),
+		m_particleOut(window, 2u) {}
 
 	void Renderer::Initialize() {
 
@@ -53,6 +54,9 @@ namespace Aen {
 				throw;
 		if (!m_PSPShader.Create(AEN_OUTPUT_DIR_WSTR(L"PixelParticleShader.cso")))
 			if (!m_PSPShader.Create(AEN_OUTPUT_DIR_WSTR(L"PixelParticleShader.cso")))
+				throw;
+		if (!m_PostPatricleCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostParticleCS.cso")))
+			if (!m_PostPatricleCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostParticleCS.cso")))
 				throw;
 		m_PSLayout.Create(m_PSVShader);
 		

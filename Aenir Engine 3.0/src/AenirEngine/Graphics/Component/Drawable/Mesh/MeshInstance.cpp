@@ -81,7 +81,7 @@ namespace Aen {
 		if(m_pMesh) {
 
 			// Transform
-			
+			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
@@ -184,7 +184,7 @@ namespace Aen {
 	void MeshInstance::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 
 		if(m_pMesh) {
-
+			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
@@ -197,8 +197,7 @@ namespace Aen {
 
 			if(GlobalSettings::GetMainCamera())
 				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum()))*/ 
-			if (GlobalSettings::GetMainCamera())
-				{
+			if (GlobalSettings::GetMainCamera()) {
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);

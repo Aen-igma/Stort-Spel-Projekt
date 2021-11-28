@@ -119,7 +119,8 @@ namespace Aen {
 		ILayout m_PSLayout;
 		ComDeviceContext m_PSDContext;
 		CBuffer<CSInputBuffer> m_PSInputBuffer;
-
+		GBuffer m_particleOut;
+		CShader m_PostPatricleCS;
 
 	};
 }

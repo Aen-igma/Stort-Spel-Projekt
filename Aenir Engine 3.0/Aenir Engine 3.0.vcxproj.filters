@@ -644,18 +644,19 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CollisionPS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PostProcessCS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\VertexParticleShader.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\GeometryParticleShader.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\ComputeParticleShader.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\PixelParticleShader.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\VertexParticleShader.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\GeometryParticleShader.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\ComputeParticleShader.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PixelParticleShader.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\FrustumGridCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\TransparencyPS.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\EmitCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\EmitCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PostParticleCS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="src\AenirEngine\Graphics\Component\Drawable\ParticleSystem\PSShaderFiles\SimplexNoise.hlsl" />
+    <None Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\SimplexNoise.hlsl" />
   </ItemGroup>
 </Project>

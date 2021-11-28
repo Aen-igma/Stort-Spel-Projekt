@@ -108,9 +108,7 @@ void Gameplay::Initialize()
 
 	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
 	psMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Flames1.png"));
-	psMat["InnerEdgeColor"] = Aen::Color::White;
-	psMat["OuterEdgeColor"] = Aen::Color::White;
-	psMat["BaseColor"] = Aen::Color::White;
+	psMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
 	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
