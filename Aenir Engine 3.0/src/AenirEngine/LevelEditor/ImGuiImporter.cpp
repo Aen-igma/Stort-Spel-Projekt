@@ -130,6 +130,11 @@ namespace Aen
 
 			if (m_entityList != nullptr)
 			{
+				for (int i = 0; i < m_entityList->size(); i++)
+				{
+					Aen::EntityHandler::RemoveEntity(*m_entityList->at(i));
+				}
+				m_entityList->clear();
 				delete m_entityList;
 			}
 			if (m_modelMap != nullptr)
