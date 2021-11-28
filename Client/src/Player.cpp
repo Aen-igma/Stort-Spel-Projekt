@@ -4,7 +4,7 @@
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
 	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(15.f), m_nrPotion(5),
-	m_sword(&Aen::EntityHandler::CreateEntity()),
+	//m_sword(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
@@ -12,7 +12,7 @@ Player::Player()
 {
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
-	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 50.f);
+	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 200.f);
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
@@ -22,21 +22,72 @@ Player::Player()
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
 	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
 
+	Aen::Mesh* protag = &Aen::Resource::CreateMesh("Protag");
+	protag->Load(AEN_RESOURCE_DIR("Protagonist.fbx"));
+
+	Aen::Material& skin = Aen::Resource::CreateMaterial("Skin");
+	skin["InnerEdgeColor"] = Aen::Color(0.3f, 0.1f, 0.08f, 1.f);
+	skin["OuterEdgeColor"] = Aen::Color(0.13f, 0.1f, 0.08f, 1.f);
+	skin["InnerEdgeThickness"] = 1;
+	skin["OuterEdgeThickness"] = 2;
+	skin["BaseColor"] = Aen::Color(0.8f, 0.67f, 0.6f, 1.f);
+
+	Aen::Material& shirt = Aen::Resource::CreateMaterial("Shirt");
+	shirt["InnerEdgeColor"] = Aen::Color(0.1f, 0.08f, 0.05f, 1.f);
+	shirt["OuterEdgeColor"] = Aen::Color(0.1f, 0.08f, 0.05f, 1.f);
+	shirt["InnerEdgeThickness"] = 1;
+	shirt["OuterEdgeThickness"] = 2;
+	shirt["BaseColor"] = Aen::Color(0.78f, 0.77f, 0.69f, 1.f);
+
+	Aen::Material& brown = Aen::Resource::CreateMaterial("Brown");
+	brown["InnerEdgeColor"] = Aen::Color(0.13f, 0.014f, 0.012f, 1.f);
+	brown["OuterEdgeColor"] = Aen::Color(0.032f, 0.017f, 0.012f, 1.f);
+	brown["InnerEdgeThickness"] = 1;
+	brown["OuterEdgeThickness"] = 2;
+	brown["BaseColor"] = Aen::Color(0.23f, 0.17f, 0.16f, 1.f);
+
+	Aen::Material& pants = Aen::Resource::CreateMaterial("Pants");
+	pants["InnerEdgeColor"] = Aen::Color(0.06f, 0.07f, 0.07f, 1.f);
+	pants["OuterEdgeColor"] = Aen::Color(0.06f, 0.07f, 0.07f, 1.f);
+	pants["InnerEdgeThickness"] = 1;
+	pants["OuterEdgeThickness"] = 2;
+	pants["BaseColor"] = Aen::Color(0.44f, 0.41f, 0.34f, 1.f);
+
+	Aen::Material& metal = Aen::Resource::CreateMaterial("Metal");
+	metal["InnerEdgeColor"] = Aen::Color(0.01f, 0.01f, 0.07f, 1.f);
+	metal["OuterEdgeColor"] = Aen::Color(0.01f, 0.01f, 0.07f, 1.f);
+	metal["InnerEdgeThickness"] = 1;
+	metal["OuterEdgeThickness"] = 2;
+	metal["BaseColor"] = Aen::Color(0.32f, 0.36f, 0.4f, 1.f);
+
+	Aen::Material& shadow = Aen::Resource::CreateMaterial("Shadow");
+	shadow["InnerEdgeColor"] = Aen::Color(0.1f, 0.03f, 0.01f, 1.f);
+	shadow["OuterEdgeColor"] = Aen::Color(0.13f, 0.1f, 0.08f, 1.f);
+	shadow["InnerEdgeThickness"] = 1;
+	shadow["OuterEdgeThickness"] = 1;
+	shadow["BaseColor"] = Aen::Color(0.37f, 0.28f, 0.24f, 1.f);
+	shadow["ShadowColor"] = Aen::Color(0.37f, 0.28f, 0.24f, 1.f);
+
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
-	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
+	//Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
 
 	m_player->AddComponent<Aen::CharacterController>();
+	m_player->GetComponent<Aen::CharacterController>().Resize(2.3f);
 	m_player->AddComponent<Aen::MeshInstance>();
-	m_player->GetComponent<Aen::MeshInstance>().SetMesh(capsule);
-	m_player->GetComponent<Aen::MeshInstance>().SetMaterial(playerMat);
+	m_player->GetComponent<Aen::MeshInstance>().SetMesh(*protag);
+	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Skin1", skin);
+	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Shirt1", shirt);
+	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Brown1", brown);
+	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Pants1", pants);
+	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Metal1", metal);
+	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
 	m_player->AddComponent<Aen::AABoundBox>();
 	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
-	m_player->SetPos(0.f, 1.2f, 0.f);
 
-	m_sword->AddComponent<Aen::MeshInstance>();
+	/*m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
 	m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);
-	m_sword->SetParent(*m_player);
+	m_sword->SetParent(*m_player);*/
 
 	m_hurtbox->AddComponent<Aen::OBBox>();
 	m_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.0);
@@ -77,8 +128,8 @@ Player::~Player() {
 	Aen::GlobalSettings::RemoveMainCamera();
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_camera);
-	m_sword->RemoveParent();
-	Aen::EntityHandler::RemoveEntity(*m_sword);
+	//m_sword->RemoveParent();
+	//Aen::EntityHandler::RemoveEntity(*m_sword);
 	Aen::EntityHandler::RemoveEntity(*m_hurtbox);
 	Aen::EntityHandler::RemoveEntity(*m_targetUI);
 }
@@ -89,6 +140,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	static Aen::Vec3f targetDir(0.f, 0.f, -1.f);
 	static bool lockedOn = false;
 
+	static Aen::Vec2f dir;
 	static Aen::Vec3f camDir;
 	static Aen::Vec2f side;
 	if (lockedOn)
@@ -255,6 +307,15 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		// Dash/Dodge
 
 		if (Aen::Input::KeyDown(Aen::Key::SPACE)) {
+
+			if(m_eventQueue.empty())
+				if (axis.Magnitude() > 0.f) 
+					m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+				else {
+					Aen::Vec2f dir(camDir.x, camDir.z);
+					m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+				}
+
 			EventData data;
 			data.accell = 20.f;
 			data.duration = 0.4f;
@@ -271,6 +332,12 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		// Attack
 
 		if (Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
+
+			if(m_eventQueue.empty()) {
+				Aen::Vec2f dir(camDir.x, camDir.z);
+				m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+			}
+
 			EventData data;
 			data.accell = m_LIGHTATTACKSPEED;
 			data.duration = m_LIGHTATTACKTIME;
@@ -278,7 +345,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.damage = 20.f;
 			data.function = [&](float& accell, const float& attackDuration) {
 				m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-				SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);
+				//SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);
 				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
 					Aen::Vec3f d(d2.x, 0.f, d2.y);
@@ -310,7 +377,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				if (attackDuration < m_HEAVYCHARGETIME)
 				{
 					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-					SwordSwing(5.f, m_HEAVYATTACKTIME, deltaTime);
+					//SwordSwing(5.f, m_HEAVYATTACKTIME, deltaTime);
 				}
 				else
 					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
@@ -401,7 +468,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	m_camera->GetComponent<Aen::Camera>().LookTowards(camDir);
 
 	Aen::Vec3f playerDir = m_camera->GetComponent<Aen::Camera>().GetForward() * axis.Normalized().z + m_camera->GetComponent<Aen::Camera>().GetRight() * axis.Normalized().x;
-	Aen::Vec2f dir(playerDir.x, playerDir.z);
+	dir = Aen::Vec2f(playerDir.x, playerDir.z);
 
 	Aen::Vec3f attackPos = m_player->GetPos() + m_finalDir * 2.f;
 
@@ -411,7 +478,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	float swordYaw = std::atan2(playerDir.x, playerDir.z);
 
 	m_hurtbox->GetComponent<Aen::OBBox>().SetRotation(0.f, yaw, 0.f);
-	m_player->SetRot(0.f, Aen::RadToDeg(yaw), 0.f);
+	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
@@ -419,24 +486,27 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			m_eventQueue.front().duration -= deltaTime;
 		}
 		else {
-			if (axis.Magnitude() > 0.f) 
+			if(axis.Magnitude() > 0.f)
 				m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-			else {
+			else if(m_eventQueue.size() > 1) {
 				Aen::Vec2f dir(camDir.x, camDir.z);
 				m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 			}
 
 			m_eventQueue.pop_front();
+
+			if(!m_eventQueue.empty()) {
+				if(m_eventQueue.front().type == EventType::Attack) {
+					Aen::Vec2f dir(camDir.x, camDir.z);
+					m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+				}
+			}
 		}
 
 	if (m_eventQueue.empty()) {
 		if (axis.Magnitude() > 0.f) {
 			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 			m_player->GetComponent<Aen::CharacterController>().Move(m_finalDir * m_movementSpeed * deltaTime, deltaTime);
-		}
-		else {
-			Aen::Vec2f dir(camDir.x, camDir.z);
-			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 		}
 	}
 
@@ -494,7 +564,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 	} else {
 		for(auto& i : e) i->Hurt(false);
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
-		ResetSword();
+		//ResetSword();
 	}
 }
 
@@ -521,22 +591,22 @@ const bool Player::IsAttacking() {
 	return false;
 }
 
-void Player::SwordSwing(float speed, float time, const float& deltaTime)
-{
-	static float timer = 0.f;
-	timer += deltaTime;
-	if (timer > time)
-	{
-		m_sword->SetRot(0, 0, 0);
-		timer = 0.f;
-	}
-	m_sword->Rotate(-speed, -speed, 0.f);
-}
-
-void Player::ResetSword()
-{
-	m_sword->SetRot(0.f, 0.f, 0.f);
-}
+//void Player::SwordSwing(float speed, float time, const float& deltaTime)
+//{
+//	static float timer = 0.f;
+//	timer += deltaTime;
+//	if (timer > time)
+//	{
+//		m_sword->SetRot(0, 0, 0);
+//		timer = 0.f;
+//	}
+//	m_sword->Rotate(-speed, -speed, 0.f);
+//}
+//
+//void Player::ResetSword()
+//{
+//	m_sword->SetRot(0.f, 0.f, 0.f);
+//}
 
 void Player::AddEvent(EventData& event) {
 	if(m_eventQueue.size() > 1u)
