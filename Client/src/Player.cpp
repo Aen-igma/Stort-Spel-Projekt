@@ -31,6 +31,10 @@ Player::Player()
 	skin["InnerEdgeThickness"] = 1;
 	skin["OuterEdgeThickness"] = 2;
 	skin["BaseColor"] = Aen::Color(0.8f, 0.67f, 0.6f, 1.f);
+	skin["SpecularColor"] = Aen::Color::Red;
+	skin["RimLightColor"] = Aen::Color(0.5f, 0.f, 0.f, 1.f);
+	skin["RimLightIntensity"] = 0.8f;
+	skin["RimLightSize"] = 0.4f;
 
 	Aen::Material& shirt = Aen::Resource::CreateMaterial("Shirt");
 	shirt["InnerEdgeColor"] = Aen::Color(0.1f, 0.08f, 0.05f, 1.f);
@@ -38,6 +42,9 @@ Player::Player()
 	shirt["InnerEdgeThickness"] = 1;
 	shirt["OuterEdgeThickness"] = 2;
 	shirt["BaseColor"] = Aen::Color(0.78f, 0.77f, 0.69f, 1.f);
+	shirt["RimLightColor"] = Aen::Color(0.5f, 0.f, 0.f, 1.f);
+	shirt["RimLightIntensity"] = 0.8f;
+	shirt["RimLightSize"] = 0.3f;
 
 	Aen::Material& brown = Aen::Resource::CreateMaterial("Brown");
 	brown["InnerEdgeColor"] = Aen::Color(0.13f, 0.014f, 0.012f, 1.f);
@@ -45,6 +52,9 @@ Player::Player()
 	brown["InnerEdgeThickness"] = 1;
 	brown["OuterEdgeThickness"] = 2;
 	brown["BaseColor"] = Aen::Color(0.23f, 0.17f, 0.16f, 1.f);
+	brown["RimLightColor"] = Aen::Color(0.8f, 0.2f, 0.1f, 1.f);
+	brown["RimLightIntensity"] = 1.f;
+	brown["RimLightSize"] = 0.6f;
 
 	Aen::Material& pants = Aen::Resource::CreateMaterial("Pants");
 	pants["InnerEdgeColor"] = Aen::Color(0.06f, 0.07f, 0.07f, 1.f);
@@ -54,19 +64,22 @@ Player::Player()
 	pants["BaseColor"] = Aen::Color(0.44f, 0.41f, 0.34f, 1.f);
 
 	Aen::Material& metal = Aen::Resource::CreateMaterial("Metal");
-	metal["InnerEdgeColor"] = Aen::Color(0.01f, 0.01f, 0.07f, 1.f);
-	metal["OuterEdgeColor"] = Aen::Color(0.01f, 0.01f, 0.07f, 1.f);
+	metal["InnerEdgeColor"] = Aen::Color(0.04f, 0.04f, 0.07f, 1.f);
+	metal["OuterEdgeColor"] = Aen::Color(0.04f, 0.04f, 0.07f, 1.f);
 	metal["InnerEdgeThickness"] = 1;
 	metal["OuterEdgeThickness"] = 2;
 	metal["BaseColor"] = Aen::Color(0.32f, 0.36f, 0.4f, 1.f);
+	metal["Roughness"] = 0.f;
 
 	Aen::Material& shadow = Aen::Resource::CreateMaterial("Shadow");
 	shadow["InnerEdgeColor"] = Aen::Color(0.1f, 0.03f, 0.01f, 1.f);
 	shadow["OuterEdgeColor"] = Aen::Color(0.13f, 0.1f, 0.08f, 1.f);
 	shadow["InnerEdgeThickness"] = 1;
 	shadow["OuterEdgeThickness"] = 1;
-	shadow["BaseColor"] = Aen::Color(0.37f, 0.28f, 0.24f, 1.f);
-	shadow["ShadowColor"] = Aen::Color(0.37f, 0.28f, 0.24f, 1.f);
+	shadow["BaseColor"] = Aen::Color(0.8f, 0.67f, 0.6f, 1.f);
+	shadow["ShadowColor"] = Aen::Color(0.3f, 0.2f, 0.2f, 1.f);
+	shadow["ShadowOffset"] = 1.f;
+	shadow["SpecularColor"] = Aen::Color::Red;
 
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 	//Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
