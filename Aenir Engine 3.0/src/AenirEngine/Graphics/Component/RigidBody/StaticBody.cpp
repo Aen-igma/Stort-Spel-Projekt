@@ -143,6 +143,50 @@ namespace Aen {
 		mp_StaticBody->setGlobalPose(t);
 	}
 
+	void StaticBody::Move(const Vec3f& pos)
+	{
+		px::PxTransform Pos = mp_StaticBody->getGlobalPose();
+		Pos.p.x += pos.x;
+		Pos.p.y += pos.y;
+		Pos.p.z += pos.z;
+		mp_StaticBody->setGlobalPose(Pos);
+	}
+
+	void StaticBody::Move(const float& x, const float& y, const float& z)
+	{
+		px::PxTransform Pos = mp_StaticBody->getGlobalPose();
+		Pos.p.x += x;
+		Pos.p.y += y;
+		Pos.p.z += z;
+		mp_StaticBody->setGlobalPose(Pos);
+	}
+
+	void StaticBody::MoveRelative(const Vec3f& pos)
+	{
+		px::PxTransform Pos = mp_StaticBody->getGlobalPose();
+		px::PxQuat quat = Pos.q;
+		Aen::Mat4f mat4 = Aen::MatQuaternion(quat.x, quat.y, quat.z, quat.w);
+		Vec3f finalPos = Transform(mat4, pos);
+		px::PxTransform finalP;
+		Pos.p.x = finalPos.x + Pos.p.x;
+		Pos.p.y = finalPos.y + Pos.p.y;
+		Pos.p.z = finalPos.z + Pos.p.z;
+		mp_StaticBody->setGlobalPose(Pos);
+	}
+
+	void StaticBody::MoveRelative(const float& x, const float& y, const float& z)
+	{
+		px::PxTransform Pos = mp_StaticBody->getGlobalPose();
+		px::PxQuat quat = Pos.q;
+		Aen::Mat4f mat4 = Aen::MatQuaternion(quat.x, quat.y, quat.z, quat.w);
+		Vec3f finalPos = Transform(mat4, Vec3f(x, y, z));
+		px::PxTransform finalP;
+		Pos.p.x = finalPos.x + Pos.p.x;
+		Pos.p.y = finalPos.y + Pos.p.y;
+		Pos.p.z = finalPos.z + Pos.p.z;
+		mp_StaticBody->setGlobalPose(Pos);
+	}
+
 	void StaticBody::SetRot(const Vec3f& rot) {
 		Vec4f tempRot = EulerToQuat(rot);
 		px::PxTransform t = mp_StaticBody->getGlobalPose();

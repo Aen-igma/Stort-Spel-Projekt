@@ -120,6 +120,7 @@ void Gameplay::Initialize()
 	//Match this value to the size of the rooms we are using
 	m_levelGenerator.SetRoomDimension(43.f);
 	mptr_map = m_levelGenerator.GenerateLevel();
+	m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
@@ -142,10 +143,9 @@ void Gameplay::Initialize()
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
 				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
 				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
-				cout << roomNormal << endl;
 			}
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE) {
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE && mptr_map[y * Aen::mapSize + x].m_present) {
 				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
 				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
 			}
@@ -175,7 +175,8 @@ void Gameplay::Initialize()
 	else if (roomNormal == 1000) {//west
 		m_door.GetEntity()->SetRot(0, -90, 0);
 	}
-	m_door.GetEntity()->SetPos(DoorPos.x, 3.f, DoorPos.z);
+	m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
+	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 
 	//m_attack->SetParent(*m_player);
 
