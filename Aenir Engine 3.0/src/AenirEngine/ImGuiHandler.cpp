@@ -468,7 +468,7 @@ namespace Aen {
 						Aen::Texture& texture = Aen::Resource::CreateTexture(materialTextureName);
 						Aen::Texture& normalTexture = Aen::Resource::CreateTexture(normalTextureName);
 
-						texture.LoadTexture(AEN_RESOURCE_DIR(textureName));
+						texture.LoadTexture(AEN_TEXTURE_DIR(textureName));
 						normalTexture.LoadTexture(AEN_NORMALTEXTURE_DIR(normalTextureName));
 
 						material.SetDiffuseMap(texture);

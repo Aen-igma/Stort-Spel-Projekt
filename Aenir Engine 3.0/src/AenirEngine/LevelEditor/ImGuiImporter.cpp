@@ -87,7 +87,7 @@ namespace Aen
 		if (model.rigidBody && model.rigidBodyType != m_imguiTypes.HITBOXTYPE[0]) // Check if should have rigidbody
 		{
 			entity->AddComponent<Aen::StaticBody>();
-			entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+			entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh	(true);
 		}
 
 		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);
@@ -439,16 +439,16 @@ namespace Aen
 
 		for (size_t i = 0; i < m_levelImporter->GetRoomVector()[index].GetLightVector().size(); i++)
 		{
-			if (m_levelImporter->GetRoomVector()[index].GetLightVector()[i].type == "Directional light")
+			if (m_levelImporter->GetRoomVector()[index].GetLightVector()[i].type == IGH::DIRECTIONALLIGHT)
 			{
 
 				AddDirectional(m_levelImporter->GetRoomVector()[index].GetLightVector()[i]);
 			}
-			else if (m_levelImporter->GetRoomVector()[index].GetLightVector()[i].type == "Spot light")
+			else if (m_levelImporter->GetRoomVector()[index].GetLightVector()[i].type == IGH::SPOTLIGHT)
 			{
 				AddSpotLight(m_levelImporter->GetRoomVector()[index].GetLightVector()[i]);
 			}
-			else if (m_levelImporter->GetRoomVector()[index].GetLightVector()[i].type == "Point light")
+			else if (m_levelImporter->GetRoomVector()[index].GetLightVector()[i].type == IGH::POINTLIGHT)
 			{
 				AddPointLight(m_levelImporter->GetRoomVector()[index].GetLightVector()[i]);
 			}
@@ -465,15 +465,15 @@ namespace Aen
 
 		for (size_t i = 0; i < roomPtr->GetLightVector().size(); i++)
 		{
-			if (roomPtr->GetLightVector()[i].type == "Directional light")
+			if (roomPtr->GetLightVector()[i].type == IGH::DIRECTIONALLIGHT)
 			{
 				AddDirectional(roomPtr->GetLightVector()[i]);
 			}
-			else if (roomPtr->GetLightVector()[i].type == "Spot light")
+			else if (roomPtr->GetLightVector()[i].type == IGH::SPOTLIGHT)
 			{
 				AddSpotLight(roomPtr->GetLightVector()[i], offset, angle);
 			}
-			else if (roomPtr->GetLightVector()[i].type == "Point light")
+			else if (roomPtr->GetLightVector()[i].type == IGH::POINTLIGHT)
 			{
 				AddPointLight(roomPtr->GetLightVector()[i], offset, angle);
 			}
@@ -794,7 +794,7 @@ namespace Aen
 			m_modelMap->at(id).m_model.m_castShadow = model.castShadow;
 		}
 
-		AddEnemy(model);
+		AddEnemy(temp);
 	}
 
 	void ImGuiImporter::AddPointLight(AenIF::Light& input, Aen::Vec2f offset, float angle)

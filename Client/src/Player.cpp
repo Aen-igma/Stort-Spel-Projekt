@@ -17,10 +17,10 @@ Player::Player()
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
-	sword.Load(AEN_RESOURCE_DIR("SwordOffset.fbx"));
+	sword.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
 
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
+	capsule.Load(AEN_MODEL_DIR("Player.fbx"));
 
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
@@ -45,25 +45,25 @@ Player::Player()
 
 
 	Aen::Mesh& eBar = Aen::Resource::CreateMesh("eBar");
-	eBar.Load(AEN_RESOURCE_DIR("bar.fbx"));
+	eBar.Load(AEN_MODEL_DIR("bar.fbx"));
 
 	Aen::Material& barMat = Aen::Resource::CreateMaterial("barMat");
 	Aen::Material& targetMat = Aen::Resource::CreateMaterial("targetMat");
 
-	targetMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("target1.png"));
-	targetMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("target1.png"));
-	targetMat.LoadeAndSetEmissionMap(AEN_RESOURCE_DIR("target1.png"));
+	targetMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("target1.png"));
+	targetMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("target1.png"));
+	targetMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("target1.png"));
 	targetMat["InnerEdgeThickness"] = 0;
 	targetMat["OuterEdgeColor"] = Aen::Color::Red;
 	targetMat["GlowColor"] = Aen::Color::Red;
 
-	barMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("enemybar.png"));
-	barMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("opacBar.png"));
-	barMat.LoadeAndSetEmissionMap(AEN_RESOURCE_DIR("enemybar.png"));
+	barMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("enemybar.png"));
+	barMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("opacBar.png"));
+	barMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("enemybar.png"));
 	//barMat["InnerEdgeThickness"] = 0;
 	barMat["GlowColor"] = Aen::Color::Red;
-	//barMat["InnerEdgeColor"] = Aen::Color::Red;
-	//barMat["OuterEdgeColor"] = Aen::Color::Red;
+	barMat["InnerEdgeColor"] = Aen::Color::Red;
+	barMat["OuterEdgeColor"] = Aen::Color::Red;
 
 	m_targetUI = &Aen::EntityHandler::CreateEntity();
 	m_targetUI->AddComponent<Aen::MeshInstance>();
