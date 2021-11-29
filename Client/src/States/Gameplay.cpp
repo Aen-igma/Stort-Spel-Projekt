@@ -12,9 +12,9 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_reimube1);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	
-	for (auto& b : *m_levelImporter.GetEntityList()) {
+	/*for (auto& b : *m_levelImporter.GetEntityList()) {
 		Aen::EntityHandler::RemoveEntity(*b);
-	}
+	}*/
 
 	for (auto& d : m_enemyQueue) {
 		delete d;
