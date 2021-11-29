@@ -22,7 +22,7 @@ namespace Aen
 		}
 		static int rerolls;
 
-		uint32_t weightS = 50; //Straight
+		uint32_t weightS = 50;	//Straight
 		uint32_t weightB = 500;	//Bend
 		uint32_t weightT = 300;	//threeway
 		uint32_t weightF = 200; //fourway
