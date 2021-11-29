@@ -137,12 +137,8 @@ void Gameplay::Initialize()
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
-
-				for (int i = 0; i < 2; i++) {
-					m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-				}
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
+
 			}
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE) {
@@ -160,6 +156,7 @@ void Gameplay::Initialize()
 		}
 	}
 	m_chest.GetObjectEntity()->SetPos(ChestPos);
+	m_door.GetEntity()->SetPos(ChestPos.x, ChestPos.y + 4.f, ChestPos.z + 10.f);
 	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y, ChestPos.z);
 	m_chest.SetType(Type::Open);
 
@@ -184,7 +181,8 @@ void Gameplay::Initialize()
 	wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 	wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
 	m_Window.LoadSettings(wDesc);
-	screenWidth = wDesc.width;
+	screenSize.x = wDesc.width;
+	screenSize.y = wDesc.height;
 
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
@@ -233,7 +231,7 @@ void Gameplay::Update(const float& deltaTime) {
 	if (m_hp != m_player.GetHealth()) {
 		float hp = (m_hp - m_player.GetHealth());
 
-		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture((hp * 2.f) * (1.f/1920.f) * screenWidth, 0);
+		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture((hp * 2.f) * (1.f/1920.f) * screenSize.x, 0);
 		m_hp = m_player.GetHealth();
 	}
 	m_UI->GetComponent<Aen::UIComponent>().ChangeText(1, potionNr.str().c_str());
@@ -249,8 +247,8 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_chest.Update(deltaTime, m_player.GetEntity());
 	if (m_chest.GetNear()) {
-		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f, 2);
-		m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300.f, 2);
+		m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * screenSize.x, (800.f / 1024.f) * screenSize.y, 2);
+		m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
 
 		//if (m_enemyQueue.empty())
 		//	m_chest.SetType(Type::Closed);
@@ -261,7 +259,7 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 	}
 	else {
-		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, 0.f, 2);
+		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f, 2);
 	}
 
 	for (auto& i : m_enemyQueue) {
@@ -276,7 +274,7 @@ void Gameplay::Update(const float& deltaTime) {
 		m_UI->GetComponent<Aen::UIComponent>().SetPicPos(0.f, 0.f, 0);
 		m_deathTimer += deltaTime;
 
-		if (m_deathTimer > 0.1f) {
+		if (m_deathTimer > 0.2f) {
 			State::SetState(States::Gameover);
 		}
 	}
@@ -305,7 +303,8 @@ void Gameplay::Update(const float& deltaTime) {
 
 		if (m_toggleFullScreen) {
 			wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
-			screenWidth = wDesc.width;
+			screenSize.x = wDesc.width;
+			screenSize.y = wDesc.height;
 			wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
@@ -313,7 +312,8 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 		else {
 			wDesc.width = static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f);
-			screenWidth = wDesc.width;
+			screenSize = wDesc.width;
+			screenSize.y = wDesc.height;
 			wDesc.height = static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f);
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_OVERLAPPEDWINDOW | AEN_WS_VISIBLE;

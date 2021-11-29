@@ -5,6 +5,7 @@
 #include "AenirEngine\Graphics\Component\EntityHandler.h"
 #include"../Enemy/Enemies.h"
 #include "../Actors/Chest.h"
+#include "../Actors/Door.h"
 #include"AenirEngine\LevelEditor\ImGuiImporter.h"
 #include<functional>
 
@@ -23,7 +24,7 @@ private:
     float m_fSpeed;
     bool m_toggleFullScreen;
 
-    float screenWidth;
+    Aen::Vec2f screenSize;
 
     Aen::Raycast m_ray;
 
@@ -36,6 +37,7 @@ private:
  
     Player m_player;
     Chest m_chest;
+    Door m_door;
     bool m_beatBoss;
 
     Aen::ImGuiImporter m_levelImporter;

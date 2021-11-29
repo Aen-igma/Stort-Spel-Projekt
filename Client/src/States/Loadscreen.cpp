@@ -50,7 +50,7 @@ void Loadscreen::Initialize()
 	// continue
 	m_loading->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Continue.png"));
 	m_loading->GetComponent<Aen::UIComponent>().SetButtonPos((950.f / 1920) * wDesc.width, (900.f / 1024) * wDesc.height);
-	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize((300.f / 1920)* wDesc.width, (150.f / 1024) * wDesc.height);
+	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize((400.f / 1920)* wDesc.width, (150.f / 1024) * wDesc.height);
 	m_loading->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	if (!State::GetLoaded())
