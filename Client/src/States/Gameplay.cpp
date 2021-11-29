@@ -176,7 +176,6 @@ void Gameplay::Initialize()
 		m_door.GetEntity()->SetRot(0, -90, 0);
 	}
 	m_door.GetEntity()->SetPos(DoorPos.x, 3.f, DoorPos.z);
-	m_door.GetEntity()->MoveRelative(1.f, 0.f, 0.f);
 
 	//m_attack->SetParent(*m_player);
 
