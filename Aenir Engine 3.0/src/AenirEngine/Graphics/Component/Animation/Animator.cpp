@@ -5,7 +5,7 @@
 namespace Aen {
 	void Animator::Update()
 	{
-		if (animation) {
+		if (animation && pause) {
 			m_end = ResClock::now();
 			while (std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > frameRate) {
 				m_start = ResClock::now();
@@ -91,6 +91,16 @@ namespace Aen {
 		m_scale = newScale;
 	}
 
+	void Animator::Pause()
+	{
+		pause = false;
+	}
+
+	void Animator::Run()
+	{
+		pause = true;
+	}
+
 	Animator::Animator(const size_t& id)
 		:Drawable(id), animation(nullptr), m_scale(1)
 	{
@@ -101,6 +111,12 @@ namespace Aen {
 	void Animator::SetAnimation(Animation& anim)
 	{
 		this->animation = &anim;
+	}
+
+	void Animator::SetAnimation(const std::string& animName)
+	{
+		if (!Resource::AnimationExist(animName)) throw;
+		this->animation = &Resource::GetAnimation(animName);
 	}
 
 	void Animator::SetFrameRate(const int& frameRate)

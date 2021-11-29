@@ -22,6 +22,7 @@ namespace Aen {
 		DurationLD frameRate;
 		int m_currentFrame;
 		float m_scale;
+		bool pause;
 		void Update();
 		void GetAnimation(std::vector<Mat4f>& mat);
 		void BindBuffer();
@@ -29,8 +30,13 @@ namespace Aen {
 	public:
 		Animator(const size_t& id);
 		void SetAnimation(Animation& anim);
+		void SetAnimation(const std::string& animName);
 		void SetFrameRate(const int& frameRate);
 		void SetAnimationScale(const float& newScale);
+
+		void Pause();
+		void Run();
+		void Reset();
 
 
 		friend class ComponentHandler;

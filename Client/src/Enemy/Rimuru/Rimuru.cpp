@@ -33,6 +33,14 @@ Rimuru::Rimuru()
 
 Rimuru::Rimuru(const Aen::Vec3f& pos)
 	:Enemy(), m_rimuru(&Aen::EntityHandler::CreateEntity()) {
+	
+
+	m_rimuru->AddComponent<Aen::Animator>();
+	//m_rimuru->GetComponent<Aen::Animator>().SetAnimation("TimWaveHead");
+	m_rimuru->GetComponent<Aen::Animator>().SetAnimationScale(5);
+	m_rimuru->GetComponent<Aen::Animator>().SetFrameRate(24);
+	//m_rimuru->GetComponent<Aen::Animator>().Pause();
+
 	m_rimuru->AddComponent<Aen::MeshInstance>();
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
@@ -58,6 +66,8 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	m_dodge = false;
 	m_hurting = false;
 	m_toggleAttacked = false;
+
+	
 }
 
 Rimuru::~Rimuru() {
@@ -77,6 +87,19 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 
 	m_healthBar->SetScale(m_health / 20.f, 0.f, 5.f);
 
+	if (Aen::Input::KeyDown(Aen::Key::O)) {
+		m_rimuru->GetComponent<Aen::Animator>().Pause();
+	}
+	if (Aen::Input::KeyDown(Aen::Key::P)) {
+		m_rimuru->GetComponent<Aen::Animator>().Run();
+	}
+	if (Aen::Input::KeyDown(Aen::Key::T)) {
+		m_rimuru->GetComponent<Aen::Animator>().SetAnimation("TimWave");
+	}
+	if (Aen::Input::KeyDown(Aen::Key::Y)) {
+		m_rimuru->GetComponent<Aen::Animator>().SetAnimation("TimWaveHead");
+	}
+
 	/*if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
 		m_v.y = 0.f;*/
 
@@ -88,8 +111,9 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 			m_eventQueue.pop_front();
 		}
 	} else {
-		if(dist < 20.f)
+		if (dist < 20.f) {
 			RandomCombatEvent(deltaTime);
+		}
 		else {
 			m_rDir = Aen::Vec2f(float(rand() % 10) - 5, float(rand() % 10) - 5);
 			RandomIdleEvent(deltaTime, m_rDir);

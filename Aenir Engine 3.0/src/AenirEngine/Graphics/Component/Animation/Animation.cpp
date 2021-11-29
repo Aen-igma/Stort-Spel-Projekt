@@ -43,7 +43,7 @@ namespace Aen {
 	}
 
 	std::vector<aiNode*> ai_nodes;
-	std::vector<aiNodeAnim*> ai_nodes_anim;
+	//std::vector<aiNodeAnim*> ai_nodes_anim;
 	std::vector<aiNode*> ai_node_bones;
 	std::vector<aiBone*> ai_bone_data;
 
@@ -106,7 +106,7 @@ namespace Aen {
 			for (size_t j = 0; j < nodeBoneArray.size(); j++) {
 				if (bone.boneID == 0) {
 					bone.parentID = -1;
-					break;
+					//break;
 				}
 				/*if (nodeBoneArray[i]->FindNode(nodeBoneArray[j]->mName.data)) {
 					OutputDebugString(std::to_string(j).c_str());
@@ -121,7 +121,7 @@ namespace Aen {
 
 			// --------- LOCAL MATRIX ----------- //
 			if (bone.parentID != -1) {
-				bone.localMatrix.a11 = nodeBoneArray[bone.parentID]->mTransformation.a1; bone.localMatrix.a12 = nodeBoneArray[bone.parentID]->mTransformation.a2;
+				/*bone.localMatrix.a11 = nodeBoneArray[bone.parentID]->mTransformation.a1; bone.localMatrix.a12 = nodeBoneArray[bone.parentID]->mTransformation.a2;
 				bone.localMatrix.a13 = nodeBoneArray[bone.parentID]->mTransformation.a3; bone.localMatrix.a14 = nodeBoneArray[bone.parentID]->mTransformation.a4;
 																															 
 				bone.localMatrix.a21 = nodeBoneArray[bone.parentID]->mTransformation.b1; bone.localMatrix.a22 = nodeBoneArray[bone.parentID]->mTransformation.b2;
@@ -131,7 +131,21 @@ namespace Aen {
 				bone.localMatrix.a33 = nodeBoneArray[bone.parentID]->mTransformation.c3; bone.localMatrix.a34 = nodeBoneArray[bone.parentID]->mTransformation.c4;
 																														
 				bone.localMatrix.a41 = nodeBoneArray[bone.parentID]->mTransformation.d1; bone.localMatrix.a42 = nodeBoneArray[bone.parentID]->mTransformation.d2;
-				bone.localMatrix.a43 = nodeBoneArray[bone.parentID]->mTransformation.d3; bone.localMatrix.a44 = nodeBoneArray[bone.parentID]->mTransformation.d4;
+				bone.localMatrix.a43 = nodeBoneArray[bone.parentID]->mTransformation.d3; bone.localMatrix.a44 = nodeBoneArray[bone.parentID]->mTransformation.d4;*/
+
+				bone.localMatrix.a11 = nodeBoneArray[i]->mTransformation.a1; bone.localMatrix.a12 = nodeBoneArray[i]->mTransformation.a2;
+				bone.localMatrix.a13 = nodeBoneArray[i]->mTransformation.a3; bone.localMatrix.a14 = nodeBoneArray[i]->mTransformation.a4;
+
+				bone.localMatrix.a21 = nodeBoneArray[i]->mTransformation.b1; bone.localMatrix.a22 = nodeBoneArray[i]->mTransformation.b2;
+				bone.localMatrix.a23 = nodeBoneArray[i]->mTransformation.b3; bone.localMatrix.a24 = nodeBoneArray[i]->mTransformation.b4;
+
+				bone.localMatrix.a31 = nodeBoneArray[i]->mTransformation.c1; bone.localMatrix.a32 = nodeBoneArray[i]->mTransformation.c2;
+				bone.localMatrix.a33 = nodeBoneArray[i]->mTransformation.c3; bone.localMatrix.a34 = nodeBoneArray[i]->mTransformation.c4;
+
+				bone.localMatrix.a41 = nodeBoneArray[i]->mTransformation.d1; bone.localMatrix.a42 = nodeBoneArray[i]->mTransformation.d2;
+				bone.localMatrix.a43 = nodeBoneArray[i]->mTransformation.d3; bone.localMatrix.a44 = nodeBoneArray[i]->mTransformation.d4;
+
+				//bone.localMatrix.Transposed();
 			}
 			else
 			{
@@ -146,11 +160,13 @@ namespace Aen {
 													 														
 				bone.localMatrix.a41 = nodeBoneArray[i]->mTransformation.d1; bone.localMatrix.a42 = nodeBoneArray[i]->mTransformation.d2;
 				bone.localMatrix.a43 = nodeBoneArray[i]->mTransformation.d3; bone.localMatrix.a44 = nodeBoneArray[i]->mTransformation.d4;
+
+				//bone.localMatrix.identity;
 			}
 			
 
 			// --------- OFFSET MATRIX ----------- //
-			bone.offsetMatrix.a11 = mesh->mBones[i]->mOffsetMatrix.a1; bone.offsetMatrix.a12 = mesh->mBones[i]->mOffsetMatrix.a2; 
+			bone.offsetMatrix.a11 = mesh->mBones[i]->mOffsetMatrix.a1; bone.offsetMatrix.a12 = mesh->mBones[i]->mOffsetMatrix.a2;
 			bone.offsetMatrix.a13 = mesh->mBones[i]->mOffsetMatrix.a3; bone.offsetMatrix.a14 = mesh->mBones[i]->mOffsetMatrix.a4;
 
 			bone.offsetMatrix.a21 = mesh->mBones[i]->mOffsetMatrix.b1; bone.offsetMatrix.a22 = mesh->mBones[i]->mOffsetMatrix.b2;
@@ -258,6 +274,9 @@ namespace Aen {
 
 	void Animation::LoadAnimation(const std::string& animationPath)
 	{
+		ai_nodes.clear();
+		ai_node_bones.clear();
+		ai_bone_data.clear();
 		Assimp::Importer importer;
 		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
 		const aiScene* animation = importer.ReadFile("../Resource/" + animationPath, /*aiProcess_Triangulate | */aiProcess_MakeLeftHanded);
