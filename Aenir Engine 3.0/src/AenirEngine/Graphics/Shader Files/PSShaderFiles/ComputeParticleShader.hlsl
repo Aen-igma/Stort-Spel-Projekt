@@ -105,7 +105,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
     random.x *= 0.5f;
     random.y *= 0.5f;
 
-    if (length(OutputParticle[i].Pos) >= 4)
+    if (length(OutputParticle[i].Pos) >= 5)
     {
         OutputParticle[i].Pos.x = 0;
         OutputParticle[i].Pos.y = 0;
@@ -128,8 +128,10 @@ void main(uint3 DTid : SV_DispatchThreadID)
     //OutputParticle[i].Pos.z = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
 
 
-
-    OutputParticle[i].Pos.y += (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+    //OutputParticle[i].Pos.x + (5 * deltaTime + noise(float3(DTid))) % 50;
+    //OutputParticle[i].Pos.y += (5 * deltaTime + noise(float3(DTid))) % 50;
+    //OutputParticle[i].Pos.z + (5 * deltaTime + noise(float3(DTid))) % 50;
+    OutputParticle[i].Pos = 0;
 
 
     //OutputParticle[i].Color.x = OutputParticle[i].Color.x;

@@ -239,13 +239,14 @@ namespace Aen
 
 		RenderSystem::Draw(this->currentNrPS,0);
 
+
 		// Second Pass
 
 		RenderSystem::UnBindShader<VShader>();
 		RenderSystem::UnBindShader<GShader>();
 		RenderSystem::UnBindShader<PShader>();
 		RenderSystem::UnBindShaderResources<VShader>(0,1);
-		RenderSystem::UnBindShaderResources<PShader>(0,2);
+		RenderSystem::UnBindShaderResources<PShader>(0,3);
 		RenderSystem::UnBindRenderTargets(renderer.m_particleOut.GetCount());
 
 		renderer.m_cbBGColor.BindBuffer<CShader>(0);
