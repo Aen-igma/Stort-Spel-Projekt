@@ -591,7 +591,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 	else {
 		for (auto& i : e) i->Hurt(false);
 		mp_hurtBox->ToggleActive(false);
-		ResetSword();
+		//ResetSword();
 	}
 }
 

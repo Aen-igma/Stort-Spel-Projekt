@@ -2,7 +2,9 @@
 
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f),
-	IFRAMEMAX(1.5f), m_iFrames(0.f) {
+	IFRAMEMAX(1.5f), m_iFrames(0.f),
+	m_skeleBoss(new Boss)
+{
 	
 }
 
@@ -36,15 +38,15 @@ void Gameplay::Initialize()
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
 	mp_uiComp = &m_UI->GetComponent<Aen::UIComponent>();
-	mp_uiComp->AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png")); //0
+	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"healthbar.png")); //0
 	mp_uiComp->SetPicPos(350.f, 100.f);
 	mp_uiComp->SetPicSize(m_hp * 2.f, 150.f);
 
-	mp_uiComp->AddPicture(AEN_RESOURCE_DIR_W(L"bar.png")); //1
+	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"bar.png")); //1
 	mp_uiComp->SetPicPos(350.f, 100.f);
 	mp_uiComp->SetPicSize(m_hp * 2.f, 150.f);
 
-	mp_uiComp->AddPicture(AEN_RESOURCE_DIR_W(L"potion.png")); //2
+	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"potion.png")); //2
 	mp_uiComp->SetPicPos(125.f, 100.f);
 	mp_uiComp->SetPicSize(150.f, 150.f);
 

@@ -36,13 +36,11 @@ namespace Aen {
 		while (Aen::WindowHandle::HandleMsg()) {
 
 			sstart = omp_get_wtime();
-			while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
 			if (m_app->m_window.IsActive()) {
 
 				Input::Update();
 				m_app->Update(static_cast<float>(deltaTime));
 			}
-				m_start = ResClock::now();
 			PhysicsHandler::Update(static_cast<float>(deltaTime));
 			
 			m_renderer->Culling();
@@ -50,15 +48,6 @@ namespace Aen {
 
 
 			deltaTime = (omp_get_wtime() - sstart);
-					m_renderer->Render();
-				}
-			}
-
-			if (!GlobalSettings::GetVSync())
-			{
-				m_renderer->Culling();
-				m_renderer->Render();
-			}
 		}
 
 		// Destroy imGui
