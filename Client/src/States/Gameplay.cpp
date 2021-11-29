@@ -278,14 +278,9 @@ void Gameplay::Update(const float& deltaTime) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f, 2);
 	}
 
-	static bool test = false;
 	if (Aen::Input::KeyDown(Aen::Key::F)) {
 
-		test = !test;
-	}
-
-	if (test) {
-		m_door.GetEntity()->SetRot(0, Aen::Lerp(m_door.GetEntity()->GetRot().y, 180.f, 0.1f), 0);
+		m_door.GetEntity()->SetRot(0, 90.f, 0);
 	}
 
 	for (auto& i : m_enemyQueue) {
