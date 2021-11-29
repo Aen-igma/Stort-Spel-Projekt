@@ -54,10 +54,6 @@ namespace Aen
 			}
 			rerolls++;
 		}
-		//if (result.m_roomIndex == roomIndex && rerolls < 4) {
-		//	rerolls++;
-		//	result = RNGRoom(connectionDir, roomIndex);
-		//}
 		assert(result.m_roomIndex < levelRoom.size());
 
 		AlignRoom(&result, connectionDir, type);
@@ -83,7 +79,7 @@ namespace Aen
 				case 1:
 					break;
 				case 2:
-					if (LehmerInt() % 0x80 > 0x40) {
+					if (LehmerInt() % (0x80 << 16) > (0x40 << 16)) {
 						room->rotateCW();
 					}
 					else {
@@ -91,10 +87,10 @@ namespace Aen
 					}
 					break;
 				case 3:
-					randNum = LehmerInt() % 0x120;
-					if (randNum < 0x60)
+					randNum = LehmerInt() % (0x120 << 16);
+					if (randNum < (0x60 << 16))
 						room->rotate180();
-					else if (randNum < 0xC0)
+					else if (randNum < (0xC0 << 16))
 						room->rotateCW();
 					else
 						room->rotateCCW();
@@ -111,7 +107,7 @@ namespace Aen
 					room->rotateCCW();
 					break;
 				case 2:
-					if (LehmerInt() % 0x80 > 0x40) {
+					if (LehmerInt() % (0x80 << 16) > (0x40 << 16)) {
 						room->rotateCCW();
 					}
 					else {
@@ -119,7 +115,7 @@ namespace Aen
 					}
 					break;
 				case 3:
-					if (LehmerInt() % 0x80 > 0x40) {
+					if (LehmerInt() % (0x80 << 16) > (0x40 << 16)) {
 						room->rotateCCW();
 					}
 					else {
@@ -137,15 +133,15 @@ namespace Aen
 				case 1:
 					break;
 				case 2:
-					if (LehmerInt() % 0x80 > 0x40) {
+					if (LehmerInt() % (0x80 << 16) > (0x40 << 16)) {
 						room->rotateCCW();
 					}
 					break;
 				case 3:
-					randNum = LehmerInt() % 0x120;
-					if (randNum < 0x60)
+					randNum = LehmerInt() % (0x120 << 16);
+					if (randNum < (0x60 << 16))
 						room->rotateCW();
-					else if (randNum < 0xC0)
+					else if (randNum < (0xC0 << 16))
 						room->rotateCCW();
 					break;
 				default:
@@ -160,12 +156,12 @@ namespace Aen
 					room->rotateCW();
 					break;
 				case 2:
-					if (LehmerInt() % 0x80 > 0x40) {
+					if (LehmerInt() % (0x80 << 16) > (0x40 << 16)) {
 						room->rotateCW();
 					}
 					break;
 				case 3:
-					if (LehmerInt() % 0x80 > 0x40) {
+					if (LehmerInt() % (0x80 << 16) > (0x40 << 16)) {
 						room->rotateCW();
 					}
 					else {
@@ -253,7 +249,7 @@ namespace Aen
 			for (int y = 0; y < mapSize; y++) {
 
 				for (int x = 0; x < mapSize; x++) {
-					SetLehmerSeed(x + y * mapSize);
+					//SetLehmerSeed(x + y * mapSize);
 					if (map[x][y].m_present) {
 
 						if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
@@ -366,15 +362,15 @@ namespace Aen
 			OutputDebugStringA(LPCSTR("\n"));
 			OutputDebugStringA(LPCSTR("///////////////////////////////////"));
 			OutputDebugStringA(LPCSTR("\n"));
-			for (int i = 0; i < 3 * mapSize; i++) {
-				//for (int j = 0; j < 3 * mapSize; j++) {
-				//	std::cout << cmap[i][j];
-				//}
-				LPCSTR out = cmap[i];
-				OutputDebugStringA(out);
-				OutputDebugStringA(LPCSTR("\n"));
-				//std::cout << std::endl;
-			}
+			//for (int i = 0; i < 3 * mapSize; i++) {
+			//	//for (int j = 0; j < 3 * mapSize; j++) {
+			//	//	std::cout << cmap[i][j];
+			//	//}
+			//	LPCSTR out = cmap[i];
+			//	OutputDebugStringA(out);
+			//	OutputDebugStringA(LPCSTR("\n"));
+			//	//std::cout << std::endl;
+			//}
 			//std::cout << std::endl;
 			OutputDebugStringA(LPCSTR("\n"));
 			OutputDebugStringA(LPCSTR("///////////////////////////////////"));
@@ -420,15 +416,11 @@ namespace Aen
 		OutputDebugStringA(LPCSTR("///////////////////////////////////"));
 		OutputDebugStringA(LPCSTR("\n"));
 		for (int i = 0; i < 3 * mapSize; i++) {
-			//for (int j = 0; j < 3 * mapSize; j++) {
-			//	std::cout << cmap[i][j];
-			//}
+
 			LPCSTR out = cmap[i];
 			OutputDebugStringA(out);
 			OutputDebugStringA(LPCSTR("\n"));
-			//std::cout << std::endl;
 		}
-		//std::cout << std::endl;
 		OutputDebugStringA(LPCSTR("\n"));
 		OutputDebugStringA(LPCSTR("///////////////////////////////////"));
 		OutputDebugStringA(LPCSTR("\n"));
@@ -634,7 +626,7 @@ namespace Aen
 	LevelGenerator::LevelGenerator()
 	{
 		srand(time(NULL));
-		SetLehmerConstSeed(rand());
+		SetLehmerConstSeed((uint64_t)rand() | ((uint64_t)rand() << 32));
 	}
 
 	const Room* LevelGenerator::GetMapPointer()
@@ -653,7 +645,6 @@ namespace Aen
 		temp.m_roomSpecial = SpecialRoom::NONE;
 		temp.m_roomTheme = RoomTheme::PLACEHOLDER;
 		temp.connectionDirections = 101;
-		//temp.mptr_modelVector = &cube;
 		AddRoomToGeneration(temp);
 		temp.connectionDirections = 11;
 		AddRoomToGeneration(temp);
@@ -685,7 +676,6 @@ namespace Aen
 
 	void LevelGenerator::LoadRoomFiles(const string& filePath)
 	{
-		//m_handler.GetImporterPtr()->ReadFromFile(filePath);
 	}
 
 	inline void LevelGenerator::LoadMutipleRoomFiles()
@@ -906,69 +896,6 @@ namespace Aen
 				}
 			}
 		}
-
-		//		//Replace room
-		//		switch(numCon) {
-		//		case 2:
-		//		break;
-		//		case 3:
-		//			switch (numUnCon)
-		//			{
-		//			case 1:
-		//				break;
-		//			case 2:
-		//				//Replace with dead end
-		//				break;
-		//			}
-		//		break;
-		//		case 4:
-		//				break;
-		//			case 2:
-		//				//Replace with corridor/bend
-		//				switch (unConDir)
-		//				{
-		//				//Straight through
-		//				case 101:
-		//				case 1010:
-		//					if (n) {
-		//						//North-South
-		//						map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
-		//					}
-		//					else {
-		//						//East-West
-		//						map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 101));
-		//						map[x][y].rotateCCW();
-		//					}
-		//					break;
-		//				//Bend
-		//				case 11:
-		//					//North-East
-		//					map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
-		//					break;
-		//				case 110:
-		//					//South-East
-		//					map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
-		//					map[x][y].rotateCW();
-		//					break;
-		//				case 1100:
-		//					//South-West
-		//					map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
-		//					map[x][y].rotate180();
-		//					break;
-		//				case 1001:
-		//					//North-West
-		//					map[x][y] = RNGRoomFromVector(GetIndexVector(map[x][y].m_roomTheme, map[x][y].m_roomSpecial, 11));
-		//					map[x][y].rotateCCW();
-		//					break;
-		//				}
-		//				break;
-		//			case 3:
-		//				//Replace with dead end
-		//				break;
-		//			}
-		//		}
-		//	}
-		//}
 	}
 
 
@@ -992,27 +919,4 @@ namespace Aen
 		m_dynamic3 = 0;
 		m_dynamic4 = 0;
 	}
-
-	//Room::Room(const Room& p)
-	//{
-	//	m_enclosed = p.m_enclosed; //Var used in level generation, true when room is surrounded
-	//	m_present = p.m_present;
-	//	m_roomSpecial = p.m_roomSpecial;
-	//	m_roomTheme = p.m_roomTheme;
-
-	//	mptr_mesh = p.mptr_mesh;
-	//	mptr_parent = p.mptr_parent;
-	//	this->m_roomIndex = p.m_roomIndex;
-	//	m_CRIndex = p.m_CRIndex;
-
-	//	//connection location
-	//	connectionDirections = p.connectionDirections;
-
-	//	//Probabilities
-	//	m_baseChance = p.m_baseChance;
-	//	m_dynamic1 = p.m_dynamic1;
-	//	m_dynamic2 = p.m_dynamic2;
-	//	m_dynamic3 = p.m_dynamic3;
-	//	m_dynamic4 = p.m_dynamic4;
-	//}
 }
