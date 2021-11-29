@@ -163,7 +163,7 @@ namespace Aen {
 			(*m_defaultMaterial)["OuterEdgeThickness"] = 2;
 			(*m_defaultMaterial)["InnerEdgeColor"] = Aen::Color::Magenta;
 			(*m_defaultMaterial)["OuterEdgeColor"] = Aen::Color::Magenta;
-			m_defaultTexture->LoadTexture(AEN_RESOURCE_DIR("Missing_Textures.png"));
+			m_defaultTexture->LoadTexture(AEN_TEXTURE_DIR("Missing_Textures.png"));
 			m_defaultMaterial->SetDiffuseMap(*m_defaultTexture);
 
 		}

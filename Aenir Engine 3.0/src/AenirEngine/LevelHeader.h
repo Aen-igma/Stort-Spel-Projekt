@@ -11,13 +11,13 @@ namespace Aen
 {
 	enum TYPE
 	{
-		UNKNOWN,
-		ROOM,
-		MODEL,
-		TEXTURE,
-		MATERIAL,
-		LIGHT,
-		PARTICLE,
+		UNKNOWN = 0,
+		ROOM = 1,
+		MODEL = 2,
+		TEXTURE = 3,
+		MATERIAL = 4,
+		LIGHT = 5,
+		PARTICLE = 6,
 
 	};
 
@@ -64,8 +64,9 @@ namespace Aen
 	struct TextureStruct
 	{
 		// add id maybe
-		char name[TEXTURE_NAME_MAX_LENGTH];
-		char textureType[TYPE_NAME];
+		char texture[TEXTURE_NAME_MAX_LENGTH];
+		char normalTexture[TYPE_NAME];
+
 		//char blending[FILE_PATH_NAME_MAX_LENGTH];
 	};
 	struct MaterialStruct

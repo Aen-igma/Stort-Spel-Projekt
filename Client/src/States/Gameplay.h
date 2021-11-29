@@ -40,7 +40,7 @@ private:
     Door m_door;
     bool m_beatBoss;
 
-    Aen::ImGuiImporter m_levelImporter;
+    //Aen::ImGuiImporter m_levelImporter;
 
     std::queue<EventData> m_eventQueue;
 

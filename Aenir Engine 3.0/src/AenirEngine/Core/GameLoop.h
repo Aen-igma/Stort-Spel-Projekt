@@ -1,6 +1,6 @@
 #pragma once
 #include"App.h"
-#include<chrono>
+#include<omp.h>
 #include "ThirdParty\fmod\fmod.hpp"
 #include "ThirdParty\fmod\fmod_errors.h"
 

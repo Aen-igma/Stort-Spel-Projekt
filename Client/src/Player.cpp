@@ -14,18 +14,18 @@ Player::Player()
 {
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
-	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 200.f);
+	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 100.f);
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
-	sword.Load(AEN_RESOURCE_DIR("SwordOffset.fbx"));
+	sword.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
 
 	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_RESOURCE_DIR("Player.fbx"));
+	capsule.Load(AEN_MODEL_DIR("Player.fbx"));
 
 	Aen::Mesh* protag = &Aen::Resource::CreateMesh("Protag");
-	protag->Load(AEN_RESOURCE_DIR("Protagonist.fbx"));
+	protag->Load(AEN_MODEL_DIR("Protagonist.fbx"));
 
 	Aen::Material& skin = Aen::Resource::CreateMaterial("Skin");
 	skin["InnerEdgeColor"] = Aen::Color(0.3f, 0.1f, 0.08f, 1.f);
@@ -113,21 +113,21 @@ Player::Player()
 
 
 	Aen::Mesh& eBar = Aen::Resource::CreateMesh("eBar");
-	eBar.Load(AEN_RESOURCE_DIR("bar.fbx"));
+	eBar.Load(AEN_MODEL_DIR("bar.fbx"));
 
 	Aen::Material& barMat = Aen::Resource::CreateMaterial("barMat");
 	Aen::Material& targetMat = Aen::Resource::CreateMaterial("targetMat");
 
-	targetMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("target1.png"));
-	targetMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("target1.png"));
-	targetMat.LoadeAndSetEmissionMap(AEN_RESOURCE_DIR("target1.png"));
+	targetMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("target1.png"));
+	targetMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("target1.png"));
+	targetMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("target1.png"));
 	targetMat["InnerEdgeThickness"] = 0;
 	targetMat["OuterEdgeColor"] = Aen::Color::Red;
 	targetMat["GlowColor"] = Aen::Color::Red;
 
-	barMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("enemybar.png"));
-	barMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("opacBar.png"));
-	barMat.LoadeAndSetEmissionMap(AEN_RESOURCE_DIR("enemybar.png"));
+	barMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("enemybar.png"));
+	barMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("opacBar.png"));
+	barMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("enemybar.png"));
 	//barMat["InnerEdgeThickness"] = 0;
 	barMat["GlowColor"] = Aen::Color::Red;
 	barMat["InnerEdgeColor"] = Aen::Color::Red;

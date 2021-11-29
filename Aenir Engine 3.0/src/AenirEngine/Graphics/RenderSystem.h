@@ -226,7 +226,7 @@ namespace Aen {
         }
 
         static void Present() {
-            m_sChain->Present(0, NULL);
+            m_sChain->Present(1, NULL);
         }
 
         static void Dispatch(const uint32_t& x, const uint32_t& y, const uint32_t& z) {

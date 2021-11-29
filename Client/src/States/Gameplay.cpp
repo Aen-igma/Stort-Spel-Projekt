@@ -11,9 +11,9 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	//Aen::EntityHandler::RemoveEntity(*m_wall);
 	
-	for (auto& b : *m_levelImporter.GetEntityList()) {
+	/*for (auto& b : *m_levelImporter.GetEntityList()) {
 		Aen::EntityHandler::RemoveEntity(*b);
-	}
+	}*/
 
 	for (auto& d : m_enemyQueue) {
 		delete d;
@@ -45,9 +45,9 @@ void Gameplay::Initialize()
 	//Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	//plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
-	rimuru.Load(AEN_RESOURCE_DIR("Slime.fbx"));
+	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
-	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
+	reimube.Load(AEN_MODEL_DIR("Cube.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
@@ -59,25 +59,19 @@ void Gameplay::Initialize()
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
-	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
-	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
-	//enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
+	enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
 	enemyMat["BaseColor"] = Aen::Color::Cyan;
-
 	// Material to switch to when enemy is hurt
 	enemyMatHurt["BaseColor"] = Aen::Color::Red;
-	/*wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
-	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
 
-	reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
+	reimubeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
 	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
 
-	planeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Floor_Diffuse.png"));
+	planeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 
@@ -107,9 +101,12 @@ void Gameplay::Initialize()
 	//m_reimube1->SetRenderLayer(1);
 
 	// ------ Level Importer ------ //
-
+	//std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
+	//m_levelImporter.import(path);
 
 	// ------------------- Procedural generation testing staging grounds ------- //
+	//std::vector<string> levelPaths;
+
 	m_levelGenerator.LoadMutipleRoomFiles();
 
 
@@ -189,6 +186,10 @@ void Gameplay::Initialize()
 	//}
 	//m_enemyQueue.emplace_back(AEN_NEW Rimuru(Aen::Vec3f(0,0,0)));
 
+
+	//m_attack->SetParent(*m_player);
+
+	//printf("");
 
 	// --------------------------- Setup Window --------------------------------- //
 
@@ -309,7 +310,6 @@ void Gameplay::Update(const float& deltaTime) {
 		if(Aen::Input::KeyDown(Aen::Key::J))
 			m_enemyQueue.emplace_back(AEN_NEW Rimuru());
 	#endif
-
 
 	//if (Aen::Input::KeyDown(Aen::Key::O)) {
 	//	delete m_enemyQueue.front();
