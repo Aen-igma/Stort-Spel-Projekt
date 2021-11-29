@@ -23,6 +23,11 @@ class Enemy {
 	float m_health;
 	bool m_hurt;
 	Aen::Vec3f m_v;
+	void SetStationary();
+	void SetStationary(bool b);
+	bool GetStationary() const;
 
 	Aen::CharacterController* mp_charCont;
+private:
+	bool m_stationary;
 };

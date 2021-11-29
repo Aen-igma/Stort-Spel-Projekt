@@ -44,3 +44,18 @@ void Enemy::Hurt(const bool& hurt) {
 const bool Enemy::IsHurt() const {
 	return m_hurt;
 }
+
+void Enemy::SetStationary()
+{
+	m_stationary = !m_stationary;
+}
+
+void Enemy::SetStationary(bool b)
+{
+	m_stationary = b;
+}
+
+bool Enemy::GetStationary() const
+{
+	return m_stationary;
+}

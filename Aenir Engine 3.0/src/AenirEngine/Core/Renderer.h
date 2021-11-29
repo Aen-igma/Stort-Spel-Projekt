@@ -4,7 +4,7 @@
 #include<thread>
 
 namespace Aen {
-
+#ifdef _DEBUG
 	struct CB_Collision
 	{
 		Vec3f color;
@@ -12,7 +12,7 @@ namespace Aen {
 
 		CB_Collision() :color(Vec3f::zero), switcher(0) {}
 	};
-
+#endif // _DEBUG
 	struct CB_DispatchInfo {
 		Vec2i threadGroups;
 		Vec2i numThreads;
@@ -77,7 +77,9 @@ namespace Aen {
 
 		Vec2i m_dispatchGroups;
 		VShader m_opaqueVS;
+#ifdef _DEBUG
 		PShader m_collisionPS;
+#endif // _DEBUG
 		PShader m_transparencyPS;
 		UAView m_UAVBackBuffer;
 		RWTexture2D m_UAVFinal;

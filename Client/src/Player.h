@@ -3,6 +3,7 @@
 #include<queue>
 
 class Enemy;
+class Boss;
 
 enum class EventType {
 	Dash,
@@ -55,6 +56,8 @@ public:
 
 	Aen::AABoundBox* GetHitBoxP() const;
 
+	void SetBossP(Boss* boss);
+
 private:
 	void SwordSwing(float speed, float time, const float& deltaTime);
 	void ResetSword();
@@ -70,6 +73,8 @@ private:
 	Aen::Entity* m_sword;
 	Aen::Entity* m_targetUI;
 	Aen::Raycast m_ray;
+
+	Boss* mp_boss;
 
 
 

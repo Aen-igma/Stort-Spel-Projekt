@@ -6,7 +6,7 @@ Boss::Boss(float hp) :
 	Enemy(), m_direction(0.f, 0.f, 1.f),
 	m_thronePosition(m_enemy->GetPos() + Aen::Vec3f(0.f, 4.f, 0.f)),
 
-	m_isEngaged(false), m_hp(hp), m_isHurting(false), m_areMinionsSummoned(false),
+	m_isEngaged(false), m_hp(hp), m_isHurting(false), m_cantSummonSlimes(false), m_waiting(false),
 	LIGHTDMG(20.f), HEAVYDMG(50.f), LIGHTFORCE(20.f), HEAVYFORCE(100.f), BASESPEED(3.f),
 	m_stage(0)
 {
@@ -34,6 +34,8 @@ Boss::Boss(float hp) :
 
 	mp_hitbox->ToggleActive(true);
 
+	SetStationary(true);
+
 	//mE_hurtBox->SetPos(1, 1, 1);
 	//phurtbox->SetBoundingBox(2, 7, 2);
 
@@ -51,14 +53,16 @@ Boss::~Boss()
 
 void Boss::Update(const float& deltaTime, Player& player)
 {
+	//m_areMinionsSummoned = m_pMinions.size() > 0;
 	mp_player = &player;
+	if (!m_cantSummonSlimes)
+		m_waiting = false;
 
 	if (Aen::Input::KeyDown(Aen::Key::K))
-		m_isEngaged = !m_isEngaged;
+		SetStationary();
 
-	if (m_isEngaged)
+	if (GetStationary())
 	{
-		//m_v = Aen::Vec3f::zero;
 		for (int i = 0; i < m_pMinions.size(); i++)
 		{
 			m_pMinions[i]->Update(deltaTime, player);
@@ -69,7 +73,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 		Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 		float distance = eDir.Magnitude();
 		eDir.Normalized();
-		
+
 
 		m_direction = Aen::Lerp(m_direction, eDir.Normalized(), 0.03f);
 		float yaw = std::atan2(m_direction.x, m_direction.z);
@@ -94,6 +98,11 @@ void Boss::Update(const float& deltaTime, Player& player)
 
 		}
 
+		if (m_pMinions.size() == 5)
+		{
+			printf("ping\n");
+		}
+
 		float zero = 0;
 		if (Aen::Input::KeyDown(Aen::Key::G))
 			LightAttack();
@@ -103,15 +112,19 @@ void Boss::Update(const float& deltaTime, Player& player)
 			SummonSlimes(6);
 		if (Aen::Input::KeyDown(Aen::Key::L))
 			GoToThrone();
-		UpdateAttack();
+		if (Aen::Input::KeyDown(Aen::Key::P))
+			Wait(2);
 
+		UpdateAttack();
 		m_v = m_direction * m_speed;
-		m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
+		static float drag = 5.0f;
+		m_v += Aen::Vec3f(-m_v.x * drag, -30.f, -m_v.z * drag) * deltaTime;
 		m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
 		m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
-		m_v.x;
+		if (m_waiting)
+			m_v = Aen::Vec3f::zero;
 	}
-	
+
 	mp_charCont->Move(m_v * m_deltatime, m_deltatime);
 }
 
@@ -125,9 +138,25 @@ void Boss::SetThronePosition(float x, float y, float z)
 	m_thronePosition = Aen::Vec3f(x, y, z);
 }
 
-std::vector<Rimuru*>& Boss::GetEnemies()
+void Boss::MakeMinionsSummonable(bool b)
+{
+	m_cantSummonSlimes = b;
+}
+
+std::vector<Rimuru*>& Boss::GetMinions()
 {
 	return m_pMinions;
+}
+
+int Boss::GetEnemiesToSummon()
+{
+	int minionsToSummon = m_minionsToSummon;
+	if (!m_cantSummonSlimes && m_minionsToSummon != 0)
+	{
+		m_minionsToSummon = 0;
+		m_cantSummonSlimes = true;
+	}
+	return minionsToSummon;
 }
 
 void Boss::LightAttack()
@@ -179,41 +208,57 @@ void Boss::GoToThrone()
 
 void Boss::SummonSlimes(int amountOfSLimes)
 {
-	if (!m_areMinionsSummoned)
-	{
-		m_areMinionsSummoned = true;
-		float minionPos = 0.f;
-		EventData data;
-
-		data.nrOfAttacks = amountOfSLimes;
-		data.duration = .01f;
-		data.type = EventType::Summon;
-		data.damage = amountOfSLimes;
-		data.knockbackForce = 0;
-		data.accell = 0.f;
-		data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-
-			float bengt = 0.f;
-			for (int i = 0; i < nrOf; i++)
-			{
-				m_pMinions.emplace_back(new Rimuru({ -11.f + minionPos, 3, minionPos }));
-				minionPos += 3.f;
-			}
 
 
-		};
+	//m_areMinionsSummoned = true;
+	float minionPos = 0.f;
+	EventData data;
 
-		m_eventQueue.emplace_back(data);
-	}
+	data.nrOfAttacks = amountOfSLimes;
+	data.duration = .01f;
+	data.type = EventType::Summon;
+	data.damage = amountOfSLimes;
+	data.knockbackForce = 0;
+	data.accell = 0.f;
+	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
+
+		if (!m_cantSummonSlimes)
+		{
+			m_minionsToSummon = nrOf;
+			//for (int i = 0; i < 1; i++)
+			//{
+				//if (m_areMinionsSummoned)
+				//m_pMinions.emplace_back(new Rimuru({ -11.f + minionPos, 3, minionPos }));
+				//minionPos += 3.f;
+			//}
+		}
+		else m_minionsToSummon = 0;
+
+	};
+
+	m_eventQueue.emplace_back(data);
 
 
 
+}
+
+void Boss::Wait(const float duration)
+{
+	EventData e;
+	e.accell = 0.f;
+	e.duration = duration;
+	e.type = EventType::Wait;
+	e.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
+		m_waiting = true;
+	};
+	m_eventQueue.emplace_back(e);
 }
 
 void Boss::UpdateAttack()
 {
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack)
 	{
+		m_cantSummonSlimes = false;
 		if (mp_hurtBox->Intersects(mp_player->GetEntity()->GetComponent<Aen::AABoundBox>()))
 		{
 			if (!m_isHurting)

@@ -30,19 +30,10 @@ namespace Aen {
 	}
 	
 	void GameLoop::Run() {
-		//m_start = m_end = 0.01fResClock::now();
 		bool useVsync = GlobalSettings::GetVSync();
-		double sstart = 0, deltaTime = 0/*, /*frameTime = 0, endTime = 0*/;
+		double sstart = 0, deltaTime = 0;
 		while(Aen::WindowHandle::HandleMsg()) {
 
-			//endTime = omp_get_wtime();
-			//m_end = ResClock::now();
-			
-			//while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
-			//while ((endTime - sstart) > m_frametime) {
-				//m_deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start);
-				//m_start = ResClock::now();
-				//deltaTime = (endTime - sstart);
 				sstart = omp_get_wtime();
 
 				if (m_app->m_window.IsActive()) {
@@ -52,7 +43,6 @@ namespace Aen {
 				}
 
 				PhysicsHandler::Update(static_cast<float>(deltaTime));
-				//PhysicsHandler::Update(static_cast<float>(m_deltaTime.count()));
 
 				if (useVsync)
 					m_renderer->Render();

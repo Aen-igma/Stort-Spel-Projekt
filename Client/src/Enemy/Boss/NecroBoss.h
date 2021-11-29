@@ -17,8 +17,11 @@ public:
 
 	void SetThronePosition(Aen::Vec3f v);
 	void SetThronePosition(float x, float y, float z);
+	void MakeMinionsSummonable(bool b);
 
-	std::vector<Rimuru*>& GetEnemies();
+	std::vector<Rimuru*>& GetMinions();
+
+	int GetEnemiesToSummon();
 
 protected:
 	//Aen::Entity* m_hurtbox;
@@ -26,12 +29,13 @@ protected:
 private:
 	void LightAttack();
 	void BigAttack();
-	//void DashAttack();
 	void GoToThrone();
 	void SummonSlimes(int amountOfSLimes);
+	void Wait(const float duration);
 
 	void UpdateAttack();
 
+	
 	Aen::Entity* mE_hurtBox;
 	Aen::OBBox* mp_hurtBox;
 
@@ -47,7 +51,7 @@ private:
 	bool m_isEngaged;
 	bool m_isHurting;
 	bool m_isCasting;
-	bool m_areMinionsSummoned;
+	bool m_cantSummonSlimes;
 
 	float m_knockBackForce;
 	float m_attackDamage;
@@ -56,6 +60,8 @@ private:
 	const float BASESPEED;
 
 	uint8_t m_stage = 0;
+	bool m_waiting;
+	uint8_t m_minionsToSummon = 0;
 
 };
 

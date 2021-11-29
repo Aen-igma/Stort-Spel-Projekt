@@ -1,5 +1,5 @@
 #include"Player.h"
-#include "Enemy/Enemy.h"
+#include "Enemy\Boss\NecroBoss.h"
 
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
@@ -546,6 +546,11 @@ const bool Player::IsAttacking() {
 Aen::AABoundBox* Player::GetHitBoxP() const
 {
 	return mp_hitBox;
+}
+
+void Player::SetBossP(Boss* boss)
+{
+	mp_boss = boss;
 }
 
 

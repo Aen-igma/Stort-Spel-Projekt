@@ -27,6 +27,9 @@ void Gameplay::Initialize()
 {
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
+
+	m_player.SetBossP(m_skeleBoss);
+
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
@@ -204,7 +207,6 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
-
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
 		wstringstream potionNr;
 		float hp = (m_hp - m_player.GetHealth());
@@ -236,6 +238,12 @@ void Gameplay::Update(const float& deltaTime) {
 
 	//if(m_enemyQueue.empty())
 	//	State::SetState(States::Victory);
+
+	int enemiesToSummon = m_skeleBoss->GetEnemiesToSummon();
+	for (int i = 0; i < enemiesToSummon; i++)
+	{
+		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
+	}
 
 	//#ifdef _DEBUG
 	//	if(Aen::Input::KeyDown(Aen::Key::J))
