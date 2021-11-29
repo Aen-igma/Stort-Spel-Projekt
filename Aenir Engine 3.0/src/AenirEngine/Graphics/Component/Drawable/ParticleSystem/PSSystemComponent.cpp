@@ -9,7 +9,7 @@
 namespace Aen 
 {
 	Aen::PSSystemcomponent::PSSystemcomponent(const size_t& id)
-		:Drawable(id),m_UAView(sizeof(Particle),1024)
+		:Drawable(id),m_UAView(sizeof(VertexParticle),1024)
 	{
 		//m_Particle.m_velocity = m_CSInputBuffer.m_vel.y;
 		//m_Particle.m_pos.x = 10;
@@ -20,15 +20,17 @@ namespace Aen
 		//m_ParticleList.m_pos[1] = 0.0f;
 		//m_ParticleList = 0;
 
-		this->m_CSInputBuffer.m_velocity.x = 1.0f;
-		this->m_CSInputBuffer.m_velocity.y = 2.0f;
-		this->m_CSInputBuffer.m_velocity.z = 1.0f;
+		//this->m_CSInputBuffer.m_velocity.x = 1.0f;
+		//this->m_CSInputBuffer.m_velocity.y = 2.0f;
+		//this->m_CSInputBuffer.m_velocity.z = 1.0f;
 
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
 	{
-
+		delete m_texture;
+		delete m_pMesh;
+		delete m_shader;
 	}
 
 	void PSSystemcomponent::LoadAndSetTexture(const std::string& dir)
@@ -81,16 +83,7 @@ namespace Aen
 	void PSSystemcomponent::updatePS(const float& framerate)
 	{
 		m_CSInputBuffer.deltaTime = framerate;
-	}
-
-	void PSSystemcomponent::InitParticleVariables()
-	{
-
-	}
-
-	void PSSystemcomponent::activatePS()
-	{
-
+		
 	}
 
 	void PSSystemcomponent::EmitRandom(float frameTime)
@@ -119,9 +112,9 @@ namespace Aen
 			};
 			float randVelocity = this->particleVelocity + (((float)rand() 
 				- (float)rand())/ RAND_MAX) * this->particleVelocityVariation;
-			//m_ParticleList[this->currentNrPS].m_pos[0] = randPosPS.x;
-			//m_ParticleList[this->currentNrPS].m_pos[1] = randPosPS.y;
-			//m_ParticleList[this->currentNrPS].m_pos[2] = randPosPS.z;
+			m_VertexPS.m_Pos.x = randPosPS.x;
+			m_VertexPS.m_Pos.y = randPosPS.y;
+			m_VertexPS.m_Pos.z = randPosPS.z;
 			found = false;
 		}
 		return;
@@ -140,44 +133,59 @@ namespace Aen
 	{
 		this->m_CSInputBuffer.m_emitCount = nr;
 		this->currentNrPS = this->m_CSInputBuffer.m_emitCount;
+		
 	}
 
 	void PSSystemcomponent::SetPos(float x, float y, float z)
 	{
-		for (int i = 0; i < this->currentNrPS; i++)
-		{
-
-		}
-	}
-
-	void PSSystemcomponent::respawn(float x, float y, float z)
-	{
-	
-	}
-
-	bool PSSystemcomponent::activate()
-	{
-		return true;
-	}
-
-
-
-	void PSSystemcomponent::SetVelo(float x)
-	{
-	
-	}
-
-	void PSSystemcomponent::SetVel(float dir)
-	{
-
+		//this->m_CSInputBuffer.m_InitalPos.x = x;
+		//this->m_CSInputBuffer.m_InitalPos.y = y;
+		//this->m_CSInputBuffer.m_InitalPos.z = z;
+		m_VertexPS.m_Pos.x = x;
+		m_VertexPS.m_Pos.y = y;
+		m_VertexPS.m_Pos.z = z;
 		
 	}
 
+	void PSSystemcomponent::SetVelocity(float x, float y, float z)
+	{
+		this->m_VertexPS.m_Velocity.x = x;
+		this->m_VertexPS.m_Velocity.y = y;
+		this->m_VertexPS.m_Velocity.z = z;
+	}
 
+
+
+	bool PSSystemcomponent::activate()
+	{
+		/*this->m_pVbuffer->Create(m_VertexPS, sizeof(VertexParticle) * this->maxParticles,D3D11_USAGE_IMMUTABLE );*/
+		return true;
+	}
+
+	void PSSystemcomponent::SetEmitPos(float x, float y, float z)
+	{
+		this->m_emitPos.x = x;
+		this->m_emitPos.y = y;
+		this->m_emitPos.z = z;
+	}
+
+	void PSSystemcomponent::Initialize()
+	{
+		this->m_vertexCount = this->maxParticles;
+		/*this->m_pVbuffer->Create(&m_VertexPS,this->m_vertexCount,D3D11_USAGE_IMMUTABLE);*/
+	}
 
 	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer) {
 
 		// First Pass
+		// 
+		renderer.m_PSInputBuffer.GetData().m_InitalPos.x = this->m_emitPos.x;
+		renderer.m_PSInputBuffer.GetData().m_InitalPos.y = this->m_emitPos.y;
+		renderer.m_PSInputBuffer.GetData().m_InitalPos.z = this->m_emitPos.z;
+		renderer.m_PSInputBuffer.GetData().m_velocity.x = this->m_emitDir.x;
+		renderer.m_PSInputBuffer.GetData().m_velocity.y = this->m_emitDir.y;
+		renderer.m_PSInputBuffer.GetData().m_velocity.z = this->m_emitDir.z;
+
 
 		RenderSystem::ClearRenderTargetView(renderer.m_particleOut, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
@@ -185,6 +193,12 @@ namespace Aen
 		renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation();
 		renderer.m_cbTransform.UpdateBuffer();
 		renderer.m_cbTransform.BindBuffer<VShader>(0);
+	
+	/*	renderer.m_VertexBuffer.Create(&m_PS,sizeof(VertexParticle)*this->maxParticles);
+		renderer.m_VertexBuffer.UpdateBuffer(&m_PS,0);
+		renderer.m_VertexBuffer.BindBuffer();*/
+
+
 
 		RenderSystem::BindShaderResourceView<VShader>(0, m_UAView);
 
@@ -216,6 +230,8 @@ namespace Aen
 
 		RenderSystem::BindRenderTargetView(renderer.m_particleOut, renderer.m_depthMap);
 		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
+		//RenderSystem::SetRasteriserState(renderer.m_wireFrameState);
+
 
 		RenderSystem::BindShader(renderer.m_PSVShader);
 		RenderSystem::BindShader(renderer.m_PSGShader);
@@ -281,8 +297,8 @@ namespace Aen
 		RenderSystem::UnBindShader<PShader>();
 		RenderSystem::UnBindShaderResources<VShader>(0,1);
 	}
-
-	bool PSSystemcomponent::FrustumCull(Renderer& renderer) {
+	bool PSSystemcomponent::FrustumCull(Renderer& renderer) 
+	{
 		return true;
 	}
 }

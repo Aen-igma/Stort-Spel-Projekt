@@ -61,7 +61,9 @@ void Gameplay::Initialize()
 	m_PS = &Aen::EntityHandler::CreateEntity();
 	m_PS->AddComponent<Aen::PSSystemcomponent>();
 	//m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("Flame.png"));
+	m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(10);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(0,0,0);
 	/*Aen::Material& PSMaterial = Aen::Resource::CreateMaterial("EnemyMaterial");*/
 
 
@@ -107,8 +109,8 @@ void Gameplay::Initialize()
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 
 	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
-	psMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Flames1.png"));
-	psMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
+	psMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Flames2.png"));
+	psMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("FlamesOppacity.png"));
 	//Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");
 
 	enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));

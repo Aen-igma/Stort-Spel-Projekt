@@ -1,14 +1,5 @@
-//cbuffer CBInput : register(b0)
-//{
-//    float runtime;
-//    uint particleCount;
-//    double padding;
-//    float3 vel;
-//    float padding2;
-
-//}
-
 #include "SimplexNoise.hlsl"
+
 cbuffer CBInput : register(b0)
 {
     float3 velocity;
@@ -17,8 +8,11 @@ cbuffer CBInput : register(b0)
     int maxParticles;
     int emitCount;
     float deltaTime;
+    float3 initalPos;
+    float m_emitInterval;
 }
-struct ParticleStruct
+
+struct Particle
 {
     float3 Pos;
     float3 Velocity;
@@ -29,6 +23,8 @@ struct ParticleStruct
     float2 padding;
     //bool alive;
 };
+
+
 
 float hash(float n)
 {
@@ -51,7 +47,9 @@ float noise(float3 x)
             lerp(hash(n + 170.0), hash(n + 171.0), f.x), f.y), f.z);
 }
 
-RWStructuredBuffer<ParticleStruct> OutputParticle : register(u0);
+
+RWStructuredBuffer<Particle> OutputParticle : register(u0);
+
 
 [numthreads(64, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
@@ -71,20 +69,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
 
     //OutputParticle[i].velocity = vel;
 	//If particle it out of range
-    if (length(OutputParticle[i].Pos) >= 6)
-    {
-        OutputParticle[i].Pos.x = 0;
-        OutputParticle[i].Pos.y = 0;
-        OutputParticle[i].Pos.z = 0;
-        OutputParticle[i].Color.x = 1;
-        OutputParticle[i].Color.y = 1;
-        OutputParticle[i].Color.z = 1;
-        OutputParticle[i].Color.w = 1;
-        OutputParticle[i].UV.x = 0;
-        OutputParticle[i].UV.y = 0;
-        //OutputParticle[i].alive = false;
-        /*OutputParticle[i].velocity = 1;*/
-    }
+
 
     //OutputParticle[i].pos += (10 * runtime + noise(float3(DTid))) %50;
     //OutputParticle[i].pos.y += (vel.y * runtime) % 50;
@@ -101,15 +86,56 @@ void main(uint3 DTid : SV_DispatchThreadID)
     //OutputParticle[i].Pos.y += (10 * deltaTime + noise(float3(DTid))) % 50;
     //OutputParticle[i].Pos.z = (10 * deltaTime + noise(float3(DTid))) % 50;
 
-    OutputParticle[i].Pos.x = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
-    OutputParticle[i].Pos.y += (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
-    OutputParticle[i].Pos.z = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+    //OutputParticle[i].Pos.xyz = initalPos.xyz;
+    //OutputParticle[i].Velocity.xyz = 4.0f * noise(float3(DTid)) % 50;
 
-    OutputParticle[i].Color.x = OutputParticle[i].Color.x;
-    OutputParticle[i].Color.y = OutputParticle[i].Color.y;
-    OutputParticle[i].Color.z = OutputParticle[i].Color.z;
-    OutputParticle[i].Color.w = OutputParticle[i].Color.w;
-    OutputParticle[i].UV.x = OutputParticle[i].UV.x;
-    OutputParticle[i].UV.y = OutputParticle[i].UV.y;
-    //OutputParticle[i].alive = true;
+    //ParticleStruct ps;
+    //ps.Pos = initalPos.xyz;
+    //OutputParticle[i].Velocity.xyz = 4.0f * noise(float3(DTid)) % 50;
+
+
+    //OutputParticle[i].Age += deltaTime;
+    //OutputParticle[i].Alive = (float) (OutputParticle[i].Age < lifeTime);
+    //OutputParticle[i].Velocity += 4.0f * vRandom;
+
+
+
+
+    float3 random = noise(0.0f);
+    random.x *= 0.5f;
+    random.y *= 0.5f;
+
+    if (length(OutputParticle[i].Pos) >= 4)
+    {
+        OutputParticle[i].Pos.x = 0;
+        OutputParticle[i].Pos.y = 0;
+        OutputParticle[i].Pos.z = 0;
+        OutputParticle[i].Color.x = 1;
+        OutputParticle[i].Color.y = 1;
+        OutputParticle[i].Color.z = 1;
+        OutputParticle[i].Color.w = 1;
+        OutputParticle[i].UV.x = 0;
+        OutputParticle[i].UV.y = 0;
+    }
+
+    //OutputParticle[i].Pos.xyz = initalPos.xyz;
+    //OutputParticle[i].Velocity += 4.0f * vRandom;
+    //OutputParticle[i].Pos.y += OutputParticle[i].Velocity * deltaTime + noise(float3(DTid)) % 50;
+ 
+
+    //OutputParticle[i].Pos.x = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+    //OutputParticle[i].Pos.y += (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+    //OutputParticle[i].Pos.z = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+
+
+
+    OutputParticle[i].Pos.y += (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+
+
+    //OutputParticle[i].Color.x = OutputParticle[i].Color.x;
+    //OutputParticle[i].Color.y = OutputParticle[i].Color.y;
+    //OutputParticle[i].Color.z = OutputParticle[i].Color.z;
+    //OutputParticle[i].Color.w = OutputParticle[i].Color.w;
+    //OutputParticle[i].UV.x = OutputParticle[i].UV.x;
+    //OutputParticle[i].UV.y = OutputParticle[i].UV.y;
 }

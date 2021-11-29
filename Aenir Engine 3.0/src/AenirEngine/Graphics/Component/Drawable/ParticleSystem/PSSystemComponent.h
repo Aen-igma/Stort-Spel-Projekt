@@ -6,7 +6,7 @@
 
 namespace Aen 
 {
-	struct Particle
+	struct VertexParticle
 	{
 		Vec3f m_Pos;
 		Vec3f m_Velocity;
@@ -33,6 +33,8 @@ namespace Aen
 		int  m_maxParticles;
 		int  m_emitCount;
 		float deltaTime;
+		Vec3f m_InitalPos;
+		float m_emitInterval;
 	};
 
 	class AEN_DECLSPEC PSSystemcomponent : public Drawable
@@ -42,19 +44,13 @@ namespace Aen
 		virtual ~PSSystemcomponent();
 
 		//Member vairables that we dont need yet
-		void SetVelo(float x);
-		void SetVel(float dir);
 		void SetNrOfPS(UINT nr);
 		void SetPos(float x, float y, float z);
-		void respawn(float x, float y, float z);
-		
-
+		void SetVelocity(float x,float y,float z);
 		void EmitRandom(float frameTime);
-		void InitParticleVariables();
-		void activatePS();
 		bool activate();
-		//void EnableBlending();
-		//void DisableBlending();
+		void SetEmitPos(float x, float y, float z);
+		void Initialize();
 		
 
 		//Texture
@@ -89,8 +85,9 @@ namespace Aen
 	
 		//Particle* m_ParticleList;
 		CSInputBuffer m_CSInputBuffer;
+		VertexParticle m_VertexPS;
 		Texture* m_texture;
-
+		VBuffer<VertexParticle>* m_pVbuffer;
 		ShaderModel* m_shader;
 		UAView m_UAView;
 
@@ -110,7 +107,9 @@ namespace Aen
 		int maxParticles, currentNrPS;
 		float accumulatedTime, runTimes;
 		float particleSize, particlesPerSecond;
-
+		Vec3f m_emitPos;
+		Vec3f m_emitDir;
+		int m_vertexCount;
 		
 		
 		// Inherited via Drawable

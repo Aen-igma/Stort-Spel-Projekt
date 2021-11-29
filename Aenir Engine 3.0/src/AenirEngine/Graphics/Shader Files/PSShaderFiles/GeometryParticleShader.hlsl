@@ -63,3 +63,35 @@ void main(
     OutStream.RestartStrip();
 
 }
+
+//[maxvertexcount(2)]
+//void main(
+//	point Particle input[1], inout TriangleStream<Particle> OutStream)
+//{
+//    input[0].Age += deltaTime;
+
+//    if (input[0].Age > emitInterval)
+//    {
+//        float3 vRandom = RandUnitVec3(0.0f);
+//        vRandom.x *= 0.5f;
+//        vRandom.y *= 0.5f;
+//        Particle ps;
+//        ps.Pos = initalPos.xyz;
+//        ps.Velocity = 4.0f * vRandom;
+//        OutStream.Append(ps);
+//        input[0].Age = 0.0f;
+
+//    }
+//    OutStream.Append(input[0]);
+//    GeometryShaderInput iPut;
+//    GeometryShaderOutput gOut;
+//    for (int i = 0; i < 4; ++i)
+//    {
+
+//        //gOut.color = iPut[0].color;
+
+//    }
+
+//}
+
+
