@@ -42,6 +42,11 @@ Boss::Boss(float hp) :
 Boss::~Boss()
 {
 	mE_hurtBox->RemoveParent();
+	UINT minionSize = m_pMinions.size();
+	for (int i = 0; i < minionSize; i++)
+	{
+		delete m_pMinions[i];
+	}
 }
 
 void Boss::Update(const float& deltaTime, Player& player)
@@ -58,6 +63,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 		{
 			m_pMinions[i]->Update(deltaTime, player);
 		}
+
 
 		m_deltatime = deltaTime;
 		Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
@@ -99,7 +105,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 			GoToThrone();
 		UpdateAttack();
 
-		//m_v = m_direction * m_speed;
+		m_v = m_direction * m_speed;
 		m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 		m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
 		m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
