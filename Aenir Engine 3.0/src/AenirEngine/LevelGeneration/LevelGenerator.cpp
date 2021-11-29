@@ -22,10 +22,10 @@ namespace Aen
 		}
 		static int rerolls;
 
-		uint32_t weightS = 15;
-		uint32_t weightB = 15;
-		uint32_t weightT = 25;
-		uint32_t weightF = 15;
+		uint32_t weightS = 100; //Straight
+		uint32_t weightB = 300;	//Bend
+		uint32_t weightT = 450;	//threeway
+		uint32_t weightF = 250; //fourway
 
 		uint32_t weightSum = weightS + weightB + weightT + weightF;
 
@@ -191,22 +191,22 @@ namespace Aen
 		int r = LehmerInt() % 4;
 		switch (r)
 		{
-		//case 0:
-		//	map[3][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-		//	map[3][3].m_present = true;
-		//	break;
-		//case 1:
-		//	map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-		//	map[3][4].m_present = true;
-		//	break;
-		//case 2:
-		//	map[4][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-		//	map[4][4].m_present = true;
-		//	break;
-		//case 3:
-		//	map[4][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 101));
-		//	map[4][3].m_present = true;
-		//	break;
+		case 0:
+			map[3][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[3][3].m_present = true;
+			break;
+		case 1:
+			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[3][4].m_present = true;
+			break;
+		case 2:
+			map[4][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[4][4].m_present = true;
+			break;
+		case 3:
+			map[4][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[4][3].m_present = true;
+			break;
 		default:
 			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
 			map[3][4].m_present = true;
@@ -215,30 +215,30 @@ namespace Aen
 
 
 		r = LehmerInt() % 4;
-		//switch (r)
-		//{
-		//case 1:
-		//	map[3][3].rotateCW();
-		//	map[3][4].rotateCW();
-		//	map[4][4].rotateCW();
-		//	map[4][3].rotateCW();
-		//	break;
-		//case 2:
-		//	map[3][3].rotateCCW();
-		//	map[3][4].rotateCCW();
-		//	map[4][4].rotateCCW();
-		//	map[4][3].rotateCCW();
-		//	break;
-		//case 3:
-		//	map[3][3].rotate180();
-		//	map[3][4].rotate180();
-		//	map[4][4].rotate180();
-		//	map[4][3].rotate180();
-		//	break;
-		//}
+		switch (r)
+		{
+		case 1:
+			map[3][3].rotateCW();
+			map[3][4].rotateCW();
+			map[4][4].rotateCW();
+			map[4][3].rotateCW();
+			break;
+		case 2:
+			map[3][3].rotateCCW();
+			map[3][4].rotateCCW();
+			map[4][4].rotateCCW();
+			map[4][3].rotateCCW();
+			break;
+		case 3:
+			map[3][3].rotate180();
+			map[3][4].rotate180();
+			map[4][4].rotate180();
+			map[4][3].rotate180();
+			break;
+		}
 
 		bool openConnections = true;
-		int maxRooms = 16; //Soft limit
+		int maxRooms = 10; //Soft limit
 
 		while (openConnections && maxRooms > 0) {
 			int numOpenConnections = 0;		//Tracks how many connections are open
@@ -307,9 +307,8 @@ namespace Aen
 
 		
 		placeBossRoom();
+		placeLootRoom();
 
-		CleanMap();
-		CleanMap();
 		
 		return *map;
 	}
@@ -319,6 +318,7 @@ namespace Aen
 
 		for (int k = 0; k < 1; k++) {
 			LevelGenerator::GenerateLevel();
+
 
 			for (int i = 0; i < 3 * mapSize; i++) {
 				for (int j = 0; j < 3 * mapSize; j++) {
@@ -372,6 +372,59 @@ namespace Aen
 			OutputDebugStringA(LPCSTR("///////////////////////////////////"));
 			OutputDebugStringA(LPCSTR("\n"));
 		}
+		CleanMap();
+		for (int i = 0; i < 3 * mapSize; i++) {
+			for (int j = 0; j < 3 * mapSize; j++) {
+				cmap[i][j] = ' ';
+				if (1 == (i % 3) && 1 == (j % 3)) {
+					cmap[i][j] = '.';
+				}
+			}
+		}
+
+		for (int y = 0; y < mapSize; y++) {
+			for (int x = mapSize - 2; x >= 0; x--) {
+				if (map[x][y].m_present) {
+					cmap[3 * y + 1][3 * x + 1] = ((int)'0' + (int)map[x][y].m_roomSpecial);
+					if (map[x][y].connectionDirections % 10u)
+					{
+						cmap[3 * y + 0][3 * x + 1] = '|'; //North
+					}
+					if ((map[x][y].connectionDirections / 10u) % 10u)
+					{
+						cmap[3 * y + 1][3 * x + 2] = '-'; //East
+					}
+					if ((map[x][y].connectionDirections / 100u) % 10u)
+					{
+						cmap[3 * y + 2][3 * x + 1] = '|'; //South
+					}
+					if ((map[x][y].connectionDirections / 1000u) % 10u)
+					{
+						cmap[3 * y + 1][3 * x + 0] = '-'; //West
+					}
+				}
+				cmap[3 * y + 0][3 * mapSize] = 0;
+				cmap[3 * y + 1][3 * mapSize] = 0;
+				cmap[3 * y + 2][3 * mapSize] = 0;
+			}
+		}
+		OutputDebugStringA(LPCSTR("\n"));
+		OutputDebugStringA(LPCSTR("///////////////////////////////////"));
+		OutputDebugStringA(LPCSTR("\n"));
+		for (int i = 0; i < 3 * mapSize; i++) {
+			//for (int j = 0; j < 3 * mapSize; j++) {
+			//	std::cout << cmap[i][j];
+			//}
+			LPCSTR out = cmap[i];
+			OutputDebugStringA(out);
+			OutputDebugStringA(LPCSTR("\n"));
+			//std::cout << std::endl;
+		}
+		//std::cout << std::endl;
+		OutputDebugStringA(LPCSTR("\n"));
+		OutputDebugStringA(LPCSTR("///////////////////////////////////"));
+		OutputDebugStringA(LPCSTR("\n"));
+	
 		return *map;
 	}
 
@@ -419,7 +472,103 @@ namespace Aen
 	{
 		bool bossRoomPlaced = false;
 		Vec2i entrancePos;
-		unsigned char type = 1;
+		Vec2i farPos;
+
+		for (int y = 0; y < mapSize; y++) {
+			for (int x = 0; x < mapSize; x++) {
+				if (map[x][y].m_present && map[x][y].m_roomSpecial == SpecialRoom::ENTRANCE) {
+					entrancePos = Vec2i(x, y);
+					y = mapSize;
+					break;
+				}
+			}
+		}
+		farPos = entrancePos;
+
+		for (int y = 0; y < mapSize; y++) {
+
+			for (int x = 0; x < mapSize; x++) {
+				if (map[x][y].m_present && !bossRoomPlaced) {
+					if (powf(x, 2) + powf(y, 2) > powf(farPos.x, 2) + powf(farPos.y, 2)) {
+						farPos = Vec2i(x, y);
+					}
+					if (y - 1 >= 0) //Prevents out of bounds
+					{																				
+						if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {	//Checks if region is clear
+							map[x][y - 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);	//
+							map[x][y - 1].rotate180();
+							bossRoomPlaced = true;
+							break;																	
+							//North
+						}
+					}
+					if (x + 1 < mapSize) {
+						if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
+							map[x + 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
+							map[x + 1][y].rotateCCW();
+							bossRoomPlaced = true;
+							break;
+							//East
+						}
+					}
+					if(y + 1 < mapSize){
+						if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
+							map[x][y + 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
+							bossRoomPlaced = true;
+							break;
+							//South
+						}
+					}
+					if (x - 1 >= 0) {
+						if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
+							map[x - 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
+							map[x - 1][y].rotateCW();
+							bossRoomPlaced = true;
+							break;
+							//West
+						}
+					}
+				}
+			}
+			if (bossRoomPlaced)
+				return;
+		}
+		//No free opening for a boss room; replacing one room with a boss room
+		map[farPos.x][farPos.y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
+		if (farPos.y + 1 < mapSize) //Prevents out of bounds
+		{
+			if (map[farPos.x][farPos.y + 1].m_present && (map[farPos.x][farPos.y - 1].connectionDirections / 1u) % 10u > 0)
+			{
+				map[farPos.x][farPos.y].rotate180();
+			}
+		}
+		if (farPos.x - 1 >= 0) 
+		{
+			if (map[farPos.x - 1][farPos.y].m_present && (map[farPos.x][farPos.y - 1].connectionDirections / 10u) % 10u > 0)
+			{
+				map[farPos.x][farPos.y].rotateCCW();
+			}
+		}
+		if (farPos.y - 1 >= 0) 
+		{
+			if (map[farPos.x][farPos.y - 1].m_present && (map[farPos.x][farPos.y - 1].connectionDirections / 100u) % 10u > 0 )
+			{
+				//No action
+			}
+		}
+		if (farPos.x + 1 < mapSize) 
+		{
+			if (map[farPos.x + 1][farPos.y].m_present && (map[farPos.x][farPos.y - 1].connectionDirections / 1000u) % 10u > 0)
+			{
+				map[farPos.x][farPos.y].rotateCW();
+			}
+		}
+	}
+
+	void LevelGenerator::placeLootRoom()
+	{
+		bool bossRoomPlaced = false;
+		Vec2i entrancePos;
 
 		for (int y = 0; y < mapSize; y++) {
 			for (int x = 0; x < mapSize; x++) {
@@ -428,37 +577,37 @@ namespace Aen
 				}
 			}
 		}
-		for (int y = 0; y < mapSize; y++) {
 
-			for (int x = 0; x < mapSize; x++) {
+		for (int y = mapSize - 1; y >= 0; y--) {
+
+			for (int x = mapSize - 1; x >= 0; x--) {
 				if (map[x][y].m_present && !bossRoomPlaced) {
 
 					if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
 					{																				//Prevents out of bounds
 						if ((map[x][y].connectionDirections / 1u) % 10u > 0 && !map[x][y - 1].m_present) {	//Checks if region is clear
-							map[x][y - 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);	//Insert random room
-							AlignRoom( &map[x][y - 1], 1, type);
+							map[x][y - 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::ITEM][1]);	//
+							map[x][y - 1].rotate180();
 							bossRoomPlaced = true;
-							break;																	
+							break;
 							//North
 						}
 						else if ((map[x][y].connectionDirections / 10u) % 10u > 0 && !map[x + 1][y].m_present) {
-							map[x + 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
-							AlignRoom(&map[x + 1][y], 10, type);
+							map[x + 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::ITEM][1]);
+							map[x + 1][y].rotateCCW();
 							bossRoomPlaced = true;
 							break;
 							//East
 						}
 						else if ((map[x][y].connectionDirections / 100u) % 10u > 0 && !map[x][y + 1].m_present) {
-							map[x][y + 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
-							AlignRoom(&map[x][y + 1], 100, type);
+							map[x][y + 1] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::ITEM][1]);
 							bossRoomPlaced = true;
 							break;
 							//South
 						}
 						else if ((map[x][y].connectionDirections / 1000u) % 10u > 0 && !map[x - 1][y].m_present) {
-							map[x - 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::BOSS][1]);
-							AlignRoom(&map[x - 1][y], 1000, type);
+							map[x - 1][y] = RNGRoomFromVector(&masterRoomMap[m_mapTheme][SpecialRoom::ITEM][1]);
+							map[x - 1][y].rotateCW();
 							bossRoomPlaced = true;
 							break;
 							//West
@@ -469,6 +618,11 @@ namespace Aen
 		}
 	}
 
+	LevelGenerator::~LevelGenerator()
+	{
+
+	}
+
 	const Room* LevelGenerator::GetMapPointer()
 	{
 		return *map;
@@ -477,7 +631,7 @@ namespace Aen
 	void LevelGenerator::InitPlaceholderRooms()
 	{
 		Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
-		cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
+		cube.Load(AEN_MODEL_DIR("Cube.obj"));
 		m_mapTheme = RoomTheme::PLACEHOLDER;
 		Room temp;
 		temp.m_baseChance = 15;
@@ -485,7 +639,7 @@ namespace Aen
 		temp.m_roomSpecial = SpecialRoom::NONE;
 		temp.m_roomTheme = RoomTheme::PLACEHOLDER;
 		temp.connectionDirections = 101;
-		temp.mptr_mesh = &cube;
+		//temp.mptr_modelVector = &cube;
 		AddRoomToGeneration(temp);
 		temp.connectionDirections = 11;
 		AddRoomToGeneration(temp);
@@ -501,16 +655,17 @@ namespace Aen
 	}
 
 
-	void LevelGenerator::constructRoom(Entity** container, Vec2i pos)
+	void LevelGenerator::constructRoom(Vec2i pos)
 	{
 		m_handler.LoadLevel(map[pos.x][pos.y].mptr_parent, (Vec2f(pos) * roomDimension) - m_mapOrigin, map[pos.x][pos.y].rotation);
+		map[pos.x][pos.y].mptr_modelVector = &map[pos.x][pos.y].mptr_parent->GetModelVector();
 	}
 
 
-	void LevelGenerator::SpawnRoom(Entity** container, Vec2i pos)
+	void LevelGenerator::SpawnRoom(Vec2i pos)
 	{
 		if (map[pos.x][pos.y].m_present) {
-			constructRoom(container, pos);
+			constructRoom(pos);
 		}
 	}
 
@@ -519,7 +674,7 @@ namespace Aen
 		//m_handler.GetImporterPtr()->ReadFromFile(filePath);
 	}
 
-	inline void LevelGenerator::LoadMutipleRoomFiles(const std::vector<string>& filePaths)
+	inline void LevelGenerator::LoadMutipleRoomFiles()
 	{
 		m_handler.ReadAllFilesFromResourceFolder();
 	}
@@ -537,6 +692,7 @@ namespace Aen
 			temp.mptr_parent	=	strRoom;
 			temp.m_CRIndex		=	i;
 			temp.m_present		= true;
+
 			temp.rotation = 3.14159265;
 			if (temp.connectionDirections == 11) {
 				temp.rotation += 1.57079633;
@@ -554,6 +710,9 @@ namespace Aen
 	{
 		for (int y = 0; y < mapSize; y++) {
 			for (int x = 0; x < mapSize; x++) {
+				if (!map[x][y].m_present) {
+					continue;
+				}
 				bool
 					on = (map[x][y].connectionDirections / 1u) % 10u > 0,
 					oe = (map[x][y].connectionDirections / 10u) % 10u > 0,
@@ -567,57 +726,76 @@ namespace Aen
 					s = (map[x][y].connectionDirections / 100u) % 10u > 0,
 					w = (map[x][y].connectionDirections / 1000u) % 10u > 0;
 
-				if (y - 1 > 0 && (map[x][y].connectionDirections / 1u) % 10u > 0) {
-					if (!map[x][y - 1].m_present) {
-						//North facing unconnected
-						n = false;
-					}
-					else {
-						if (!(map[x][y - 1].connectionDirections / 100u) % 10u > 0) {
+				if(y - 1 >= 0){
+					if ((map[x][y].connectionDirections / 1u) % 10u > 0) {
+						if (!map[x][y - 1].m_present) {
+							//North facing unconnected
 							n = false;
 						}
+						else {
+							if (!((map[x][y - 1].connectionDirections / 100u) % 10u) > 0) {
+								n = false;
+							}
+						}
 					}
 				}
-				if (x + 1 < mapSize && (map[x][y].connectionDirections / 10u) % 10u > 0) {
-					map[x + 1][y];
-					if (!map[x + 1][y].m_present) {
-						//East facing unconnected
-						e = false;
-					}
-					else {
-						if (!(map[x + 1][y].connectionDirections / 1000u) % 10u > 0) {
+				else{
+					n = false;
+				}
+				if(x + 1 < mapSize){
+					if ((map[x][y].connectionDirections / 10u) % 10u > 0) {
+						if (!map[x + 1][y].m_present) {
+							//East facing unconnected
 							e = false;
 						}
+						else {
+							if (!((map[x + 1][y].connectionDirections / 1000u) % 10u > 0)) {
+								e = false;
+							}
+						}
 					}
 				}
-				if (y + 1 < mapSize && (map[x][y].connectionDirections / 100u) % 10u > 0) {
-					map[x][y + 1];
-					if (!map[x][y + 1].m_present) {
-						//South facing unconnected
-						s = false;
-					}
-					else {
-						if (!(map[x][y + 1].connectionDirections / 1u) % 10u > 0) {
+				else {
+					e = false;
+				}
+				
+				if(y + 1 < mapSize){
+					if ((map[x][y].connectionDirections / 100u) % 10u > 0) {
+						if (!map[x][y + 1].m_present) {
+							//South facing unconnected
 							s = false;
 						}
-					}
-				}
-				if (x - 1 > 0 && (map[x][y].connectionDirections / 1000u) % 10u > 0) {
-					map[x - 1][y];
-					if (!map[x - 1][y].m_present) {
-						//West facing unconnected
-						w = false;
-					}
-					else {
-						if (!(map[x - 1][y].connectionDirections / 10u) % 10u > 0) {
-							w = false;
+						else {
+							if (!((map[x][y + 1].connectionDirections / 1u) % 10u > 0)) {
+								s = false;
+							}
 						}
 					}
+				}
+				else {
+					s = false;
+				}
+				if(x - 1 >= 0)
+				{
+					if ((map[x][y].connectionDirections / 1000u) % 10u > 0) {
+						if (!map[x - 1][y].m_present) {
+							//West facing unconnected
+							w = false;
+						}
+						else {
+							if (!((map[x - 1][y].connectionDirections / 10u) % 10u > 0)) {
+								w = false;
+							}
+						}
+					}
+				}
+				else {
+					w = false;
 				}
 				UINT32 numCon = (UINT32)(on & n) + (UINT32)(oe & e) + (UINT32)(os & s) + (UINT32)(ow & w);
 				UINT32 numUnCon = (UINT32)(on & !n) + (UINT32)(oe & !e) + (UINT32)(os & !s) + (UINT32)(ow & !w);
 				UINT32 conDir = n + 10 * e + 100 * s + 1000 * w;
-				UINT32 unConDir = !n + 10 * !e + 100 * !s + 1000 * !w;
+				UINT32 unConDir = (on & !n) + 10 * (oe & !e) + 100 * (os & !s) + 1000 * (ow & !w);
 				if (numUnCon == 0) {
 					continue; //Early exit; no unconnected exits to remove
 				}
@@ -787,7 +965,7 @@ namespace Aen
 		m_roomSpecial = SpecialRoom::NONE;
 		m_roomIndex = MAXUINT16;
 
-		mptr_mesh = nullptr;
+		mptr_modelVector = nullptr;
 		mptr_parent = nullptr;
 
 		//connection location

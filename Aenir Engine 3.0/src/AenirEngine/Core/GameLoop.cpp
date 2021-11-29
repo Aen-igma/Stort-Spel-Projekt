@@ -24,32 +24,34 @@ namespace Aen {
 		m_renderer->Initialize();
 
 		GlobalSettings::Initialize(m_app->m_window, m_renderer);
+		GlobalSettings::SetVSync(true);
 
 		m_app->Start();
 	}
 	
 	void GameLoop::Run() {
-		m_start = m_end = ResClock::now();
-		while(Aen::WindowHandle::HandleMsg()) {
+		bool useVsync = GlobalSettings::GetVSync();
+		double sstart = 0, deltaTime = 0;
+		while (Aen::WindowHandle::HandleMsg()) {
 
-			m_end = ResClock::now();
-			while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
-				m_deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start);
-				m_start = ResClock::now();
+			sstart = omp_get_wtime();
 
-				if(m_app->m_window.IsActive()) {
-					Input::Update();
-					m_app->Update(static_cast<float>(m_deltaTime.count()));
-				}
+			if (m_app->m_window.IsActive()) {
 
-				PhysicsHandler::Update(static_cast<float>(m_deltaTime.count()));
-
-				if(GlobalSettings::GetVSync()) m_renderer->Render();
+				Input::Update();
+				m_app->Update(static_cast<float>(deltaTime));
 			}
 
 			ComponentHandler::UpdateAnimation();
 
 			if(!GlobalSettings::GetVSync()) m_renderer->Render();
+			PhysicsHandler::Update(static_cast<float>(deltaTime));
+			
+			m_renderer->Culling();
+			m_renderer->Render();
+
+
+			deltaTime = (omp_get_wtime() - sstart);
 		}
 
 		// Destroy imGui
@@ -63,5 +65,11 @@ namespace Aen {
 		GlobalSettings::Destroy();
 		PhysicsHandler::Destroy();
 		delete m_renderer;
+		
+	}
+
+	void GameLoop::InitApp(Aen::App* app)
+	{
+		m_app = app;
 	}
 }

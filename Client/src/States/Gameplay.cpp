@@ -2,7 +2,9 @@
 
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f),
-	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
+	IFRAMEMAX(1.5f), m_iFrames(0.f) {
+	
+}
 
 Gameplay::~Gameplay() {
 	//Aen::EntityHandler::RemoveEntity(*m_dLight);
@@ -27,18 +29,19 @@ void Gameplay::Initialize()
 {
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
+
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"healthbar.png")); //0
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"healthbar.png")); //0
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(350.f, 100.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"bar.png")); //1
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"bar.png")); //1
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(350.f, 100.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(m_hp * 2.f, 150.f);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"potion.png")); //2
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"potion.png")); //2
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos(125.f, 100.f);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(150.f, 150.f);
 
@@ -76,42 +79,9 @@ void Gameplay::Initialize()
 	
 
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
-	rimuru.Load(AEN_RESOURCE_DIR("AnimTri3.fbx"));
-	/*Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
-	reimube.Load(AEN_RESOURCE_DIR("Cube.fbx"));
-	Aen::Mesh& pot = Aen::Resource::CreateMesh("Pot");*/
-	/*pot.Load(AEN_RESOURCE_DIR("Pot.fbx"));
-	Aen::Mesh& torch = Aen::Resource::CreateMesh("Torch");
-	torch.Load(AEN_RESOURCE_DIR("Torch.fbx"));
-	Aen::Mesh& healingPot = Aen::Resource::CreateMesh("HealingPot");
-	healingPot.Load(AEN_RESOURCE_DIR("Healing_Pot_Soft.fbx"));*/
-	/*Aen::Mesh& skelLight = Aen::Resource::CreateMesh("Skel_Light");
-	skelLight.Load(AEN_RESOURCE_DIR("Skel_Light.fbx"));
-	Aen::Mesh& door = Aen::Resource::CreateMesh("Door");
-	door.Load(AEN_RESOURCE_DIR("Door.fbx"));
-	Aen::Mesh& chest = Aen::Resource::CreateMesh("Chest");
-	chest.Load(AEN_RESOURCE_DIR("chest_withAnimations.fbx"));*/
-	m_tim = &Aen::EntityHandler::CreateEntity();
-	//Aen::Animation& testAnim = Aen::Resource::CreateAnimation("TimDab");
-	//testAnim.LoadAnimation("AnimTri3.fbx");
-
-	////Aen::Entity* testAnimObject = &Aen::EntityHandler::CreateEntity();
-	//m_tim->AddComponent<Aen::Animator>();
-	//m_tim->GetComponent<Aen::Animator>().SetAnimation(testAnim);
-	//m_tim->GetComponent<Aen::Animator>().SetAnimationScale(5);
-	//m_tim->GetComponent<Aen::Animator>().SetFrameRate(24);
-	////m_tim->GetComponent<Aen::Animator>().Pause();
-
-	//Aen::Mesh& tim = Aen::Resource::CreateMesh("TimJ");
-	//tim.Load(AEN_RESOURCE_DIR("AnimTri3.fbx"));
-
-	//m_tim->AddComponent<Aen::MeshInstance>();
-	//m_tim->GetComponent<Aen::MeshInstance>().SetMesh(tim);
-	//m_tim->GetComponent<Aen::MeshInstance>().SetMaterial(timMat);
-
-	//m_tim->AddComponent<Aen::Animator>();
-	/*Aen::Mesh& web = Aen::Resource::CreateMesh("Web");
-	web.Load(AEN_RESOURCE_DIR("Web.fbx"));*/
+	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
+	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
+	reimube.Load(AEN_MODEL_DIR("Cube.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
 	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
 	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
@@ -122,34 +92,20 @@ void Gameplay::Initialize()
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
-	/*Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");*/
-	/*Aen::Material& wallMat = Aen::Resource::CreateMaterial("WallMat");*/
-	/*Aen::Material& potMat = Aen::Resource::CreateMaterial("PotMat");
-	Aen::Material& torchMat = Aen::Resource::CreateMaterial("TorchMat");
-	Aen::Material& healingPotMat = Aen::Resource::CreateMaterial("HealingPotMat");*/
-	/*Aen::Material& skelLightMat = Aen::Resource::CreateMaterial("SkelLightMat");
-	Aen::Material& doorMat = Aen::Resource::CreateMaterial("DoorMat");
-	Aen::Material& chestMat = Aen::Resource::CreateMaterial("ChestMat");*/
-	Aen::Material& timMat = Aen::Resource::CreateMaterial("TimMat");
-	//Aen::Material& webMat = Aen::Resource::CreateMaterial("WebMat");
+	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 
-	//enemyMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("SlimeRimuruFace.png"));
-	////enemyMat.LoadeAndSetOpacityMap(AEN_RESOURCE_DIR("SakuyaI.png"));
-	//enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
-	//enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
-	//enemyMat["BaseColor"] = Aen::Color::Cyan;
-
+	enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
+	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
+	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
+	enemyMat["BaseColor"] = Aen::Color::Cyan;
 	// Material to switch to when enemy is hurt
-	/*enemyMatHurt["BaseColor"] = Aen::Color::Red;*/
-	/*wallMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Brick_Diffuse.png"));
-	wallMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	wallMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);*/
+	enemyMatHurt["BaseColor"] = Aen::Color::Red;
 
-	/*reimubeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("greenMage.png"));
+	reimubeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
 	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;*/
 
-	planeMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Floor_Diffuse.png"));
+	planeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 
@@ -284,7 +240,7 @@ void Gameplay::Initialize()
 	// ------------------- Procedural generation testing staging grounds ------- //
 	//std::vector<string> levelPaths;
 
-	//m_levelGenerator.LoadMutipleRoomFiles(levelPaths);
+	//m_levelGenerator.LoadMutipleRoomFiles();
 
 
 	//m_levelGenerator.AddLoadedToGeneration();
@@ -299,24 +255,32 @@ void Gameplay::Initialize()
 	//Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
 
 
-	//for (UINT y = 0; y < Aen::mapSize; y++) {
-	//	for (UINT x = 0; x < Aen::mapSize; x++) {
-	//		m_levelGenerator.SpawnRoom(rooms, Aen::Vec2i(x, y));
+	/*for (UINT y = 0; y < Aen::mapSize; y++) {
+		for (UINT x = 0; x < Aen::mapSize; x++) {
+			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
-	//		if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
-	//			m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
-	//		}
-	//	}
-	//}
-	//m_player.GetEntity()->SetPos(playerStartPos);
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+			}
+		}
+	}
+
+	m_player.GetEntity()->SetPos(playerStartPos + Aen::Vec3f(0.f, 0.8f, 0.f));
+
 
 	//---------ENEMIES----------//
-	int numEnemies = 10;
+	/*int numEnemies = 10;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
+	}*/
+
+	std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
+	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
+	{
+		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
 	}
 
 	//m_attack->SetParent(*m_player);
@@ -341,7 +305,6 @@ void Gameplay::Initialize()
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
 
 void Gameplay::Update(const float& deltaTime) {
-
 
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
 		wstringstream potionNr;
@@ -411,7 +374,10 @@ void Gameplay::Update(const float& deltaTime) {
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
-		m_Window.Exit();
+	{
+		State::SetState(States::Gameover);
+		//m_Window.Exit();
+	}
 
 	// ------------------------------------- States -------------------------------------- //
 	/*if (m_hp <= 0 && m_enemyQueue.size() == 0)

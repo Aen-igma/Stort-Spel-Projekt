@@ -30,7 +30,7 @@ namespace Aen {
 		size_t off = dir.find_last_of('.');
 		std::string format = dir.substr(off + 1);
 		if (format == "fbx") {
-			AssimpImport::LoadFbx(m_ibuffer, m_vPos, m_vertices, dir, m_partitions, m_meshMaterialName, m_indices);
+			AssimpImport::LoadFbx(m_vPos, m_vertices, dir, m_partitions, m_meshMaterialName, m_indices);
 
 			size_t vStride = sizeof(DirectX::XMFLOAT3);
 			m_aabb.CreateFromPoints(m_aabb, m_vPos.size(), m_vPos.data(), vStride);

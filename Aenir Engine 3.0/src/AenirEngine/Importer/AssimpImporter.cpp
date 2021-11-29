@@ -4,39 +4,53 @@
 #undef min
 
 
-void Aen::AssimpImport::LoadFbx(IBuffer iBuffer, std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial, std::vector<uint32_t>& invertIndices)
-{
-	std::vector<Vertex> mesh;
+void Aen::AssimpImport::LoadFbx(std::vector<DirectX::XMFLOAT3>& vPos, VBuffer<Vertex>& vBuffer, const std::string path, std::vector<PartitionData>& partitions, std::unordered_map<std::string, uint32_t>& meshMaterial, std::vector<uint32_t>& invertIndices) {
 	Assimp::Importer importer;
 
-	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_MakeLeftHanded );
-	
+	const aiScene* pScene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_MakeLeftHanded);
 
-	if (pScene == NULL) {
+
+	if(pScene == NULL) {
 		throw;
 		printf("Assimp failed or path to model does not exist");
 	}
+	
+	uint32_t matCount = pScene->mNumMaterials;
+	std::vector<std::vector<Aen::Vertex>> mGroup;
+	mGroup.reserve(matCount);
+	mGroup.resize(matCount);
 
-	AssimpImport::ProcessNode(pScene->mRootNode, pScene, vBuffer, mesh, invertIndices, partitions, meshMaterial);
+	ProcNode(pScene->mRootNode, pScene, mGroup, invertIndices);
+	std::vector<Vertex> mesh;
 
-	UINT meshSize = (UINT)mesh.size();
+	uint32_t meshSize = 0u;
+	partitions.reserve(matCount);
+	partitions.resize(matCount);
+	for(uint32_t i = 0u; i < matCount; i++) {
+		partitions[i].size = mGroup[i].size();
+		partitions[i].materialIndex = i;
+		partitions[i].offset = meshSize;
+		meshSize += mGroup[i].size();
 
+		aiString aiName = pScene->mMaterials[i]->GetName();
+		std::string name = aiName.C_Str();
+
+		meshMaterial.emplace(name, i);
+
+		for(uint32_t j = 0u; j < mGroup[i].size(); j++)
+			mesh.emplace_back(mGroup[i][j]);
+	}
+	
+	vPos.reserve(meshSize);
 	vPos.resize(meshSize);
-	for (UINT i = 0; i < meshSize; i++)
-	{
+	for (uint32_t i = 0; i < meshSize; i++) {
 		vPos[i] = mesh[i].pos.smVec;
 	}
 
-	if (!vBuffer.Create(mesh.data(), (UINT)mesh.size())) 
-	{
+	if (!vBuffer.Create(mesh.data(), (UINT)meshSize)) {
 		throw;
 		printf("Failed to create vbuffer");
 	}
-	//if (!iBuffer.Create(invertIndices.data(), (UINT)invertIndices.size()))
-	//{
-	//	throw;
-	//	printf("Failed to create ibuffer");
-	//}
 }
 
 void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>&verts, std::vector<uint32_t>& invertIndices, std::vector<Aen::PartitionData>& partsData, std::unordered_map<std::string, uint32_t>& meshMaterial)
@@ -171,4 +185,62 @@ void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBu
 	UINT numNodes = node->mNumChildren;
 	for (UINT i = 0; i < numNodes; i++)
 		AssimpImport::ProcessNode(node->mChildren[i], scene, vBuffer, verts, invertIndices, partsData, meshMaterial);
+}
+
+void Aen::AssimpImport::ProcNode(aiNode* node, const aiScene* scene, std::vector<std::vector<Aen::Vertex>>& mGroup, std::vector<uint32_t>& invertIndices) {
+	
+	uint32_t offset = 0;
+	uint32_t numMeshes = node->mNumMeshes;
+
+	for (uint32_t i = 0; i < numMeshes; i++) {
+		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+		uint32_t matIndex = mesh->mMaterialIndex;
+		ProcMesh(mesh, scene, mGroup[matIndex], invertIndices);
+	}
+
+	uint32_t numNodes = node->mNumChildren;
+	for(uint32_t i = 0; i < numNodes; i++)
+		ProcNode(node->mChildren[i], scene, mGroup, invertIndices);
+}
+
+void Aen::AssimpImport::ProcMesh(aiMesh* mesh, const aiScene* scene, std::vector<Aen::Vertex>& verts, std::vector<uint32_t>& invertIndices) {
+
+	uint32_t numVerts = mesh->mNumVertices;
+	verts.reserve(verts.size() + numVerts);
+
+	for (uint32_t i = 0; i < numVerts; i++) {
+		Vertex vertex;
+		vertex.pos.x = mesh[0].mVertices[i].x;
+		vertex.pos.y = mesh[0].mVertices[i].y;
+		vertex.pos.z = mesh[0].mVertices[i].z;
+
+		if (mesh->mTextureCoords[0]) {
+			vertex.uv.x = (float)mesh[0].mTextureCoords[0][i].x;
+			vertex.uv.y = (float)mesh[0].mTextureCoords[0][i].y;
+		}
+
+		if (mesh->HasNormals()) {
+			vertex.norm.x = (float)mesh[0].mNormals[i].x;
+			vertex.norm.y = (float)mesh[0].mNormals[i].y;
+			vertex.norm.z = (float)mesh[0].mNormals[i].z;
+		}
+
+		if (mesh->HasTangentsAndBitangents()) {
+			vertex.tan.x = (float)mesh[0].mTangents[i].x;
+			vertex.tan.y = (float)mesh[0].mTangents[i].y;
+			vertex.tan.z = (float)mesh[0].mTangents[i].z;
+
+			vertex.bi.x = (float)mesh[0].mBitangents[i].x;
+			vertex.bi.y = (float)mesh[0].mBitangents[i].y;
+			vertex.bi.z = (float)mesh[0].mBitangents[i].z;
+		}
+
+		verts.emplace_back(vertex);
+	}
+
+	for (int i = 0; i < mesh->mNumFaces; i++) {
+		aiFace face = mesh->mFaces[i];
+		for (int j = 1; j <= face.mNumIndices; j++)
+			invertIndices.push_back(face.mIndices[face.mNumIndices - j]);
+	}
 }

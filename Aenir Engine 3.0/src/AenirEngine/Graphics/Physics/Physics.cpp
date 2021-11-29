@@ -9,10 +9,14 @@ namespace Aen {
 
 	PhysXWrap::~PhysXWrap() {
 
-		mp_Scene->release();
-		mp_Dispatcher->release();
-		mp_Physics->release();
-		mp_Cooking->release();
+		if(mp_Scene)
+			mp_Scene->release();
+		if(mp_Dispatcher)
+			mp_Dispatcher->release();
+		if(mp_Physics)
+			mp_Physics->release();
+		if(mp_Cooking)
+			mp_Cooking->release();
 
 		if (mp_Pvd) {
 			physx::PxPvdTransport* transport = mp_Pvd->getTransport();
@@ -21,7 +25,8 @@ namespace Aen {
 			transport->release();
 		}
 		
-		mp_Foundation->release(); // Always release last
+		if(mp_Foundation)
+			mp_Foundation->release(); // Always release last
 
 		mp_Dispatcher = nullptr;
 		mp_Foundation = nullptr;
