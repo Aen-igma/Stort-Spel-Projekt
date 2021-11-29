@@ -54,17 +54,14 @@ namespace Aen {
 				m_currentFrame++;
 			}
 
-			float f = duration.count() - animation->m_timeStamp[m_currentFrame] * m_scale;
-			float h = animation->m_timeStamp[m_currentFrame + 1] * m_scale - animation->m_timeStamp[m_currentFrame] * m_scale;
+			float f = duration.count() - (animation->m_timeStamp[m_currentFrame] * m_scale);
+			float h = (animation->m_timeStamp[m_currentFrame + 1] * m_scale) - (animation->m_timeStamp[m_currentFrame] * m_scale);
 			float t = f / h;
-
 
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].scale * animation->m_keyFrames.at(bName)[m_currentFrame].rotation * animation->m_keyFrames.at(bName)[m_currentFrame].position;
 				Mat4f nextFrame = animation->m_keyFrames.at(bName)[m_currentFrame + 1].scale * animation->m_keyFrames.at(bName)[m_currentFrame + 1].rotation * animation->m_keyFrames.at(bName)[m_currentFrame + 1].position;
-				//currentFrame.Transposed();
-				//nextFrame.Transposed();
 
 				mat.emplace_back(Lerp(currentFrame, nextFrame, t));
 			}
@@ -73,7 +70,7 @@ namespace Aen {
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].scale * animation->m_keyFrames.at(bName)[m_currentFrame].rotation * animation->m_keyFrames.at(bName)[m_currentFrame].position;
-				//currentFrame.Transposed();
+
 				mat.emplace_back(currentFrame);
 			}
 		}
@@ -153,5 +150,10 @@ namespace Aen {
 
 	void Animator::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	{
+	}
+
+	bool Animator::FrustumCull(Renderer& renderer)
+	{
+		return true;
 	}
 }

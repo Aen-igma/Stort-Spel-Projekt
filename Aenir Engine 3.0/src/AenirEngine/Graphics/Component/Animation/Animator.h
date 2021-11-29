@@ -47,5 +47,8 @@ namespace Aen {
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
 		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
+
+		// Inherited via Drawable
+		virtual bool FrustumCull(Renderer& renderer) override;
 	};
 }

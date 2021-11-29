@@ -461,6 +461,7 @@ namespace Aen {
 		friend class GameLoop;
 		friend class StaticBody;
 		friend class DynamicBody;
+		//friend class Animator;
 	};
 
 }

@@ -79,7 +79,7 @@ void Gameplay::Initialize()
 	
 
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
-	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
+	rimuru.Load(AEN_MODEL_DIR("AnimTri3.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_MODEL_DIR("Cube.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
@@ -103,7 +103,7 @@ void Gameplay::Initialize()
 
 	reimubeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
-	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;*/
+	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
 
 	planeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
@@ -265,17 +265,17 @@ void Gameplay::Initialize()
 		}
 	}
 
-	m_player.GetEntity()->SetPos(playerStartPos + Aen::Vec3f(0.f, 0.8f, 0.f));
+	m_player.GetEntity()->SetPos(playerStartPos + Aen::Vec3f(0.f, 0.8f, 0.f));*/
 
 
 	//---------ENEMIES----------//
-	/*int numEnemies = 10;
+	int numEnemies = 10;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
-	}*/
+	}
 
 	std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
