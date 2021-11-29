@@ -23,7 +23,6 @@ void Client::Start()
 void Client::Update(const float& deltaTime) 
 {
 	if (m_typeState != mp_state->GetCurrentState()){
-
 		ChangeState(mp_state->GetCurrentState());
 	}
 
@@ -46,14 +45,12 @@ void Client::ChangeState(const States& states)
 	{
 		case States::Gameplay:
 			mp_state = AEN_NEW Gameplay(m_window);
-			///mp_gameplay = nullptr;
 			break;
 		case States::Main_Menu:
 			mp_state = AEN_NEW MainMenu(m_window);
 			break;
 		case States::Loadscreen:
 			mp_state = AEN_NEW Loadscreen(m_window);
-			//mp_gameplay = AEN_NEW Gameplay(m_window);
 			break;
 		case States::Gameover:
 			mp_state = AEN_NEW GameEnd(m_window);
@@ -65,7 +62,6 @@ void Client::ChangeState(const States& states)
 			mp_state = AEN_NEW Credits(m_window);
 			break;
 	}
-
 	//if (mp_state && mp_state->GetCurrentState() != States::Gameplay)
 		mp_state->Initialize();
 

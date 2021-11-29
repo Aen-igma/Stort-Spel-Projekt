@@ -26,8 +26,8 @@ namespace Aen {
 	{
 	private:
 
-		int typeValue[15] = {101,11,1011,1111,1,0,1,2,3,4,5,0,1,2,3};
-		string validType[15] = { "Straight","Bend","T Junction","Four Way", "None", "Normal","Entrance", "Exit", "Boss", "Arena", "Item", "Normal Dungeon", "Skeleton", "Gothic", "Aztec"};
+		int typeValue[15] = {		1,		101,	11,		1011,		1111,		0,		1,			2,		3,		4,		5,			0,				1,			2,		3 };
+		string validType[15] = { "End","Straight","Bend","T Junction","Four Way", "None","Entrance", "Exit", "Boss", "Arena", "Item", "Normal Dungeon", "Skeleton", "Gothic", "Aztec"};
 
 		IGH::RoomValues valid;
 		ofstream m_outfile;
@@ -38,10 +38,12 @@ namespace Aen {
 		vector<LightStruct> m_LightVector;
 		vector<ParticleStruct> m_ParticleVector;
 
+
+
 		void lightFunc(LightStruct *&lightStruct, vector<LightStruct> &m_LightVector, Entity*& entity, unordered_map<size_t, Aen::Entity*>& lightMap);
-		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap,size_t& index);
+		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap,size_t& index, ParticleStruct*& particleStruct);
 		void roomFunc(RoomStruct*& roomStruct, string array[]);
-		void textureFunc(TextureStruct*& textureStruct, string& textureFileName);
+		void textureFunc(TextureStruct*& textureStruct, string& textureFileName, string& normalTextureFileName);
 		void materialFunc(MaterialStruct*& materialStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index);
 
 

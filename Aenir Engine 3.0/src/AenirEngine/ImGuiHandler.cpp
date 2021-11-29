@@ -20,8 +20,8 @@ namespace Aen {
 		ImGui::DragFloat4("Outer EdgeColor", outerEdgeColor, 0.02f);
 		ImGui::DragFloat4("Glow Color", glowColor, 0.02f);
 		ImGui::DragFloat("Glow GlowStr", &glowStr, 0.02f, 0.0f, 100.0f);
-		ImGui::DragFloat("InnerEdge Thickness", &innerEdgeThickness, 0.02f, 0.0f, 1.0f);
-		ImGui::DragFloat("OuterEdge Thickness", &outerEdgeThickness, 0.02f, 0.0f, 1.0f);
+		ImGui::DragFloat("InnerEdge Thickness", &innerEdgeThickness, 1.0f, 0.0f, 100.0f);
+		ImGui::DragFloat("OuterEdge Thickness", &outerEdgeThickness, 1.0f, 0.0f, 100.0f);
 		ImGui::DragFloat("Specular Power", &specularPower, 0.02f, 0.0f, 1.0f);
 		ImGui::DragFloat("Specular Strength", &specularStrength, 0.02f, 0.0f, 1.0f);
 		ImGui::DragFloat("Roughness", &roughness, 0.02f, 0.0f, 1.0f);
@@ -56,14 +56,19 @@ namespace Aen {
 
 	ImGuiHandler::ImGuiHandler()
 	{
-		imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter, &m_materialList);
+		m_imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter, &m_materialList);
+
+		m_normalMapTextureFileName.push_back("None");
+		m_normalMapTexture.push_back("None");
+		m_textureFileName.push_back("None");
+		m_textureName.push_back("None");
 	}
 
 	ImGuiHandler::~ImGuiHandler()
 	{
-		if (imguiImporter != nullptr)
+		if (m_imguiImporter != nullptr)
 		{
-			delete imguiImporter;
+			delete m_imguiImporter;
 		}
 	}
 
@@ -85,7 +90,11 @@ namespace Aen {
 	void ImGuiHandler::StartUp()
 	{
 		ReadAllModelsFromHandler();
-		ReadAllFilesFromResourceFolder();
+		ReadAllFilesFromFolder(IGH::FBXPATH);
+		ReadAllFilesFromFolder(IGH::TEXTUREPATH);
+		ReadAllFilesFromFolder(IGH::NORMALTEXTUREPATH);
+
+
 		//CreatePreviewTextureThumbnail();
 	}
 
@@ -100,6 +109,7 @@ namespace Aen {
 		EnemyCreateWindow();
 		ImportWindow();
 		MaterialCreateWindow();
+		ParticleCreateWindow();
 
 	}
 
@@ -214,6 +224,7 @@ namespace Aen {
 	void ImGuiHandler::AssetWindow()
 	{
 		ImGui::Begin("Assets", nullptr);
+
 		if (ImGui::BeginTabBar("#AssetTab", ImGuiTabBarFlags_None))
 		{
 			if (ImGui::BeginTabItem(IGH::MODEL.c_str()))
@@ -228,6 +239,12 @@ namespace Aen {
 			if (ImGui::BeginTabItem(IGH::LIGHT.c_str()))
 			{
 				LightButtons();
+
+				if(AddButton("Torch")) 
+				{
+					m_imguiImporter->AddTorchWithLight();
+				}
+
 				ImGui::EndTabItem();
 			}
 
@@ -241,7 +258,12 @@ namespace Aen {
 			{
 				AddMaterialButton();
 				ImGui::EndTabItem();
-
+			} 
+			
+			if (ImGui::BeginTabItem("Particle"))
+			{
+				AddParticleButton();
+				ImGui::EndTabItem();
 			}
 
 			ImGui::EndTabBar();
@@ -273,6 +295,11 @@ namespace Aen {
 			RoomTab();
 
 			LightTab();
+
+			ParticleTab();
+
+			ImGui::EndTabBar();
+
 		}
 		ImGui::End();
 	}
@@ -282,24 +309,24 @@ namespace Aen {
 		static int mode = -1;
 		static std::string currentMode = "";
 
-		ImGui::Begin("a", nullptr);
+		ImGui::Begin("Tools", nullptr);
 		for (int i = 0; i < 3; i++)
 		{
-			if (ImGui::Button(IGH::TOOLS[i]))
+			if (ImGui::Button(m_imguiTypes.TOOLS[i]))
 			{
 				mode = i;
 
 				if (mode == 0)
 				{
-					currentMode = IGH::TOOLS[i];
+					currentMode = m_imguiTypes.TOOLS[i];
 				}
 				else if (mode == 1)
 				{
-					currentMode = IGH::TOOLS[i];
+					currentMode = m_imguiTypes.TOOLS[i];
 				}
 				else if (mode == 2)
 				{
-					currentMode = IGH::TOOLS[i];
+					currentMode = m_imguiTypes.TOOLS[i];
 				}
 			}
 		}
@@ -343,7 +370,7 @@ namespace Aen {
 			ImGui::Begin("Create Enemy", nullptr);
 
 			ImGui::InputText("Name", name, MESH_NAME_MAX_LENGTH);
-			ImGui::Combo("Type", &selectedType, IGH::ENEMYTYPE, IM_ARRAYSIZE(IGH::ENEMYTYPE));
+			ImGui::Combo("Type", &selectedType, m_imguiTypes.ENEMYTYPE, IM_ARRAYSIZE(m_imguiTypes.ENEMYTYPE));
 
 			mesh = CustomComboString(m_objFileName, "Mesh", CurrentIndex);
 
@@ -351,8 +378,8 @@ namespace Aen {
 			{
 				if (mesh != "")
 				{
-					size_t id = imguiImporter->AddBase(name, mesh);
-					m_modelMap.at(id).m_type = IGH::ENEMYTYPE[selectedType];
+					size_t id = m_imguiImporter->AddBase(name, mesh);
+					m_modelMap.at(id).m_type = m_imguiTypes.ENEMYTYPE[selectedType];
 				}
 			
 				m_createEnemyWindowActive = false;
@@ -378,7 +405,8 @@ namespace Aen {
 
 			if (ImGui::Button("Import"))
 			{
-				m_ImportWindowActive = imguiImporter->import(m_levelImporter,levelPath,tempTranslation,tempRotation,tempScale);
+				m_ImportWindowActive = m_imguiImporter->import(m_levelImporter,levelPath,tempTranslation,tempRotation,tempScale, m_roomProperty);
+				m_imported = true;
 			}
 			ImGui::End();
 		}
@@ -397,8 +425,8 @@ namespace Aen {
 			static float glowColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 			static float glowStr = 100;
-			static float innerEdgeThickness = 0.001f;
-			static float outerEdgeThickness = 0.001f;
+			static float innerEdgeThickness = 0;
+			static float outerEdgeThickness = 0;
 			static float specularPower = 0.6f;
 			static float specularStrength = 1.0f;
 			static float roughness = 0.5f;
@@ -411,16 +439,19 @@ namespace Aen {
 			static char materialName[MATERIAL_NAME_MAX_LENGTH];
 			static char textureName[TEXTURE_NAME_MAX_LENGTH];
 			static char materialTextureName[MATERIAL_NAME_MAX_LENGTH];
+			static char normalTextureName[TEXTURE_NAME_MAX_LENGTH];
 
-			static int selected = 0;
+			static int selectedTex = 0;
+			static int selectedNormTex = 0;
 
 			ImGui::Begin((IGH::CREATE + IGH::MATERIAL).c_str(), nullptr);
 
 			ImGui::InputText((IGH::MATERIAL + " " + IGH::NAME).c_str(), materialName, MATERIAL_NAME_MAX_LENGTH);
 			ImGui::InputText((IGH::MATERIAL + " " + IGH::TEXTURE + " " + IGH::NAME).c_str(), materialTextureName, MATERIAL_NAME_MAX_LENGTH);
 
-			strcpy(textureName, CustomComboString(m_textureFileName, (IGH::TEXTURE + IGH::NAME), selected).c_str());
-			
+			strcpy(textureName, CustomComboString(m_textureFileName, (IGH::TEXTURE + IGH::NAME), selectedTex).c_str());
+			strcpy(normalTextureName, CustomComboString(m_normalMapTextureFileName, (IGH::NORMALTEXTURE + IGH::NAME), selectedNormTex).c_str());
+
 			MaterialDragFloats(baseColor, shadowColor, specularColor, rimLightColor, 
 				innerEdgeColor, outerEdgeColor, glowColor, glowStr, 
 				innerEdgeThickness, outerEdgeThickness, specularPower, specularStrength, 
@@ -435,9 +466,13 @@ namespace Aen {
 					if (strcmp(materialTextureName, "") != 0 && strcmp(textureName, "") != 0)
 					{
 						Aen::Texture& texture = Aen::Resource::CreateTexture(materialTextureName);
-						texture.LoadTexture(IGH::RESOURCEPATH + textureName);
+						Aen::Texture& normalTexture = Aen::Resource::CreateTexture(normalTextureName);
+
+						texture.LoadTexture(AEN_TEXTURE_DIR(textureName));
+						normalTexture.LoadTexture(AEN_NORMALTEXTURE_DIR(normalTextureName));
+
 						material.SetDiffuseMap(texture);
-	
+						material.SetNormalMap(normalTexture);
 					}
 
 					SetMaterialValues(baseColor, shadowColor, specularColor, rimLightColor,
@@ -446,10 +481,43 @@ namespace Aen {
 						roughness, shadowOffset, innerFalloff, outerFalloff, rimLightIntensity, rimLightSize, material);
 
 
-					m_materialList.push_back(IGH::MatTexName(materialName,materialTextureName));
+					m_materialList.push_back(IGH::MatTexName(materialName,materialTextureName,normalTextureName));
 					std::memset(materialName, '\0', sizeof(char) * MATERIAL_NAME_MAX_LENGTH);
+					std::memset(materialTextureName, '\0', sizeof(char) * MATERIAL_NAME_MAX_LENGTH);
+
 					m_createMaterialActive = false;
 				}
+			}
+			ImGui::End();
+		}
+	}
+
+	void ImGuiHandler::ParticleCreateWindow()
+	{
+		if (m_createParticleWindowActive == true)
+		{
+			static int selectedType = 0;
+			static int CurrentIndex = 0;
+			static char name[MESH_NAME_MAX_LENGTH];
+			static string mesh = "";
+
+			ImGui::Begin("Create Particle", nullptr);
+
+			ImGui::InputText("Name", name, MESH_NAME_MAX_LENGTH);
+			ImGui::Combo("Type", &selectedType, m_imguiTypes.PARTICLETAG, IM_ARRAYSIZE(m_imguiTypes.PARTICLETAG));
+
+			mesh = CustomComboString(m_objFileName, "Mesh", CurrentIndex);
+
+			if (ImGui::Button("Create"))
+			{
+				if (mesh != "")
+				{
+					size_t id = m_imguiImporter->AddBase(name, mesh);
+					m_modelMap.at(id).m_type = m_imguiTypes.PARTICLETAG[selectedType];
+				}
+
+				m_createParticleWindowActive = false;
+				std::memset(name, '\0', sizeof(char) * MESH_NAME_MAX_LENGTH);
 			}
 			ImGui::End();
 		}
@@ -463,7 +531,6 @@ namespace Aen {
 			{
 				m_entityList.push_back(element.second);
 				m_itemList.push_back(CheckType(element.second));
-				m_OriginalCount++;
 			}
 		}
 	}
@@ -614,13 +681,13 @@ namespace Aen {
 	{
 		Aen::Material& material = Aen::Resource::GetMaterial((m_materialList[selected].matName));
 
-		imguiImporter->Convert(m_baseColor, material["BaseColor"]);
-		imguiImporter->Convert(m_shadowColor, material["ShadowColor"]);
-		imguiImporter->Convert(m_specularColor, material["SpecularColor"]);
-		imguiImporter->Convert(m_rimLightColor, material["RimLightColor"]);
-		imguiImporter->Convert(m_innerEdgeColor, material["InnerEdgeColor"]);
-		imguiImporter->Convert(m_outerEdgeColor, material["OuterEdgeColor"]);
-		imguiImporter->Convert(m_glowColor, material["GlowColor"]);
+		m_imguiImporter->Convert(m_baseColor, material["BaseColor"]);
+		m_imguiImporter->Convert(m_shadowColor, material["ShadowColor"]);
+		m_imguiImporter->Convert(m_specularColor, material["SpecularColor"]);
+		m_imguiImporter->Convert(m_rimLightColor, material["RimLightColor"]);
+		m_imguiImporter->Convert(m_innerEdgeColor, material["InnerEdgeColor"]);
+		m_imguiImporter->Convert(m_outerEdgeColor, material["OuterEdgeColor"]);
+		m_imguiImporter->Convert(m_glowColor, material["GlowColor"]);
 
 		material["GlowStr"] = m_glowStr;
 		material["InnerEdgeThickness"] = m_innerEdgeThickness;
@@ -638,13 +705,13 @@ namespace Aen {
 	void ImGuiHandler::SetDefaultMaterialValue(int selected)
 	{
 		Aen::Material& material = Aen::Resource::GetMaterial((m_materialList[selected].matName));
-		imguiImporter->Convert(material["BaseColor"], m_baseColor);
-		imguiImporter->Convert(material["ShadowColor"], m_shadowColor);
-		imguiImporter->Convert(material["SpecularColor"], m_specularColor);
-		imguiImporter->Convert(material["RimLightColor"], m_rimLightColor);
-		imguiImporter->Convert(material["InnerEdgeColor"], m_innerEdgeColor);
-		imguiImporter->Convert(material["OuterEdgeColor"], m_outerEdgeColor);
-		imguiImporter->Convert(material["GlowColor"], m_glowColor);
+		m_imguiImporter->Convert(material["BaseColor"], m_baseColor);
+		m_imguiImporter->Convert(material["ShadowColor"], m_shadowColor);
+		m_imguiImporter->Convert(material["SpecularColor"], m_specularColor);
+		m_imguiImporter->Convert(material["RimLightColor"], m_rimLightColor);
+		m_imguiImporter->Convert(material["InnerEdgeColor"], m_innerEdgeColor);
+		m_imguiImporter->Convert(material["OuterEdgeColor"], m_outerEdgeColor);
+		m_imguiImporter->Convert(material["GlowColor"], m_glowColor);
 
 		m_glowStr = material["GlowStr"];
 		m_innerEdgeThickness = material["InnerEdgeThickness"];
@@ -695,20 +762,51 @@ namespace Aen {
 		}
 	}
 
-	void ImGuiHandler::ChangeTexture(int& currentIndex, string materialName, string materialTextureName)
+	void ImGuiHandler::ChangeTexture(int& currentIndexTex, int& currentIndexNorm, string materialName, string materialTextureName, string materialNormalTextureName)
 	{
 		size_t id = m_entityList[m_selectedEntity]->GetID();
 
-		string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
-		string textureName = materialTextureName;
-		UpdateMap(id, textureName, materialName, m_itemList[m_selectedEntity], m_textureFileName[currentIndex]);
+		if (m_textureFileName[currentIndexTex] == m_modelMap.at(id).m_texture.m_textureName && m_normalMapTextureFileName[currentIndexNorm] == m_modelMap.at(id).m_texture.m_normalTexture)
+		{
+			Aen::Material& mat = Aen::Resource::GetMaterial(materialName);
+			Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
 
-		Aen::Texture& texture = Aen::Resource::CreateTexture(textureName);
-		texture.LoadTexture(imageName);
-		Aen::Material& mat = Aen::Resource::GetMaterial(materialName);
-		mat.SetDiffuseMap(texture);
+		}
+		else
+		{
+			string imageName = m_modelMap.at(id).m_texture.m_textureName;
+			string textureName = materialTextureName;
+			string normalImageName = m_modelMap.at(id).m_texture.m_normalTexture;
 
-		Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
+			if (m_textureFileName[currentIndexTex] != m_modelMap.at(id).m_texture.m_textureName)
+			{
+				imageName = m_textureFileName[currentIndexTex];
+				textureName = materialTextureName;
+
+				
+			}
+
+			if (m_normalMapTextureFileName[currentIndexNorm] != m_modelMap.at(id).m_texture.m_normalTexture)
+			{
+				normalImageName = m_normalMapTextureFileName[currentIndexNorm];
+			}
+
+
+
+			UpdateMap(id, textureName, materialName, m_itemList[m_selectedEntity], m_textureFileName[currentIndexTex]);
+
+			Aen::Texture& texture = Aen::Resource::CreateTexture(textureName);
+			texture.LoadTexture(AEN_TEXTURE_DIR(imageName));
+
+			Aen::Texture& normalTexture = Aen::Resource::CreateTexture(materialNormalTextureName);
+			normalTexture.LoadTexture(AEN_NORMALTEXTURE_DIR(normalImageName));
+
+			Aen::Material& mat = Aen::Resource::GetMaterial(materialName);
+			mat.SetDiffuseMap(texture);
+			mat.SetNormalMap(normalTexture);
+
+			Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
+		}
 	}
 
 	void ImGuiHandler::update()
@@ -832,7 +930,6 @@ namespace Aen {
 			}
 			ImGui::EndTabItem();
 		}
-		ImGui::EndTabBar();
 	}
 
 	void ImGuiHandler::RoomTab()
@@ -844,17 +941,33 @@ namespace Aen {
 		static int roomSize = 0;
 		static float rotateRoom = 0;
 
-		m_roomProperty[0] = IGH::ROOMTYPE[selectedType];
-		m_roomProperty[1] = IGH::SPECIALROOM[selectedSpecial];
-		m_roomProperty[2] = IGH::ROOMTHEME[selectedTheme];
-		m_roomProperty[3] = to_string(probability);
-		m_roomProperty[4] = to_string(roomSize);
+		
 
 		if (ImGui::BeginTabItem("Room"))
 		{
-			ImGui::Combo("Room Theme", &selectedTheme, IGH::ROOMTHEME, IM_ARRAYSIZE(IGH::ROOMTHEME));
-			ImGui::Combo("Room Type", &selectedType, IGH::ROOMTYPE, IM_ARRAYSIZE(IGH::ROOMTYPE));
-			ImGui::Combo("Special Room", &selectedSpecial, IGH::SPECIALROOM, IM_ARRAYSIZE(IGH::SPECIALROOM));
+			if (m_imported == true)
+			{
+				selectedType = stoi(m_roomProperty[0]);
+				selectedSpecial = stoi(m_roomProperty[1]);
+				selectedTheme = stoi(m_roomProperty[2]);
+				probability = stoi(m_roomProperty[3]);
+				roomSize = stoi(m_roomProperty[4]);
+				m_imported = false;
+
+			}
+			else
+			{
+				m_roomProperty[0] = m_imguiTypes.ROOMTYPE[selectedType];
+				m_roomProperty[1] = m_imguiTypes.SPECIALROOM[selectedSpecial];
+				m_roomProperty[2] = m_imguiTypes.ROOMTHEME[selectedTheme];
+				m_roomProperty[3] = to_string(probability);
+				m_roomProperty[4] = to_string(roomSize);
+			}
+
+
+			ImGui::Combo("Room Theme", &selectedTheme, m_imguiTypes.ROOMTHEME, IM_ARRAYSIZE(m_imguiTypes.ROOMTHEME));
+			ImGui::Combo("Room Type", &selectedType, m_imguiTypes.ROOMTYPE, IM_ARRAYSIZE(m_imguiTypes.ROOMTYPE));
+			ImGui::Combo("Special Room", &selectedSpecial, m_imguiTypes.SPECIALROOM, IM_ARRAYSIZE(m_imguiTypes.SPECIALROOM));
 			ImGui::DragInt("Probability", &probability, 1, 0, 100, "%.d", 0);
 			ImGui::DragInt("Room Size", &roomSize, 1);
 			ImGui::DragFloat("Rotate Room", &rotateRoom, 1);
@@ -864,6 +977,12 @@ namespace Aen {
 				Rotate(rotateRoom);
 			}
 
+			m_roomProperty[0] = m_imguiTypes.ROOMTYPE[selectedType];
+			m_roomProperty[1] = m_imguiTypes.SPECIALROOM[selectedSpecial];
+			m_roomProperty[2] = m_imguiTypes.ROOMTHEME[selectedTheme];
+			m_roomProperty[3] = to_string(probability);
+			m_roomProperty[4] = to_string(roomSize);
+
 			ImGui::EndTabItem();
 		}
 	}
@@ -872,6 +991,8 @@ namespace Aen {
 	{
 		static int selected = 0;
 		static int selectedTexture = 0;
+		static int selectedNormalTexture = 0;
+
 		if (ImGui::BeginTabItem(IGH::MATERIAL.c_str()))
 		{
 			size_t id = m_entityList[m_selectedEntity]->GetID();
@@ -891,10 +1012,12 @@ namespace Aen {
 				
 					SetMaterialValues(selected);
 					CustomCombo(m_textureFileName, IGH::TEXTURE.c_str(), selectedTexture);
+					CustomCombo(m_normalMapTextureFileName, IGH::NORMALTEXTURE.c_str(), selectedNormalTexture);
+
 
 					if (AddButton("Change Material"))
 					{
-						ChangeTexture(selectedTexture, m_materialList[selected].matName, m_materialList[selected].texName);
+						ChangeTexture(selectedTexture, selectedNormalTexture, m_materialList[selected].matName, m_materialList[selected].texName, m_materialList[selected].normTexName);
 						if (m_modelMap.find(id) != m_modelMap.end())
 						{
 							m_modelMap.at(id).m_material.set(Aen::Resource::GetMaterial(m_materialList[selected].matName));
@@ -928,7 +1051,7 @@ namespace Aen {
 			if (Aen::ComponentHandler::MeshInstanceExist(id))
 			{
 				ImGui::Checkbox("Hit box", &hitBoxEnable);
-				ImGui::Combo("Hit box Type", &selectedHitBoxType, IGH::HITBOXTYPE, IM_ARRAYSIZE(IGH::HITBOXTYPE));
+				ImGui::Combo("Hit box Type", &selectedHitBoxType, m_imguiTypes.HITBOXTYPE, IM_ARRAYSIZE(m_imguiTypes.HITBOXTYPE));
 				ImGui::Checkbox("Cast Shadow", &castShadow);
 
 				if (hitBoxEnable == true || castShadow == true)
@@ -938,7 +1061,7 @@ namespace Aen {
 					if (it != m_modelMap.end())
 					{
 						it->second.m_model.rigidBody = hitBoxEnable;
-						it->second.m_model.rigidBodyType = IGH::HITBOXTYPE[selectedHitBoxType];
+						it->second.m_model.rigidBodyType = m_imguiTypes.HITBOXTYPE[selectedHitBoxType];
 						it->second.m_model.m_castShadow = castShadow;
 
 					}
@@ -947,6 +1070,34 @@ namespace Aen {
 			}
 			ImGui::EndTabItem();
 		}
+	}
+
+	void ImGuiHandler::ParticleTab()
+	{
+		/*static int selectedType = 0;
+		static string mesh = "";
+		IGH::ImguiTypes types;
+
+		if (ImGui::BeginTabItem(IGH::PARTICLE.c_str()))
+		{
+			size_t id = m_entityList[m_selectedEntity]->GetID();
+			if (types.GetParticleTag(m_modelMap.at(id).m_type) == true)
+			{
+				selectedType = types.GetParticleTagIndex(m_modelMap.at(id).m_type);
+			}
+
+			ImGui::Combo("Type", &selectedType, m_imguiTypes.PARTICLETAG, IM_ARRAYSIZE(m_imguiTypes.PARTICLETAG));
+
+			if (m_imguiTypes.PARTICLETAG[selectedType] != "NONE")
+			{
+				m_modelMap.at(id).m_type = m_imguiTypes.PARTICLETAG[selectedType];
+			}
+			else
+			{
+				m_modelMap.at(id).m_type = "";
+			}
+			ImGui::EndTabItem();
+		}*/
 	}
 
 	void ImGuiHandler::UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName)
@@ -961,9 +1112,9 @@ namespace Aen {
 		}
 	}
 
-	void ImGuiHandler::ReadAllFilesFromResourceFolder()
+	void ImGuiHandler::ReadAllFilesFromFolder(string folder)
 	{
-		string filePath = IGH::RESOURCEPATH;
+		string filePath = folder;
 		string fileName = "";
 		string fileType = "";
 
@@ -987,8 +1138,16 @@ namespace Aen {
 			}
 			else if (fileType == IGH::PNG || fileType == IGH::JPG)
 			{
-				m_textureFileName.push_back(fileName);
-				m_textureName.push_back(fileName.substr(0, fileName.length() - 4));
+				if (filePath == IGH::NORMALTEXTUREPATH)
+				{
+					m_normalMapTextureFileName.push_back(fileName);
+					m_normalMapTexture.push_back(fileName.substr(0, fileName.length() - 4));
+				}
+				else
+				{
+					m_textureFileName.push_back(fileName);
+					m_textureName.push_back(fileName.substr(0, fileName.length() - 4));
+				}
 			}
 		}
 	}
@@ -1019,6 +1178,14 @@ namespace Aen {
 		}
 	}
 
+	void ImGuiHandler::AddParticleButton()
+	{
+		if (AddButton(IGH::PARTICLE))
+		{
+			m_createParticleWindowActive = true;
+		}
+	}
+
 	void ImGuiHandler::ModelButtons()
 	{
 		for (size_t i = 0; i < m_objFileName.size(); i++)
@@ -1026,7 +1193,7 @@ namespace Aen {
 			ImGui::Columns(4, nullptr);
 			if (AddButton(m_objName[i]))
 			{
-				imguiImporter->AddBase(m_objName[i], m_objFileName[i]);
+				m_imguiImporter->AddBase(m_objName[i], m_objFileName[i]);
 			}
 			ImGui::NextColumn();
 		}
@@ -1036,17 +1203,17 @@ namespace Aen {
 	{
 		if (AddButton(IGH::POINTLIGHT.c_str()))
 		{
-			imguiImporter->AddPointLight();
+			m_imguiImporter->AddPointLight();
 		}
 
 		if (AddButton(IGH::SPOTLIGHT.c_str()))
 		{
-			imguiImporter->AddSpotLight();
+			m_imguiImporter->AddSpotLight();
 		}
 
 		if (AddButton(IGH::DIRECTIONALLIGHT.c_str()))
 		{
-			imguiImporter->AddDirectional();
+			m_imguiImporter->AddDirectional();
 		}
 	}
 
@@ -1138,11 +1305,11 @@ namespace Aen {
 	{
 		if (list.size() > 0)
 		{
-			static string value = "";
-
+			//static string value = "";
 			if (ImGui::BeginCombo(name.c_str(), list[index].c_str()))
 			{
 				static bool isSelected = false;
+
 				for (size_t i = 0; i < list.size(); i++)
 				{
 					isSelected = (index == i);
@@ -1150,7 +1317,6 @@ namespace Aen {
 					if (ImGui::Selectable(list[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
 					{
 						index = static_cast<int>(i);
-						value = list[index];
 					}
 
 					if (isSelected)
@@ -1159,8 +1325,9 @@ namespace Aen {
 					}
 				}
 				ImGui::EndCombo();
+				return list[index];
+
 			}
-			return value;
 		}
 		return "";
 	}

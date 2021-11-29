@@ -637,7 +637,7 @@ namespace Aen
 	void LevelGenerator::InitPlaceholderRooms()
 	{
 		Aen::Mesh& cube = Aen::Resource::CreateMesh("Cube");
-		cube.Load(AEN_RESOURCE_DIR("Cube.obj"));
+		cube.Load(AEN_MODEL_DIR("Cube.obj"));
 		m_mapTheme = RoomTheme::PLACEHOLDER;
 		Room temp;
 		temp.m_baseChance = 15;
