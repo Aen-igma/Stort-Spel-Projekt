@@ -125,7 +125,9 @@ void Gameplay::Initialize()
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos;
 	Aen::Vec3f ChestPos;
+	Aen::Vec3f DoorPos;
 	Aen::Vec3f EnemyPos;
+	int roomNormal = 0;
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
@@ -138,7 +140,9 @@ void Gameplay::Initialize()
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
-
+				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
+				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+				cout << roomNormal << endl;
 			}
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE) {
@@ -155,10 +159,24 @@ void Gameplay::Initialize()
 			}
 		}
 	}
-	m_chest.GetObjectEntity()->SetPos(ChestPos);
-	m_door.GetEntity()->SetPos(ChestPos.x, ChestPos.y + 4.f, ChestPos.z + 10.f);
+	m_chest.GetEntity()->SetPos(ChestPos);
 	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y, ChestPos.z);
 	m_chest.SetType(Type::Open);
+
+	if (roomNormal == 1) { //north
+		m_door.GetEntity()->SetRot(0, 180, 0);
+	}
+	else if (roomNormal == 10) {//east
+		m_door.GetEntity()->SetRot(0, 90, 0);
+	}
+	else if (roomNormal == 100) {//south
+		m_door.GetEntity()->SetRot(0, 0, 0);
+	}
+	else if (roomNormal == 1000) {//west
+		m_door.GetEntity()->SetRot(0, -90, 0);
+	}
+	m_door.GetEntity()->SetPos(DoorPos.x, 3.f, DoorPos.z);
+	m_door.GetEntity()->MoveRelative(1.f, 0.f, 0.f);
 
 	//m_attack->SetParent(*m_player);
 

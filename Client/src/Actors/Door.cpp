@@ -7,17 +7,10 @@ Door::Door()
 	door.Load(AEN_RESOURCE_DIR("door.fbx"));
 	m_door->AddComponent<Aen::MeshInstance>();
 	m_door->GetComponent<Aen::MeshInstance>().SetMesh("Door");
-	m_door->SetScale(0.4f, 0.4f, 0.4f);
 	
 	m_door->AddComponent<Aen::StaticBody>();
 	m_door->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
-
-	//m_door->SetParent(*mp_object);
-
-	//mp_object->AddComponent<Aen::StaticBody>();
-	//mp_object->GetComponent<Aen::StaticBody>().set
-	//mp_object->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
-	//mp_object->SetPos(m_door->GetPos().x, m_door->GetPos().y, m_door->GetPos().z);
+	m_door->SetRot(0, 0, 0);
 }
 
 Door::~Door()
