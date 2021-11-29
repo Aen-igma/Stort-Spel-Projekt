@@ -69,6 +69,20 @@ namespace Aen {
 		m_frustumGrid.Create(128u, size);
 	}
 
+	void Renderer::Culling()
+	{
+		for (uint32_t i = 0u; i < 7u; i++)
+		{
+			for (auto& k : ComponentHandler::m_meshLayer[i])
+			{
+				if (k.second->FrustumCull(*this))
+				{
+					m_drawTable[i].emplace_back(k.second);
+				}
+			}
+		}
+	}
+
 	void Renderer::Render() {
 		
 		RenderSystem::SetViewPort(m_viewPort);
@@ -143,20 +157,23 @@ namespace Aen {
 		// Layered Rendering
 
 		for(uint32_t i = 0u; i < 7u; i++)
-			if(ComponentHandler::m_meshLayer[i].size() > 0) {
+			if (m_drawTable[i].size() > 0) {
 
 				RenderSystem::UnBindRenderTargets(1u);
 				RenderSystem::BindRenderTargetView(m_depthMap);
 				RenderSystem::SetDepthStencilState(m_offStencil, 0xFF);
 				
 				// Pre Depth Pass
-
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->DepthDraw(*this, i);
-
+				
+				for (auto& k : m_drawTable[i])
+				{
+					k->DepthDraw(*this);
+				}
+				
 				// Light Cull Pass
-
+				
 				RenderSystem::UnBindRenderTargets(1u);
-
+				
 				RenderSystem::BindShaderResourceView<CShader>(0u, m_frustumGrid);
 				m_sbLight.BindSRV<CShader>(1u);
 				RenderSystem::BindShaderResourceView<CShader>(2u, m_depthMap);
@@ -175,8 +192,12 @@ namespace Aen {
 
 				// Draw pass
 
-				for(auto& k : ComponentHandler::m_meshLayer[i]) k.second->Draw(*this, i);
+				for (auto& k : m_drawTable[i])
+				{
+					k->Draw(*this);
+				}
 
+				m_drawTable[i].clear();
 				RenderSystem::ClearDepthStencilView(m_depthMap, true, false);
 			}
 
@@ -197,4 +218,5 @@ namespace Aen {
 		RenderSystem::Present(1);
 		RenderSystem::ClearState();
 	}
+
 }

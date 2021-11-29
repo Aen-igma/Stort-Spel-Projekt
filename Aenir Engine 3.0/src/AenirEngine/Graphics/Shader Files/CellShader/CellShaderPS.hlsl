@@ -161,7 +161,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 
 	if(opacityM > 0.f || !useOpacity) {
 		output.depthNormal = mul(float4(normal, 0.f), vMat);
-		output.depth = float4(sqrt(input.pos.z / input.pos.w), 0.f, 0.f, 1.f);
+		output.depth = float4(input.pos.z / input.pos.w, 0.f, 0.f, 1.f);
 	}
 
 	output.opacity = float4(opacityM, 0.f, 0.f, 0.f);

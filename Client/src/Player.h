@@ -59,8 +59,9 @@ public:
 	void SetBossP(Boss* boss);
 
 private:
-	void SwordSwing(float speed, float time, const float& deltaTime);
-	void ResetSword();
+
+	//void SwordSwing(float speed, float time, const float& deltaTime);
+	//void ResetSword();
 	void AddEvent(EventData& event);
 
 	float m_health;
@@ -70,7 +71,7 @@ private:
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
 	Aen::Entity* m_camera;
-	Aen::Entity* m_sword;
+	//Aen::Entity* m_sword;
 	Aen::Entity* m_targetUI;
 	Aen::Raycast m_ray;
 

@@ -62,10 +62,10 @@ namespace Aen
 		
 
 		// Inherited via Drawable
-		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
+		virtual void Draw(Renderer& renderer, const uint32_t& layer = 0) override;
+		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer = 0) override;
+		virtual bool FrustumCull(Renderer& renderer) override;
 
-		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
 		friend class AABoundBox;
-
 	};
 }

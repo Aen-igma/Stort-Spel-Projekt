@@ -1,4 +1,7 @@
 #include"Rimuru.h"
+#include "AenirEngine/LevelGeneration/LevelGenerator.h"
+
+#define rand LehmerInt
 
 Rimuru::Rimuru()
 	:Enemy(), m_rimuru(&Aen::EntityHandler::CreateEntity()), m_lDir(0.f, 0.f, -1.f) {

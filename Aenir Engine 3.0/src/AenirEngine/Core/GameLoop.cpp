@@ -25,6 +25,7 @@ namespace Aen {
 		m_renderer->Initialize();
 
 		GlobalSettings::Initialize(m_app->m_window, m_renderer);
+		GlobalSettings::SetVSync(true);
 
 		m_app->Start();
 	}

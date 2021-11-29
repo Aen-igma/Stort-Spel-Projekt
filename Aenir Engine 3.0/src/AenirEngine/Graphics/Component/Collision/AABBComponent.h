@@ -50,8 +50,9 @@ namespace Aen
 		bool m_camBox;
 
 		// Inherited via Drawable
-		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
-		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) override;
+		virtual void Draw(Renderer& renderer, const uint32_t& layer = 0) override;
+		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer = 0) override;
+		virtual bool FrustumCull(Renderer& renderer) override;
 
 		friend class OBBox;
 
