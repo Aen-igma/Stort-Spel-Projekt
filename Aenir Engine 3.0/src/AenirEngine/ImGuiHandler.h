@@ -23,12 +23,13 @@ using std::cout;
 using std::endl;
 using std::to_string;
 using std::unordered_map;
+using std::stoi;
 
 namespace Aen {
 
 	class AEN_DECLSPEC ImGuiHandler {
 
-	private:
+	//private:
 		/*void SaveThumbnail(string& destinationPath, string& filePathDestination,
 			string& sourcePath, string& filePathSource,
 			Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i);*/
@@ -41,7 +42,9 @@ namespace Aen {
 		Aen::EntityHandler* mp_entityHandlerPtr;
 		vector<Aen::Entity*> m_entityList;
 
-		Aen::ImGuiImporter* imguiImporter;
+		Aen::ImGuiImporter* m_imguiImporter;
+
+		IGH::ImguiTypes m_imguiTypes;
 
 		// Display in scene list
 		vector<string> m_itemList;
@@ -52,12 +55,12 @@ namespace Aen {
 		vector<string> m_textureFileName;
 		vector<string> m_textureName;
 
+		vector<string> m_normalMapTextureFileName;
+		vector<string> m_normalMapTexture;
+
 		unordered_map< size_t, IGH::ModelContainer> m_modelMap;
 		unordered_map< size_t, Aen::Entity*> m_lightMap;
 		vector<IGH::MatTexName> m_materialList;
-
-
-
 
 		int m_selectedEntity = 0;
 
@@ -85,8 +88,6 @@ namespace Aen {
 		float m_outerFalloff = 0;
 		float m_rimLightIntensity = 0;
 		float m_rimLightSize = 0;
-
-
 		
 		ImGui::FileBrowser m_fileDialog;
 
@@ -97,12 +98,12 @@ namespace Aen {
 		bool m_ImportWindowActive = false;
 		bool m_createEnemyWindowActive = false;
 		bool m_createMaterialActive = false;
-
+		bool m_createParticleWindowActive = false;
+		bool m_imported = false;
 		// Counters
 		unsigned int m_enemyCount = 0;
 		int m_entityCount = 0;
 		int m_lightCount = 0;
-		int m_OriginalCount = 0;
 
 		void print(string input);
 
@@ -113,6 +114,7 @@ namespace Aen {
 		bool AddButton(const string& name);
 		void AddEnemyButton();
 		void AddMaterialButton();
+		void AddParticleButton();
 
 	public:
 		// All Set and Get here
@@ -136,14 +138,9 @@ namespace Aen {
 		void SetDefaultMaterialValue(int selected);
 
 		void SetValues();
-
 		void SetDefaultValue();
 		void ZeroValue();
-
 		void Rotate(float angle);
-
-
-
 
 	public: 
 		// All window func here
@@ -151,11 +148,14 @@ namespace Aen {
 		void AssetWindow();
 		void ColorWheel();
 		void PropertyWindow();
+
+		// Only delete works
 		void ToolWindow();
 		void SaveWindow();
 		void EnemyCreateWindow();
 		void ImportWindow();
 		void MaterialCreateWindow();
+		void ParticleCreateWindow();
 
 	public:
 		ImGuiHandler();
@@ -171,11 +171,10 @@ namespace Aen {
 
 	private:
 
-
 		void ReadAllModelsFromHandler();
 		//void CreatePreviewTextureThumbnail();
 		void RemoveObject();
-		void ReadAllFilesFromResourceFolder();
+		void ReadAllFilesFromFolder(string folder);
 		void UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName);
 	
 		void ModelButtons();
@@ -190,7 +189,7 @@ namespace Aen {
 
 		string CustomComboMap(unordered_map< string, AenIF::Material >& list, string name, string index);
 
-		void ChangeTexture(int& currentIndex, string materialName, string materialTextureName);
+		void ChangeTexture(int& currentIndexTex, int & currentIndexNorm ,string materialName, string materialTextureName, string materialNormalTextureName);
 
 		void update();
 
@@ -200,9 +199,7 @@ namespace Aen {
 		void RoomTab();
 		void MaterialTab();
 		void ModelTab();
-
-
-
+		void ParticleTab();
 };
 }
 

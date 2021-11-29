@@ -9,6 +9,15 @@
 	#define AEN_RESOURCE_DIR(file) "../Resource/" + std::string(file)
 	#define AEN_RESOURCE_DIR_W(file) L"../Resource/" + std::wstring(file)
 
+	#define AEN_TEXTURE_DIR(file) "../Resource/" + std::string(file)
+	#define AEN_NORMALTEXTURE_DIR(file) "../Resource/" + std::string(file)
+	#define AEN_LEVEL_DIR(file) "../LevelFolder/" + std::string(file)
+	#define AEN_MODEL_DIR(file) "../Resource/" + std::string(file)
+	//#define AEN_TEXTURE_DIR(file) "../Resource/Texture/" + std::string(file)
+	//#define AEN_NORMALTEXTURE_DIR(file) "../Resource/Texture/Normal_Map/" + std::string(file)
+	//#define AEN_LEVEL_DIR(file) "../LevelFolder/" + std::string(file)
+	//#define AEN_MODEL_DIR(file) "../Resource/FBX/" + std::string(file)
+
 	#define AEN_LEVEL_DIR(file) "../LevelFolder/" + std::string(file)
 
 	#ifdef _WIN64
