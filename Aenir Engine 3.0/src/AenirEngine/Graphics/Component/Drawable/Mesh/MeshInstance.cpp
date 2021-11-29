@@ -132,13 +132,17 @@ namespace Aen {
 
 						uint32_t* slots = pMaterial->m_pShaderModel->m_slots;
 
-						for(UINT k = 0; k < 4; k++)
-							if(pMaterial->m_textures[k] && slots[k] != UINT_MAX) {
-								RenderSystem::UnBindShaderResources<PShader>(slots[k], 1u);
+						for (UINT k = 0; k < 4; k++)
+						{
+							RenderSystem::UnBindShaderResources<PShader>(slots[k], 1u);
+							if (pMaterial->m_textures[k] && slots[k] != UINT_MAX) {
 								RenderSystem::BindShaderResourceView<PShader>(slots[k], pMaterial->m_textures[k]->m_shaderResource);
 								renderer.m_cbUseTexture.GetData()[k] = (int)true;
-							} else
+							}
+							else
 								renderer.m_cbUseTexture.GetData()[k] = (int)false;
+						}
+								
 
 							pMaterial->m_dBuffer.UpdateBuffer();
 							renderer.m_cbUseTexture.UpdateBuffer();
