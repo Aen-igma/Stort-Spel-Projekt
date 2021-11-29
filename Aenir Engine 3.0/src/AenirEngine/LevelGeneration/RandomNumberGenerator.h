@@ -20,4 +20,5 @@ static void SetLehmerSeed(const int seed) {
 static void SetLehmerConstSeed(const int seed)
 {
 	lehmerConstSeed = seed;
+	nLehmer = seed;
 };

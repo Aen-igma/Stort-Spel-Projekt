@@ -119,7 +119,7 @@ void Gameplay::Initialize()
 
 	//Match this value to the size of the rooms we are using
 	m_levelGenerator.SetRoomDimension(43.f);
-	mptr_map = m_levelGenerator.GenerateLevel();
+	mptr_map = m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
@@ -161,7 +161,8 @@ void Gameplay::Initialize()
 		}
 	}
 	m_chest.GetObjectEntity()->SetPos(ChestPos);
-	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y, ChestPos.z);
+	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y, ChestPos.z);
+	m_player.GetEntity()->SetPos(playerStartPos);
 	m_chest.SetType(Type::Locked);
 
 	//m_attack->SetParent(*m_player);

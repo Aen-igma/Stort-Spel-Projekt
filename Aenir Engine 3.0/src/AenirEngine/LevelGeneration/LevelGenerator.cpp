@@ -22,31 +22,37 @@ namespace Aen
 		}
 		static int rerolls;
 
-		uint32_t weightS = 100; //Straight
-		uint32_t weightB = 300;	//Bend
-		uint32_t weightT = 450;	//threeway
-		uint32_t weightF = 250; //fourway
+		uint32_t weightS = 50; //Straight
+		uint32_t weightB = 500;	//Bend
+		uint32_t weightT = 300;	//threeway
+		uint32_t weightF = 200; //fourway
 
 		uint32_t weightSum = weightS + weightB + weightT + weightF;
-
-		uint32_t randNum = LehmerInt() % weightSum;
 		static unsigned char type = 0;
+		uint32_t randNum = LehmerInt() % weightSum;
 
-		if (randNum < weightS) {
-			result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 101));
-			type = 1;
-		}
-		else if (randNum < (weightB + weightS)) {
-			result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 11));
-			type = 2;
-		}
-		else if (randNum < (weightT + weightB + weightS)) {
-			result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 1011));
-			type = 3;
-		}
-		else if (randNum < (weightF + weightT + weightB + weightS)) {
-			result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 1111));
-			type = 4;
+		while(rerolls < 2){
+			randNum = LehmerInt() % weightSum;
+			if (randNum < weightS) {
+				result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 101));
+				type = 1;
+			}
+			else if (randNum < (weightB + weightS)) {
+				result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 11));
+				type = 2;
+			}
+			else if (randNum < (weightT + weightB + weightS)) {
+				result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 1011));
+				type = 3;
+			}
+			else if (randNum < (weightF + weightT + weightB + weightS)) {
+				result = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::NONE, 1111));
+				type = 4;
+			}
+			if (result.connectionDirections != levelRoom[roomIndex].connectionDirections && result.connectionDirections > 0) {
+				break;
+			}
+			rerolls++;
 		}
 		//if (result.m_roomIndex == roomIndex && rerolls < 4) {
 		//	rerolls++;
@@ -186,59 +192,61 @@ namespace Aen
 				map[x][y] = Room();
 			}
 		}
-		srand(time(0));
-		SetLehmerConstSeed(rand());
 		int r = LehmerInt() % 4;
+
+		int low = std::floor((mapSize + 1) / 2);
+		int high = std::ceil((mapSize + 1) / 2);
+
 		switch (r)
 		{
 		case 0:
-			map[3][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
-			map[3][3].m_present = true;
+			map[low][low] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[low][low].m_present = true;
 			break;
 		case 1:
-			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
-			map[3][4].m_present = true;
+			map[low][high] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[low][high].m_present = true;
 			break;
 		case 2:
-			map[4][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
-			map[4][4].m_present = true;
+			map[high][high] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[high][high].m_present = true;
 			break;
 		case 3:
-			map[4][3] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
-			map[4][3].m_present = true;
+			map[high][low] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[high][low].m_present = true;
 			break;
 		default:
-			map[3][4] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
-			map[3][4].m_present = true;
+			map[low][high] = RNGRoomFromVector(GetIndexVector(m_mapTheme, SpecialRoom::ENTRANCE, 1));
+			map[low][high].m_present = true;
 			break;
 		}
 
 
-		r = LehmerInt() % 4;
+		r = (LehmerInt() >> 32) % 4;
 		switch (r)
 		{
 		case 1:
-			map[3][3].rotateCW();
-			map[3][4].rotateCW();
-			map[4][4].rotateCW();
-			map[4][3].rotateCW();
+			map[low][low].rotateCW();
+			map[low][high].rotateCW();
+			map[high][high].rotateCW();
+			map[high][low].rotateCW();
 			break;
 		case 2:
-			map[3][3].rotateCCW();
-			map[3][4].rotateCCW();
-			map[4][4].rotateCCW();
-			map[4][3].rotateCCW();
+			map[low][low].rotateCCW();
+			map[low][high].rotateCCW();
+			map[high][high].rotateCCW();
+			map[high][low].rotateCCW();
 			break;
 		case 3:
-			map[3][3].rotate180();
-			map[3][4].rotate180();
-			map[4][4].rotate180();
-			map[4][3].rotate180();
+			map[low][low].rotate180();
+			map[low][high].rotate180();
+			map[high][high].rotate180();
+			map[high][low].rotate180();
 			break;
 		}
 
 		bool openConnections = true;
-		int maxRooms = 10; //Soft limit
+		int maxRooms = 12; //Soft limit
 
 		while (openConnections && maxRooms > 0) {
 			int numOpenConnections = 0;		//Tracks how many connections are open
@@ -621,6 +629,12 @@ namespace Aen
 	LevelGenerator::~LevelGenerator()
 	{
 
+	}
+
+	LevelGenerator::LevelGenerator()
+	{
+		srand(time(NULL));
+		SetLehmerConstSeed(rand());
 	}
 
 	const Room* LevelGenerator::GetMapPointer()
