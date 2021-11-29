@@ -23,7 +23,7 @@ Player::Player()
 	capsule.Load(AEN_MODEL_DIR("Player.fbx"));
 
 	Aen::Mesh* protag = &Aen::Resource::CreateMesh("Protag");
-	protag->Load(AEN_RESOURCE_DIR("Protagonist.fbx"));
+	protag->Load(AEN_MODEL_DIR("Protagonist.fbx"));
 
 	Aen::Material& skin = Aen::Resource::CreateMaterial("Skin");
 	skin["InnerEdgeColor"] = Aen::Color(0.3f, 0.1f, 0.08f, 1.f);
