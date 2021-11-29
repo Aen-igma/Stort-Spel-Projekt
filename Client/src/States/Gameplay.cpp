@@ -155,13 +155,13 @@ void Gameplay::Initialize()
 				int index = m_enemyQueue.size();
 				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
 				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-				m_enemyQueue.at(index)->GetEntity()->SetScale(2.f);
 			}
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
 	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
+	m_door.SetType(Type::Open);
 
 	if (roomNormal == 1) { //north
 		m_door.GetEntity()->SetRot(0, 180, 0);
@@ -264,20 +264,28 @@ void Gameplay::Update(const float& deltaTime) {
 	m_player.Update(m_enemyQueue, deltaTime);
 
 	m_chest.Update(deltaTime, m_player.GetEntity());
-	if (m_chest.GetNear()) {
+	m_door.Update(deltaTime, m_player.GetEntity());
+	if (m_chest.GetNear() || m_door.GetNear()) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * screenSize.x, (800.f / 1024.f) * screenSize.y, 2);
 		m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
 
-		//if (m_enemyQueue.empty())
-		//	m_chest.SetType(Type::Closed);
-
-		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open) {
+		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open && m_chest.GetNear()) {
 			m_player.IncreaseHealthCap();
 			m_chest.SetType(Type::Locked);
 		}
 	}
 	else {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f, 2);
+	}
+
+	static bool test = false;
+	if (Aen::Input::KeyDown(Aen::Key::F)) {
+
+		test = !test;
+	}
+
+	if (test) {
+		m_door.GetEntity()->SetRot(0, Aen::Lerp(m_door.GetEntity()->GetRot().y, 180.f, 0.1f), 0);
 	}
 
 	for (auto& i : m_enemyQueue) {

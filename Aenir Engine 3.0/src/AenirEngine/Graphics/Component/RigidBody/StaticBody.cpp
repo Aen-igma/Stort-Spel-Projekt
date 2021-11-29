@@ -201,6 +201,21 @@ namespace Aen {
 		mp_StaticBody->setGlobalPose(t);
 	}
 
+	void StaticBody::Rotate(const Vec3f& rot)
+	{
+		Vec4f tempRot = EulerToQuat(rot);
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		t.q += px::PxQuat(tempRot.x, tempRot.y, tempRot.z, tempRot.w);
+		mp_StaticBody->setGlobalPose(t);
+	}
+
+	void StaticBody::Rotate(const float& p, const float& y, const float& r)
+	{
+		Vec4f tempRot = EulerToQuat(p,y,r);
+		px::PxTransform t = mp_StaticBody->getGlobalPose();
+		mp_StaticBody->setGlobalPose(t);
+	}
+
 	px::PxTriangleMesh* StaticBody::CookMesh(const bool& insert)
 	{
 		std::vector<DirectX::XMFLOAT3> localvPos = ComponentHandler::GetMeshInstance(m_id).m_pMesh->GetvPos();

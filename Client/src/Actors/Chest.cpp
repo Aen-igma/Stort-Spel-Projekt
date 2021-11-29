@@ -27,7 +27,7 @@ Chest::~Chest()
 
 void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 {
-	Aen::Vec3f eDir = e->GetPos() - mp_object->GetPos();
+	Aen::Vec3f eDir = e->GetPos() - m_chest->GetPos();
 	float dist = eDir.Magnitude();
 
 	//player
