@@ -77,7 +77,7 @@ namespace Aen {
 			{
 				if (k.second->FrustumCull(*this))
 				{
-					m_drawTable[i].emplace_back(k.second);
+					m_drawTable[i].push_back(k.second);
 				}
 			}
 		}

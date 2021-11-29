@@ -33,26 +33,32 @@ namespace Aen {
 	void GameLoop::Run() {
 		bool useVsync = GlobalSettings::GetVSync();
 		double sstart = 0, deltaTime = 0;
-		while(Aen::WindowHandle::HandleMsg()) {
+		while (Aen::WindowHandle::HandleMsg()) {
 
-				sstart = omp_get_wtime();
+			sstart = omp_get_wtime();
+			while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
+			if (m_app->m_window.IsActive()) {
 
-				if (m_app->m_window.IsActive()) {
-
-					Input::Update();
-					m_app->Update(static_cast<float>(deltaTime));
-				}
-
-				PhysicsHandler::Update(static_cast<float>(deltaTime));
-
-				if (useVsync)
-					m_renderer->Render();
-		//	}
-
-			if(!useVsync)
-				m_renderer->Render();
+				Input::Update();
+				m_app->Update(static_cast<float>(deltaTime));
+			}
+				m_start = ResClock::now();
+			PhysicsHandler::Update(static_cast<float>(deltaTime));
 			
+			m_renderer->Culling();
+			m_renderer->Render();
+
+
 			deltaTime = (omp_get_wtime() - sstart);
+					m_renderer->Render();
+				}
+			}
+
+			if (!GlobalSettings::GetVSync())
+			{
+				m_renderer->Culling();
+				m_renderer->Render();
+			}
 		}
 
 		// Destroy imGui
@@ -66,5 +72,11 @@ namespace Aen {
 		GlobalSettings::Destroy();
 		PhysicsHandler::Destroy();
 		delete m_renderer;
+		
+	}
+
+	void GameLoop::InitApp(Aen::App* app)
+	{
+		m_app = app;
 	}
 }

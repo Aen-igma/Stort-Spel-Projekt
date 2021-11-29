@@ -35,34 +35,33 @@ namespace AenIF
 
 	struct Texture
 	{
-		string name;
-		string textureType;
-		//string blending[FILE_PATH_NAME_MAX_LENGTH];
-
+		string texture;
+		string normalTexture;
 	};
+
 	struct Material
 	{
-		string materialName;
-		string materialTextureName;
-		float baseColor[4];
-		float shadowColor[4];
-		float specularColor[4];
-		float rimLightColor[4];
-		float innerEdgeColor[4];
-		float outerEdgeColor[4];
-		float glowColor[4];
+		string materialName = "";
+		string materialTextureName = "";
+		float baseColor[4] = { 0.0f,0.0f,0.0f,0.0f };
+		float shadowColor[4] = { 0.0f,0.0f,0.0f,0.0f };
+		float specularColor[4] = { 0.0f,0.0f,0.0f,0.0f };
+		float rimLightColor[4] = { 0.0f,0.0f,0.0f,0.0f };
+		float innerEdgeColor[4] = { 0.0f,0.0f,0.0f,0.0f };
+		float outerEdgeColor[4] = { 0.0f,0.0f,0.0f,0.0f };
+		float glowColor[4] = { 0.0f,0.0f,0.0f,0.0f };
 
-		float glowStr;
-		float innerEdgeThickness;
-		float outerEdgeThickness;
-		float specularPower;
-		float specularStrength;
-		float roughness;
-		float shadowOffset;
-		float innerFalloff;
-		float outerFalloff;
-		float rimLightIntensity;
-		float rimLightSize;
+		float glowStr = 0;
+		float innerEdgeThickness = 0;
+		float outerEdgeThickness = 0;
+		float specularPower = 0;
+		float specularStrength = 0;
+		float roughness = 0;
+		float shadowOffset = 0;
+		float innerFalloff = 0;
+		float outerFalloff = 0;
+		float rimLightIntensity = 0;
+		float rimLightSize = 0;
 
 		Material()
 		{

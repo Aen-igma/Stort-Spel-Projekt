@@ -27,7 +27,7 @@ private:
     Aen::Entity* m_reimube1;
 
     Aen::Entity* m_UI;
-    Aen::Entity* m_wall;
+    //Aen::Entity* m_wall;
 
     Player m_player;
     Boss* m_skeleBoss;
@@ -36,7 +36,7 @@ private:
 
     bool m_beatBoss;
 
-    Aen::ImGuiImporter m_levelImporter;
+    //Aen::ImGuiImporter m_levelImporter;
 
     std::queue<EventData> m_eventQueue;
 

@@ -15,9 +15,8 @@ namespace Aen {
 	}
 
 	CharacterController::CharacterController(const size_t& id)
-		:Component(id), m_physics(PhysicsHandler::GetInstance()->GetPxPhysics()),
+		:Component(id), m_physics(PhysicsHandler::GetInstance()->GetPxPhysics()), 
 		m_controller(nullptr), m_isGrounded(false) {
-
 		px::PxCapsuleControllerDesc desc;
 		desc.climbingMode = px::PxCapsuleClimbingMode::eCONSTRAINED;
 		desc.nonWalkableMode = px::PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
@@ -63,7 +62,8 @@ namespace Aen {
 	}
 
 	CharacterController::~CharacterController() {
-
+		m_physics = nullptr;
+		//m_controller = nullptr;
 		m_controller->release();
 	}
 
