@@ -221,10 +221,11 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920)* wDesc.width, (800.f / 1024)* wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920)* wDesc.width, (300 / 1024)* wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
 
+	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, std::to_wstring(m_player.GetPotionNr()).c_str());
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
@@ -238,16 +239,12 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
-	static wstringstream potionNr;
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
-		float hp = (m_hp - m_player.GetHealth());
-		potionNr << m_player.GetPotionNr();
-
-		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture((hp * 2.f) * (1.f/1920.f) * screenWidth, 0);
-		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
+		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenWidth, 0);
+		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, std::to_wstring(m_player.GetPotionNr()).c_str());
 		m_hp = m_player.GetHealth();
 	}
-	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, potionNr.str().c_str());
+	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, std::to_wstring(m_player.GetPotionNr()).c_str());
 	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
 
 	if (m_toggleFullScreen)
