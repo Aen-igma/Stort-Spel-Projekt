@@ -158,22 +158,22 @@ void Gameplay::Initialize()
 	m_chest.GetEntity()->SetPos(ChestPos);
 	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
-	m_door.SetType(Type::Open);
+	//m_door.SetType(Type::Open);
 
-	if (roomNormal == 1) { //north
-		m_door.GetEntity()->SetRot(0, 180, 0);
-	}
-	else if (roomNormal == 10) {//east
-		m_door.GetEntity()->SetRot(0, 90, 0);
-	}
-	else if (roomNormal == 100) {//south
-		m_door.GetEntity()->SetRot(0, 0, 0);
-	}
-	else if (roomNormal == 1000) {//west
-		m_door.GetEntity()->SetRot(0, -90, 0);
-	}
-	m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
-	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
+	//if (roomNormal == 1) { //north
+	//	m_door.GetEntity()->SetRot(0, 180, 0);
+	//}
+	//else if (roomNormal == 10) {//east
+	//	m_door.GetEntity()->SetRot(0, 90, 0);
+	//}
+	//else if (roomNormal == 100) {//south
+	//	m_door.GetEntity()->SetRot(0, 0, 0);
+	//}
+	//else if (roomNormal == 1000) {//west
+	//	m_door.GetEntity()->SetRot(0, -90, 0);
+	//}
+	//m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
+	//m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 
 	//m_attack->SetParent(*m_player);
 
@@ -265,8 +265,8 @@ void Gameplay::Update(const float& deltaTime) {
 	m_player.Update(m_enemyQueue, deltaTime);
 
 	m_chest.Update(deltaTime, m_player.GetEntity());
-	m_door.Update(deltaTime, m_player.GetEntity());
-	if (m_chest.GetNear() || m_door.GetNear()) {
+	//m_door.Update(deltaTime, m_player.GetEntity());
+	if (m_chest.GetNear()) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * screenSize.x, (800.f / 1024.f) * screenSize.y, 2);
 		m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
 
@@ -281,7 +281,7 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if (Aen::Input::KeyDown(Aen::Key::F)) {
 
-		m_door.GetEntity()->SetRot(0, 90.f, 0);
+		//m_door.GetEntity()->SetRot(0, 90.f, 0);
 	}
 
 	for (auto& i : m_enemyQueue) {

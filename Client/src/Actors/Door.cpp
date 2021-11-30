@@ -4,13 +4,17 @@ Door::Door()
 	:Interact(), m_door(&Aen::EntityHandler::CreateEntity()), m_near(false)
 {
 	Aen::Mesh& door = Aen::Resource::CreateMesh("Door");
-	door.Load(AEN_RESOURCE_DIR("door.fbx"));
+	door.Load(AEN_MODEL_DIR("door.fbx"));
 	m_door->AddComponent<Aen::MeshInstance>();
 	m_door->GetComponent<Aen::MeshInstance>().SetMesh("Door");
-	
+	m_door->SetRot(0, 0, 0);
+
 	m_door->AddComponent<Aen::StaticBody>();
 	m_door->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
-	m_door->SetRot(0, 0, 0);
+
+	//m_door->SetParent(*mp_object);
+	//mp_object->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
+	//mp_object->SetPos(m_door->GetPos().x, m_door->GetPos().y, m_door->GetPos().z);
 
 	Aen::Material& DoorBrown = Aen::Resource::CreateMaterial("DoorBrown");
 	DoorBrown["InnerEdgeColor"] = Aen::Color::Brown;

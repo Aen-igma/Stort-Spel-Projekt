@@ -37,7 +37,7 @@ private:
  
     Player m_player;
     Chest m_chest;
-    Door m_door;
+    //Door m_door;
     bool m_beatBoss;
 
     //Aen::ImGuiImporter m_levelImporter;

@@ -30,12 +30,12 @@ void Credits::Initialize()
 	// ----------------------------- UI -------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"PathToTheTower.png"));
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"PathToTheTower.png"));
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((961.f / 1920.f) * wDesc.width, (516.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(wDesc.width, wDesc.height);
 
 	// continue
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Back.png"));
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_TEXTURE_DIR_W(L"Back.png"));
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((3.f / 6.f) * wDesc.width, (880.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (75.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
