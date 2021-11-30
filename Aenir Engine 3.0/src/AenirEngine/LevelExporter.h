@@ -41,9 +41,9 @@ namespace Aen {
 
 
 		void lightFunc(LightStruct *&lightStruct, vector<LightStruct> &m_LightVector, Entity*& entity, unordered_map<size_t, Aen::Entity*>& lightMap);
-		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap,size_t& index);
+		void modelFunc(ModelStruct *& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap,size_t& index, ParticleStruct*& particleStruct);
 		void roomFunc(RoomStruct*& roomStruct, string array[]);
-		void textureFunc(TextureStruct*& textureStruct, string& textureFileName);
+		void textureFunc(TextureStruct*& textureStruct, string& textureFileName, string& normalTextureFileName);
 		void materialFunc(MaterialStruct*& materialStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index);
 
 

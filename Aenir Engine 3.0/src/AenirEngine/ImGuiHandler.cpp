@@ -57,6 +57,11 @@ namespace Aen {
 	ImGuiHandler::ImGuiHandler()
 	{
 		m_imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter, &m_materialList);
+
+		m_normalMapTextureFileName.push_back("None");
+		m_normalMapTexture.push_back("None");
+		m_textureFileName.push_back("None");
+		m_textureName.push_back("None");
 	}
 
 	ImGuiHandler::~ImGuiHandler()
@@ -67,7 +72,7 @@ namespace Aen {
 		}
 	}
 
-	void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
+	/*void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
 		string& sourcePath, string& filePathSource,
 		Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i)
 	{
@@ -80,12 +85,16 @@ namespace Aen {
 
 		source.FreeData();
 		destination.FreeData();
-	}
+	}*/
 
 	void ImGuiHandler::StartUp()
 	{
 		ReadAllModelsFromHandler();
-		ReadAllFilesFromResourceFolder();
+		ReadAllFilesFromFolder(IGH::FBXPATH);
+		ReadAllFilesFromFolder(IGH::TEXTUREPATH);
+		ReadAllFilesFromFolder(IGH::NORMALTEXTUREPATH);
+
+
 		//CreatePreviewTextureThumbnail();
 	}
 
@@ -215,6 +224,7 @@ namespace Aen {
 	void ImGuiHandler::AssetWindow()
 	{
 		ImGui::Begin("Assets", nullptr);
+
 		if (ImGui::BeginTabBar("#AssetTab", ImGuiTabBarFlags_None))
 		{
 			if (ImGui::BeginTabItem(IGH::MODEL.c_str()))
@@ -229,6 +239,12 @@ namespace Aen {
 			if (ImGui::BeginTabItem(IGH::LIGHT.c_str()))
 			{
 				LightButtons();
+
+				if(AddButton("Torch")) 
+				{
+					m_imguiImporter->AddTorchWithLight();
+				}
+
 				ImGui::EndTabItem();
 			}
 
@@ -279,6 +295,11 @@ namespace Aen {
 			RoomTab();
 
 			LightTab();
+
+			ParticleTab();
+
+			ImGui::EndTabBar();
+
 		}
 		ImGui::End();
 	}
@@ -418,16 +439,19 @@ namespace Aen {
 			static char materialName[MATERIAL_NAME_MAX_LENGTH];
 			static char textureName[TEXTURE_NAME_MAX_LENGTH];
 			static char materialTextureName[MATERIAL_NAME_MAX_LENGTH];
+			static char normalTextureName[TEXTURE_NAME_MAX_LENGTH];
 
-			static int selected = 0;
+			static int selectedTex = 0;
+			static int selectedNormTex = 0;
 
 			ImGui::Begin((IGH::CREATE + IGH::MATERIAL).c_str(), nullptr);
 
 			ImGui::InputText((IGH::MATERIAL + " " + IGH::NAME).c_str(), materialName, MATERIAL_NAME_MAX_LENGTH);
 			ImGui::InputText((IGH::MATERIAL + " " + IGH::TEXTURE + " " + IGH::NAME).c_str(), materialTextureName, MATERIAL_NAME_MAX_LENGTH);
 
-			strcpy(textureName, CustomComboString(m_textureFileName, (IGH::TEXTURE + IGH::NAME), selected).c_str());
-			
+			strcpy(textureName, CustomComboString(m_textureFileName, (IGH::TEXTURE + IGH::NAME), selectedTex).c_str());
+			strcpy(normalTextureName, CustomComboString(m_normalMapTextureFileName, (IGH::NORMALTEXTURE + IGH::NAME), selectedNormTex).c_str());
+
 			MaterialDragFloats(baseColor, shadowColor, specularColor, rimLightColor, 
 				innerEdgeColor, outerEdgeColor, glowColor, glowStr, 
 				innerEdgeThickness, outerEdgeThickness, specularPower, specularStrength, 
@@ -442,9 +466,13 @@ namespace Aen {
 					if (strcmp(materialTextureName, "") != 0 && strcmp(textureName, "") != 0)
 					{
 						Aen::Texture& texture = Aen::Resource::CreateTexture(materialTextureName);
-						texture.LoadTexture(IGH::RESOURCEPATH + textureName);
+						Aen::Texture& normalTexture = Aen::Resource::CreateTexture(normalTextureName);
+
+						texture.LoadTexture(AEN_RESOURCE_DIR(textureName));
+						normalTexture.LoadTexture(AEN_NORMALTEXTURE_DIR(normalTextureName));
+
 						material.SetDiffuseMap(texture);
-	
+						material.SetNormalMap(normalTexture);
 					}
 
 					SetMaterialValues(baseColor, shadowColor, specularColor, rimLightColor,
@@ -453,8 +481,10 @@ namespace Aen {
 						roughness, shadowOffset, innerFalloff, outerFalloff, rimLightIntensity, rimLightSize, material);
 
 
-					m_materialList.push_back(IGH::MatTexName(materialName,materialTextureName));
+					m_materialList.push_back(IGH::MatTexName(materialName,materialTextureName,normalTextureName));
 					std::memset(materialName, '\0', sizeof(char) * MATERIAL_NAME_MAX_LENGTH);
+					std::memset(materialTextureName, '\0', sizeof(char) * MATERIAL_NAME_MAX_LENGTH);
+
 					m_createMaterialActive = false;
 				}
 			}
@@ -505,7 +535,7 @@ namespace Aen {
 		}
 	}
 
-	void ImGuiHandler::CreatePreviewTextureThumbnail()
+	/*void ImGuiHandler::CreatePreviewTextureThumbnail()
 	{
 		string filePathDestination = IGH::RESOURCEPATH + "Thumbnail/";
 		string filePathSource = IGH::RESOURCEPATH;
@@ -553,7 +583,7 @@ namespace Aen {
 				}
 			}
 		}
-	}
+	}*/
 
 	void ImGuiHandler::SetDefaultValue()
 	{
@@ -732,20 +762,58 @@ namespace Aen {
 		}
 	}
 
-	void ImGuiHandler::ChangeTexture(int& currentIndex, string materialName, string materialTextureName)
+	void ImGuiHandler::ChangeTexture(int& currentIndexTex, int& currentIndexNorm, string materialName, string materialTextureName, string materialNormalTextureName)
 	{
 		size_t id = m_entityList[m_selectedEntity]->GetID();
 
-		string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
-		string textureName = materialTextureName;
-		UpdateMap(id, textureName, materialName, m_itemList[m_selectedEntity], m_textureFileName[currentIndex]);
+		if (m_modelMap.find(id) != m_modelMap.end())
+		{
+			if (m_textureFileName[currentIndexTex] == m_modelMap.at(id).m_texture.m_textureName && m_normalMapTextureFileName[currentIndexNorm] == m_modelMap.at(id).m_texture.m_normalTexture)
+			{
+				Aen::Material& mat = Aen::Resource::GetMaterial(materialName);
+				Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
 
-		Aen::Texture& texture = Aen::Resource::CreateTexture(textureName);
-		texture.LoadTexture(imageName);
-		Aen::Material& mat = Aen::Resource::GetMaterial(materialName);
-		mat.SetDiffuseMap(texture);
+			}
+			else
+			{
+				string imageName = m_modelMap.at(id).m_texture.m_textureName;
+				string textureName = materialTextureName;
+				string normalImageName = m_modelMap.at(id).m_texture.m_normalTexture;
 
-		Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
+				if (m_textureFileName[currentIndexTex] != m_modelMap.at(id).m_texture.m_textureName)
+				{
+					imageName = m_textureFileName[currentIndexTex];
+					textureName = materialTextureName;
+				}
+
+				if (m_normalMapTextureFileName[currentIndexNorm] != m_modelMap.at(id).m_texture.m_normalTexture)
+				{
+					normalImageName = m_normalMapTextureFileName[currentIndexNorm];
+				}
+
+				UpdateMap(id, textureName, materialName, m_itemList[m_selectedEntity], m_textureFileName[currentIndexTex], m_normalMapTextureFileName[currentIndexNorm]);
+
+				Aen::Texture& texture = Aen::Resource::CreateTexture(textureName);
+
+				Aen::Texture& normalTexture = Aen::Resource::CreateTexture(materialNormalTextureName);
+				Aen::Material& mat = Aen::Resource::GetMaterial(materialName);
+
+				if (imageName.find(".png") != string::npos || imageName.find(".jpg") != string::npos)
+				{
+					texture.LoadTexture(AEN_TEXTURE_DIR(imageName));
+					mat.SetDiffuseMap(texture);
+				}
+
+				if (normalImageName.find(".png") != string::npos || normalImageName.find(".jpg") != string::npos)
+				{
+					normalTexture.LoadTexture(AEN_NORMALTEXTURE_DIR(normalImageName));
+					mat.SetNormalMap(normalTexture);
+
+				}
+
+				Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
+			}
+		}
 	}
 
 	void ImGuiHandler::update()
@@ -869,7 +937,6 @@ namespace Aen {
 			}
 			ImGui::EndTabItem();
 		}
-		ImGui::EndTabBar();
 	}
 
 	void ImGuiHandler::RoomTab()
@@ -887,11 +954,12 @@ namespace Aen {
 		{
 			if (m_imported == true)
 			{
-				selectedTheme = stoi(m_roomProperty[0]);
-				selectedType = stoi(m_roomProperty[1]);
-				selectedSpecial = stoi(m_roomProperty[2]);
+				selectedType = stoi(m_roomProperty[0]);
+				selectedSpecial = stoi(m_roomProperty[1]);
+				selectedTheme = stoi(m_roomProperty[2]);
 				probability = stoi(m_roomProperty[3]);
 				roomSize = stoi(m_roomProperty[4]);
+				m_imported = false;
 
 			}
 			else
@@ -916,6 +984,12 @@ namespace Aen {
 				Rotate(rotateRoom);
 			}
 
+			m_roomProperty[0] = m_imguiTypes.ROOMTYPE[selectedType];
+			m_roomProperty[1] = m_imguiTypes.SPECIALROOM[selectedSpecial];
+			m_roomProperty[2] = m_imguiTypes.ROOMTHEME[selectedTheme];
+			m_roomProperty[3] = to_string(probability);
+			m_roomProperty[4] = to_string(roomSize);
+
 			ImGui::EndTabItem();
 		}
 	}
@@ -924,6 +998,8 @@ namespace Aen {
 	{
 		static int selected = 0;
 		static int selectedTexture = 0;
+		static int selectedNormalTexture = 0;
+
 		if (ImGui::BeginTabItem(IGH::MATERIAL.c_str()))
 		{
 			size_t id = m_entityList[m_selectedEntity]->GetID();
@@ -943,15 +1019,24 @@ namespace Aen {
 				
 					SetMaterialValues(selected);
 					CustomCombo(m_textureFileName, IGH::TEXTURE.c_str(), selectedTexture);
+					CustomCombo(m_normalMapTextureFileName, IGH::NORMALTEXTURE.c_str(), selectedNormalTexture);
+
 
 					if (AddButton("Change Material"))
 					{
-						ChangeTexture(selectedTexture, m_materialList[selected].matName, m_materialList[selected].texName);
+						ChangeTexture(selectedTexture, selectedNormalTexture, m_materialList[selected].matName, m_materialList[selected].texName, m_materialList[selected].normTexName);
 						if (m_modelMap.find(id) != m_modelMap.end())
 						{
 							m_modelMap.at(id).m_material.set(Aen::Resource::GetMaterial(m_materialList[selected].matName));
 						}
-						
+					}
+
+					if (AddButton("Set Material"))
+					{
+						if (m_modelMap.find(id) != m_modelMap.end())
+						{
+							m_modelMap.at(id).m_material.set(Aen::Resource::GetMaterial(m_materialList[selected].matName));
+						}
 					}
 				}
 			}
@@ -1003,10 +1088,33 @@ namespace Aen {
 
 	void ImGuiHandler::ParticleTab()
 	{
+		/*static int selectedType = 0;
+		static string mesh = "";
+		IGH::ImguiTypes types;
 
+		if (ImGui::BeginTabItem(IGH::PARTICLE.c_str()))
+		{
+			size_t id = m_entityList[m_selectedEntity]->GetID();
+			if (types.GetParticleTag(m_modelMap.at(id).m_type) == true)
+			{
+				selectedType = types.GetParticleTagIndex(m_modelMap.at(id).m_type);
+			}
+
+			ImGui::Combo("Type", &selectedType, m_imguiTypes.PARTICLETAG, IM_ARRAYSIZE(m_imguiTypes.PARTICLETAG));
+
+			if (m_imguiTypes.PARTICLETAG[selectedType] != "NONE")
+			{
+				m_modelMap.at(id).m_type = m_imguiTypes.PARTICLETAG[selectedType];
+			}
+			else
+			{
+				m_modelMap.at(id).m_type = "";
+			}
+			ImGui::EndTabItem();
+		}*/
 	}
 
-	void ImGuiHandler::UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName)
+	void ImGuiHandler::UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName, string &normalTexName)
 	{
 		unordered_map<size_t, IGH::ModelContainer>::iterator it;
 
@@ -1014,13 +1122,13 @@ namespace Aen {
 
 		if (it != m_modelMap.end())
 		{
-			it->second.update(texValue, matValue, texName, meshName);
+			it->second.update(texValue, matValue, texName, meshName, normalTexName);
 		}
 	}
 
-	void ImGuiHandler::ReadAllFilesFromResourceFolder()
+	void ImGuiHandler::ReadAllFilesFromFolder(string folder)
 	{
-		string filePath = IGH::RESOURCEPATH;
+		string filePath = folder;
 		string fileName = "";
 		string fileType = "";
 
@@ -1044,8 +1152,16 @@ namespace Aen {
 			}
 			else if (fileType == IGH::PNG || fileType == IGH::JPG)
 			{
-				m_textureFileName.push_back(fileName);
-				m_textureName.push_back(fileName.substr(0, fileName.length() - 4));
+				if (filePath == IGH::NORMALTEXTUREPATH)
+				{
+					m_normalMapTextureFileName.push_back(fileName);
+					m_normalMapTexture.push_back(fileName.substr(0, fileName.length() - 4));
+				}
+				else
+				{
+					m_textureFileName.push_back(fileName);
+					m_textureName.push_back(fileName.substr(0, fileName.length() - 4));
+				}
 			}
 		}
 	}
@@ -1203,11 +1319,11 @@ namespace Aen {
 	{
 		if (list.size() > 0)
 		{
-			static string value = "";
-
+			//static string value = "";
 			if (ImGui::BeginCombo(name.c_str(), list[index].c_str()))
 			{
 				static bool isSelected = false;
+
 				for (size_t i = 0; i < list.size(); i++)
 				{
 					isSelected = (index == i);
@@ -1215,7 +1331,6 @@ namespace Aen {
 					if (ImGui::Selectable(list[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
 					{
 						index = static_cast<int>(i);
-						value = list[index];
 					}
 
 					if (isSelected)
@@ -1224,8 +1339,9 @@ namespace Aen {
 					}
 				}
 				ImGui::EndCombo();
+				return list[index];
+
 			}
-			return value;
 		}
 		return "";
 	}

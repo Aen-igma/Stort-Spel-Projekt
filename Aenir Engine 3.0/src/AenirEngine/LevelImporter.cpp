@@ -54,6 +54,7 @@ namespace AenIMP {
 
 	Model::Model()
 	{
+		model = nullptr;
 	}
 
 	Model::~Model()
@@ -70,13 +71,13 @@ namespace AenIMP {
 		ptr = ptr + sizeof(Aen::SectionHeader);
 		infile.read(ptr, sizeof(Aen::TextureHeader) - sizeof(Aen::SectionHeader));
 		this->texture = new Aen::TextureStruct;
-		infile.read((char*)&this->texture->name, sizeof(*texture));
+		infile.read((char*)&this->texture->texture, sizeof(*texture));
 	}
 
 	void Texture::printTexture()
 	{
-		cout << "name :" << texture->name << endl;
-		cout << "textureType :" << texture->textureType << endl;
+		cout << "texture :" << texture->texture << endl;
+		cout << "normalmap :" << texture->normalTexture << endl;
 	}
 
 	Texture::Texture()
@@ -323,9 +324,9 @@ namespace AenIMP {
 
 		for (size_t i = 0; i < textureVector.size(); i++)
 		{
-			cout << "Name: " << textureVector[i].name << endl;
+			/*cout << "Name: " << textureVector[i].name << endl;
 			cout << "Texture Type: " << textureVector[i].textureType << endl;
-			cout << endl << "-----------------------------------" << endl;
+			cout << endl << "-----------------------------------" << endl;*/
 		}
 
 		for (size_t i = 0; i < materialVector.size(); i++)
@@ -396,8 +397,8 @@ namespace AenIMP {
 	void CompleteRoom::addTexture(Texture* input)
 	{
 		AenIF::Texture temp;
-		temp.name = input->texture->name;
-		temp.textureType = input->texture->textureType;
+		temp.texture = input->texture->texture;
+		temp.normalTexture = input->texture->normalTexture;
 		textureVector.push_back(temp);
 	}
 

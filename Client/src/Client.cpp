@@ -39,15 +39,15 @@ void Client::Start() {
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
-	plane.Load(AEN_RESOURCE_DIR("Plane.obj"));
+	plane.Load(AEN_MODEL_DIR("Plane.obj"));
 
 	// ----------------------------- Load Reimushes -------------------------------- //
 
 	m_ReimuTex = &Aen::Resource::CreateTexture("ReimuTex");
 	m_ReimuMat = &Aen::Resource::CreateMaterial("ReimuMat");
 	m_reimubeMesh = &Aen::Resource::CreateMesh("Cube");
-	m_reimubeMesh->Load(AEN_RESOURCE_DIR("Cube.obj"));
-	m_ReimuTex->LoadTexture(AEN_RESOURCE_DIR("Reimu.png"));
+	m_reimubeMesh->Load(AEN_MODEL_DIR("Cube.obj"));
+	m_ReimuTex->LoadTexture(AEN_TEXTURE_DIR("Reimu.png"));
 	m_ReimuMat->SetDiffuseMap(*m_ReimuTex);
 
 	(*m_ReimuMat)["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);

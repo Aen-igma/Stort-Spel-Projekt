@@ -6,6 +6,11 @@
 	#define AEN_ENDL std::cout << std::endl
 	
 	#define AEN_RESOURCE_DIR(file) "../Resource/" + std::string(file)
+	#define AEN_TEXTURE_DIR(file) "../Resource/Texture/" + std::string(file)
+	#define AEN_NORMALTEXTURE_DIR(file) "../Resource/Texture/Normal_Map/" + std::string(file)
+	#define AEN_LEVEL_DIR(file) "../LevelFolder/" + std::string(file)
+	#define AEN_MODEL_DIR(file) "../Resource/FBX/" + std::string(file)
+
 
 	#ifdef _WIN64
 	#define AEN_OUTPUT_DIR_STR(file) "../bin/Debug-x64/" + std::string(file)
@@ -22,6 +27,11 @@
 	#define AEN_ENDL
 	
 	#define AEN_RESOURCE_DIR(file) ((IsDebuggerPresent()) ? "../Resource/" + std::string(file) : "../../Resource/" + std::string(file))
+	#define AEN_TEXTURE_DIR(file) ((IsDebuggerPresent()) ? "../Resource/Texture/" + std::string(file) : "../../Resource/Texture/" + std::string(file))
+	#define AEN_NORMALTEXTURE_DIR(file) ((IsDebuggerPresent()) ? "../Resource/Texture/Normal_Map/" + std::string(file) : "../../Resource/Texture/Normal_Map/" + std::string(file))
+	#define AEN_LEVEL_DIR(file) ((IsDebuggerPresent()) ? "../LevelFolder/" + std::string(file) : "../../LevelFolder/" + std::string(file))
+	#define AEN_MODEL_DIR(file) ((IsDebuggerPresent()) ? "../Resource/FBX/" + std::string(file) : "../../Resource/FBX/" + std::string(file))
+
 
 	#ifdef _WIN64
 	#define AEN_OUTPUT_DIR_STR(file) "../bin/Release-x64/" + std::string(file)

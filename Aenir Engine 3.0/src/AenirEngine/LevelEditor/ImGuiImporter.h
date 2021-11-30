@@ -19,8 +19,7 @@ using std::unordered_map;
 
 namespace Aen 
 {
-
-	class ImGuiImporter
+	class AEN_DECLSPEC ImGuiImporter
 	{
 	private:
 
@@ -36,8 +35,7 @@ namespace Aen
 
 		IGH::ImguiTypes m_imguiTypes;
 
-
-		Aen::Entity* mp_bossPtr;
+		Vec3f m_boss[3];
 		vector<Vec3f> m_enemyPos;
 
 		unsigned int m_entityCount = 0;
@@ -46,7 +44,7 @@ namespace Aen
 		bool m_standAlone = false;
 
 		void setMaterial(Aen::Material& materialOut,AenIF::Material materialIn);
-		void addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, AenIF::Model& model, AenIF::Texture& texture, AenIF::Material& materialIn);
+		void addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, Aen::Texture*& normalTexture, AenIF::Model& model, AenIF::Texture& texture,AenIF::Material& materialIn);
 
 	public:
 		void Convert(const Aen::Vec4f inputVec, float* inputArray);
@@ -87,6 +85,9 @@ namespace Aen
 		size_t AddBase(AenIF::Model& model, AenIF::Texture& texture);
 		size_t AddBase(const string& meshName, const string& objName);
 		size_t AddBaseLight(const string& meshName, const string& objName, const string& lightTex);
+
+		size_t AddBaseParticle(string type, float* pos);
+
 		size_t AddBaseEnemy(const string& meshName, const string& objName);
 
 
@@ -112,8 +113,15 @@ namespace Aen
 		void AddPointLight(AenIF::Light& input, Aen::Vec2f offset, float angle);
 		void AddSpotLight(AenIF::Light& input, Aen::Vec2f offset, float angle);
 
+		void AddTorchWithLight();
+
+		
+
 		vector<Vec3f>& GetEnemyPos();
-		Aen::Entity* GetBossPos();
+		Vec3f GetBossPosition();
+		Vec3f GetBossRotation();
+		Vec3f GetBossScale();
+
 	};
 
 }

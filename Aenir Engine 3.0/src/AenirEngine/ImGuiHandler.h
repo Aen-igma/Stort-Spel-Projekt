@@ -29,10 +29,10 @@ namespace Aen {
 
 	class AEN_DECLSPEC ImGuiHandler {
 
-	private:
-		void SaveThumbnail(string& destinationPath, string& filePathDestination,
+	//private:
+		/*void SaveThumbnail(string& destinationPath, string& filePathDestination,
 			string& sourcePath, string& filePathSource,
-			Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i);
+			Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i);*/
 
 	private:
 
@@ -54,6 +54,9 @@ namespace Aen {
 
 		vector<string> m_textureFileName;
 		vector<string> m_textureName;
+
+		vector<string> m_normalMapTextureFileName;
+		vector<string> m_normalMapTexture;
 
 		unordered_map< size_t, IGH::ModelContainer> m_modelMap;
 		unordered_map< size_t, Aen::Entity*> m_lightMap;
@@ -135,14 +138,9 @@ namespace Aen {
 		void SetDefaultMaterialValue(int selected);
 
 		void SetValues();
-
 		void SetDefaultValue();
 		void ZeroValue();
-
 		void Rotate(float angle);
-
-
-
 
 	public: 
 		// All window func here
@@ -159,7 +157,6 @@ namespace Aen {
 		void MaterialCreateWindow();
 		void ParticleCreateWindow();
 
-
 	public:
 		ImGuiHandler();
 		~ImGuiHandler();
@@ -174,12 +171,11 @@ namespace Aen {
 
 	private:
 
-
 		void ReadAllModelsFromHandler();
-		void CreatePreviewTextureThumbnail();
+		//void CreatePreviewTextureThumbnail();
 		void RemoveObject();
-		void ReadAllFilesFromResourceFolder();
-		void UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName);
+		void ReadAllFilesFromFolder(string folder);
+		void UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName, string& normalTexName);
 	
 		void ModelButtons();
 		void LightButtons();
@@ -193,7 +189,7 @@ namespace Aen {
 
 		string CustomComboMap(unordered_map< string, AenIF::Material >& list, string name, string index);
 
-		void ChangeTexture(int& currentIndex, string materialName, string materialTextureName);
+		void ChangeTexture(int& currentIndexTex, int & currentIndexNorm ,string materialName, string materialTextureName, string materialNormalTextureName);
 
 		void update();
 
@@ -204,8 +200,6 @@ namespace Aen {
 		void MaterialTab();
 		void ModelTab();
 		void ParticleTab();
-
-
 };
 }
 

@@ -19,7 +19,7 @@ namespace AenIMP
 	struct Room
 	{
 		Aen::RoomHeader roomHeader;
-		Aen::RoomStruct* room;
+		Aen::RoomStruct* room = nullptr;
 
 		void readFromFile(ifstream& infile);
 		void printRoom();
@@ -43,7 +43,7 @@ namespace AenIMP
 	struct Texture
 	{
 		Aen::TextureHeader textureHeader;
-		Aen::TextureStruct* texture;
+		Aen::TextureStruct* texture = nullptr;
 
 		void readFromFile(ifstream& infile);
 		void printTexture();
@@ -55,7 +55,7 @@ namespace AenIMP
 	struct Material
 	{
 		Aen::MaterialHeader materialHeader;
-		Aen::MaterialStruct* material;
+		Aen::MaterialStruct* material = nullptr;
 
 		void readFromFile(ifstream& infile);
 		void printMaterial();
@@ -67,7 +67,7 @@ namespace AenIMP
 	struct Light
 	{
 		Aen::LightHeader lightHeader;
-		Aen::LightStruct* light;
+		Aen::LightStruct* light = nullptr;
 
 		void readFromFile(ifstream& infile);
 		void printLight();
@@ -79,7 +79,7 @@ namespace AenIMP
 	struct Particle
 	{
 		Aen::ParticleHeader particleHeader;
-		Aen::ParticleStruct* particle;
+		Aen::ParticleStruct* particle = nullptr;
 
 		void readFromFile(ifstream& infile);
 		void printParticle();

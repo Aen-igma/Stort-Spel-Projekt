@@ -102,7 +102,7 @@ namespace Aen {
 		}
 	}
 
-	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index)
+	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index, ParticleStruct*& particleStruct)
 	{
 		size_t id = entityList[index]->GetID();
 
@@ -110,28 +110,41 @@ namespace Aen {
 
 		if (modelMap.find(id) != modelMap.end())
 		{
-			strcpy(modelStruct->name, it->second.m_model.m_name.c_str());
-			strcpy(modelStruct->mesh, it->second.m_model.m_meshName.c_str());
+			IGH::ImguiTypes temp;
+			if (temp.GetParticleTag(it->second.m_type) == false)
+			{
+				entityList[index]->RemoveParent();
+				strcpy(modelStruct->name, it->second.m_model.m_name.c_str());
+				strcpy(modelStruct->mesh, it->second.m_model.m_meshName.c_str());
 
-			modelStruct->translation[0] = entityList[index]->GetPos().x;
-			modelStruct->translation[1] = entityList[index]->GetPos().y;
-			modelStruct->translation[2] = entityList[index]->GetPos().z;
+				modelStruct->translation[0] = entityList[index]->GetPos().x;
+				modelStruct->translation[1] = entityList[index]->GetPos().y;
+				modelStruct->translation[2] = entityList[index]->GetPos().z;
 
-			modelStruct->rotation[0] = entityList[index]->GetRot().x;
-			modelStruct->rotation[1] = entityList[index]->GetRot().y;
-			modelStruct->rotation[2] = entityList[index]->GetRot().z;
+				modelStruct->rotation[0] = entityList[index]->GetRot().x;
+				modelStruct->rotation[1] = entityList[index]->GetRot().y;
+				modelStruct->rotation[2] = entityList[index]->GetRot().z;
 
-			modelStruct->scale[0] = entityList[index]->GetScale().x;
-			modelStruct->scale[1] = entityList[index]->GetScale().y;
-			modelStruct->scale[2] = entityList[index]->GetScale().z;
+				modelStruct->scale[0] = entityList[index]->GetScale().x;
+				modelStruct->scale[1] = entityList[index]->GetScale().y;
+				modelStruct->scale[2] = entityList[index]->GetScale().z;
 
-			strcpy(modelStruct->type, it->second.m_type.c_str());
-			strcpy(modelStruct->sound, it->second.m_sound.c_str());
-			modelStruct->rigidBody = it->second.m_model.rigidBody;
-			strcpy(modelStruct->rigidBodyType, it->second.m_model.rigidBodyType.c_str());
-			modelStruct->castShadow = it->second.m_model.m_castShadow;
+				strcpy(modelStruct->type, it->second.m_type.c_str());
+				strcpy(modelStruct->sound, it->second.m_sound.c_str());
+				modelStruct->rigidBody = it->second.m_model.rigidBody;
+				strcpy(modelStruct->rigidBodyType, it->second.m_model.rigidBodyType.c_str());
+				modelStruct->castShadow = it->second.m_model.m_castShadow;
 
-			m_ModelVector.push_back(*modelStruct);
+				m_ModelVector.push_back(*modelStruct);
+			}
+			else
+			{
+				particleStruct->translation[0] = entityList[index]->GetPos().x;
+				particleStruct->translation[1] = entityList[index]->GetPos().y;
+				particleStruct->translation[2] = entityList[index]->GetPos().z;
+				strcpy(particleStruct->type, it->second.m_type.c_str());
+				m_ParticleVector.push_back(*particleStruct);
+			}
 		}
 	}
 
@@ -146,10 +159,10 @@ namespace Aen {
 
 	}
 
-	void LevelExporter::textureFunc(TextureStruct*& textureStruct, string& textureFileName)
+	void LevelExporter::textureFunc(TextureStruct*& textureStruct, string& textureFileName, string& normalTextureFileName)
 	{
-		strcpy(textureStruct->name, textureFileName.c_str());
-		strcpy(textureStruct->textureType, "test");
+		strcpy(textureStruct->texture, textureFileName.c_str());
+		strcpy(textureStruct->normalTexture, normalTextureFileName.c_str());
 		m_TextureVector.push_back(*textureStruct);
 	}
 
@@ -198,8 +211,6 @@ namespace Aen {
 
 		for (std::pair<std::string, int> element : valid.map)
 		{
-			
-
 			if (element.first == check)
 			{
 				return element.second;
@@ -268,7 +279,7 @@ namespace Aen {
 
 			if (Aen::ComponentHandler::MeshInstanceExist(id))
 			{
-				modelFunc(modelStruct, entityList, modelMap, i);
+				modelFunc(modelStruct, entityList, modelMap, i, particleStruct);
 				materialFunc(materialStruct, entityList, modelMap, i);
 			}
 			else if ((Aen::ComponentHandler::DirectionalLightExist(id) || Aen::ComponentHandler::SpotLightExist(id) || Aen::ComponentHandler::PointLightExist(id)))
@@ -282,7 +293,7 @@ namespace Aen {
 		
 		for (it = modelMap.begin(); it != modelMap.end(); it++)
 		{
-			textureFunc(textureStruct, it->second.m_texture.m_textureName);
+			textureFunc(textureStruct, it->second.m_texture.m_textureName, it->second.m_texture.m_normalTexture);
 		}
 		
 		WriteToFile(roomHeader, m_outfile);
@@ -302,9 +313,6 @@ namespace Aen {
 
 		for (size_t i = 0; i < m_TextureVector.size(); i++)
 		{
-			cout << m_TextureVector[i].name << endl;
-			cout << m_TextureVector[i].textureType << endl;
-
 			WriteToFile(textureHeader, m_outfile);
 			*textureStruct = m_TextureVector[i];
 			WriteToFile(textureStruct, m_outfile);
@@ -315,6 +323,13 @@ namespace Aen {
 			WriteToFile(lightHeader, m_outfile);
 			*lightStruct = m_LightVector[i];
 			WriteToFile(lightStruct, m_outfile);
+		}
+
+		for (size_t i = 0; i < m_ParticleVector.size(); i++)
+		{
+			WriteToFile(particleHeader, m_outfile);
+			*particleStruct = m_ParticleVector[i];
+			WriteToFile(particleStruct, m_outfile);
 		}
 
 		m_ModelVector.clear();

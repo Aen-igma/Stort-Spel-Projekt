@@ -23,7 +23,13 @@ namespace IGH
 	const string LEVEL = "Level";
 
 	const string RESOURCEPATH = "../Resource/";
+	const string FBXPATH = "../Resource/FBX/";
+
+	const string TEXTUREPATH = "../Resource/Texture/";
+	const string NORMALTEXTUREPATH = "../Resource/Texture/Normal_Map/";
+
 	const string LEVELPATH = "../LevelFolder/";
+
 	const string NAME = "Name";
 	const string CREATE = "Create";
 
@@ -35,6 +41,7 @@ namespace IGH
 	const string MODEL = "Model";
 	const string MATERIAL = "Material";
 	const string TEXTURE = "Texture";
+	const string NORMALTEXTURE = "Normal Texture";
 
 	const string COLOR = "Color";
 
@@ -46,13 +53,14 @@ namespace IGH
 	const string DEFAULTMATERIAL = "DefaultMaterial";
 	const string PARTICLE = "Particle";
 
+
 	class ImguiTypes {
 
 	public:
 
 
 		const char* TAGS[5] = { "Light","Model","Enemy", "Weapon","Chest" };
-		const char* PARTICLETAG[1] = { "Torch" };
+		const char* PARTICLETAG[2] = { "Torch", "None"};
 
 
 		const char* HITBOXTYPE[3] = { "None","Static", "Dynamic" };
@@ -61,13 +69,13 @@ namespace IGH
 		const char* TOOLS[3] = { "Move","Rotate","Scale" };
 
 		const char* SPECIALROOM[6] = { "None", "Entrance", "Exit", "Boss", "Arena", "Item" };
-		int SPECIALROOMVALUE[6] ={0,1,2,3,4,5};
+		int SPECIALROOMVALUE[6] = { 0,1,2,3,4,5 };
 
 		const char* ROOMTYPE[5] = { "End", "Straight", "Bend", "T Junction" ,"Four Way" };
-		int ROOMTYPEVALUE[5] = { 1	,101		,11			,1011		,1111 };
+		int ROOMTYPEVALUE[5] = { 1,101,11,1011,1111 };
 
 		const char* ROOMTHEME[4] = { "Normal Dungeon", "Skeleton", "Gothic", "Aztec" };
-		int ROOMTHEMEVALUE[4] = { 0,1,2,3};
+		int ROOMTHEMEVALUE[4] = { 0,1,2,3 };
 
 		int GetRoomTypeValue(int input)
 		{
@@ -78,6 +86,7 @@ namespace IGH
 					return i;
 				}
 			}
+			return 0;
 		}
 
 		int GetRoomThemeValue(int input)
@@ -89,27 +98,55 @@ namespace IGH
 					return i;
 				}
 			}
+			return 0;
 		}
 
 		int GetRoomSpecialValue(int input)
 		{
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				if (SPECIALROOMVALUE[i] == input)
 				{
 					return i;
 				}
 			}
+			return 0;
+		}
+
+
+		bool GetParticleTag(string tag)
+		{
+			for (size_t i = 0; i < 2; i++)
+			{
+				if (std::strcmp(PARTICLETAG[i], tag.c_str()) == 0)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		int GetParticleTagIndex(string tag)
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				if (std::strcmp(PARTICLETAG[i], tag.c_str()) == 0)
+				{
+					return i;
+				}
+			}
+			return 0;
 		}
 
 	};
 
-
+	
 
 	struct MatTexName
 	{
 		string matName;
 		string texName;
+		string normTexName;
 		MatTexName()
 		{
 
@@ -119,6 +156,13 @@ namespace IGH
 		{
 			this->matName = mat;
 			this->texName = tex;
+		}
+
+		MatTexName(string mat, string tex, string norm)
+		{
+			this->matName = mat;
+			this->texName = tex;
+			this->normTexName = norm;
 		}
 
 	};
@@ -336,7 +380,7 @@ namespace IGH
 	struct TextureInfo
 	{
 		string m_textureName;
-		//string m_textureType;
+		string m_normalTexture;
 	};
 
 	struct ModelContainer
@@ -377,7 +421,7 @@ namespace IGH
 			this->m_model.rigidBodyType = rigidBodyType;
 		}
 
-		void update(string& materialTextureName, string& materialName, string& textureName, string& modelName)
+		void update(string& materialTextureName, string& materialName, string& textureName, string& modelName, string &normalTexName)
 		{
 
 			if (materialTextureName != "")
@@ -398,6 +442,11 @@ namespace IGH
 			if (modelName != "")
 			{
 				this->m_model.m_name = modelName;
+			}
+
+			if (normalTexName != "")
+			{
+				this->m_texture.m_normalTexture = normalTexName;
 			}
 		}
 	};

@@ -120,7 +120,7 @@ namespace Aen {
 			defaultMaterial["OuterEdgeThickness"] = 0.0006f;
 			defaultMaterial["InnerEdgeColor"] = Aen::Color::Magenta;
 			defaultMaterial["OuterEdgeColor"] = Aen::Color::Magenta;
-			defaultTexture.LoadTexture(AEN_RESOURCE_DIR("Missing_Textures.png"));
+			defaultTexture.LoadTexture(AEN_TEXTURE_DIR("Missing_Textures.png"));
 			defaultMaterial.SetDiffuseMap(defaultTexture);
 
 		}
