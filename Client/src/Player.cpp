@@ -4,7 +4,7 @@
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
 	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(15.f), m_nrPotion(5),
-	//m_sword(&Aen::EntityHandler::CreateEntity()),
+	m_sword(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
@@ -82,7 +82,7 @@ Player::Player()
 	shadow["SpecularColor"] = Aen::Color::Red;
 
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
-	//Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
+	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
 
 	m_player->AddComponent<Aen::CharacterController>();
 	m_player->GetComponent<Aen::CharacterController>().Resize(2.3f);
@@ -97,10 +97,11 @@ Player::Player()
 	m_player->AddComponent<Aen::AABoundBox>();
 	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
 
-	/*m_sword->AddComponent<Aen::MeshInstance>();
+	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
 	m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);
-	m_sword->SetParent(*m_player);*/
+	m_sword->SetScale(0.1f, 0.1f, 0.1f);
+	m_sword->SetParent(*m_player);
 
 	m_hurtbox->AddComponent<Aen::OBBox>();
 	m_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.0);
@@ -141,8 +142,8 @@ Player::~Player() {
 	Aen::GlobalSettings::RemoveMainCamera();
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_camera);
-	//m_sword->RemoveParent();
-	//Aen::EntityHandler::RemoveEntity(*m_sword);
+	m_sword->RemoveParent();
+	Aen::EntityHandler::RemoveEntity(*m_sword);
 	Aen::EntityHandler::RemoveEntity(*m_hurtbox);
 	Aen::EntityHandler::RemoveEntity(*m_targetUI);
 }
@@ -358,7 +359,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.damage = 20.f;
 			data.function = [&](float& accell, const float& attackDuration) {
 				m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-				//SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);
+				SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);
 				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
 					Aen::Vec3f d(d2.x, 0.f, d2.y);
@@ -390,7 +391,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				if (attackDuration < m_HEAVYCHARGETIME)
 				{
 					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-					//SwordSwing(5.f, m_HEAVYATTACKTIME, deltaTime);
+					SwordSwing(5.f, m_HEAVYATTACKTIME, deltaTime);
 				}
 				else
 					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
@@ -559,7 +560,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 
 				e[i]->SubtractHealth(m_eventQueue.front().damage);
 				Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
-				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage);
+				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage * e[i]->GetKnockback());
 				
 				if(e[i]->GetHealth() <= 0.f) {
 					for(uint32_t k = 0u; k < m_targets.size(); k++)
@@ -577,7 +578,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 	} else {
 		for(auto& i : e) i->Hurt(false);
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
-		//ResetSword();
+		ResetSword();
 	}
 }
 
@@ -604,22 +605,22 @@ const bool Player::IsAttacking() {
 	return false;
 }
 
-//void Player::SwordSwing(float speed, float time, const float& deltaTime)
-//{
-//	static float timer = 0.f;
-//	timer += deltaTime;
-//	if (timer > time)
-//	{
-//		m_sword->SetRot(0, 0, 0);
-//		timer = 0.f;
-//	}
-//	m_sword->Rotate(-speed, -speed, 0.f);
-//}
-//
-//void Player::ResetSword()
-//{
-//	m_sword->SetRot(0.f, 0.f, 0.f);
-//}
+void Player::SwordSwing(float speed, float time, const float& deltaTime)
+{
+	static float timer = 0.f;
+	timer += deltaTime;
+	if (timer > time)
+	{
+		m_sword->SetRot(0, 0, 0);
+		timer = 0.f;
+	}
+	m_sword->Rotate(-speed, -speed, 0.f);
+}
+
+void Player::ResetSword()
+{
+	m_sword->SetRot(0.f, 0.f, 0.f);
+}
 
 void Player::AddEvent(EventData& event) {
 	if(m_eventQueue.size() > 1u)

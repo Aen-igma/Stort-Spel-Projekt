@@ -12,16 +12,19 @@ public:
 	virtual void Update(const float& deltaTime, Player& player);
 private:
 
-	void RandomCombatEvent(const float& deltaTime);
+	void CombatEvent(const float& deltaTime, const float& distance);
 	void RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir);
-	void WaitEvent(uint64_t randomTime);
+	void WaitEvent();
 
-	Aen::Entity* mp_healthBar;
 	Aen::Entity* mp_skeleton;
+	Aen::Entity* mp_healthBar;
+	Aen::Entity* mp_hurtbox;
 
+	Aen::Vec3f m_Dir;
 	Aen::Vec3f m_lDir;
+	Aen::Vec2f m_nDir;
+	Aen::Vec2f m_rDir;
 
-	bool m_toggleAttacked;
 	bool m_hurting;
 	bool m_wait;
 };

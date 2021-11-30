@@ -75,7 +75,7 @@ void Gameplay::Initialize()
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
 	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
 	Aen::Mesh& skeleLight = Aen::Resource::CreateMesh("SkeletonLight");
-	skeleLight.Load(AEN_MODEL_DIR("Skel_Light.fbx"));
+	skeleLight.Load(AEN_MODEL_DIR("Skel_Light_New.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_MODEL_DIR("Cube.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
@@ -99,8 +99,7 @@ void Gameplay::Initialize()
 	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["BaseColor"] = Aen::Color::Cyan;
-	
-	skeleLightMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Missing_Textures.png"));
+
 	skeleLightMat["InnerEdgeColor"] = Aen::Color::Black;
 	skeleLightMat["OuterEdgeColor"] = Aen::Color::Black;
 	skeleLightMat["BaseColor"] = Aen::Color::White;
@@ -159,7 +158,7 @@ void Gameplay::Initialize()
 		}
 	}
 
-	//m_player.GetEntity()->SetPos(playerStartPos + Aen::Vec3f(0.f, 0.8f, 0.f));
+	m_player.GetEntity()->SetPos(playerStartPos + Aen::Vec3f(0.f, 0.8f, 0.f));
 
 
 	//---------ENEMIES----------//
@@ -171,10 +170,15 @@ void Gameplay::Initialize()
 		offset -= 5;
 	}
 
-	std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
+	std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
+	std::vector<Aen::Vec3f> tempLskels = m_levelGenerator.GetHandlerPtr()->GetLskelPos();
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
 	{
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
+		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempSlimes[i]));
+	}
+	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetLskelPos().size(); i++)
+	{
+		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(tempLskels[i]));
 	}
 
 	//m_attack->SetParent(*m_player);

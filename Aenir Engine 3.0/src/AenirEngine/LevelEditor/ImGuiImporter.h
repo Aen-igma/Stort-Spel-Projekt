@@ -37,6 +37,7 @@ namespace Aen
 
 		Vec3f m_boss[3];
 		vector<Vec3f> m_enemyPos;
+		vector<Vec3f> m_lSkelPos;
 
 		unsigned int m_entityCount = 0;
 		unsigned int m_lightCount = 0;
@@ -118,6 +119,7 @@ namespace Aen
 		
 
 		vector<Vec3f>& GetEnemyPos();
+		vector<Vec3f>& GetLskelPos();
 		Vec3f GetBossPosition();
 		Vec3f GetBossRotation();
 		Vec3f GetBossScale();

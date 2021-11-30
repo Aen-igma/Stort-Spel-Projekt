@@ -50,6 +50,8 @@ namespace IGH
 
 	// Tags
 	const string NORMALENEMY = "Normal Enemy";
+	const string SLIME = "Slime Enemy";
+	const string LIGHTSKELETON = "Light Skeleton";
 	const string BOSS = "Boss Enemy";
 	const string TORCH = "Torch";
 

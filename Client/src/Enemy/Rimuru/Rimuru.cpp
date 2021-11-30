@@ -105,7 +105,7 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		Aen::Vec2f nDir(m_Dir.x, m_Dir.z);
 		nDir = nDir.Normalized();
 
-		m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(nDir.x, 0.f, nDir.y) * 3.f * deltaTime, deltaTime);
+		//m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(nDir.x, 0.f, nDir.y) * 3.f * deltaTime, deltaTime);
 
 		static float d = 0.f;
 		if(m_targeted && player.IsAttacking() && !m_toggleAttacked) {

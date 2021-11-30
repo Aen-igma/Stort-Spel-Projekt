@@ -4,70 +4,92 @@
 #define rand LehmerInt
 
 SkeleLight::SkeleLight()
-	:Enemy(), m_skeleton(&Aen::EntityHandler::CreateEntity()), m_lDir(0.f, 0.f, -1.f)
+	:Enemy(), mp_skeleton(&Aen::EntityHandler::CreateEntity()), m_lDir(0.f, 0.f, -1.f)
 {
-	m_skeleton->AddComponent<Aen::MeshInstance>();
-	m_skeleton->GetComponent<Aen::MeshInstance>().SetMesh("SkeletonLight");
-	m_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleLightMaterial");
-	m_skeleton->SetParent(*m_enemy);
-	
-	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.f, 1.4f, 1.f);
-	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.7f);
+	mp_skeleton->AddComponent<Aen::MeshInstance>();
+	mp_skeleton->GetComponent<Aen::MeshInstance>().SetMesh("SkeletonLight");
+	mp_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleLightMaterial");
+	mp_skeleton->SetParent(*m_enemy);
+	mp_skeleton->SetPos(0.f, 2.f, 0.f);
+
+	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.f, 2.f, 1.f);
+	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.8f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
+	m_enemy->SetRot(0, 90, 0);
 	m_enemy->SetPos(0.f, 0.f, 0.f);
+	m_knockbackScalar = 0.f;
 
 	// -----------------------------	Floating m_healthBar		------------------------------- //
-	m_healthBar = &Aen::EntityHandler::CreateEntity();
-	m_healthBar->AddComponent<Aen::MeshInstance>();
-	m_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
-	m_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
-	m_healthBar->SetRot(180, 0, 0);
-	m_healthBar->SetPos(0, -100, 0);
-	m_healthBar->SetScale(5.f, 0.f, 5.f);
-	m_healthBar->SetRenderLayer(1);
+	mp_healthBar = &Aen::EntityHandler::CreateEntity();
+	mp_healthBar->AddComponent<Aen::MeshInstance>();
+	mp_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
+	mp_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
+	mp_healthBar->SetRot(180, 0, 0);
+	mp_healthBar->SetPos(0, -100, 0);
+	mp_healthBar->SetScale(5.f, 0.f, 5.f);
+	mp_healthBar->SetRenderLayer(1);
 
+	mp_hurtbox = &Aen::EntityHandler::CreateEntity();
+	mp_hurtbox->AddComponent<Aen::OBBox>();
+	mp_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.f);
+	mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+	mp_hurtbox->SetParent(*m_enemy);
+
+	m_nDir = Aen::Vec2f(0.f, 0.f);
 	m_health = 100.f;
-	m_toggleAttacked, m_hurting, m_wait = false;
+	m_hurting, m_wait = false;
 }
 
 SkeleLight::SkeleLight(const Aen::Vec3f& pos)
-	:Enemy(), m_skeleton(&Aen::EntityHandler::CreateEntity())
+	:Enemy(), mp_skeleton(&Aen::EntityHandler::CreateEntity())
 {
-	m_skeleton->AddComponent<Aen::MeshInstance>();
-	m_skeleton->GetComponent<Aen::MeshInstance>().SetMesh("SkeletonLight");
-	m_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleLightMaterial");
-	m_skeleton->SetParent(*m_enemy);
+	mp_skeleton->AddComponent<Aen::MeshInstance>();
+	mp_skeleton->GetComponent<Aen::MeshInstance>().SetMesh("SkeletonLight");
+	mp_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleLightMaterial");
+	mp_skeleton->SetParent(*m_enemy);
+	mp_skeleton->SetPos(0.f, 2.f, 0.f);
 
-	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.f, 1.4f, 1.f);
-	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.7f);
+	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.f, 2.f, 1.f);
+	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.8f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
+	m_enemy->SetRot(0, 90, 0);
 	m_enemy->SetPos(pos);
+	m_knockbackScalar = 0.f;
 
 	// -----------------------------	Floating m_healthBar		------------------------------- //
-	m_healthBar = &Aen::EntityHandler::CreateEntity();
-	m_healthBar->AddComponent<Aen::MeshInstance>();
-	m_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
-	m_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
-	m_healthBar->SetRot(180, 0, 0);
-	m_healthBar->SetPos(0, -100, 0);
-	m_healthBar->SetScale(5.f, 0.f, 5.f);
-	m_healthBar->SetRenderLayer(1);
+	mp_healthBar = &Aen::EntityHandler::CreateEntity();
+	mp_healthBar->AddComponent<Aen::MeshInstance>();
+	mp_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
+	mp_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
+	mp_healthBar->SetRot(180, 0, 0);
+	mp_healthBar->SetPos(0, -100, 0);
+	mp_healthBar->SetScale(5.f, 0.f, 5.f);
+	mp_healthBar->SetRenderLayer(1);
 
-	m_health = 100.f;
-	m_toggleAttacked, m_hurting, m_wait = false;
+	mp_hurtbox = &Aen::EntityHandler::CreateEntity();
+	mp_hurtbox->AddComponent<Aen::OBBox>();
+	mp_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.f);
+	mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+	mp_hurtbox->SetParent(*m_enemy);
+
+	m_nDir = Aen::Vec2f(0.f, 0.f);
+	m_health = 200.f;
+	m_hurting, m_wait = false;
 }
 
 SkeleLight::~SkeleLight()
 {
-	m_skeleton->RemoveParent();
-	Aen::EntityHandler::RemoveEntity(*m_skeleton);
+	mp_skeleton->RemoveParent();
+	mp_hurtbox->RemoveParent();
+	Aen::EntityHandler::RemoveEntity(*mp_skeleton);
 	Aen::EntityHandler::RemoveEntity(*m_enemy);
-	Aen::EntityHandler::RemoveEntity(*m_healthBar);
+	Aen::EntityHandler::RemoveEntity(*mp_healthBar);
+	Aen::EntityHandler::RemoveEntity(*mp_hurtbox);
 }
 
 Aen::Entity*& SkeleLight::GetEntity()
 {
-	return m_skeleton;
+	return mp_skeleton;
 }
 
 void SkeleLight::Update(const float& deltaTime, Player& player)
@@ -75,7 +97,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float dist = eDir.Magnitude();
 
-	m_healthBar->SetScale(m_health / 20.f, 0.f, 5.f);
+	mp_healthBar->SetScale(m_health / 20.f, 0.f, 5.f);
 
 	if (!m_eventQueue.empty()) {
 		if (m_eventQueue.front().duration > 0.f) {
@@ -83,38 +105,55 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 			m_eventQueue.front().duration -= deltaTime;
 		}
 		else {
+			if(m_eventQueue.front().type == EventType::Attack)
+				mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
 			m_eventQueue.pop_front();
 		}
 	}
-	else {
+	else 
+	{
 		if (dist < 20.f)
 		{
-			RandomCombatEvent(deltaTime);
+			CombatEvent(deltaTime, dist);
 		}
 		else 
 		{
-			RandomIdleEvent(deltaTime, Aen::Vec2f(float(rand() % 10) - 5, float(rand() % 10) - 5));
+			mp_healthBar->SetRot(180, 0, 0);
+			mp_healthBar->SetPos(0, -100, 0);
+			m_rDir = Aen::Vec2f(float(rand() % 10) - 5, float(rand() % 10) - 5);
+			RandomIdleEvent(deltaTime, m_rDir);
 		}
 	}
 
 	if (dist < 20.f) {
-		m_healthBar->SetRot(-player.GetCamera()->GetRot().x - 90.f, player.GetCamera()->GetRot().y + 180.f, 0);
-		m_healthBar->SetPos(m_enemy->GetPos() + Aen::Vec3f(0, 4.f, 0));
+		mp_healthBar->SetRot(-player.GetCamera()->GetRot().x - 90.f, player.GetCamera()->GetRot().y + 180.f, 0);
+		mp_healthBar->SetPos(m_enemy->GetPos() + Aen::Vec3f(0, 7.f, 0));
+
+
+		m_lDir = Aen::Lerp(m_lDir, eDir.Normalized(), 0.03f);
+		float yaw = std::atan2(m_lDir.x, m_lDir.z);
+		mp_hurtbox->GetComponent<Aen::OBBox>().SetRotation(0.f, yaw, 0.f);
+		yaw = Aen::RadToDeg(yaw);
+		mp_skeleton->SetRot(0.f, yaw + 180, 0.f);
+		mp_hurtbox->SetPos(m_lDir*2);
+
+		m_Dir = Aen::Lerp(m_Dir, eDir.Normalized(), 0.1f);
+		m_nDir = Aen::Vec2f(m_Dir.x, m_Dir.z);
+		m_nDir = m_nDir.Normalized();
+
+		m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(m_nDir.x, 0.f, m_nDir.y) * 3.f * deltaTime, deltaTime);
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 	}
 	else
 	{
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
-		m_healthBar->SetRot(180, 0, 0);
-		m_healthBar->SetPos(0, -100, 0);
 	}
 
-
-	if (player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_enemy->GetComponent<Aen::AABoundBox>())) {
+	if (player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(mp_hurtbox->GetComponent<Aen::OBBox>())) {
 		if (!m_hurting) {
 			m_hurting = true;
 			player.SubtractHealth(10.f);
-			Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f);
+			Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + m_lDir.Normalized();
 			player.Move(dir.Normalized() * 20.f);
 		}
 	}
@@ -124,14 +163,14 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	if (IsHurt() && !m_wait)
 	{
 		m_wait = true;
-		m_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterialHurt");
-		WaitEvent(rand() % 2 + 1);
+		mp_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterialHurt");
+		WaitEvent();
 	}
 
 	if (!IsHurt() && m_wait)
 	{
 		m_wait = false;
-		m_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleLightMaterial");
+		mp_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleLightMaterial");
 	}
 
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
@@ -139,22 +178,30 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	m_enemy->GetComponent<Aen::CharacterController>().Move(m_v * deltaTime, deltaTime);
 }
 
-void SkeleLight::RandomCombatEvent(const float& deltaTime)
+void SkeleLight::CombatEvent(const float& deltaTime, const float& distance)
 {
-	EventData data;
-	switch (rand() % 2) {
-	case 0:
-		WaitEvent(rand() % 2 + 1);
-		break;
-	case 1:
-		data.duration = 0.01f;
-		data.function = [&](float& accell, const float& attackDuration) {
-			m_v = Aen::Vec3f(0.f, 8.f, 0.f) + m_lDir * 14.f;
+	if (distance < 5.f)
+	{
+		// Attack
+		EventData data;
+		data.type = EventType::Attack;
+		data.duration = 1;
+		data.function = [&](float& accell, const float& attackDuration)
+		{
+			mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 		};
-		break;
+		m_eventQueue.emplace_back(data);
+
+		// Wait after attacking
+		data.type = EventType::Wait;
+		data.duration = 2;
+		data.function = [&](float& accell, const float& attackDuration)
+		{
+			mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
+		};
+		m_eventQueue.emplace_back(data);
 	}
 
-	m_eventQueue.emplace_back(data);
 }
 
 void SkeleLight::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir)
@@ -163,7 +210,8 @@ void SkeleLight::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randD
 
 	switch (rand() % 2) {
 	case 0:
-		WaitEvent(rand() % 3 + 3);
+		data.duration = rand() % 3 + 3;
+		data.function = [&](float& accell, const float& attackDuration) {};
 		break;
 	case 1:
 		data.duration = rand() % 3 + 1;
@@ -172,20 +220,20 @@ void SkeleLight::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randD
 
 			m_lDir = Aen::Lerp(m_lDir, Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized(), 0.03f);
 			float yaw = Aen::RadToDeg(std::atan2(m_lDir.x, m_lDir.z));
-			m_skeleton->SetRot(0.f, yaw + 180, 0.f);
+			mp_skeleton->SetRot(0.f, yaw + 180, 0.f);
 		};
 		break;
 	}
-
 	m_eventQueue.emplace_back(data);
 }
 
-void SkeleLight::WaitEvent(uint64_t randomTime)
+void SkeleLight::WaitEvent()
 {
+
 	EventData data;
 
 	data.type = EventType::Wait;
-	data.duration = randomTime;
+	data.duration = 2.f;
 	data.function = [&](float& accell, const float& attackDuration) {};
 
 	m_eventQueue.clear();

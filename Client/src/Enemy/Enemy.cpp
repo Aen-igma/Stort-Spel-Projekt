@@ -5,6 +5,7 @@ Enemy::Enemy()
 	m_enemy->SetTag("Enemy");
 	m_enemy->AddComponent<Aen::AABoundBox>();
 	m_enemy->AddComponent<Aen::CharacterController>();
+	m_knockbackScalar = 1.f;
 }
 
 Enemy::~Enemy() {
@@ -32,6 +33,11 @@ void Enemy::Move(const Aen::Vec3f& dir) {
 
 const float& Enemy::GetHealth() {
 	return m_health;
+}
+
+const float& Enemy::GetKnockback()
+{
+	return m_knockbackScalar;
 }
 
 void Enemy::Hurt(const bool& hurt) {

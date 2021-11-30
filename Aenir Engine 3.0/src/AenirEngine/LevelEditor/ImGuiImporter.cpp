@@ -650,6 +650,10 @@ namespace Aen
 			m_boss[1] = entity->GetRot();
 			m_boss[2] = entity->GetScale();
 		}
+		else if (model.type == IGH::LIGHTSKELETON)
+		{
+			m_lSkelPos.push_back(entity->GetPos());
+		}
 	}
 
 	void ImGuiImporter::AddEnemy(AenIF::Model& model)
@@ -862,6 +866,11 @@ namespace Aen
 	vector<Vec3f>& ImGuiImporter::GetEnemyPos()
 	{
 		return m_enemyPos;
+	}
+
+	vector<Vec3f>& ImGuiImporter::GetLskelPos()
+	{
+		return m_lSkelPos;
 	}
 
 	Vec3f ImGuiImporter::GetBossPosition()

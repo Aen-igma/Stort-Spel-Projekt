@@ -12,6 +12,7 @@ class Enemy {
 	void SubtractHealth(const float& damage);
 	void Move(const Aen::Vec3f& dir);
 	const float& GetHealth();
+	const float& GetKnockback();
 
 	void Hurt(const bool& hurt);
 	const bool IsHurt();
@@ -23,4 +24,5 @@ class Enemy {
 	float m_health;
 	bool m_hurt;
 	Aen::Vec3f m_v;
+	float m_knockbackScalar;
 };
