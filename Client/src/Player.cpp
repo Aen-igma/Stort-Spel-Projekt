@@ -12,6 +12,7 @@ Player::Player()
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
 	m_LIGHTATTACKSPEED(6.0f), m_HEAVYATTACKSPEED(2.54f)
 {
+	m_player->SetTag("Player");
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
 	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 100.f);

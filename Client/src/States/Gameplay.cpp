@@ -1,7 +1,7 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f), m_timer(0),m_deathTimer(0),
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f), m_timer(0),m_deathTimer(0),m_doorTime(0),
 	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
@@ -138,8 +138,6 @@ void Gameplay::Initialize()
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
-				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
-				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 			}
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE && mptr_map[y * Aen::mapSize + x].m_present) {
@@ -149,31 +147,36 @@ void Gameplay::Initialize()
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
 
-				int index = m_enemyQueue.size();
+				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
 				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+				for (int i = 0; i < 10; i++) {
+					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+				}
 			}
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
-	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 3.f, playerStartPos.z);
 	m_chest.SetType(Type::Open);
-	//m_door.SetType(Type::Open);
+	m_door.SetType(Type::Closed);
 
-	//if (roomNormal == 1) { //north
-	//	m_door.GetEntity()->SetRot(0, 180, 0);
-	//}
-	//else if (roomNormal == 10) {//east
-	//	m_door.GetEntity()->SetRot(0, 90, 0);
-	//}
-	//else if (roomNormal == 100) {//south
-	//	m_door.GetEntity()->SetRot(0, 0, 0);
-	//}
-	//else if (roomNormal == 1000) {//west
-	//	m_door.GetEntity()->SetRot(0, -90, 0);
-	//}
-	//m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
-	//m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
+	if (roomNormal == 1) { //north
+		m_door.GetEntity()->SetRot(0, 180, 0);
+	}
+	else if (roomNormal == 10) {//east
+		m_door.GetEntity()->SetRot(0, 90, 0);
+	}
+	else if (roomNormal == 100) {//south
+		m_door.GetEntity()->SetRot(0, 0, 0);
+	}
+	else if (roomNormal == 1000) {//west
+		m_door.GetEntity()->SetRot(0, -90, 0);
+	}
+	m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
+	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
+	//m_door.GetObjectEntity()->SetPos(m_door.GetEntity()->GetPos());
+	//m_door.GetObjectEntity()->MoveRelative(0, 0, 5.f);
 
 	//m_attack->SetParent(*m_player);
 
@@ -232,8 +235,8 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * wDesc.width, (800.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * wDesc.width, (300.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
 
 	Aen::Input::ToggleRawMouse(true);
@@ -265,8 +268,8 @@ void Gameplay::Update(const float& deltaTime) {
 	m_player.Update(m_enemyQueue, deltaTime);
 
 	m_chest.Update(deltaTime, m_player.GetEntity());
-	//m_door.Update(deltaTime, m_player.GetEntity());
-	if (m_chest.GetNear()) {
+	m_door.Update(deltaTime, m_player.GetEntity());
+	if (m_chest.GetNear() || m_door.GetNear()) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * screenSize.x, (800.f / 1024.f) * screenSize.y, 2);
 		m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
 
@@ -274,14 +277,13 @@ void Gameplay::Update(const float& deltaTime) {
 			m_player.IncreaseHealthCap();
 			m_chest.SetType(Type::Locked);
 		}
+
+		if (Aen::Input::KeyDown(Aen::Key::F) && m_door.GetType() == Type::Closed && m_door.GetNear()) {
+			m_door.SetType(Type::Opening);
+		}
 	}
 	else {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f, 2);
-	}
-
-	if (Aen::Input::KeyDown(Aen::Key::F)) {
-
-		//m_door.GetEntity()->SetRot(0, 90.f, 0);
 	}
 
 	for (auto& i : m_enemyQueue) {
@@ -289,7 +291,6 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
-
 
 	if (m_hp <= 0.f) {
 		SetWin(false);
@@ -324,18 +325,18 @@ void Gameplay::Update(const float& deltaTime) {
 
 		if (m_toggleFullScreen) {
 			wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
+			wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
 			screenSize.x = wDesc.width;
 			screenSize.y = wDesc.height;
-			wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
 			m_Window.LoadSettings(wDesc);
 		}
 		else {
 			wDesc.width = static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f);
-			screenSize = wDesc.width;
-			screenSize.y = wDesc.height;
 			wDesc.height = static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f);
+			screenSize.x = wDesc.width;
+			screenSize.y = wDesc.height;
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_OVERLAPPEDWINDOW | AEN_WS_VISIBLE;
 			m_Window.LoadSettings(wDesc);

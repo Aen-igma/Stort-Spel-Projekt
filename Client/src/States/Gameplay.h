@@ -15,6 +15,7 @@ private:
     float m_sub;
     float m_timer;
     float m_deathTimer;
+    float m_doorTime;
 
     float m_iFrames;
     const float IFRAMEMAX;
@@ -37,7 +38,7 @@ private:
  
     Player m_player;
     Chest m_chest;
-    //Door m_door;
+    Door m_door;
     bool m_beatBoss;
 
     //Aen::ImGuiImporter m_levelImporter;
