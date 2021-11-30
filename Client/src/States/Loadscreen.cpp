@@ -27,10 +27,6 @@ void Loadscreen::Update(const float& deltaTime)
 
 void Loadscreen::Initialize()
 {
-#ifdef _DEBUG
-	cout << "Loadstate\n";
-#endif // _DEBUG
-
 	m_Window.SetWindowSize(static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f), static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f));
 	Aen::WindowDesc wDesc;
 	wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
@@ -43,12 +39,12 @@ void Loadscreen::Initialize()
 	// keyboard
 	m_loading = &Aen::EntityHandler::CreateEntity();
 	m_loading->AddComponent<Aen::UIComponent>();
-	m_loading->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"KeyboardLayout.png"));
+	m_loading->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"KeyboardLayout.png"));
 	m_loading->GetComponent<Aen::UIComponent>().SetPicPos((965.f / 1920) * wDesc.width, (520.f / 1024) * wDesc.height); //Divide by standard size, mul with wDesc size
-	m_loading->GetComponent<Aen::UIComponent>().SetPicSize(1700.f, 900.f);
+	m_loading->GetComponent<Aen::UIComponent>().SetPicSize((1700.f / 1920.f) * wDesc.width, (900.f / 1024.f) * wDesc.height);
 
 	// continue
-	m_loading->GetComponent<Aen::UIComponent>().AddButton(AEN_RESOURCE_DIR_W(L"Continue.png"));
+	m_loading->GetComponent<Aen::UIComponent>().AddButton(AEN_TEXTURE_DIR_W(L"Continue.png"));
 	m_loading->GetComponent<Aen::UIComponent>().SetButtonPos((950.f / 1920) * wDesc.width, (900.f / 1024) * wDesc.height);
 	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize((400.f / 1920)* wDesc.width, (150.f / 1024) * wDesc.height);
 	m_loading->GetComponent<Aen::UIComponent>().SaveButtonData();
