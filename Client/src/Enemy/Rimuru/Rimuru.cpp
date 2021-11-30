@@ -39,7 +39,8 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	
 
 	m_rimuru->AddComponent<Aen::Animator>();
-	//m_rimuru->GetComponent<Aen::Animator>().SetAnimation("TimWaveHead");
+	m_rimuru->GetComponent<Aen::Animator>().AddAnimation("TimWaveHead", "firstAnim");
+	m_rimuru->GetComponent<Aen::Animator>().AddAnimation("TimWave", "secondAnim");
 	m_rimuru->GetComponent<Aen::Animator>().SetAnimationScale(5);
 	m_rimuru->GetComponent<Aen::Animator>().SetFrameRate(24);
 	//m_rimuru->GetComponent<Aen::Animator>().Pause();
@@ -97,10 +98,11 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		m_rimuru->GetComponent<Aen::Animator>().Run();
 	}
 	if (Aen::Input::KeyDown(Aen::Key::T)) {
-		m_rimuru->GetComponent<Aen::Animator>().SetAnimation("TimWave");
+		m_rimuru->GetComponent<Aen::Animator>().Reset();
+		m_rimuru->GetComponent<Aen::Animator>().SetAnimation("firstAnim");
 	}
 	if (Aen::Input::KeyDown(Aen::Key::Y)) {
-		m_rimuru->GetComponent<Aen::Animator>().SetAnimation("TimWaveHead");
+		m_rimuru->GetComponent<Aen::Animator>().RemoveAnimation("secondAnim");
 	}
 
 	/*if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
@@ -129,7 +131,7 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 
 		m_lDir = Aen::Lerp(m_lDir, eDir.Normalized(), 0.03f);
 		float yaw = Aen::RadToDeg(std::atan2(m_lDir.x, m_lDir.z));
-		m_rimuru->SetRot(0.f, yaw + 180, 0.f);
+		m_rimuru->SetRot(0.f, yaw + 90, 0.f);
 		
 		m_Dir = Aen::Lerp(m_Dir, eDir.Normalized(), 0.1f);
 		Aen::Vec2f nDir(m_Dir.x, m_Dir.z);

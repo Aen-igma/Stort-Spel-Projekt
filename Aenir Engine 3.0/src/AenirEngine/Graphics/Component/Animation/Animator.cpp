@@ -5,9 +5,11 @@
 namespace Aen {
 	void Animator::Update()
 	{
-		if (animation && pause) {
+		if (animationIndex < m_animationList.size() && pause) {
 			m_end = ResClock::now();
 			while (std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > frameRate) {
+				Animation* animation = m_animationList[animationIndex].second;
+
 				m_start = ResClock::now();
 				std::vector<Mat4f> anim;
 				GetAnimation(anim);
@@ -31,13 +33,16 @@ namespace Aen {
 					animation->m_finalMatrix.GetData(i) = modelTran[i] * animation->m_boneArray[i].offsetMatrix;
 				}
 
-				animation->m_finalMatrix.UpdateBuffer();
+				if (m_currentFrame > 1)
+					animation->m_finalMatrix.UpdateBuffer();
 			}
 		}
 	}
 
 	void Animator::GetAnimation(std::vector<Mat4f>& mat)
 	{
+		Animation* animation = m_animationList[animationIndex].second;
+
 		int sizeBA = animation->m_boneArray.size();
 		int numFrames = animation->m_timeStamp.size();
 		m_frameTime = ResClock::now();
@@ -78,14 +83,38 @@ namespace Aen {
 
 	void Animator::BindBuffer()
 	{
-		if (animation) {
-			animation->m_finalMatrix.BindSRV<VShader>(0);
+		if (animationIndex < m_animationList.size()) {
+			m_animationList[animationIndex].second->m_finalMatrix.BindSRV<VShader>(0);
 		}
+	}
+
+	bool Animator::HasAnimation(const std::string& anim)
+	{
+		for (auto& i : m_animationList) {
+			if (i.first == anim)
+				return true;
+		}
+		return false;
 	}
 
 	void Animator::SetAnimationScale(const float& newScale)
 	{
 		m_scale = newScale;
+	}
+
+	void Animator::RemoveAnimation(const std::string& animName)
+	{
+		if (!HasAnimation(animName))
+			return;
+
+		for (int i = 0; i < m_animationList.size(); i++) {
+			if (m_animationList[i].first == animName) {
+				m_animationList.erase(m_animationList.begin() + i);
+				break;
+			}
+		}
+		if (animationIndex > m_animationList.size())
+			animationIndex = m_animationList.size()-1;
 	}
 
 	void Animator::Pause()
@@ -98,22 +127,49 @@ namespace Aen {
 		pause = true;
 	}
 
+	void Animator::Reset()
+	{
+		m_currentFrame = 0;
+		m_currentTime = ResClock::now();
+	}
+
 	Animator::Animator(const size_t& id)
-		:Drawable(id), animation(nullptr), m_scale(1)
+		:Drawable(id), m_scale(1), m_currentFrame(0), animationIndex(0)
 	{
 		m_start = m_end = ResClock::now();
 		SetFrameRate(60);
 	}
 
-	void Animator::SetAnimation(Animation& anim)
+	void Animator::AddAnimation(Animation& anim, const std::string& name)
 	{
-		this->animation = &anim;
+		if (HasAnimation(name))
+			return;
+
+		std::pair<std::string, Animation*> animation(name, &anim);
+		m_animationList.emplace_back(animation);
+	}
+
+	void Animator::AddAnimation(const std::string& animName, const std::string& name)
+	{
+		if (HasAnimation(name))
+			return;
+
+		if (!Resource::AnimationExist(animName)) throw;
+		std::pair<std::string, Animation*> animation(name, &Resource::GetAnimation(animName));
+		m_animationList.emplace_back(animation);
 	}
 
 	void Animator::SetAnimation(const std::string& animName)
 	{
-		if (!Resource::AnimationExist(animName)) throw;
-		this->animation = &Resource::GetAnimation(animName);
+		if (!HasAnimation(animName))
+			return;
+
+		for (int i = 0; i < m_animationList.size();i++) {
+			if (m_animationList[i].first == animName) {
+				animationIndex = i;
+				break;
+			}
+		}
 	}
 
 	void Animator::SetFrameRate(const int& frameRate)
@@ -124,7 +180,7 @@ namespace Aen {
 
 	void Animator::Draw(Renderer& renderer, const uint32_t& layer)
 	{
-		if (animation) {
+		if (animationIndex < m_animationList.size()) {
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
@@ -139,11 +195,11 @@ namespace Aen {
 			RenderSystem::SetPrimitiveTopology(Topology::LINELIST);
 			RenderSystem::BindRenderTargetView(renderer.m_backBuffer);
 
-			animation->m_finalMatrix.BindSRV<VShader>(0);
-			animation->vBuff.BindBuffer();
+			m_animationList[animationIndex].second->m_finalMatrix.BindSRV<VShader>(0);
+			m_animationList[animationIndex].second->vBuff.BindBuffer();
 			//animation->vBuff.Draw();
-			animation->m_indexBuffer.BindBuffer();
-			animation->m_indexBuffer.DrawIndexed();
+			m_animationList[animationIndex].second->m_indexBuffer.BindBuffer();
+			m_animationList[animationIndex].second->m_indexBuffer.DrawIndexed();
 			RenderSystem::UnBindShaderResources<VShader>(0, 1);
 		}
 	}

@@ -18,21 +18,25 @@ namespace Aen {
 		TimePoint m_currentTime;
 		TimePoint m_frameTime;
 
-		Animation* animation;
 		DurationLD frameRate;
 		int m_currentFrame;
 		float m_scale;
 		bool pause;
+		UINT animationIndex;
+		std::vector<std::pair<std::string, Animation*>> m_animationList;
 		void Update();
 		void GetAnimation(std::vector<Mat4f>& mat);
 		void BindBuffer();
+		bool HasAnimation(const std::string& anim);
 
 	public:
 		Animator(const size_t& id);
-		void SetAnimation(Animation& anim);
+		void AddAnimation(Animation& anim, const std::string& name);
+		void AddAnimation(const std::string& animName, const std::string& name);
 		void SetAnimation(const std::string& animName);
 		void SetFrameRate(const int& frameRate);
 		void SetAnimationScale(const float& newScale);
+		void RemoveAnimation(const std::string& animName);
 
 		void Pause();
 		void Run();
