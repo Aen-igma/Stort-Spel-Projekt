@@ -63,7 +63,9 @@ void Gameplay::Initialize()
 	//m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("Flame.png"));
 	m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(10);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(0,0,0);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(10.0f,0.0f,0.0f);
+
+
 	/*Aen::Material& PSMaterial = Aen::Resource::CreateMaterial("EnemyMaterial");*/
 
 

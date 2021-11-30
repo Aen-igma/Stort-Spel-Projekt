@@ -119,9 +119,14 @@ namespace Aen {
 		ILayout m_PSLayout;
 		ComDeviceContext m_PSDContext;
 		CBuffer<CSInputBuffer> m_PSInputBuffer;
-		VBuffer<VertexParticle> m_VertexBuffer;
+
+		VBuffer<VertexParticle> m_InitVertexBuffer;
+		VBuffer<VertexParticle> m_DrawVertexBuffer;
+		VBuffer<VertexParticle> m_StreamOutVertex´Buffer;
 		GBuffer m_particleOut;
 		CShader m_PostPatricleCS;
+
+
 
 	};
 }

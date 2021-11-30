@@ -13,6 +13,17 @@ cbuffer CBInput : register(b0)
     float3 initalPos;
     float emitInterval;
 }
+cbuffer CBFixed : register(b1)
+{
+    float3 AccelOnW = float3(0.0f, 7.8f, 0.0f);
+    float2 TextureCordinates[4] =
+    {
+        float2(0.0f, 1.0f),
+        float2(1.0f, 1.0f),
+        float2(0.0f, 0.0f),
+        float2(1.0f, 0.0f)
+    };
+}
 
 struct Particle
 {

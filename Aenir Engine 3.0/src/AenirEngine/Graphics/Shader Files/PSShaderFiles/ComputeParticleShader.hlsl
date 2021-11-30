@@ -104,12 +104,25 @@ void main(uint3 DTid : SV_DispatchThreadID)
     float3 random = noise(0.0f);
     random.x *= 0.5f;
     random.y *= 0.5f;
+    float3 posO = initalPos;
 
     if (length(OutputParticle[i].Pos) >= 5)
     {
-        OutputParticle[i].Pos.x = 0;
+        OutputParticle[i].Pos.x = posO.x;
         OutputParticle[i].Pos.y = 0;
-        OutputParticle[i].Pos.z = 0;
+        OutputParticle[i].Pos.z = posO.z;
+        OutputParticle[i].Color.x = 1;
+        OutputParticle[i].Color.y = 1;
+        OutputParticle[i].Color.z = 1;
+        OutputParticle[i].Color.w = 1;
+        OutputParticle[i].UV.x = 0;
+        OutputParticle[i].UV.y = 0;
+    }
+    if (length(OutputParticle[i].Pos) <= 5)
+    {
+        OutputParticle[i].Pos.x = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+        OutputParticle[i].Pos.y += (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
+        OutputParticle[i].Pos.z = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
         OutputParticle[i].Color.x = 1;
         OutputParticle[i].Color.y = 1;
         OutputParticle[i].Color.z = 1;
@@ -118,21 +131,19 @@ void main(uint3 DTid : SV_DispatchThreadID)
         OutputParticle[i].UV.y = 0;
     }
 
+
     //OutputParticle[i].Pos.xyz = initalPos.xyz;
     //OutputParticle[i].Velocity += 4.0f * vRandom;
     //OutputParticle[i].Pos.y += OutputParticle[i].Velocity * deltaTime + noise(float3(DTid)) % 50;
- 
+
 
     //OutputParticle[i].Pos.x = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
     //OutputParticle[i].Pos.y += (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
     //OutputParticle[i].Pos.z = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
 
-
-    //OutputParticle[i].Pos.x + (5 * deltaTime + noise(float3(DTid))) % 50;
-    //OutputParticle[i].Pos.y += (5 * deltaTime + noise(float3(DTid))) % 50;
-    //OutputParticle[i].Pos.z + (5 * deltaTime + noise(float3(DTid))) % 50;
-    OutputParticle[i].Pos = 0;
-
+    //OutputParticle[i].Pos.x = initalPos.x;
+    //OutputParticle[i].Pos.y = initalPos.y;
+    //OutputParticle[i].Pos.z = initalPos.z;
 
     //OutputParticle[i].Color.x = OutputParticle[i].Color.x;
     //OutputParticle[i].Color.y = OutputParticle[i].Color.y;

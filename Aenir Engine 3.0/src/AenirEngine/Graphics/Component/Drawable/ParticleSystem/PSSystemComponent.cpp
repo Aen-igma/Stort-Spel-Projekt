@@ -149,16 +149,15 @@ namespace Aen
 
 	void PSSystemcomponent::SetVelocity(float x, float y, float z)
 	{
-		this->m_VertexPS.m_Velocity.x = x;
-		this->m_VertexPS.m_Velocity.y = y;
-		this->m_VertexPS.m_Velocity.z = z;
+		this->m_CSInputBuffer.m_velocity.x = x;
+		this->m_CSInputBuffer.m_velocity.y = y;
+		this->m_CSInputBuffer.m_velocity.z = z;
 	}
 
 
 
 	bool PSSystemcomponent::activate()
 	{
-		/*this->m_pVbuffer->Create(m_VertexPS, sizeof(VertexParticle) * this->maxParticles,D3D11_USAGE_IMMUTABLE );*/
 		return true;
 	}
 
@@ -167,24 +166,29 @@ namespace Aen
 		this->m_emitPos.x = x;
 		this->m_emitPos.y = y;
 		this->m_emitPos.z = z;
+		this->m_CSInputBuffer.m_InitalPos.x = x;
+		this->m_CSInputBuffer.m_InitalPos.y = y;
+		this->m_CSInputBuffer.m_InitalPos.z = z;
 	}
 
 	void PSSystemcomponent::Initialize()
 	{
 		this->m_vertexCount = this->maxParticles;
-		/*this->m_pVbuffer->Create(&m_VertexPS,this->m_vertexCount,D3D11_USAGE_IMMUTABLE);*/
+		this->m_CSInputBuffer.m_InitalPos = this->m_emitPos;
+		this->m_emitDir = { 0.0f,0.0f,0.0f };
 	}
 
 	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer) {
 
 		// First Pass
 		// 
+		/*renderer.m_PSInputBuffer.GetData() = m_CSInputBuffer;
 		renderer.m_PSInputBuffer.GetData().m_InitalPos.x = this->m_emitPos.x;
 		renderer.m_PSInputBuffer.GetData().m_InitalPos.y = this->m_emitPos.y;
 		renderer.m_PSInputBuffer.GetData().m_InitalPos.z = this->m_emitPos.z;
 		renderer.m_PSInputBuffer.GetData().m_velocity.x = this->m_emitDir.x;
 		renderer.m_PSInputBuffer.GetData().m_velocity.y = this->m_emitDir.y;
-		renderer.m_PSInputBuffer.GetData().m_velocity.z = this->m_emitDir.z;
+		renderer.m_PSInputBuffer.GetData().m_velocity.z = this->m_emitDir.z;*/
 
 
 		RenderSystem::ClearRenderTargetView(renderer.m_particleOut, Color(0.f, 0.f, 0.f, 0.f));
@@ -237,7 +241,7 @@ namespace Aen
 		RenderSystem::BindShader(renderer.m_PSGShader);
 		RenderSystem::BindShader(renderer.m_PSPShader);
 
-		RenderSystem::Draw(this->currentNrPS,0);
+		RenderSystem::Draw(1,0);
 
 
 		// Second Pass
