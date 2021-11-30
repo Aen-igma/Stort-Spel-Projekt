@@ -41,6 +41,7 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	m_rimuru->AddComponent<Aen::Animator>();
 	m_rimuru->GetComponent<Aen::Animator>().AddAnimation("TimWaveHead", "firstAnim");
 	m_rimuru->GetComponent<Aen::Animator>().AddAnimation("TimWave", "secondAnim");
+	m_rimuru->GetComponent<Aen::Animator>().SetAnimation("firstAnim");
 	m_rimuru->GetComponent<Aen::Animator>().SetAnimationScale(5);
 	m_rimuru->GetComponent<Aen::Animator>().SetFrameRate(24);
 	//m_rimuru->GetComponent<Aen::Animator>().Pause();
@@ -86,6 +87,7 @@ Aen::Entity*& Rimuru::GetEntity() {
 }
 
 void Rimuru::Update(const float& deltaTime, Player& player) {
+	return;
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float dist = eDir.Magnitude();
 

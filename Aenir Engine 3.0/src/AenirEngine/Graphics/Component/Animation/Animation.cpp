@@ -178,6 +178,9 @@ namespace Aen {
 			bone.offsetMatrix.a41 = mesh->mBones[i]->mOffsetMatrix.d1; bone.offsetMatrix.a42 = mesh->mBones[i]->mOffsetMatrix.d2;
 			bone.offsetMatrix.a43 = mesh->mBones[i]->mOffsetMatrix.d3; bone.offsetMatrix.a44 = mesh->mBones[i]->mOffsetMatrix.d4;
 
+			/*if (bone.boneID == 1) {
+				bone.
+			}*/
 			boneArray.emplace_back(bone);
 		}
 	}

@@ -73,13 +73,13 @@ void Gameplay::Initialize()
 	//Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
 	//plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Animation& testAnim2 = Aen::Resource::CreateAnimation("TimWaveHead");
-	testAnim2.LoadAnimation("AnimWaveHead.fbx");
+	testAnim2.LoadAnimation("ChestOpen.fbx");
 	Aen::Animation& testAnim = Aen::Resource::CreateAnimation("TimWave");
 	testAnim.LoadAnimation("AnimTri3.fbx");
 	
 
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
-	rimuru.Load(AEN_MODEL_DIR("AnimTri3.fbx"));
+	rimuru.Load(AEN_MODEL_DIR("ChestOpen.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_MODEL_DIR("Cube.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");

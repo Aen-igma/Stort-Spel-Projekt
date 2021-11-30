@@ -6,9 +6,11 @@ namespace Aen {
 	void Animator::Update()
 	{
 		if (animationIndex < m_animationList.size() && pause) {
+			Animation* animation = m_animationList[animationIndex].second;
+			//animation->m_finalMatrix.UpdateBuffer();
+			//return;
 			m_end = ResClock::now();
 			while (std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > frameRate) {
-				Animation* animation = m_animationList[animationIndex].second;
 
 				m_start = ResClock::now();
 				std::vector<Mat4f> anim;
@@ -19,7 +21,7 @@ namespace Aen {
 				std::vector<Mat4f> modelTran(animation->m_boneArray.size());
 
 				for (int i = 0; i < animation->m_boneArray.size(); i++) {
-					localTran[i] = anim[i].Transposed() * animation->m_boneArray[i].localMatrix;
+					localTran[i] = animation->m_boneArray[i].localMatrix * anim[i].Transposed();
 				}
 
 				modelTran[0] = localTran[0];
@@ -31,10 +33,12 @@ namespace Aen {
 
 				for (int i = 0; i < animation->m_boneArray.size(); i++) {
 					animation->m_finalMatrix.GetData(i) = modelTran[i] * animation->m_boneArray[i].offsetMatrix;
+					//animation->m_finalMatrix.GetData(i) = animation->m_finalMatrix.GetData(i).Inverse();
 				}
 
-				if (m_currentFrame > 1)
+				if (m_currentFrame > 1) {
 					animation->m_finalMatrix.UpdateBuffer();
+				}
 			}
 		}
 	}
@@ -65,8 +69,8 @@ namespace Aen {
 
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].scale * animation->m_keyFrames.at(bName)[m_currentFrame].rotation * animation->m_keyFrames.at(bName)[m_currentFrame].position;
-				Mat4f nextFrame = animation->m_keyFrames.at(bName)[m_currentFrame + 1].scale * animation->m_keyFrames.at(bName)[m_currentFrame + 1].rotation * animation->m_keyFrames.at(bName)[m_currentFrame + 1].position;
+				Mat4f currentFrame = /*animation->m_keyFrames.at(bName)[m_currentFrame].scale * */animation->m_keyFrames.at(bName)[m_currentFrame].rotation/* * animation->m_keyFrames.at(bName)[m_currentFrame].position*/;
+				Mat4f nextFrame = /*animation->m_keyFrames.at(bName)[m_currentFrame + 1].scale **/ animation->m_keyFrames.at(bName)[m_currentFrame + 1].rotation /** animation->m_keyFrames.at(bName)[m_currentFrame + 1].position*/;
 
 				mat.emplace_back(Lerp(currentFrame, nextFrame, t));
 			}
@@ -74,7 +78,7 @@ namespace Aen {
 		else {
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].scale * animation->m_keyFrames.at(bName)[m_currentFrame].rotation * animation->m_keyFrames.at(bName)[m_currentFrame].position;
+				Mat4f currentFrame = /*animation->m_keyFrames.at(bName)[m_currentFrame].scale **/ animation->m_keyFrames.at(bName)[m_currentFrame].rotation /** animation->m_keyFrames.at(bName)[m_currentFrame].position*/;
 
 				mat.emplace_back(currentFrame);
 			}
