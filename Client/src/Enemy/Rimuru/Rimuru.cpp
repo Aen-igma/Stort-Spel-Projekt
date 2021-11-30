@@ -7,7 +7,7 @@ Rimuru::Rimuru()
 	:Enemy(), m_rimuru(&Aen::EntityHandler::CreateEntity()), m_lDir(0.f, 0.f, -1.f) {
 	m_rimuru->AddComponent<Aen::MeshInstance>();
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
-	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
+	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("SlimeMaterial");
 	m_rimuru->SetScale(0.8f, 0.8f, 0.8f);
 	m_rimuru->SetParent(*m_enemy);
 
@@ -28,17 +28,14 @@ Rimuru::Rimuru()
 	m_healthBar->SetRenderLayer(1);
 
 	m_health = 100.f;
-	m_wait = false;
-	m_dodge = false;
-	m_hurting = false;
-	m_toggleAttacked = false;
+	m_wait, m_dodge, m_hurting, m_toggleAttacked = false;
 }
 
 Rimuru::Rimuru(const Aen::Vec3f& pos)
 	:Enemy(), m_rimuru(&Aen::EntityHandler::CreateEntity()) {
 	m_rimuru->AddComponent<Aen::MeshInstance>();
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
-	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
+	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("SlimeMaterial");
 	m_rimuru->SetScale(0.8f, 0.8f, 0.8f);
 	m_rimuru->SetParent(*m_enemy);
 
@@ -57,10 +54,7 @@ Rimuru::Rimuru(const Aen::Vec3f& pos)
 	m_healthBar->SetRenderLayer(1);
 
 	m_health = 100.f;
-	m_wait = false;
-	m_dodge = false;
-	m_hurting = false;
-	m_toggleAttacked = false;
+	m_wait, m_dodge, m_hurting, m_toggleAttacked = false;
 }
 
 Rimuru::~Rimuru() {
@@ -159,7 +153,7 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 	if(!IsHurt() && m_wait)
 	{
 		m_wait = false;
-		m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
+		m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("SlimeMaterial");
 	}
 
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;

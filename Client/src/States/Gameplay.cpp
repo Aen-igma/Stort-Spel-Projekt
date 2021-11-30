@@ -74,6 +74,8 @@ void Gameplay::Initialize()
 	//plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
 	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
+	Aen::Mesh& skeleLight = Aen::Resource::CreateMesh("SkeletonLight");
+	skeleLight.Load(AEN_MODEL_DIR("Skel_Light.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_MODEL_DIR("Cube.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
@@ -84,14 +86,25 @@ void Gameplay::Initialize()
 	// -------------------------- Setup Material -------------------------------- //
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
-	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
+	Aen::Material& slimeMat = Aen::Resource::CreateMaterial("SlimeMaterial");
+	Aen::Material& skeleLightMat = Aen::Resource::CreateMaterial("SkeleLightMaterial");
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 
-	enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
-	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
-	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
-	enemyMat["BaseColor"] = Aen::Color::Cyan;
+	planeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Floor_Diffuse.png"));
+	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+
+	slimeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
+	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
+	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
+	slimeMat["BaseColor"] = Aen::Color::Cyan;
+	
+	skeleLightMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Missing_Textures.png"));
+	skeleLightMat["InnerEdgeColor"] = Aen::Color::Black;
+	skeleLightMat["OuterEdgeColor"] = Aen::Color::Black;
+	skeleLightMat["BaseColor"] = Aen::Color::White;
+
 	// Material to switch to when enemy is hurt
 	enemyMatHurt["BaseColor"] = Aen::Color::Red;
 
@@ -99,35 +112,20 @@ void Gameplay::Initialize()
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
 	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
 
-	planeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Floor_Diffuse.png"));
-	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
-
-	//targetMat["InnerEdgeColor"] = Aen::Color::Red;
-	//targetMat["OuterEdgeColor"] = Aen::Color::Green;
-
 	// -------------------------- Setup Entities -------------------------------- //
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();
 	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
 
-
-	//m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
-	//m_plane->AddComponent<Aen::MeshInstance>();
-	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
-	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
-
-
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	m_reimube1->AddComponent<Aen::MeshInstance>();
 	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
-	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(enemyMat);
+	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(slimeMat);
 	//m_reimube1->AddComponent<Aen::StaticBody>();
 	//m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
 	m_reimube1->SetPos(0.f, 1.f, 11.f);
 	m_reimube1->SetRot(10, 1, 1);
-	//m_reimube1->SetRenderLayer(1);
 
 	// ------ Level Importer ------ //
 	//std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
@@ -161,17 +159,17 @@ void Gameplay::Initialize()
 		}
 	}
 
-	m_player.GetEntity()->SetPos(playerStartPos + Aen::Vec3f(0.f, 0.8f, 0.f));
+	//m_player.GetEntity()->SetPos(playerStartPos + Aen::Vec3f(0.f, 0.8f, 0.f));
 
 
 	//---------ENEMIES----------//
-	/*int numEnemies = 10;
+	int numEnemies = 5;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
+		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
-	}*/
+	}
 
 	std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
