@@ -17,7 +17,7 @@ Player::Player()
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
-	sword.Load(AEN_MODEL_DIR("simplesword.fbx"));
+	sword.Load(AEN_MODEL_DIR("simpSword.fbx"));
 
 	//Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
 	//capsule.Load(AEN_MODEL_DIR("Player.fbx"));
@@ -100,7 +100,7 @@ Player::Player()
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
 	m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);
-	m_sword->SetScale(0.1f, 0.1f, 0.1f);
+	//m_sword->SetScale(0.1f, 0.1f, 0.1f);
 	m_sword->SetParent(*m_player);
 
 	m_hurtbox->AddComponent<Aen::OBBox>();
@@ -614,7 +614,7 @@ void Player::SwordSwing(float speed, float time, const float& deltaTime)
 		m_sword->SetRot(0, 0, 0);
 		timer = 0.f;
 	}
-	m_sword->Rotate(-speed, -speed, 0.f);
+	m_sword->Rotate(0.f, -speed, 0.f);
 }
 
 void Player::ResetSword()
