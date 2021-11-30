@@ -225,7 +225,7 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920)* wDesc.width, (300 / 1024)* wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
 
-	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, std::to_wstring(m_player.GetPotionNr()).c_str());
+	//m_UI->GetComponent<Aen::UIComponent>().TextNr(1, std::to_wstring(m_player.GetPotionNr()).c_str());
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
@@ -241,11 +241,16 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
 		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenWidth, 0);
-		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, std::to_wstring(m_player.GetPotionNr()).c_str());
 		m_hp = m_player.GetHealth();
 	}
-	m_UI->GetComponent<Aen::UIComponent>().TextNr(1, std::to_wstring(m_player.GetPotionNr()).c_str());
+	static int pots;
+	if (pots != m_player.GetPotionNr()) {
+		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, std::to_wstring(m_player.GetPotionNr()).c_str());	
+		pots = m_player.GetPotionNr();
+	}
 	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
+
+	m_player.PotionUpdate();
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
