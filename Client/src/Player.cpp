@@ -17,10 +17,10 @@ Player::Player()
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
-	sword.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
+	sword.Load(AEN_MODEL_DIR("simplesword.fbx"));
 
-	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_MODEL_DIR("Player.fbx"));
+	//Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
+	//capsule.Load(AEN_MODEL_DIR("Player.fbx"));
 
 	Aen::Mesh* protag = &Aen::Resource::CreateMesh("Protag");
 	protag->Load(AEN_MODEL_DIR("Protagonist.fbx"));
