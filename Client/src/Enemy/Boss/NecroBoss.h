@@ -22,6 +22,9 @@ public:
 	std::vector<Rimuru*>& GetMinions();
 
 	int GetEnemiesToSummon();
+	int GetEnemiesInVector() const;
+	void EmplaceMinion(Rimuru* e);
+	void RemoveMinion(Enemy* e);
 
 protected:
 	//Aen::Entity* m_hurtbox;

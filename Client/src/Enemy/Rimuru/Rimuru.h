@@ -3,8 +3,8 @@
 
 class Rimuru : public Enemy {
 	public:
-	Rimuru();
-	Rimuru(const Aen::Vec3f &pos);
+	Rimuru(bool isMinion = false);
+	Rimuru(const Aen::Vec3f &pos, bool isMinion = false);
 	~Rimuru() override;
 
 	Aen::Entity*& GetEntity();

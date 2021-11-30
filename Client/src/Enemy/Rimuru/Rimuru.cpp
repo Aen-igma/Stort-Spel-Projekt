@@ -3,8 +3,8 @@
 
 #define rand LehmerInt
 
-Rimuru::Rimuru()
-	:Enemy(), m_rimuru(&Aen::EntityHandler::CreateEntity()), m_lDir(0.f, 0.f, -1.f) {
+Rimuru::Rimuru(bool isMinion)
+	:Enemy(isMinion), m_rimuru(&Aen::EntityHandler::CreateEntity()), m_lDir(0.f, 0.f, -1.f) {
 	m_rimuru->AddComponent<Aen::MeshInstance>();
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");
@@ -34,8 +34,8 @@ Rimuru::Rimuru()
 	m_toggleAttacked = false;
 }
 
-Rimuru::Rimuru(const Aen::Vec3f& pos)
-	:Enemy(), m_rimuru(&Aen::EntityHandler::CreateEntity()) {
+Rimuru::Rimuru(const Aen::Vec3f& pos, bool isMinion)
+	:Enemy(isMinion), m_rimuru(&Aen::EntityHandler::CreateEntity()) {
 	m_rimuru->AddComponent<Aen::MeshInstance>();
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterial");

@@ -245,7 +245,9 @@ void Gameplay::Update(const float& deltaTime) {
 	int enemiesToSummon = m_skeleBoss->GetEnemiesToSummon();
 	for (int i = 0; i < enemiesToSummon; i++)
 	{
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
+		Rimuru* bossMinion = AEN_NEW Rimuru(m_player.GetEntity()->GetPos() + Aen::Vec3f(0.f,0.f,1.f), true);
+		m_skeleBoss->EmplaceMinion(bossMinion);
+		m_enemyQueue.emplace_back(bossMinion);
 	}
 
 	//#ifdef _DEBUG

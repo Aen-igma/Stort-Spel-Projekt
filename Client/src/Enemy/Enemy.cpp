@@ -1,7 +1,7 @@
 #include"Enemy.h"
 
-Enemy::Enemy()
-	:m_enemy(&Aen::EntityHandler::CreateEntity()), m_targeted(false), m_hurt(false) {
+Enemy::Enemy(const bool isMinion)
+	:m_enemy(&Aen::EntityHandler::CreateEntity()), m_targeted(false), m_hurt(false), m_ISMINION(isMinion) {
 	m_enemy->SetTag("Enemy");
 	m_enemy->AddComponent<Aen::AABoundBox>();
 	m_enemy->AddComponent<Aen::CharacterController>();
@@ -17,9 +17,6 @@ Aen::Entity*& Enemy::GetEntity()
 {
 	return m_enemy;
 }
-
-//void Enemy::Update(const float& deltaTime, Player& player) {
-//}
 
 void Enemy::SetISTargeted(const bool& targeted) {
 	m_targeted = targeted;
@@ -58,4 +55,9 @@ void Enemy::SetStationary(bool b)
 bool Enemy::GetStationary() const
 {
 	return m_stationary;
+}
+
+const bool Enemy::GetIsMinion() const
+{
+	return m_ISMINION;
 }

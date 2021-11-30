@@ -44,17 +44,13 @@ Boss::Boss(float hp) :
 Boss::~Boss()
 {
 	mE_hurtBox->RemoveParent();
-	UINT minionSize = m_pMinions.size();
-	for (int i = 0; i < minionSize; i++)
-	{
-		delete m_pMinions[i];
-	}
 }
 
 void Boss::Update(const float& deltaTime, Player& player)
 {
 	//m_areMinionsSummoned = m_pMinions.size() > 0;
 	mp_player = &player;
+	m_cantSummonSlimes = m_pMinions.size() > 0;
 	if (!m_cantSummonSlimes)
 		m_waiting = false;
 
@@ -63,10 +59,6 @@ void Boss::Update(const float& deltaTime, Player& player)
 
 	if (GetStationary())
 	{
-		for (int i = 0; i < m_pMinions.size(); i++)
-		{
-			m_pMinions[i]->Update(deltaTime, player);
-		}
 
 
 		m_deltatime = deltaTime;
@@ -74,7 +66,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 		float distance = eDir.Magnitude();
 		eDir.Normalized();
 
-
+		
 		m_direction = Aen::Lerp(m_direction, eDir.Normalized(), 0.03f);
 		float yaw = std::atan2(m_direction.x, m_direction.z);
 		mp_hurtBox->SetOrientation(0, yaw, 0);
@@ -96,11 +88,6 @@ void Boss::Update(const float& deltaTime, Player& player)
 				m_eventQueue.pop_front();
 			}
 
-		}
-
-		if (m_pMinions.size() == 5)
-		{
-			printf("ping\n");
 		}
 
 		float zero = 0;
@@ -159,6 +146,24 @@ int Boss::GetEnemiesToSummon()
 	return minionsToSummon;
 }
 
+int Boss::GetEnemiesInVector() const
+{
+	return m_pMinions.size();
+}
+
+void Boss::EmplaceMinion(Rimuru* e)
+{
+	m_pMinions.emplace_back(e);
+}
+
+void Boss::RemoveMinion(Enemy* e)
+{
+	//delete e;
+	e = m_pMinions.back();
+	//m_pMinions.back() = nullptr;
+	m_pMinions.pop_back();
+}
+
 void Boss::LightAttack()
 {
 	EventData data;
@@ -167,6 +172,7 @@ void Boss::LightAttack()
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * accell;
 	};
+
 	data.accell = 4.f;
 	data.duration = .3f;
 	data.type = EventType::Attack;
@@ -208,8 +214,6 @@ void Boss::GoToThrone()
 
 void Boss::SummonSlimes(int amountOfSLimes)
 {
-
-
 	//m_areMinionsSummoned = true;
 	float minionPos = 0.f;
 	EventData data;

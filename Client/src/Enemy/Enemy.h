@@ -3,7 +3,7 @@
 
 class Enemy {
 	public:
-	Enemy();
+	Enemy(const bool isMinion = false);
 	virtual~Enemy();
 	Aen::Entity*& GetEntity();
 
@@ -15,7 +15,8 @@ class Enemy {
 
 	void Hurt(const bool& hurt);
 	const bool IsHurt() const;
-	protected:
+	const bool GetIsMinion() const;
+protected:
 	Aen::AABoundBox* mp_hitbox;
 	Aen::Entity* m_enemy;
 	std::deque<EventData> m_eventQueue;
@@ -27,7 +28,10 @@ class Enemy {
 	void SetStationary(bool b);
 	bool GetStationary() const;
 
+	
+
 	Aen::CharacterController* mp_charCont;
 private:
 	bool m_stationary;
+	const bool m_ISMINION;
 };

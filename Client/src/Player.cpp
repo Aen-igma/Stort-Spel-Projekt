@@ -96,7 +96,7 @@ Player::Player()
 	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
 	m_player->AddComponent<Aen::AABoundBox>();
 	mp_hitBox = &m_player->GetComponent<Aen::AABoundBox>();
-	mp_hitBox->SetBoundsToMesh();
+	mp_hitBox->SetBoundingBox(0.45f,1.1f,0.45f);
 	m_player->SetPos(0.f, 1.2f, 0.f);
 
 	/*m_sword->AddComponent<Aen::MeshInstance>();
@@ -582,6 +582,9 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 						}
 
 					delete e[i];
+					if (e[i]->GetIsMinion())
+						mp_boss->RemoveMinion(e[i]);
+					e[i] = nullptr;
 					e.erase(e.begin() + i);
 				}
 			}
