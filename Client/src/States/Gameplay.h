@@ -28,7 +28,7 @@ private:
 
     Aen::Raycast m_ray;
 
-    Aen::Entity* m_dLight;
+    //Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
     Aen::Entity* m_reimube1;
 
@@ -39,8 +39,6 @@ private:
     Chest m_chest;
     //Door m_door;
     bool m_beatBoss;
-
-    //Aen::ImGuiImporter m_levelImporter;
 
     std::queue<EventData> m_eventQueue;
 

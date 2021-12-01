@@ -35,7 +35,7 @@ namespace Aen
 
 		IGH::ImguiTypes m_imguiTypes;
 
-		Vec3f m_boss[3];
+		//Vec3f m_boss[3];
 		vector<Vec3f> m_enemyPos;
 		vector<Vec3f> m_lSkelPos;
 
@@ -120,9 +120,9 @@ namespace Aen
 
 		vector<Vec3f>& GetEnemyPos();
 		vector<Vec3f>& GetLskelPos();
-		Vec3f GetBossPosition();
+		/*Vec3f GetBossPosition();
 		Vec3f GetBossRotation();
-		Vec3f GetBossScale();
+		Vec3f GetBossScale();*/
 
 	};
 

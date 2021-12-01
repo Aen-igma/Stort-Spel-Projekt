@@ -644,12 +644,12 @@ namespace Aen
 		{
 			m_enemyPos.push_back(entity->GetPos());
 		}
-		else if (model.type == IGH::BOSS)
+		/*else if (model.type == IGH::BOSS)
 		{
 			m_boss[0] = entity->GetPos();
 			m_boss[1] = entity->GetRot();
 			m_boss[2] = entity->GetScale();
-		}
+		}*/
 		else if (model.type == IGH::LIGHTSKELETON)
 		{
 			m_lSkelPos.push_back(entity->GetPos());
@@ -877,7 +877,7 @@ namespace Aen
 		return m_lSkelPos;
 	}
 
-	Vec3f ImGuiImporter::GetBossPosition()
+	/*Vec3f ImGuiImporter::GetBossPosition()
 	{
 		return m_boss[0];
 	}
@@ -891,5 +891,5 @@ namespace Aen
 	Vec3f ImGuiImporter::GetBossScale()
 	{
 		return m_boss[2];
-	}
+	}*/
 }
