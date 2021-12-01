@@ -100,6 +100,8 @@ namespace Aen {
 				{
 
 					m_pMesh->m_vertices.BindBuffer();
+					if(ComponentHandler::AnimatorExists(m_id))
+						ComponentHandler::GetAnimator(m_id).BindBuffer();
 
 					// Opaque pass
 
@@ -181,6 +183,9 @@ namespace Aen {
 	void MeshInstance::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 
 		if(m_pMesh) {
+
+			if(ComponentHandler::AnimatorExists(m_id))
+				ComponentHandler::GetAnimator(m_id).BindBuffer();
 
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();

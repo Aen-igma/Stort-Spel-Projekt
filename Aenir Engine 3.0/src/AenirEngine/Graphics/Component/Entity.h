@@ -265,7 +265,7 @@ namespace Aen {
 	}
 
 	template<>
-	inline Animator& Entity::GetComponent() {
+	inline Animator& Entity::GetComponent() const {
 		return ComponentHandler::GetAnimator(m_id);
 	}
 }

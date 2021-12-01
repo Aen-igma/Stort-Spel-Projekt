@@ -45,7 +45,7 @@ namespace Aen {
 			
 			m_renderer->Culling();
 			m_renderer->Render();
-
+			ComponentHandler::UpdateAnimation();
 
 			deltaTime = (omp_get_wtime() - sstart);
 		}

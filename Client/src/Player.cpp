@@ -87,6 +87,9 @@ Player::Player()
 	mp_charCont = &m_player->GetComponent<Aen::CharacterController>();
 	mp_charCont->Resize(2.3f);
 
+	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
+	protagRun.LoadAnimation(AEN_MODEL_DIR("Protagonist_Run.fbx"));
+
 	m_playerMeshHolder->AddComponent<Aen::MeshInstance>();
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMesh(*protag);
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Skin1", skin);
@@ -95,6 +98,9 @@ Player::Player()
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Pants1", pants);
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Metal1", metal);
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
+	m_playerMeshHolder->AddComponent<Aen::Animator>();
+	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagRun, "Run");
+	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
 	m_playerMeshHolder->SetParent(*m_player);
 	m_playerMeshHolder->SetPos(0.f, -1.7f, 0.f);
 
