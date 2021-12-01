@@ -545,6 +545,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack) {
 		m_attackTimer += deltaTime;
+		Aen::Vec3f dir = Aen::Vec3f(0.f, 0.f, 0.f);
 
 		for (int i = 0; i < e.size(); i++) {
 			if (e[i]->GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_hurtbox->GetComponent<Aen::OBBox>()) && !e[i]->IsHurt()) {
@@ -552,8 +553,8 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 				e[i]->Hurt(true);
 
 				e[i]->SubtractHealth(m_eventQueue.front().damage);
-				Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
-				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage);
+				dir = Aen::Vec3f(0.f, 0.3f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
+				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage * e[i]->GetKnockback());
 				
 				if(e[i]->GetHealth() <= 0.f) {
 					for(uint32_t k = 0u; k < m_targets.size(); k++)
