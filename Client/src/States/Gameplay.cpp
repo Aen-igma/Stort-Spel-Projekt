@@ -85,13 +85,15 @@ void Gameplay::Initialize()
 	// -------------------------- Setup Entities -------------------------------- //
 	// 
 	// -------------------------- Particle System -------------------------------- //
-	//m_PS = &Aen::EntityHandler::CreateEntity();
-	//m_PS->AddComponent<Aen::PSSystemcomponent>();
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(10);
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(5, 5, 5);
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(5);
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
+
+	//Comment if you want the engine to work, big problem here
+	/*m_PS = &Aen::EntityHandler::CreateEntity();
+	m_PS->AddComponent<Aen::PSSystemcomponent>();
+	m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(10);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(5, 5, 5);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(5);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);*/
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();

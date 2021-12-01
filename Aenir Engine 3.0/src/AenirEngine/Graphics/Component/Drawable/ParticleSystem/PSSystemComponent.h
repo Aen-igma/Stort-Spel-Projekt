@@ -98,10 +98,6 @@ namespace Aen
 
 		void updatePS(const float& framerate);
 
-
-		ID3D11BlendState* alphaEnableBlendingState = NULL;
-		ID3D11BlendState* alphaDisableBlendingState = NULL;
-
 		int maxParticles, currentNrPS;
 		float accumulatedTime, runTimes;
 		float particleSize, particlesPerSecond;
@@ -117,9 +113,6 @@ namespace Aen
 		Vec3f m_EyePosW;
 		Vec3f m_EmitPosW;
 		Vec3f m_EmitDirW;
-
-
-		
 		
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;

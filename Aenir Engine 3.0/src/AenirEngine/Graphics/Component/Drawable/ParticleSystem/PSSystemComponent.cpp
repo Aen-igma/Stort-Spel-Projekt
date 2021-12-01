@@ -11,19 +11,7 @@ namespace Aen
 	Aen::PSSystemcomponent::PSSystemcomponent(const size_t& id)
 		:Drawable(id),m_UAView(sizeof(VertexParticle),1024)
 	{
-		//m_Particle.m_velocity = m_CSInputBuffer.m_vel.y;
-		//m_Particle.m_pos.x = 10;
-		//m_Particle.m_pos.y = 10;
-		//m_Particle.m_pos.z = 10;
-		//m_CSInputBuffer.m_particleCount = 10;
-		//m_ParticleList.m_velocity = m_CSInputBuffer.m_vel.y;
-		//m_ParticleList.m_pos[1] = 0.0f;
-		//m_ParticleList = 0;
-
-		//this->m_CSInputBuffer.m_velocity.x = 1.0f;
-		//this->m_CSInputBuffer.m_velocity.y = 2.0f;
-		//this->m_CSInputBuffer.m_velocity.z = 1.0f;
-
+	
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
