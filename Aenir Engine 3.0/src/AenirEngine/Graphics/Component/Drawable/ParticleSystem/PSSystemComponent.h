@@ -46,7 +46,6 @@ namespace Aen
 
 		//Member vairables that we dont need yet
 		void SetNrOfPS(UINT nr);
-		void SetPos(float x, float y, float z);
 		void SetVelocity(float x,float y,float z);
 		void EmitRandom(float frameTime);
 		bool activate();
@@ -91,7 +90,6 @@ namespace Aen
 		CSInputBuffer m_CSInputBuffer;
 		VertexParticle m_VertexPS;
 		Texture* m_texture;
-		VBuffer<VertexParticle>* m_pVbuffer;
 		ShaderModel* m_shader;
 		UAView m_UAView;
 
@@ -99,10 +97,6 @@ namespace Aen
 		Material* m_pMaterial;
 
 		void updatePS(const float& framerate);
-		
-		void DeviationAndVelocity();
-		float particleDeviationX, particleDeviationY, particleDeviationZ;
-		float particleVelocity, particleVelocityVariation;
 
 
 		ID3D11BlendState* alphaEnableBlendingState = NULL;

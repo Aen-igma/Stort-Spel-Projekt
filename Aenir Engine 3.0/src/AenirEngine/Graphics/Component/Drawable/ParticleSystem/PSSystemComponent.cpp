@@ -29,8 +29,8 @@ namespace Aen
 	Aen::PSSystemcomponent::~PSSystemcomponent()
 	{
 		delete m_texture;
-		delete m_pMesh;
 		delete m_shader;
+
 	}
 
 	void PSSystemcomponent::LoadAndSetTexture(const std::string& dir)
@@ -110,24 +110,17 @@ namespace Aen
 				(((float)rand() - (float)rand()) / RAND_MAX) + 0.5f,
 				(((float)rand() - (float)rand()) / RAND_MAX) + 0.5f
 			};
-			float randVelocity = this->particleVelocity + (((float)rand() 
-				- (float)rand())/ RAND_MAX) * this->particleVelocityVariation;
-			m_VertexPS.m_Pos.x = randPosPS.x;
-			m_VertexPS.m_Pos.y = randPosPS.y;
-			m_VertexPS.m_Pos.z = randPosPS.z;
+			//float randVelocity = this->particleVelocity + (((float)rand() 
+			//	- (float)rand())/ RAND_MAX) * this->particleVelocityVariation;
+			//m_VertexPS.m_Pos.x = randPosPS.x;
+			//m_VertexPS.m_Pos.y = randPosPS.y;
+			//m_VertexPS.m_Pos.z = randPosPS.z;
 			found = false;
 		}
 		return;
 	}
 
-	void PSSystemcomponent::DeviationAndVelocity()
-	{
-		this->particleDeviationX = 100.0f;
-		this->particleDeviationY = 10.0f;
-		this->particleDeviationZ = 100.0f;
-		this->particleVelocity = 10.0f;
-		this->particleVelocityVariation = 1.0f;
-	}
+
 
 	void PSSystemcomponent::SetNrOfPS(UINT nr)
 	{

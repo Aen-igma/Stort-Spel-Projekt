@@ -67,19 +67,6 @@ void Gameplay::Initialize()
 
 
 
-	/*Aen::Material& PSMaterial = Aen::Resource::CreateMaterial("EnemyMaterial");*/
-
-
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().InitParticleVariables();
-
-
-	
-
-	//m_PS = &Aen::EntityHandler::CreateEntity();
-	//m_PS->AddComponent<Aen::PSSystemcomponent>();
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("PikaFace.png"));
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(20);
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetVel(1, 10, 1);
 
 	// ----------------------------- Setup Camera ------------------------------- //
 
