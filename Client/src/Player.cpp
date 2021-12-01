@@ -19,10 +19,10 @@ Player::Player()
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
-	sword.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
+	sword.Load(AEN_MODEL_DIR("simpSword.fbx"));
 
-	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_MODEL_DIR("Player.fbx"));
+	/*Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
+	capsule.Load(AEN_MODEL_DIR("Player.fbx"));*/
 
 	Aen::Mesh* protag = &Aen::Resource::CreateMesh("Protag");
 	protag->Load(AEN_MODEL_DIR("Protagonist.fbx"));
@@ -145,8 +145,8 @@ Player::~Player() {
 	Aen::GlobalSettings::RemoveMainCamera();
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_camera);
-	//m_sword->RemoveParent();
-	//Aen::EntityHandler::RemoveEntity(*m_sword);
+	m_sword->RemoveParent();
+	Aen::EntityHandler::RemoveEntity(*m_sword);
 	Aen::EntityHandler::RemoveEntity(*m_hurtbox);
 	Aen::EntityHandler::RemoveEntity(*m_targetUI);
 }

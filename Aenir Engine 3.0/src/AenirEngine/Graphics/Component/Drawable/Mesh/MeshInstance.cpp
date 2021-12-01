@@ -76,7 +76,8 @@ namespace Aen {
 
 	void MeshInstance::Draw(Renderer& renderer, const uint32_t& layer) {
 
-		if(m_pMesh) {
+		if(m_pMesh) 
+		{
 
 			// Transform
 
@@ -85,15 +86,18 @@ namespace Aen {
 			renderer.m_cbTransform.UpdateBuffer();
 
 			//DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
-			DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+			/*DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 
 			box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())
-				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
+				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {*/
+			if (GlobalSettings::GetMainCamera())
+			{
 
 			// Mesh and Material
-				for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
+				for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) 
+				{
 
 					m_pMesh->m_vertices.BindBuffer();
 
@@ -101,7 +105,8 @@ namespace Aen {
 
 					uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
 					Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
-					if(pMaterial) {
+					if(pMaterial) 
+					{
 
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 
@@ -164,8 +169,8 @@ namespace Aen {
 							RenderSystem::UnBindUnOrderedAccessViews(0u, 2u);
 							RenderSystem::UnBindShaderResources<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
 					}
-					}
 				}
+			}
 		}
 	}
 
