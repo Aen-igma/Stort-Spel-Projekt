@@ -148,8 +148,8 @@ Player::~Player() {
 	Aen::GlobalSettings::RemoveMainCamera();
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_camera);
-	//m_sword->RemoveParent();
-	//Aen::EntityHandler::RemoveEntity(*m_sword);
+	m_sword->RemoveParent();
+	Aen::EntityHandler::RemoveEntity(*m_sword);
 	Aen::EntityHandler::RemoveEntity(*m_hurtbox);
 	Aen::EntityHandler::RemoveEntity(*m_targetUI);
 }
@@ -676,18 +676,6 @@ const bool Player::IsAttacking() {
 	return false;
 }
 
-void Player::SwordSwing(float speed, float time, const float& deltaTime)
-{
-	static float timer = 0.f;
-	timer += deltaTime;
-	if (timer > time)
-	{
-		m_sword->SetRot(0, 0, 0);
-		timer = 0.f;
-	}
-	m_sword->Rotate(-speed, -speed, 0.f);
-}
-
 Aen::AABoundBox* Player::GetHitBoxP() const
 {
 	return mp_hitBox;
@@ -718,7 +706,7 @@ void Player::SwordSwing(float speed, float time, const float& deltaTime)
 		m_sword->SetRot(0, 0, 0);
 		timer = 0.f;
 	}
-	m_sword->Rotate(-speed, -speed, 0.f);
+	m_sword->Rotate(-speed * deltaTime, -speed * deltaTime, 0.f);
 }
 
 void Player::ResetSword()

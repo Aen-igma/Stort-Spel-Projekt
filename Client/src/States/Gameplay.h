@@ -42,6 +42,7 @@ private:
 
     Chest m_chest;
     bool m_beatBoss;
+    Aen::Vec3f m_bossPos;
 
     //Aen::ImGuiImporter m_levelImporter;
 

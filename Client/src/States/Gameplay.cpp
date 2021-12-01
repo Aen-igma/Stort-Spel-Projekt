@@ -129,7 +129,6 @@ void Gameplay::Initialize()
 	Aen::Vec3f EnemyPos;
 	int roomNormal = 0;
 
-	Aen::Vec3f bossPos;
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
@@ -142,8 +141,7 @@ void Gameplay::Initialize()
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
 			{
-
-				m_levelGenerator.GetRoomPos(x, y, &bossPos.x, &bossPos.z);
+				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
 				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
@@ -159,16 +157,16 @@ void Gameplay::Initialize()
 				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
 			}
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
+			//if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
 
-				int index = m_enemyQueue.size();
-				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			}
+			//	int index = m_enemyQueue.size();
+			//	m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+			//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+			//}
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
-	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	m_player.GetEntity()->SetPos(playerStartPos);
 	m_chest.SetType(Type::Open);
 	//m_door.SetType(Type::Open);
 
@@ -178,10 +176,10 @@ void Gameplay::Initialize()
 
 
 
-	m_enemyQueue.emplace_back(AEN_NEW Boss(bossPos));
+	m_enemyQueue.emplace_back(AEN_NEW Boss(m_bossPos));
 	m_pSkeleBoss = dynamic_cast<Boss*>(m_enemyQueue[m_enemyQueue.size() - 1]);
 	m_player.AddBossesAlive(1);
-	m_pSkeleBoss->GetEntity()->SetPos(bossPos);
+	m_pSkeleBoss->GetEntity()->SetPos(m_bossPos);
 
 	m_player.SetBossP(m_pSkeleBoss);
 
@@ -303,10 +301,13 @@ void Gameplay::Update(const float& deltaTime) {
 	int enemiesToSummon = 0;
 	if (m_player.GetBossesAlive() > 0)
 	{
+		Aen::Vec3f minionOffset(-8.f,0,8.f);
 		enemiesToSummon = m_pSkeleBoss->GetEnemiesToSummon();
 		for (int i = 0; i < enemiesToSummon; i++)
 		{
-			Rimuru* bossMinion = AEN_NEW Rimuru(m_player.GetEntity()->GetPos() + Aen::Vec3f(0.f, 0.f, 1.f), EnemyType::MINION);
+			minionOffset.z *= -1;
+			Rimuru* bossMinion = AEN_NEW Rimuru(m_bossPos + minionOffset, EnemyType::MINION);
+			minionOffset += Aen::Vec3f(3.f, 0, 0);
 			m_pSkeleBoss->EmplaceMinion(bossMinion);
 			m_enemyQueue.emplace_back(bossMinion);
 		}
@@ -324,7 +325,11 @@ void Gameplay::Update(const float& deltaTime) {
 			State::SetState(States::Gameover);
 		}
 	}
-
+	if (m_player.GetBossesAlive() <= 0.f)
+	{
+		SetWin(true);
+		State::SetState(States::Gameover);
+	}
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::F1)) {
