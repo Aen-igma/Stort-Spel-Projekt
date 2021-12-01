@@ -3,7 +3,7 @@
 Boss::Boss(const Aen::Vec3f position, float hp) :
 	//m_hurtbox(&Aen::EntityHandler::CreateEntity()),
 	mE_hurtBox(&Aen::EntityHandler::CreateEntity()),
-	Enemy(EnemyType::BOSS), m_direction(0.f, 0.f, 1.f),
+	Enemy(EnemyType::BOSS), m_direction(0.f, 0.f, 1.f), 
 	m_thronePosition(m_enemy->GetPos() + Aen::Vec3f(0.f, 4.f, 0.f)), bs(BossState::STATIONARY),
 
 	m_isHurting(false), m_cantSummonSlimes(false), m_waiting(false),
@@ -34,6 +34,12 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 
 	m_enemy->SetPos(position);
 	mE_hurtBox->SetParent(*m_enemy);
+	//mE_sword = &Aen::EntityHandler::CreateEntity();
+	//mE_sword->AddComponent<Aen::MeshInstance>();
+	//Aen::Mesh& swordMesh = Aen::Resource::CreateMesh("DuckBringer");
+	//swordMesh.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
+	//mE_sword->GetComponent<Aen::MeshInstance>().SetMesh(swordMesh);
+
 
 	mp_hitbox->ToggleActive(true);
 
