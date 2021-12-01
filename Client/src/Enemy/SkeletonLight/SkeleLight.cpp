@@ -10,14 +10,14 @@ SkeleLight::SkeleLight()
 	mp_skeleton->GetComponent<Aen::MeshInstance>().SetMesh("SkeletonLight");
 	mp_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleLightMaterial");
 	mp_skeleton->SetParent(*m_enemy);
-	mp_skeleton->SetPos(0.f, 2.f, 0.f);
+	mp_skeleton->SetPos(0.f, 0.f, 0.f);
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.f, 2.f, 1.f);
 	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.8f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
 	m_enemy->SetRot(0, 90, 0);
 	m_enemy->SetPos(0.f, 0.f, 0.f);
-	m_knockbackScalar = 0.f;
+	m_knockbackScalar = 0.5f;
 
 	// -----------------------------	Floating m_healthBar		------------------------------- //
 	mp_healthBar = &Aen::EntityHandler::CreateEntity();
@@ -47,14 +47,14 @@ SkeleLight::SkeleLight(const Aen::Vec3f& pos)
 	mp_skeleton->GetComponent<Aen::MeshInstance>().SetMesh("SkeletonLight");
 	mp_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleLightMaterial");
 	mp_skeleton->SetParent(*m_enemy);
-	mp_skeleton->SetPos(0.f, 2.f, 0.f);
+	mp_skeleton->SetPos(0.f, 0.f, 0.f);
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.f, 2.f, 1.f);
 	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.8f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
 	m_enemy->SetRot(0, 90, 0);
 	m_enemy->SetPos(pos);
-	m_knockbackScalar = 0.f;
+	m_knockbackScalar = 0.5f;
 
 	// -----------------------------	Floating m_healthBar		------------------------------- //
 	mp_healthBar = &Aen::EntityHandler::CreateEntity();
