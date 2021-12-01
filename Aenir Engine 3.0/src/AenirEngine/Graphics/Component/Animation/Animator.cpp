@@ -134,7 +134,7 @@ namespace Aen {
 	}
 
 	Animator::Animator(const size_t& id)
-		:Drawable(id), m_scale(1), m_currentFrame(0), animationIndex(0)
+		:Drawable(id), m_scale(1), m_currentFrame(0), animationIndex(0), pause(true)
 	{
 		m_start = m_end = ResClock::now();
 		SetFrameRate(60);

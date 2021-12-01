@@ -106,9 +106,6 @@ void Rimuru::Update(const float& deltaTime, Player& player) {
 		m_rimuru->GetComponent<Aen::Animator>().RemoveAnimation("secondAnim");
 	}
 
-	/*if(m_enemy->GetComponent<Aen::CharacterController>().IsGrounded())
-		m_v.y = 0.f;*/
-
 	if(!m_eventQueue.empty()) {
 		if(m_eventQueue.front().duration > 0.f) {
 			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration);
