@@ -1,10 +1,8 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f),
-	IFRAMEMAX(1.5f), m_iFrames(0.f) {
-	
-}
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f), m_timer(0),m_deathTimer(0),
+	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
 	//Aen::EntityHandler::RemoveEntity(*m_dLight);
@@ -118,13 +116,15 @@ void Gameplay::Initialize()
 
 	//Match this value to the size of the rooms we are using
 	m_levelGenerator.SetRoomDimension(43.f);
-	mptr_map = m_levelGenerator.GenerationTestingFunction();
+	mptr_map = m_levelGenerator.GenerateLevel();
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos;
 	Aen::Vec3f ChestPos;
+	Aen::Vec3f DoorPos;
 	Aen::Vec3f EnemyPos;
+	int roomNormal = 0;
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
@@ -136,16 +136,12 @@ void Gameplay::Initialize()
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
-
-				for (int i = 0; i < 2; i++) {
-					m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-					m_enemyQueue.at(i)->GetEntity()->SetTag("ItemEnemy");
-				}
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
+				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
+				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 			}
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE) {
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE && mptr_map[y * Aen::mapSize + x].m_present) {
 				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
 				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
 			}
@@ -155,15 +151,28 @@ void Gameplay::Initialize()
 				int index = m_enemyQueue.size();
 				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
 				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-				m_enemyQueue.at(index)->GetEntity()->SetScale(2.f);
 			}
 		}
 	}
-	m_chest.GetObjectEntity()->SetPos(ChestPos);
-	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y, ChestPos.z);
-	playerStartPos.y = 1u;
-	m_player.GetEntity()->SetPos(playerStartPos);
-	m_chest.SetType(Type::Locked);
+	m_chest.GetEntity()->SetPos(ChestPos);
+	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	m_chest.SetType(Type::Open);
+	//m_door.SetType(Type::Open);
+
+	//if (roomNormal == 1) { //north
+	//	m_door.GetEntity()->SetRot(0, 180, 0);
+	//}
+	//else if (roomNormal == 10) {//east
+	//	m_door.GetEntity()->SetRot(0, 90, 0);
+	//}
+	//else if (roomNormal == 100) {//south
+	//	m_door.GetEntity()->SetRot(0, 0, 0);
+	//}
+	//else if (roomNormal == 1000) {//west
+	//	m_door.GetEntity()->SetRot(0, -90, 0);
+	//}
+	//m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
+	//m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 
 	//m_attack->SetParent(*m_player);
 
@@ -190,7 +199,8 @@ void Gameplay::Initialize()
 	wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 	wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
 	m_Window.LoadSettings(wDesc);
-	screenWidth = wDesc.width;
+	screenSize.x = wDesc.width;
+	screenSize.y = wDesc.height;
 
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
@@ -215,7 +225,7 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
-		m_UI->GetComponent<Aen::UIComponent>().AddText(L"5", 50.f); //1 - Amount of potion
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"", 50.f); //1 - Amount of potion
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((120.f / 1920) * wDesc.width, (110.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
@@ -225,14 +235,8 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920)* wDesc.width, (300 / 1024)* wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
 
-	//m_UI->GetComponent<Aen::UIComponent>().TextNr(1, std::to_wstring(m_player.GetPotionNr()).c_str());
-
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
-#ifdef _DEBUG
-	cout << "Press Enter To Continue\n";
-#endif // _DEBUG
-
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -240,7 +244,7 @@ void Gameplay::Initialize()
 void Gameplay::Update(const float& deltaTime) {
 
 	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
-		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenWidth, 0);
+		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenSize.x, 0);
 		m_hp = m_player.GetHealth();
 	}
 	static int pots;
@@ -262,26 +266,27 @@ void Gameplay::Update(const float& deltaTime) {
 	m_player.Update(m_enemyQueue, deltaTime);
 
 	m_chest.Update(deltaTime, m_player.GetEntity());
+	//m_door.Update(deltaTime, m_player.GetEntity());
 	if (m_chest.GetNear()) {
-		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f, 2);
-		m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300.f, 2);
+		m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * screenSize.x, (800.f / 1024.f) * screenSize.y, 2);
+		m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
 
-		//if (m_enemyQueue.empty())
-		//	m_chest.SetType(Type::Closed);
-
-		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open) {
+		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open && m_chest.GetNear()) {
 			m_player.IncreaseHealthCap();
-			m_chest.SetType(Type::Closed);
+			m_chest.SetType(Type::Locked);
 		}
 	}
 	else {
-		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, 0.f, 2);
+		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f, 2);
 	}
 
+	if (Aen::Input::KeyDown(Aen::Key::F)) {
+
+		//m_door.GetEntity()->SetRot(0, 90.f, 0);
+	}
 
 	for (auto& i : m_enemyQueue) {
 		i->Update(deltaTime, m_player);
-		m_chest.Update(deltaTime, i->GetEntity());
 	}
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
@@ -292,7 +297,7 @@ void Gameplay::Update(const float& deltaTime) {
 		m_UI->GetComponent<Aen::UIComponent>().SetPicPos(0.f, 0.f, 0);
 		m_deathTimer += deltaTime;
 
-		if (m_deathTimer > 0.1f) {
+		if (m_deathTimer > 0.2f) {
 			State::SetState(States::Gameover);
 		}
 	}
@@ -320,7 +325,8 @@ void Gameplay::Update(const float& deltaTime) {
 
 		if (m_toggleFullScreen) {
 			wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
-			screenWidth = wDesc.width;
+			screenSize.x = wDesc.width;
+			screenSize.y = wDesc.height;
 			wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
@@ -328,7 +334,8 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 		else {
 			wDesc.width = static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f);
-			screenWidth = wDesc.width;
+			screenSize = wDesc.width;
+			screenSize.y = wDesc.height;
 			wDesc.height = static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f);
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_OVERLAPPEDWINDOW | AEN_WS_VISIBLE;
@@ -338,12 +345,10 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
-	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
-	{
-		State::SetState(States::Gameover);
-		//m_Window.Exit();
+	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
+		//State::SetState(States::Gameover);
+		m_Window.Exit();
 	}
-
 	// ------------------------------------- States -------------------------------------- //
 	//if (m_hp <= 0 && m_enemyQueue.size() == 0)
 	//{

@@ -68,7 +68,7 @@ namespace Aen
 		this->m_target2D->EndDraw();
 	}
 
-	void UITextHolder::TextNr(int index, LPCWSTR text)
+	void UITextHolder::ChangeText(int index, LPCWSTR text)
 	{
 		m_UITextData.at(index).m_Text = text;
 		m_UITextData.at(index).m_Lenght = m_UITextData.at(index).m_Text.size();

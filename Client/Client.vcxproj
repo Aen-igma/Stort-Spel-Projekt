@@ -170,6 +170,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Actors\Door.h" />
     <ClInclude Include="src\States\Credits.h" />
     <ClInclude Include="src\Actors\Chest.h" />
     <ClInclude Include="src\Actors\Interact.h" />
@@ -186,6 +187,7 @@
     <ClInclude Include="src\States\States.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Actors\Door.cpp" />
     <ClCompile Include="src\States\Credits.cpp" />
     <ClCompile Include="src\Actors\Chest.cpp" />
     <ClCompile Include="src\Actors\Interact.cpp" />

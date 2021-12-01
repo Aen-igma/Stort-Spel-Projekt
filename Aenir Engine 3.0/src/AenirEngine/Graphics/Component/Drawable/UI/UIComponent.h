@@ -32,7 +32,7 @@ namespace Aen {
 		void SetTextSize(float width, float height, int indX);
 		void SetTextPos(float x, float y);
 		void SetTextPos(float x, float y, int indX);
-		void TextNr(int index, LPCWSTR text);
+		void ChangeText(int index, LPCWSTR text);
 		void SetColor(D2D1::ColorF color);
 		void SetFont(LPCWSTR font);
 

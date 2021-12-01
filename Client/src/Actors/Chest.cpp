@@ -7,11 +7,16 @@ Chest::Chest()
 	chest.Load(AEN_RESOURCE_DIR("chest.fbx"));
 	m_chest->AddComponent<Aen::MeshInstance>();
 	m_chest->GetComponent<Aen::MeshInstance>().SetMesh("Chest");
-	m_chest->SetScale(0.8f, 0.8f, 0.8f);
-	m_chest->SetParent(*mp_object);
+	m_chest->SetScale(0.8f);
 
-	mp_object->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
-	mp_object->SetPos(m_chest->GetPos().x, m_chest->GetPos().y, m_chest->GetPos().z);
+	m_chest->AddComponent<Aen::StaticBody>();
+	m_chest->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+	m_chest->SetRot(0, 0, 0);
+
+	//m_chest->SetParent(*mp_object);
+
+	//mp_object->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
+	//mp_object->SetPos(m_chest->GetPos().x, m_chest->GetPos().y, m_chest->GetPos().z);
 }
 
 Chest::~Chest()
@@ -22,7 +27,7 @@ Chest::~Chest()
 
 void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 {
-	Aen::Vec3f eDir = e->GetPos() - mp_object->GetPos();
+	Aen::Vec3f eDir = e->GetPos() - m_chest->GetPos();
 	float dist = eDir.Magnitude();
 
 	//player
@@ -32,13 +37,6 @@ void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 		}
 		else {
 			m_near = false;
-		}
-	}
-
-	//Enemy
-	if (e->GetTag() == "ItemEnemy") {
-		if (dist < 20.f) {	
-			m_type = Type::Locked;
 		}
 	}
 }

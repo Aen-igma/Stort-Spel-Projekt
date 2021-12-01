@@ -79,7 +79,6 @@ void MainMenu::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((5.f / 9.f) * wDesc.width, (780.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (75.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
-
 	
 	//Text
 	//m_UI->GetComponent<Aen::UIComponent>().AddText(L"test", 72.f);
