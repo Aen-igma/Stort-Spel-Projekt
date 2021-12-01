@@ -249,7 +249,7 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 	static int pots;
 	if (pots != m_player.GetPotionNr()) {
-		m_UI->GetComponent<Aen::UIComponent>().TextNr(1, std::to_wstring(m_player.GetPotionNr()).c_str());	
+		m_UI->GetComponent<Aen::UIComponent>().ChangeText(1, std::to_wstring(m_player.GetPotionNr()).c_str());	
 		pots = m_player.GetPotionNr();
 	}
 	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
