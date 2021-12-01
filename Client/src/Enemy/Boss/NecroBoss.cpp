@@ -21,6 +21,7 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	m_enemy->AddComponent<Aen::MeshInstance>();
 	m_enemy->GetComponent<Aen::MeshInstance>().SetMesh(skeleBoss);
 	m_enemy->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleBossMat");
+	mp_meshInst = &m_enemy->GetComponent<Aen::MeshInstance>();
 	skeleBossMat.LoadeAndSetDiffuseMap(AEN_RESOURCE_DIR("Textures/Skeleton/SkeletonBoss_diffuse.png"));
 	skeleBossMat.LoadeAndSetEmissionMap(AEN_RESOURCE_DIR("Textures/Skeleton/SkeletonBoss_glow.png"));
 
@@ -69,9 +70,9 @@ void Boss::Update(const float& deltaTime, Player& player)
 	eDir.Normalized();
 
 	if (!m_hurt)
-		m_enemy->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleBossMat");
+		mp_meshInst->SetMaterial("SkeleBossMat");
 	else
-		m_enemy->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterialHurt");
+		mp_meshInst->SetMaterial("EnemyMaterialHurt");
 
 	if (distance <= 10.f && bs == BossState(0))
 		bs = BossState(1);

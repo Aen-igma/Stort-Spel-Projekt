@@ -79,5 +79,6 @@ private:
 	uint16_t m_minionsToSummon = 0;
 	float m_spawnTimer = 0;
 	float m_attackTimer = 0;
+	Aen::MeshInstance* mp_meshInst;
 };
 
