@@ -162,13 +162,13 @@ void Gameplay::Initialize()
 
 
 	//---------ENEMIES----------//
-	int numEnemies = 5;
+	/*int numEnemies = 5;
 	int offset = -10;
 	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
 	for (int u = 0; u < numEnemies; u++) {
 		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
 		offset -= 5;
-	}
+	}*/
 
 	std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	std::vector<Aen::Vec3f> tempLskels = m_levelGenerator.GetHandlerPtr()->GetLskelPos();
