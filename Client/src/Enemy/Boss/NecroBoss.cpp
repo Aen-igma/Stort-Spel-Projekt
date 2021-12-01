@@ -41,8 +41,8 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	m_healthBar->AddComponent<Aen::MeshInstance>();
 	m_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
 	m_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
-	m_healthBar->SetRot(180, 0, 0);
-	m_healthBar->SetPos(0, -100, 0);
+	m_healthBar->SetRot(0, 0, 0);
+	//m_healthBar->SetPos(0, -100, 0);
 	m_healthBar->SetScale(5.f, 0.f, 5.f);
 	m_healthBar->SetRenderLayer(1);
 	m_healthBar->SetParent(*m_enemy);
@@ -53,6 +53,7 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 Boss::~Boss()
 {
 	mE_hurtBox->RemoveParent();
+	m_healthBar->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*mE_hurtBox);
 	Aen::EntityHandler::RemoveEntity(*m_healthBar);
 }
@@ -64,6 +65,8 @@ void Boss::Update(const float& deltaTime, Player& player)
 	m_cantSummonSlimes = m_pMinions.size() > 0;
 	if (!m_cantSummonSlimes)
 		m_waiting = false;
+
+	m_healthBar->SetScale(m_health / 20.f, 0.f, 5.f);
 
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float distance = eDir.Magnitude();
@@ -101,7 +104,8 @@ void Boss::Update(const float& deltaTime, Player& player)
 	{
 		m_deltatime = deltaTime;
 
-		if(distance < 2.f )m_attackTimer += deltaTime;
+		if(distance < 2.f )
+			m_attackTimer += deltaTime;
 		if (m_attackTimer >= 3.f)
 		{
 			m_attackTimer = 0.f;
@@ -117,7 +121,6 @@ void Boss::Update(const float& deltaTime, Player& player)
 		mE_hurtBox->SetPos(attackPos);
 
 
-
 		UpdateAttack();
 		m_v = m_direction * m_speed;
 		static float drag = 5.0f;
@@ -130,7 +133,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 		if (!m_slimesWereCasted && m_health <= m_MAXHP / 2)
 		{
 			m_slimesWereCasted = true;
-			SummonSlimes(6);
+			SummonSlimes(3);
 			GoToThrone();
 		}
 
@@ -145,7 +148,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 			GoToThrone();
 		if (Aen::Input::KeyDown(Aen::Key::P))
 			Wait(2);
-#endif // _DEBUG
+#endif
 
 		break;
 	}

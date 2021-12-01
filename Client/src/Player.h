@@ -79,6 +79,7 @@ private:
 	float m_timer;
 	static bool m_healing;
 
+	Aen::Entity* m_playerMeshHolder;
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
 	Aen::Entity* m_camera;

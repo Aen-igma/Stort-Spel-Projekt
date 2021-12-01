@@ -6,7 +6,7 @@ bool Player::m_healing{ false };
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
 	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(80.f), m_potionCap(3), m_nrPotion(m_potionCap),m_timer(0),
-	m_sword(&Aen::EntityHandler::CreateEntity()),
+	m_sword(&Aen::EntityHandler::CreateEntity()), m_playerMeshHolder(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
@@ -85,18 +85,23 @@ Player::Player()
 
 	m_player->AddComponent<Aen::CharacterController>();
 	mp_charCont = &m_player->GetComponent<Aen::CharacterController>();
-	m_player->AddComponent<Aen::MeshInstance>();
-	m_player->GetComponent<Aen::MeshInstance>().SetMesh(*protag);
-	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Skin1", skin);
-	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Shirt1", shirt);
-	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Brown1", brown);
-	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Pants1", pants);
-	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Metal1", metal);
-	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
+	mp_charCont->Resize(2.3f);
+
+	m_playerMeshHolder->AddComponent<Aen::MeshInstance>();
+	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMesh(*protag);
+	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Skin1", skin);
+	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Shirt1", shirt);
+	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Brown1", brown);
+	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Pants1", pants);
+	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Metal1", metal);
+	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
+	m_playerMeshHolder->SetParent(*m_player);
+	m_playerMeshHolder->SetPos(0.f, -1.7f, 0.f);
+
 	m_player->AddComponent<Aen::AABoundBox>();
 	mp_hitBox = &m_player->GetComponent<Aen::AABoundBox>();
 	mp_hitBox->SetBoundingBox(0.45f,1.1f,0.45f);
-	m_player->SetPos(0.f, 1.2f, 0.f);
+	//m_player->SetPos(0.f, -1.f, 0.f);
 	m_player->SetTag("Player");
 
 	m_sword->AddComponent<Aen::MeshInstance>();
@@ -143,6 +148,8 @@ Player::Player()
 
 Player::~Player() {
 	Aen::GlobalSettings::RemoveMainCamera();
+	m_playerMeshHolder->RemoveParent();
+	Aen::EntityHandler::RemoveEntity(*m_playerMeshHolder);
 	Aen::EntityHandler::RemoveEntity(*m_player);
 	Aen::EntityHandler::RemoveEntity(*m_camera);
 	m_sword->RemoveParent();

@@ -40,7 +40,7 @@ void Gameplay::Initialize()
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
 	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
 	Aen::Mesh& skeleLight = Aen::Resource::CreateMesh("SkeletonLight");
-	skeleLight.Load(AEN_MODEL_DIR("Skel_Light_New.fbx"));
+	skeleLight.Load(AEN_MODEL_DIR("Skel_Light_Done.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -83,7 +83,7 @@ void Gameplay::Initialize()
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
-	Aen::Vec3f playerStartPos;
+	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
 	Aen::Vec3f ChestPos;
 	Aen::Vec3f DoorPos;
 	Aen::Vec3f EnemyPos;
@@ -114,7 +114,8 @@ void Gameplay::Initialize()
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
-	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y, playerStartPos.z);
+	m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
+	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	//m_door.SetType(Type::Open);
