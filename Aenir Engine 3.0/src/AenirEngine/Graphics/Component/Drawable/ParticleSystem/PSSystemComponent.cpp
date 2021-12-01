@@ -156,8 +156,8 @@ namespace Aen
 
 	void PSSystemcomponent::Reset()
 	{
-		this->m_firstRun = true;
-		this->m_Age = 0.0f;
+		//this->m_firstRun = true;
+		//this->m_Age = 0.0f;
 	}
 
 	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer) {
@@ -270,6 +270,11 @@ namespace Aen
 	}
 	bool PSSystemcomponent::FrustumCull(Renderer& renderer) 
 	{
-		return true;
+		bool notgettingfucked = false;
+		if (notgettingfucked)
+		{
+			return true;
+		}
+		return notgettingfucked;
 	}
 }

@@ -104,15 +104,6 @@ namespace Aen
 		Vec3f m_emitPos;
 		Vec3f m_emitDir;
 		int m_vertexCount;
-
-		UINT m_MaxParticles;
-		bool m_firstRun;
-		float m_GameTime;
-		float m_TimeStep;
-		float m_Age;
-		Vec3f m_EyePosW;
-		Vec3f m_EmitPosW;
-		Vec3f m_EmitDirW;
 		
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;
