@@ -16,9 +16,9 @@ Gameplay::~Gameplay() {
 		Aen::EntityHandler::RemoveEntity(*b);
 	}*/
 
-	/*for (auto& d : m_enemyQueue) {
+	for (auto& d : m_enemyQueue) {
 		delete d;
-	}*/
+	}
 
 	Aen::Resource::RemoveAllMaterials();
 	Aen::Resource::RemoveAllMeshes();

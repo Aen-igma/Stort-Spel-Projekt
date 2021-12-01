@@ -1,19 +1,5 @@
 #pragma once
 #include"../../Graphics.h"
-//#include"ThirdParty/assimp/AssimpIncludes.h"
-//#include"ThirdParty/assimp/AssimpIncludes.h"
-
-//#undef min
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/Importer.hpp"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/scene.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/postprocess.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/matrix4x4.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/cimport.h"
-//#undef min
-//#include <assimp/Importer.hpp>
-//#include <assimp/scene.h>
-//#include <assimp/postprocess.h>
-//#include "Importer/AssimpImporter.h"
 
 namespace Aen {
 
@@ -45,9 +31,6 @@ namespace Aen {
 		std::string boneName;
 		Mat4f localMatrix;
 		Mat4f offsetMatrix;			// Inverse bind pose
-		//Mat4f transformRelParent;
-		//std::vector<Bones> children = {};
-		//KeyFrameData keyFrameInfo;
 	};
 
 	
@@ -76,15 +59,11 @@ namespace Aen {
 		inline float GetTicksPerSecond() { return m_TicksPerSecond; }
 		inline float GetDuration() { return m_Duration; }
 		inline const AssimpData& GetRootNode() { return m_RootNode; }
-		//inline const std::map<std::string, BondInfo>& GetBoneIDMap() { return m_BoneInfoMap; }
 		Vec2f GetTimeFraction(std::vector<float>& times, float& dt);
 		void LoadAnimation(const std::string& animationPath);
-		//void GetPose(Animation& anim, Bones& skele, float dt, std::vector<Mat4f>& output, Mat4f& parentTrans, Mat4f& globalInverseTrans);
 
 	private:
 		~Animation();
-
-		//void ReadHeirarchyData(AssimpData& destination, const aiNode* source);
 
 		friend class Resource;
 		friend class Renderer;

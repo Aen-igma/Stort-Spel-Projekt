@@ -43,7 +43,6 @@ namespace Aen {
 	}
 
 	std::vector<aiNode*> ai_nodes;
-	//std::vector<aiNodeAnim*> ai_nodes_anim;
 	std::vector<aiNode*> ai_node_bones;
 	std::vector<aiBone*> ai_bone_data;
 
@@ -69,34 +68,17 @@ namespace Aen {
 		for (int i = 0; i < nodeArray.size(); i++) {
 			for (int j = 0; j < scene->mMeshes[0]->mNumBones; j++) {
 				if (nodeArray[i]->mName == scene->mMeshes[0]->mBones[j]->mName) {
-					//boneArray.emplace_back(scene->mMeshes[0]->mBones[j]);
 					ai_node_bones.emplace_back(nodeArray[i]);
 				}
 			}
 		}
 	}
 
-	/*int FindParentID(const aiNode* parentNode, std::vector<aiNode*>& boneNodeArray) {
-		for (int i = 0; i < boneNodeArray.size(); i++) {
-			if (parentNode->mName == boneNodeArray[i]->mName) {
-				return i;
-			}
-		}
-	}*/
-
 	void MeshBoneData(const aiMesh* meshNode, std::vector<aiBone*>& boneArray) {
 		for (int i = 0; i < meshNode->mNumBones; i++) {
 			boneArray.emplace_back(meshNode->mBones[i]);
 		}
 	}
-
-	/*void TransferBones(std::vector<aiBone*>& boneArray, std::vector<Bones>& boneArrayFinal) {
-		Bones bone;
-		for (int i = 0; i < boneArray.size(); i++) {
-			bone.boneID = i;
-			bone.boneName = boneArray[i]->mName.data;
-		}
-	}*/
 
 	void TransferNodeBoneData(std::vector<aiNode*>& nodeBoneArray, std::vector<Bones>& boneArray, aiMesh* mesh) {
 		Bones bone;
@@ -106,32 +88,14 @@ namespace Aen {
 			for (size_t j = 0; j < nodeBoneArray.size(); j++) {
 				if (bone.boneID == 0) {
 					bone.parentID = -1;
-					//break;
 				}
-				/*if (nodeBoneArray[i]->FindNode(nodeBoneArray[j]->mName.data)) {
-					OutputDebugString(std::to_string(j).c_str());
-					OutputDebugString("\n");
-				}*/
 				if (nodeBoneArray[i]->mParent[0].mName.data == nodeBoneArray[j]->mName.data) {
 					bone.parentID = j;
 				}
 			}
-			//bone.localMatrix = nodeBoneArray[i]->mTransformation;
-			// 
 
 			// --------- LOCAL MATRIX ----------- //
 			if (bone.parentID != -1) {
-				/*bone.localMatrix.a11 = nodeBoneArray[bone.parentID]->mTransformation.a1; bone.localMatrix.a12 = nodeBoneArray[bone.parentID]->mTransformation.a2;
-				bone.localMatrix.a13 = nodeBoneArray[bone.parentID]->mTransformation.a3; bone.localMatrix.a14 = nodeBoneArray[bone.parentID]->mTransformation.a4;
-																															 
-				bone.localMatrix.a21 = nodeBoneArray[bone.parentID]->mTransformation.b1; bone.localMatrix.a22 = nodeBoneArray[bone.parentID]->mTransformation.b2;
-				bone.localMatrix.a23 = nodeBoneArray[bone.parentID]->mTransformation.b3; bone.localMatrix.a24 = nodeBoneArray[bone.parentID]->mTransformation.b4;
-																															
-				bone.localMatrix.a31 = nodeBoneArray[bone.parentID]->mTransformation.c1; bone.localMatrix.a32 = nodeBoneArray[bone.parentID]->mTransformation.c2;
-				bone.localMatrix.a33 = nodeBoneArray[bone.parentID]->mTransformation.c3; bone.localMatrix.a34 = nodeBoneArray[bone.parentID]->mTransformation.c4;
-																														
-				bone.localMatrix.a41 = nodeBoneArray[bone.parentID]->mTransformation.d1; bone.localMatrix.a42 = nodeBoneArray[bone.parentID]->mTransformation.d2;
-				bone.localMatrix.a43 = nodeBoneArray[bone.parentID]->mTransformation.d3; bone.localMatrix.a44 = nodeBoneArray[bone.parentID]->mTransformation.d4;*/
 
 				bone.localMatrix.a11 = nodeBoneArray[i]->mTransformation.a1; bone.localMatrix.a12 = nodeBoneArray[i]->mTransformation.a2;
 				bone.localMatrix.a13 = nodeBoneArray[i]->mTransformation.a3; bone.localMatrix.a14 = nodeBoneArray[i]->mTransformation.a4;
@@ -293,20 +257,6 @@ namespace Aen {
 		auto rootBoneNode = animation->mMeshes[0]->mBones[0];
 		//m_boneArray.emplace_back(rootBone);
 		FindRootBone(rootBone, animation, m_boneArray);
-		
-		/*globalInverseTransformMatrix.a11 = animation->mRootNode->mTransformation.a1; globalInverseTransformMatrix.a12 = animation->mRootNode->mTransformation.a2;
-		globalInverseTransformMatrix.a13 = animation->mRootNode->mTransformation.a3; globalInverseTransformMatrix.a14 = animation->mRootNode->mTransformation.a4;
-
-		globalInverseTransformMatrix.a21 = animation->mRootNode->mTransformation.b1; globalInverseTransformMatrix.a22 = animation->mRootNode->mTransformation.b2;
-		globalInverseTransformMatrix.a23 = animation->mRootNode->mTransformation.b3; globalInverseTransformMatrix.a24 = animation->mRootNode->mTransformation.b4;
-
-		globalInverseTransformMatrix.a31 = animation->mRootNode->mTransformation.c1; globalInverseTransformMatrix.a32 = animation->mRootNode->mTransformation.c2;
-		globalInverseTransformMatrix.a33 = animation->mRootNode->mTransformation.c3; globalInverseTransformMatrix.a34 = animation->mRootNode->mTransformation.c4;
-
-		globalInverseTransformMatrix.a41 = animation->mRootNode->mTransformation.d1; globalInverseTransformMatrix.a42 = animation->mRootNode->mTransformation.d2;
-		globalInverseTransformMatrix.a43 = animation->mRootNode->mTransformation.d3; globalInverseTransformMatrix.a44 = animation->mRootNode->mTransformation.d4;
-
-		globalInverseTransformMatrix.Inverse();*/
 		boneCount = animation->mMeshes[0]->mNumBones;
 
 		RecursiveNodeProcess(animation->mRootNode);
@@ -314,7 +264,6 @@ namespace Aen {
 		TransferNodeBoneData(ai_node_bones, m_boneArray, animation->mMeshes[0]);
 		AnimProcess(m_keyFrames, animation, m_Duration, m_timeStamp);
 		MeshBoneData(animation->mMeshes[0], ai_bone_data);
-		//TransferBones(ai_bone_data, m_boneArray);
 		
 		std::vector<DWORD> indices;
 		std::vector<VertexAnimation> verts;
@@ -344,47 +293,6 @@ namespace Aen {
 		//----------------------ANIMATION DATA--------------------------//
 
 	}
-
-	//void Animation::GetPose(Animation& anim, Bones& skele, float dt, std::vector<Mat4f>& output, Mat4f& parentTrans, Mat4f& globalInverseTrans)
-	//{
-	//	KeyFrameData& keyFrameData = anim.m_keyFrames[skele.boneName];
-	//	dt = fmod(dt, anim.m_Duration);
-
-	//	std::pair<UINT, float> fp;
-
-	//	// Position
-	//	fp.first = GetTimeFraction(keyFrameData.timeStampPos, dt).x;
-	//	fp.second = GetTimeFraction(keyFrameData.timeStampPos, dt).y;
-
-	//	Vec3f position1 = keyFrameData.position[fp.first - 1];
-	//	Vec3f position2 = keyFrameData.position[fp.first];
-	//	Vec3f position = position1 * (1.0 - fp.second) + position2 * fp.second;
-
-	//	 //Rotation
-	//	fp.first = GetTimeFraction(keyFrameData.timeStampRot, dt).x;
-	//	fp.second = GetTimeFraction(keyFrameData.timeStampRot, dt).y;
-
-	//	Mat4f rotation1 = keyFrameData.rotation[fp.first - 1];
-	//	Mat4f rotation2 = keyFrameData.rotation[fp.first];
-	//	Mat4f rotation = rotation1 * (1.0 - fp.second) + rotation2 * fp.second;
-
-	//	Mat4f positionMatrix = positionMatrix.identity;
-	//	
-	//	positionMatrix.a14 = position.x;
-	//	positionMatrix.a24 = position.y;
-	//	positionMatrix.a34 = position.z;
-	//	positionMatrix.a44 = 1;
-
-	//	Mat4f localTransform = positionMatrix * rotation;
-	//	Mat4f globalTransform = parentTrans * localTransform;
-
-	//	output[skele.boneID] = globalInverseTrans * globalTransform * skele.offsetMatrix;
-
-	//	for (Bones& child : m_boneArray) {
-	//		GetPose(anim, child, dt, output, globalTransform, globalInverseTrans);
-	//	}
-
-	//}
 
 	Animation::~Animation()
 	{
