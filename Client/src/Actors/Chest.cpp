@@ -14,7 +14,7 @@ Chest::Chest()
 
 
 	m_chest->AddComponent<Aen::StaticBody>();
-	m_chest->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+	m_chest->GetComponent<Aen::StaticBody>().SetBoundsToMesh();
 	m_chest->SetRot(0, 0, 0);
 
 	//m_chest->SetParent(*mp_object);
