@@ -21,9 +21,6 @@ Player::Player()
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
 	sword.Load(AEN_MODEL_DIR("simpSword.fbx"));
 
-	/*Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	capsule.Load(AEN_MODEL_DIR("Player.fbx"));*/
-
 	Aen::Mesh* protag = &Aen::Resource::CreateMesh("Protag");
 	protag->Load(AEN_MODEL_DIR("Protagonist.fbx"));
 
@@ -704,7 +701,7 @@ void Player::SwordSwing(float speed, float time, const float& deltaTime)
 	timer += deltaTime;
 	if (timer > time)
 	{
-		m_sword->SetRot(0, 0 + 180.f, 0);
+		m_sword->SetRot(0, 0, 0);
 		timer = 0.f;
 	}
 	m_sword->Rotate(-speed * deltaTime, -speed * deltaTime, 0.f);
@@ -712,7 +709,7 @@ void Player::SwordSwing(float speed, float time, const float& deltaTime)
 
 void Player::ResetSword()
 {
-	m_sword->SetRot(0.f, 0.f + 180.f, 0.f);
+	m_sword->SetRot(0.f, 0.f, 0.f);
 }
 
 void Player::AddEvent(EventData& event) {

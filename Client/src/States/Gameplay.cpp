@@ -7,13 +7,9 @@ Gameplay::Gameplay(Aen::Window& window)
 Gameplay::~Gameplay() {
 	//Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
-	Aen::EntityHandler::RemoveEntity(*m_reimube1);
+	//Aen::EntityHandler::RemoveEntity(*m_reimube1);
 	Aen::EntityHandler::RemoveEntity(*m_UI);
-	//Aen::EntityHandler::RemoveEntity(*m_wall);
 	
-	/*for (auto& b : *m_levelImporter.GetEntityList()) {
-		Aen::EntityHandler::RemoveEntity(*b);
-	}*/
 
 	for (auto& d : m_enemyQueue) {
 		delete d;
@@ -48,12 +44,8 @@ void Gameplay::Initialize()
 	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
 	Aen::Mesh& skeleLight = Aen::Resource::CreateMesh("SkeletonLight");
 	skeleLight.Load(AEN_MODEL_DIR("Skel_Light_New.fbx"));
-	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
-	reimube.Load(AEN_MODEL_DIR("Cube.fbx"));
-	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
-	//wall.Load(AEN_RESOURCE_DIR("Wall_Final.fbx"));
-	//Aen::Mesh& wallDoor = Aen::Resource::CreateMesh("WallDoor");
-	//wallDoor.Load(AEN_RESOURCE_DIR("Wall_Door_Final.fbx"));
+	/*Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
+	reimube.Load(AEN_MODEL_DIR("Cube.fbx"));*/
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -61,7 +53,7 @@ void Gameplay::Initialize()
 	Aen::Material& slimeMat = Aen::Resource::CreateMaterial("SlimeMaterial");
 	Aen::Material& skeleLightMat = Aen::Resource::CreateMaterial("SkeleLightMaterial");
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
-	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
+	//Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 
 	slimeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
 	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
@@ -75,9 +67,9 @@ void Gameplay::Initialize()
 	// Material to switch to when enemy is hurt
 	enemyMatHurt["BaseColor"] = Aen::Color::Red;
 
-	reimubeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("greenMage.png"));
+	/*reimubeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("greenMage.png"));
 	reimubeMat["InnerEdgeColor"] = Aen::Color::Pink;
-	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;
+	reimubeMat["OuterEdgeColor"] = Aen::Color::Pink;*/
 
 	planeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
@@ -88,24 +80,17 @@ void Gameplay::Initialize()
 	m_plane->AddComponent<Aen::StaticBody>();
 	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
 
-	m_reimube1 = &Aen::EntityHandler::CreateEntity();
+	/*m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	m_reimube1->AddComponent<Aen::MeshInstance>();
 	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
 	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(slimeMat);
 
 	m_reimube1->SetPos(0.f, 1.f, 11.f);
-	m_reimube1->SetRot(10, 1, 1);
-	//m_reimube1->SetRenderLayer(1);
+	m_reimube1->SetRot(10, 1, 1);*/
 
-	// ------ Level Importer ------ //
-	//std::string path = AEN_LEVEL_DIR("NewTestLevel.Level");
-	//m_levelImporter.import(path);
 
 	// ------------------- Procedural generation testing staging grounds ------- //
-	//std::vector<string> levelPaths;
-
 	m_levelGenerator.LoadMutipleRoomFiles();
-
 
 	m_levelGenerator.AddLoadedToGeneration();
 
@@ -145,36 +130,22 @@ void Gameplay::Initialize()
 				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
 				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 			}
-			else if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
-
-				int index = m_enemyQueue.size();
-				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-				//m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			}
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
-	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	//m_door.SetType(Type::Open);
 
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
-	
-
-
 
 	m_enemyQueue.emplace_back(AEN_NEW Boss(m_bossPos));
 	m_pSkeleBoss = dynamic_cast<Boss*>(m_enemyQueue[m_enemyQueue.size() - 1]);
 	m_player.AddBossesAlive(1);
 	m_pSkeleBoss->GetEntity()->SetPos(m_bossPos);
-
 	m_player.SetBossP(m_pSkeleBoss);
-
-	//m_attack->SetParent(*m_player);
-
-	//printf("");
 
 	std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	std::vector<Aen::Vec3f> tempLskels = m_levelGenerator.GetHandlerPtr()->GetLskelPos();
@@ -282,10 +253,10 @@ void Gameplay::Update(const float& deltaTime) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f, 2);
 	}
 
-	if (Aen::Input::KeyDown(Aen::Key::F)) {
+	//if (Aen::Input::KeyDown(Aen::Key::F)) {
 
-		//m_door.GetEntity()->SetRot(0, 90.f, 0);
-	}
+	//	//m_door.GetEntity()->SetRot(0, 90.f, 0);
+	//}
 
 	for (auto& i : m_enemyQueue) {
 		i->Update(deltaTime, m_player);

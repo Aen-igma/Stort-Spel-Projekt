@@ -60,7 +60,7 @@ Rimuru::Rimuru(const Aen::Vec3f& pos, EnemyType isMinion)
 Rimuru::~Rimuru() {
 	m_rimuru->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_rimuru);
-	//Aen::EntityHandler::RemoveEntity(*m_enemy);
+	Aen::EntityHandler::RemoveEntity(*m_enemy);
 	Aen::EntityHandler::RemoveEntity(*m_healthBar);
 }
 

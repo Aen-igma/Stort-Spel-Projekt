@@ -37,9 +37,9 @@ protected:
 
 	
 
+	float m_knockbackScalar;
 	Aen::CharacterController* mp_charCont;
 private:
 	bool m_stationary;
 	const EnemyType m_ENEMYTYPE;
-	float m_knockbackScalar;
 };

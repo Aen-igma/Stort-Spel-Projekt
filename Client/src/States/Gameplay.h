@@ -33,7 +33,6 @@ private:
     Aen::Entity* m_reimube1;
 
     Aen::Entity* m_UI;
-    //Aen::Entity* m_wall;
 
     Player m_player;
     Boss* m_pSkeleBoss;
@@ -50,7 +49,7 @@ private:
 
     Aen::LevelGenerator m_levelGenerator;
     Aen::Room* mptr_map;
-    Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
+    //Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
 
 
     public:

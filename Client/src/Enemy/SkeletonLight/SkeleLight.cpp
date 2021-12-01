@@ -101,7 +101,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 
 	if (!m_eventQueue.empty()) {
 		if (m_eventQueue.front().duration > 0.f) {
-			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration);
+			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration, m_eventQueue.front().nrOfAttacks);
 			m_eventQueue.front().duration -= deltaTime;
 		}
 		else {
@@ -132,7 +132,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 
 		m_lDir = Aen::Lerp(m_lDir, eDir.Normalized(), 0.03f);
 		float yaw = std::atan2(m_lDir.x, m_lDir.z);
-		mp_hurtbox->GetComponent<Aen::OBBox>().SetRotation(0.f, yaw, 0.f);
+		mp_hurtbox->GetComponent<Aen::OBBox>().SetOrientation(0.f, yaw, 0.f);
 		yaw = Aen::RadToDeg(yaw);
 		mp_skeleton->SetRot(0.f, yaw + 180, 0.f);
 		mp_hurtbox->SetPos(m_lDir*2);
@@ -141,15 +141,16 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 		m_nDir = Aen::Vec2f(m_Dir.x, m_Dir.z);
 		m_nDir = m_nDir.Normalized();
 
-		m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(m_nDir.x, 0.f, m_nDir.y) * 3.f * deltaTime, deltaTime);
+		mp_charCont->Move(Aen::Vec3f(m_nDir.x, 0.f, m_nDir.y) * 3.f * deltaTime, deltaTime);
+		//m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(m_nDir.x, 0.f, m_nDir.y) * 3.f * deltaTime, deltaTime);
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 	}
 	else
 	{
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 	}
-
-	if (player.GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(mp_hurtbox->GetComponent<Aen::OBBox>())) {
+	
+	if (player.GetHitBoxP()->Intersects(mp_hurtbox->GetComponent<Aen::OBBox>())) {
 		if (!m_hurting) {
 			m_hurting = true;
 			player.SubtractHealth(10.f);
@@ -175,7 +176,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
-	m_enemy->GetComponent<Aen::CharacterController>().Move(m_v * deltaTime, deltaTime);
+	mp_charCont->Move(m_v * deltaTime, deltaTime);
 }
 
 void SkeleLight::CombatEvent(const float& deltaTime, const float& distance)
@@ -186,7 +187,7 @@ void SkeleLight::CombatEvent(const float& deltaTime, const float& distance)
 		EventData data;
 		data.type = EventType::Attack;
 		data.duration = 1;
-		data.function = [&](float& accell, const float& attackDuration)
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks)
 		{
 			mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 		};
@@ -195,7 +196,7 @@ void SkeleLight::CombatEvent(const float& deltaTime, const float& distance)
 		// Wait after attacking
 		data.type = EventType::Wait;
 		data.duration = 2;
-		data.function = [&](float& accell, const float& attackDuration)
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks)
 		{
 			mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
 		};
@@ -211,12 +212,12 @@ void SkeleLight::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randD
 	switch (rand() % 2) {
 	case 0:
 		data.duration = rand() % 3 + 3;
-		data.function = [&](float& accell, const float& attackDuration) {};
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks) {};
 		break;
 	case 1:
 		data.duration = rand() % 3 + 1;
-		data.function = [&](float& accell, const float& attackDuration) {
-			m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized() * 3.f * deltaTime, deltaTime);
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks) {
+			mp_charCont->Move(Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized() * 3.f * deltaTime, deltaTime);
 
 			m_lDir = Aen::Lerp(m_lDir, Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized(), 0.03f);
 			float yaw = Aen::RadToDeg(std::atan2(m_lDir.x, m_lDir.z));
@@ -234,7 +235,7 @@ void SkeleLight::WaitEvent()
 
 	data.type = EventType::Wait;
 	data.duration = 2.f;
-	data.function = [&](float& accell, const float& attackDuration) {};
+	data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks) {};
 
 	m_eventQueue.clear();
 	m_eventQueue.emplace_back(data);
