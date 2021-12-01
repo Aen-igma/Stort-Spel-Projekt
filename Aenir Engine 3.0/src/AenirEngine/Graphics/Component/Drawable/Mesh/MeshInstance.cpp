@@ -28,10 +28,6 @@ namespace Aen {
 
 	void MeshInstance::SetMesh(Mesh& mesh) {
 		m_pMesh = &mesh;
-		//m_boundBox = mesh.getAABB();
-		//m_boundBox.center = m_pMesh->getAABB().Center;
-		//m_boundBox.extents = m_pMesh->getAABB().Extents;
-		//DirectX::BoundingOrientedBox box(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 
 		if(m_pMesh->m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_pMesh->m_meshMaterialName.size());
@@ -42,11 +38,6 @@ namespace Aen {
 	void MeshInstance::SetMesh(const std::string& meshName) {
 		if(!Resource::MeshExist(meshName)) throw;
 		m_pMesh = &Resource::GetMesh(meshName);
-
-		//m_boundBox.center = m_pMesh->getAABB().Center;
-		//m_boundBox.extents = m_pMesh->getAABB().Extents;
-
-		//m_boundBox = DirectX::BoundingOrientedBox(m_pMesh->getAABB().Center, m_pMesh->getAABB().Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 
 		if(m_pMesh->m_meshMaterialName.size() > 0) {
 			m_pMaterials.reserve(m_pMesh->m_meshMaterialName.size());
@@ -85,7 +76,6 @@ namespace Aen {
 
 	void MeshInstance::Draw(Renderer& renderer, const uint32_t& layer) {
 
-
 		if(m_pMesh) {
 
 			// Transform
@@ -103,18 +93,15 @@ namespace Aen {
 				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
 
 			// Mesh and Material
-
-					UINT partSize = m_pMesh->getPartitions().size();
-
-					for(uint32_t i = 0; i < partSize; i++) {
+				for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
 
 					m_pMesh->m_vertices.BindBuffer();
 
 					// Opaque pass
 
-						uint32_t materialIndex = m_pMesh->getPartitions()[i].materialIndex;
-						Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
-						if(pMaterial) {
+					uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
+					Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
+					if(pMaterial) {
 
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 
@@ -133,7 +120,7 @@ namespace Aen {
 							else
 								renderer.m_cbUseTexture.GetData()[k] = (int)false;
 						}
-								
+							
 
 							pMaterial->m_dBuffer.UpdateBuffer();
 							renderer.m_cbUseTexture.UpdateBuffer();
@@ -159,16 +146,16 @@ namespace Aen {
 
 							// Per Object Post Process Pass
 
-								if (slots[9] != UINT_MAX)RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
-								if (slots[10] != UINT_MAX)RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
-								RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
-								if(slots[12] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<CShader>(slots[12]);
-								if(slots[13] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<CShader>(slots[13]);
-								if(slots[14] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<CShader>(slots[14]);
-								if(slots[15] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<CShader>(slots[15]);
-								if(slots[16] != UINT_MAX)	renderer.m_sbLight.BindSRV<CShader>(slots[16]);
-								if(slots[17] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<CShader>(slots[17]);
-								if(slots[18] != UINT_MAX)	renderer.m_cbBGColor.BindBuffer<CShader>(slots[18]);
+							RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
+							RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
+							RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
+							if(slots[12] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<CShader>(slots[12]);
+							if(slots[13] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<CShader>(slots[13]);
+							if(slots[14] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<CShader>(slots[14]);
+							if(slots[15] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<CShader>(slots[15]);
+							if(slots[16] != UINT_MAX)	renderer.m_sbLight.BindSRV<CShader>(slots[16]);
+							if(slots[17] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<CShader>(slots[17]);
+							if(slots[18] != UINT_MAX)	renderer.m_cbBGColor.BindBuffer<CShader>(slots[18]);
 
 							RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer);
 							RenderSystem::BindUnOrderedAccessView(0u, renderer.m_UAVBackBuffer);

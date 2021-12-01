@@ -68,7 +68,10 @@ void Boss::Update(const float& deltaTime, Player& player)
 	float distance = eDir.Magnitude();
 	eDir.Normalized();
 
-
+	if (!m_hurt)
+		m_enemy->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleBossMat");
+	else
+		m_enemy->GetComponent<Aen::MeshInstance>().SetMaterial("EnemyMaterialHurt");
 
 	if (distance <= 10.f && bs == BossState(0))
 		bs = BossState(1);

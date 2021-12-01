@@ -395,7 +395,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				if (attackDuration < m_HEAVYCHARGETIME)
 				{
 					mp_hurtBox->ToggleActive(true);
-					//SwordSwing(250.f, m_HEAVYATTACKTIME, deltaTime);
+					SwordSwing(250.f, m_HEAVYATTACKTIME, deltaTime);
 				}
 				else
 					mp_hurtBox->ToggleActive(false);
@@ -497,7 +497,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	float swordYaw = std::atan2(playerDir.x, playerDir.z);
 
 	mp_hurtBox->SetOrientation(0.f, yaw, 0.f);
-	m_player->SetRot(0.f, Aen::RadToDeg(yaw), 0.f);
+	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
@@ -703,7 +703,7 @@ void Player::SwordSwing(float speed, float time, const float& deltaTime)
 	timer += deltaTime;
 	if (timer > time)
 	{
-		m_sword->SetRot(0, 0, 0);
+		m_sword->SetRot(0, 0 + 180.f, 0);
 		timer = 0.f;
 	}
 	m_sword->Rotate(-speed * deltaTime, -speed * deltaTime, 0.f);
@@ -711,7 +711,7 @@ void Player::SwordSwing(float speed, float time, const float& deltaTime)
 
 void Player::ResetSword()
 {
-	m_sword->SetRot(0.f, 0.f, 0.f);
+	m_sword->SetRot(0.f, 0.f + 180.f, 0.f);
 }
 
 void Player::AddEvent(EventData& event) {
