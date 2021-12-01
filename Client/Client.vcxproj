@@ -170,29 +170,41 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Actors\Door.h" />
+    <ClInclude Include="src\States\Credits.h" />
+    <ClInclude Include="src\Actors\Chest.h" />
+    <ClInclude Include="src\Actors\Interact.h" />
     <ClInclude Include="src\Client.h" />
+    <ClInclude Include="src\Enemy\Boss\NecroBoss.h" />
     <ClInclude Include="src\Enemy\Enemies.h" />
     <ClInclude Include="src\Enemy\Enemy.h" />
     <ClInclude Include="src\Enemy\Rimuru\Rimuru.h" />
+    <ClInclude Include="src\Enemy\SkeletonLight\SkeleLight.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\States\GameEnd.h" />
     <ClInclude Include="src\States\Gameplay.h" />
     <ClInclude Include="src\States\Loadscreen.h" />
     <ClInclude Include="src\States\Menu.h" />
+    <ClInclude Include="src\States\Options.h" />
     <ClInclude Include="src\States\States.h" />
-    <ClInclude Include="src\States\Victory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Actors\Door.cpp" />
+    <ClCompile Include="src\States\Credits.cpp" />
+    <ClCompile Include="src\Actors\Chest.cpp" />
+    <ClCompile Include="src\Actors\Interact.cpp" />
     <ClCompile Include="src\Client.cpp" />
+    <ClCompile Include="src\Enemy\Boss\NecroBoss.cpp" />
     <ClCompile Include="src\Enemy\Enemy.cpp" />
     <ClCompile Include="src\Enemy\Rimuru\Rimuru.cpp" />
+    <ClCompile Include="src\Enemy\SkeletonLight\SkeleLight.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\States\GameEnd.cpp" />
     <ClCompile Include="src\States\Gameplay.cpp" />
     <ClCompile Include="src\States\Loadscreen.cpp" />
     <ClCompile Include="src\States\Menu.cpp" />
+    <ClCompile Include="src\States\Options.cpp" />
     <ClCompile Include="src\States\States.cpp" />
-    <ClCompile Include="src\States\Victory.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

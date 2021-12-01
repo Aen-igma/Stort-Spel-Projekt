@@ -4,6 +4,8 @@
 #include "AenirEngine/ThirdParty/ImGui/imgui.h"
 #include "AenirEngine\Graphics\Component\EntityHandler.h"
 #include"../Enemy/Enemies.h"
+#include "../Actors/Chest.h"
+#include "../Actors/Door.h"
 #include"AenirEngine\LevelEditor\ImGuiImporter.h"
 #include<functional>
 
@@ -11,6 +13,8 @@ class Gameplay : public State {
 private:
     float m_hp;
     float m_sub;
+    float m_timer;
+    float m_deathTimer;
 
     float m_iFrames;
     const float IFRAMEMAX;
@@ -20,29 +24,23 @@ private:
     float m_fSpeed;
     bool m_toggleFullScreen;
 
+    Aen::Vec2f screenSize;
+
     Aen::Raycast m_ray;
 
-    Aen::Entity* m_dLight;
+    //Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
-    Aen::Entity* m_reimube1;
 
     Aen::Entity* m_UI;
-    Aen::Entity* m_wall;
-    Aen::Entity* m_bones;
-    Aen::Entity* m_pot;
-    Aen::Entity* m_torch;
-    Aen::Entity* m_healingPot;
-    Aen::Entity* m_skelLight;
-    Aen::Entity* m_door;
-    Aen::Entity* m_chest;
-    Aen::Entity* m_tim;
-    Aen::Entity* m_web;
-
 
     Player m_player;
-    bool m_beatBoss;
+    Boss* m_pSkeleBoss;
 
-    //Aen::ImGuiImporter m_levelImporter;
+    Aen::UIComponent* mp_uiComp;
+
+    Chest m_chest;
+    bool m_beatBoss;
+    Aen::Vec3f m_bossPos;
 
     std::queue<EventData> m_eventQueue;
 
@@ -50,7 +48,8 @@ private:
 
     Aen::LevelGenerator m_levelGenerator;
     Aen::Room* mptr_map;
-    Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
+    //Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
+
 
     public:
     Gameplay(Aen::Window& window);

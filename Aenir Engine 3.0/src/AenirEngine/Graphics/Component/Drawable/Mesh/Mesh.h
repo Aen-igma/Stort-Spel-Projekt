@@ -30,6 +30,11 @@ namespace Aen {
 		const std::vector<DirectX::XMFLOAT3>& GetvPos();
 		const std::vector<uint32_t>& GetIndices();
 
+
+		DirectX::BoundingBox getAABB() const;
+		DirectX::BoundingOrientedBox getOBB() const;
+		std::vector<PartitionData> getPartitions() const;
+
 		private:
 
 		~Mesh();

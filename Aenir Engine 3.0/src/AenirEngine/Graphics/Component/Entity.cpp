@@ -90,19 +90,31 @@ namespace Aen {
 	}
 
 	void Entity::Move(const Vec3f& pos) {
-		ComponentHandler::GetTranslation(m_id).Move(pos);
+		if(ComponentHandler::StaticBodyExist(m_id))
+			ComponentHandler::GetStaticBody(m_id).Move(pos);
+		else if (ComponentHandler::TranslationExist(m_id))
+			ComponentHandler::GetTranslation(m_id).Move(pos);
 	}
 
 	void Entity::Move(const float& x, const float& y, const float& z) {
-		ComponentHandler::GetTranslation(m_id).Move(x, y, z);
+		if (ComponentHandler::StaticBodyExist(m_id))
+			ComponentHandler::GetStaticBody(m_id).Move(x,y,z);
+		else if (ComponentHandler::TranslationExist(m_id))
+			ComponentHandler::GetTranslation(m_id).Move(x,y,z);
 	}
 
 	void Entity::MoveRelative(const Vec3f& pos) {
-		ComponentHandler::GetTranslation(m_id).Move(Transform(ComponentHandler::GetRotation(m_id).GetTranform(), pos));
+		if (ComponentHandler::StaticBodyExist(m_id))
+			ComponentHandler::GetStaticBody(m_id).MoveRelative(pos);
+		else if (ComponentHandler::TranslationExist(m_id))
+			ComponentHandler::GetTranslation(m_id).Move(Transform(ComponentHandler::GetRotation(m_id).GetTranform(), pos));
 	}
 
 	void Entity::MoveRelative(const float& x, const float& y, const float& z) {
-		ComponentHandler::GetTranslation(m_id).Move(Transform(ComponentHandler::GetRotation(m_id).GetTranform(), Vec3f(x, y, z)));
+		if (ComponentHandler::StaticBodyExist(m_id))
+			ComponentHandler::GetStaticBody(m_id).MoveRelative(x,y,z);
+		else if (ComponentHandler::TranslationExist(m_id))
+			ComponentHandler::GetTranslation(m_id).Move(Transform(ComponentHandler::GetRotation(m_id).GetTranform(), Vec3f(x, y, z)));
 	}
 
 	void Entity::SetRot(const Vec3f& rot) {
@@ -133,6 +145,9 @@ namespace Aen {
 		if(ComponentHandler::RotationExist(m_id))
 			ComponentHandler::GetRotation(m_id).Rotate(rot);
 
+		if (ComponentHandler::StaticBodyExist(m_id))
+			ComponentHandler::GetStaticBody(m_id).Rotate(rot);
+
 		if(ComponentHandler::CameraExist(m_id))
 			ComponentHandler::GetCamera(m_id).LookTowards(Transform(MatRotate(rot), Vec3f(0.f, 0.f, -1.f)).Normalized());
 	}
@@ -140,6 +155,9 @@ namespace Aen {
 	void Entity::Rotate(const float& p, const float& y, const float& r) {
 		if(ComponentHandler::RotationExist(m_id))
 			ComponentHandler::GetRotation(m_id).Rotate(p, y, r);
+
+		if (ComponentHandler::StaticBodyExist(m_id))
+			ComponentHandler::GetStaticBody(m_id).Rotate(p,y,r);
 
 		if(ComponentHandler::CameraExist(m_id))
 			ComponentHandler::GetCamera(m_id).LookTowards(Transform(MatRotate(p, y, r), Vec3f(0.f, 0.f, -1.f)).Normalized());
@@ -155,7 +173,7 @@ namespace Aen {
 			ComponentHandler::GetScale(m_id).SetScale(x, y, z);
 	}
 
-	const Vec3f Entity::GetPos() {
+	const Vec3f Entity::GetPos() const {
 
 		Vec3f pos;
 		if(ComponentHandler::DynamicBodyExist(m_id))
@@ -170,7 +188,7 @@ namespace Aen {
 		return pos;
 	}
 
-	const Vec3f Entity::GetRot() {
+	const Vec3f Entity::GetRot() const {
 		Vec3f rot;
 		if(ComponentHandler::DynamicBodyExist(m_id))
 			rot = ComponentHandler::GetDynamicBody(m_id).GetRot();
@@ -182,25 +200,25 @@ namespace Aen {
 		return rot;
 	}
 
-	const Vec3f Entity::GetScale() {
+	const Vec3f Entity::GetScale() const {
 		if(ComponentHandler::ScaleExist(m_id))
 			return ComponentHandler::GetScale(m_id).GetScale();
 		return Vec3f::one;
 	}
 
-	const size_t& Entity::GetID() {
+	const size_t& Entity::GetID() const {
 		return m_id;
 	}
 
-	const std::string& Entity::GetTag() {
+	const std::string& Entity::GetTag() const {
 		return m_tag;
 	}
 
-	const bool Entity::HasId(const size_t& id) {
+	const bool Entity::HasId(const size_t& id) const {
 		return m_id == id;
 	}
 
-	const Mat4f Entity::GetTransformation() {
+	const Mat4f Entity::GetTransformation() const {
 
 		Mat4f pos(Mat4f::identity); 
 		if(ComponentHandler::DynamicBodyExist(m_id))
@@ -229,7 +247,7 @@ namespace Aen {
 		return scale * rot * pos * parentMatrix;
 	}
 
-	const Vec3f Entity::GetTranslation() {
+	const Vec3f Entity::GetTranslation() const {
 
 		Vec3f pos = GetPos();
 
@@ -241,7 +259,7 @@ namespace Aen {
 		return pos + parent;
 	}
 
-	const Mat4f Entity::GetPosMat() {
+	const Mat4f Entity::GetPosMat() const {
 		Mat4f pos = (ComponentHandler::TranslationExist(m_id)) ? ComponentHandler::GetTranslation(m_id).GetTranform() : Mat4f::identity;
 
 		Mat4f parentMatrix;
@@ -251,7 +269,7 @@ namespace Aen {
 		return pos * parentMatrix;
 	}
 
-	const Mat4f Entity::GetRotMat() {
+	const Mat4f Entity::GetRotMat() const {
 		Mat4f rot = (ComponentHandler::RotationExist(m_id)) ? ComponentHandler::GetRotation(m_id).GetTranform() : Mat4f::identity;
 
 		Mat4f parentMatrix;
@@ -261,7 +279,7 @@ namespace Aen {
 		return rot * parentMatrix;
 	}
 
-	const Mat4f Entity::GetScaleMat() {
+	const Mat4f Entity::GetScaleMat() const {
 		Mat4f scale = (ComponentHandler::ScaleExist(m_id)) ? ComponentHandler::GetScale(m_id).GetTranform() : Mat4f::identity;
 
 		Mat4f parentMatrix;

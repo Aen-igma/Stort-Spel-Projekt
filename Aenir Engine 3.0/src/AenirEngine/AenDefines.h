@@ -32,8 +32,6 @@
 	#define AEN_RESOURCE_DIR(file) ((IsDebuggerPresent()) ? "../Resource/" + std::string(file) : "../../Resource/" + std::string(file))
 	#define AEN_RESOURCE_DIR_W(file) ((IsDebuggerPresent()) ? L"../Resource/" + std::wstring(file) : L"../../Resource/" + std::wstring(file))
 
-	#define AEN_LEVEL_DIR(file) ((IsDebuggerPresent()) ? "../LevelFolder/" + std::string(file) : "../../LevelFolder/" + std::string(file))
-
 	#define AEN_TEXTURE_DIR(file) ((IsDebuggerPresent()) ? "../Resource/Texture/" + std::string(file) : "../../Resource/Texture/" + std::string(file))
 	#define AEN_TEXTURE_DIR_W(file) ((IsDebuggerPresent()) ? L"../Resource/Texture/UI/" + std::wstring(file) : L"../../Resource/Texture/UI/" + std::wstring(file))
 	#define AEN_NORMALTEXTURE_DIR(file) ((IsDebuggerPresent()) ? "../Resource/Texture/Normal_Map/" + std::string(file) : "../../Resource/Texture/Normal_Map/" + std::string(file))

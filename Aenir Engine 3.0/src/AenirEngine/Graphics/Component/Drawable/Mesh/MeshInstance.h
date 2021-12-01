@@ -4,6 +4,11 @@
 
 namespace Aen {
 
+	//struct BoundBoxStoreable
+	//{
+	//	DirectX::XMFLOAT3 center, extents;
+	//};
+
 	class AEN_DECLSPEC MeshInstance : public Drawable{
 		public:
 		MeshInstance(const size_t& id);
@@ -22,7 +27,10 @@ namespace Aen {
 		~MeshInstance();
 
 		Mesh* m_pMesh;
+		//BoundBoxStoreable m_boundBox;
 		std::vector<Material*> m_pMaterials;
+
+
 
 		friend class ComponentHandler;
 		friend class Renderer;

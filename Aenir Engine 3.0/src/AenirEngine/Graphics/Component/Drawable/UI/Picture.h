@@ -31,8 +31,11 @@ namespace Aen {
 		void Initialize();
 		void AddPicture(LPCWSTR path);
 		void SetPicPos(float x, float y);
+		void SetPicPos(float x, float y,int indX);
 		void SetPicSize(float width, float height);
+		void SetPicSize(float width, float height, int indX);
 		void UpdatePicture(float width, int indX);
+		bool Intersect(int index);
 
 		friend class GameLoop;
 

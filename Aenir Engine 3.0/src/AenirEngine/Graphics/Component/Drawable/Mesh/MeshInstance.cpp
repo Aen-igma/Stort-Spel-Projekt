@@ -76,42 +76,37 @@ namespace Aen {
 
 	void MeshInstance::Draw(Renderer& renderer, const uint32_t& layer) {
 
-		if(m_pMesh) {
+		if(m_pMesh) 
+		{
 
 			// Transform
 
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
-			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
-/*#ifndef _DEBUG
-			DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
-#endif // !_DEBUG
-#ifdef _DEBUG
-			DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
-			//After procedural generation, m_obb values become nan, this is a work around
-#endif // DEBUG
+			//DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
+			/*DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 
+			box.Transform(box, m.smMat);
 
-			box.Transform(box, m.smMat);*/
-
-			if(GlobalSettings::GetMainCamera()) {
-				//if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) 
+			if(GlobalSettings::GetMainCamera())
+				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {*/
+			if (GlobalSettings::GetMainCamera())
+			{
 
 			// Mesh and Material
-				for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
+				for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) 
+				{
 
 					m_pMesh->m_vertices.BindBuffer();
-					if (ComponentHandler::AnimatorExists(m_id)) {
-						ComponentHandler::GetAnimator(m_id).BindBuffer();
-					}
 
 					// Opaque pass
 
 					uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
 					Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
-					if(pMaterial) {
+					if(pMaterial) 
+					{
 
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 
@@ -120,13 +115,17 @@ namespace Aen {
 
 						uint32_t* slots = pMaterial->m_pShaderModel->m_slots;
 
-						for(UINT k = 0; k < 4; k++)
-							if(pMaterial->m_textures[k] && slots[k] != UINT_MAX) {
-								RenderSystem::UnBindShaderResources<PShader>(slots[k], 1u);
+						for (UINT k = 0; k < 4; k++)
+						{
+							RenderSystem::UnBindShaderResources<PShader>(slots[k], 1u);
+							if (pMaterial->m_textures[k] && slots[k] != UINT_MAX) {
 								RenderSystem::BindShaderResourceView<PShader>(slots[k], pMaterial->m_textures[k]->m_shaderResource);
 								renderer.m_cbUseTexture.GetData()[k] = (int)true;
-							} else
+							}
+							else
 								renderer.m_cbUseTexture.GetData()[k] = (int)false;
+						}
+							
 
 							pMaterial->m_dBuffer.UpdateBuffer();
 							renderer.m_cbUseTexture.UpdateBuffer();
@@ -152,18 +151,16 @@ namespace Aen {
 
 							// Per Object Post Process Pass
 
-
-								RenderSystem::UnBindShaderResources<VShader>(0, 1);
-								RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
-								RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
-								RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
-								if(slots[12] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<CShader>(slots[12]);
-								if(slots[13] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<CShader>(slots[13]);
-								if(slots[14] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<CShader>(slots[14]);
-								if(slots[15] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<CShader>(slots[15]);
-								if(slots[16] != UINT_MAX)	renderer.m_sbLight.BindSRV<CShader>(slots[16]);
-								if(slots[17] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<CShader>(slots[17]);
-								if(slots[18] != UINT_MAX)	renderer.m_cbBGColor.BindBuffer<CShader>(slots[18]);
+							RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
+							RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
+							RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
+							if(slots[12] != UINT_MAX)	renderer.m_cbTransform.BindBuffer<CShader>(slots[12]);
+							if(slots[13] != UINT_MAX)	renderer.m_cbLightCount.BindBuffer<CShader>(slots[13]);
+							if(slots[14] != UINT_MAX)	renderer.m_cbCamera.BindBuffer<CShader>(slots[14]);
+							if(slots[15] != UINT_MAX)	renderer.m_cbUseTexture.BindBuffer<CShader>(slots[15]);
+							if(slots[16] != UINT_MAX)	renderer.m_sbLight.BindSRV<CShader>(slots[16]);
+							if(slots[17] != UINT_MAX)	pMaterial->m_dBuffer.BindBuffer<CShader>(slots[17]);
+							if(slots[18] != UINT_MAX)	renderer.m_cbBGColor.BindBuffer<CShader>(slots[18]);
 
 							RenderSystem::BindShaderResourceView<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer);
 							RenderSystem::BindUnOrderedAccessView(0u, renderer.m_UAVBackBuffer);
@@ -176,8 +173,8 @@ namespace Aen {
 							RenderSystem::UnBindUnOrderedAccessViews(0u, 2u);
 							RenderSystem::UnBindShaderResources<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
 					}
-					}
 				}
+			}
 		}
 	}
 
@@ -188,9 +185,9 @@ namespace Aen {
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
-			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
-			/*DirectX::BoundingOrientedBox box;
+			/*
+			DirectX::BoundingOrientedBox box;
 			box.Extents = m_pMesh->m_aabb.Extents;
 			box.Transform(box, m.smMat);
 
@@ -199,10 +196,6 @@ namespace Aen {
 			if (GlobalSettings::GetMainCamera())
 				{
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
-
-					if (ComponentHandler::AnimatorExists(m_id)) {
-						ComponentHandler::GetAnimator(m_id).BindBuffer();
-					}
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 						RenderSystem::BindShader(renderer.m_opaqueVS);
@@ -213,7 +206,6 @@ namespace Aen {
 
 					m_pMesh->m_vertices.BindBuffer();
 					m_pMesh->m_vertices.Draw();
-					RenderSystem::UnBindShaderResources<VShader>(0, 1);
 				}
 		}
 	}

@@ -31,8 +31,14 @@ namespace Aen {
 		const Mat4f GetRotMat();
 		void SetPos(const Vec3f& pos);
 		void SetPos(const float& x, const float& y, const float& z);
+		void Move(const Vec3f& pos);
+		void Move(const float& x, const float& y, const float& z);
+		void MoveRelative(const Vec3f& pos);
+		void MoveRelative(const float& x, const float& y, const float& z);
 		void SetRot(const Vec3f& rot);
 		void SetRot(const float& p, const float& y, const float& r);
+		void Rotate(const Vec3f& rot);
+		void Rotate(const float& p, const float& y, const float& r);
 		px::PxTriangleMesh* CookMesh(const bool& insert);
 
 		StaticGeometryType m_gType;
