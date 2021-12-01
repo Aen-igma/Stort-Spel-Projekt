@@ -29,10 +29,11 @@ namespace Aen {
 		if(!m_lightCullCS.Create(AEN_OUTPUT_DIR_WSTR(L"LightCullCS.cso")))
 			if(!m_lightCullCS.Create(L"LightCullCS.cso"))
 				throw;
-
-		if(!m_collisionPS.Create(AEN_OUTPUT_DIR_WSTR(L"CollisionPS.cso")))
-			if(!m_collisionPS.Create(L"CollisionPS.cso"))
+#ifdef _DEBUG
+		if (!m_collisionPS.Create(AEN_OUTPUT_DIR_WSTR(L"CollisionPS.cso")))
+			if (!m_collisionPS.Create(L"CollisionPS.cso"))
 				throw;
+#endif // _DEBUG
 
 		if(!m_postProcessCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessCS.cso")))
 			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))

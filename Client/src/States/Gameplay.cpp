@@ -127,14 +127,20 @@ void Gameplay::Initialize()
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE && mptr_map[y * Aen::mapSize + x].m_present) {
-				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-				//m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			}
-			else if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+
 			}
-			else if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
+			mptr_map[x + y * Aen::mapSize].mptr_parent;
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
+			{
+				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
+				//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+			}
+			mptr_map[x + y * Aen::mapSize].mptr_parent;
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
 				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
 				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
@@ -153,20 +159,18 @@ void Gameplay::Initialize()
 	m_chest.SetType(Type::Open);
 	//m_door.SetType(Type::Open);
 
-	//if (roomNormal == 1) { //north
-	//	m_door.GetEntity()->SetRot(0, 180, 0);
-	//}
-	//else if (roomNormal == 10) {//east
-	//	m_door.GetEntity()->SetRot(0, 90, 0);
-	//}
-	//else if (roomNormal == 100) {//south
-	//	m_door.GetEntity()->SetRot(0, 0, 0);
-	//}
-	//else if (roomNormal == 1000) {//west
-	//	m_door.GetEntity()->SetRot(0, -90, 0);
-	//}
-	//m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
-	//m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
+	//---------ENEMIES----------//
+	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
+	
+
+
+
+	m_enemyQueue.emplace_back(AEN_NEW Boss(m_bossPos));
+	m_pSkeleBoss = dynamic_cast<Boss*>(m_enemyQueue[m_enemyQueue.size() - 1]);
+	m_player.AddBossesAlive(1);
+	m_pSkeleBoss->GetEntity()->SetPos(m_bossPos);
+
+	m_player.SetBossP(m_pSkeleBoss);
 
 	//m_attack->SetParent(*m_player);
 
@@ -241,7 +245,7 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
-	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
+	if (m_hp != m_player.GetHealth()) { //ers�tt collision med enemy i if satsen
 		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenSize.x, 0);
 		m_hp = m_player.GetHealth();
 	}
@@ -278,16 +282,33 @@ void Gameplay::Update(const float& deltaTime) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f, 2);
 	}
 
-	//if (Aen::Input::KeyDown(Aen::Key::F)) {
+	if (Aen::Input::KeyDown(Aen::Key::F)) {
 
-	//	//m_door.GetEntity()->SetRot(0, 90.f, 0);
-	//}
+		//m_door.GetEntity()->SetRot(0, 90.f, 0);
+	}
 
 	for (auto& i : m_enemyQueue) {
 		i->Update(deltaTime, m_player);
 	}
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
+
+	int enemiesToSummon = 0;
+	if (m_player.GetBossesAlive() > 0)
+	{
+		Aen::Vec3f minionOffset(-8.f,0,8.f);
+		enemiesToSummon = m_pSkeleBoss->GetEnemiesToSummon();
+		for (int i = 0; i < enemiesToSummon; i++)
+		{
+			minionOffset.z *= -1;
+			Rimuru* bossMinion = AEN_NEW Rimuru(m_bossPos + minionOffset, EnemyType::MINION);
+			minionOffset += Aen::Vec3f(3.f, 0, 0);
+			m_pSkeleBoss->EmplaceMinion(bossMinion);
+			m_enemyQueue.emplace_back(bossMinion);
+		}
+
+	}
+	else enemiesToSummon = 0;
 
 
 	if (m_hp <= 0.f) {
@@ -299,22 +320,11 @@ void Gameplay::Update(const float& deltaTime) {
 			State::SetState(States::Gameover);
 		}
 	}
-
-	//if (m_enemyQueue.empty()) {
-	//	SetWin(true);
-	//	State::SetState(States::Gameover);
-	//}
-
-	#ifdef _DEBUG
-		if(Aen::Input::KeyDown(Aen::Key::J))
-			m_enemyQueue.emplace_back(AEN_NEW Rimuru());
-	#endif
-
-	//if (Aen::Input::KeyDown(Aen::Key::O)) {
-	//	delete m_enemyQueue.front();
-	//	m_enemyQueue.pop_front();
-	//}
-
+	if (m_player.GetBossesAlive() <= 0.f)
+	{
+		SetWin(true);
+		State::SetState(States::Gameover);
+	}
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::F1)) {

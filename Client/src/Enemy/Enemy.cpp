@@ -1,22 +1,23 @@
 #include"Enemy.h"
 
-Enemy::Enemy()
-	:m_enemy(&Aen::EntityHandler::CreateEntity()), m_targeted(false), m_hurt(false) {
+Enemy::Enemy(EnemyType isMinion)
+	:m_enemy(&Aen::EntityHandler::CreateEntity()), m_targeted(false), m_hurt(false), m_ENEMYTYPE(isMinion)
+{
 	m_enemy->SetTag("Enemy");
 	m_enemy->AddComponent<Aen::AABoundBox>();
 	m_enemy->AddComponent<Aen::CharacterController>();
+	mp_hitbox = &m_enemy->GetComponent<Aen::AABoundBox>();
+	mp_charCont = &m_enemy->GetComponent<Aen::CharacterController>();
 	m_knockbackScalar = 1.f;
 }
 
 Enemy::~Enemy() {
+	Aen::EntityHandler::RemoveEntity(*m_enemy);
 }
 
 Aen::Entity*& Enemy::GetEntity()
 {
 	return m_enemy;
-}
-
-void Enemy::Update(const float& deltaTime, Player& player) {
 }
 
 void Enemy::SetISTargeted(const bool& targeted) {
@@ -44,6 +45,26 @@ void Enemy::Hurt(const bool& hurt) {
 	m_hurt = hurt;
 }
 
-const bool Enemy::IsHurt() {
+const bool Enemy::IsHurt() const {
 	return m_hurt;
+}
+
+void Enemy::SetStationary()
+{
+	m_stationary = !m_stationary;
+}
+
+void Enemy::SetStationary(bool b)
+{
+	m_stationary = b;
+}
+
+bool Enemy::GetStationary() const
+{
+	return m_stationary;
+}
+
+const EnemyType Enemy::GetEnemyType() const
+{
+	return m_ENEMYTYPE;
 }

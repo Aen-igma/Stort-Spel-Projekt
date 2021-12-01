@@ -36,9 +36,13 @@ private:
     //Aen::Entity* m_wall;
 
     Player m_player;
+    Boss* m_pSkeleBoss;
+
+    Aen::UIComponent* mp_uiComp;
+
     Chest m_chest;
-    //Door m_door;
     bool m_beatBoss;
+    Aen::Vec3f m_bossPos;
 
     std::queue<EventData> m_eventQueue;
 
@@ -47,6 +51,7 @@ private:
     Aen::LevelGenerator m_levelGenerator;
     Aen::Room* mptr_map;
     Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
+
 
     public:
     Gameplay(Aen::Window& window);

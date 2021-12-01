@@ -175,6 +175,7 @@
     <ClInclude Include="src\Actors\Chest.h" />
     <ClInclude Include="src\Actors\Interact.h" />
     <ClInclude Include="src\Client.h" />
+    <ClInclude Include="src\Enemy\Boss\NecroBoss.h" />
     <ClInclude Include="src\Enemy\Enemies.h" />
     <ClInclude Include="src\Enemy\Enemy.h" />
     <ClInclude Include="src\Enemy\Rimuru\Rimuru.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="src\Actors\Chest.cpp" />
     <ClCompile Include="src\Actors\Interact.cpp" />
     <ClCompile Include="src\Client.cpp" />
+    <ClCompile Include="src\Enemy\Boss\NecroBoss.cpp" />
     <ClCompile Include="src\Enemy\Enemy.cpp" />
     <ClCompile Include="src\Enemy\Rimuru\Rimuru.cpp" />
     <ClCompile Include="src\Enemy\SkeletonLight\SkeleLight.cpp" />

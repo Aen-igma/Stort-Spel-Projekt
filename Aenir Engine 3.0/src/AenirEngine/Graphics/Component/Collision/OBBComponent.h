@@ -30,8 +30,8 @@ namespace Aen
 
 		void Transform(Aen::Mat4f transform);
 		void Transform(sm::Matrix transform);
-		void SetRotation(Aen::Vec3f v);
-		void SetRotation(const float& x, const float& y, const float& z);
+		void SetOrientation(Aen::Vec3f v);
+		void SetOrientation(const float& x, const float& y, const float& z);
 
 		/// <summary>
 		/// Used for turning off/on collision checking

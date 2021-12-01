@@ -1,9 +1,15 @@
 #pragma once
 #include"../Player.h"
+#include"LevelGeneration/RandomNumberGenerator.h"
+enum class EnemyType
+{
+	BASE, MINION, BOSS,
+};
 
 class Enemy {
+
 	public:
-	Enemy();
+	Enemy(EnemyType isMinion = EnemyType::BASE);
 	virtual~Enemy();
 	Aen::Entity*& GetEntity();
 
@@ -15,14 +21,25 @@ class Enemy {
 	const float& GetKnockback();
 
 	void Hurt(const bool& hurt);
-	const bool IsHurt();
-
-	protected:
+	const bool IsHurt() const;
+	const EnemyType GetEnemyType() const;
+protected:
+	Aen::AABoundBox* mp_hitbox;
 	Aen::Entity* m_enemy;
 	std::deque<EventData> m_eventQueue;
 	bool m_targeted;
 	float m_health;
 	bool m_hurt;
 	Aen::Vec3f m_v;
+	void SetStationary();
+	void SetStationary(bool b);
+	bool GetStationary() const;
+
+	
+
+	Aen::CharacterController* mp_charCont;
+private:
+	bool m_stationary;
+	const EnemyType m_ENEMYTYPE;
 	float m_knockbackScalar;
 };
