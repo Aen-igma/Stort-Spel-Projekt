@@ -159,7 +159,7 @@ void Gameplay::Initialize()
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
-	m_player.GetEntity()->SetPos(ChestPos.x, ChestPos.y + 3.f, ChestPos.z);
+	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 3.f, playerStartPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 
@@ -191,9 +191,6 @@ void Gameplay::Initialize()
 	m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 	//m_attack->SetParent(*m_player);
-
-	cout << itemNormal << endl;
-
 	//printf("");
 
 	//std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
