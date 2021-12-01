@@ -28,12 +28,13 @@ private:
 
     Aen::Raycast m_ray;
 
-    //Aen::Entity* m_dLight;
+    Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
     Aen::Entity* m_reimube1;
+
     Aen::Entity* m_UI;
     //Aen::Entity* m_wall;
- 
+
     Player m_player;
     Chest m_chest;
     //Door m_door;

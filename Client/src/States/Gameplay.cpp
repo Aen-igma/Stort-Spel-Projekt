@@ -46,8 +46,6 @@ void Gameplay::Initialize()
 	//plane.Load(AEN_RESOURCE_DIR("Floor_Final.fbx"));
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
 	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
-	Aen::Mesh& skeleLight = Aen::Resource::CreateMesh("SkeletonLight");
-	skeleLight.Load(AEN_MODEL_DIR("Skel_Light_New.fbx"));
 	Aen::Mesh& reimube = Aen::Resource::CreateMesh("Reimube");
 	reimube.Load(AEN_MODEL_DIR("Cube.fbx"));
 	//Aen::Mesh& wall = Aen::Resource::CreateMesh("Wall");
@@ -58,19 +56,14 @@ void Gameplay::Initialize()
 	// -------------------------- Setup Material -------------------------------- //
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
-	Aen::Material& slimeMat = Aen::Resource::CreateMaterial("SlimeMaterial");
-	Aen::Material& skeleLightMat = Aen::Resource::CreateMaterial("SkeleLightMaterial");
+	Aen::Material& enemyMat = Aen::Resource::CreateMaterial("EnemyMaterial");
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 	Aen::Material& reimubeMat = Aen::Resource::CreateMaterial("ReimubeMat");
 
-	slimeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
-	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
-	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
-	slimeMat["BaseColor"] = Aen::Color::Cyan;
-
-	skeleLightMat["InnerEdgeColor"] = Aen::Color::Black;
-	skeleLightMat["OuterEdgeColor"] = Aen::Color::Black;
-	skeleLightMat["BaseColor"] = Aen::Color::White;
+	enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
+	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
+	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
+	enemyMat["BaseColor"] = Aen::Color::Cyan;
 	// Material to switch to when enemy is hurt
 	enemyMatHurt["BaseColor"] = Aen::Color::Red;
 
@@ -91,10 +84,16 @@ void Gameplay::Initialize()
 	m_plane->AddComponent<Aen::StaticBody>();
 	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
 
+
+	//m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::CUBE, Aen::Vec3f(1.f, 44.f, 44.f));
+	//m_plane->AddComponent<Aen::MeshInstance>();
+	//m_plane->GetComponent<Aen::MeshInstance>().SetMesh(plane);
+	//m_plane->GetComponent<Aen::MeshInstance>().SetMaterial(planeMat);
+
 	m_reimube1 = &Aen::EntityHandler::CreateEntity();
 	m_reimube1->AddComponent<Aen::MeshInstance>();
 	m_reimube1->GetComponent<Aen::MeshInstance>().SetMesh(reimube);
-	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(slimeMat);
+	m_reimube1->GetComponent<Aen::MeshInstance>().SetMaterial(enemyMat);
 	//m_reimube1->AddComponent<Aen::StaticBody>();
 	//m_reimube1->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
 	m_reimube1->SetPos(0.f, 1.f, 11.f);
@@ -118,7 +117,6 @@ void Gameplay::Initialize()
 	//Match this value to the size of the rooms we are using
 	m_levelGenerator.SetRoomDimension(43.f);
 	mptr_map = m_levelGenerator.GenerateLevel();
-	m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
@@ -132,33 +130,28 @@ void Gameplay::Initialize()
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE && mptr_map[y * Aen::mapSize + x].m_present) {
+				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+			}
+			else if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
-			mptr_map[x + y * Aen::mapSize].mptr_parent;
-
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
+			else if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
 				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
 				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 			}
-
-			/*if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE && mptr_map[y * Aen::mapSize + x].m_present) {
-				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			}
-
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
+			else if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
 
 				int index = m_enemyQueue.size();
 				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
 				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			}*/
+			}
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
-	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
-	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	//m_door.SetType(Type::Open);
 
@@ -181,18 +174,12 @@ void Gameplay::Initialize()
 
 	//printf("");
 
-	
-	std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
-	std::vector<Aen::Vec3f> tempLskels = m_levelGenerator.GetHandlerPtr()->GetLskelPos();
-	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
-	{
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempSlimes[i]));
-	}
-	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetLskelPos().size(); i++)
-	{
-		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(tempLskels[i]));
-	}
-	
+	//std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
+	//for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
+	//{
+	//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempEnemies[i]));
+	//}
+	//m_enemyQueue.emplace_back(AEN_NEW Rimuru(Aen::Vec3f(0,0,0)));
 
 
 	//m_attack->SetParent(*m_player);
@@ -240,8 +227,8 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos(965.f, 800.f);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize(900.f, 300);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920)* wDesc.width, (800.f / 1024)* wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920)* wDesc.width, (300 / 1024)* wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
 
 	Aen::Input::ToggleRawMouse(true);
@@ -251,17 +238,19 @@ void Gameplay::Initialize()
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
 
 void Gameplay::Update(const float& deltaTime) {
-	
-	wstringstream potionNr;
-	potionNr << m_player.GetPotionNr();
-	m_player.PotionUpdate();
-	if (m_hp != m_player.GetHealth()) {
-		float hp = (m_hp - m_player.GetHealth());
 
-		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture((hp * 2.f) * (1.f/1920.f) * screenSize.x, 0);
+	if (m_hp != m_player.GetHealth()) { //ersätt collision med enemy i if satsen
+		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenSize.x, 0);
 		m_hp = m_player.GetHealth();
 	}
-	m_UI->GetComponent<Aen::UIComponent>().ChangeText(1, potionNr.str().c_str());
+	static int pots;
+	if (pots != m_player.GetPotionNr()) {
+		m_UI->GetComponent<Aen::UIComponent>().ChangeText(1, std::to_wstring(m_player.GetPotionNr()).c_str());	
+		pots = m_player.GetPotionNr();
+	}
+	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
+
+	m_player.PotionUpdate();
 
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
@@ -287,10 +276,10 @@ void Gameplay::Update(const float& deltaTime) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f, 2);
 	}
 
-	//if (Aen::Input::KeyDown(Aen::Key::F)) {
+	if (Aen::Input::KeyDown(Aen::Key::F)) {
 
 		//m_door.GetEntity()->SetRot(0, 90.f, 0);
-	//}
+	}
 
 	for (auto& i : m_enemyQueue) {
 		i->Update(deltaTime, m_player);
@@ -314,10 +303,10 @@ void Gameplay::Update(const float& deltaTime) {
 	//	State::SetState(States::Gameover);
 	//}
 
-	/*#ifdef _DEBUG
+	#ifdef _DEBUG
 		if(Aen::Input::KeyDown(Aen::Key::J))
 			m_enemyQueue.emplace_back(AEN_NEW Rimuru());
-	#endif*/
+	#endif
 
 	//if (Aen::Input::KeyDown(Aen::Key::O)) {
 	//	delete m_enemyQueue.front();
@@ -353,8 +342,8 @@ void Gameplay::Update(const float& deltaTime) {
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
-		State::SetState(States::Gameover);
-		//m_Window.Exit();
+		//State::SetState(States::Gameover);
+		m_Window.Exit();
 	}
 	// ------------------------------------- States -------------------------------------- //
 	//if (m_hp <= 0 && m_enemyQueue.size() == 0)
