@@ -124,8 +124,8 @@ void Gameplay::Initialize()
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
-	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
-	m_player.GetEntity()->SetPos(ChestPos.x, ChestPos.y + 5.f, ChestPos.z);
+	m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
+	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
@@ -215,8 +215,8 @@ void Gameplay::Initialize()
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Find the boss", 72.f); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"- Find the boss", 30.f); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((175.f / 1920) * wDesc.width, (300.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddText(L"3", 50.f); //1 - Amount of potion
@@ -228,6 +228,10 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * wDesc.width, (800.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * wDesc.width, (300.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"- Find Item Room (Optional)", 30.f); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((200.f / 1920) * wDesc.width, (350.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
@@ -295,9 +299,9 @@ void Gameplay::Update(const float& deltaTime) {
 	if (m_player.GetBossesAlive() > 0)
 	{
 		if (m_pSkeleBoss->GetBS() != BossState::STATIONARY && m_door.GetType() == Type::Open) {
+			m_UI->GetComponent<Aen::UIComponent>().ChangeText(0, L"- Kill the Boss");
 			m_door.SetType(Type::Locking);
 		}
-
 
 		Aen::Vec3f minionOffset(-8.f,0,8.f);
 		enemiesToSummon = m_pSkeleBoss->GetEnemiesToSummon();
