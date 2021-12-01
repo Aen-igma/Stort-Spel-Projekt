@@ -1,19 +1,5 @@
 #pragma once
 #include"../../Graphics.h"
-//#include"ThirdParty/assimp/AssimpIncludes.h"
-//#include"ThirdParty/assimp/AssimpIncludes.h"
-
-//#undef min
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/Importer.hpp"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/scene.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/postprocess.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/matrix4x4.h"
-//#include"../AenirEngine/ThirdParty/assimp/include/assimp/cimport.h"
-//#undef min
-//#include <assimp/Importer.hpp>
-//#include <assimp/scene.h>
-//#include <assimp/postprocess.h>
-//#include "Importer/AssimpImporter.h"
 
 namespace Aen {
 

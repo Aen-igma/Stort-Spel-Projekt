@@ -30,7 +30,6 @@ namespace Aen {
 
 				for (int i = 0; i < animation->m_boneArray.size(); i++) {
 					animation->m_finalMatrix.GetData(i) = modelTran[i] * animation->m_boneArray[i].offsetMatrix;
-					//animation->m_finalMatrix.GetData(i) = animation->m_boneArray[i].localMatrix;
 				}
 
 				if (m_currentFrame > 1) {
