@@ -4,6 +4,8 @@
 #include "AenirEngine/ThirdParty/ImGui/imgui.h"
 #include "AenirEngine\Graphics\Component\EntityHandler.h"
 #include"../Enemy/Enemies.h"
+#include "../Actors/Chest.h"
+#include "../Actors/Door.h"
 #include"AenirEngine\LevelEditor\ImGuiImporter.h"
 #include<functional>
 
@@ -11,6 +13,8 @@ class Gameplay : public State {
 private:
     float m_hp;
     float m_sub;
+    float m_timer;
+    float m_deathTimer;
 
     float m_iFrames;
     const float IFRAMEMAX;
@@ -20,6 +24,8 @@ private:
     float m_fSpeed;
     bool m_toggleFullScreen;
 
+    Aen::Vec2f screenSize;
+
     Aen::Raycast m_ray;
 
     Aen::Entity* m_dLight;
@@ -27,13 +33,14 @@ private:
     Aen::Entity* m_reimube1;
 
     Aen::Entity* m_UI;
-    //Aen::Entity* m_wall;
-
+    Aen::Entity* m_wall;
+ 
     Player m_player;
     Boss* m_pSkeleBoss;
 
     Aen::UIComponent* mp_uiComp;
 
+    Chest m_chest;
     bool m_beatBoss;
 
     //Aen::ImGuiImporter m_levelImporter;

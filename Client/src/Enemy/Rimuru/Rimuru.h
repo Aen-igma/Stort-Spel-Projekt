@@ -18,7 +18,8 @@ class Rimuru : public Enemy {
 	void RandomCombatEvent(const float& deltaTime);
 	void RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir);
 	void WaitEvent();
-
+	
+	float m_damage = 40.f;
 	Aen::Entity* m_healthBar;
 	Aen::Entity* m_rimuru;
 	Aen::Vec3f m_lDir;

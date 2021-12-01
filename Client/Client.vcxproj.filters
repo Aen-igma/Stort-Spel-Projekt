@@ -27,9 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Client.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="src\States\Gameplay.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
@@ -57,7 +54,22 @@
     <ClInclude Include="src\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\States\Victory.h">
+    <ClInclude Include="src\States\Options.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Actors\Interact.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Actors\Chest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\States\Credits.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Actors\Door.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Enemy\Boss\NecroBoss.h">
@@ -92,7 +104,19 @@
     <ClCompile Include="src\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\States\Victory.cpp">
+    <ClCompile Include="src\States\Options.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Actors\Interact.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Actors\Chest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\States\Credits.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Actors\Door.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Enemy\Boss\NecroBoss.cpp">
