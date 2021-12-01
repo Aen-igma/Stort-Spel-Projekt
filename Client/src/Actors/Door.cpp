@@ -66,6 +66,7 @@ void Door::Update(const float& deltaTime, Aen::Entity*& e)
 	Aen::Vec3f eDir = e->GetPos() - m_door->GetPos();
 	float dist = eDir.Magnitude();
 	static float timer = 0;
+	static const Aen::Vec3f pos = m_door->GetPos();
 
 	//player
 	if (e->GetTag() == "Player") {
@@ -78,26 +79,13 @@ void Door::Update(const float& deltaTime, Aen::Entity*& e)
 	}
 
 	if (m_type == Type::Locking) {
-		
-		timer += 0.05f * deltaTime;
-		m_door->MoveRelative(-timer, 0, 0);
-
-		if (timer > 0.095f) {
-			m_type = Type::Locked;
-			timer = 0;
-		}
+		m_door->SetPos(pos);
+		m_type = Type::Locked;
 	}
 
 	if (m_type == Type::Opening) {
-		timer += 0.05f * deltaTime;
-		m_door->MoveRelative(timer, 0, 0);
-
-		if (timer > 0.1f) {
-			m_type = Type::Open;
-			timer = 0;
-		}
-
-		cout << timer << endl;
+		m_door->SetPos(0.f, -100, 0);
+		m_type = Type::Open;
 	}
 }
 

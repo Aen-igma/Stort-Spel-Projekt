@@ -113,11 +113,6 @@ void Gameplay::Initialize()
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
 			}
 
-			//if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE && mptr_map[y * Aen::mapSize + x].m_present) {
-			//	m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-			//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			//}
-
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
 
 				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
@@ -130,7 +125,7 @@ void Gameplay::Initialize()
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
 	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
-	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+	m_player.GetEntity()->SetPos(ChestPos.x, ChestPos.y + 5.f, ChestPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
