@@ -1,6 +1,15 @@
 #pragma once
 #include"../Rimuru/Rimuru.h"
 
+enum class BossState
+{
+	STATIONARY,
+	PHASE1,
+	ONTHRONE,
+	PHASE2,
+	CASTING,
+};
+
 class Boss : public Enemy
 {
 private:
@@ -9,7 +18,7 @@ private:
 	const float LIGHTFORCE;
 	const float HEAVYFORCE;
 public:
-	Boss(float hp = 100.f);
+	Boss(const Aen::Vec3f position = Aen::Vec3f(1.f, 0.f, 3.f), float hp = 100.f);
 	virtual~Boss();
 
 	// Inherited via Enemy
@@ -25,46 +34,50 @@ public:
 	int GetEnemiesInVector() const;
 	void EmplaceMinion(Rimuru* e);
 	void RemoveMinion(Enemy* e);
+	void RemoveMinion(uint16_t i);
 
 protected:
 	//Aen::Entity* m_hurtbox;
 
 private:
+
 	void LightAttack();
 	void BigAttack();
 	void GoToThrone();
 	void SummonSlimes(int amountOfSLimes);
 	void Wait(const float duration);
+	void RandomCombatEvent();
 
 	void UpdateAttack();
 
 	
 	Aen::Entity* mE_hurtBox;
+	Aen::Entity* m_healthBar;
 	Aen::OBBox* mp_hurtBox;
-
-	float m_deltatime;
-	Aen::Vec3f m_direction;
-
 	Player* mp_player;
+	bool m_waiting;
+
+	Aen::Vec3f m_direction;
 	std::vector<Rimuru*> m_pMinions;
+	
+	const float m_MAXHP;
+	float m_deltatime;
+
 
 	Aen::Vec3f m_thronePosition; // TODO: Pair with procedual generation
-
-	float m_hp;
-	bool m_isEngaged;
 	bool m_isHurting;
 	bool m_isCasting;
 	bool m_cantSummonSlimes;
+	bool m_slimesWereCasted = false;
 
 	float m_knockBackForce;
 	float m_attackDamage;
-
 	float m_speed;
 	const float BASESPEED;
 
-	uint8_t m_stage = 0;
-	bool m_waiting;
-	uint8_t m_minionsToSummon = 0;
-
+	BossState bs;
+	uint16_t m_minionsToSummon = 0;
+	float m_spawnTimer = 0;
+	float m_attackTimer = 0;
 };
 

@@ -581,9 +581,25 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 							break;
 						}
 
-					delete e[i];
-					if (e[i]->GetIsMinion())
+					switch (e[i]->GetEnemyType())
+					{
+					case EnemyType::BASE:
+						delete e[i];
+						break;
+					case EnemyType::MINION:
 						mp_boss->RemoveMinion(e[i]);
+						break;
+					case EnemyType::BOSS:
+					{
+						delete e[i];
+						m_bossesAlive--;
+						break;
+					}
+
+					default:
+						break;
+					}
+						
 					e[i] = nullptr;
 					e.erase(e.begin() + i);
 				}
@@ -636,6 +652,17 @@ Aen::AABoundBox* Player::GetHitBoxP() const
 void Player::SetBossP(Boss* boss)
 {
 	mp_boss = boss;
+}
+
+int Player::GetBossesAlive() const
+{
+	return m_bossesAlive;
+}
+
+void Player::AddBossesAlive(int n)
+{
+	m_bossesAlive += n;
+	if (m_bossesAlive < 0) m_bossesAlive = 0;
 }
 
 //void Player::SwordSwing(float speed, float time, const float& deltaTime)

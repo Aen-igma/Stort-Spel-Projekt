@@ -58,6 +58,9 @@ public:
 
 	void SetBossP(Boss* boss);
 
+	int GetBossesAlive() const;
+	void AddBossesAlive(int n);
+
 private:
 
 	//void SwordSwing(float speed, float time, const float& deltaTime);
@@ -100,4 +103,6 @@ private:
 	Aen::AABoundBox* mp_hitBox;
 	Aen::OBBox* mp_hurtBox;
 	Aen::Rotation* m_rot;
+
+	int m_bossesAlive = 0;
 };

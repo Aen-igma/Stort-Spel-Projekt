@@ -2,8 +2,7 @@
 
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f),
-	IFRAMEMAX(1.5f), m_iFrames(0.f),
-	m_skeleBoss(new Boss)
+	IFRAMEMAX(1.5f), m_iFrames(0.f)
 {
 	
 }
@@ -32,7 +31,7 @@ void Gameplay::Initialize()
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
 
-	m_player.SetBossP(m_skeleBoss);
+	
 
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
@@ -157,28 +156,40 @@ void Gameplay::Initialize()
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
 
-
+	Aen::Vec3f bossPos;
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+				//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+
+			}
+			mptr_map[x + y * Aen::mapSize].mptr_parent;
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
+			{
+
+				m_levelGenerator.GetRoomPos(x, y, &bossPos.x, &bossPos.z);
 				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
 		}
 	}
-
 	m_player.GetEntity()->SetPos(playerStartPos + Aen::Vec3f(0.f, 0.8f, 0.f));
-
+	
 
 	//---------ENEMIES----------//
-	/*int numEnemies = 10;
-	int offset = -10;
-	Aen::Vec3f enemyPos{0.f, 1.f, -15.f};
-	for (int u = 0; u < numEnemies; u++) {
-		m_enemyQueue.emplace_back(AEN_NEW Rimuru(enemyPos + Aen::Vec3f((rand() % 38) - 19.f, 0.f, offset)));
-		offset -= 5;
-	}*/
+	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
+	
+
+
+
+	m_enemyQueue.emplace_back(AEN_NEW Boss(bossPos));
+	m_pSkeleBoss = dynamic_cast<Boss*>(m_enemyQueue[m_enemyQueue.size() - 1]);
+	m_player.AddBossesAlive(1);
+	m_pSkeleBoss->GetEntity()->SetPos(bossPos);
+
+	m_player.SetBossP(m_pSkeleBoss);
 
 	std::vector<Aen::Vec3f> tempEnemies = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
@@ -203,7 +214,7 @@ void Gameplay::Initialize()
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	cout << "Press Enter To Continue\n";
-	m_enemyQueue.emplace_back(m_skeleBoss);
+	//m_enemyQueue.push_back(m_pSkeleBoss);
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -229,36 +240,27 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.Update(m_enemyQueue, deltaTime);
 
-	//m_skeleBoss.Update(deltaTime, m_player);
-
 	for(auto& i : m_enemyQueue)
 		i->Update(deltaTime, m_player);
 
 	m_player.UpdateAttack(m_enemyQueue, deltaTime);
 
+	int enemiesToSummon = 0;
+	if (m_player.GetBossesAlive() > 0)
+	{
+		enemiesToSummon = m_pSkeleBoss->GetEnemiesToSummon();
+		for (int i = 0; i < enemiesToSummon; i++)
+		{
+			Rimuru* bossMinion = AEN_NEW Rimuru(m_player.GetEntity()->GetPos() + Aen::Vec3f(0.f, 0.f, 1.f), EnemyType::MINION);
+			m_pSkeleBoss->EmplaceMinion(bossMinion);
+			m_enemyQueue.emplace_back(bossMinion);
+		}
+
+	}
+	else enemiesToSummon = 0;
+
 	if(m_player.GetHealth() <= 0.f)
 		State::SetState(States::Gameover);
-
-	//if(m_enemyQueue.empty())
-	//	State::SetState(States::Victory);
-
-	int enemiesToSummon = m_skeleBoss->GetEnemiesToSummon();
-	for (int i = 0; i < enemiesToSummon; i++)
-	{
-		Rimuru* bossMinion = AEN_NEW Rimuru(m_player.GetEntity()->GetPos() + Aen::Vec3f(0.f,0.f,1.f), true);
-		m_skeleBoss->EmplaceMinion(bossMinion);
-		m_enemyQueue.emplace_back(bossMinion);
-	}
-
-	//#ifdef _DEBUG
-	//	if(Aen::Input::KeyDown(Aen::Key::J))
-	//		m_enemyQueue.emplace_back(AEN_NEW Rimuru());
-	//#endif
-
-	//if (Aen::Input::KeyDown(Aen::Key::O)) {
-	//	delete m_enemyQueue.front();
-	//	m_enemyQueue.pop_front();
-	//}
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 

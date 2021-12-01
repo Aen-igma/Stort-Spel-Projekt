@@ -12,6 +12,7 @@ Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, cons
 void Client::Start()
 {
 	State::SetState(States::Gameplay);
+	SetLehmerSeed(time(0));
 	//ChangeState(States::Gameplay);
 }
 

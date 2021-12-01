@@ -1,7 +1,8 @@
 #include"Enemy.h"
 
-Enemy::Enemy(const bool isMinion)
-	:m_enemy(&Aen::EntityHandler::CreateEntity()), m_targeted(false), m_hurt(false), m_ISMINION(isMinion) {
+Enemy::Enemy(EnemyType isMinion)
+	:m_enemy(&Aen::EntityHandler::CreateEntity()), m_targeted(false), m_hurt(false), m_ENEMYTYPE(isMinion)
+{
 	m_enemy->SetTag("Enemy");
 	m_enemy->AddComponent<Aen::AABoundBox>();
 	m_enemy->AddComponent<Aen::CharacterController>();
@@ -57,7 +58,7 @@ bool Enemy::GetStationary() const
 	return m_stationary;
 }
 
-const bool Enemy::GetIsMinion() const
+const EnemyType Enemy::GetEnemyType() const
 {
-	return m_ISMINION;
+	return m_ENEMYTYPE;
 }
