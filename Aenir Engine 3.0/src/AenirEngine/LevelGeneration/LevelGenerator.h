@@ -110,7 +110,7 @@ namespace Aen {
 
 
 
-	static const int mapSize = 8;
+	static const int mapSize = 12;
 	static float roomDimension = 3;
 
 	static RoomTheme m_mapTheme = RoomTheme::PLACEHOLDER;
@@ -136,6 +136,7 @@ namespace Aen {
 		void placeLootRoom();
 	public:
 		~LevelGenerator();
+		LevelGenerator();
 
 		Vec2f m_mapOrigin;
 

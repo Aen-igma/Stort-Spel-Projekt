@@ -175,9 +175,11 @@
     <ClInclude Include="src\Actors\Chest.h" />
     <ClInclude Include="src\Actors\Interact.h" />
     <ClInclude Include="src\Client.h" />
+    <ClInclude Include="src\Enemy\Boss\NecroBoss.h" />
     <ClInclude Include="src\Enemy\Enemies.h" />
     <ClInclude Include="src\Enemy\Enemy.h" />
     <ClInclude Include="src\Enemy\Rimuru\Rimuru.h" />
+    <ClInclude Include="src\Enemy\SkeletonLight\SkeleLight.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\States\GameEnd.h" />
     <ClInclude Include="src\States\Gameplay.h" />
@@ -192,8 +194,10 @@
     <ClCompile Include="src\Actors\Chest.cpp" />
     <ClCompile Include="src\Actors\Interact.cpp" />
     <ClCompile Include="src\Client.cpp" />
+    <ClCompile Include="src\Enemy\Boss\NecroBoss.cpp" />
     <ClCompile Include="src\Enemy\Enemy.cpp" />
     <ClCompile Include="src\Enemy\Rimuru\Rimuru.cpp" />
+    <ClCompile Include="src\Enemy\SkeletonLight\SkeleLight.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\States\GameEnd.cpp" />
     <ClCompile Include="src\States\Gameplay.cpp" />

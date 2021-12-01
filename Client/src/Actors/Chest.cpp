@@ -4,13 +4,17 @@ Chest::Chest()
 	:Interact(), m_chest(&Aen::EntityHandler::CreateEntity()), m_near(false)
 {
 	Aen::Mesh& chest = Aen::Resource::CreateMesh("Chest");
-	chest.Load(AEN_RESOURCE_DIR("chest.fbx"));
+	chest.Load(AEN_MODEL_DIR("chest.fbx"));
+	Aen::Material& chestMat = Aen::Resource::CreateMaterial("ChestMaterial");
+	chestMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("chest.png"));
 	m_chest->AddComponent<Aen::MeshInstance>();
-	m_chest->GetComponent<Aen::MeshInstance>().SetMesh("Chest");
+	m_chest->GetComponent<Aen::MeshInstance>().SetMesh(chest);
+	m_chest->GetComponent<Aen::MeshInstance>().SetMaterial(chestMat);
 	m_chest->SetScale(0.8f);
 
+
 	m_chest->AddComponent<Aen::StaticBody>();
-	m_chest->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+	m_chest->GetComponent<Aen::StaticBody>().SetBoundsToMesh();
 	m_chest->SetRot(0, 0, 0);
 
 	Aen::Material& ChestMaterial = Aen::Resource::CreateMaterial("ChestMat");

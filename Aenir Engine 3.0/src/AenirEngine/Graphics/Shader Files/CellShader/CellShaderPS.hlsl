@@ -61,7 +61,8 @@ struct Light {
 
 struct PS_Input {
 	float4 pos : SV_Position;
-	float3x3 tbn : TBN;
+	float3 normal : NORMAL;
+	float3 tangent : TANGENT;
 	float2 uv : TEXCOORD;
 	float3 worldPos : WORLD_POSITION;
 };
@@ -105,7 +106,11 @@ PS_Output main(PS_Input input) : SV_Target0 {
 		clip((opacityM <= 0.1f) ? -1 : 1);
 	}
 
-	float3 normal = (useNormal) ? float4(mul(normalM, input.tbn), 1.f).rgb : float4(normalize(input.tbn._m20_m21_m22), 1.f).rgb;
+	float3 binormal = normalize(cross(input.tangent, input.normal));
+
+	float3x3 TBN = float3x3(input.tangent, binormal, input.normal);
+
+	float3 normal = (useNormal) ? float4(mul(normalM, TBN), 1.f) : float4(normalize(input.normal), 1.f);
 	float3 ambient = shadowColor.rgb;
 
 
@@ -152,6 +157,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 	output.diffuse = float4(saturate(finalPixel * diffuseM), 1.f);
 	output.pos = float4(input.worldPos, 1.f);
 
+	//finalPixel = normal;
 
 	if(opacityM > 0.f || !useOpacity) {
 		output.depthNormal = mul(float4(normal, 0.f), vMat);

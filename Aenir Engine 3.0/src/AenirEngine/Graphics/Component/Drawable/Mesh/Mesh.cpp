@@ -62,6 +62,21 @@ namespace Aen {
 		return this->m_indices;
 	}
 
+	DirectX::BoundingBox Mesh::getAABB() const
+	{
+		return m_aabb;
+	}
+
+	DirectX::BoundingOrientedBox Mesh::getOBB() const
+	{
+		return m_obb;
+	}
+
+	std::vector<PartitionData> Mesh::getPartitions() const
+	{
+		return m_partitions;
+	}
+
 	Mesh::~Mesh() {
 		//delete[] mp_posV;
 	}

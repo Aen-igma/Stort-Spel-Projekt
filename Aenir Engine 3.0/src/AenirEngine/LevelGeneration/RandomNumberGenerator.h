@@ -14,10 +14,11 @@ static const uint64_t LehmerInt() {
 	uint64_t m2 = (temp >> 32) ^ temp;
 	return m2;
 };
-static void SetLehmerSeed(const int seed) {
+static void SetLehmerSeed(const uint64_t seed) {
 	nLehmer = seed + lehmerConstSeed;
 };
-static void SetLehmerConstSeed(const int seed)
+static void SetLehmerConstSeed(const uint64_t seed)
 {
 	lehmerConstSeed = seed;
+	nLehmer = seed;
 };

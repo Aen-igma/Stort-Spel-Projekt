@@ -171,7 +171,7 @@ namespace Aen {
 			ComponentHandler::GetScale(m_id).SetScale(x, y, z);
 	}
 
-	const Vec3f Entity::GetPos() {
+	const Vec3f Entity::GetPos() const {
 
 		Vec3f pos;
 		if(ComponentHandler::DynamicBodyExist(m_id))
@@ -186,7 +186,7 @@ namespace Aen {
 		return pos;
 	}
 
-	const Vec3f Entity::GetRot() {
+	const Vec3f Entity::GetRot() const {
 		Vec3f rot;
 		if(ComponentHandler::DynamicBodyExist(m_id))
 			rot = ComponentHandler::GetDynamicBody(m_id).GetRot();
@@ -198,25 +198,25 @@ namespace Aen {
 		return rot;
 	}
 
-	const Vec3f Entity::GetScale() {
+	const Vec3f Entity::GetScale() const {
 		if(ComponentHandler::ScaleExist(m_id))
 			return ComponentHandler::GetScale(m_id).GetScale();
 		return Vec3f::one;
 	}
 
-	const size_t& Entity::GetID() {
+	const size_t& Entity::GetID() const {
 		return m_id;
 	}
 
-	const std::string& Entity::GetTag() {
+	const std::string& Entity::GetTag() const {
 		return m_tag;
 	}
 
-	const bool Entity::HasId(const size_t& id) {
+	const bool Entity::HasId(const size_t& id) const {
 		return m_id == id;
 	}
 
-	const Mat4f Entity::GetTransformation() {
+	const Mat4f Entity::GetTransformation() const {
 
 		Mat4f pos(Mat4f::identity); 
 		if(ComponentHandler::DynamicBodyExist(m_id))
@@ -245,7 +245,7 @@ namespace Aen {
 		return scale * rot * pos * parentMatrix;
 	}
 
-	const Vec3f Entity::GetTranslation() {
+	const Vec3f Entity::GetTranslation() const {
 
 		Vec3f pos = GetPos();
 
@@ -257,7 +257,7 @@ namespace Aen {
 		return pos + parent;
 	}
 
-	const Mat4f Entity::GetPosMat() {
+	const Mat4f Entity::GetPosMat() const {
 		Mat4f pos = (ComponentHandler::TranslationExist(m_id)) ? ComponentHandler::GetTranslation(m_id).GetTranform() : Mat4f::identity;
 
 		Mat4f parentMatrix;
@@ -267,7 +267,7 @@ namespace Aen {
 		return pos * parentMatrix;
 	}
 
-	const Mat4f Entity::GetRotMat() {
+	const Mat4f Entity::GetRotMat() const {
 		Mat4f rot = (ComponentHandler::RotationExist(m_id)) ? ComponentHandler::GetRotation(m_id).GetTranform() : Mat4f::identity;
 
 		Mat4f parentMatrix;
@@ -277,7 +277,7 @@ namespace Aen {
 		return rot * parentMatrix;
 	}
 
-	const Mat4f Entity::GetScaleMat() {
+	const Mat4f Entity::GetScaleMat() const {
 		Mat4f scale = (ComponentHandler::ScaleExist(m_id)) ? ComponentHandler::GetScale(m_id).GetTranform() : Mat4f::identity;
 
 		Mat4f parentMatrix;

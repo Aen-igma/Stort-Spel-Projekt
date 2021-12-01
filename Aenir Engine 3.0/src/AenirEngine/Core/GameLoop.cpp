@@ -4,12 +4,13 @@
 namespace Aen {
 
 	GameLoop::GameLoop()
-		:m_app(nullptr), m_start(), m_end(), m_frameTime(), m_deltaTime(), m_renderer(nullptr) {}
+		:m_app(nullptr), /*m_start(), m_end(), m_frameTime(), m_deltaTime(),*/ m_renderer(nullptr) {}
 
 	void GameLoop::Initialize() {
 		//m_app = CreateApp();                       fix this
 		int ft = (int)(((double)1 / (double)60) * (double)pow(10, 9));
-		m_frameTime = std::chrono::nanoseconds{ft};
+		//m_frameTime = std::chrono::nanoseconds{ft};
+		m_frametime = ft / pow(10, 9);
 
 		if(!Input::Initialize())
 			exit(-1);
@@ -35,13 +36,11 @@ namespace Aen {
 		while (Aen::WindowHandle::HandleMsg()) {
 
 			sstart = omp_get_wtime();
-
 			if (m_app->m_window.IsActive()) {
 
 				Input::Update();
 				m_app->Update(static_cast<float>(deltaTime));
 			}
-
 			PhysicsHandler::Update(static_cast<float>(deltaTime));
 			
 			m_renderer->Culling();

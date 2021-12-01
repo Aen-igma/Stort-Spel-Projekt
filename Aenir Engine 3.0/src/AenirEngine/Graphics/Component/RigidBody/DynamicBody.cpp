@@ -19,6 +19,7 @@ namespace Aen {
 		px::PxTransform t(0.f, 0.f, 0.f);
 		px::PxBoxGeometry cube(m_scale.x * 0.5f, m_scale.y * 0.5f, m_scale.x * 0.5f);
 		mp_DynamicBody = px::PxCreateDynamic(*mp_LocalPhysics, t, cube, *mp_Material, m_density);
+		//mp_DynamicBody->setActorFlag(px::PxActorFlag::eDISABLE_GRAVITY, true);
 		PhysicsHandler::GetInstance()->AddActor(mp_DynamicBody);
 	}
 
