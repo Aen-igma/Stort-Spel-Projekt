@@ -73,7 +73,7 @@ SkeleLight::SkeleLight(const Aen::Vec3f& pos)
 	mp_hurtbox->SetParent(*m_enemy);
 
 	m_nDir = Aen::Vec2f(0.f, 0.f);
-	m_health = 200.f;
+	m_health = 100.f;
 	m_hurting, m_wait = false;
 }
 

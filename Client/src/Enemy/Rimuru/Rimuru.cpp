@@ -27,7 +27,7 @@ Rimuru::Rimuru(EnemyType isMinion)
 	m_healthBar->SetScale(5.f, 0.f, 5.f);
 	m_healthBar->SetRenderLayer(1);
 
-	m_health = 100.f;
+	m_health = 50.f;
 	m_wait, m_dodge, m_hurting, m_toggleAttacked = false;
 }
 
@@ -53,7 +53,7 @@ Rimuru::Rimuru(const Aen::Vec3f& pos, EnemyType isMinion)
 	m_healthBar->SetScale(5.f, 0.f, 5.f);
 	m_healthBar->SetRenderLayer(1);
 
-	m_health = 100.f;
+	m_health = 50.f;
 	m_wait, m_dodge, m_hurting, m_toggleAttacked = false;
 }
 

@@ -41,7 +41,7 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	m_healthBar->AddComponent<Aen::MeshInstance>();
 	m_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
 	m_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
-	m_healthBar->SetRot(0, 0, 0);
+	m_healthBar->SetRot(180, 0, 0);
 	//m_healthBar->SetPos(0, -100, 0);
 	m_healthBar->SetScale(5.f, 0.f, 5.f);
 	m_healthBar->SetRenderLayer(1);
@@ -78,7 +78,11 @@ void Boss::Update(const float& deltaTime, Player& player)
 		mp_meshInst->SetMaterial("EnemyMaterialHurt");
 
 	if (distance <= 10.f && bs == BossState(0))
+	{
+		m_healthBar->SetRot(-45, 0, 0);
+		m_healthBar->SetPos(0, 3, 0);
 		bs = BossState(1);
+	}
 
 	if (bs != BossState::STATIONARY && !m_eventQueue.empty())
 	{
@@ -104,9 +108,9 @@ void Boss::Update(const float& deltaTime, Player& player)
 	{
 		m_deltatime = deltaTime;
 
-		if(distance < 2.f )
+		if(distance < 5.f )
 			m_attackTimer += deltaTime;
-		if (m_attackTimer >= 3.f)
+		if (m_attackTimer >= 2.f)
 		{
 			m_attackTimer = 0.f;
 			RandomCombatEvent();
@@ -117,7 +121,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 		mp_hurtBox->SetOrientation(0, yaw, 0);
 		yaw = Aen::RadToDeg(yaw);
 		m_enemy->SetRot(0.f, yaw + 180, 0.f);
-		Aen::Vec3f attackPos = m_direction * 3 /*+ m_enemy->GetPos()*/;
+		Aen::Vec3f attackPos = m_direction * 3;
 		mE_hurtBox->SetPos(attackPos);
 
 

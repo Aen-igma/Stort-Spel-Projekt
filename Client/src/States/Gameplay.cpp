@@ -123,7 +123,7 @@ void Gameplay::Initialize()
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
 
-	m_enemyQueue.emplace_back(AEN_NEW Boss(m_bossPos));
+	m_enemyQueue.emplace_back(AEN_NEW Boss(m_bossPos, 200.f));
 	m_pSkeleBoss = dynamic_cast<Boss*>(m_enemyQueue[m_enemyQueue.size() - 1]);
 	m_player.AddBossesAlive(1);
 	m_pSkeleBoss->GetEntity()->SetPos(m_bossPos);
@@ -234,11 +234,6 @@ void Gameplay::Update(const float& deltaTime) {
 	else {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f, 2);
 	}
-
-	//if (Aen::Input::KeyDown(Aen::Key::F)) {
-
-	//	//m_door.GetEntity()->SetRot(0, 90.f, 0);
-	//}
 
 	for (auto& i : m_enemyQueue) {
 		i->Update(deltaTime, m_player);
