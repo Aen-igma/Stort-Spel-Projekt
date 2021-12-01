@@ -1,7 +1,7 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay(Aen::Window& window)
-	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f), m_timer(0),m_deathTimer(0),m_doorTime(0),
+	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f), m_timer(0),m_deathTimer(0),
 	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
 
 Gameplay::~Gameplay() {
@@ -126,6 +126,7 @@ void Gameplay::Initialize()
 	Aen::Vec3f DoorPos;
 	Aen::Vec3f EnemyPos;
 	int roomNormal = 0;
+	int itemNormal = 0;
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
@@ -137,6 +138,7 @@ void Gameplay::Initialize()
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
+				itemNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
 			}
 
@@ -157,7 +159,7 @@ void Gameplay::Initialize()
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
-	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 3.f, playerStartPos.z);
+	m_player.GetEntity()->SetPos(ChestPos.x, ChestPos.y + 3.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 
@@ -173,12 +175,24 @@ void Gameplay::Initialize()
 	else if (roomNormal == 1000) {//west
 		m_door.GetEntity()->SetRot(0, -90, 0);
 	}
+
+	if (itemNormal == 1) { //north
+		m_chest.GetEntity()->SetRot(0, 0, 0);
+	}
+	else if (itemNormal == 10) {//east
+		m_chest.GetEntity()->SetRot(0, -90, 0);
+	}
+	else if (itemNormal == 100) {//south
+		m_chest.GetEntity()->SetRot(0, 180, 0);
+	}
+	else if (itemNormal == 1000) {//west
+		m_chest.GetEntity()->SetRot(0, 90, 0);
+	}
 	m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
-	//m_door.GetObjectEntity()->SetPos(m_door.GetEntity()->GetPos());
-	//m_door.GetObjectEntity()->MoveRelative(0, 0, 5.f);
-
 	//m_attack->SetParent(*m_player);
+
+	cout << itemNormal << endl;
 
 	//printf("");
 
@@ -276,7 +290,14 @@ void Gameplay::Update(const float& deltaTime) {
 		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open && m_chest.GetNear()) {
 			m_player.IncreaseHealthCap();
 			m_chest.SetType(Type::Locked);
+			m_UI->GetComponent<Aen::UIComponent>().ChangeText(2, L"Health Potions Restored");
 		}
+		else if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Locked && m_chest.GetNear()) {
+			m_UI->GetComponent<Aen::UIComponent>().ChangeText(2, L"Can't Get More health potions");
+		}
+
+		if (m_door.GetNear())
+			m_UI->GetComponent<Aen::UIComponent>().ChangeText(2, L"Interact(F)");
 
 		if (Aen::Input::KeyDown(Aen::Key::F) && m_door.GetType() == Type::Closed && m_door.GetNear()) {
 			m_door.SetType(Type::Opening);
