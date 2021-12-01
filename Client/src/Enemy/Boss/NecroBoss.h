@@ -30,6 +30,7 @@ public:
 
 	std::vector<Rimuru*>& GetMinions();
 
+	const BossState GetBS()const;
 	int GetEnemiesToSummon();
 	int GetEnemiesInVector() const;
 	void EmplaceMinion(Rimuru* e);

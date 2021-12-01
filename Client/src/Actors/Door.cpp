@@ -75,10 +75,6 @@ void Door::Update(const float& deltaTime, Aen::Entity*& e)
 		else {
 			m_near = false;
 		}
-
-		if (m_type == Type::Open && dist > 5.f) {
-			m_type = Type::Locking;
-		}
 	}
 
 	if (m_type == Type::Locking) {
@@ -86,7 +82,7 @@ void Door::Update(const float& deltaTime, Aen::Entity*& e)
 		timer += 0.05f * deltaTime;
 		m_door->MoveRelative(-timer, 0, 0);
 
-		if (timer > 0.1f) {
+		if (timer > 0.095f) {
 			m_type = Type::Locked;
 			timer = 0;
 		}

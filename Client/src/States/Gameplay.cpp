@@ -80,6 +80,7 @@ void Gameplay::Initialize()
 	//Match this value to the size of the rooms we are using
 	m_levelGenerator.SetRoomDimension(43.f);
 	mptr_map = m_levelGenerator.GenerateLevel();
+	m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
@@ -112,15 +113,14 @@ void Gameplay::Initialize()
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
 			}
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE && mptr_map[y * Aen::mapSize + x].m_present) {
-				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
-				m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-			}
+			//if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::NONE && mptr_map[y * Aen::mapSize + x].m_present) {
+			//	m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
+			//	m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+			//}
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
 
 				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
-				m_levelGenerator.GetRoomPos(x, y, &EnemyPos.x, &EnemyPos.z);
 				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 				for (int i = 0; i < 10; i++) {
 					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
@@ -220,7 +220,7 @@ void Gameplay::Initialize()
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Kill All Enemies", 72.f); //0
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Find the boss", 72.f); //0
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
@@ -299,6 +299,11 @@ void Gameplay::Update(const float& deltaTime) {
 	int enemiesToSummon = 0;
 	if (m_player.GetBossesAlive() > 0)
 	{
+		if (m_pSkeleBoss->GetBS() != BossState::STATIONARY && m_door.GetType() == Type::Open) {
+			m_door.SetType(Type::Locking);
+		}
+
+
 		Aen::Vec3f minionOffset(-8.f,0,8.f);
 		enemiesToSummon = m_pSkeleBoss->GetEnemiesToSummon();
 		for (int i = 0; i < enemiesToSummon; i++)
