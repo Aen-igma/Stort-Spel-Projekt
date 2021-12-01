@@ -31,6 +31,7 @@ namespace Aen {
 		friend class OBBox;
 		friend class StaticBody;
 		friend class DynamicBody;
+		friend class PSSystemcomponent;
 
 		virtual void Draw(Renderer& renderer, const uint32_t& layer = 0) override;
 		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer = 0) override;

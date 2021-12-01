@@ -54,6 +54,7 @@ namespace Aen {
 		friend class AABoundBox;
 		friend class OBBox;
 		friend class GlobalSettings;
+		friend class PSSystemcomponent;
 
 		private:
 		bool m_toggleView;
@@ -106,5 +107,17 @@ namespace Aen {
 		const uint32_t m_avarageLights;
 
 		CBuffer<CB_Collision> m_collisionBuffer;
+
+		//ParticleSystem Shaders
+		VShader m_PSVShader;
+		GShader m_PSGShader;
+		CShader m_PSCShader;
+		PShader m_PSPShader;
+		ILayout m_PSLayout;
+		ComDeviceContext m_PSDContext;
+		CBuffer<CSInputBuffer> m_PSInputBuffer;
+
+		GBuffer m_particleOut;
+		CShader m_PostPatricleCS;
 	};
 }

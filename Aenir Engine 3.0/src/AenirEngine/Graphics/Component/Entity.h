@@ -109,6 +109,12 @@ namespace Aen {
 	}
 
 	template<>
+	inline void Entity::AddComponent<PSSystemcomponent>() {
+		if (!ComponentHandler::PSExist(m_id))
+			ComponentHandler::CreatePS(m_id, m_layer + 3);
+	}
+
+	template<>
 	inline void Entity::AddComponent<Mesh>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
 			ComponentHandler::CreateMeshInstance(m_id, m_layer + 3);
@@ -241,6 +247,11 @@ namespace Aen {
 	template<>
 	inline UIComponent& Entity::GetComponent() {
 		return ComponentHandler::GetUI(m_id);
+	}
+
+	template<>
+	inline PSSystemcomponent& Entity::GetComponent() {
+		return ComponentHandler::GetPS(m_id);
 	}
 
 	template<>

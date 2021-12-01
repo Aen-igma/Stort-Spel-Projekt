@@ -40,6 +40,7 @@ namespace Aen {
 		friend class Resource;
 		friend class Renderer;
 		friend class MeshInstance;
+		friend class PSSystemcomponent;
 	};
 
 	class AEN_DECLSPEC Material {
@@ -80,5 +81,6 @@ namespace Aen {
 		friend class Renderer;
 		friend class MeshInstance;
 		friend class GlobalSettings;
+		friend class PSSystemcomponent;
 	};
 }

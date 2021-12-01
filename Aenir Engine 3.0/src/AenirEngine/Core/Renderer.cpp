@@ -38,6 +38,26 @@ namespace Aen {
 			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
 				throw;
 
+		//-------------- Particle System ---------------//
+		if (!m_PSVShader.Create(AEN_OUTPUT_DIR_WSTR(L"VertexParticleShader.cso")))
+			if (!m_PSVShader.Create(AEN_OUTPUT_DIR_WSTR(L"VertexParticleShader.cso")))
+				throw;
+		if (!m_PSGShader.Create(AEN_OUTPUT_DIR_WSTR(L"GeometryParticleShader.cso")))
+			if (!m_PSGShader.Create(AEN_OUTPUT_DIR_WSTR(L"GeometryParticleShader.cso")))
+				throw;
+		if (!m_PSCShader.Create(AEN_OUTPUT_DIR_WSTR(L"ComputeParticleShader.cso")))
+			if (!m_PSCShader.Create(AEN_OUTPUT_DIR_WSTR(L"ComputeParticleShader.cso")))
+				throw;
+		if (!m_PSPShader.Create(AEN_OUTPUT_DIR_WSTR(L"PixelParticleShader.cso")))
+			if (!m_PSPShader.Create(AEN_OUTPUT_DIR_WSTR(L"PixelParticleShader.cso")))
+				throw;
+		if (!m_PostPatricleCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostParticleCS.cso")))
+			if (!m_PostPatricleCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostParticleCS.cso")))
+				throw;
+		m_PSLayout.Create(m_PSVShader);
+
+
+
 		if(!m_transparencyPS.Create(AEN_OUTPUT_DIR_WSTR(L"TransparencyPS.cso")))
 			if(!m_transparencyPS.Create(L"TransparencyPS.cso"))
 				throw;
