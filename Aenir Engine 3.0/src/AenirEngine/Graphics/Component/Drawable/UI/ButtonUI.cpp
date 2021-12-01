@@ -178,7 +178,7 @@ namespace Aen {
 		ButtonData temp = m_tempData.at(index);
 
 		if (Intersect(index)) {
-			int addX = 20;
+			int addX = 5;
 			int addY = 5;
 
 			float buttonWidth = GetButtonSize(m_tempData.at(index).rect).x + addX;

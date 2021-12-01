@@ -1,10 +1,12 @@
 #include"Player.h"
 #include "Enemy/Enemy.h"
 
+bool Player::m_healing{ false };
+
 Player::Player()
 	:m_player(&Aen::EntityHandler::CreateEntity()), m_camera(&Aen::EntityHandler::CreateEntity()),
-	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(15.f), m_nrPotion(5),
-	//m_sword(&Aen::EntityHandler::CreateEntity()),
+	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(80.f), m_potionCap(3), m_nrPotion(m_potionCap),m_timer(0),
+	m_sword(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
 	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
@@ -17,10 +19,10 @@ Player::Player()
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
-	sword.Load(AEN_MODEL_DIR("simpSword.fbx"));
+	sword.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
 
-	//Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
-	//capsule.Load(AEN_MODEL_DIR("Player.fbx"));
+	Aen::Mesh& capsule = Aen::Resource::CreateMesh("Capsule");
+	capsule.Load(AEN_MODEL_DIR("Player.fbx"));
 
 	Aen::Mesh* protag = &Aen::Resource::CreateMesh("Protag");
 	protag->Load(AEN_MODEL_DIR("Protagonist.fbx"));
@@ -96,12 +98,13 @@ Player::Player()
 	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
 	m_player->AddComponent<Aen::AABoundBox>();
 	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
+	m_player->SetPos(0.f, 1.2f, 0.f);
+	m_player->SetTag("Player");
 
-	/*m_sword->AddComponent<Aen::MeshInstance>();
+	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
-	m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);*/
-	//m_sword->SetScale(0.1f, 0.1f, 0.1f);
-	//m_sword->SetParent(*m_player);
+	m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);
+	m_sword->SetParent(*m_player);
 
 	m_hurtbox->AddComponent<Aen::OBBox>();
 	m_hurtbox->GetComponent<Aen::OBBox>().SetBoundingBox(1.f, 1.f, 1.0);
@@ -128,7 +131,7 @@ Player::Player()
 	//barMat["InnerEdgeThickness"] = 0;
 	barMat["GlowColor"] = Aen::Color::Red;
 	barMat["InnerEdgeColor"] = Aen::Color::Red;
-	barMat["OuterEdgeColor"] = Aen::Color::Red;
+	barMat["OuterEdgeColor"] = Aen::Color::Yellow;
 
 	m_targetUI = &Aen::EntityHandler::CreateEntity();
 	m_targetUI->AddComponent<Aen::MeshInstance>();
@@ -187,16 +190,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			printf("scroll down\n");
 
 		}
-	}
-	// ------------------------------		Health potion		---------------------------------- //
-	
-	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0 && m_health < 200.f) {
-	
-		m_health += m_potion;
-		m_nrPotion--;
-
-		if (m_health > 200.f) // cap
-			m_health = 200.f;
 	}
 
 	// ------------------------------ Player Controler ---------------------------------- //
@@ -356,10 +349,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			data.accell = m_LIGHTATTACKSPEED;
 			data.duration = m_LIGHTATTACKTIME;
 			data.type = EventType::Attack;
-			data.damage = 20.f;
+			data.damage = 100.f;
 			data.function = [&](float& accell, const float& attackDuration) {
 				m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-				//SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);
+				SwordSwing(10.f, m_LIGHTATTACKTIME, deltaTime);
 				if (lockedOn) {
 					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
 					Aen::Vec3f d(d2.x, 0.f, d2.y);
@@ -391,7 +384,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				if (attackDuration < m_HEAVYCHARGETIME)
 				{
 					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
-					//SwordSwing(5.f, m_HEAVYATTACKTIME, deltaTime);
+					SwordSwing(5.f, m_HEAVYATTACKTIME, deltaTime);
 				}
 				else
 					m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
@@ -551,7 +544,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 	// Attacking -------------------------------------------------------------------------------------
 
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack) {
-		/*m_attackTimer += deltaTime;*/
+		m_attackTimer += deltaTime;
 
 		for (int i = 0; i < e.size(); i++) {
 			if (e[i]->GetEntity()->GetComponent<Aen::AABoundBox>().Intersects(m_hurtbox->GetComponent<Aen::OBBox>()) && !e[i]->IsHurt()) {
@@ -560,7 +553,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 
 				e[i]->SubtractHealth(m_eventQueue.front().damage);
 				Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + (e[i]->GetEntity()->GetPos() - m_player->GetPos()).Normalized();
-				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage * e[i]->GetKnockback());
+				e[i]->Move(dir.Normalized() * m_eventQueue.front().damage);
 				
 				if(e[i]->GetHealth() <= 0.f) {
 					for(uint32_t k = 0u; k < m_targets.size(); k++)
@@ -578,7 +571,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 	} else {
 		for(auto& i : e) i->Hurt(false);
 		m_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(false);
-		//ResetSword();
+		ResetSword();
 	}
 }
 
@@ -590,6 +583,37 @@ void Player::Move(const Aen::Vec3f& dir) {
 	m_v = dir;
 }
 
+void Player::PotionUpdate()
+{
+	// ------------------------------		Health potion		---------------------------------- //
+	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0 && m_health < 200.f && !m_healing) {
+
+		m_healing = true;
+		m_nrPotion -= 1;
+	}
+
+	if (m_healing) {
+		m_timer += 1.f;
+		if (m_timer <= m_potion) {
+			m_health += 1.f;
+		}
+		else
+			m_healing = false;
+	}
+	if(!m_healing) {
+		m_timer = 0;
+	}
+
+	if (m_health > 200.f) // cap
+		m_health = 200.f;
+}
+
+void Player::IncreaseHealthCap()
+{
+	m_potionCap += 1;
+	m_nrPotion = m_potionCap;
+}
+
 const float& Player::GetHealth() {
 	return m_health;
 }
@@ -599,28 +623,38 @@ const float& Player::GetHealth() {
 	return m_nrPotion;
 }
 
-const bool Player::IsAttacking() {
+ void Player::SetHealing(const bool& b)
+ {
+	 m_healing = b;
+ }
+
+ bool& Player::IsHealing() const
+ {
+	 return m_healing;
+ }
+
+ const bool Player::IsAttacking() {
 	if(!m_eventQueue.empty())
 		return (m_eventQueue.front().type == EventType::Attack);
 	return false;
 }
 
-//void Player::SwordSwing(float speed, float time, const float& deltaTime)
-//{
-//	static float timer = 0.f;
-//	timer += deltaTime;
-//	if (timer > time)
-//	{
-//		m_sword->SetRot(0, 0, 0);
-//		timer = 0.f;
-//	}
-//	m_sword->Rotate(0.f, -speed, 0.f);
-//}
-//
-//void Player::ResetSword()
-//{
-//	m_sword->SetRot(0.f, 0.f, 0.f);
-//}
+void Player::SwordSwing(float speed, float time, const float& deltaTime)
+{
+	static float timer = 0.f;
+	timer += deltaTime;
+	if (timer > time)
+	{
+		m_sword->SetRot(0, 0, 0);
+		timer = 0.f;
+	}
+	m_sword->Rotate(-speed, -speed, 0.f);
+}
+
+void Player::ResetSword()
+{
+	m_sword->SetRot(0.f, 0.f, 0.f);
+}
 
 void Player::AddEvent(EventData& event) {
 	if(m_eventQueue.size() > 1u)

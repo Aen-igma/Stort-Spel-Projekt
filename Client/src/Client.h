@@ -3,7 +3,8 @@
 #include "States\Menu.h"
 #include "States\Loadscreen.h"
 #include "States\GameEnd.h"
-#include "States\Victory.h"
+#include "States\Credits.h"
+#include "States\Options.h"
 #include "AenirEngine.h"
 
 #include<stack>
@@ -24,8 +25,6 @@ class Client : public Aen::App {
 	State* mp_state;
 	States m_typeState;
 	Gameplay* mp_gameplay;
-	GameEnd* mp_gameEnd;
-	Victory* mp_victory;
 };
 
 Aen::App* Aen::CreateApp() {
