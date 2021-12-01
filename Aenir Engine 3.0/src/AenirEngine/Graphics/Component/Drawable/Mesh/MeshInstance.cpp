@@ -99,14 +99,13 @@ namespace Aen {
 			if(GlobalSettings::GetMainCamera()) {
 				//if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) 
 
-					if (ComponentHandler::AnimatorExists(m_id)) {
-						ComponentHandler::GetAnimator(m_id).BindBuffer();
-					}
-
 			// Mesh and Material
 				for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
 
 					m_pMesh->m_vertices.BindBuffer();
+					if (ComponentHandler::AnimatorExists(m_id)) {
+						ComponentHandler::GetAnimator(m_id).BindBuffer();
+					}
 
 					// Opaque pass
 

@@ -84,6 +84,9 @@ Player::Player()
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 	//Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
 
+	Aen::Animation& anima = Aen::Resource::CreateAnimation("ProtagAnim");
+	anima.LoadAnimation(AEN_MODEL_DIR("Protagonist_Run.fbx"));
+
 	m_player->AddComponent<Aen::CharacterController>();
 	m_player->GetComponent<Aen::CharacterController>().Resize(2.3f);
 	m_player->AddComponent<Aen::MeshInstance>();
@@ -96,6 +99,9 @@ Player::Player()
 	m_player->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
 	m_player->AddComponent<Aen::AABoundBox>();
 	m_player->GetComponent<Aen::AABoundBox>().SetBoundsToMesh();
+	m_player->AddComponent<Aen::Animator>();
+	m_player->GetComponent<Aen::Animator>().AddAnimation(anima, "Run");
+
 
 	/*m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);

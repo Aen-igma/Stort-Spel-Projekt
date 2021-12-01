@@ -87,7 +87,6 @@ Aen::Entity*& Rimuru::GetEntity() {
 }
 
 void Rimuru::Update(const float& deltaTime, Player& player) {
-	return;
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float dist = eDir.Magnitude();
 
