@@ -136,17 +136,6 @@ namespace Aen
 
 	}
 
-	void PSSystemcomponent::SetPos(float x, float y, float z)
-	{
-		//this->m_CSInputBuffer.m_InitalPos.x = x;
-		//this->m_CSInputBuffer.m_InitalPos.y = y;
-		//this->m_CSInputBuffer.m_InitalPos.z = z;
-		m_VertexPS.m_Pos.x = x;
-		m_VertexPS.m_Pos.y = y;
-		m_VertexPS.m_Pos.z = z;
-		
-	}
-
 	void PSSystemcomponent::SetVelocity(float x, float y, float z)
 	{
 		this->m_CSInputBuffer.velocity.x = x;
@@ -172,11 +161,11 @@ namespace Aen
 
 	void PSSystemcomponent::Initialize()
 	{
+		//Need to check this later if this is the right things
 		this->m_CSInputBuffer.maxParticles = 1024;
 		this->m_CSInputBuffer.acceleration = {0.0f, 7.8f, 0.0f};
 		this->m_CSInputBuffer.lifeTime = 0.0f;
 		this->m_CSInputBuffer.deltaTime = 0.0f;
-		this->m_CSInputBuffer.velocity = { 0.0f,0.0f,0.0f };
 		this->m_CSInputBuffer.velocity = { 0.0f,0.0f,0.0f };
 	}
 
@@ -195,9 +184,6 @@ namespace Aen
 
 		// First Pass
 
-		/*SetEmitPos(this->m_emitPos.x, this->m_emitPos.y, this->m_emitPos.z);*/
-		//this->m_CSInputBuffer.initalPos = this->m_emitPos;
-
 
 		RenderSystem::ClearRenderTargetView(renderer.m_particleOut, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
@@ -205,12 +191,6 @@ namespace Aen
 		renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation();
 		renderer.m_cbTransform.UpdateBuffer();
 		renderer.m_cbTransform.BindBuffer<VShader>(0);
-	
-	/*	renderer.m_VertexBuffer.Create(&m_PS,sizeof(VertexParticle)*this->maxParticles);
-		renderer.m_VertexBuffer.UpdateBuffer(&m_PS,0);
-		renderer.m_VertexBuffer.BindBuffer();*/
-
-
 
 		RenderSystem::BindShaderResourceView<VShader>(0, m_UAView);
 

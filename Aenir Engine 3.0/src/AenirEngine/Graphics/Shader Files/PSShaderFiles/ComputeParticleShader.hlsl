@@ -68,7 +68,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
 
     OutputParticle[i].Pos.xz = initalPos.xz;
     OutputParticle[i].Velocity = 4.0f * random;
-    OutputParticle[i].Pos.y += (5 * deltaTime + noise(float3(DTid))) % 50;
+    OutputParticle[i].Pos.y += (10 * deltaTime + noise(float3(DTid))) % 50;
     if (length(OutputParticle[i].Pos.y) >= lifeTime)
     {
         OutputParticle[i].Pos.x = initalPos.x;
@@ -77,14 +77,4 @@ void main(uint3 DTid : SV_DispatchThreadID)
         OutputParticle[i].Color = 1;
     }
 
-
-    //OutputParticle[i].Pos.y += 0.5f * a * a * AccelOnW + a * velo + initalPos;
-    //if (length(OutputParticle[i].Pos.y) <= 5)
-    //{
-    //    OutputParticle[i].Pos.x = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
-    //    OutputParticle[i].Pos.y += (10 * deltaTime + noise(float3(DTid))) % 50;
-    //    OutputParticle[i].Pos.z = (OutputParticle[i].Velocity * deltaTime + noise(float3(DTid))) % 50;
-    //}
-
- 
 }
