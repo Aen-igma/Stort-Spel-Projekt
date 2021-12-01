@@ -9,11 +9,11 @@ namespace Aen
 	struct VertexParticle
 	{
 		Vec3f m_Pos;
+		float Alive;
 		Vec3f m_Velocity;
+		float Age;
 		Color m_Color;
 		Vec2f m_UV;
-		float Alive;
-		float Age;
 		Vec2f padding;
 	};
 	//struct CSInputBuffer
@@ -27,14 +27,15 @@ namespace Aen
 
 	struct CSInputBuffer
 	{
-		Vec3f m_velocity;
-		float  m_lifeTime;
-		Vec3f  m_acceleration;
-		int  m_maxParticles;
-		int  m_emitCount;
+		Vec3f velocity;
+		float lifeTime;
+		Vec3f acceleration;
 		float deltaTime;
-		Vec3f m_InitalPos;
-		float m_emitInterval;
+		Vec3f initalPos;
+		float emitInterval;
+		int maxParticles;
+		int emitCount;
+
 	};
 
 	class AEN_DECLSPEC PSSystemcomponent : public Drawable
@@ -51,6 +52,7 @@ namespace Aen
 		bool activate();
 		void SetEmitPos(float x, float y, float z);
 		void Initialize();
+		void SetRespawnHeight(float height);
 		
 
 		void Reset();

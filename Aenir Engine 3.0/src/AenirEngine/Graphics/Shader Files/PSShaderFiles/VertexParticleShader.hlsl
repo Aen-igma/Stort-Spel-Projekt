@@ -9,11 +9,11 @@ cbuffer Aen_CB_Transform {
 struct Particle
 {
     float3 Pos;
+    float Age;
     float3 Velocity;
+    float Alive;
     float4 Color;
     float2 UV;
-    float Alive;
-    float Age;
     float2 padding;
 
 };
@@ -45,9 +45,6 @@ VertexShaderOutput main(uint vertexID : SV_VertexID)
     output.position = mul(VSInputPos, mdlMat);
     output.position = mul(output.position, vMat);
     output.position = mul(output.position, pMat);
-
-
-
 
     output.uv = Particles[vertexID].UV;
     output.color = float4(1.0f,1.0f,1.0f,opacity);

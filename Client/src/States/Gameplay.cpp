@@ -60,10 +60,11 @@ void Gameplay::Initialize()
 	// -------------------------- Particle System ------------------------------- //
 	m_PS = &Aen::EntityHandler::CreateEntity();
 	m_PS->AddComponent<Aen::PSSystemcomponent>();
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().LoadAndSetTexture(AEN_RESOURCE_DIR("Flame.png"));
 	m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(10);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(10.0f,0.0f,0.0f);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(10);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(5, 5, 5);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(5);
+
 
 
 	/*Aen::Material& PSMaterial = Aen::Resource::CreateMaterial("EnemyMaterial");*/
