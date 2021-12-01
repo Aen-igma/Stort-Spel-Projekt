@@ -17,8 +17,13 @@ Chest::Chest()
 	m_chest->GetComponent<Aen::StaticBody>().SetBoundsToMesh();
 	m_chest->SetRot(0, 0, 0);
 
-	//m_chest->SetParent(*mp_object);
+	Aen::Material& ChestMaterial = Aen::Resource::CreateMaterial("ChestMat");
+	ChestMaterial.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("chest.png"));
+	ChestMaterial["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	ChestMaterial["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	m_chest->GetComponent<Aen::MeshInstance>().SetMaterial("ChestMat");
 
+	//m_chest->SetParent(*mp_object);
 	//mp_object->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
 	//mp_object->SetPos(m_chest->GetPos().x, m_chest->GetPos().y, m_chest->GetPos().z);
 }

@@ -39,6 +39,7 @@ private:
     Aen::UIComponent* mp_uiComp;
 
     Chest m_chest;
+    Door m_door;
     bool m_beatBoss;
     Aen::Vec3f m_bossPos;
 

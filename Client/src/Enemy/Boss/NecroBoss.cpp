@@ -197,6 +197,11 @@ std::vector<Rimuru*>& Boss::GetMinions()
 	return m_pMinions;
 }
 
+const BossState Boss::GetBS() const
+{
+	return this->bs;
+}
+
 int Boss::GetEnemiesToSummon()
 {
 	int minionsToSummon = m_minionsToSummon;

@@ -12,9 +12,7 @@ Door::Door()
 	m_door->AddComponent<Aen::StaticBody>();
 	m_door->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
 
-	//m_door->SetParent(*mp_object);
 	//mp_object->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
-	//mp_object->SetPos(m_door->GetPos().x, m_door->GetPos().y, m_door->GetPos().z);
 
 	Aen::Material& DoorBrown = Aen::Resource::CreateMaterial("DoorBrown");
 	DoorBrown["InnerEdgeColor"] = Aen::Color::Brown;
@@ -67,6 +65,9 @@ void Door::Update(const float& deltaTime, Aen::Entity*& e)
 {
 	Aen::Vec3f eDir = e->GetPos() - m_door->GetPos();
 	float dist = eDir.Magnitude();
+	static float timer = 0;
+	static const Aen::Vec3f pos = m_door->GetPos();
+
 	//player
 	if (e->GetTag() == "Player") {
 		if (dist < 3.f) {
@@ -75,6 +76,16 @@ void Door::Update(const float& deltaTime, Aen::Entity*& e)
 		else {
 			m_near = false;
 		}
+	}
+
+	if (m_type == Type::Locking) {
+		m_door->SetPos(pos);
+		m_type = Type::Locked;
+	}
+
+	if (m_type == Type::Opening) {
+		m_door->SetPos(0.f, -100, 0);
+		m_type = Type::Open;
 	}
 }
 

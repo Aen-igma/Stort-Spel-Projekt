@@ -80,6 +80,7 @@ void Gameplay::Initialize()
 	//Match this value to the size of the rooms we are using
 	m_levelGenerator.SetRoomDimension(43.f);
 	mptr_map = m_levelGenerator.GenerateLevel();
+	m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
@@ -88,6 +89,7 @@ void Gameplay::Initialize()
 	Aen::Vec3f DoorPos;
 	Aen::Vec3f EnemyPos;
 	int roomNormal = 0;
+	int itemNormal = 0;
 
 	for (UINT y = 0; y < Aen::mapSize; y++) {
 		for (UINT x = 0; x < Aen::mapSize; x++) {
@@ -107,9 +109,17 @@ void Gameplay::Initialize()
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
+				itemNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
+			}
+
+			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
+
 				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
 				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+				for (int i = 0; i < 10; i++) {
+					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+				}
 			}
 		}
 	}
@@ -118,8 +128,37 @@ void Gameplay::Initialize()
 	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
-	//m_door.SetType(Type::Open);
+	m_door.SetType(Type::Closed);
 
+	if (roomNormal == 1) { //north
+		m_door.GetEntity()->SetRot(0, 180, 0);
+	}
+	else if (roomNormal == 10) {//east
+		m_door.GetEntity()->SetRot(0, 90, 0);
+	}
+	else if (roomNormal == 100) {//south
+		m_door.GetEntity()->SetRot(0, 0, 0);
+	}
+	else if (roomNormal == 1000) {//west
+		m_door.GetEntity()->SetRot(0, -90, 0);
+	}
+
+	if (itemNormal == 1) { //north
+		m_chest.GetEntity()->SetRot(0, 0, 0);
+	}
+	else if (itemNormal == 10) {//east
+		m_chest.GetEntity()->SetRot(0, -90, 0);
+	}
+	else if (itemNormal == 100) {//south
+		m_chest.GetEntity()->SetRot(0, 180, 0);
+	}
+	else if (itemNormal == 1000) {//west
+		m_chest.GetEntity()->SetRot(0, 90, 0);
+	}
+	m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
+	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
+	//m_attack->SetParent(*m_player);
+	//printf("");
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
 
@@ -176,8 +215,8 @@ void Gameplay::Initialize()
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Kill All Enemies", 72.f); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"- Find the boss", 30.f); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((175.f / 1920) * wDesc.width, (300.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddText(L"3", 50.f); //1 - Amount of potion
@@ -186,9 +225,13 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920)* wDesc.width, (800.f / 1024)* wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920)* wDesc.width, (300 / 1024)* wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * wDesc.width, (800.f / 1024.f) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * wDesc.width, (300.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
+
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"- Find Item Room (Optional)", 30.f); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((200.f / 1920) * wDesc.width, (350.f / 1024) * wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
@@ -221,14 +264,25 @@ void Gameplay::Update(const float& deltaTime) {
 	m_player.Update(m_enemyQueue, deltaTime);
 
 	m_chest.Update(deltaTime, m_player.GetEntity());
-	//m_door.Update(deltaTime, m_player.GetEntity());
-	if (m_chest.GetNear()) {
+	m_door.Update(deltaTime, m_player.GetEntity());
+	if (m_chest.GetNear() || m_door.GetNear()) {
 		m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * screenSize.x, (800.f / 1024.f) * screenSize.y, 2);
 		m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
 
 		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open && m_chest.GetNear()) {
 			m_player.IncreaseHealthCap();
 			m_chest.SetType(Type::Locked);
+			m_UI->GetComponent<Aen::UIComponent>().ChangeText(2, L"Health Potions Restored");
+		}
+		else if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Locked && m_chest.GetNear()) {
+			m_UI->GetComponent<Aen::UIComponent>().ChangeText(2, L"Can't Get More health potions");
+		}
+
+		if (m_door.GetNear())
+			m_UI->GetComponent<Aen::UIComponent>().ChangeText(2, L"Interact(F)");
+
+		if (Aen::Input::KeyDown(Aen::Key::F) && m_door.GetType() == Type::Closed && m_door.GetNear()) {
+			m_door.SetType(Type::Opening);
 		}
 	}
 	else {
@@ -244,6 +298,11 @@ void Gameplay::Update(const float& deltaTime) {
 	int enemiesToSummon = 0;
 	if (m_player.GetBossesAlive() > 0)
 	{
+		if (m_pSkeleBoss->GetBS() != BossState::STATIONARY && m_door.GetType() == Type::Open) {
+			m_UI->GetComponent<Aen::UIComponent>().ChangeText(0, L"- Kill the Boss");
+			m_door.SetType(Type::Locking);
+		}
+
 		Aen::Vec3f minionOffset(-8.f,0,8.f);
 		enemiesToSummon = m_pSkeleBoss->GetEnemiesToSummon();
 		for (int i = 0; i < enemiesToSummon; i++)
@@ -281,18 +340,18 @@ void Gameplay::Update(const float& deltaTime) {
 
 		if (m_toggleFullScreen) {
 			wDesc.width = GetSystemMetrics(SM_CXSCREEN) + 4u;
+			wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
 			screenSize.x = wDesc.width;
 			screenSize.y = wDesc.height;
-			wDesc.height = GetSystemMetrics(SM_CYSCREEN) + 4u;
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_POPUPWINDOW | AEN_WS_VISIBLE;
 			m_Window.LoadSettings(wDesc);
 		}
 		else {
 			wDesc.width = static_cast<UINT>(GetSystemMetrics(SM_CXSCREEN) * 0.4f);
-			screenSize = wDesc.width;
-			screenSize.y = wDesc.height;
 			wDesc.height = static_cast<UINT>(GetSystemMetrics(SM_CYSCREEN) * 0.4f);
+			screenSize.x = wDesc.width;
+			screenSize.y = wDesc.height;
 			wDesc.EXStyle = AEN_WS_EX_APPWINDOW;
 			wDesc.style = AEN_WS_OVERLAPPEDWINDOW | AEN_WS_VISIBLE;
 			m_Window.LoadSettings(wDesc);
