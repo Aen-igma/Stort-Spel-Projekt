@@ -166,6 +166,11 @@ namespace Aen {
 			ComponentHandler::GetScale(m_id).SetScale(scale);
 	}
 
+	void Entity::SetScale(const float& xyz) {
+		if (ComponentHandler::ScaleExist(m_id))
+			ComponentHandler::GetScale(m_id).SetScale(xyz, xyz, xyz);
+	}
+
 	void Entity::SetScale(const float& x, const float& y, const float& z) {
 		if(ComponentHandler::ScaleExist(m_id))
 			ComponentHandler::GetScale(m_id).SetScale(x, y, z);

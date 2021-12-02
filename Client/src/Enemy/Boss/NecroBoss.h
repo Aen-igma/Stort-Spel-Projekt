@@ -41,18 +41,20 @@ protected:
 
 private:
 
-	void LightAttack();
-	void BigAttack();
+	void LightAttack(const float& deltatime);
+	void BigAttack(const float& deltaTime);
 	void GoToThrone();
 	void SummonSlimes(int amountOfSLimes);
 	void Wait(const float duration);
 	void RandomCombatEvent();
+	void SwordSwing(const float& speed, const float& time, const float& deltaTime);
+	void ResetSword();
 
 	void UpdateAttack();
 
 	
 	Aen::Entity* mE_hurtBox;
-	//Aen::Entity* mE_sword;
+	Aen::Entity* mE_sword;
 	Aen::Entity* m_healthBar;
 	Aen::OBBox* mp_hurtBox;
 	Player* mp_player;
