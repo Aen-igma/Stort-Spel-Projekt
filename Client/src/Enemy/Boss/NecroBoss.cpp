@@ -34,6 +34,14 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 
 	m_enemy->SetPos(position);
 	mE_hurtBox->SetParent(*m_enemy);
+	mE_sword = &Aen::EntityHandler::CreateEntity();
+	mE_sword->AddComponent<Aen::MeshInstance>();
+	Aen::Mesh& swordMesh = Aen::Resource::CreateMesh("DuckBringer");
+	swordMesh.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
+	mE_sword->GetComponent<Aen::MeshInstance>().SetMesh(swordMesh);
+	mE_sword->SetScale(3.f);
+	mE_sword->SetParent(*m_enemy);
+
 
 	mp_hitbox->ToggleActive(true);
 
@@ -56,6 +64,8 @@ Boss::~Boss()
 	m_healthBar->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*mE_hurtBox);
 	Aen::EntityHandler::RemoveEntity(*m_healthBar);
+	mE_sword->RemoveParent();
+	Aen::EntityHandler::RemoveEntity(*mE_sword);
 }
 
 void Boss::Update(const float& deltaTime, Player& player)
@@ -108,9 +118,8 @@ void Boss::Update(const float& deltaTime, Player& player)
 	{
 		m_deltatime = deltaTime;
 
-		if(distance < 5.f )
-			m_attackTimer += deltaTime;
-		if (m_attackTimer >= 2.f)
+		if (distance < 10.f) m_attackTimer += deltaTime;
+		if (m_attackTimer >= 1.5f)
 		{
 			m_attackTimer = 0.f;
 			RandomCombatEvent();
@@ -143,9 +152,9 @@ void Boss::Update(const float& deltaTime, Player& player)
 
 #ifdef _DEBUG
 		if (Aen::Input::KeyDown(Aen::Key::G))
-			LightAttack();
+			LightAttack(deltaTime);
 		if (Aen::Input::KeyDown(Aen::Key::H))
-			BigAttack();
+			BigAttack(deltaTime);
 		if (Aen::Input::KeyDown(Aen::Key::J))
 			SummonSlimes(6);
 		if (Aen::Input::KeyDown(Aen::Key::L))
@@ -172,7 +181,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 		break;
 	}
 
-		
+
 
 	mp_charCont->Move(m_v * m_deltatime, m_deltatime);
 }
@@ -237,11 +246,11 @@ void Boss::RemoveMinion(uint16_t i)
 	m_pMinions.pop_back();
 }
 
-void Boss::LightAttack()
+void Boss::LightAttack(const float& deltaTime)
 {
 	EventData data;
 	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-
+		SwordSwing(500.f, .3f, deltaTime);
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * accell;
 	};
@@ -256,7 +265,7 @@ void Boss::LightAttack()
 	m_eventQueue.emplace_back(data);
 }
 
-void Boss::BigAttack()
+void Boss::BigAttack(const float& deltaTime)
 {
 	EventData data;
 	data.duration = .5f;
@@ -265,7 +274,7 @@ void Boss::BigAttack()
 	data.knockbackForce = HEAVYFORCE;
 	data.accell = .1f;
 	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-
+		SwordSwing(250.f, .5f, deltaTime);
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * 4.f * accell;
 
@@ -279,7 +288,7 @@ void Boss::GoToThrone()
 	//EventData data;
 	//data.type = EventType::Wait;
 	//data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-		
+
 	//};
 
 	//m_eventQueue.emplace_back(data);
@@ -338,14 +347,31 @@ void Boss::RandomCombatEvent()
 	switch (randN)
 	{
 	case 0:
-		LightAttack();
+		LightAttack(m_deltatime);
 		break;
 	case 1:
-		BigAttack();
+		BigAttack(m_deltatime);
 		break;
 	default:
 		break;
 	}
+}
+
+void Boss::SwordSwing(const float& speed, const float& time, const float& deltaTime)
+{
+	static float timer = 0.f;
+	timer += deltaTime;
+	if (timer > time)
+	{
+		mE_sword->SetRot(0, 0 + 180.f, 0);
+		timer = 0.f;
+	}
+	mE_sword->Rotate(-speed * deltaTime, -speed * deltaTime, 0.f);
+}
+
+void Boss::ResetSword()
+{
+	mE_sword->SetRot(0, 180.f, 0);
 }
 
 void Boss::UpdateAttack()
@@ -365,5 +391,8 @@ void Boss::UpdateAttack()
 		else m_isHurting = false;
 	}
 	else
+	{
 		mp_hurtBox->ToggleActive(false);
+		ResetSword();
+	}
 }

@@ -152,7 +152,7 @@ namespace Aen {
 
 
 							// Per Object Post Process Pass
-
+							RenderSystem::UnBindShaderResources<VShader>(0u, 1u);
 							RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
 							RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
 							RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
@@ -211,6 +211,7 @@ namespace Aen {
 
 					m_pMesh->m_vertices.BindBuffer();
 					m_pMesh->m_vertices.Draw();
+					RenderSystem::UnBindShaderResources<VShader>(0u, 1u);
 				}
 		}
 	}
