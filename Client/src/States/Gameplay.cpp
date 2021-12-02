@@ -59,7 +59,9 @@ void Gameplay::Initialize()
 	skeleLightMat["BaseColor"] = Aen::Color::White;
 
 	// Material to switch to when enemy is hurt
+	enemyMatHurt.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));
 	enemyMatHurt["BaseColor"] = Aen::Color::Red;
+	enemyMatHurt["GlowColor"] = Aen::Color::Red;
 
 	planeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);

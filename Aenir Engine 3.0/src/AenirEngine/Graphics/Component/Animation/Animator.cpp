@@ -5,38 +5,41 @@
 namespace Aen {
 	void Animator::Update()
 	{
-		if (animationIndex < m_animationList.size() && pause) {
+		if (animationIndex < m_animationList.size()) {
 			Animation* animation = m_animationList[animationIndex].second;
-			m_end = ResClock::now();
-			while (std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > frameRate) {
 
-				m_start = ResClock::now();
-				std::vector<Mat4f> anim;
-				GetAnimation(anim);
+				m_end = ResClock::now();
+				while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > frameRate) {
 
-				std::vector<Mat4f> localTran(animation->m_boneArray.size());
-				std::vector<Mat4f> modelTran(animation->m_boneArray.size());
+					if(pause) {
+						m_start = ResClock::now();
+						std::vector<Mat4f> anim;
+						GetAnimation(anim);
 
-				for (int i = 0; i < animation->m_boneArray.size(); i++) {
-					localTran[i] = animation->m_boneArray[i].localMatrix * anim[i].Transposed();
+						std::vector<Mat4f> localTran(animation->m_boneArray.size());
+						std::vector<Mat4f> modelTran(animation->m_boneArray.size());
+
+						for(int i = 0; i < animation->m_boneArray.size(); i++) {
+							localTran[i] = animation->m_boneArray[i].localMatrix * anim[i].Transposed();
+						}
+
+						modelTran[0] = localTran[0];
+
+						for(int i = 1; i < animation->m_boneArray.size(); i++) {
+							int parent = animation->m_boneArray[i].parentID;
+							modelTran[i] = modelTran[parent] * localTran[i];
+						}
+
+						for(int i = 0; i < animation->m_boneArray.size(); i++) {
+							animation->m_finalMatrix.GetData(i) = modelTran[i] * animation->m_boneArray[i].offsetMatrix;
+						}
+					}
+
+					if(m_currentFrame > 0)
+						animation->m_finalMatrix.UpdateBuffer();
 				}
-
-				modelTran[0] = localTran[0];
-
-				for (int i = 1; i < animation->m_boneArray.size(); i++) {
-					int parent = animation->m_boneArray[i].parentID;
-					modelTran[i] = modelTran[parent] * localTran[i];
-				}
-
-				for (int i = 0; i < animation->m_boneArray.size(); i++) {
-					animation->m_finalMatrix.GetData(i) = modelTran[i] * animation->m_boneArray[i].offsetMatrix;
-				}
-
-				if (m_currentFrame > 1) {
-					animation->m_finalMatrix.UpdateBuffer();
-				}
-			}
 		}
+		
 	}
 
 	void Animator::GetAnimation(std::vector<Mat4f>& mat)
@@ -48,35 +51,33 @@ namespace Aen {
 		m_frameTime = ResClock::now();
 		DurationLD duration = std::chrono::duration_cast<std::chrono::nanoseconds>(m_frameTime - m_currentTime);
 
-		if (duration.count() > animation->m_duration * m_scale) {
-			m_currentFrame = 0;
-			m_currentTime = ResClock::now();
-		}
-
-		if (m_currentFrame < (numFrames-2)) {
-
-			if (duration.count() > animation->m_timeStamp[m_currentFrame + 1] * m_scale) {
-				m_currentFrame++;
-			}
-
-			float f = duration.count() - (animation->m_timeStamp[m_currentFrame] * m_scale);
-			float h = (animation->m_timeStamp[m_currentFrame + 1] * m_scale) - (animation->m_timeStamp[m_currentFrame] * m_scale);
-			float t = f / h;
-
+		if (duration.count() * m_scale > animation->m_duration) {
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].rotation;
-				Mat4f nextFrame = animation->m_keyFrames.at(bName)[m_currentFrame + 1].rotation;
-
-				mat.emplace_back(Lerp(currentFrame, nextFrame, t));
-			}
-		}
-		else {
-			for (int i = 0; i < sizeBA; i++) {
-				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].rotation;
+				Mat4f currentFrame = animation->m_keyFrames.at(bName)[numFrames].rotation;
 
 				mat.emplace_back(currentFrame);
+			}
+
+			m_currentFrame = 0;
+			m_currentTime = ResClock::now();
+		} else {
+
+			/*float f = duration.count() * m_scale - (animation->m_timeStamp[m_currentFrame]);
+			float h = (animation->m_timeStamp[m_currentFrame + 1]) - (animation->m_timeStamp[m_currentFrame]);
+			float t = f / h;*/
+
+			for (int i = 0; i < sizeBA; i++) {
+				std::string bName = animation->m_boneArray[i].boneName;
+				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].rotation;
+				//Mat4f nextFrame = animation->m_keyFrames.at(bName)[m_currentFrame + 1].rotation;
+
+				//mat.emplace_back(Lerp(currentFrame, nextFrame, t));
+				mat.emplace_back(currentFrame);
+			}
+
+			if (duration.count() * m_scale > animation->m_timeStamp[m_currentFrame + 1]) {
+				m_currentFrame++;
 			}
 		}
 	}
@@ -127,8 +128,7 @@ namespace Aen {
 		pause = true;
 	}
 
-	void Animator::Reset()
-	{
+	void Animator::Reset() {
 		m_currentFrame = 0;
 		m_currentTime = ResClock::now();
 	}
@@ -203,6 +203,15 @@ namespace Aen {
 				RenderSystem::UnBindShaderResources<VShader>(0, 1);
 			}
 		#endif
+	}
+
+	const Mat4f Animator::GetBoneMat(const uint32_t & index) {
+		if(animationIndex < m_animationList.size()) {
+			Animation* animation = m_animationList[animationIndex].second;
+			return animation->m_finalMatrix.GetData(index).Transposed();
+		}
+
+		return Mat4f::identity;
 	}
 
 	void Animator::DepthDraw(Renderer& renderer, const uint32_t& layer)

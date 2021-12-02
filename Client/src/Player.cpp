@@ -15,7 +15,7 @@ Player::Player()
 	m_player->SetTag("Player");
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
-	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 50.f);
+	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 200.f);
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
@@ -88,8 +88,14 @@ Player::Player()
 	mp_charCont = &m_player->GetComponent<Aen::CharacterController>();
 	mp_charCont->Resize(2.3f);
 
+	Aen::Animation& protagIdle = Aen::Resource::CreateAnimation("protagIdle");
+	protagIdle.LoadAnimation(AEN_MODEL_DIR("Protagonist_Idle.fbx"));
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
 	protagRun.LoadAnimation(AEN_MODEL_DIR("Protagonist_Run.fbx"));
+	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
+	protagDash.LoadAnimation(AEN_MODEL_DIR("Protagonist_Dash.fbx"));
+	Aen::Animation& protagAttack = Aen::Resource::CreateAnimation("protagAttack");
+	protagAttack.LoadAnimation(AEN_MODEL_DIR("Protagonist_Attack.fbx"));
 
 	m_playerMeshHolder->AddComponent<Aen::MeshInstance>();
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMesh(*protag);
@@ -100,8 +106,12 @@ Player::Player()
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Metal1", metal);
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
 	m_playerMeshHolder->AddComponent<Aen::Animator>();
+	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagIdle, "Idle");
 	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagRun, "Run");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
+	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagDash, "Dash");
+	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagAttack, "Attack");
+	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
+	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
 	m_playerMeshHolder->SetParent(*m_player);
 	m_playerMeshHolder->SetPos(0.f, -1.7f, 0.f);
 
@@ -114,7 +124,9 @@ Player::Player()
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
 	m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);
-	m_sword->SetParent(*m_player);
+	//m_sword->SetPos(0.7f, 1.7f, -1.f);
+	m_sword->SetPos(0.f, 1.7f, 0.f);
+	m_sword->SetParent(*m_playerMeshHolder);
 
 	m_hurtbox->AddComponent<Aen::OBBox>();
 	mp_hurtBox = &m_hurtbox->GetComponent<Aen::OBBox>();
@@ -187,7 +199,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 #endif // _DEBUG
 
 
-
+	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19));
 
 
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
@@ -386,7 +398,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 			AddEvent(data);
 		}
-		if (Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
+		/*if (Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
 			EventData data;
 			data.accell = m_HEAVYATTACKSPEED;
 			data.duration = m_HEAVYATTACKTIME;
@@ -413,7 +425,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			};
 
 			AddEvent(data);
-		}
+		}*/
 
 		// Lock On Target
 
@@ -509,11 +521,22 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	mp_hurtBox->SetOrientation(0.f, yaw, 0.f);
 	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
+	
+	if(axis.Magnitude() > 0.f)
+		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
+	else
+		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
 			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration, m_eventQueue.front().nrOfAttacks);
 			m_eventQueue.front().duration -= deltaTime;
+
+			if(m_eventQueue.front().type == EventType::Dash)
+				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Dash");
+			else if(m_eventQueue.front().type == EventType::Attack)
+				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Attack");
+
 		}
 		else {
 			if (axis.Magnitude() > 0.f)

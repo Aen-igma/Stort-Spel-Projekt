@@ -42,6 +42,7 @@ namespace Aen {
 		void Run();
 		void Reset();
 
+		const Mat4f GetBoneMat(const uint32_t& index);
 
 		friend class ComponentHandler;
 		friend class Renderer;
