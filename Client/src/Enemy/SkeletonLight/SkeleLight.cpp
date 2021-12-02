@@ -56,6 +56,17 @@ SkeleLight::SkeleLight(const Aen::Vec3f& pos)
 	m_enemy->SetPos(pos);
 	m_knockbackScalar = 0.5f;
 
+	// -------- Animation --------- //
+
+	mp_skeleton->AddComponent<Aen::Animator>();
+	mp_skeleton->GetComponent<Aen::Animator>().AddAnimation("Skel_Idle", "idle");
+	mp_skeleton->GetComponent<Aen::Animator>().AddAnimation("Skel_Walk", "walk");
+	mp_skeleton->GetComponent<Aen::Animator>().AddAnimation("Skel_Attack", "attack");
+	mp_skeleton->GetComponent<Aen::Animator>().SetAnimation("idle");
+	mp_skeleton->GetComponent<Aen::Animator>().SetFrameRate(60);
+	mp_skeleton->GetComponent<Aen::Animator>().SetAnimationScale(5);
+
+
 	// -----------------------------	Floating m_healthBar		------------------------------- //
 	mp_healthBar = &Aen::EntityHandler::CreateEntity();
 	mp_healthBar->AddComponent<Aen::MeshInstance>();
@@ -114,6 +125,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	{
 		if (dist < 20.f)
 		{
+			mp_skeleton->GetComponent<Aen::Animator>().SetAnimation("walk");
 			CombatEvent(deltaTime, dist);
 		}
 		else 
@@ -126,6 +138,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	}
 
 	if (dist < 20.f) {
+
 		mp_healthBar->SetRot(-player.GetCamera()->GetRot().x - 90.f, player.GetCamera()->GetRot().y + 180.f, 0);
 		mp_healthBar->SetPos(m_enemy->GetPos() + Aen::Vec3f(0, 2.f, 0));
 
@@ -147,6 +160,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	}
 	else
 	{
+		mp_skeleton->GetComponent<Aen::Animator>().SetAnimation("idle");
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 	}
 	
@@ -189,6 +203,7 @@ void SkeleLight::CombatEvent(const float& deltaTime, const float& distance)
 		data.duration = 1;
 		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks)
 		{
+			mp_skeleton->GetComponent<Aen::Animator>().SetAnimation("attack");
 			mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 		};
 		m_eventQueue.emplace_back(data);
