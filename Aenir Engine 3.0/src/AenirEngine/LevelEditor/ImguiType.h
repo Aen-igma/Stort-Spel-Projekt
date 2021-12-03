@@ -47,7 +47,12 @@ namespace IGH
 
 	// Tags
 	const string NORMALENEMY = "Normal Enemy";
+	const string SLIME = "Slime Enemy";
+	const string LIGHTSKELETON = "Light Skeleton";
+
 	const string BOSS = "Boss Enemy";
+
+
 	const string TORCH = "Torch";
 
 	const string DEFAULTMATERIAL = "DefaultMaterial";
@@ -64,7 +69,7 @@ namespace IGH
 
 
 		const char* HITBOXTYPE[3] = { "None","Static", "Dynamic" };
-		const char* ENEMYTYPE[2] = { "Normal Enemy", "Boss Enemy" };
+		const char* ENEMYTYPE[4] = { "Normal Enemy", "Slime Enemy","Light Skeleton","Boss Enemy" };
 		const char* ModelType[2] = { "Prop", "Walls" };
 		const char* TOOLS[3] = { "Move","Rotate","Scale" };
 
@@ -411,9 +416,10 @@ namespace IGH
 			this->m_model.rigidBodyType = rigidBodyType;
 		}
 
-		ModelContainer(AenIF::Material &mat, string textureName, string modelName, string meshName, string type, bool rigidBody, string rigidBodyType) {
+		ModelContainer(AenIF::Material &mat, string textureName, string normalTextureName,string modelName, string meshName, string type, bool rigidBody, string rigidBodyType) {
 			this->m_material.set(mat);
 			this->m_texture.m_textureName = textureName;
+			this->m_texture.m_normalTexture = normalTextureName;
 			this->m_model.m_name = modelName;
 			this->m_model.m_meshName = meshName;
 			this->m_type = type;

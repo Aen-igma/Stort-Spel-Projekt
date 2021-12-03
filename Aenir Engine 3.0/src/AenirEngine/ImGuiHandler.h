@@ -62,6 +62,8 @@ namespace Aen {
 		unordered_map< size_t, Aen::Entity*> m_lightMap;
 		vector<IGH::MatTexName> m_materialList;
 
+		unordered_map< size_t, size_t> m_parentList;
+
 		int m_selectedEntity = 0;
 
 		float m_xyzTranslation[3] = { 0,0,0 };
@@ -106,6 +108,8 @@ namespace Aen {
 		int m_lightCount = 0;
 
 		void print(string input);
+
+		void ExistInList(vector<string>& list, string &target, int& index);
 
 	public:
 		// All Add func here
@@ -186,6 +190,8 @@ namespace Aen {
 		bool CustomCombo(vector<IGH::MatTexName>& list, string name, int& index);
 
 		string CustomComboString(vector<string>& list, string name, int& index);
+		void CustomComboString(vector<string>& list, string name, string &input, int& index);
+
 
 		string CustomComboMap(unordered_map< string, AenIF::Material >& list, string name, string index);
 
@@ -202,6 +208,3 @@ namespace Aen {
 		void ParticleTab();
 };
 }
-
-
-

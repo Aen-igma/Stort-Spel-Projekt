@@ -31,6 +31,7 @@ namespace Aen
 		
 		unordered_map< size_t, IGH::ModelContainer> *m_modelMap;
 		unordered_map< size_t, Aen::Entity*> *m_lightMap;
+		unordered_map< size_t, size_t>* m_parentList = nullptr;
 		vector<IGH::MatTexName> *m_materialList;
 
 		IGH::ImguiTypes m_imguiTypes;
@@ -52,7 +53,7 @@ namespace Aen
 		Aen::Vec3f Convert(float input[3]);
 
 		ImGuiImporter();
-		ImGuiImporter(vector<Aen::Entity*>* m_entityList, vector<string>* m_itemList, unordered_map< size_t, IGH::ModelContainer>* m_modelMap, unordered_map< size_t, Aen::Entity*>* m_lightMap, AenIMP::LevelImporter* m_levelImporter, vector<IGH::MatTexName> *m_materialList);
+		ImGuiImporter(vector<Aen::Entity*>* m_entityList, vector<string>* m_itemList, unordered_map< size_t, IGH::ModelContainer>* m_modelMap, unordered_map< size_t, Aen::Entity*>* m_lightMap, AenIMP::LevelImporter* m_levelImporter, vector<IGH::MatTexName> *m_materialList, unordered_map< size_t, size_t>* m_parentList);
 		~ImGuiImporter();
 
 

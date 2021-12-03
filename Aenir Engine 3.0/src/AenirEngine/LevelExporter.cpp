@@ -102,7 +102,7 @@ namespace Aen {
 		}
 	}
 
-	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index, ParticleStruct*& particleStruct)
+	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index, ParticleStruct*& particleStruct, TextureStruct*& textureStruct)
 	{
 		size_t id = entityList[index]->GetID();
 
@@ -145,6 +145,8 @@ namespace Aen {
 				strcpy(particleStruct->type, it->second.m_type.c_str());
 				m_ParticleVector.push_back(*particleStruct);
 			}
+			textureFunc(textureStruct, it->second.m_texture.m_textureName, it->second.m_texture.m_normalTexture);
+
 		}
 	}
 
@@ -279,8 +281,9 @@ namespace Aen {
 
 			if (Aen::ComponentHandler::MeshInstanceExist(id))
 			{
-				modelFunc(modelStruct, entityList, modelMap, i, particleStruct);
+				modelFunc(modelStruct, entityList, modelMap, i, particleStruct,textureStruct);
 				materialFunc(materialStruct, entityList, modelMap, i);
+
 			}
 			else if ((Aen::ComponentHandler::DirectionalLightExist(id) || Aen::ComponentHandler::SpotLightExist(id) || Aen::ComponentHandler::PointLightExist(id)))
 			{
@@ -290,12 +293,7 @@ namespace Aen {
 		}
 
 		roomFunc(roomStruct, array);
-		
-		for (it = modelMap.begin(); it != modelMap.end(); it++)
-		{
-			textureFunc(textureStruct, it->second.m_texture.m_textureName, it->second.m_texture.m_normalTexture);
-		}
-		
+				
 		WriteToFile(roomHeader, m_outfile);
 		WriteToFile(roomStruct, m_outfile);
 
@@ -306,16 +304,13 @@ namespace Aen {
 			*modelStruct = m_ModelVector[i];
 			WriteToFile(modelStruct, m_outfile);
 
-			WriteToFile(materialHeader, m_outfile);
-			*materialStruct = m_MaterialVector[i];
-			WriteToFile(materialStruct, m_outfile);
-		}
-
-		for (size_t i = 0; i < m_TextureVector.size(); i++)
-		{
 			WriteToFile(textureHeader, m_outfile);
 			*textureStruct = m_TextureVector[i];
 			WriteToFile(textureStruct, m_outfile);
+
+			WriteToFile(materialHeader, m_outfile);
+			*materialStruct = m_MaterialVector[i];
+			WriteToFile(materialStruct, m_outfile);
 		}
 
 		for (size_t i = 0; i < m_LightVector.size(); i++)

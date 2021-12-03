@@ -56,7 +56,7 @@ namespace Aen {
 
 	ImGuiHandler::ImGuiHandler()
 	{
-		m_imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter, &m_materialList);
+		m_imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter, &m_materialList, &m_parentList);
 
 		m_normalMapTextureFileName.push_back("None");
 		m_normalMapTexture.push_back("None");
@@ -354,6 +354,12 @@ namespace Aen {
 				m_saveWindowActive = false;
 				std::memset(inputString, '\0', sizeof(char) * MESH_NAME_MAX_LENGTH);
 			}
+
+			if (ImGui::Button(IGH::CLOSE.c_str()))
+			{
+				m_saveWindowActive = false;
+			}
+
 			ImGui::End();
 		}
 	}
@@ -372,7 +378,7 @@ namespace Aen {
 			ImGui::InputText("Name", name, MESH_NAME_MAX_LENGTH);
 			ImGui::Combo("Type", &selectedType, m_imguiTypes.ENEMYTYPE, IM_ARRAYSIZE(m_imguiTypes.ENEMYTYPE));
 
-			mesh = CustomComboString(m_objFileName, "Mesh", CurrentIndex);
+			CustomComboString(m_objFileName, "Mesh", mesh,CurrentIndex);
 
 			if (ImGui::Button("Create"))
 			{
@@ -436,10 +442,10 @@ namespace Aen {
 			static float rimLightIntensity = 1.0f;
 			static float rimLightSize = 0.0f;
 
-			static char materialName[MATERIAL_NAME_MAX_LENGTH];
-			static char textureName[TEXTURE_NAME_MAX_LENGTH];
-			static char materialTextureName[MATERIAL_NAME_MAX_LENGTH];
-			static char normalTextureName[TEXTURE_NAME_MAX_LENGTH];
+			static char materialName[MATERIAL_NAME_MAX_LENGTH] = "";
+			static char textureName[TEXTURE_NAME_MAX_LENGTH] = "";
+			static char materialTextureName[MATERIAL_NAME_MAX_LENGTH] = "";
+			static char normalTextureName[TEXTURE_NAME_MAX_LENGTH] = "";
 
 			static int selectedTex = 0;
 			static int selectedNormTex = 0;
@@ -748,16 +754,20 @@ namespace Aen {
 		for (size_t i = 0; i < m_entityList.size(); i++)
 		{
 			id = m_entityList[i]->GetID();
-			if (Aen::ComponentHandler::MeshInstanceExist(id))
+			if (Aen::ComponentHandler::TranslationExist(id))
 			{
 				translation = m_entityList[i]->GetPos();
-				rotation = m_entityList[i]->GetRot();
 
+				if (Aen::ComponentHandler::RotationExist(id))
+				{
+					rotation = m_entityList[i]->GetRot();
+					m_entityList[i]->SetRot(rotation.x, rotation.y + angle, rotation.z);
+				}
 				posX = (translation.x * c) - (translation.z * s);
 				posZ = (translation.x * s) + (translation.z * c);
 
 				m_entityList[i]->SetPos(posX, translation.y, posZ);
-				m_entityList[i]->SetRot(rotation.x, rotation.y + angle, rotation.z);
+
 			}
 		}
 	}
@@ -772,7 +782,6 @@ namespace Aen {
 			{
 				Aen::Material& mat = Aen::Resource::GetMaterial(materialName);
 				Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
-
 			}
 			else
 			{
@@ -791,7 +800,7 @@ namespace Aen {
 					normalImageName = m_normalMapTextureFileName[currentIndexNorm];
 				}
 
-				UpdateMap(id, textureName, materialName, m_itemList[m_selectedEntity], m_textureFileName[currentIndexTex], m_normalMapTextureFileName[currentIndexNorm]);
+				UpdateMap(id, textureName, materialName, m_itemList[m_selectedEntity], imageName, normalImageName);
 
 				Aen::Texture& texture = Aen::Resource::CreateTexture(textureName);
 
@@ -867,7 +876,7 @@ namespace Aen {
 				intensity = lightPtr.m_light.m_strength;
 
 				SetValues();
-
+				
 				ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
 				ImGui::DragFloat("Intensity", &intensity, 0.02f);
 
@@ -1018,15 +1027,19 @@ namespace Aen {
 						m_roughness, m_shadowOffset, m_innerFalloff, m_outerFalloff, m_rimLightIntensity, m_rimLightSize);
 				
 					SetMaterialValues(selected);
+
+					ExistInList(m_textureFileName, m_modelMap.at(id).m_texture.m_textureName, selectedTexture);
 					CustomCombo(m_textureFileName, IGH::TEXTURE.c_str(), selectedTexture);
+
+					ExistInList(m_normalMapTextureFileName, m_modelMap.at(id).m_texture.m_normalTexture, selectedNormalTexture);
 					CustomCombo(m_normalMapTextureFileName, IGH::NORMALTEXTURE.c_str(), selectedNormalTexture);
 
 
 					if (AddButton("Change Material"))
 					{
-						ChangeTexture(selectedTexture, selectedNormalTexture, m_materialList[selected].matName, m_materialList[selected].texName, m_materialList[selected].normTexName);
 						if (m_modelMap.find(id) != m_modelMap.end())
 						{
+							ChangeTexture(selectedTexture, selectedNormalTexture, m_materialList[selected].matName, m_materialList[selected].texName, m_materialList[selected].normTexName);
 							m_modelMap.at(id).m_material.set(Aen::Resource::GetMaterial(m_materialList[selected].matName));
 						}
 					}
@@ -1041,6 +1054,10 @@ namespace Aen {
 				}
 			}
 			ImGui::EndTabItem();
+
+			static int selected = 0;
+			static int selectedTexture = 0;
+			static int selectedNormalTexture = 0;
 		}
 	}
 
@@ -1169,6 +1186,18 @@ namespace Aen {
 	void ImGuiHandler::print(string input)
 	{
 		OutputDebugStringA((input + "\n").c_str());
+	}
+
+	void ImGuiHandler::ExistInList(vector<string>& list,string &target, int& index)
+	{
+		for (size_t i = 0; i < list.size(); i++)
+		{
+			if (list[i] == target)
+			{
+				index = i;
+				break;
+			}
+		}
 	}
 
 	bool ImGuiHandler::AddButton(const string& name)
@@ -1346,6 +1375,35 @@ namespace Aen {
 		return "";
 	}
 
+	void ImGuiHandler::CustomComboString(vector<string>& list, string name, string& input, int& index)
+	{
+		if (list.size() > 0)
+		{
+			//static string value = "";
+			if (ImGui::BeginCombo(name.c_str(), list[index].c_str()))
+			{
+				static bool isSelected = false;
+
+				for (size_t i = 0; i < list.size(); i++)
+				{
+					isSelected = (index == i);
+
+					if (ImGui::Selectable(list[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+					{
+						index = static_cast<int>(i);
+						input = list[index];
+					}
+
+					if (isSelected)
+					{
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+		}
+	}
+
 	string ImGuiHandler::CustomComboMap(unordered_map<string, AenIF::Material>& list, string name, string index)
 	{
 		static string value = "";
@@ -1382,6 +1440,11 @@ namespace Aen {
 		size_t id = m_entityList[m_selectedEntity]->GetID();
 		if (!Aen::ComponentHandler::CameraExist(id))
 		{
+			if (m_parentList.find(id) != m_parentList.end())
+			{
+				mp_entityHandlerPtr->GetEntity(m_parentList.at(id)).RemoveParent();
+			}
+
 			if (m_modelMap.find(id) != m_modelMap.end())
 			{
 				m_modelMap.erase(id);
