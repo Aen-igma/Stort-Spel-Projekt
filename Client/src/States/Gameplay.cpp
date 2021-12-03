@@ -244,6 +244,22 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((200.f / 1920) * wDesc.width, (350.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
+	//Pause menu UI
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"PauseOverlay.png")); //3
+	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((1.f / 2.f)* wDesc.width, (1.f / 2.f)* wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(wDesc.width, wDesc.height);
+	
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_TEXTURE_DIR_W(L"Continue.png")); //0
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((1.f / 6.f)* wDesc.width, (800.f / 1024.f)* wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (75.f / 1024.f) * wDesc.height);
+	
+	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_TEXTURE_DIR_W(L"Quit.png")); //1
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((1.f / 6.f)* wDesc.width, (900 / 1024.f)* wDesc.height);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f)* wDesc.width, (75.f / 1024.f)* wDesc.height);
+	
+	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
+
+
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 }
@@ -251,6 +267,28 @@ void Gameplay::Initialize()
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
 
 void Gameplay::Update(const float& deltaTime) {
+
+	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
+		m_paused = !m_paused;
+		Aen::Input::SetMouseVisible(m_paused);
+		//State::SetState(States::Loadscreen);
+		//m_Window.Exit();
+	}
+
+	if (m_paused) {
+
+		m_UI->GetComponent<Aen::UIComponent>().Update();
+		if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().Intersects(0))
+		{
+			m_paused = !m_paused;
+			Aen::Input::SetMouseVisible(m_paused);
+		}
+		if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().Intersects(1))
+		{
+			State::SetState(States::Gameover);
+		}
+		return;
+	}
 
 	if (m_hp != m_player.GetHealth()) { //ers�tt collision med enemy i if satsen
 		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenSize.x, 0);
@@ -371,10 +409,6 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
-	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
-		State::SetState(States::Gameover);
-		//m_Window.Exit();
-	}
 	// ------------------------------------- States -------------------------------------- //
 	//if (m_hp <= 0 && m_enemyQueue.size() == 0)
 	//{

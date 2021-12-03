@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Level">
-      <UniqueIdentifier>{1c73de93-3158-4d38-90e3-d6e7a83bf565}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Level">
       <UniqueIdentifier>{3cde0f54-6355-4825-926d-6b372afde062}</UniqueIdentifier>
     </Filter>
@@ -24,6 +21,9 @@
     </Filter>
     <Filter Include="Source Files\States">
       <UniqueIdentifier>{ee25da7f-7c47-42cc-8263-62dc92f28e5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States\Level">
+      <UniqueIdentifier>{1c73de93-3158-4d38-90e3-d6e7a83bf565}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
