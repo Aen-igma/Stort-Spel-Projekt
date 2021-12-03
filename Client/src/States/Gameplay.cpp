@@ -256,8 +256,12 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_TEXTURE_DIR_W(L"Quit.png")); //1
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((1.f / 6.f)* wDesc.width, (900 / 1024.f)* wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f)* wDesc.width, (75.f / 1024.f)* wDesc.height);
-	
+
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
+
+	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(0, 0, 3);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 0);
+	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 1);
 
 
 	Aen::Input::ToggleRawMouse(true);
@@ -271,6 +275,9 @@ void Gameplay::Update(const float& deltaTime) {
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
 		m_paused = !m_paused;
 		Aen::Input::SetMouseVisible(m_paused);
+		m_UI->GetComponent<Aen::UIComponent>().SetPicSize(0, 0, 3);
+		m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 0);
+		m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 1);
 		//State::SetState(States::Loadscreen);
 		//m_Window.Exit();
 	}
@@ -278,10 +285,14 @@ void Gameplay::Update(const float& deltaTime) {
 	if (m_paused) {
 
 		m_UI->GetComponent<Aen::UIComponent>().Update();
+		m_UI->GetComponent<Aen::UIComponent>().SetPicSize(screenSize.x, screenSize.y, 3);
 		if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().Intersects(0))
 		{
 			m_paused = !m_paused;
 			Aen::Input::SetMouseVisible(m_paused);
+			m_UI->GetComponent<Aen::UIComponent>().SetPicSize(0, 0, 3);
+			m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 0);
+			m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 1);
 		}
 		if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().Intersects(1))
 		{
