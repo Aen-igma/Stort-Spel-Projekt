@@ -240,7 +240,7 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * wDesc.width, (300.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"- Find Item Room (Optional)", 30.f); //0
+	m_UI->GetComponent<Aen::UIComponent>().AddText(L"- Find Item Room (Optional)", 30.f); //3
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((200.f / 1920) * wDesc.width, (350.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
@@ -275,9 +275,25 @@ void Gameplay::Update(const float& deltaTime) {
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
 		m_paused = !m_paused;
 		Aen::Input::SetMouseVisible(m_paused);
-		m_UI->GetComponent<Aen::UIComponent>().SetPicSize(0, 0, 3);
-		m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 0);
-		m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 1);
+		if (m_paused) {
+			m_UI->GetComponent<Aen::UIComponent>().SetPicSize(screenSize.x, screenSize.y, 3);
+			m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100, 0, 0);
+			m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100, 0, 1);
+			m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100, 0, 3);
+		}
+		else{
+			m_UI->GetComponent<Aen::UIComponent>().SetPicSize(0, 0, 3);
+			m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 0);
+			m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 1);
+			m_UI->GetComponent<Aen::UIComponent>().SetTextPos((175.f / 1920) * screenSize.x, (300.f / 1024) * screenSize.y, 0);
+			m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * screenSize.x, (300 / 1024) * screenSize.y, 0);
+			m_UI->GetComponent<Aen::UIComponent>().SetTextPos((120.f / 1920) * screenSize.x, (110.f / 1024) * screenSize.y, 1);
+			m_UI->GetComponent<Aen::UIComponent>().SetTextSize((150.f / 1920) * screenSize.x, (150.f / 1024) * screenSize.y, 1);
+			m_UI->GetComponent<Aen::UIComponent>().SetTextPos((200.f / 1920) * screenSize.x, (350.f / 1024) * screenSize.y, 3);
+			m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * screenSize.x, (300 / 1024) * screenSize.y, 3);
+
+
+		}
 		//State::SetState(States::Loadscreen);
 		//m_Window.Exit();
 	}
@@ -285,10 +301,9 @@ void Gameplay::Update(const float& deltaTime) {
 	if (m_paused) {
 
 		m_UI->GetComponent<Aen::UIComponent>().Update();
-		m_UI->GetComponent<Aen::UIComponent>().SetPicSize(screenSize.x, screenSize.y, 3);
 		if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().Intersects(0))
 		{
-			m_paused = !m_paused;
+			m_paused = false;
 			Aen::Input::SetMouseVisible(m_paused);
 			m_UI->GetComponent<Aen::UIComponent>().SetPicSize(0, 0, 3);
 			m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 0);
