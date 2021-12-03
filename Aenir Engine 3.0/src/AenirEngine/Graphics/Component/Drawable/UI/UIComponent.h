@@ -23,7 +23,9 @@ namespace Aen {
 		void SaveButtonData();
 		void AddButton(const std::wstring& dir);
 		void SetButtonPos(float x, float y);
+		void SetButtonPos(float x, float y, int indX);
 		void SetButtonSize(float width, float height);
+		void SetButtonSize(float width, float height, int indX);
 		bool Intersects(int index);
 
 		//----------------------	Text	----------------------------//
