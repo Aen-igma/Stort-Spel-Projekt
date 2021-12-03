@@ -3,7 +3,6 @@
 Chest::Chest()
 	:Interact(), m_chest(&Aen::EntityHandler::CreateEntity()), m_near(false)
 {
-
 	Aen::Animation& ChestOpen = Aen::Resource::CreateAnimation("ChestOpen");
 	ChestOpen.LoadAnimation(AEN_MODEL_DIR("ChestOpen.fbx"));
 	Aen::Mesh& chest = Aen::Resource::CreateMesh("ChestMesh");
@@ -16,7 +15,6 @@ Chest::Chest()
 	m_chest->GetComponent<Aen::MeshInstance>().SetMaterial(chestMat);
 	m_chest->AddComponent<Aen::Animator>();
 	m_chest->GetComponent<Aen::Animator>().AddAnimation(ChestOpen, "Open");
-	m_chest->GetComponent<Aen::Animator>().Pause();
 	m_chest->GetComponent<Aen::Animator>().SetAnimation("Open");
 	m_chest->SetScale(0.8f);
 
@@ -48,14 +46,15 @@ void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 	float dist = eDir.Magnitude();
 
 	static float time = 0;
-	if(m_type == Type::Locked) {
+	if (m_type == Type::Locked) {
 		time += deltaTime;
 		m_chest->GetComponent<Aen::Animator>().Pause();
-	} else {
+	}
+	else {
 		m_chest->GetComponent<Aen::Animator>().Run();
-	} 
+	}
 
-	if(time > 0.5f)
+	if (time > 0.5f)
 		m_chest->GetComponent<Aen::Animator>().Run();
 
 	//player

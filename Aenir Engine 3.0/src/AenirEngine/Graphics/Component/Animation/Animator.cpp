@@ -12,6 +12,7 @@ namespace Aen {
 				while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > frameRate) {
 					m_start = ResClock::now();
 
+					m_start = ResClock::now();
 					if(pause) {
 						std::vector<Mat4f> anim;
 						GetAnimation(anim);
@@ -54,7 +55,7 @@ namespace Aen {
 		if (duration.count() * m_scale > animation->m_duration) {
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[numFrames].rotation;
+				Mat4f currentFrame = animation->m_keyFrames.at(bName)[numFrames-1].rotation;
 
 				mat.emplace_back(currentFrame);
 			}
@@ -76,7 +77,7 @@ namespace Aen {
 				mat.emplace_back(currentFrame);
 			}
 
-			if (duration.count() * m_scale > animation->m_timeStamp[m_currentFrame + 1]) {
+			if (m_currentFrame + 1 < numFrames && duration.count() * m_scale > animation->m_timeStamp[m_currentFrame + 1]) {
 				m_currentFrame++;
 			}
 		}

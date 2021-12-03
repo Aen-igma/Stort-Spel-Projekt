@@ -65,7 +65,7 @@ SkeleLight::SkeleLight(const Aen::Vec3f& pos)
 	mp_skeleton->GetComponent<Aen::Animator>().AddAnimation("Skel_Attack", "attack");
 	mp_skeleton->GetComponent<Aen::Animator>().SetAnimation("idle");
 	mp_skeleton->GetComponent<Aen::Animator>().SetFrameRate(60);
-	mp_skeleton->GetComponent<Aen::Animator>().SetAnimationScale(5);
+	mp_skeleton->GetComponent<Aen::Animator>().SetAnimationScale(1);
 
 
 	// -----------------------------	Floating m_healthBar		------------------------------- //
