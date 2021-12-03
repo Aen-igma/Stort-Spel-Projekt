@@ -27,26 +27,6 @@ namespace Aen {
 		return Vec2f(xCenter, yCenter);
 	}
 
-	void ButtonUI::SetButtonPos(float x, float y, int indX)
-	{
-		m_buttonData.at(indX).rect.left = x;
-		m_buttonData.at(indX).rect.right = x;
-		m_buttonData.at(indX).rect.top = y;
-		m_buttonData.at(indX).rect.bottom = y;
-	}
-	void ButtonUI::SetButtonSize(float width, float height, int indX)
-	{
-		float left = GetButtonCenter(m_buttonData.at(indX).rect).x - (width / 2.f);
-		float right = GetButtonCenter(m_buttonData.at(indX).rect).x + (width / 2.f);
-		float top = GetButtonCenter(m_buttonData.at(indX).rect).y - (height / 2.f);
-		float bottom = GetButtonCenter(m_buttonData.at(indX).rect).y + (height / 2.f);
-
-		m_buttonData.at(indX).rect.left = left;
-		m_buttonData.at(indX).rect.right = right;
-		m_buttonData.at(indX).rect.top = top;
-		m_buttonData.at(indX).rect.bottom = bottom;
-	}
-
 	bool  ButtonUI::Intersect(int index)
 	{
 		//Get mouse pos, cuz right now its dumb af
@@ -133,6 +113,13 @@ namespace Aen {
 		m_buttonData.at(m_nr).rect.top		= y;
 		m_buttonData.at(m_nr).rect.bottom	= y;
 	}
+	void ButtonUI::SetButtonPos(float x, float y, int indX)
+	{
+		m_buttonData.at(indX).rect.left = x;
+		m_buttonData.at(indX).rect.right = x;
+		m_buttonData.at(indX).rect.top = y;
+		m_buttonData.at(indX).rect.bottom = y;
+	}
 
 	void ButtonUI::SetButtonSize(float width, float height)
 	{
@@ -152,6 +139,19 @@ namespace Aen {
 		m_buttonData.at(m_nr).rect.right	= right;
 		m_buttonData.at(m_nr).rect.top		= top;
 		m_buttonData.at(m_nr).rect.bottom	= bottom;
+	}
+
+	void ButtonUI::SetButtonSize(float width, float height, int indX)
+	{
+		float left = GetButtonCenter(m_buttonData.at(indX).rect).x - (width / 2.f);
+		float right = GetButtonCenter(m_buttonData.at(indX).rect).x + (width / 2.f);
+		float top = GetButtonCenter(m_buttonData.at(indX).rect).y - (height / 2.f);
+		float bottom = GetButtonCenter(m_buttonData.at(indX).rect).y + (height / 2.f);
+
+		m_buttonData.at(indX).rect.left = left;
+		m_buttonData.at(indX).rect.right = right;
+		m_buttonData.at(indX).rect.top = top;
+		m_buttonData.at(indX).rect.bottom = bottom;
 	}
 
 	std::vector<ButtonData> ButtonUI::GetData() const
