@@ -325,7 +325,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			m_targets.front().target->SetISTargeted(true);
 			m_targets.emplace_back(temp);
 		}
-
+	
 	if (Aen::Input::KeyDown(Aen::Key::E)) {
 		lockedOn = !lockedOn;
 
@@ -540,7 +540,7 @@ void Player::Move(const Aen::Vec3f& dir) {
 void Player::PotionUpdate()
 {
 	// ------------------------------		Health potion		---------------------------------- //
-	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0 && m_health < 200.f && !m_healing) {
+	if (Aen::Input::KeyDown(Aen::Key::Q) && m_nrPotion > 0 && m_health < 200.f && !m_healing) {
 
 		m_healing = true;
 		m_nrPotion -= 1;
