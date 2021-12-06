@@ -272,7 +272,7 @@ void Gameplay::Initialize()
 	mp_uiComp->SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
 	//Pause menu UI
-	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"PauseOverlay.png")); //3
+	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"PauseOverlay.png")); //4
 	mp_uiComp->SetPicPos((1.f / 2.f)* wDesc.width, (1.f / 2.f)* wDesc.height);
 	mp_uiComp->SetPicSize(wDesc.width, wDesc.height);
 
@@ -286,7 +286,7 @@ void Gameplay::Initialize()
 
 	mp_uiComp->SaveButtonData();
 
-	mp_uiComp->SetPicSize(0, 0, 3);
+	mp_uiComp->SetPicSize(0, 0, 4);
 	mp_uiComp->SetButtonSize(0, 0, 0);
 	mp_uiComp->SetButtonSize(0, 0, 1);
 
@@ -304,13 +304,13 @@ void Gameplay::Update(const float& deltaTime) {
 		m_paused = !m_paused;
 		Aen::Input::SetMouseVisible(m_paused);
 		if (m_paused) {
-			mp_uiComp->SetPicSize(screenSize.x, screenSize.y, 3);
+			mp_uiComp->SetPicSize(screenSize.x, screenSize.y, 4);
 			mp_uiComp->SetTextPos(-100, 0, 0);
 			mp_uiComp->SetTextPos(-100, 0, 1);
 			mp_uiComp->SetTextPos(-100, 0, 3);
 		}
 		else{
-			mp_uiComp->SetPicSize(0, 0, 3);
+			mp_uiComp->SetPicSize(0, 0, 4);
 			mp_uiComp->SetButtonSize(0, 0, 0);
 			mp_uiComp->SetButtonSize(0, 0, 1);
 			mp_uiComp->SetTextPos((175.f / 1920) * screenSize.x, (300.f / 1024) * screenSize.y, 0);
@@ -331,7 +331,7 @@ void Gameplay::Update(const float& deltaTime) {
 		{
 			m_paused = false;
 			Aen::Input::SetMouseVisible(false);
-			mp_uiComp->SetPicSize(0, 0, 3);
+			mp_uiComp->SetPicSize(0, 0, 4);
 			mp_uiComp->SetButtonSize(0, 0, 0);
 			mp_uiComp->SetButtonSize(0, 0, 1);
 			mp_uiComp->SetTextPos((175.f / 1920) * screenSize.x, (300.f / 1024) * screenSize.y, 0);
