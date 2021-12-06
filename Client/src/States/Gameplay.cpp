@@ -406,16 +406,16 @@ void Gameplay::Update(const float& deltaTime) {
 	if (m_player.GetBossesAlive() > 0)
 	{
 		if (m_pSkeleBoss->GetBS() != BossState::STATIONARY && m_door.GetType() == Type::Open) {
-			m_UI->GetComponent<Aen::UIComponent>().ChangeText(0, L"- Kill the Boss");
-			m_UI->GetComponent<Aen::UIComponent>().SetPicPos((1000.f / 1920) * screenSize.x, (700.f / 1024) * screenSize.y, 3);
-			m_UI->GetComponent<Aen::UIComponent>().SetPicSize((1200.f / 1920) * screenSize.x, (150.f / 1024) * screenSize.y, 3);
+			mp_uiComp->ChangeText(0, L"- Kill the Boss");
+			mp_uiComp->SetPicPos((1000.f / 1920) * screenSize.x, (700.f / 1024) * screenSize.y, 3);
+			mp_uiComp->SetPicSize((1200.f / 1920) * screenSize.x, (150.f / 1024) * screenSize.y, 3);
 			m_door.GetEntity()->SetPos(doorPos);
 			m_door.SetType(Type::Locked);
 		}
 
 		if (m_bossHP != m_pSkeleBoss->GetHealth()) {
 
-			m_UI->GetComponent<Aen::UIComponent>().UpdatePicture((m_bossHP - m_pSkeleBoss->GetHealth()) * 6.f * (1.f / 1920.f)* screenSize.x, 3);
+			mp_uiComp->UpdatePicture((m_bossHP - m_pSkeleBoss->GetHealth()) * 6.f * (1.f / 1920.f)* screenSize.x, 3);
 			m_bossHP = m_pSkeleBoss->GetHealth();
 		}
 
