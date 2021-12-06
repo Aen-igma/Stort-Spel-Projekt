@@ -9,6 +9,7 @@
 #include "Drawable\UI\UIComponent.h"
 #include"Collision\AABBComponent.h"
 #include"Collision\OBBComponent.h"
+#include "Drawable\ParticleSystem\PSSystemComponent.h"
 #include"Animation/Animator.h"
 
 #include<unordered_map>
@@ -386,6 +387,39 @@ namespace Aen {
 			return *m_OBBs.at(id);
 		}
 
+		// ------------Particle System----------------- //
+		static const bool PSExist(const size_t& id) {
+			return m_PS.count(id) > 0;
+		}
+
+		static void CreatePS(const size_t& id, const size_t& layer) {
+			m_PS.emplace(id, AEN_NEW PSSystemcomponent(id));
+			m_meshLayer[layer].emplace(id, m_PS.at(id));
+		}
+
+		static void RemovePS(const size_t& id) {
+			if (m_PS.count(id) > 0) {
+				delete m_PS.at(id);
+				m_PS.at(id) = nullptr;
+				m_PS.erase(id);
+			}
+		}
+
+		static PSSystemcomponent& GetPS(const size_t& id) {
+			if (m_PS.count(id) > 0)
+				return *m_PS.at(id);
+			throw;
+		}
+
+		static void UpdatePS(const float& deltaTime)
+		{
+			for (auto a : m_PS)
+			{
+				a.second->updatePS(deltaTime);
+				//a.second->EmitRandom(deltaTime);
+			}
+		}
+
 		// -------------------------------------------- //
 
 		// ----------- Mesh Instance Layer ------------ //
@@ -443,7 +477,7 @@ namespace Aen {
 		static std::unordered_map<size_t, AABoundBox*> m_AABBs;
 		static std::unordered_map<size_t, OBBox*> m_OBBs;
 		static std::unordered_map<size_t, UIComponent*> m_UI;
-
+		static std::unordered_map<size_t, PSSystemcomponent*> m_PS;
 		static std::multimap<size_t, Light*> m_lights;
 		static std::unordered_map<size_t, Animator*> m_animators;
 		
@@ -461,7 +495,7 @@ namespace Aen {
 		friend class GameLoop;
 		friend class StaticBody;
 		friend class DynamicBody;
-		//friend class Animator;
+		friend class PSSystemcomponent;
 	};
 
 }

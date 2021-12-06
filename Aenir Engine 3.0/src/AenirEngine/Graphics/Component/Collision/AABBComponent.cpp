@@ -150,7 +150,7 @@ namespace Aen {
 		#ifdef _DEBUG
 			
 			if(m_canDraw) {
-
+				RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 				Vec3f p = Vec3f(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z);
 				renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(p).Transposed();
 				renderer.m_cbTransform.UpdateBuffer();
@@ -189,11 +189,13 @@ namespace Aen {
 			if(m_camBox) {
 				DirectX::XMFLOAT3 points[8u];
 				GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().GetCorners(points);
+
 				for(uint32_t i = 0u; i < 8u; i++)
 					m_verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
 			}
 
 			if(m_canDraw) {
+				RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 				m_vBuffer.UpdateBuffer(m_verts, 8);
 				Vec3f p = Vec3f(m_aabb.Center.x, m_aabb.Center.y, m_aabb.Center.z);
 				renderer.m_cbTransform.GetData().m_mdlMat = (EntityHandler::GetEntity(m_id).GetScaleMat() * MatTranslate(p)).Transposed();
