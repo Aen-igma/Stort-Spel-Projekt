@@ -31,14 +31,13 @@ private:
 
     //Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
-
     Aen::Entity* m_UI;
-    Aen::UIComponent* mp_UIHolder;
+
+    Aen::UIComponent* mp_uiComp;
 
     Player m_player;
     Boss* m_pSkeleBoss;
 
-    Aen::UIComponent* mp_uiComp;
 
     Chest m_chest;
     Door m_door;
