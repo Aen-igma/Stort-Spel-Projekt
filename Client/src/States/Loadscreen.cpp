@@ -17,6 +17,7 @@ void Loadscreen::Update(const float& deltaTime)
 	if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_loading->GetComponent<Aen::UIComponent>().Intersects(0))
 	{
 		State::SetState(States::Gameplay);
+		Aen::Input::SetMouseVisible(false);
 	}
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE))
@@ -39,16 +40,19 @@ void Loadscreen::Initialize()
 	// keyboard
 	m_loading = &Aen::EntityHandler::CreateEntity();
 	m_loading->AddComponent<Aen::UIComponent>();
-	m_loading->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"KeyboardLayout2.png"));
-	m_loading->GetComponent<Aen::UIComponent>().SetPicPos((965.f / 1920) * wDesc.width, (520.f / 1024) * wDesc.height); //Divide by standard size, mul with wDesc size
+	m_loading->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"KeyboardLayout.png"));
+	m_loading->GetComponent<Aen::UIComponent>().SetPicPos((965.f / 1920.f) * wDesc.width, (520.f / 1024.f) * wDesc.height); //Divide by standard size, mul with wDesc size
 	m_loading->GetComponent<Aen::UIComponent>().SetPicSize(/*(1700.f / 1920.f) **/ wDesc.width,/* (900.f / 1024.f) **/ wDesc.height);
 
 	// continue
 	m_loading->GetComponent<Aen::UIComponent>().AddButton(AEN_TEXTURE_DIR_W(L"Continue.png"));
-	m_loading->GetComponent<Aen::UIComponent>().SetButtonPos((950.f / 1920) * wDesc.width, (900.f / 1024) * wDesc.height);
-	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920)* wDesc.width, (100.f / 1024) * wDesc.height);
+	m_loading->GetComponent<Aen::UIComponent>().SetButtonPos((950.f / 1920.f) * wDesc.width, (900.f / 1024.f) * wDesc.height);
+	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (100.f / 1024.f) * wDesc.height);
 	m_loading->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	if (!State::GetLoaded())
 		State::SetLoad(true);
+
+	Aen::Input::ToggleRawMouse(true);
+	Aen::Input::SetMouseVisible(true);
 }

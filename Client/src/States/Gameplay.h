@@ -23,6 +23,7 @@ private:
     float m_speed;
     float m_fSpeed;
     bool m_toggleFullScreen;
+    bool m_paused = false;
 
     Aen::Vec2f screenSize;
 
@@ -30,15 +31,17 @@ private:
 
     //Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
+    Aen::Entity* m_UI;
 
     Aen::Entity* m_UI;
     Aen::Entity* m_PS;
     Aen::Entity* m_wall;
  
+    Aen::UIComponent* mp_uiComp;
+
     Player m_player;
     Boss* m_pSkeleBoss;
 
-    Aen::UIComponent* mp_uiComp;
 
     Chest m_chest;
     Door m_door;
