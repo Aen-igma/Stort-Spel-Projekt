@@ -415,7 +415,7 @@ namespace Aen {
 			for (auto a : m_PS)
 			{
 				a.second->updatePS(deltaTime);
-				a.second->EmitRandom(deltaTime);
+				//a.second->EmitRandom(deltaTime);
 			}
 		}
 

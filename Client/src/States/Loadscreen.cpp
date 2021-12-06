@@ -39,9 +39,9 @@ void Loadscreen::Initialize()
 	// keyboard
 	m_loading = &Aen::EntityHandler::CreateEntity();
 	m_loading->AddComponent<Aen::UIComponent>();
-	m_loading->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"KeyboardLayout.png"));
+	m_loading->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"KeyboardLayout2.png"));
 	m_loading->GetComponent<Aen::UIComponent>().SetPicPos((965.f / 1920) * wDesc.width, (520.f / 1024) * wDesc.height); //Divide by standard size, mul with wDesc size
-	m_loading->GetComponent<Aen::UIComponent>().SetPicSize((1700.f / 1920.f) * wDesc.width, (900.f / 1024.f) * wDesc.height);
+	m_loading->GetComponent<Aen::UIComponent>().SetPicSize(/*(1700.f / 1920.f) **/ wDesc.width,/* (900.f / 1024.f) **/ wDesc.height);
 
 	// continue
 	m_loading->GetComponent<Aen::UIComponent>().AddButton(AEN_TEXTURE_DIR_W(L"Continue.png"));

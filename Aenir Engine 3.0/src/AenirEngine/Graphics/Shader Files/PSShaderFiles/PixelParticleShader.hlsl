@@ -1,4 +1,3 @@
-
 cbuffer Aen_CB_UseTexture {
     int useDiffuse;
     int useNormal;

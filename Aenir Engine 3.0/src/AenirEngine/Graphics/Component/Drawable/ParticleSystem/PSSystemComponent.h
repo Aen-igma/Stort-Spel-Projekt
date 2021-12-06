@@ -84,17 +84,17 @@ namespace Aen
 		friend class Entity;
 		friend class GCore;
 
-
-	
-		//Particle* m_ParticleList;
 		CSInputBuffer m_CSInputBuffer;
 		VertexParticle m_VertexPS;
 		Texture* m_texture;
 		ShaderModel* m_shader;
 		UAView m_UAView;
-
 		Mesh* m_pMesh;
 		Material* m_pMaterial;
+
+		//Viewfrustrum
+		Vec3f m_offset;
+		DirectX::BoundingOrientedBox m_obb;
 
 		void updatePS(const float& framerate);
 

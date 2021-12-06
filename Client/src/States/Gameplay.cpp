@@ -91,9 +91,10 @@ void Gameplay::Initialize()
 	m_PS->AddComponent<Aen::PSSystemcomponent>();
 	m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(10);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(5, 5, 5);
+
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(5);
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
+
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();
@@ -172,6 +173,8 @@ void Gameplay::Initialize()
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
 	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	//m_door.SetType(Type::Open);
 

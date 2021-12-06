@@ -11,12 +11,18 @@ namespace Aen
 	Aen::PSSystemcomponent::PSSystemcomponent(const size_t& id)
 		:Drawable(id),m_UAView(sizeof(VertexParticle),1024)
 	{
-	
+		m_texture = 0;
+		m_shader = 0;
+		m_pMesh = 0;
+		m_pMaterial = 0;
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
 	{
-
+		delete m_texture;
+		delete m_shader;
+		delete m_pMesh;
+		delete m_pMaterial;
 
 	}
 
@@ -70,7 +76,6 @@ namespace Aen
 	void PSSystemcomponent::updatePS(const float& framerate)
 	{
 		m_CSInputBuffer.deltaTime = framerate;
-		
 	}
 
 	void PSSystemcomponent::EmitRandom(float frameTime)
@@ -162,7 +167,7 @@ namespace Aen
 
 	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer) {
 
-		// First Pass
+		//First Pass
 		RenderSystem::ClearRenderTargetView(renderer.m_particleOut, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
 		RenderSystem::SetInputLayout(renderer.m_PSLayout);
@@ -211,7 +216,6 @@ namespace Aen
 
 
 		// Second Pass
-
 		RenderSystem::UnBindShader<VShader>();
 		RenderSystem::UnBindShader<GShader>();
 		RenderSystem::UnBindShader<PShader>();
@@ -252,7 +256,6 @@ namespace Aen
 		renderer.m_cbTransform.BindBuffer<VShader>(0);
 
 		RenderSystem::BindShaderResourceView<VShader>(0, m_UAView);
-
 		renderer.m_cbTransform.BindBuffer<GShader>(0);
 
 		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
@@ -268,13 +271,26 @@ namespace Aen
 		RenderSystem::UnBindShader<PShader>();
 		RenderSystem::UnBindShaderResources<VShader>(0,1);
 	}
+
 	bool PSSystemcomponent::FrustumCull(Renderer& renderer) 
-	{
-		bool notgettingfucked = false;
-		if (notgettingfucked)
-		{
-			return true;
-		}
-		return notgettingfucked;
+	{		
+		//Ree momment
+		//if (m_pMaterial)
+		//{
+		//	for (int i = 0; i < 4; i++)
+		//	{
+		//		m_pMaterial->m_textures[i];
+		//	}
+		///*	Mat4f mat = EntityHandler::GetEntity(m_id).GetTransformation();
+		//	Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
+		//	if (ComponentHandler::StaticBodyExist(m_id))
+		//		m_obb.Center = ComponentHandler::GetStaticBody(m_id).GetPos().smVec + m_offset.smVec;
+		//*/
+
+		//	return true;
+		//}
+		return true;
 	}
+
+
 }
