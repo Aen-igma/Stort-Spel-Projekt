@@ -292,6 +292,7 @@ void Gameplay::Initialize()
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
+	SetWin(false);
 	m_bossHP = m_pSkeleBoss->GetHealth();
 }
 
