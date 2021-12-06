@@ -33,7 +33,7 @@ private:
     Aen::Entity* m_plane;
 
     Aen::Entity* m_UI;
-    Aen::Entity* m_pauseUI;
+    Aen::UIComponent* mp_UIHolder;
 
     Player m_player;
     Boss* m_pSkeleBoss;

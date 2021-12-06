@@ -7,6 +7,7 @@ Gameplay::Gameplay(Aen::Window& window)
 Gameplay::~Gameplay() {
 	//Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
+	mp_UIHolder = nullptr;
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	
 
@@ -210,58 +211,59 @@ void Gameplay::Initialize()
 	// -----------------------------	UI	------------------------------- //
 	m_UI = &Aen::EntityHandler::CreateEntity();
 	m_UI->AddComponent<Aen::UIComponent>();
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"healthbar.png")); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((350.f / 1920)* wDesc.width, (100.f / 1024) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(((m_hp * 2.f) / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+	mp_UIHolder = &m_UI->GetComponent<Aen::UIComponent>();
+	mp_UIHolder->AddPicture(AEN_TEXTURE_DIR_W(L"healthbar.png")); //0
+	mp_UIHolder->SetPicPos((350.f / 1920)* wDesc.width, (100.f / 1024) * wDesc.height);
+	mp_UIHolder->SetPicSize(((m_hp * 2.f) / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"bar.png")); //1
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((350.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(((m_hp * 2.f) / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+	mp_UIHolder->AddPicture(AEN_TEXTURE_DIR_W(L"bar.png")); //1
+	mp_UIHolder->SetPicPos((350.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
+	mp_UIHolder->SetPicSize(((m_hp * 2.f) / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"potion.png")); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((125.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+	mp_UIHolder->AddPicture(AEN_TEXTURE_DIR_W(L"potion.png")); //2
+	mp_UIHolder->SetPicPos((125.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
+	mp_UIHolder->SetPicSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 
 	//m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
 	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"- Find the boss", 30.f); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((175.f / 1920) * wDesc.width, (300.f / 1024) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
+	mp_UIHolder->AddText(L"- Find the boss", 30.f); //0
+	mp_UIHolder->SetTextPos((175.f / 1920) * wDesc.width, (300.f / 1024) * wDesc.height);
+	mp_UIHolder->SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"3", 50.f); //1 - Amount of potion
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((120.f / 1920) * wDesc.width, (110.f / 1024) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Black);
+	mp_UIHolder->AddText(L"3", 50.f); //1 - Amount of potion
+	mp_UIHolder->SetTextPos((120.f / 1920) * wDesc.width, (110.f / 1024) * wDesc.height);
+	mp_UIHolder->SetTextSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+	mp_UIHolder->SetColor(D2D1::ColorF::Black);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"Interact (F)", 60.f); //2
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * wDesc.width, (800.f / 1024.f) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * wDesc.width, (300.f / 1024.f) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetColor(D2D1::ColorF::Aqua);
+	mp_UIHolder->AddText(L"Interact (F)", 60.f); //2
+	mp_UIHolder->SetTextPos((965.f / 1920.f) * wDesc.width, (800.f / 1024.f) * wDesc.height);
+	mp_UIHolder->SetTextSize((900.f / 1920.f) * wDesc.width, (300.f / 1024.f) * wDesc.height);
+	mp_UIHolder->SetColor(D2D1::ColorF::Aqua);
 
-	m_UI->GetComponent<Aen::UIComponent>().AddText(L"- Find Item Room (Optional)", 30.f); //3
-	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((200.f / 1920) * wDesc.width, (350.f / 1024) * wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
+	mp_UIHolder->AddText(L"- Find Item Room (Optional)", 30.f); //3
+	mp_UIHolder->SetTextPos((200.f / 1920) * wDesc.width, (350.f / 1024) * wDesc.height);
+	mp_UIHolder->SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
 	//Pause menu UI
-	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"PauseOverlay.png")); //3
-	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((1.f / 2.f)* wDesc.width, (1.f / 2.f)* wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(wDesc.width, wDesc.height);
-	
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_TEXTURE_DIR_W(L"Continue.png")); //0
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((1.f / 6.f)* wDesc.width, (800.f / 1024.f)* wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (75.f / 1024.f) * wDesc.height);
-	
-	m_UI->GetComponent<Aen::UIComponent>().AddButton(AEN_TEXTURE_DIR_W(L"Quit.png")); //1
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonPos((1.f / 6.f)* wDesc.width, (900 / 1024.f)* wDesc.height);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f)* wDesc.width, (75.f / 1024.f)* wDesc.height);
+	mp_UIHolder->AddPicture(AEN_TEXTURE_DIR_W(L"PauseOverlay.png")); //3
+	mp_UIHolder->SetPicPos((1.f / 2.f)* wDesc.width, (1.f / 2.f)* wDesc.height);
+	mp_UIHolder->SetPicSize(wDesc.width, wDesc.height);
 
-	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
+	mp_UIHolder->AddButton(AEN_TEXTURE_DIR_W(L"Continue.png")); //0
+	mp_UIHolder->SetButtonPos((1.f / 6.f)* wDesc.width, (800.f / 1024.f)* wDesc.height);
+	mp_UIHolder->SetButtonSize((200.f / 1920.f) * wDesc.width, (75.f / 1024.f) * wDesc.height);
 
-	m_UI->GetComponent<Aen::UIComponent>().SetPicSize(0, 0, 3);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 0);
-	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 1);
+	mp_UIHolder->AddButton(AEN_TEXTURE_DIR_W(L"Quit.png")); //1
+	mp_UIHolder->SetButtonPos((1.f / 6.f)* wDesc.width, (900 / 1024.f)* wDesc.height);
+	mp_UIHolder->SetButtonSize((200.f / 1920.f)* wDesc.width, (75.f / 1024.f)* wDesc.height);
+
+	mp_UIHolder->SaveButtonData();
+
+	mp_UIHolder->SetPicSize(0, 0, 3);
+	mp_UIHolder->SetButtonSize(0, 0, 0);
+	mp_UIHolder->SetButtonSize(0, 0, 1);
 
 
 	Aen::Input::ToggleRawMouse(true);
@@ -276,22 +278,21 @@ void Gameplay::Update(const float& deltaTime) {
 		m_paused = !m_paused;
 		Aen::Input::SetMouseVisible(m_paused);
 		if (m_paused) {
-			m_UI->GetComponent<Aen::UIComponent>().SetPicSize(screenSize.x, screenSize.y, 3);
-			m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100, 0, 0);
-			m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100, 0, 1);
-			m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100, 0, 3);
+			mp_UIHolder->SetPicSize(screenSize.x, screenSize.y, 3);
+			mp_UIHolder->SetTextPos(-100, 0, 0);
+			mp_UIHolder->SetTextPos(-100, 0, 1);
+			mp_UIHolder->SetTextPos(-100, 0, 3);
 		}
 		else{
-			m_UI->GetComponent<Aen::UIComponent>().SetPicSize(0, 0, 3);
-			m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 0);
-			m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 1);
-			m_UI->GetComponent<Aen::UIComponent>().SetTextPos((175.f / 1920) * screenSize.x, (300.f / 1024) * screenSize.y, 0);
-			m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * screenSize.x, (300 / 1024) * screenSize.y, 0);
-			m_UI->GetComponent<Aen::UIComponent>().SetTextPos((120.f / 1920) * screenSize.x, (110.f / 1024) * screenSize.y, 1);
-			m_UI->GetComponent<Aen::UIComponent>().SetTextSize((150.f / 1920) * screenSize.x, (150.f / 1024) * screenSize.y, 1);
-			m_UI->GetComponent<Aen::UIComponent>().SetTextPos((200.f / 1920) * screenSize.x, (350.f / 1024) * screenSize.y, 3);
-			m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920) * screenSize.x, (300 / 1024) * screenSize.y, 3);
-
+			mp_UIHolder->SetPicSize(0, 0, 3);
+			mp_UIHolder->SetButtonSize(0, 0, 0);
+			mp_UIHolder->SetButtonSize(0, 0, 1);
+			mp_UIHolder->SetTextPos((175.f / 1920) * screenSize.x, (300.f / 1024) * screenSize.y, 0);
+			mp_UIHolder->SetTextSize((900.f / 1920) * screenSize.x, (300 / 1024) * screenSize.y, 0);
+			mp_UIHolder->SetTextPos((120.f / 1920) * screenSize.x, (110.f / 1024) * screenSize.y, 1);
+			mp_UIHolder->SetTextSize((150.f / 1920) * screenSize.x, (150.f / 1024) * screenSize.y, 1);
+			mp_UIHolder->SetTextPos((200.f / 1920) * screenSize.x, (350.f / 1024) * screenSize.y, 3);
+			mp_UIHolder->SetTextSize((900.f / 1920) * screenSize.x, (300 / 1024) * screenSize.y, 3);
 
 		}
 		//State::SetState(States::Loadscreen);
@@ -299,17 +300,22 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 
 	if (m_paused) {
-
-		m_UI->GetComponent<Aen::UIComponent>().Update();
-		if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().Intersects(0))
+		mp_UIHolder->Update();
+		if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && mp_UIHolder->Intersects(0))
 		{
 			m_paused = false;
-			Aen::Input::SetMouseVisible(m_paused);
-			m_UI->GetComponent<Aen::UIComponent>().SetPicSize(0, 0, 3);
-			m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 0);
-			m_UI->GetComponent<Aen::UIComponent>().SetButtonSize(0, 0, 1);
+			Aen::Input::SetMouseVisible(false);
+			mp_UIHolder->SetPicSize(0, 0, 3);
+			mp_UIHolder->SetButtonSize(0, 0, 0);
+			mp_UIHolder->SetButtonSize(0, 0, 1);
+			mp_UIHolder->SetTextPos((175.f / 1920) * screenSize.x, (300.f / 1024) * screenSize.y, 0);
+			mp_UIHolder->SetTextSize((900.f / 1920) * screenSize.x, (300 / 1024) * screenSize.y, 0);
+			mp_UIHolder->SetTextPos((120.f / 1920) * screenSize.x, (110.f / 1024) * screenSize.y, 1);
+			mp_UIHolder->SetTextSize((150.f / 1920) * screenSize.x, (150.f / 1024) * screenSize.y, 1);
+			mp_UIHolder->SetTextPos((200.f / 1920) * screenSize.x, (350.f / 1024) * screenSize.y, 3);
+			mp_UIHolder->SetTextSize((900.f / 1920) * screenSize.x, (300 / 1024) * screenSize.y, 3);
 		}
-		if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && m_UI->GetComponent<Aen::UIComponent>().Intersects(1))
+		if (Aen::Input::KeyDown(Aen::Key::LMOUSE) && mp_UIHolder->Intersects(1))
 		{
 			State::SetState(States::Gameover);
 		}
@@ -317,12 +323,12 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 
 	if (m_hp != m_player.GetHealth()) { //ers�tt collision med enemy i if satsen
-		m_UI->GetComponent<Aen::UIComponent>().UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenSize.x, 0);
+		mp_UIHolder->UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenSize.x, 0);
 		m_hp = m_player.GetHealth();
 	}
 	static int pots;
 	if (pots != m_player.GetPotionNr()) {
-		m_UI->GetComponent<Aen::UIComponent>().ChangeText(1, std::to_wstring(m_player.GetPotionNr()).c_str());	
+		mp_UIHolder->ChangeText(1, std::to_wstring(m_player.GetPotionNr()).c_str());
 		pots = m_player.GetPotionNr();
 	}
 	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
@@ -341,27 +347,27 @@ void Gameplay::Update(const float& deltaTime) {
 	m_chest.Update(deltaTime, m_player.GetEntity());
 	m_door.Update(deltaTime, m_player.GetEntity());
 	if (m_chest.GetNear() || m_door.GetNear()) {
-		m_UI->GetComponent<Aen::UIComponent>().SetTextPos((965.f / 1920.f) * screenSize.x, (800.f / 1024.f) * screenSize.y, 2);
-		m_UI->GetComponent<Aen::UIComponent>().SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
+		mp_UIHolder->SetTextPos((965.f / 1920.f) * screenSize.x, (800.f / 1024.f) * screenSize.y, 2);
+		mp_UIHolder->SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
 
 		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open && m_chest.GetNear()) {
 			m_player.IncreaseHealthCap();
 			m_chest.SetType(Type::Locked);
-			m_UI->GetComponent<Aen::UIComponent>().ChangeText(2, L"Health Potions Restored");
+			mp_UIHolder->ChangeText(2, L"Health Potions Restored");
 		}
 		else if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Locked && m_chest.GetNear()) {
-			m_UI->GetComponent<Aen::UIComponent>().ChangeText(2, L"Can't Get More health potions");
+			mp_UIHolder->ChangeText(2, L"Can't Get More health potions");
 		}
 
 		if (m_door.GetNear())
-			m_UI->GetComponent<Aen::UIComponent>().ChangeText(2, L"Interact(F)");
+			mp_UIHolder->ChangeText(2, L"Interact(F)");
 
 		if (Aen::Input::KeyDown(Aen::Key::F) && m_door.GetType() == Type::Closed && m_door.GetNear()) {
 			m_door.SetType(Type::Opening);
 		}
 	}
 	else {
-		m_UI->GetComponent<Aen::UIComponent>().SetTextPos(-100.f, -100.f, 2);
+		mp_UIHolder->SetTextPos(-100.f, -100.f, 2);
 	}
 
 	for (auto& i : m_enemyQueue) {
@@ -374,7 +380,7 @@ void Gameplay::Update(const float& deltaTime) {
 	if (m_player.GetBossesAlive() > 0)
 	{
 		if (m_pSkeleBoss->GetBS() != BossState::STATIONARY && m_door.GetType() == Type::Open) {
-			m_UI->GetComponent<Aen::UIComponent>().ChangeText(0, L"- Kill the Boss");
+			mp_UIHolder->ChangeText(0, L"- Kill the Boss");
 			m_door.SetType(Type::Locking);
 		}
 
@@ -395,7 +401,7 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if (m_hp <= 0.f) {
 		SetWin(false);
-		m_UI->GetComponent<Aen::UIComponent>().SetPicPos(0.f, 0.f, 0);
+		mp_UIHolder->SetPicPos(0.f, 0.f, 0);
 		m_deathTimer += deltaTime;
 
 		if (m_deathTimer > 0.2f) {
