@@ -52,9 +52,6 @@ namespace Aen
 		void SetEmitPos(float x, float y, float z);
 		void Initialize();
 		void SetRespawnHeight(float height);
-		
-
-		void Reset();
 
 		//Texture
 		void LoadAndSetTexture(const std::string& dir);
