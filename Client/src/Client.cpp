@@ -16,8 +16,9 @@ Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, cons
 
 void Client::Start()
 {
-	Aen::GlobalSettings::SetVSync(true);
 	State::SetState(States::Main_Menu);
+	SetLehmerSeed(time(0));
+	//ChangeState(States::Gameplay);
 }
 
 void Client::Update(const float& deltaTime) 

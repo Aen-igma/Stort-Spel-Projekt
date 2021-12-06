@@ -3,7 +3,10 @@
 
 enum class Type{
 	Open,
+	Opening,
+	Closing,
 	Closed,
+	Locking,
 	Locked
 };
 

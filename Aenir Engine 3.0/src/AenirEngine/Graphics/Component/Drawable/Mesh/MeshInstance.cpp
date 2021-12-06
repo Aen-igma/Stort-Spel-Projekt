@@ -76,7 +76,8 @@ namespace Aen {
 
 	void MeshInstance::Draw(Renderer& renderer, const uint32_t& layer) {
 
-		if(m_pMesh) {
+		if(m_pMesh) 
+		{
 
 			// Transform
 			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
@@ -85,23 +86,29 @@ namespace Aen {
 			renderer.m_cbTransform.UpdateBuffer();
 
 			//DirectX::BoundingOrientedBox box(m_pMesh->m_obb);
-			DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
+			/*DirectX::BoundingOrientedBox box(m_pMesh->m_aabb.Center, m_pMesh->m_aabb.Extents, DirectX::XMFLOAT4(0, 0, 0, 1));
 
 			box.Transform(box, m.smMat);
 
 			if(GlobalSettings::GetMainCamera())
-				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {
+				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum())) {*/
+			if (GlobalSettings::GetMainCamera())
+			{
 
 			// Mesh and Material
-				for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) {
+				for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++) 
+				{
 
 					m_pMesh->m_vertices.BindBuffer();
+					if(ComponentHandler::AnimatorExists(m_id))
+						ComponentHandler::GetAnimator(m_id).BindBuffer();
 
 					// Opaque pass
 
 					uint32_t materialIndex = m_pMesh->m_partitions[i].materialIndex;
 					Material* pMaterial = (m_pMaterials[materialIndex]) ? m_pMaterials[materialIndex] : nullptr;
-					if(pMaterial) {
+					if(pMaterial) 
+					{
 
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 
@@ -110,13 +117,17 @@ namespace Aen {
 
 						uint32_t* slots = pMaterial->m_pShaderModel->m_slots;
 
-						for(UINT k = 0; k < 4; k++)
-							if(pMaterial->m_textures[k] && slots[k] != UINT_MAX) {
-								RenderSystem::UnBindShaderResources<PShader>(slots[k], 1u);
+						for (UINT k = 0; k < 4; k++)
+						{
+							RenderSystem::UnBindShaderResources<PShader>(slots[k], 1u);
+							if (pMaterial->m_textures[k] && slots[k] != UINT_MAX) {
 								RenderSystem::BindShaderResourceView<PShader>(slots[k], pMaterial->m_textures[k]->m_shaderResource);
 								renderer.m_cbUseTexture.GetData()[k] = (int)true;
-							} else
+							}
+							else
 								renderer.m_cbUseTexture.GetData()[k] = (int)false;
+						}
+							
 
 							pMaterial->m_dBuffer.UpdateBuffer();
 							renderer.m_cbUseTexture.UpdateBuffer();
@@ -141,7 +152,7 @@ namespace Aen {
 
 
 							// Per Object Post Process Pass
-
+							RenderSystem::UnBindShaderResources<VShader>(0u, 1u);
 							RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
 							RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
 							RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
@@ -164,8 +175,8 @@ namespace Aen {
 							RenderSystem::UnBindUnOrderedAccessViews(0u, 2u);
 							RenderSystem::UnBindShaderResources<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
 					}
-					}
 				}
+			}
 		}
 	}
 
@@ -173,6 +184,10 @@ namespace Aen {
 
 		if(m_pMesh) {
 			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
+
+			if(ComponentHandler::AnimatorExists(m_id))
+				ComponentHandler::GetAnimator(m_id).BindBuffer();
+
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
@@ -197,6 +212,7 @@ namespace Aen {
 
 					m_pMesh->m_vertices.BindBuffer();
 					m_pMesh->m_vertices.Draw();
+					RenderSystem::UnBindShaderResources<VShader>(0u, 1u);
 				}
 		}
 	}

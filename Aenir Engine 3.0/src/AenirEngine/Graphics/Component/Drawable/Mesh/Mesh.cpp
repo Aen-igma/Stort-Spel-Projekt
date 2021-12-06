@@ -5,13 +5,7 @@
 #include"Importer/AssimpImporter.h"
 #include<thread>
 
-#undef min
 
-#include"assimp/Importer.hpp"
-#include"assimp/scene.h"
-#include"assimp/postprocess.h"
-#include"assimp/matrix4x4.h"
-#include"assimp/cimport.h"
 
 namespace Aen {
 	
@@ -60,6 +54,21 @@ namespace Aen {
 	const std::vector<uint32_t>& Mesh::GetIndices()
 	{
 		return this->m_indices;
+	}
+
+	DirectX::BoundingBox Mesh::getAABB() const
+	{
+		return m_aabb;
+	}
+
+	DirectX::BoundingOrientedBox Mesh::getOBB() const
+	{
+		return m_obb;
+	}
+
+	std::vector<PartitionData> Mesh::getPartitions() const
+	{
+		return m_partitions;
 	}
 
 	Mesh::~Mesh() {

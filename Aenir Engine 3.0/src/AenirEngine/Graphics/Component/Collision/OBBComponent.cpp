@@ -4,7 +4,7 @@
 #include"Core/Renderer.h"
 
 Aen::OBBox::OBBox(const size_t& id)
-	:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false)
+	:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false), m_isOn(false)
 #ifdef _DEBUG
 	,m_canDraw(false)
 #endif
@@ -72,11 +72,13 @@ const bool Aen::OBBox::Intersects(AABoundBox& volume)
 void Aen::OBBox::SetOffset(const Vec3f& offset)
 {
 	m_offset = offset;
+	m_obb.Extents = m_obb.Extents + m_offset.smVec;
 }
 
 void Aen::OBBox::SetOffset(const float& x, const float& y, const float& z)
 {
 	m_offset = Vec3f(x, y, z);
+	m_obb.Extents = m_obb.Extents + m_offset.smVec;
 }
 
 void Aen::OBBox::SetBoundsToMesh()
@@ -100,7 +102,7 @@ void Aen::OBBox::SetBoundsToMesh()
 
 void Aen::OBBox::SetBoundingBox(const Vec3f& extents)
 {
-	m_obb.Extents = extents.smVec;
+	m_obb.Extents = extents.smVec + m_offset.smVec;
 	//static sm::Matrix m = DirectX::XMMatrixRotationRollPitchYaw(1.f, 2.f, 1.f);
 	//m_obb.Transform(m_obb,DirectX::XMMatrixRotationRollPitchYaw(1.f, 2.f, 1.f));
 	UpdateVerts();
@@ -109,8 +111,9 @@ void Aen::OBBox::SetBoundingBox(const Vec3f& extents)
 void Aen::OBBox::SetBoundingBox(const float& x, const float& y, const float& z)
 {
 	Vec3f extents = { x,y,z };
-	m_obb.Extents = extents.smVec;
+	m_obb.Extents = extents.smVec + m_offset.smVec;
 #ifdef _DEBUG
+	UpdateVerts();
 	DirectX::XMFLOAT3 corners[8];
 	m_obb.GetCorners(corners);
 	for (int i = 0; i < 8; i++)
@@ -120,27 +123,25 @@ void Aen::OBBox::SetBoundingBox(const float& x, const float& y, const float& z)
 
 void Aen::OBBox::Transform(Aen::Mat4f transform)
 {
-	m_obb.Transform(m_obb, transform.smMat);
+	//m_obb.Transform(m_obb, transform.smMat);
 }
 
 void Aen::OBBox::Transform(sm::Matrix transform)
 {
-	m_obb.Transform(m_obb, transform);
-	UpdateVerts();
+	//m_obb.Transform(m_obb, transform);
+	//UpdateVerts();
 }
 
-void Aen::OBBox::SetRotation(Aen::Vec3f v)
+void Aen::OBBox::SetOrientation(Aen::Vec3f v)
 {
-	//m_obb.Transform(m_obb, 0.f, v.smVec, Vec3f::zero.smVec);
-	
 	m_obb.Orientation = sm::Vector4(DirectX::XMQuaternionRotationRollPitchYaw(v.x, v.y, v.z));
-	UpdateVerts();
+	//UpdateVerts();
 }
 
-void Aen::OBBox::SetRotation(const float& x, const float& y, const float& z)
+void Aen::OBBox::SetOrientation(const float& x, const float& y, const float& z)
 {
 	m_obb.Orientation = sm::Vector4(DirectX::XMQuaternionRotationRollPitchYaw(x, y, z));
-	UpdateVerts();
+	//UpdateVerts();
 }
 
 void Aen::OBBox::ToggleActive(bool b)
@@ -186,12 +187,12 @@ void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
 		renderer.m_cbTransform.GetData().m_mdlMat = Mat4f::identity;
 		renderer.m_cbTransform.UpdateBuffer();
 		renderer.m_cbTransform.BindBuffer<VShader>(0u);
+		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
 		renderer.m_collisionBuffer.BindBuffer<PShader>(0);
 		if (!m_isOn) renderer.m_collisionBuffer.GetData().color = { .2f,.2f,.2f };
-		else if(m_isColliding) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
+		else if (m_isColliding) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
 		else renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
-		renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
 		renderer.m_collisionBuffer.GetData().switcher = 0;
 		renderer.m_collisionBuffer.UpdateBuffer();
 
@@ -215,16 +216,33 @@ void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 {
 
 	Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
+	RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
+
+	Vec3f rot = EntityHandler::GetEntity(m_id).GetRot();
+
+	
 	m_obb.Center = transformation.smVec;
-	if (ComponentHandler::DynamicBodyExist(m_id))
-		m_obb.Center = ComponentHandler::GetDynamicBody(m_id).GetPos().smVec + m_offset.smVec;
-	else if (ComponentHandler::StaticBodyExist(m_id))
-		m_obb.Center = ComponentHandler::GetStaticBody(m_id).GetPos().smVec + m_offset.smVec;
-	else if (ComponentHandler::CharacterControllerExist(m_id))
+	if (ComponentHandler::CharacterControllerExist(m_id))
+	{
 		m_obb.Center = ComponentHandler::GetCharacterController(m_id).GetPos().smVec + m_offset.smVec;
+	}
+	else if (ComponentHandler::DynamicBodyExist(m_id))
+	{
+		m_obb.Center = ComponentHandler::GetDynamicBody(m_id).GetPos().smVec + m_offset.smVec;
+		 
+	}
+	else if (ComponentHandler::StaticBodyExist(m_id))
+	{
+		m_obb.Center = ComponentHandler::GetStaticBody(m_id).GetPos().smVec + m_offset.smVec;
+		
+	}
+	sm::Vector4 quatRot = DirectX::XMQuaternionRotationRollPitchYaw(DegToRad(rot.x), DegToRad(rot.y), DegToRad(rot.z));
+
+	//m_obb.Orientation = quatRot;
 
 #ifdef _DEBUG
+	UpdateVerts();
 	if (m_canDraw) {
 		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 		m_vBuffer.UpdateBuffer(m_verts, 8);

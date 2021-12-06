@@ -28,20 +28,22 @@ private:
 
     Aen::Raycast m_ray;
 
-    Aen::Entity* m_dLight;
+    //Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
-    Aen::Entity* m_reimube1;
 
     Aen::Entity* m_UI;
     Aen::Entity* m_PS;
     Aen::Entity* m_wall;
  
     Player m_player;
-    Chest m_chest;
-    //Door m_door;
-    bool m_beatBoss;
+    Boss* m_pSkeleBoss;
 
-    //Aen::ImGuiImporter m_levelImporter;
+    Aen::UIComponent* mp_uiComp;
+
+    Chest m_chest;
+    Door m_door;
+    bool m_beatBoss;
+    Aen::Vec3f m_bossPos;
 
     std::queue<EventData> m_eventQueue;
 
@@ -49,7 +51,8 @@ private:
 
     Aen::LevelGenerator m_levelGenerator;
     Aen::Room* mptr_map;
-    Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
+    //Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
+
 
     public:
     Gameplay(Aen::Window& window);

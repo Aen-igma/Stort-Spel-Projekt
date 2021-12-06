@@ -4,7 +4,7 @@
 #include<thread>
 
 namespace Aen {
-
+#ifdef _DEBUG
 	struct CB_Collision
 	{
 		Vec3f color;
@@ -12,7 +12,7 @@ namespace Aen {
 
 		CB_Collision() :color(Vec3f::zero), switcher(0) {}
 	};
-
+#endif // _DEBUG
 	struct CB_DispatchInfo {
 		Vec2i threadGroups;
 		Vec2i numThreads;
@@ -53,6 +53,7 @@ namespace Aen {
 		friend class MeshInstance;
 		friend class AABoundBox;
 		friend class OBBox;
+		friend class Animator;
 		friend class GlobalSettings;
 		friend class PSSystemcomponent;
 
@@ -81,7 +82,9 @@ namespace Aen {
 
 		Vec2i m_dispatchGroups;
 		VShader m_opaqueVS;
+#ifdef _DEBUG
 		PShader m_collisionPS;
+#endif // _DEBUG
 		PShader m_transparencyPS;
 		UAView m_UAVBackBuffer;
 		RWTexture2D m_UAVFinal;
@@ -105,7 +108,7 @@ namespace Aen {
 		RWTexture2D m_lGrid;
 		Vec2i m_dispatchCall;
 		const uint32_t m_avarageLights;
-
+#ifdef _DEBUG
 		CBuffer<CB_Collision> m_collisionBuffer;
 
 		//ParticleSystem Shaders
@@ -119,5 +122,6 @@ namespace Aen {
 
 		GBuffer m_particleOut;
 		CShader m_PostPatricleCS;
+#endif // _DEBUG
 	};
 }

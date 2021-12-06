@@ -10,6 +10,8 @@ namespace Aen {
 		Vec3f tan;
 		Vec3f bi;
 		Vec2f uv;
+		Vec4i boneId;
+		Vec4f boneWeights;
 	};
 
 	struct PartitionData {
@@ -27,6 +29,11 @@ namespace Aen {
 		void Load(const std::string& dir);
 		const std::vector<DirectX::XMFLOAT3>& GetvPos();
 		const std::vector<uint32_t>& GetIndices();
+
+
+		DirectX::BoundingBox getAABB() const;
+		DirectX::BoundingOrientedBox getOBB() const;
+		std::vector<PartitionData> getPartitions() const;
 
 		private:
 

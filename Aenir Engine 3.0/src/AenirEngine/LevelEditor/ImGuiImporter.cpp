@@ -45,8 +45,8 @@ namespace Aen
 
 	void ImGuiImporter::addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, Aen::Texture*& normalTexture,AenIF::Model& model, AenIF::Texture& texture, AenIF::Material& materialIn)
 	{
-		string imageName = AEN_TEXTURE_DIR(texture.texture);
-		string normalImageName = AEN_NORMALTEXTURE_DIR(texture.normalTexture);
+		string imageName = (texture.texture);
+		string normalImageName = (texture.normalTexture);
 
 		entity = &mp_entityHandlerPtr->CreateEntity();
 		mesh = &Aen::Resource::CreateMesh(model.name);
@@ -61,14 +61,14 @@ namespace Aen
 			m_materialList->push_back(IGH::MatTexName(materialIn.materialName, materialIn.materialTextureName));
 
 			materialTexture = &Aen::Resource::CreateTexture(textureName);
-			materialTexture->LoadTexture(imageName);
+			materialTexture->LoadTexture(AEN_TEXTURE_DIR(imageName));
 
 			material = &Aen::Resource::CreateMaterial(materialName, true);
 
 			if (normalTextureName.find(".png") != string::npos || normalTextureName.find(".jpg") != string::npos)
 			{
 				normalTexture = &Aen::Resource::CreateTexture(normalTextureName);
-				normalTexture->LoadTexture(normalImageName);
+				normalTexture->LoadTexture(AEN_NORMALTEXTURE_DIR(normalImageName));
 				material->SetNormalMap(*normalTexture);
 			}
 
@@ -644,11 +644,15 @@ namespace Aen
 		{
 			m_enemyPos.push_back(entity->GetPos());
 		}
-		else if (model.type == IGH::BOSS)
+		/*else if (model.type == IGH::BOSS)
 		{
 			m_boss[0] = entity->GetPos();
 			m_boss[1] = entity->GetRot();
 			m_boss[2] = entity->GetScale();
+		}*/
+		else if (model.type == IGH::LIGHTSKELETON)
+		{
+			m_lSkelPos.push_back(entity->GetPos());
 		}
 	}
 
@@ -657,6 +661,10 @@ namespace Aen
 		if (model.type == IGH::NORMALENEMY)
 		{
 			m_enemyPos.push_back(Convert(model.translation));
+		}
+		else if (model.type == IGH::LIGHTSKELETON)
+		{
+			m_lSkelPos.push_back(Convert(model.translation));
 		}
 	}
 
@@ -782,7 +790,7 @@ namespace Aen
 		temp.translation[2] = posZ + offset.y;
 		temp.rotation[1] = model.rotation[1] + (angle * 57.2957795f);
 
-		if (model.type.size() != IGH::NORMALENEMY.size())
+		if (model.type != IGH::NORMALENEMY && model.type != IGH::LIGHTSKELETON)
 		{
 			addBaseCommon(entity, mesh, material, materialTexture, normalTexture, temp, texture, materialIn);
 
@@ -864,7 +872,12 @@ namespace Aen
 		return m_enemyPos;
 	}
 
-	Vec3f ImGuiImporter::GetBossPosition()
+	vector<Vec3f>& ImGuiImporter::GetLskelPos()
+	{
+		return m_lSkelPos;
+	}
+
+	/*Vec3f ImGuiImporter::GetBossPosition()
 	{
 		return m_boss[0];
 	}
@@ -878,5 +891,5 @@ namespace Aen
 	Vec3f ImGuiImporter::GetBossScale()
 	{
 		return m_boss[2];
-	}
+	}*/
 }

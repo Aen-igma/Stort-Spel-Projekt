@@ -16,6 +16,7 @@ namespace Aen {
 	std::unordered_map<size_t, UIComponent*> ComponentHandler::m_UI;
 	std::unordered_map<size_t, PSSystemcomponent*> ComponentHandler::m_PS;
 	std::multimap<size_t, Light*> ComponentHandler::m_lights;
+	std::unordered_map<size_t, Animator*> ComponentHandler::m_animators;
 
 	std::array<std::unordered_map<size_t, Drawable*>, 7> ComponentHandler::m_meshLayer;
 	

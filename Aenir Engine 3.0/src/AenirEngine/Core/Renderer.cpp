@@ -29,10 +29,11 @@ namespace Aen {
 		if(!m_lightCullCS.Create(AEN_OUTPUT_DIR_WSTR(L"LightCullCS.cso")))
 			if(!m_lightCullCS.Create(L"LightCullCS.cso"))
 				throw;
-
-		if(!m_collisionPS.Create(AEN_OUTPUT_DIR_WSTR(L"CollisionPS.cso")))
-			if(!m_collisionPS.Create(L"CollisionPS.cso"))
+#ifdef _DEBUG
+		if (!m_collisionPS.Create(AEN_OUTPUT_DIR_WSTR(L"CollisionPS.cso")))
+			if (!m_collisionPS.Create(L"CollisionPS.cso"))
 				throw;
+#endif // _DEBUG
 
 		if(!m_postProcessCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessCS.cso")))
 			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
@@ -105,7 +106,6 @@ namespace Aen {
 	void Renderer::Render() {
 		
 		RenderSystem::SetViewPort(m_viewPort);
-		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 		RenderSystem::SetRasteriserState(m_rasterizerState);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.f, 0.f, 0.f, 0.f));
 
@@ -234,7 +234,7 @@ namespace Aen {
 		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);*/
 
 		// Present
-		RenderSystem::Present();
+		RenderSystem::Present((UINT)Aen::GlobalSettings::GetVSync());
 		RenderSystem::ClearState();
 	}
 

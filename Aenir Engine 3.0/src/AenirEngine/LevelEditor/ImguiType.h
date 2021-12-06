@@ -24,9 +24,6 @@ namespace IGH
 
 	const string RESOURCEPATH = "../Resource/";
 
-	/*const string FBXPATH = "../Resource/";
-	const string TEXTUREPATH = "../Resource/";
-	const string NORMALTEXTUREPATH = "../Resource/";*/
 	const string FBXPATH = "../Resource/FBX/";
 	const string TEXTUREPATH = "../Resource/Texture/";
 	const string NORMALTEXTUREPATH = "../Resource/Texture/Normal_Map/";
@@ -50,6 +47,8 @@ namespace IGH
 
 	// Tags
 	const string NORMALENEMY = "Normal Enemy";
+	const string SLIME = "Slime Enemy";
+	const string LIGHTSKELETON = "Light Skeleton";
 	const string BOSS = "Boss Enemy";
 	const string TORCH = "Torch";
 
