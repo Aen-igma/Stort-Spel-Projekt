@@ -67,10 +67,6 @@ void Gameplay::Initialize()
 	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Flames2.png"));
 	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FlamesOppacity.png"));
 
-	/*enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
-	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
-	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
-	enemyMat["BaseColor"] = Aen::Color::Cyan;*/
 	slimeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
 	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
@@ -140,7 +136,6 @@ void Gameplay::Initialize()
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
 			{
 				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
-				//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
@@ -200,8 +195,7 @@ void Gameplay::Initialize()
 	}
 	m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
-	//m_attack->SetParent(*m_player);
-	//printf("");
+
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
 
@@ -254,10 +248,6 @@ void Gameplay::Initialize()
 	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"potion.png")); //2
 	mp_uiComp->SetPicPos((125.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
 	mp_uiComp->SetPicSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
-
-	//m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
-	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
-	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
 
 	mp_uiComp->AddText(L"- Find the boss", 30.f); //0
 	mp_uiComp->SetTextPos((175.f / 1920) * wDesc.width, (300.f / 1024) * wDesc.height);
