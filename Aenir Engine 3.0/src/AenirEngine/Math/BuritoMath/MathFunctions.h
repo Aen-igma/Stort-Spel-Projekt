@@ -137,6 +137,13 @@ namespace Aen {
 
 	// ----------------------------------------------- Matrix Math Functions ------------------------------------------ //
 
+	template<class T>
+	inline const Concealed::TMat<T> Lerp(const Concealed::TMat<T>& a, const Concealed::TMat<T>& b, const float& t) noexcept {
+		Concealed::TMat<T> out;
+		out.smMat = sm::Matrix::Lerp(a.smMat, b.smMat, t);
+		return out;
+	}
+
 	template<class T, uint32_t N>
 	inline const Concealed::TVec<T, N> Transform(const Concealed::TMat<T>& m, const Concealed::TVec<T, 2>& vec) noexcept;
 

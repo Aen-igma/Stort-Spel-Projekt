@@ -100,6 +100,8 @@ namespace Aen {
 				{
 
 					m_pMesh->m_vertices.BindBuffer();
+					if(ComponentHandler::AnimatorExists(m_id))
+						ComponentHandler::GetAnimator(m_id).BindBuffer();
 
 					// Opaque pass
 
@@ -150,7 +152,7 @@ namespace Aen {
 
 
 							// Per Object Post Process Pass
-
+							RenderSystem::UnBindShaderResources<VShader>(0u, 1u);
 							RenderSystem::UnBindShaderResources<PShader>(slots[9], 1u);
 							RenderSystem::UnBindShaderResources<PShader>(slots[10], 1u);
 							RenderSystem::UnBindRenderTargets(pMaterial->m_pShaderModel->m_gBuffer.GetCount());
@@ -182,6 +184,9 @@ namespace Aen {
 
 		if(m_pMesh) {
 
+			if(ComponentHandler::AnimatorExists(m_id))
+				ComponentHandler::GetAnimator(m_id).BindBuffer();
+
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
@@ -206,6 +211,7 @@ namespace Aen {
 
 					m_pMesh->m_vertices.BindBuffer();
 					m_pMesh->m_vertices.Draw();
+					RenderSystem::UnBindShaderResources<VShader>(0u, 1u);
 				}
 		}
 	}

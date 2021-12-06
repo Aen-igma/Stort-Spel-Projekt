@@ -86,7 +86,6 @@ namespace Aen {
 	void Renderer::Render() {
 		
 		RenderSystem::SetViewPort(m_viewPort);
-		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 		RenderSystem::SetRasteriserState(m_rasterizerState);
 		RenderSystem::ClearRenderTargetView(m_backBuffer, Color(0.f, 0.f, 0.f, 0.f));
 

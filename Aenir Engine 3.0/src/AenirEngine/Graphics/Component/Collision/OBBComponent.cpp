@@ -186,6 +186,7 @@ void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
 		renderer.m_cbTransform.GetData().m_mdlMat = Mat4f::identity;
 		renderer.m_cbTransform.UpdateBuffer();
 		renderer.m_cbTransform.BindBuffer<VShader>(0u);
+		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
 		renderer.m_collisionBuffer.BindBuffer<PShader>(0);
 		if (!m_isOn) renderer.m_collisionBuffer.GetData().color = { .2f,.2f,.2f };
@@ -213,6 +214,7 @@ void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
 void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 {
 	Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
+	RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
 
 	Vec3f rot = EntityHandler::GetEntity(m_id).GetRot();

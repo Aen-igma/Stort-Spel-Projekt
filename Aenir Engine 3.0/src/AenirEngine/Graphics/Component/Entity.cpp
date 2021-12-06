@@ -16,9 +16,11 @@ namespace Aen {
 		ComponentHandler::RemoveCharacterController(m_id);
 		ComponentHandler::RemoveUI(m_id);
 		ComponentHandler::RemoveAABB(m_id);
+		ComponentHandler::RemoveAnimators(m_id);
 
 		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
 		ComponentHandler::RemoveMeshFromLayer(m_id, 6);
+		ComponentHandler::RemoveMeshFromLayer(m_id, 5);
 		EntityHandler::RemoveFromTaged(m_id, m_tag);
 	}
 
@@ -171,6 +173,10 @@ namespace Aen {
 			ComponentHandler::GetScale(m_id).SetScale(x, y, z);
 	}
 
+	void Entity::SetTransformation(const Mat4f & m) {
+		tempBonParent = m;
+	}
+
 	const Vec3f Entity::GetPos() const {
 
 		Vec3f pos;
@@ -242,7 +248,7 @@ namespace Aen {
 		if(m_hasParent)
 			parentMatrix = EntityHandler::GetEntity(m_parentId).GetTransformation();
 
-		return scale * rot * pos * parentMatrix;
+		return scale * rot * pos * tempBonParent * parentMatrix;
 	}
 
 	const Vec3f Entity::GetTranslation() const {

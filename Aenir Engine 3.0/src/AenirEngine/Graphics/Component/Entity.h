@@ -32,6 +32,8 @@ namespace Aen {
 		void SetScale(const Vec3f& scale);
 		void SetScale(const float& x, const float& y, const float& z);
 
+		void SetTransformation(const Mat4f& m);
+
 		const Vec3f GetPos() const;
 		const Vec3f GetRot() const;
 		const Vec3f GetScale() const;
@@ -55,6 +57,8 @@ namespace Aen {
 		size_t m_layer;
 		bool m_hasParent;
 		std::string m_tag;
+
+		Mat4f tempBonParent;
 
 		friend class Renderer;
 		friend class MeshInstance;
@@ -182,6 +186,16 @@ namespace Aen {
 		AddComponent<Translation>();
 		AddComponent<Rotation>();
 	}
+
+	template<>
+	inline void Entity::AddComponent<Animator>() {
+		if (!ComponentHandler::AnimatorExists(m_id))
+			ComponentHandler::CreateAnimator(m_id);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
+	}
 	// --------------- GetComponent -----------------
 
 	template<>
@@ -252,5 +266,10 @@ namespace Aen {
 	template<>
 	inline OBBox& Entity::GetComponent() const {
 		return ComponentHandler::GetOBB(m_id);
+	}
+
+	template<>
+	inline Animator& Entity::GetComponent() const {
+		return ComponentHandler::GetAnimator(m_id);
 	}
 }

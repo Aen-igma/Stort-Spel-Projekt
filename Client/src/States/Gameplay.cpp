@@ -35,12 +35,21 @@ void Gameplay::Initialize()
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
 	m_dLight->SetRot(45.f, -135.f, 0.f);*/
 
+	// ----------------------------- Animations -------------------------------- //
+	
+	Aen::Animation& skelIdle = Aen::Resource::CreateAnimation("Skel_Idle");
+	skelIdle.LoadAnimation(AEN_MODEL_DIR("Idle_skelTest2.fbx"));
+	Aen::Animation& skelWalk = Aen::Resource::CreateAnimation("Skel_Walk");
+	skelWalk.LoadAnimation(AEN_MODEL_DIR("Walk_skelTest3.fbx"));
+	Aen::Animation& skelAttack = Aen::Resource::CreateAnimation("Skel_Attack");
+	skelAttack.LoadAnimation(AEN_MODEL_DIR("Attack_skelTest3.fbx"));
+
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
 	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
 	Aen::Mesh& skeleLight = Aen::Resource::CreateMesh("SkeletonLight");
-	skeleLight.Load(AEN_MODEL_DIR("Skel_Light_Done.fbx"));
+	skeleLight.Load(AEN_MODEL_DIR("Skel_Meshtest.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -59,7 +68,9 @@ void Gameplay::Initialize()
 	skeleLightMat["BaseColor"] = Aen::Color::White;
 
 	// Material to switch to when enemy is hurt
+	enemyMatHurt.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));
 	enemyMatHurt["BaseColor"] = Aen::Color::Red;
+	enemyMatHurt["GlowColor"] = Aen::Color::Red;
 
 	planeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);

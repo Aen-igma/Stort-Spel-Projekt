@@ -155,7 +155,7 @@ namespace Aen {
 				renderer.m_cbTransform.GetData().m_mdlMat = MatTranslate(p).Transposed();
 				renderer.m_cbTransform.UpdateBuffer();
 				renderer.m_cbTransform.BindBuffer<VShader>(0u);
-
+				RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 				renderer.m_collisionBuffer.BindBuffer<PShader>(0);
 				if (!m_isOn) renderer.m_collisionBuffer.GetData().color = { .2f,.2f,.2f };
 				else if (m_isColliding) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
@@ -184,7 +184,7 @@ namespace Aen {
 		m_aabb.Center = transformation.smVec;
 
 			#ifdef _DEBUG
-			
+			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
 			if(m_camBox) {
 				DirectX::XMFLOAT3 points[8u];
