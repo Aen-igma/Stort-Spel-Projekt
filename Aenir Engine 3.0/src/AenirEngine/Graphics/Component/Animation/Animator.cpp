@@ -1,6 +1,7 @@
 #include"PCH.h"
 #include"Animator.h"
 #include"Core/Renderer.h"
+#include<omp.h>
 
 namespace Aen {
 
@@ -8,15 +9,14 @@ namespace Aen {
 		if (animationIndex < m_animationList.size()) {
 			Animation* animation = m_animationList[animationIndex].second;
 
-			m_end = ResClock::now();
-			while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
-				m_deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start);
-				m_start = ResClock::now();
+			m_sEnd = omp_get_wtime();
+			while(m_sEnd - m_sStart > m_frameRate) {
+				double dTime = m_sEnd - m_sStart;
+				m_sStart = omp_get_wtime();
 
-				m_start = ResClock::now();
 				if(!m_pause) {
 					std::vector<Mat4f> anim;
-					GetAnimation(anim, (float)m_deltaTime.count());
+					GetAnimation(anim, (float)dTime);
 
 					std::vector<Mat4f> localTran(animation->m_boneArray.size());
 					std::vector<Mat4f> modelTran(animation->m_boneArray.size());
@@ -40,7 +40,6 @@ namespace Aen {
 				animation->m_finalMatrix.UpdateBuffer();
 			}
 		}
-		
 	}
 
 	void Animator::GetAnimation(std::vector<Mat4f>& mat, const float& deltaTime) {
@@ -104,15 +103,13 @@ namespace Aen {
 		}
 	}
 
-	void Animator::BindBuffer()
-	{
+	void Animator::BindBuffer() {
 		if (animationIndex < m_animationList.size()) {
 			m_animationList[animationIndex].second->m_finalMatrix.BindSRV<VShader>(0);
 		}
 	}
 
-	bool Animator::HasAnimation(const std::string& anim)
-	{
+	bool Animator::HasAnimation(const std::string& anim) {
 		for (auto& i : m_animationList) {
 			if (i.first == anim)
 				return true;
@@ -120,8 +117,7 @@ namespace Aen {
 		return false;
 	}
 
-	void Animator::SetAnimationScale(const float& newScale)
-	{
+	void Animator::SetAnimationScale(const float& newScale) {
 		m_scale = newScale;
 	}
 
@@ -153,9 +149,7 @@ namespace Aen {
 	}
 
 	Animator::Animator(const size_t& id)
-		:Drawable(id), m_scale(1), animationIndex(0), m_pause(false), m_loop(true), m_time(0.f)
-	{
-		m_start = m_end = ResClock::now();
+		:Drawable(id), m_scale(1), animationIndex(0), m_pause(false), m_loop(true), m_time(0.f) {
 		SetFrameRate(60);
 	}
 
@@ -168,8 +162,7 @@ namespace Aen {
 		m_animationList.emplace_back(animation);
 	}
 
-	void Animator::AddAnimation(const std::string& animName, const std::string& name)
-	{
+	void Animator::AddAnimation(const std::string& animName, const std::string& name) {
 		if (HasAnimation(name))
 			return;
 
@@ -178,8 +171,7 @@ namespace Aen {
 		m_animationList.emplace_back(animation);
 	}
 
-	void Animator::SetAnimation(const std::string& animName)
-	{
+	void Animator::SetAnimation(const std::string& animName) {
 		if (!HasAnimation(animName))
 			return;
 
@@ -192,12 +184,10 @@ namespace Aen {
 	}
 
 	void Animator::SetFrameRate(const int& frameRate) {
-		int ft = (int)(((double)1 / (double)frameRate) * (double)pow(10, 9));
-		m_frameTime = std::chrono::nanoseconds{ft};
+		m_frameRate = 1.0 / (double)frameRate;
 	}
 
-	void Animator::Draw(Renderer& renderer, const uint32_t& layer)
-	{
+	void Animator::Draw(Renderer& renderer, const uint32_t& layer) {
 		#ifdef _DEBUG
 			if (animationIndex < m_animationList.size()) {
 				Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
@@ -232,12 +222,10 @@ namespace Aen {
 		return Mat4f::identity;
 	}
 
-	void Animator::DepthDraw(Renderer& renderer, const uint32_t& layer)
-	{
+	void Animator::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 	}
 
-	bool Animator::FrustumCull(Renderer& renderer)
-	{
+	bool Animator::FrustumCull(Renderer& renderer) {
 		return true;
 	}
 }

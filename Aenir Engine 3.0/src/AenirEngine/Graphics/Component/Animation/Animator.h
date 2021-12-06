@@ -8,16 +8,11 @@ namespace Aen {
 
 	class AEN_DECLSPEC Animator : public Drawable{
 	private:
-		
-		using ResClock = std::chrono::high_resolution_clock;
-		using TimePoint = std::chrono::high_resolution_clock::time_point;
-		using DurationLD = std::chrono::duration<long double>;
 
-		TimePoint m_start;
-		TimePoint m_end;
+		double m_sStart;
+		double m_sEnd;
+		double m_frameRate;
 
-		DurationLD m_frameTime;
-		DurationLD m_deltaTime;
 		float m_scale;
 		bool m_pause;
 		bool m_loop;
