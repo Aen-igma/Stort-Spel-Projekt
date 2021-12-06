@@ -97,7 +97,6 @@ void Gameplay::Initialize()
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
 	Aen::Vec3f ChestPos;
-	Aen::Vec3f DoorPos;
 	Aen::Vec3f EnemyPos;
 	int roomNormal = 0;
 	int itemNormal = 0;
@@ -126,7 +125,7 @@ void Gameplay::Initialize()
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
 
-				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
+				m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
 				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 				for (int i = 0; i < 10; i++) {
 					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
@@ -166,7 +165,7 @@ void Gameplay::Initialize()
 	else if (itemNormal == 1000) {//west
 		m_chest.GetEntity()->SetRot(0, 90, 0);
 	}
-	m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
+	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 	//m_attack->SetParent(*m_player);
 	//printf("");

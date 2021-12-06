@@ -66,7 +66,6 @@ void Door::Update(const float& deltaTime, Aen::Entity*& e)
 	Aen::Vec3f eDir = e->GetPos() - m_door->GetPos();
 	float dist = eDir.Magnitude();
 	static float timer = 0;
-	static const Aen::Vec3f pos = m_door->GetPos();
 
 	//player
 	if (e->GetTag() == "Player") {

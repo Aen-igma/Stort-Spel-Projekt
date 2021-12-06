@@ -40,6 +40,7 @@ private:
 
     Chest m_chest;
     Door m_door;
+    Aen::Vec3f doorPos;
     bool m_beatBoss;
     Aen::Vec3f m_bossPos;
 
