@@ -302,14 +302,16 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
 		m_paused = !m_paused;
-		Aen::Input::SetMouseVisible(m_paused);
+
 		if (m_paused) {
+			Aen::Input::SetMouseVisible(true);
 			mp_uiComp->SetPicSize(screenSize.x, screenSize.y, 4);
 			mp_uiComp->SetTextPos(-100, 0, 0);
 			mp_uiComp->SetTextPos(-100, 0, 1);
 			mp_uiComp->SetTextPos(-100, 0, 3);
 		}
 		else{
+			Aen::Input::SetMouseVisible(false);
 			mp_uiComp->SetPicSize(0, 0, 4);
 			mp_uiComp->SetButtonSize(0, 0, 0);
 			mp_uiComp->SetButtonSize(0, 0, 1);
@@ -357,7 +359,6 @@ void Gameplay::Update(const float& deltaTime) {
 		mp_uiComp->ChangeText(1, std::to_wstring(m_player.GetPotionNr()).c_str());
 		pots = m_player.GetPotionNr();
 	}
-	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
 
 	m_player.PotionUpdate();
 

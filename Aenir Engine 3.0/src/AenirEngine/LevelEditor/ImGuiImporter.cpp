@@ -39,8 +39,8 @@ namespace Aen
 		materialOut["ShadowOffset"] = materialIn.shadowOffset;
 		materialOut["InnerFalloff"] = materialIn.innerFalloff;
 		materialOut["OuterFalloff"] = materialIn.outerFalloff;
-		materialOut["RimLightIntensity"] = materialIn.rimLightIntensity;
-		materialOut["RimLightSize"] = materialIn.rimLightSize;
+		materialOut["RimLightIntensity"] = 0.f; // caused what we thought was specular glitch
+		materialOut["RimLightSize"] = 0.f;
 	}
 
 	void ImGuiImporter::addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, Aen::Texture*& normalTexture,AenIF::Model& model, AenIF::Texture& texture, AenIF::Material& materialIn)
