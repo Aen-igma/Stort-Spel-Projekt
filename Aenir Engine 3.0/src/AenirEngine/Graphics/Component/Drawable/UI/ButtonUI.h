@@ -26,8 +26,6 @@ namespace Aen {
 		IWICFormatConverter* mp_FormatConverter;
 		IWICBitmapFrameDecode* mp_FrameDecode;
 
-		void SetButtonPos(float x, float y, int indX);
-		void SetButtonSize(float width, float height, int indX);
 	public:
 		ButtonUI();
 		~ButtonUI();
@@ -35,7 +33,9 @@ namespace Aen {
 		void Initialize();
 		void AddButton(LPCWSTR path);
 		void SetButtonPos(float x, float y);
+		void SetButtonPos(float x, float y, int indX);
 		void SetButtonSize(float width, float height);
+		void SetButtonSize(float width, float height, int indX);
 		
 		void SaveData();
 		bool Intersect(int index);
