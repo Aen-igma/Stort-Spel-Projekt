@@ -62,6 +62,7 @@ namespace Aen {
 
 				Input::Update();
 				m_app->Update(static_cast<float>(deltaTime));
+				ComponentHandler::UpdatePS(deltaTime);
 			}
 			PhysicsHandler::Update(static_cast<float>(deltaTime));
 			

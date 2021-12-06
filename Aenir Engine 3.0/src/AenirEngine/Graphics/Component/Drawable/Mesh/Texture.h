@@ -19,5 +19,6 @@ namespace Aen {
 		friend class Renderer;
 		friend class MeshInstance;
 		friend class GlobalSettings;
+		friend class PSSystemcomponent;
 	};
 }
