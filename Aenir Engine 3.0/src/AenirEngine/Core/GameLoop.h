@@ -17,14 +17,14 @@ namespace Aen {
 		void InitApp(Aen::App* app);
 
 		private:
-		//using ResClock = std::chrono::high_resolution_clock;
-		//using TimePoint = std::chrono::high_resolution_clock::time_point;
+		using ResClock = std::chrono::high_resolution_clock;
+		using TimePoint = std::chrono::high_resolution_clock::time_point;
 		using DurationLD = std::chrono::duration<long double>;
 		
-		//TimePoint m_start;
-		//TimePoint m_end;
-		//DurationLD m_frameTime;
-		//DurationLD m_deltaTime;
+		TimePoint m_start;
+		TimePoint m_end;
+		DurationLD m_frameTime;
+		DurationLD m_deltaTime;
 			double m_frametime;
 
 		App* m_app;

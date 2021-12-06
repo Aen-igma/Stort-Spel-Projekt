@@ -19,6 +19,7 @@ Gameplay::~Gameplay() {
 	Aen::Resource::RemoveAllMaterials();
 	Aen::Resource::RemoveAllMeshes();
 	Aen::Resource::RemoveAllTextures();
+	Aen::Resource::RemoveAllAnimations();
 }
 
 void Gameplay::Initialize()
@@ -45,6 +46,9 @@ void Gameplay::Initialize()
 	Aen::Animation& skelAttack = Aen::Resource::CreateAnimation("Skel_Attack");
 	skelAttack.LoadAnimation(AEN_MODEL_DIR("Attack_skelTest3.fbx"));
 
+
+	
+
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
@@ -63,10 +67,6 @@ void Gameplay::Initialize()
 	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Flames2.png"));
 	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FlamesOppacity.png"));
 
-	/*enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
-	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
-	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
-	enemyMat["BaseColor"] = Aen::Color::Cyan;*/
 	slimeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
 	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
@@ -135,7 +135,6 @@ void Gameplay::Initialize()
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
 			{
 				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
-				//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
