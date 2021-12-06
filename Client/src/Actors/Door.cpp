@@ -77,11 +77,6 @@ void Door::Update(const float& deltaTime, Aen::Entity*& e)
 		}
 	}
 
-	if (m_type == Type::Locking) {
-		m_door->SetPos(pos);
-		m_type = Type::Locked;
-	}
-
 	if (m_type == Type::Opening) {
 		m_door->SetPos(0.f, -100, 0);
 		m_type = Type::Open;

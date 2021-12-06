@@ -167,6 +167,7 @@ void Gameplay::Initialize()
 	}
 	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
+	doorPos = m_door.GetEntity()->GetPos();
 	//m_attack->SetParent(*m_player);
 	//printf("");
 	//---------ENEMIES----------//
@@ -221,9 +222,7 @@ void Gameplay::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetPicPos((125.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SetPicSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 
-	//m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
-	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
-	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"healthbar.png"));//3 - bosshealthbar
 
 	m_UI->GetComponent<Aen::UIComponent>().AddText(L"- Find the boss", 30.f); //0
 	m_UI->GetComponent<Aen::UIComponent>().SetTextPos((175.f / 1920) * wDesc.width, (300.f / 1024) * wDesc.height);
@@ -245,6 +244,7 @@ void Gameplay::Initialize()
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
+	m_bossHP = m_pSkeleBoss->GetHealth();
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -310,7 +310,16 @@ void Gameplay::Update(const float& deltaTime) {
 	{
 		if (m_pSkeleBoss->GetBS() != BossState::STATIONARY && m_door.GetType() == Type::Open) {
 			m_UI->GetComponent<Aen::UIComponent>().ChangeText(0, L"- Kill the Boss");
-			m_door.SetType(Type::Locking);
+			m_UI->GetComponent<Aen::UIComponent>().SetPicPos((1000.f / 1920) * screenSize.x, (700.f / 1024) * screenSize.y, 3);
+			m_UI->GetComponent<Aen::UIComponent>().SetPicSize((1200.f / 1920) * screenSize.x, (150.f / 1024) * screenSize.y, 3);
+			m_door.GetEntity()->SetPos(doorPos);
+			m_door.SetType(Type::Locked);
+		}
+
+		if (m_bossHP != m_pSkeleBoss->GetHealth()) {
+
+			m_UI->GetComponent<Aen::UIComponent>().UpdatePicture((m_bossHP - m_pSkeleBoss->GetHealth()) * 6.f * (1.f / 1920.f)* screenSize.x, 3);
+			m_bossHP = m_pSkeleBoss->GetHealth();
 		}
 
 		Aen::Vec3f minionOffset(-8.f,0,8.f);
