@@ -33,7 +33,7 @@ private:
     Aen::Entity* m_plane;
     Aen::Entity* m_UI;
 
-    Aen::Entity* m_UI;
+
     Aen::Entity* m_PS;
     Aen::Entity* m_wall;
  
