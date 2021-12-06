@@ -200,10 +200,20 @@ namespace Aen {
 			throw;
 		}
 
+		static void RemoveAllAnimations() {
+			for (auto& m : m_animations) {
+				if (m.second) {
+					delete m.second;
+					m.second = nullptr;
+				}
+			}
+
+			m_animations.clear();
+		}
+
 		private:
 
 		Resource();
-
 
 		static void Destroy() {
 

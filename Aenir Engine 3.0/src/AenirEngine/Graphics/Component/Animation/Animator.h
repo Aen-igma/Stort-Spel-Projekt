@@ -15,17 +15,18 @@ namespace Aen {
 
 		TimePoint m_start;
 		TimePoint m_end;
-		TimePoint m_currentTime;
-		TimePoint m_frameTime;
 
-		DurationLD frameRate;
-		int m_currentFrame;
+		DurationLD m_frameTime;
+		DurationLD m_deltaTime;
 		float m_scale;
-		bool pause;
+		bool m_pause;
+		bool m_loop;
 		UINT animationIndex;
+		float m_time;
+
 		std::vector<std::pair<std::string, Animation*>> m_animationList;
 		void Update();
-		void GetAnimation(std::vector<Mat4f>& mat);
+		void GetAnimation(std::vector<Mat4f>& mat, const float& deltaTime);
 		void BindBuffer();
 		bool HasAnimation(const std::string& anim);
 
@@ -38,8 +39,8 @@ namespace Aen {
 		void SetAnimationScale(const float& newScale);
 		void RemoveAnimation(const std::string& animName);
 
-		void Pause();
-		void Run();
+		void SetPaused(const bool& pause);
+		void SetLoopAnim(const bool& loop);
 		void Reset();
 
 		const Mat4f GetBoneMat(const uint32_t& index);

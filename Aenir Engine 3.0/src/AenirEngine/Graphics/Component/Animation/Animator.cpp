@@ -3,82 +3,103 @@
 #include"Core/Renderer.h"
 
 namespace Aen {
-	void Animator::Update()
-	{
+
+	void Animator::Update() {
 		if (animationIndex < m_animationList.size()) {
 			Animation* animation = m_animationList[animationIndex].second;
 
-				m_end = ResClock::now();
-				while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > frameRate) {
-					m_start = ResClock::now();
+			m_end = ResClock::now();
+			while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
+				m_deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start);
+				m_start = ResClock::now();
 
-					m_start = ResClock::now();
-					if(pause) {
-						std::vector<Mat4f> anim;
-						GetAnimation(anim);
+				m_start = ResClock::now();
+				if(!m_pause) {
+					std::vector<Mat4f> anim;
+					GetAnimation(anim, (float)m_deltaTime.count());
 
-						std::vector<Mat4f> localTran(animation->m_boneArray.size());
-						std::vector<Mat4f> modelTran(animation->m_boneArray.size());
+					std::vector<Mat4f> localTran(animation->m_boneArray.size());
+					std::vector<Mat4f> modelTran(animation->m_boneArray.size());
 
-						for(int i = 0; i < animation->m_boneArray.size(); i++) {
-							localTran[i] = animation->m_boneArray[i].localMatrix * anim[i].Transposed();
-						}
-
-						modelTran[0] = localTran[0];
-
-						for(int i = 1; i < animation->m_boneArray.size(); i++) {
-							int parent = animation->m_boneArray[i].parentID;
-							modelTran[i] = modelTran[parent] * localTran[i];
-						}
-
-						for(int i = 0; i < animation->m_boneArray.size(); i++) {
-							animation->m_finalMatrix.GetData(i) = modelTran[i] * animation->m_boneArray[i].offsetMatrix;
-						}
+					for(int i = 0; i < animation->m_boneArray.size(); i++) {
+						localTran[i] = animation->m_boneArray[i].localMatrix * anim[i].Transposed();
 					}
 
-					if(m_currentFrame > 0)
-						animation->m_finalMatrix.UpdateBuffer();
+					modelTran[0] = localTran[0];
+
+					for(int i = 1; i < animation->m_boneArray.size(); i++) {
+						int parent = animation->m_boneArray[i].parentID;
+						modelTran[i] = modelTran[parent] * localTran[i];
+					}
+
+					for(int i = 0; i < animation->m_boneArray.size(); i++) {
+						animation->m_finalMatrix.GetData(i) = modelTran[i] * animation->m_boneArray[i].offsetMatrix;
+					}
 				}
+
+				animation->m_finalMatrix.UpdateBuffer();
+			}
 		}
 		
 	}
 
-	void Animator::GetAnimation(std::vector<Mat4f>& mat)
-	{
+	void Animator::GetAnimation(std::vector<Mat4f>& mat, const float& deltaTime) {
+
 		Animation* animation = m_animationList[animationIndex].second;
 
-		int sizeBA = animation->m_boneArray.size();
-		int numFrames = animation->m_timeStamp.size();
-		m_frameTime = ResClock::now();
-		DurationLD duration = std::chrono::duration_cast<std::chrono::nanoseconds>(m_frameTime - m_currentTime);
+		uint32_t sizeBA = animation->m_boneArray.size();
+		uint32_t numFrames = animation->m_timeStamp.size();
+		float duration = animation->m_duration * m_scale;
 
-		if (duration.count() * m_scale > animation->m_duration) {
-			for (int i = 0; i < sizeBA; i++) {
-				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[numFrames-1].rotation;
+		if(m_time < duration) {
+			uint32_t l = 0u;
+			uint32_t r = numFrames;
+			uint32_t mid = 0u;
 
-				mat.emplace_back(currentFrame);
+			uint32_t fFrame = 0u;
+			uint32_t sFrame = 0u;
+
+			while(true) {
+				mid = (l + r) / 2u;
+				float ft = animation->m_timeStamp[mid] * duration;
+				float st = animation->m_timeStamp[Clamp(mid + 1u, 0u, numFrames - 1u)] * duration;
+				if((m_time >= ft && m_time <= st) || ft == st) {
+					fFrame = mid;
+					sFrame = (mid + 1u) % numFrames;
+					break;
+				} 
+
+				if(m_time < ft)
+					r = mid;
+
+				if(m_time > ft)
+					l = mid;
+
 			}
 
-			m_currentFrame = 0;
-			m_currentTime = ResClock::now();
+			float f = m_time - animation->m_timeStamp[fFrame] * duration;
+			float h = animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
+			float t = f / h;
+
+			for (int i = 0; i < sizeBA; i++) {
+				std::string bName = animation->m_boneArray[i].boneName;
+				Mat4f currentFrame = animation->m_keyFrames.at(bName)[fFrame].rotation;
+				Mat4f nextFrame = animation->m_keyFrames.at(bName)[sFrame].rotation;
+
+				mat.emplace_back(Lerp(currentFrame, nextFrame, t));
+			}
+
+			m_time += deltaTime;
 		} else {
 
-			/*float f = duration.count() * m_scale - (animation->m_timeStamp[m_currentFrame]);
-			float h = (animation->m_timeStamp[m_currentFrame + 1]) - (animation->m_timeStamp[m_currentFrame]);
-			float t = f / h;*/
+			if(m_loop)
+				m_time = 0.f;
 
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].rotation;
-				//Mat4f nextFrame = animation->m_keyFrames.at(bName)[m_currentFrame + 1].rotation;
+				Mat4f currentFrame = animation->m_keyFrames.at(bName)[numFrames - 1].rotation;
 
-				//mat.emplace_back(Lerp(currentFrame, nextFrame, t));
 				mat.emplace_back(currentFrame);
-			}
-
-			if (m_currentFrame + 1 < numFrames && duration.count() * m_scale > animation->m_timeStamp[m_currentFrame + 1]) {
-				m_currentFrame++;
 			}
 		}
 	}
@@ -119,23 +140,20 @@ namespace Aen {
 			animationIndex = m_animationList.size()-1;
 	}
 
-	void Animator::Pause()
-	{
-		pause = true;
+	void Animator::SetPaused(const bool& pause) {
+		m_pause = pause;
 	}
 
-	void Animator::Run()
-	{
-		pause = false;
+	void Animator::SetLoopAnim(const bool& loop) {
+		m_loop = loop;
 	}
 
 	void Animator::Reset() {
-		m_currentFrame = 0;
-		m_currentTime = ResClock::now();
+		m_time = 0.f;
 	}
 
 	Animator::Animator(const size_t& id)
-		:Drawable(id), m_scale(1), m_currentFrame(0), animationIndex(0), pause(true)
+		:Drawable(id), m_scale(1), animationIndex(0), m_pause(false), m_loop(true), m_time(0.f)
 	{
 		m_start = m_end = ResClock::now();
 		SetFrameRate(60);
@@ -173,10 +191,9 @@ namespace Aen {
 		}
 	}
 
-	void Animator::SetFrameRate(const int& frameRate)
-	{
+	void Animator::SetFrameRate(const int& frameRate) {
 		int ft = (int)(((double)1 / (double)frameRate) * (double)pow(10, 9));
-		this->frameRate = std::chrono::nanoseconds{ ft };
+		m_frameTime = std::chrono::nanoseconds{ft};
 	}
 
 	void Animator::Draw(Renderer& renderer, const uint32_t& layer)
