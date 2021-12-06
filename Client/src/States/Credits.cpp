@@ -40,7 +40,7 @@ void Credits::Initialize()
 	m_UI->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (75.f / 1024.f) * wDesc.height);
 	m_UI->GetComponent<Aen::UIComponent>().SaveButtonData();
 
-	const wchar_t credits[10][27] = {{L"Credits"}, {L"Adam Levin"}, {L"Andreas Johansson"}, {L"Christian Falk"}, {L"Filip Michael"}, {L"Julian Agonoy"}, {L"Linus Dorell"}, {L"Matthew Pettersson"}, {L"Oskar Nyman"},{L"\nIn collaboration\nwith BTH"} };
+	const wchar_t credits[10][32] = {{L"Credits"}, {L"Adam Levin"}, {L"Andreas Johansson"}, {L"Christian Falk"}, {L"Filip Michael"}, {L"Julian Agonoy"}, {L"Linus Dorell"}, {L"Matthew Pettersson"}, {L"Oskar Nyman"},{L"\nIn collaboration\nwith BTH"} };
 
 	for (int i = 0; i < 10; i++) {
 
