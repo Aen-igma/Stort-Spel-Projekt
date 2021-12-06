@@ -406,6 +406,7 @@ void Aen::AssimpImport::ProcAnimation(const aiScene* scene, std::unordered_map<s
 
 void Aen::AssimpImport::LoadFbxAnimation(const std::string path, std::vector<Bones>& boneArray, std::unordered_map<std::string, std::vector<KeyFrameData>>& keyFrames, std::vector<float>& m_timeStamp, float& duration) {
 	
+	boneArray.clear();
 	Assimp::Importer importer;
 	const aiScene* pScene = importer.ReadFile(path, aiProcess_MakeLeftHanded | aiProcess_LimitBoneWeights);
 

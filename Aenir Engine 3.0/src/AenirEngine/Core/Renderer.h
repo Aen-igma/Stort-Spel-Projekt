@@ -108,8 +108,6 @@ namespace Aen {
 		RWTexture2D m_lGrid;
 		Vec2i m_dispatchCall;
 		const uint32_t m_avarageLights;
-#ifdef _DEBUG
-		CBuffer<CB_Collision> m_collisionBuffer;
 
 		//ParticleSystem Shaders
 		VShader m_PSVShader;
@@ -122,6 +120,11 @@ namespace Aen {
 
 		GBuffer m_particleOut;
 		CShader m_PostPatricleCS;
+
+#ifdef _DEBUG
+		CBuffer<CB_Collision> m_collisionBuffer;
+
+		
 #endif // _DEBUG
 	};
 }
