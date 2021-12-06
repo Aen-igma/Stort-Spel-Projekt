@@ -159,11 +159,6 @@ namespace Aen
 		this->m_CSInputBuffer.lifeTime = height;
 	}
 
-	void PSSystemcomponent::Reset()
-	{
-		//this->m_firstRun = true;
-		//this->m_Age = 0.0f;
-	}
 
 	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer) {
 
@@ -275,20 +270,6 @@ namespace Aen
 	bool PSSystemcomponent::FrustumCull(Renderer& renderer) 
 	{		
 		//Ree momment
-		//if (m_pMaterial)
-		//{
-		//	for (int i = 0; i < 4; i++)
-		//	{
-		//		m_pMaterial->m_textures[i];
-		//	}
-		///*	Mat4f mat = EntityHandler::GetEntity(m_id).GetTransformation();
-		//	Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
-		//	if (ComponentHandler::StaticBodyExist(m_id))
-		//		m_obb.Center = ComponentHandler::GetStaticBody(m_id).GetPos().smVec + m_offset.smVec;
-		//*/
-
-		//	return true;
-		//}
 		return true;
 	}
 
