@@ -12,7 +12,7 @@ namespace Aen {
 
 		CB_Collision() :color(Vec3f::zero), switcher(0) {}
 	};
-#endif // _DEBUG
+#endif 
 	struct CB_DispatchInfo {
 		Vec2i threadGroups;
 		Vec2i numThreads;
@@ -42,6 +42,10 @@ namespace Aen {
 		float pad2;
 
 		CB_Camera() :pos(), pad(0.f), fDir(), pad1(0.f), uDir(), pad2(0.f) {}
+	};
+
+	struct CB_ShadowCamera {
+		// shadow cameras world, view and projection matricies
 	};
 
 	class Renderer {
@@ -126,5 +130,6 @@ namespace Aen {
 		Entity* m_shadowCamera;
 		VShader m_shadowVS;
 		DepthMap m_shadowDepthMap;
+		CBuffer<CB_ShadowCamera> m_cbShadowCamera;
 	};
 }

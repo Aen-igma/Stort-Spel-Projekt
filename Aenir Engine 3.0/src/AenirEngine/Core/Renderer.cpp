@@ -5,7 +5,7 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
+		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_cbShadowCamera(), m_sbLight(1024),
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
@@ -173,7 +173,8 @@ namespace Aen {
 
 		// Shadow Camera
 		if (m_shadowCamera) {
-
+			//Update CB_ShadowCamera
+			//m_cbShadowCamera.UpdateBuffer();
 		}
 
 		// Light
