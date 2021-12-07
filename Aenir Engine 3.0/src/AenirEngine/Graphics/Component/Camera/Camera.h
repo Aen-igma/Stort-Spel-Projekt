@@ -17,9 +17,12 @@ namespace Aen {
 		const Mat4f GetVPMatrix() const;
 		const Mat4f& GetView() const;
 		const Mat4f& GetProjecton() const;
+		const DirectX::BoundingFrustum& GetFrustum();
 
 		private:
 		~Camera() = default;
+
+		DirectX::BoundingFrustum m_boxFrustum;
 
 		void UpdateView(const Vec3f& pos, const Vec3f& rot);
 

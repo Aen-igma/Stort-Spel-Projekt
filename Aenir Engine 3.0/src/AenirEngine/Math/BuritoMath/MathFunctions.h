@@ -137,6 +137,13 @@ namespace Aen {
 
 	// ----------------------------------------------- Matrix Math Functions ------------------------------------------ //
 
+	template<class T>
+	inline const Concealed::TMat<T> Lerp(const Concealed::TMat<T>& a, const Concealed::TMat<T>& b, const float& t) noexcept {
+		Concealed::TMat<T> out;
+		out.smMat = sm::Matrix::Lerp(a.smMat, b.smMat, t);
+		return out;
+	}
+
 	template<class T, uint32_t N>
 	inline const Concealed::TVec<T, N> Transform(const Concealed::TMat<T>& m, const Concealed::TVec<T, 2>& vec) noexcept;
 
@@ -225,7 +232,7 @@ namespace Aen {
 		MatPerspective(const float& fov, const float& aspect, const float& min, const float& max) noexcept {
 		float ang = DegToRad(fov);
 		Concealed::TMat<T> out;
-		out.smMat = sm::Matrix::CreatePerspectiveFieldOfView(ang, aspect, min, max);
+		out.smMat = DirectX::XMMatrixPerspectiveFovLH(ang, aspect, min, max);
 		return out;
 	}
 
@@ -288,6 +295,23 @@ namespace Aen {
 		Concealed::TMat<T> out;
 		sm::Quaternion q(x, y, z, w);
 		out.smMat = sm::Matrix::CreateFromQuaternion(q);
+
+		return out;
+	}
+
+	template<class T>
+	inline const Concealed::TVec<T, 4> EulerToQuat(const T& x, const T& y, const T& z) noexcept {
+		Concealed::TVec<T, 4> out;
+		out.smVec = DirectX::XMQuaternionRotationRollPitchYaw(DegToRad(x), DegToRad(y), DegToRad(z));
+
+		return out;
+	}
+
+	template<class T>
+	inline const Concealed::TVec<T, 4> EulerToQuat(const Concealed::TVec<T, 3> rot) noexcept {
+		Concealed::TVec<T, 4> out;
+		Concealed::TVec<T, 3> tempRot = DegToRad(rot);
+		out.smVec = DirectX::XMQuaternionRotationRollPitchYaw(tempRot.x, tempRot.y, tempRot.z);
 
 		return out;
 	}

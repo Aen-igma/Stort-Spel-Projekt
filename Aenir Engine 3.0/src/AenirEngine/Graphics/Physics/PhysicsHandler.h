@@ -3,6 +3,13 @@
 
 namespace Aen {
 
+    class CollisionFilter : public px::PxControllerFilterCallback {
+        public:
+        CollisionFilter();
+        ~CollisionFilter() override;
+        virtual bool filter(const px::PxController& a, const px::PxController& b) override;
+    };
+
     class AEN_DECLSPEC PhysicsHandler {
         public:
 
@@ -18,6 +25,10 @@ namespace Aen {
             mp_PhysXService->SetGravity(x, y, z);
         }
 
+        static px::PxControllerManager*& GetCManager() {
+            return m_cManager;
+        }
+
         private:
         PhysicsHandler() = default;
         ~PhysicsHandler() = default;
@@ -25,6 +36,7 @@ namespace Aen {
         static void Initialize(const int& toleranceLength, const int& toleranceSpeed) {
             mp_PhysXService = AEN_NEW PhysXWrap;
             mp_PhysXService->InitPhysics(toleranceLength, toleranceSpeed);
+            m_cManager = PxCreateControllerManager(*mp_PhysXService->GetScene(), false);
         };
 
         static void Update(const float& deltaTime) {
@@ -32,12 +44,19 @@ namespace Aen {
         }
 
         static void Destroy() {
-            if(mp_PhysXService) {
+
+            if(mp_PhysXService)
                 delete mp_PhysXService;
-            }
+
+          /*  if (m_cManager)
+            {
+                m_cManager->purgeControllers();
+                m_cManager->release();
+            }*/
         }
 
         static PhysXWrap* mp_PhysXService;
+        static px::PxControllerManager* m_cManager;
         friend class GameLoop;
     };
 }

@@ -4,6 +4,8 @@
 
 namespace Aen {
 	
+	
+
 	class AEN_DECLSPEC PhysXWrap {
 		public:
 		PhysXWrap();
@@ -19,6 +21,7 @@ namespace Aen {
 		void RemoveActor(px::PxActor* dynamicActor);
 		px::PxPhysics*& GetPxPhysics();
 		px::PxScene*& GetScene();
+		px::PxCooking*& GetCooking();
 
 		void SetGravity(const Vec3f& force);
 		void SetGravity(const float& x, const float& y, const float& z);

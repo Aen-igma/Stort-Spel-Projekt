@@ -3,8 +3,14 @@
 #include"Camera/Camera.h"
 #include"Drawable/Mesh/MeshInstance.h"
 #include"Light/Light.h"
-#include"RigidBody/RigidBody.h"
+#include"RigidBody/StaticBody.h"
+#include"RigidBody/DynamicBody.h"
 #include"CharacterController/CharacterController.h"
+#include "Drawable\UI\UIComponent.h"
+#include"Collision\AABBComponent.h"
+#include"Collision\OBBComponent.h"
+#include "Drawable\ParticleSystem\PSSystemComponent.h"
+#include"Animation/Animator.h"
 
 #include<unordered_map>
 #include<array>
@@ -36,10 +42,8 @@ namespace Aen {
 		}
 
 		static Camera& GetCamera(const size_t& id) {
-			if(m_cameras.count(id) > 0)
-				return *m_cameras.at(id);
-
-			throw;
+			if(m_cameras.count(id) <= 0) throw;
+			return *m_cameras.at(id);
 		}
 
 		// ----------- Mesh Instance Component ---------- //
@@ -62,8 +66,32 @@ namespace Aen {
 		}
 
 		static MeshInstance& GetMeshInstance(const size_t& id) {
-			if(m_mesheInstances.count(id) > 0)
-				return *m_mesheInstances.at(id);
+			if(m_mesheInstances.count(id) <= 0) throw;
+			return *m_mesheInstances.at(id);
+		}
+
+		// ----------- UI Component ---------- //
+
+		static const bool UIComponentExist(const size_t& id) {
+			return m_UI.count(id) > 0;
+		}
+
+		static void CreateUI(const size_t& id, const size_t& layer) {
+			m_UI.emplace(id, AEN_NEW UIComponent(id));
+			m_meshLayer[layer].emplace(id, m_UI.at(id));
+		}
+
+		static void RemoveUI(const size_t& id) {
+			if (m_UI.count(id) > 0) {
+				delete m_UI.at(id);
+				m_UI.at(id) = nullptr;
+				m_UI.erase(id);
+			}
+		}
+
+		static UIComponent& GetUI(const size_t& id) {
+			if (m_UI.count(id) <= 0) throw;
+			return *m_UI.at(id);
 		}
 
 		// ------------ Transform Component ------------- //
@@ -113,24 +141,18 @@ namespace Aen {
 		}
 
 		static Translation& GetTranslation(const size_t& id) {
-			if(m_translations.count(id) > 0)
-				return *m_translations.at(id);
-
-			throw;
+			if(m_translations.count(id) <= 0) throw;
+			return *m_translations.at(id);
 		}
 
 		static Rotation& GetRotation(const size_t& id) {
-			if(m_rotations.count(id) > 0)
-				return *m_rotations.at(id);
-
-			throw;
+			if(m_rotations.count(id) <= 0) throw;
+			return *m_rotations.at(id);
 		}
 
 		static Scale& GetScale(const size_t& id) {
-			if(m_scales.count(id) > 0)
-				return *m_scales.at(id);
-
-			throw;
+			if(m_scales.count(id) <= 0) throw;
+			return *m_scales.at(id);
 		}
 
 		// ----------------- Spot Light Component ------------------ //
@@ -244,28 +266,50 @@ namespace Aen {
 			return *pDLight;
 		}
 
-		// ----------- Rigid Body Component ----------- //
+		// ----------- StaticBody Component ----------- //
 
-		static const bool RigidExist(const size_t& id) {
-			return m_rigids.count(id) > 0;
+		static const bool StaticBodyExist(const size_t& id) {
+			return m_staticBodies.count(id) > 0;
 		}
 
-		static void CreateRigid(const size_t& id) {
-			m_rigids.emplace(id, AEN_NEW RigidBody(id));
+		static void CreateStaticBody(const size_t& id) {
+			m_staticBodies.emplace(id, AEN_NEW StaticBody(id));
 		}
 
-		static void RemoveRigid(const size_t& id) {
-			if (m_rigids.count(id) > 0) {
-				delete m_rigids.at(id);
-				m_rigids.at(id) = nullptr;
-				m_rigids.erase(id);
+		static void RemoveStaticBody(const size_t& id) {
+			if (m_staticBodies.count(id) > 0) {
+				delete m_staticBodies.at(id);
+				m_staticBodies.at(id) = nullptr;
+				m_staticBodies.erase(id);
 			}
 		}
 
-		static RigidBody& GetRigid(const size_t& id) {
-			if (m_rigids.count(id) > 0)
-				return *m_rigids.at(id);
-			throw;
+		static StaticBody& GetStaticBody(const size_t& id) {
+			if (m_staticBodies.count(id) <= 0) throw;
+			return *m_staticBodies.at(id);
+		}
+
+		// ----------- DynamicBody Component ----------- //
+
+		static const bool DynamicBodyExist(const size_t& id) {
+			return m_dynamicBodies.count(id) > 0;
+		}
+
+		static void CreateDynamicBody(const size_t& id) {
+			m_dynamicBodies.emplace(id, AEN_NEW DynamicBody(id));
+		}
+
+		static void RemoveDynamicBody(const size_t& id) {
+			if (m_dynamicBodies.count(id) > 0) {
+				delete m_dynamicBodies.at(id);
+				m_dynamicBodies.at(id) = nullptr;
+				m_dynamicBodies.erase(id);
+			}
+		}
+
+		static DynamicBody& GetDynamicBody(const size_t& id) {
+			if (m_dynamicBodies.count(id) <= 0) throw;
+			return *m_dynamicBodies.at(id);
 		}
 
 		// ------ CharacterController Component ------- //
@@ -287,9 +331,93 @@ namespace Aen {
 		}
 
 		static CharacterController& GetCharacterController(const size_t& id) {
-			if (m_characterControllers.count(id) > 0)
-				return *m_characterControllers.at(id);
+			if (m_characterControllers.count(id) <= 0) throw;
+			return *m_characterControllers.at(id);
+		}
+
+		// -------------------------------------------- //
+
+		// ----------- Axis Aligned Bounding Box ------------ //
+
+		static const bool AABBExist(const size_t& id) {
+			return m_AABBs.count(id) > 0;
+		}
+
+		static void CreateAABB(const size_t& id, const size_t& layer) {
+			m_AABBs.emplace(id, AEN_NEW AABoundBox(id));
+			m_meshLayer[6].emplace(id, m_AABBs.at(id));
+		}
+
+		static void RemoveAABB(const size_t& id) {
+			if (m_AABBs.count(id) > 0) {
+				delete m_AABBs.at(id);
+				m_AABBs.at(id) = nullptr;
+				m_AABBs.erase(id);
+			}
+		}
+
+		static AABoundBox& GetAABB(const size_t& id) {
+			if (m_AABBs.count(id) <= 0) throw;
+			return *m_AABBs.at(id);
+		}
+
+		// -------------------------------------------- //
+
+		// ----------- Axis Aligned Bounding Box ------------ //
+
+		static const bool OBBExist(const size_t& id) {
+			return m_OBBs.count(id) > 0;
+		}
+
+		static void CreateOBB(const size_t& id, const size_t& layer) {
+			m_OBBs.emplace(id, AEN_NEW OBBox(id));
+			m_meshLayer[6].emplace(id, m_OBBs.at(id));
+		}
+
+		static void RemoveOBB(const size_t& id) {
+			if (m_OBBs.count(id) > 0) {
+				delete m_OBBs.at(id);
+				m_OBBs.at(id) = nullptr;
+				m_OBBs.erase(id);
+			}
+		}
+
+		static OBBox& GetOBB(const size_t& id) {
+			if (m_OBBs.count(id) <= 0) throw;
+			return *m_OBBs.at(id);
+		}
+
+		// ------------Particle System----------------- //
+		static const bool PSExist(const size_t& id) {
+			return m_PS.count(id) > 0;
+		}
+
+		static void CreatePS(const size_t& id, const size_t& layer) {
+			m_PS.emplace(id, AEN_NEW PSSystemcomponent(id));
+			m_meshLayer[layer].emplace(id, m_PS.at(id));
+		}
+
+		static void RemovePS(const size_t& id) {
+			if (m_PS.count(id) > 0) {
+				delete m_PS.at(id);
+				m_PS.at(id) = nullptr;
+				m_PS.erase(id);
+			}
+		}
+
+		static PSSystemcomponent& GetPS(const size_t& id) {
+			if (m_PS.count(id) > 0)
+				return *m_PS.at(id);
 			throw;
+		}
+
+		static void UpdatePS(const float& deltaTime)
+		{
+			for (auto a : m_PS)
+			{
+				a.second->updatePS(deltaTime);
+				//a.second->EmitRandom(deltaTime);
+			}
 		}
 
 		// -------------------------------------------- //
@@ -308,17 +436,50 @@ namespace Aen {
 			m_meshLayer[layer].erase(id);
 		}
 		// ------------------------------------------ //
+		// ----------- ANIMATOR ------------ //
+		static const bool AnimatorExists(const uint32_t& id) {
+			return m_animators.count(id) > 0;
+		}
+
+		static void CreateAnimator(const uint32_t& id) {
+			m_animators.emplace(id, AEN_NEW Animator(id));
+			m_meshLayer[5].emplace(id, m_animators.at(id));
+		}
+
+		static void RemoveAnimators(const uint32_t& id) {
+			if (m_animators.count(id) > 0) {
+				delete m_animators.at(id);
+				m_animators.at(id) = nullptr;
+				m_animators.erase(id);
+			}
+		}
+
+		static Animator& GetAnimator(const uint32_t& id) {
+			if (m_animators.count(id) > 0)
+				return *m_animators.at(id);
+		}
+
+		static void UpdateAnimation() {
+			for (auto& ani : m_animators) {
+				ani.second->Update();
+			}
+		}
+		// --------------------------------------------------//
 
 		static std::unordered_map<size_t, Camera*> m_cameras;
 		static std::unordered_map<size_t, MeshInstance*> m_mesheInstances;
 		static std::unordered_map<size_t, Translation*> m_translations;
 		static std::unordered_map<size_t, Rotation*> m_rotations;
 		static std::unordered_map<size_t, Scale*> m_scales;
-		static std::unordered_map<size_t, RigidBody*> m_rigids;
-		static std::unordered_map<size_t, Drawable*> m_drawables;
+		static std::unordered_map<size_t, StaticBody*> m_staticBodies;
+		static std::unordered_map<size_t, DynamicBody*> m_dynamicBodies;
 		static std::unordered_map<size_t, CharacterController*> m_characterControllers;
+		static std::unordered_map<size_t, AABoundBox*> m_AABBs;
+		static std::unordered_map<size_t, OBBox*> m_OBBs;
+		static std::unordered_map<size_t, UIComponent*> m_UI;
+		static std::unordered_map<size_t, PSSystemcomponent*> m_PS;
 		static std::multimap<size_t, Light*> m_lights;
-		
+		static std::unordered_map<size_t, Animator*> m_animators;
 		
 		static std::array<std::unordered_map<size_t, Drawable*>, 7> m_meshLayer;
 
@@ -326,6 +487,15 @@ namespace Aen {
 		friend class MeshInstance;
 		friend class Renderer;
 		friend class ImGuiHandler;
+		friend class AABoundBox;
+		friend class OBBox;
+		friend class Camera;
+		friend class LevelExporter;
+		friend class ImGuiImporter;
+		friend class GameLoop;
+		friend class StaticBody;
+		friend class DynamicBody;
+		friend class PSSystemcomponent;
 		friend class Quadtree;
 	};
 

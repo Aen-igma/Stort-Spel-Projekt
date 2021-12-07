@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "Camera.h"
+#include"Core/GlobalSettings.h"
 
 namespace Aen {
 
@@ -8,10 +9,12 @@ namespace Aen {
 
     void Camera::SetCameraPerspective(const float& fov, const float& aRatio, const float& minZ, const float& maxZ) {
         m_projection = MatPerspective<float>(fov, aRatio, minZ, maxZ);
+        GlobalSettings::UpdateFrstumGrid();
     }
 
     void Camera::SetCameraOrthographic(const float& width, const float& height, const float& minZ, const float& maxZ) {
         m_projection = MatOrthographic<float>(-width * 0.5f, width * 0.5f, height * 0.5f, -height * 0.5f, minZ, maxZ);
+        GlobalSettings::UpdateFrstumGrid();
     }
 
     void Camera::LookTowards(const Vec3f& dir) {
@@ -42,9 +45,15 @@ namespace Aen {
         return m_projection;
     }
 
+    const DirectX::BoundingFrustum& Camera::GetFrustum() {
+        return m_boxFrustum;
+    }
+
     void Camera::UpdateView(const Vec3f& pos, const Vec3f& rot) {
         Vec3f camTarget = m_forwardVec + pos;
-        m_upVec = Transform(MatRotate(rot), Vec3f(0.f, 1.f, 0.f)).Normalized();
-        m_view = MatViewRH(pos, camTarget, m_upVec);
+        m_view = MatViewLH(pos, camTarget, m_upVec);
+
+        DirectX::BoundingFrustum::CreateFromMatrix(m_boxFrustum, m_projection.smMat);
+        m_boxFrustum.Transform(m_boxFrustum, m_view.Inverse().smMat);
     }
 }

@@ -1,27 +1,79 @@
 #include"PCH.h"
 #include "ImGuiHandler.h"
 
+
 namespace Aen {
 
-	
+	AenIF::Room ImGuiHandler::GetRoom(size_t index)
+	{
+		return m_levelImporter.GetRoomVector()[index].GetRoom();
+	}
+
+	void ImGuiHandler::MaterialDragFloats(float* baseColor, float* shadowColor, float* specularColor, float* rimLightColor, float* innerEdgeColor, float* outerEdgeColor, float* glowColor, float& glowStr, float& innerEdgeThickness, float& outerEdgeThickness, float& specularPower, float& specularStrength, float& roughness, float& shadowOffset, float& innerFalloff, float& outerFalloff, float& rimLightIntensity, float& rimLightSize)
+	{
+		ImGui::DragFloat4("Base Color", baseColor, 0.02f);
+		ImGui::DragFloat4("Shadow Color", shadowColor, 0.02f);
+		ImGui::DragFloat4("Specular Color", specularColor, 0.02f);
+
+		ImGui::DragFloat4("RimLight Color", rimLightColor, 0.02f);
+		ImGui::DragFloat4("Inner EdgeColor", innerEdgeColor, 0.02f);
+		ImGui::DragFloat4("Outer EdgeColor", outerEdgeColor, 0.02f);
+		ImGui::DragFloat4("Glow Color", glowColor, 0.02f);
+		ImGui::DragFloat("Glow GlowStr", &glowStr, 0.02f, 0.0f, 100.0f);
+		ImGui::DragFloat("InnerEdge Thickness", &innerEdgeThickness, 1.0f, 0.0f, 100.0f);
+		ImGui::DragFloat("OuterEdge Thickness", &outerEdgeThickness, 1.0f, 0.0f, 100.0f);
+		ImGui::DragFloat("Specular Power", &specularPower, 0.02f, 0.0f, 1.0f);
+		ImGui::DragFloat("Specular Strength", &specularStrength, 0.02f, 0.0f, 1.0f);
+		ImGui::DragFloat("Roughness", &roughness, 0.02f, 0.0f, 1.0f);
+		ImGui::DragFloat("Shadow Offset", &shadowOffset, 0.02f, 0.0f, 1.0f);
+		ImGui::DragFloat("Inner Falloff", &innerFalloff, 0.02f, 0.0f, 1.0f);
+		ImGui::DragFloat("Outer Falloff", &outerFalloff, 0.02f, 0.0f, 1.0f);
+		ImGui::DragFloat("RimLight Intensity", &rimLightIntensity, 0.02f, 0.0f, 1.0f);
+		ImGui::DragFloat("RimLight Size", &rimLightSize, 0.02f, 0.0f, 1.0f);
+	}
+
+	void ImGuiHandler::SetMaterialValues(float* baseColor, float* shadowColor, float* specularColor, float* rimLightColor, float* innerEdgeColor, float* outerEdgeColor, float* glowColor, float& glowStr, float& innerEdgeThickness, float& outerEdgeThickness, float& specularPower, float& specularStrength, float& roughness, float& shadowOffset, float& innerFalloff, float& outerFalloff, float& rimLightIntensity, float& rimLightSize, Aen::Material& material)
+	{
+		material["BaseColor"] = Color(baseColor[0], baseColor[1], baseColor[2], baseColor[3]);
+		material["ShadowColor"] = Color(shadowColor[0], shadowColor[1], shadowColor[2], shadowColor[3]);
+		material["SpecularColor"] = Color(specularColor[0], specularColor[1], specularColor[2], specularColor[3]);
+		material["RimLightColor"] = Color(rimLightColor[0], rimLightColor[1], rimLightColor[2], rimLightColor[3]);
+		material["InnerEdgeColor"] = Color(innerEdgeColor[0], innerEdgeColor[1], innerEdgeColor[2], innerEdgeColor[3]);
+		material["OuterEdgeColor"] = Color(outerEdgeColor[0], outerEdgeColor[1], outerEdgeColor[2], outerEdgeColor[3]);
+		material["GlowColor"] = Color(glowColor[0], glowColor[1], glowColor[2], glowColor[3]);
+		material["GlowStr"] = glowStr;
+		material["InnerEdgeThickness"] = innerEdgeThickness;
+		material["OuterEdgeThickness"] = outerEdgeThickness;
+		material["SpecularPower"] = specularPower;
+		material["SpecularStrength"] = specularPower;
+		material["Roughness"] = roughness;
+		material["ShadowOffset"] = shadowOffset;
+		material["InnerFalloff"] = innerFalloff;
+		material["OuterFalloff"] = outerFalloff;
+		material["RimLightIntensity"] = rimLightIntensity;
+		material["RimLightSize"] = rimLightSize;
+	}
+
 	ImGuiHandler::ImGuiHandler()
 	{
+		m_imguiImporter = new ImGuiImporter(&m_entityList, &m_itemList, &m_modelMap, &m_lightMap, &m_levelImporter, &m_materialList);
+
+		m_normalMapTextureFileName.push_back("None");
+		m_normalMapTexture.push_back("None");
+		m_textureFileName.push_back("None");
+		m_textureName.push_back("None");
 	}
 
 	ImGuiHandler::~ImGuiHandler()
 	{
-
-		/*if (m_deleteList.size() > 0)
+		if (m_imguiImporter != nullptr)
 		{
-			for (size_t i = 0; i < m_deleteList.size(); i++)
-			{
-				delete m_entityList[m_deleteList[i] - static_cast<size_t>(1)];
-			}
-		}*/
+			delete m_imguiImporter;
+		}
 	}
 
-	void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
-		string& sourcePath, string& filePathSource, 
+	/*void ImGuiHandler::SaveThumbnail(string& destinationPath, string& filePathDestination,
+		string& sourcePath, string& filePathSource,
 		Aen::ImageByteData& source, Aen::ImageByteData& destination, int& i)
 	{
 		destinationPath = filePathDestination + m_textureName[i] + "_Thumbnail.png";
@@ -33,13 +85,32 @@ namespace Aen {
 
 		source.FreeData();
 		destination.FreeData();
-	}
+	}*/
 
 	void ImGuiHandler::StartUp()
 	{
 		ReadAllModelsFromHandler();
-		ReadAllFilesFromResourceFolder();
-		CreatePreviewTextureThumbnail();
+		ReadAllFilesFromFolder(IGH::FBXPATH);
+		ReadAllFilesFromFolder(IGH::TEXTUREPATH);
+		ReadAllFilesFromFolder(IGH::NORMALTEXTUREPATH);
+
+
+		//CreatePreviewTextureThumbnail();
+	}
+
+	void ImGuiHandler::RenderAllWindows()
+	{
+		SceneListWindow();
+		update();
+		AssetWindow();
+		PropertyWindow();
+		ToolWindow();
+		SaveWindow();
+		EnemyCreateWindow();
+		ImportWindow();
+		MaterialCreateWindow();
+		ParticleCreateWindow();
+
 	}
 
 	void ImGuiHandler::Initialize(const HWND& hwnd, ID3D11Device* mp_device, ID3D11DeviceContext* mp_dContext)
@@ -63,7 +134,6 @@ namespace Aen {
 
 	void ImGuiHandler::Render()
 	{
-
 		// Draw
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -75,27 +145,31 @@ namespace Aen {
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
 	}
-	
+
 	void ImGuiHandler::SceneListWindow()
 	{
 		ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_MenuBar);
+
+		static string m_openOrSave = "";
 
 		if (ImGui::BeginMenuBar())
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Open..", "Ctrl + O"))
+				if (ImGui::MenuItem((IGH::OPEN + "..").c_str(), "Ctrl + O"))
 				{
-					m_openOrSave = "Open";
-					m_fileDialog.SetTitle("Open");
+					m_openOrSave = IGH::OPEN;
+					m_fileDialog.SetTitle(IGH::OPEN.c_str());
 					m_fileDialog.Open();
 				}
 
-				if (ImGui::MenuItem("Save..", "Ctrl + S"))
+				if (ImGui::MenuItem((IGH::SAVE + "..").c_str(), "Ctrl + S"))
 				{
-					m_openOrSave = "Save";
-					m_fileDialog.SetTitle("Save as");
-					m_fileDialog.Open();
+					m_saveWindowActive = true;
+				}
+
+				if (ImGui::MenuItem((IGH::COPY + "..").c_str()))
+				{
 				}
 
 				ImGui::EndMenu();
@@ -108,24 +182,18 @@ namespace Aen {
 
 		if (m_fileDialog.HasSelected())
 		{
-			if (m_openOrSave == "Open")
+			if (m_openOrSave == IGH::OPEN.c_str())
 			{
-				std::cout << "Selected filename " << m_fileDialog.GetSelected().string() << std::endl;
-
+				levelPath = m_fileDialog.GetSelected().string();
+				m_ImportWindowActive = true;
+				m_openOrSave = "";
 			}
-			else if(m_openOrSave == "Save")
-			{
-				std::cout << "Selected fileDir " << m_fileDialog.GetPwd().string() << std::endl;
-				m_levelExporter.WriteInto(m_entityList, m_itemList, m_meshObjList, m_textureFileName, m_entityType);
-
-			}
-
 			m_fileDialog.ClearSelected();
 		}
 
 		ImGui::BeginChild("List");
 
-		if (ImGui::BeginListBox("Test"))
+		if (ImGui::BeginListBox(""))
 		{
 			for (size_t i = 0; i < m_itemList.size(); i++)
 			{
@@ -149,32 +217,55 @@ namespace Aen {
 		}
 		ImGui::EndChild();
 		ImGui::End();
+		
 
 	}
 
 	void ImGuiHandler::AssetWindow()
 	{
 		ImGui::Begin("Assets", nullptr);
-		ImGui::Separator();
+
 		if (ImGui::BeginTabBar("#AssetTab", ImGuiTabBarFlags_None))
 		{
-			if (ImGui::BeginTabItem("Model"))
+			if (ImGui::BeginTabItem(IGH::MODEL.c_str()))
 			{
-				HandleButton();
+			
+				ModelButtons();
 
-				if (AddButton("Delete"))
+				ImGui::Columns(1);
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem(IGH::LIGHT.c_str()))
+			{
+				LightButtons();
+
+				if(AddButton("Torch")) 
 				{
-					RemoveObject();
+					m_imguiImporter->AddTorchWithLight();
 				}
 
 				ImGui::EndTabItem();
 			}
 
-			if (ImGui::BeginTabItem("Light"))
+			if (ImGui::BeginTabItem("Entities"))
 			{
-				ImGui::Text("Light");
+				AddEnemyButton();
 				ImGui::EndTabItem();
 			}
+
+			if (ImGui::BeginTabItem(IGH::MATERIAL.c_str()))
+			{
+				AddMaterialButton();
+				ImGui::EndTabItem();
+			} 
+			
+			if (ImGui::BeginTabItem("Particle"))
+			{
+				AddParticleButton();
+				ImGui::EndTabItem();
+			}
+
 			ImGui::EndTabBar();
 		}
 		ImGui::End();
@@ -182,7 +273,7 @@ namespace Aen {
 
 	void ImGuiHandler::ColorWheel()
 	{
-		ImGui::Begin("Color", nullptr);
+		ImGui::Begin(IGH::COLOR.c_str(), nullptr);
 		static float color[3] = { 255,255,255 };
 		ImGui::ColorPicker3("##picker", color, ImGuiColorEditFlags_PickerHueWheel);
 		ImGui::End();
@@ -190,107 +281,25 @@ namespace Aen {
 
 	void ImGuiHandler::PropertyWindow()
 	{
-
-		static bool hitBoxEnable = false;
-
-		static float albedoColor = 0;
-		static float ambientColor = 0;
-		static float transparency = 0;
-		static float diffuse = 0;
-
-		static float specularColor = 0;
-		static float reflectivity = 0;
-
-		static std::string mapName = "";
-
-		//string imageName = AEN_RESOURCE_DIR("Place_Holder.png");
-
-		//Aen::Texture& texture = Aen::Resource::CreateTexture("ImGuiTexture");
-		//texture.LoadTexture(imageName)*/;
-
-		//// texture friend
-		////static ImVec2 imageSize = ImVec2(50, 50);
-		////ImGui::Image("Display", imageSize,)
-
+		
 		SetDefaultValue();
 
-		ImGui::Begin("Mesh Properties", nullptr);
+		ImGui::Begin("Properties", nullptr);
 
 		if (ImGui::BeginTabBar("#Property Tab", ImGuiTabBarFlags_None))
 		{
-			if (ImGui::BeginTabItem("Mesh"))
-			{
-				if (ImGui::CollapsingHeader("Transform Attributes"))
-				{
-					SetValues();
-				}
+			ModelTab();
 
-				ImGui::Checkbox("Hit box", &hitBoxEnable);
+			MaterialTab();
 
-				static int selectedItem = 0;
-				CustomCombo(selectedItem,"Parent");
+			RoomTab();
 
-				ImGui::EndTabItem();
-			}
+			LightTab();
 
-			if (ImGui::BeginTabItem("Material"))
-			{
-				if (ImGui::CollapsingHeader("Common Material Properties"))
-				{
-					if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
-					{
-						uint32_t id = m_entityList[m_selectedEntity]->GetID();
+			ParticleTab();
 
-						if (Aen::ComponentHandler::MeshInstanceExist(id))
-						{
-							static int currentIndex = 0;
-							if (ImGui::BeginCombo("Test", m_textureName[currentIndex].c_str()))
-							{
-								for (size_t i = 0; i < m_textureName.size(); i++)
-								{
-									static bool isSelected = (currentIndex == i);
-
-									if (ImGui::Selectable(m_textureName[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
-									{
-										currentIndex = static_cast<int>(i);
-										string imageName = AEN_RESOURCE_DIR(m_textureFileName[currentIndex]);
-										Aen::Texture& texture = Aen::Resource::CreateTexture("Texture");
-										texture.LoadTexture(imageName);
-										Aen::Material& mat = Aen::Resource::CreateMaterial("Material", true);
-										mat.SetDiffuseMap(texture);
-
-										size_t id = m_entityList[m_selectedEntity]->GetID();
-										Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(mat);
-									}
-
-									if (isSelected)
-									{
-										ImGui::SetItemDefaultFocus();
-									}
-								}
-								ImGui::EndCombo();
-							}
-							ImGui::SliderFloat("Transparency", &transparency, 0.0f, 1.0f);
-							ImGui::SliderFloat("Ambient Color", &ambientColor, 0.0f, 1.0f);
-							ImGui::SliderFloat("Diffuse", &diffuse, 0.0f, 1.0f);
-							
-						}
-					}
-				}
-
-				if (ImGui::CollapsingHeader("Normal Mapping"))
-				{
-					ImGui::InputText("Map", const_cast<char*>(mapName.c_str()), IM_ARRAYSIZE(mapName.c_str()));
-				}
-
-				if (ImGui::CollapsingHeader("Specular Shading"))
-				{
-					ImGui::SliderFloat("Specular Color", &specularColor, 0.0f, 1.0f);
-					ImGui::SliderFloat("Reflectivity", &reflectivity, 0.0f, 1.0f);
-				}
-				ImGui::EndTabItem();
-			}
 			ImGui::EndTabBar();
+
 		}
 		ImGui::End();
 	}
@@ -298,67 +307,238 @@ namespace Aen {
 	void ImGuiHandler::ToolWindow()
 	{
 		static int mode = -1;
-		static const std::string stringArray[3] = { "Move","Rotate","Scale" };
 		static std::string currentMode = "";
 
-		ImGui::Begin("a", nullptr);
+		ImGui::Begin("Tools", nullptr);
 		for (int i = 0; i < 3; i++)
 		{
-			if (ImGui::Button(stringArray[i].c_str()))
+			if (ImGui::Button(m_imguiTypes.TOOLS[i]))
 			{
 				mode = i;
 
 				if (mode == 0)
 				{
-					currentMode = stringArray[0];
+					currentMode = m_imguiTypes.TOOLS[i];
 				}
 				else if (mode == 1)
 				{
-					currentMode = stringArray[1];
+					currentMode = m_imguiTypes.TOOLS[i];
 				}
 				else if (mode == 2)
 				{
-					currentMode = stringArray[2];
+					currentMode = m_imguiTypes.TOOLS[i];
 				}
 			}
+		}
+
+		if (AddButton("Delete"))
+		{
+			RemoveObject();
 		}
 		ImGui::End();
 	}
 
-	void ImGuiHandler::MaterialWindow()
+	void ImGuiHandler::SaveWindow()
 	{
+		if (m_saveWindowActive == true)
+		{
+			ImGui::Begin(IGH::SAVE.c_str(), nullptr);
+			static char inputString[MESH_NAME_MAX_LENGTH];
+			ImGui::InputText("FileName", inputString, MESH_NAME_MAX_LENGTH);
+
+			if (ImGui::Button(IGH::SAVE.c_str()))
+			{
+				string input = inputString;
+				m_levelExporter.WriteInto(m_entityList, m_itemList, m_modelMap, m_lightMap, m_roomProperty, input);
+				
+				m_saveWindowActive = false;
+				std::memset(inputString, '\0', sizeof(char) * MESH_NAME_MAX_LENGTH);
+			}
+			ImGui::End();
+		}
 	}
 
-	void ImGuiHandler::Update()
+	void ImGuiHandler::EnemyCreateWindow()
 	{
+		if (m_createEnemyWindowActive == true)
+		{
+			static int selectedType = 0;
+			static int CurrentIndex = 0;
+			static char name[MESH_NAME_MAX_LENGTH];
+			static string mesh = "";
 
+			ImGui::Begin("Create Enemy", nullptr);
 
+			ImGui::InputText("Name", name, MESH_NAME_MAX_LENGTH);
+			ImGui::Combo("Type", &selectedType, m_imguiTypes.ENEMYTYPE, IM_ARRAYSIZE(m_imguiTypes.ENEMYTYPE));
+
+			mesh = CustomComboString(m_objFileName, "Mesh", CurrentIndex);
+
+			if (ImGui::Button("Create"))
+			{
+				if (mesh != "")
+				{
+					size_t id = m_imguiImporter->AddBase(name, mesh);
+					m_modelMap.at(id).m_type = m_imguiTypes.ENEMYTYPE[selectedType];
+				}
+			
+				m_createEnemyWindowActive = false;
+				std::memset(name, '\0', sizeof(char) * MESH_NAME_MAX_LENGTH);
+			}
+			ImGui::End();
+		}
 	}
 
-	void ImGuiHandler::AddModel(Aen::Entity* entity)
+	void ImGuiHandler::ImportWindow()
 	{
-		m_entityList.push_back(entity);
-		m_itemList.push_back("Model" + std::to_string(m_entityCount));
-		m_entityType.push_back("Model");
-		m_entityCount++;
+		if (m_ImportWindowActive == true)
+		{
+			ImGui::Begin("Offset", nullptr);
+
+			static float tempTranslation[3] = { 0,0,0 };
+			static float tempRotation[3] = { 0,0,0 };
+			static float tempScale[3] = { 1,1,1 };
+
+			ImGui::DragFloat3("Translate", tempTranslation, 0.02f);
+			ImGui::DragFloat3("Rotate", tempRotation, 0.5f);
+			ImGui::DragFloat3("Scale", tempScale, 0.02f);
+
+			if (ImGui::Button("Import"))
+			{
+				m_ImportWindowActive = m_imguiImporter->import(m_levelImporter,levelPath,tempTranslation,tempRotation,tempScale, m_roomProperty);
+				m_imported = true;
+			}
+			ImGui::End();
+		}
+	}
+
+	void ImGuiHandler::MaterialCreateWindow()
+	{
+		if (m_createMaterialActive == true)
+		{
+			static float baseColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			static float shadowColor[4] = { 0.3f, 0.3f, 0.5f, 1.f };
+			static float specularColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			static float rimLightColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			static float innerEdgeColor[4] = { 0, 0, 0, 1 };
+			static float outerEdgeColor[4] = { 0, 0, 0, 1 };
+			static float glowColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+			static float glowStr = 100;
+			static float innerEdgeThickness = 0;
+			static float outerEdgeThickness = 0;
+			static float specularPower = 0.6f;
+			static float specularStrength = 1.0f;
+			static float roughness = 0.5f;
+			static float shadowOffset = 0.0f;
+			static float innerFalloff = 0.0f;
+			static float outerFalloff = 0.0f;
+			static float rimLightIntensity = 1.0f;
+			static float rimLightSize = 0.0f;
+
+			static char materialName[MATERIAL_NAME_MAX_LENGTH];
+			static char textureName[TEXTURE_NAME_MAX_LENGTH];
+			static char materialTextureName[MATERIAL_NAME_MAX_LENGTH];
+			static char normalTextureName[TEXTURE_NAME_MAX_LENGTH];
+
+			static int selectedTex = 0;
+			static int selectedNormTex = 0;
+
+			ImGui::Begin((IGH::CREATE + IGH::MATERIAL).c_str(), nullptr);
+
+			ImGui::InputText((IGH::MATERIAL + " " + IGH::NAME).c_str(), materialName, MATERIAL_NAME_MAX_LENGTH);
+			ImGui::InputText((IGH::MATERIAL + " " + IGH::TEXTURE + " " + IGH::NAME).c_str(), materialTextureName, MATERIAL_NAME_MAX_LENGTH);
+
+			strcpy(textureName, CustomComboString(m_textureFileName, (IGH::TEXTURE + IGH::NAME), selectedTex).c_str());
+			strcpy(normalTextureName, CustomComboString(m_normalMapTextureFileName, (IGH::NORMALTEXTURE + IGH::NAME), selectedNormTex).c_str());
+
+			MaterialDragFloats(baseColor, shadowColor, specularColor, rimLightColor, 
+				innerEdgeColor, outerEdgeColor, glowColor, glowStr, 
+				innerEdgeThickness, outerEdgeThickness, specularPower, specularStrength, 
+				roughness, shadowOffset, innerFalloff, outerFalloff, rimLightIntensity, rimLightSize);
+			
+			if (ImGui::Button(IGH::CREATE.c_str()))
+			{
+				if (strcmp(materialTextureName, "") != 0)
+				{
+					Aen::Material& material = Aen::Resource::CreateMaterial(materialName, true);
+
+					if (strcmp(materialTextureName, "") != 0 && strcmp(textureName, "") != 0)
+					{
+						Aen::Texture& texture = Aen::Resource::CreateTexture(materialTextureName);
+						Aen::Texture& normalTexture = Aen::Resource::CreateTexture(normalTextureName);
+
+						texture.LoadTexture(AEN_TEXTURE_DIR(textureName));
+						normalTexture.LoadTexture(AEN_NORMALTEXTURE_DIR(normalTextureName));
+
+						material.SetDiffuseMap(texture);
+						material.SetNormalMap(normalTexture);
+					}
+
+					SetMaterialValues(baseColor, shadowColor, specularColor, rimLightColor,
+						innerEdgeColor, outerEdgeColor, glowColor, glowStr,
+						innerEdgeThickness, outerEdgeThickness, specularPower, specularStrength,
+						roughness, shadowOffset, innerFalloff, outerFalloff, rimLightIntensity, rimLightSize, material);
+
+
+					m_materialList.push_back(IGH::MatTexName(materialName,materialTextureName,normalTextureName));
+					std::memset(materialName, '\0', sizeof(char) * MATERIAL_NAME_MAX_LENGTH);
+					std::memset(materialTextureName, '\0', sizeof(char) * MATERIAL_NAME_MAX_LENGTH);
+
+					m_createMaterialActive = false;
+				}
+			}
+			ImGui::End();
+		}
+	}
+
+	void ImGuiHandler::ParticleCreateWindow()
+	{
+		if (m_createParticleWindowActive == true)
+		{
+			static int selectedType = 0;
+			static int CurrentIndex = 0;
+			static char name[MESH_NAME_MAX_LENGTH];
+			static string mesh = "";
+
+			ImGui::Begin("Create Particle", nullptr);
+
+			ImGui::InputText("Name", name, MESH_NAME_MAX_LENGTH);
+			ImGui::Combo("Type", &selectedType, m_imguiTypes.PARTICLETAG, IM_ARRAYSIZE(m_imguiTypes.PARTICLETAG));
+
+			mesh = CustomComboString(m_objFileName, "Mesh", CurrentIndex);
+
+			if (ImGui::Button("Create"))
+			{
+				if (mesh != "")
+				{
+					size_t id = m_imguiImporter->AddBase(name, mesh);
+					m_modelMap.at(id).m_type = m_imguiTypes.PARTICLETAG[selectedType];
+				}
+
+				m_createParticleWindowActive = false;
+				std::memset(name, '\0', sizeof(char) * MESH_NAME_MAX_LENGTH);
+			}
+			ImGui::End();
+		}
 	}
 
 	void ImGuiHandler::ReadAllModelsFromHandler()
 	{
-		/*if (m_entityList.size() < mp_entityHandlerPtr->m_entities.size())
+		if (m_entityList.size() < mp_entityHandlerPtr->m_entities.size())
 		{
-			for (std::pair<uint32_t, Aen::Entity*> element : mp_entityHandlerPtr->m_entities)
+			for (std::pair<size_t, Aen::Entity*> element : mp_entityHandlerPtr->m_entities)
 			{
 				m_entityList.push_back(element.second);
 				m_itemList.push_back(CheckType(element.second));
 			}
-		}*/
+		}
 	}
 
-	void ImGuiHandler::CreatePreviewTextureThumbnail()
+	/*void ImGuiHandler::CreatePreviewTextureThumbnail()
 	{
-		string filePathDestination = "../Resource/Thumbnail/";
-		string filePathSource = "../Resource/";
+		string filePathDestination = IGH::RESOURCEPATH + "Thumbnail/";
+		string filePathSource = IGH::RESOURCEPATH;
 		string destinationPath;
 		string sourcePath;
 
@@ -373,8 +553,6 @@ namespace Aen {
 
 		if (std::filesystem::is_empty(filePathDestination))
 		{
-			cout << "is empty" << endl;
-
 			for (int i = 0; i < m_textureFileName.size(); i++)
 			{
 				SaveThumbnail(destinationPath, filePathDestination,
@@ -402,18 +580,16 @@ namespace Aen {
 					{
 						cout << "Already exist" << endl;
 					}
-
 				}
 			}
 		}
-	}
+	}*/
 
 	void ImGuiHandler::SetDefaultValue()
 	{
-
 		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
-			uint32_t id = m_entityList[m_selectedEntity]->GetID();
+			size_t id = m_entityList[m_selectedEntity]->GetID();
 
 			if (Aen::ComponentHandler::TranslationExist(id))
 			{
@@ -467,7 +643,6 @@ namespace Aen {
 		else
 		{
 			ZeroValue();
-
 		}
 	}
 
@@ -475,23 +650,23 @@ namespace Aen {
 	{
 		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
 		{
-			uint32_t id = m_entityList[m_selectedEntity]->GetID();
+			size_t id = m_entityList[m_selectedEntity]->GetID();
 
-			if (Aen::ComponentHandler::TranslationExist(id)) 
+			if (Aen::ComponentHandler::TranslationExist(id))
 			{
-				ImGui::InputFloat3("Translate", m_xyzTranslation);
+				ImGui::DragFloat3("Translate", m_xyzTranslation, 0.02f);
 				m_entityList[m_selectedEntity]->SetPos(m_xyzTranslation[0], m_xyzTranslation[1], m_xyzTranslation[2]);
 			}
-						
-			if (Aen::ComponentHandler::RotationExist(id)) 
+
+			if (Aen::ComponentHandler::RotationExist(id))
 			{
-				ImGui::InputFloat3("Rotate", m_xyzRotation);
+				ImGui::DragFloat3("Rotate", m_xyzRotation, 0.5f);
 				m_entityList[m_selectedEntity]->SetRot(m_xyzRotation[0], m_xyzRotation[1], m_xyzRotation[2]);
 			}
-					
-			if (Aen::ComponentHandler::ScaleExist(id)) 
+
+			if (Aen::ComponentHandler::ScaleExist(id))
 			{
-				ImGui::InputFloat3("Scale", m_xyzScale);
+				ImGui::DragFloat3("Scale", m_xyzScale, 0.02f);
 				m_entityList[m_selectedEntity]->SetScale(m_xyzScale[0], m_xyzScale[1], m_xyzScale[2]);
 			}
 
@@ -500,6 +675,55 @@ namespace Aen {
 		{
 			ZeroValue();
 		}
+	}
+
+	void ImGuiHandler::SetMaterialValues(int selected)
+	{
+		Aen::Material& material = Aen::Resource::GetMaterial((m_materialList[selected].matName));
+
+		m_imguiImporter->Convert(m_baseColor, material["BaseColor"]);
+		m_imguiImporter->Convert(m_shadowColor, material["ShadowColor"]);
+		m_imguiImporter->Convert(m_specularColor, material["SpecularColor"]);
+		m_imguiImporter->Convert(m_rimLightColor, material["RimLightColor"]);
+		m_imguiImporter->Convert(m_innerEdgeColor, material["InnerEdgeColor"]);
+		m_imguiImporter->Convert(m_outerEdgeColor, material["OuterEdgeColor"]);
+		m_imguiImporter->Convert(m_glowColor, material["GlowColor"]);
+
+		material["GlowStr"] = m_glowStr;
+		material["InnerEdgeThickness"] = m_innerEdgeThickness;
+		material["OuterEdgeThickness"] = m_outerEdgeThickness;
+		material["SpecularPower"] = m_specularPower;
+		material["SpecularStrength"] = m_specularStrength;
+		material["Roughness"] = m_roughness;
+		material["ShadowOffset"] = m_shadowOffset;
+		material["InnerFalloff"] = m_innerFalloff;
+		material["OuterFalloff"] = m_outerFalloff;
+		material["RimLightIntensity"] = m_rimLightIntensity;
+		material["RimLightSize"] = m_rimLightSize;		
+	}
+
+	void ImGuiHandler::SetDefaultMaterialValue(int selected)
+	{
+		Aen::Material& material = Aen::Resource::GetMaterial((m_materialList[selected].matName));
+		m_imguiImporter->Convert(material["BaseColor"], m_baseColor);
+		m_imguiImporter->Convert(material["ShadowColor"], m_shadowColor);
+		m_imguiImporter->Convert(material["SpecularColor"], m_specularColor);
+		m_imguiImporter->Convert(material["RimLightColor"], m_rimLightColor);
+		m_imguiImporter->Convert(material["InnerEdgeColor"], m_innerEdgeColor);
+		m_imguiImporter->Convert(material["OuterEdgeColor"], m_outerEdgeColor);
+		m_imguiImporter->Convert(material["GlowColor"], m_glowColor);
+
+		m_glowStr = material["GlowStr"];
+		m_innerEdgeThickness = material["InnerEdgeThickness"];
+		m_outerEdgeThickness = material["OuterEdgeThickness"];
+		m_specularPower = material["SpecularPower"];
+		m_specularStrength = material["SpecularStrength"];
+		m_roughness = material["Roughness"];
+		m_shadowOffset = material["ShadowOffset"];
+		m_innerFalloff = material["InnerFalloff"];
+		m_outerFalloff = material["OuterFalloff"];
+		m_rimLightIntensity = material["RimLightIntensity"];
+		m_rimLightSize = material["RimLightSize"];
 	}
 
 	void ImGuiHandler::ZeroValue()
@@ -512,96 +736,531 @@ namespace Aen {
 		}
 	}
 
-	void ImGuiHandler::SetMaterialValues()
+	void ImGuiHandler::Rotate(float angle)
 	{
-		if (m_entityList.size() > 0 && m_selectedEntity < m_entityList.size())
+		float s = static_cast<float>(sin(angle * (C_PI / 180)));
+		float c = static_cast<float>(cos(angle * (C_PI / 180)));
+		float posX = 0;
+		float posZ = 0;
+		Vec3f translation;
+		Vec3f rotation;
+		size_t id;
+		for (size_t i = 0; i < m_entityList.size(); i++)
 		{
-			uint32_t id = m_entityList[m_selectedEntity]->GetID();
-
-			m_entityList[m_selectedEntity]->SetPos(m_xyzTranslation[0], m_xyzTranslation[1], m_xyzTranslation[2]);
-						
-			m_entityList[m_selectedEntity]->SetRot(m_xyzRotation[0], m_xyzRotation[1], m_xyzRotation[2]);
-			
-
-			if (Aen::ComponentHandler::ScaleExist(id))
+			id = m_entityList[i]->GetID();
+			if (Aen::ComponentHandler::MeshInstanceExist(id))
 			{
-				m_entityList[m_selectedEntity]->SetScale(m_xyzScale[0], m_xyzScale[1], m_xyzScale[2]);
+				translation = m_entityList[i]->GetPos();
+				rotation = m_entityList[i]->GetRot();
+
+				posX = (translation.x * c) - (translation.z * s);
+				posZ = (translation.x * s) + (translation.z * c);
+
+				m_entityList[i]->SetPos(posX, translation.y, posZ);
+				m_entityList[i]->SetRot(rotation.x, rotation.y + angle, rotation.z);
 			}
+		}
+	}
+
+	void ImGuiHandler::ChangeTexture(int& currentIndexTex, int& currentIndexNorm, string materialName, string materialTextureName, string materialNormalTextureName)
+	{
+		size_t id = m_entityList[m_selectedEntity]->GetID();
+
+		if (m_textureFileName[currentIndexTex] == m_modelMap.at(id).m_texture.m_textureName && m_normalMapTextureFileName[currentIndexNorm] == m_modelMap.at(id).m_texture.m_normalTexture)
+		{
+			Aen::Material& mat = Aen::Resource::GetMaterial(materialName);
+			Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
 
 		}
 		else
 		{
-			ZeroValue();
+			string imageName = m_modelMap.at(id).m_texture.m_textureName;
+			string textureName = materialTextureName;
+			string normalImageName = m_modelMap.at(id).m_texture.m_normalTexture;
+
+			if (m_textureFileName[currentIndexTex] != m_modelMap.at(id).m_texture.m_textureName)
+			{
+				imageName = m_textureFileName[currentIndexTex];
+				textureName = materialTextureName;
+
+				
+			}
+
+			if (m_normalMapTextureFileName[currentIndexNorm] != m_modelMap.at(id).m_texture.m_normalTexture)
+			{
+				normalImageName = m_normalMapTextureFileName[currentIndexNorm];
+			}
+
+
+
+			UpdateMap(id, textureName, materialName, m_itemList[m_selectedEntity], m_textureFileName[currentIndexTex]);
+
+			Aen::Texture& texture = Aen::Resource::CreateTexture(textureName);
+			texture.LoadTexture(AEN_TEXTURE_DIR(imageName));
+
+			Aen::Texture& normalTexture = Aen::Resource::CreateTexture(materialNormalTextureName);
+			normalTexture.LoadTexture(AEN_NORMALTEXTURE_DIR(normalImageName));
+
+			Aen::Material& mat = Aen::Resource::GetMaterial(materialName);
+			mat.SetDiffuseMap(texture);
+			mat.SetNormalMap(normalTexture);
+
+			Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(mat);
 		}
 	}
 
-	void ImGuiHandler::AddBase(const string& meshName, const string& objName)
+	void ImGuiHandler::update()
 	{
-		/*Aen::Entity* entity = AEN_NEW(Aen::Entity);
-		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName + std::to_string(m_entityCount));
-		mesh.Load(AEN_RESOURCE_DIR(objName));
+	}
 
-		entity->AddComponent<Aen::MeshInstance>();
-		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
+	void ImGuiHandler::DuplicateWindow(bool &active)
+	{
+		if (active == true)
+		{
+			static float translation[3] = { 0 };
+			static float rotation[3] = { 0 };
+			static float scale[3] = { 0 };
+			static int copies = 0;
 
-		m_meshObjList.push_back(objName);
-		m_textureFileList.push_back("Missing_Textures.png");
+			ImGui::Begin("Copy", nullptr);
 
-		AddModel(entity);
-		m_deleteList.push_back(static_cast<int>(m_entityList.size()));*/
+			ImGui::DragFloat3(IGH::TRANSLATION.c_str(), m_xyzTranslation, 0.02f);
+			ImGui::DragFloat3(IGH::ROTATION.c_str(), m_xyzTranslation, 0.02f);
+			ImGui::DragFloat3(IGH::SCALE.c_str(), m_xyzTranslation, 0.02f);
+			ImGui::SliderInt("Number of copies", &copies, 0, 10);
+
+
+			if (ImGui::Button("Create"))
+			{
+				active = false;
+			}
+			ImGui::End();
+		}
+	}
+
+	void ImGuiHandler::LightTab()
+	{
+		if (ImGui::BeginTabItem(IGH::LIGHT.c_str()))
+		{
+			size_t id = m_entityList[m_selectedEntity]->GetID();
+			static float color[4];
+			static float attenuation[3];
+			static float intensity;
+			static float range;
+			static float angle;
+
+			if (Aen::ComponentHandler::DirectionalLightExist(id))
+			{
+				Aen::DirectionalLight& lightPtr = Aen::ComponentHandler::GetDirectionalLight(id);
+
+				color[0] = lightPtr.m_light.m_color.r;
+				color[1] = lightPtr.m_light.m_color.g;
+				color[2] = lightPtr.m_light.m_color.b;
+				color[3] = lightPtr.m_light.m_color.a;
+				intensity = lightPtr.m_light.m_strength;
+
+				SetValues();
+
+				ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
+				ImGui::DragFloat("Intensity", &intensity, 0.02f);
+
+				lightPtr.SetColor(color[0], color[1], color[2], color[3]);
+				lightPtr.SetStrength(intensity);
+			}
+
+			if (Aen::ComponentHandler::PointLightExist(id))
+			{
+				Aen::PointLight& lightPtr = Aen::ComponentHandler::GetPointLight(id);
+
+				color[0] = lightPtr.m_light.m_color.r;
+				color[1] = lightPtr.m_light.m_color.g;
+				color[2] = lightPtr.m_light.m_color.b;
+				color[3] = lightPtr.m_light.m_color.a;
+
+				intensity = lightPtr.m_light.m_strength;
+
+				attenuation[0] = lightPtr.m_light.m_dist.x;
+				attenuation[1] = lightPtr.m_light.m_dist.y;
+				attenuation[2] = lightPtr.m_light.m_dist.z;
+
+				range = lightPtr.m_light.m_dist.w;
+
+				SetValues();
+
+				ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
+				ImGui::DragFloat("Intensity", &intensity, 0.02f);
+				ImGui::DragFloat3("Attenuation", attenuation, 0.02f);
+				ImGui::DragFloat("Range", &range, 0.02f);
+
+				lightPtr.SetColor(color[0], color[1], color[2], color[3]);
+				lightPtr.SetStrength(intensity);
+				lightPtr.SetLightDist(attenuation[0], attenuation[1], attenuation[2], range);
+			}
+
+			if (Aen::ComponentHandler::SpotLightExist(id))
+			{
+				Aen::SpotLight& lightPtr = Aen::ComponentHandler::GetSpotLight(id);
+
+				color[0] = lightPtr.m_light.m_color.r;
+				color[1] = lightPtr.m_light.m_color.g;
+				color[2] = lightPtr.m_light.m_color.b;
+				color[3] = lightPtr.m_light.m_color.a;
+
+				intensity = lightPtr.m_light.m_strength;
+
+				attenuation[0] = lightPtr.m_light.m_dist.x;
+				attenuation[1] = lightPtr.m_light.m_dist.y;
+				attenuation[2] = lightPtr.m_light.m_dist.z;
+
+				range = lightPtr.m_light.m_dist.w;
+				angle = lightPtr.m_light.m_angle;
+
+				SetValues();
+
+				ImGui::DragFloat4(IGH::COLOR.c_str(), color, 0.02f);
+				ImGui::DragFloat("Intensity", &intensity, 0.02f);
+				ImGui::DragFloat3("Attenuation", attenuation, 0.02f);
+				ImGui::DragFloat("Range", &range, 0.02f);
+				ImGui::DragFloat("angle", &angle, 0.02f);
+
+				lightPtr.SetColor(color[0], color[1], color[2], color[3]);
+				lightPtr.SetStrength(intensity);
+				lightPtr.SetLightDist(attenuation[0], attenuation[1], attenuation[2], range);
+				lightPtr.SetConeSize(angle);
+			}
+			ImGui::EndTabItem();
+		}
+	}
+
+	void ImGuiHandler::RoomTab()
+	{
+		static int selectedTheme = 0;
+		static int selectedType = 0;
+		static int selectedSpecial = 0;
+		static int probability = 0;
+		static int roomSize = 0;
+		static float rotateRoom = 0;
+
+		
+
+		if (ImGui::BeginTabItem("Room"))
+		{
+			if (m_imported == true)
+			{
+				selectedType = stoi(m_roomProperty[0]);
+				selectedSpecial = stoi(m_roomProperty[1]);
+				selectedTheme = stoi(m_roomProperty[2]);
+				probability = stoi(m_roomProperty[3]);
+				roomSize = stoi(m_roomProperty[4]);
+				m_imported = false;
+
+			}
+			else
+			{
+				m_roomProperty[0] = m_imguiTypes.ROOMTYPE[selectedType];
+				m_roomProperty[1] = m_imguiTypes.SPECIALROOM[selectedSpecial];
+				m_roomProperty[2] = m_imguiTypes.ROOMTHEME[selectedTheme];
+				m_roomProperty[3] = to_string(probability);
+				m_roomProperty[4] = to_string(roomSize);
+			}
+
+
+			ImGui::Combo("Room Theme", &selectedTheme, m_imguiTypes.ROOMTHEME, IM_ARRAYSIZE(m_imguiTypes.ROOMTHEME));
+			ImGui::Combo("Room Type", &selectedType, m_imguiTypes.ROOMTYPE, IM_ARRAYSIZE(m_imguiTypes.ROOMTYPE));
+			ImGui::Combo("Special Room", &selectedSpecial, m_imguiTypes.SPECIALROOM, IM_ARRAYSIZE(m_imguiTypes.SPECIALROOM));
+			ImGui::DragInt("Probability", &probability, 1, 0, 100, "%.d", 0);
+			ImGui::DragInt("Room Size", &roomSize, 1);
+			ImGui::DragFloat("Rotate Room", &rotateRoom, 1);
+
+			if (AddButton("Rotate"))
+			{
+				Rotate(rotateRoom);
+			}
+
+			m_roomProperty[0] = m_imguiTypes.ROOMTYPE[selectedType];
+			m_roomProperty[1] = m_imguiTypes.SPECIALROOM[selectedSpecial];
+			m_roomProperty[2] = m_imguiTypes.ROOMTHEME[selectedTheme];
+			m_roomProperty[3] = to_string(probability);
+			m_roomProperty[4] = to_string(roomSize);
+
+			ImGui::EndTabItem();
+		}
+	}
+
+	void ImGuiHandler::MaterialTab()
+	{
+		static int selected = 0;
+		static int selectedTexture = 0;
+		static int selectedNormalTexture = 0;
+
+		if (ImGui::BeginTabItem(IGH::MATERIAL.c_str()))
+		{
+			size_t id = m_entityList[m_selectedEntity]->GetID();
+
+			if (Aen::ComponentHandler::MeshInstanceExist(id) && m_materialList.size() > 0)
+			{
+				if (ImGui::CollapsingHeader("Common Material Properties"))
+				{
+
+					CustomCombo(m_materialList, (IGH::MATERIAL + " List"), selected);
+					SetDefaultMaterialValue(selected);
+
+					MaterialDragFloats(m_baseColor, m_shadowColor, m_specularColor, m_rimLightColor,
+						m_innerEdgeColor, m_outerEdgeColor, m_glowColor, m_glowStr,
+						m_innerEdgeThickness, m_outerEdgeThickness, m_specularPower, m_specularStrength,
+						m_roughness, m_shadowOffset, m_innerFalloff, m_outerFalloff, m_rimLightIntensity, m_rimLightSize);
+				
+					SetMaterialValues(selected);
+					CustomCombo(m_textureFileName, IGH::TEXTURE.c_str(), selectedTexture);
+					CustomCombo(m_normalMapTextureFileName, IGH::NORMALTEXTURE.c_str(), selectedNormalTexture);
+
+
+					if (AddButton("Change Material"))
+					{
+						ChangeTexture(selectedTexture, selectedNormalTexture, m_materialList[selected].matName, m_materialList[selected].texName, m_materialList[selected].normTexName);
+						if (m_modelMap.find(id) != m_modelMap.end())
+						{
+							m_modelMap.at(id).m_material.set(Aen::Resource::GetMaterial(m_materialList[selected].matName));
+						}
+						
+					}
+				}
+			}
+			ImGui::EndTabItem();
+		}
+	}
+
+	void ImGuiHandler::ModelTab()
+	{
+		static bool hitBoxEnable = false;
+		static bool castShadow = false;
+
+		static int selectedHitBoxType = 0;
+
+		static int selectedParent = 0;
+
+		if (ImGui::BeginTabItem(IGH::MODEL.c_str()))
+		{
+			size_t id = m_entityList[m_selectedEntity]->GetID();
+
+			if (ImGui::CollapsingHeader("Transform Attributes"))
+			{
+				SetValues();
+			}
+
+			if (Aen::ComponentHandler::MeshInstanceExist(id))
+			{
+				ImGui::Checkbox("Hit box", &hitBoxEnable);
+				ImGui::Combo("Hit box Type", &selectedHitBoxType, m_imguiTypes.HITBOXTYPE, IM_ARRAYSIZE(m_imguiTypes.HITBOXTYPE));
+				ImGui::Checkbox("Cast Shadow", &castShadow);
+
+				if (hitBoxEnable == true || castShadow == true)
+				{
+					unordered_map<size_t, IGH::ModelContainer>::iterator it = m_modelMap.find(id);
+
+					if (it != m_modelMap.end())
+					{
+						it->second.m_model.rigidBody = hitBoxEnable;
+						it->second.m_model.rigidBodyType = m_imguiTypes.HITBOXTYPE[selectedHitBoxType];
+						it->second.m_model.m_castShadow = castShadow;
+
+					}
+				}
+				CustomCombo(m_itemList, "Parent", selectedParent);
+			}
+			ImGui::EndTabItem();
+		}
+	}
+
+	void ImGuiHandler::ParticleTab()
+	{
+		/*static int selectedType = 0;
+		static string mesh = "";
+		IGH::ImguiTypes types;
+
+		if (ImGui::BeginTabItem(IGH::PARTICLE.c_str()))
+		{
+			size_t id = m_entityList[m_selectedEntity]->GetID();
+			if (types.GetParticleTag(m_modelMap.at(id).m_type) == true)
+			{
+				selectedType = types.GetParticleTagIndex(m_modelMap.at(id).m_type);
+			}
+
+			ImGui::Combo("Type", &selectedType, m_imguiTypes.PARTICLETAG, IM_ARRAYSIZE(m_imguiTypes.PARTICLETAG));
+
+			if (m_imguiTypes.PARTICLETAG[selectedType] != "NONE")
+			{
+				m_modelMap.at(id).m_type = m_imguiTypes.PARTICLETAG[selectedType];
+			}
+			else
+			{
+				m_modelMap.at(id).m_type = "";
+			}
+			ImGui::EndTabItem();
+		}*/
+	}
+
+	void ImGuiHandler::UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName)
+	{
+		unordered_map<size_t, IGH::ModelContainer>::iterator it;
+
+		it = m_modelMap.find(key);
+
+		if (it != m_modelMap.end())
+		{
+			it->second.update(texValue, matValue, texName, meshName);
+		}
+	}
+
+	void ImGuiHandler::ReadAllFilesFromFolder(string folder)
+	{
+		string filePath = folder;
+		string fileName = "";
+		string fileType = "";
+
+		m_objFileName.reserve(5);
+		m_objName.reserve(5);
+
+		for (const auto& entry : std::filesystem::directory_iterator(filePath))
+		{
+			fileName = entry.path().filename().string();
+			fileType = fileName.substr(fileName.find_last_of(".") + 1);
+
+			if (fileType == IGH::OBJ)
+			{
+				m_objFileName.push_back(fileName);
+				m_objName.push_back(fileName.substr(0, fileName.length() - 4));
+			} 
+			else if(fileType == IGH::FBX)
+			{
+				m_objFileName.push_back(fileName);
+				m_objName.push_back(fileName.substr(0, fileName.length() - 4));
+			}
+			else if (fileType == IGH::PNG || fileType == IGH::JPG)
+			{
+				if (filePath == IGH::NORMALTEXTUREPATH)
+				{
+					m_normalMapTextureFileName.push_back(fileName);
+					m_normalMapTexture.push_back(fileName.substr(0, fileName.length() - 4));
+				}
+				else
+				{
+					m_textureFileName.push_back(fileName);
+					m_textureName.push_back(fileName.substr(0, fileName.length() - 4));
+				}
+			}
+		}
+	}
+
+	void ImGuiHandler::print(string input)
+	{
+		OutputDebugStringA((input + "\n").c_str());
+	}
+
+	bool ImGuiHandler::AddButton(const string& name)
+	{
+		return ImGui::Button(name.c_str());
+	}
+
+	void ImGuiHandler::AddEnemyButton()
+	{
+		if (AddButton("Enemy"))
+		{
+			m_createEnemyWindowActive = true;
+		}
+	}
+
+	void ImGuiHandler::AddMaterialButton()
+	{
+		if (AddButton(IGH::MATERIAL))
+		{
+			m_createMaterialActive = true;
+		}
+	}
+
+	void ImGuiHandler::AddParticleButton()
+	{
+		if (AddButton(IGH::PARTICLE))
+		{
+			m_createParticleWindowActive = true;
+		}
+	}
+
+	void ImGuiHandler::ModelButtons()
+	{
+		for (size_t i = 0; i < m_objFileName.size(); i++)
+		{
+			ImGui::Columns(4, nullptr);
+			if (AddButton(m_objName[i]))
+			{
+				m_imguiImporter->AddBase(m_objName[i], m_objFileName[i]);
+			}
+			ImGui::NextColumn();
+		}
+	}
+
+	void ImGuiHandler::LightButtons()
+	{
+		if (AddButton(IGH::POINTLIGHT.c_str()))
+		{
+			m_imguiImporter->AddPointLight();
+		}
+
+		if (AddButton(IGH::SPOTLIGHT.c_str()))
+		{
+			m_imguiImporter->AddSpotLight();
+		}
+
+		if (AddButton(IGH::DIRECTIONALLIGHT.c_str()))
+		{
+			m_imguiImporter->AddDirectional();
+		}
 	}
 
 	const string ImGuiHandler::CheckType(Aen::Entity* entity)
 	{
 		string type = "";
-		uint32_t id = entity->GetID();
+		size_t id = entity->GetID();
 
 		if (Aen::ComponentHandler::MeshInstanceExist(id))
 		{
-			type = "Model" + std::to_string(m_entityCount);
-			m_entityType.push_back("Model");
-			m_meshObjList.push_back("Cube.obj");
-			m_textureFileList.push_back("Missing_Textures.png");
+			type = IGH::MODEL + std::to_string(m_entityCount);
 			m_entityCount++;
 		}
 		else if (Aen::ComponentHandler::CameraExist(id))
 		{
-			type = "Camera";
-			m_entityType.push_back(type);			
+			type = IGH::CAMERA;
 		}
 		else if (Aen::ComponentHandler::DirectionalLightExist(id))
 		{
-			type = "Directional light";
-			m_entityType.push_back(type);
+			type = IGH::DIRECTIONALLIGHT;
 		}
 		else if (Aen::ComponentHandler::SpotLightExist(id))
 		{
-			type = "Spot light";
-			m_entityType.push_back(type);
+			type = IGH::SPOTLIGHT;
 		}
 		else if (Aen::ComponentHandler::PointLightExist(id))
 		{
-			type = "Point light";
-			m_entityType.push_back(type);
+			type = IGH::POINTLIGHT;
 		}
 		else
 		{
 			type = "Asset" + std::to_string(m_entityCount);
-			m_entityType.push_back("Asset");
 			m_entityCount++;
 		}
 		return type;
 	}
 
-	void ImGuiHandler::CustomCombo(int& index, string name)
+	bool ImGuiHandler::CustomCombo(vector<string>& list, string name, int& index)
 	{
-		/*if (ImGui::BeginCombo(name.c_str(), m_itemList[index].c_str()))
+		bool selected = false;
+		if (ImGui::BeginCombo(name.c_str(), list[index].c_str()))
 		{
-			for (size_t i = 0; i < m_itemList.size(); i++)
+			for (size_t i = 0; i < list.size(); i++)
 			{
 				static bool isSelected = (index == i);
 
-				if (ImGui::Selectable(m_itemList[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+				if (ImGui::Selectable(list[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
 				{
 					index = static_cast<int>(i);
 				}
@@ -609,73 +1268,121 @@ namespace Aen {
 				if (isSelected)
 				{
 					ImGui::SetItemDefaultFocus();
+					selected = isSelected;
 				}
 			}
 			ImGui::EndCombo();
-		}*/
+		}
+		return selected;
 	}
 
-
-	
-	void ImGuiHandler::ReadAllFilesFromResourceFolder()
+	bool ImGuiHandler::CustomCombo(vector<IGH::MatTexName>& list, string name, int& index)
 	{
-		string filePath = "../Resource/";
-		string fileName = "";
-		string fileType = "";
-
-		for (const auto & entry : std::filesystem::directory_iterator(filePath))
+		bool selected = false;
+		if (ImGui::BeginCombo(name.c_str(), list[index].matName.c_str()))
 		{
-			fileName = entry.path().filename().string();
-			fileType = fileName.substr(fileName.find_last_of(".") + 1);
+			for (size_t i = 0; i < list.size(); i++)
+			{
+				static bool isSelected = (index == i);
+
+				if (ImGui::Selectable(list[i].matName.data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+				{
+					index = static_cast<int>(i);
+				}
+
+				if (isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+					selected = isSelected;
+				}
+			}
+			ImGui::EndCombo();
+		}
+		return selected;
+	}
+
+	string ImGuiHandler::CustomComboString(vector<string>& list, string name, int& index)
+	{
+		if (list.size() > 0)
+		{
+			//static string value = "";
+			if (ImGui::BeginCombo(name.c_str(), list[index].c_str()))
+			{
+				static bool isSelected = false;
+
+				for (size_t i = 0; i < list.size(); i++)
+				{
+					isSelected = (index == i);
+
+					if (ImGui::Selectable(list[i].data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+					{
+						index = static_cast<int>(i);
+					}
+
+					if (isSelected)
+					{
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+				return list[index];
+
+			}
+		}
+		return "";
+	}
+
+	string ImGuiHandler::CustomComboMap(unordered_map<string, AenIF::Material>& list, string name, string index)
+	{
+		static string value = "";
+
+		if (list.size() > 0)
+		{
 			
-			if (fileType == "obj")
+			if (ImGui::BeginCombo(name.c_str(), value.c_str()))
 			{
-				m_objFileName.push_back(fileName);
-				m_objName.push_back(fileName.substr(0, fileName.length() - 4));
-				cout << fileName.substr(0, fileName.length() - 4) << endl;
+				static bool isSelected = false;
+				for (unordered_map<string, AenIF::Material>::iterator it = list.begin(); it != list.end(); it++)
+				{
+					isSelected = (index == it->first);
+
+					if (ImGui::Selectable(it->first.data(), isSelected, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups))
+					{
+						value = it->first;
+					}
+
+					if (isSelected)
+					{
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
 			}
-			else if (fileType == "png" || fileType == "jpg")
-			{
-				m_textureFileName.push_back(fileName);
-				m_textureName.push_back(fileName.substr(0, fileName.length() - 4));
-				cout << fileName.substr(0, fileName.length() - 4) << endl;
-			}
+			return value;
 		}
+		return "";
 	}
-
-	bool ImGuiHandler::AddButton(const string &name)
-	{
-			return ImGui::Button(name.c_str());
-	}
-
-	void ImGuiHandler::HandleButton()
-	{
-		for (size_t i = 0; i < m_objFileName.size(); i++)
-		{
-			if (AddButton(m_objName[i]))
-			{
-				AddBase(m_objName[i], m_objFileName[i]);
-			}
-		}
-
-	}
-
-
 
 	void ImGuiHandler::RemoveObject()
 	{
-
-		/*for (int i = 0; i < m_deleteList.size(); i++)
+		size_t id = m_entityList[m_selectedEntity]->GetID();
+		if (!Aen::ComponentHandler::CameraExist(id))
 		{
-			if (m_selectedEntity == m_deleteList[i] - 1)
+			if (m_modelMap.find(id) != m_modelMap.end())
 			{
-				delete m_entityList[m_selectedEntity];
-				m_entityList.erase(m_entityList.begin() + m_selectedEntity);
-				m_itemList.erase(m_itemList.begin() + m_selectedEntity);
-				m_deleteList.erase(m_deleteList.begin() + i);
-				m_entityCount--;
+				m_modelMap.erase(id);
 			}
-		}*/
+
+			if (m_lightMap.find(id) != m_lightMap.end())
+			{
+				m_lightMap.erase(id);
+			}
+
+			mp_entityHandlerPtr->RemoveEntity(*m_entityList[m_selectedEntity]);
+			m_entityList.erase(m_entityList.begin() + m_selectedEntity);
+			m_itemList.erase(m_itemList.begin() + m_selectedEntity);
+			//m_selected.erase(m_selected.begin() + m_selectedEntity);
+			m_selectedEntity--;
+		}
 	}
 }
-

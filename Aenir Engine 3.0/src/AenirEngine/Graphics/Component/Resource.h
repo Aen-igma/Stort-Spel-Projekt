@@ -2,6 +2,7 @@
 #include"Drawable/Mesh/Material.h"
 #include"Drawable/Mesh/Texture.h"
 #include"Drawable/Mesh/Mesh.h"
+#include"Animation/Animation.h"
 
 #include<unordered_map>
 
@@ -28,6 +29,17 @@ namespace Aen {
 				m_shaders.at(name) = nullptr;
 				m_shaders.erase(name);
 			}
+		}
+
+		static void RemoveAllShaders() {
+			for (auto& s : m_shaders) {
+				if (s.second) {
+					delete s.second;
+					s.second = nullptr;
+				}
+			}
+
+			m_shaders.clear();
 		}
 
 		static ShaderModel& GetShader(const std::string& name) {
@@ -63,6 +75,17 @@ namespace Aen {
 			}
 		}
 
+		static void RemoveAllMaterials() {
+			for (auto& m : m_materials) {
+				if (m.second && m.first != "DefaultMaterial") {
+					delete m.second;
+					m.second = nullptr;
+				}
+			}
+
+			m_materials.clear();
+		}
+
 		static Material& GetMaterial(const std::string& name) {
 			if(m_materials.count(name) > 0)
 				return *m_materials.at(name);
@@ -88,6 +111,17 @@ namespace Aen {
 				m_textures.at(name) = nullptr;
 				m_textures.erase(name);
 			}
+		}
+
+		static void RemoveAllTextures() {
+			for (auto& t : m_textures) {
+				if (t.second && t.first != "DefaultTexture") {
+					delete t.second;
+					t.second = nullptr;
+				}
+			}
+
+			m_textures.clear();
 		}
 
 		static Texture& GetTexture(const std::string& name) {
@@ -122,6 +156,17 @@ namespace Aen {
 			}
 		}
 
+		static void RemoveAllMeshes() {
+			for (auto& m : m_meshes) {
+				if (m.second) {
+					delete m.second;
+					m.second = nullptr;
+				}
+			}
+
+			m_meshes.clear();
+		}
+
 		static Mesh& GetMesh(const std::string& name) {
 			if(m_meshes.count(name) > 0)
 				return *m_meshes.at(name);
@@ -129,10 +174,46 @@ namespace Aen {
 			throw;
 		}
 
+		// ------------------ Animations ----------------- //
+
+		static const bool AnimationExist(const std::string& name) {
+			return m_animations.count(name) > 0;
+		}
+
+		static Animation& CreateAnimation(const std::string& name) {
+			m_animations.emplace(name, AEN_NEW Animation());
+			return *m_animations.at(name);
+		}
+		
+		static void RemoveAnimation(const std::string& name) {
+			if (m_animations.count(name) < 0) {
+				delete m_animations.at(name);
+				m_animations.at(name) = nullptr;
+				m_animations.erase(name);
+			}
+		}
+
+		static Animation& GetAnimation(const std::string& name) {
+			if (m_animations.count(name) > 0)
+				return *m_animations.at(name);
+			
+			throw;
+		}
+
+		static void RemoveAllAnimations() {
+			for (auto& m : m_animations) {
+				if (m.second) {
+					delete m.second;
+					m.second = nullptr;
+				}
+			}
+
+			m_animations.clear();
+		}
+
 		private:
 
 		Resource();
-
 
 		static void Destroy() {
 
@@ -167,18 +248,28 @@ namespace Aen {
 					delete i.second;
 					i.second = nullptr;
 				}
+
+			// --------------- Animations -------------- //
+
+			for(auto& i : m_animations)
+				if (i.second) {
+					delete i.second;
+					i.second = nullptr;
+				}
 		}
 
 		static std::unordered_map<std::string, ShaderModel*> m_shaders;
 		static std::unordered_map<std::string, Material*> m_materials;
 		static std::unordered_map<std::string, Texture*> m_textures;
 		static std::unordered_map<std::string, Mesh*> m_meshes;
+		static std::unordered_map<std::string, Animation*> m_animations;
 
 		friend class Mesh;
 		friend class Texture;
 		friend class Material;
 		friend class ShaderModel;
 		friend class GameLoop;
+		friend class Animation;
 	};
 
 }

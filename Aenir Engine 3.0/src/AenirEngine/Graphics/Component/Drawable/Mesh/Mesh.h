@@ -10,6 +10,8 @@ namespace Aen {
 		Vec3f tan;
 		Vec3f bi;
 		Vec2f uv;
+		Vec4i boneId;
+		Vec4f boneWeights;
 	};
 
 	struct PartitionData {
@@ -25,19 +27,34 @@ namespace Aen {
 
 		void PrintMaterialSlots();
 		void Load(const std::string& dir);
+		const std::vector<DirectX::XMFLOAT3>& GetvPos();
+		const std::vector<uint32_t>& GetIndices();
+
+
+		DirectX::BoundingBox getAABB() const;
+		DirectX::BoundingOrientedBox getOBB() const;
+		std::vector<PartitionData> getPartitions() const;
 
 		private:
 
 		~Mesh();
 
-
+		DirectX::BoundingBox m_aabb;
+		DirectX::BoundingOrientedBox m_obb;
 
 		VBuffer<Vertex> m_vertices;
 		std::vector<PartitionData> m_partitions;
 		std::unordered_map<std::string, uint32_t> m_meshMaterialName;
+		std::vector<DirectX::XMFLOAT3> m_vPos;
+		std::vector<uint32_t> m_indices;
 
 		friend class Resource;
 		friend class MeshInstance;
 		friend class Renderer;
+		friend class AABoundBox;
+		friend class OBBox;
+		friend class StaticBody;
+		friend class DynamicBody;
+		friend class PSSystemcomponent;
 	};
 }

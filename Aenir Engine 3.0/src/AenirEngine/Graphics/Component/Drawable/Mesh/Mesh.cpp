@@ -5,20 +5,15 @@
 #include"Importer/AssimpImporter.h"
 #include<thread>
 
-#undef min
 
-#include"assimp/Importer.hpp"
-#include"assimp/scene.h"
-#include"assimp/postprocess.h"
-#include"assimp/matrix4x4.h"
-#include"assimp/cimport.h"
 
 namespace Aen {
 	
 	Mesh::Mesh()
-		:m_vertices(), m_partitions(), m_meshMaterialName() {}
+		:m_vertices(), m_partitions(), m_meshMaterialName(), m_obb(), m_aabb() {}
 	
-	Mesh::Mesh(const std::string& dir) {
+	Mesh::Mesh(const std::string& dir)
+		: m_obb(), m_aabb() {
 		ImportObj(m_vertices, dir, m_partitions, m_meshMaterialName);
 	}
 	
@@ -31,16 +26,19 @@ namespace Aen {
 
 	void Mesh::Load(const std::string& dir) {
 
+
 		size_t off = dir.find_last_of('.');
 		std::string format = dir.substr(off + 1);
 		if (format == "fbx") {
-			AssimpImport::LoadFbx(m_vertices, dir, m_partitions, m_meshMaterialName);
-		}
-		else if (format == "obj") {
-			std::thread worker(ImportObj, std::ref(m_vertices), dir, std::ref(m_partitions), std::ref(m_meshMaterialName));
-			worker.join();
-		}
-		else {
+			AssimpImport::LoadFbx(m_vPos, m_vertices, dir, m_partitions, m_meshMaterialName, m_indices);
+
+			size_t vStride = sizeof(DirectX::XMFLOAT3);
+			m_aabb.CreateFromPoints(m_aabb, m_vPos.size(), m_vPos.data(), vStride);
+			m_obb.CreateFromPoints(m_obb, m_vPos.size(), m_vPos.data(), vStride);
+			/*m_aabb.CreateFromPoints(m_aabb, vPos.size(), vPos.data(), vStride);
+			m_obb.CreateFromPoints(m_obb, vPos.size(), vPos.data(), vStride);*/
+
+		} else {
 			throw;
 			printf("Format not supported!");
 		}
@@ -48,5 +46,32 @@ namespace Aen {
 
 	}
 
-	Mesh::~Mesh() {}
+	const std::vector<DirectX::XMFLOAT3>& Mesh::GetvPos()
+	{
+		return this->m_vPos;
+	}
+
+	const std::vector<uint32_t>& Mesh::GetIndices()
+	{
+		return this->m_indices;
+	}
+
+	DirectX::BoundingBox Mesh::getAABB() const
+	{
+		return m_aabb;
+	}
+
+	DirectX::BoundingOrientedBox Mesh::getOBB() const
+	{
+		return m_obb;
+	}
+
+	std::vector<PartitionData> Mesh::getPartitions() const
+	{
+		return m_partitions;
+	}
+
+	Mesh::~Mesh() {
+		//delete[] mp_posV;
+	}
 }

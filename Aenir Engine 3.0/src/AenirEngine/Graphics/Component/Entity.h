@@ -10,7 +10,7 @@ namespace Aen {
 		void AddComponent();
 
 		template<class T>
-		T& GetComponent();
+		T& GetComponent() const;
 
 		void SetTag(const std::string& tag);
 		//void SetRenderLayer(const int& layer);
@@ -32,21 +32,25 @@ namespace Aen {
 		void SetScale(const Vec3f& scale);
 		void SetScale(const float& x, const float& y, const float& z);
 
-		const Vec3f GetPos();
-		const Vec3f GetRot();
-		const Vec3f GetScale();
-		const size_t& GetID();
-		const std::string& GetTag();
+		void SetTransformation(const Mat4f& m);
+
+		const Vec3f GetPos() const;
+		const Vec3f GetRot() const;
+		const Vec3f GetScale() const;
+		const size_t& GetID() const;
+		const std::string& GetTag() const;
+
+		const Vec3f GetTranslation() const;
+		const Mat4f GetTransformation() const;
 
 		private:
 		Entity(const size_t& id);
 		~Entity();
 
-		const bool HasId(const size_t& id);
-		const Mat4f GetTransformation();
-		const Mat4f GetPosMat();
-		const Mat4f GetRotMat();
-		const Mat4f GetScaleMat();
+		const bool HasId(const size_t& id) const;
+		const Mat4f GetPosMat() const;
+		const Mat4f GetRotMat() const;
+		const Mat4f GetScaleMat() const;
 
 		const size_t m_id;
 		size_t m_parentId;
@@ -54,8 +58,11 @@ namespace Aen {
 		bool m_hasParent;
 		std::string m_tag;
 
+		Mat4f tempBonParent;
+
 		friend class Renderer;
 		friend class MeshInstance;
+		friend class AABoundBox;
 		friend class EntityHandler;
 	};
 
@@ -99,6 +106,19 @@ namespace Aen {
 	}
 
 	template<>
+	inline void Entity::AddComponent<UIComponent>() {
+		m_layer = 3;
+		if (!ComponentHandler::UIComponentExist(m_id))
+			ComponentHandler::CreateUI(m_id, m_layer + 3);
+	}
+
+	template<>
+	inline void Entity::AddComponent<PSSystemcomponent>() {
+		if (!ComponentHandler::PSExist(m_id))
+			ComponentHandler::CreatePS(m_id, m_layer + 3);
+	}
+
+	template<>
 	inline void Entity::AddComponent<Mesh>() {
 		if(!ComponentHandler::MeshInstanceExist(m_id))
 			ComponentHandler::CreateMeshInstance(m_id, 0);
@@ -134,13 +154,15 @@ namespace Aen {
 	}
 
 	template<>
-	inline void Entity::AddComponent<RigidBody>() {
-		if (!ComponentHandler::RigidExist(m_id))
-			ComponentHandler::CreateRigid(m_id);
+	inline void Entity::AddComponent<StaticBody>() {
+		if (!ComponentHandler::StaticBodyExist(m_id))
+			ComponentHandler::CreateStaticBody(m_id);
+	}
 
-		AddComponent<Translation>();
-		AddComponent<Rotation>();
-		AddComponent<Scale>();
+	template<>
+	inline void Entity::AddComponent<DynamicBody>() {
+		if (!ComponentHandler::DynamicBodyExist(m_id))
+			ComponentHandler::CreateDynamicBody(m_id);
 	}
 
 	template<>
@@ -153,55 +175,112 @@ namespace Aen {
 		AddComponent<Scale>();
 	}
 
+
+	template<>
+	inline void Entity::AddComponent<AABoundBox>(){
+		if (!ComponentHandler::AABBExist(m_id))
+			ComponentHandler::CreateAABB(m_id, m_layer + 3);
+		
+		AddComponent<Translation>();
+	}
+
+	template<>
+	inline void Entity::AddComponent<OBBox>() {
+		if (!ComponentHandler::OBBExist(m_id))
+			ComponentHandler::CreateOBB(m_id, m_layer + 3);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+	}
+
+	template<>
+	inline void Entity::AddComponent<Animator>() {
+		if (!ComponentHandler::AnimatorExists(m_id))
+			ComponentHandler::CreateAnimator(m_id);
+
+		AddComponent<Translation>();
+		AddComponent<Rotation>();
+		AddComponent<Scale>();
+	}
 	// --------------- GetComponent -----------------
 
 	template<>
-	inline Translation& Entity::GetComponent() {
+	inline Translation& Entity::GetComponent() const {
 		return ComponentHandler::GetTranslation(m_id);
 	}
 
 	template<>
-	inline Rotation& Entity::GetComponent() {
+	inline Rotation& Entity::GetComponent() const {
 		return ComponentHandler::GetRotation(m_id);
 	}
 
 	template<>
-	inline Scale& Entity::GetComponent() {
+	inline Scale& Entity::GetComponent() const {
 		return ComponentHandler::GetScale(m_id);
 	}
 
 	template<>
-	inline Camera& Entity::GetComponent() {
+	inline Camera& Entity::GetComponent() const {
 		return ComponentHandler::GetCamera(m_id);
 	}
 
 	template<>
-	inline MeshInstance& Entity::GetComponent() {
+	inline MeshInstance& Entity::GetComponent() const {
 		return ComponentHandler::GetMeshInstance(m_id);
 	}
 
 	template<>
-	inline SpotLight& Entity::GetComponent() {
+	inline SpotLight& Entity::GetComponent() const {
 		return ComponentHandler::GetSpotLight(m_id);
 	}
 
 	template<>
-	inline PointLight& Entity::GetComponent() {
+	inline PointLight& Entity::GetComponent() const {
 		return ComponentHandler::GetPointLight(m_id);
 	}
 
 	template<>
-	inline DirectionalLight& Entity::GetComponent() {
+	inline DirectionalLight& Entity::GetComponent() const {
 		return ComponentHandler::GetDirectionalLight(m_id);
 	}
 
 	template<>
-	inline RigidBody& Entity::GetComponent() {
-		return ComponentHandler::GetRigid(m_id);
+	inline StaticBody& Entity::GetComponent() const {
+		return ComponentHandler::GetStaticBody(m_id);
 	}
 
 	template<>
-	inline CharacterController& Entity::GetComponent() {
+	inline DynamicBody& Entity::GetComponent() const {
+		return ComponentHandler::GetDynamicBody(m_id);
+	}
+
+	template<>
+	inline CharacterController& Entity::GetComponent() const {
 		return ComponentHandler::GetCharacterController(m_id);
+	}
+
+	template<>
+	inline UIComponent& Entity::GetComponent() const {
+		return ComponentHandler::GetUI(m_id);
+	}
+
+	template<>
+	inline PSSystemcomponent& Entity::GetComponent() const{
+		return ComponentHandler::GetPS(m_id);
+	}
+
+	template<>
+	inline AABoundBox& Entity::GetComponent() const{
+		return ComponentHandler::GetAABB(m_id);
+	}
+
+	template<>
+	inline OBBox& Entity::GetComponent() const {
+		return ComponentHandler::GetOBB(m_id);
+	}
+
+	template<>
+	inline Animator& Entity::GetComponent() const {
+		return ComponentHandler::GetAnimator(m_id);
 	}
 }

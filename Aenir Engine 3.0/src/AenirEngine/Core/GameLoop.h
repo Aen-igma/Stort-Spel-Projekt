@@ -1,7 +1,6 @@
 #pragma once
 #include"App.h"
-#include<chrono>
-#include "QuadTree\Quadtree.h"
+#include<omp.h>
 #include "ThirdParty\fmod\fmod.hpp"
 #include "ThirdParty\fmod\fmod_errors.h"
 
@@ -15,24 +14,20 @@ namespace Aen {
 
 		void Initialize();
 		void Run();
+		void InitApp(Aen::App* app);
 
-		App* m_app;
 		private:
 		using ResClock = std::chrono::high_resolution_clock;
 		using TimePoint = std::chrono::high_resolution_clock::time_point;
 		using DurationLD = std::chrono::duration<long double>;
-
-		//Quadtree
-		Quadtree* m_Quadtree;
-		DirectX::BoundingBox m_WorldBox;
-		//std::vector<int> m_QuadObjectsToRender; 
-
 		
 		TimePoint m_start;
 		TimePoint m_end;
 		DurationLD m_frameTime;
 		DurationLD m_deltaTime;
+			double m_frametime;
 
+		App* m_app;
 		Renderer* m_renderer;
 	};
 }

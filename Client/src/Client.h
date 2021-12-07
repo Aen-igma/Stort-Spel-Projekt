@@ -2,9 +2,14 @@
 #include "States\Gameplay.h"
 #include "States\Menu.h"
 #include "States\Loadscreen.h"
+#include "States\GameEnd.h"
+#include "States\Credits.h"
+#include "States\Options.h"
 #include "AenirEngine.h"
 
 #include<stack>
+
+
 
 class Client : public Aen::App {
 	public:
@@ -19,6 +24,7 @@ class Client : public Aen::App {
 	private:
 	State* mp_state;
 	States m_typeState;
+	//States m_currentState;
 	Gameplay* mp_gameplay;
 };
 
@@ -32,13 +38,6 @@ Aen::App* Aen::CreateApp() {
 	wDesc.hMenu = 0;
 	wDesc.WCStyle = 0;
 
-	return new Client(wDesc, L"Aenir Engine", L"Main_Window");
+	return AEN_NEW Client(wDesc, L"Aenir Engine", L"Main_Window");
 }
 
-
-class levelBuilder : public LevelGenerator {
-
-	static bool CreateRooms(std::vector<Aen::Entity>* storage, uint8_t x, uint8_t y);
-
-	public:
-};

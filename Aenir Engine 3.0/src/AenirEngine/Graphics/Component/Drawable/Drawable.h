@@ -7,7 +7,7 @@ namespace Aen {
 
 	class Renderer;
 
-	class Drawable : public Component {
+	class AEN_DECLSPEC Drawable : public Component {
 		public:
 		Drawable(const size_t& id);
 		~Drawable();
@@ -21,8 +21,9 @@ namespace Aen {
 		DirectX::BoundingBox m_boundingBox;
 
 		private:
-		virtual void Draw(Renderer& renderer, const uint32_t& layer) = 0;
-		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer) = 0;
+		virtual void Draw(Renderer& renderer, const uint32_t& layer = 0) = 0;
+		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer = 0) = 0;
+		virtual bool FrustumCull(Renderer& renderer) = 0;
 
 		int m_layer;
 

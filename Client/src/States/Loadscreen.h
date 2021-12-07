@@ -4,7 +4,8 @@
 class Loadscreen : public State
 {
 private:
-
+	bool m_toggleFullScreen;
+	Aen::Entity* m_loading;
 public:
 	Loadscreen(Aen::Window& window);
 	~Loadscreen()override;

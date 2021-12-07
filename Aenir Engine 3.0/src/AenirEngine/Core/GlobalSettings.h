@@ -2,6 +2,7 @@
 #include"Renderer.h"
 #include "../ImGuiHandler.h"
 #include<string>
+//#include"../LevelGeneration/LevelGenerator.h"
 
 namespace Aen {
 
@@ -18,6 +19,11 @@ namespace Aen {
 
 		static void SetMainCamera(Entity& camera) {
 			m_pMainCamera = &camera;
+			UpdateFrstumGrid();
+		}
+
+		static Entity* GetMainCamera() {
+			return m_pMainCamera;
 		}
 
 		static Entity* GetMainCamera()
@@ -37,8 +43,12 @@ namespace Aen {
 			return m_BGColor;
 		}
 
-		static ImGuiHandler*& GetImGuiHandler() {
-			return mp_guiHandler;
+		static Material* GetDefaultMaterial() {
+			return m_defaultMaterial;
+		}
+
+		static void SetVSync(const bool& set) {
+			m_vSync = set;
 		}
 
 		static void RemoveMainCamera()
@@ -46,15 +56,50 @@ namespace Aen {
 			m_pMainCamera = nullptr;
 		}
 
+		static Window* GetWindow(){
+			return m_pWindow;
+		}
+
+		static const bool GetVSync() {
+			return m_vSync;
+		}
+
 		friend class GameLoop;
 		friend class Renderer;
+		friend class Camera;
 
 		private:
 
+		static void UpdateFrstumGrid() {
+			if(m_pMainCamera) {
+				RenderSystem::BindShader(m_pRenderer->m_frustumGridCS);
+				RenderSystem::BindUnOrderedAccessView(0u, m_pRenderer->m_frustumGrid);
+				m_pRenderer->m_dispatchInfo.BindBuffer<CShader>(0u);
+				m_pRenderer->m_cbTransform.BindBuffer<CShader>(1u);
+
+				m_pRenderer->m_cbTransform.GetData().m_vMat = m_pMainCamera->GetComponent<Camera>().GetView().Transposed();
+				m_pRenderer->m_cbTransform.GetData().m_pMat = m_pMainCamera->GetComponent<Camera>().GetProjecton().Transposed();
+				m_pRenderer->m_cbTransform.GetData().m_ivMat = m_pRenderer->m_cbTransform.GetData().m_vMat.Inverse();
+				m_pRenderer->m_cbTransform.GetData().m_ipMat = m_pRenderer->m_cbTransform.GetData().m_pMat.Inverse();
+				m_pRenderer->m_cbTransform.UpdateBuffer();
+
+				RenderSystem::Dispatch(m_pRenderer->m_dispatchInfo.GetData().threadGroups, 1u);
+
+				RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
+			}
+		}
+
+
+		static void Destroy() {
+			delete m_defaultMaterial;
+			delete m_defaultTexture;
+		}
+
 		GlobalSettings();
 
-		static void Initialize(Window& window) {
+		static void Initialize(Window& window, Renderer* renderer) {
 			m_pWindow = &window;
+			m_pRenderer = renderer;
 
 			// -------------------------- Initialize Default ShaderModel -------------------------- //
 
@@ -117,14 +162,14 @@ namespace Aen {
 
 			// --------------------------------- Default Material --------------------------------- //
 
-			Aen::Material& defaultMaterial = Resource::CreateMaterial("DefaultMaterial");
-			Aen::Texture& defaultTexture = Resource::CreateTexture("DefaultTexture");
-			defaultMaterial["InnerEdgeThickness"] = 3;
-			defaultMaterial["OuterEdgeThickness"] = 3;
-			defaultMaterial["InnerEdgeColor"] = Aen::Color::Magenta;
-			defaultMaterial["OuterEdgeColor"] = Aen::Color::Magenta;
-			defaultTexture.LoadTexture(AEN_RESOURCE_DIR("Missing_Textures.png"));
-			defaultMaterial.SetDiffuseMap(defaultTexture);
+			m_defaultMaterial = AEN_NEW Material(true);
+			m_defaultTexture = AEN_NEW Texture();
+			(*m_defaultMaterial)["InnerEdgeThickness"] = 2;
+			(*m_defaultMaterial)["OuterEdgeThickness"] = 2;
+			(*m_defaultMaterial)["InnerEdgeColor"] = Aen::Color::Magenta;
+			(*m_defaultMaterial)["OuterEdgeColor"] = Aen::Color::Magenta;
+			m_defaultTexture->LoadTexture(AEN_TEXTURE_DIR("Missing_Textures.png"));
+			m_defaultMaterial->SetDiffuseMap(*m_defaultTexture);
 
 		}
 
@@ -133,7 +178,13 @@ namespace Aen {
 		static Entity* m_pMainCamera;
 		static Color m_BGColor;
 
-		static ImGuiHandler* mp_guiHandler;
+		static Material* m_defaultMaterial;
+		static Texture* m_defaultTexture;
+
+		//static ImGuiHandler* mp_guiHandler;
+		static bool m_vSync;
+
+		static Renderer* m_pRenderer;
 
 	};
 

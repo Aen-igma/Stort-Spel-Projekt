@@ -3,11 +3,20 @@
 
 namespace Aen {
 
-	CharacterController::CharacterController(const size_t& id) 
-		:Component(id), m_pScene(PhysicsHandler::GetInstance()->GetScene()), m_physics(PhysicsHandler::GetInstance()->GetPxPhysics()),
-		m_cManager(nullptr), m_controller(nullptr) {
-		m_cManager = PxCreateControllerManager(*m_pScene, false);
+	CollisionFilter::CollisionFilter() {}
 
+	CollisionFilter::~CollisionFilter() {}
+
+	bool CollisionFilter::filter(const px::PxController& a, const px::PxController& b) {
+		
+		/*if (a.getActor() == b.getActor())
+			return false;*/
+		return true;
+	}
+
+	CharacterController::CharacterController(const size_t& id)
+		:Component(id), m_physics(PhysicsHandler::GetInstance()->GetPxPhysics()), 
+		m_controller(nullptr), m_isGrounded(false) {
 		px::PxCapsuleControllerDesc desc;
 		desc.climbingMode = px::PxCapsuleClimbingMode::eCONSTRAINED;
 		desc.nonWalkableMode = px::PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
@@ -18,14 +27,30 @@ namespace Aen {
 		desc.contactOffset = 0.01f;
 		desc.upDirection = px::PxVec3(0.f, 1.f, 0.f);
 		desc.material = m_physics->createMaterial(0.f, 0.f, 0.f);
-		if(!desc.isValid())
+		if (!desc.isValid())
 			throw;
 
-		m_controller = m_cManager->createController(desc);
+		m_height = 0.99f;
+
+		m_controller = PhysicsHandler::GetCManager()->createController(desc);
+		px::PxVec3 d = -m_controller->getUpDirection();
+
+		m_ray.SetDirection(d.x, d.y, d.z);
+		m_ray.SetMaxDist(0.01f);
+
+		m_filter.mCCTFilterCallback = &m_callback;
 	}
 
-	void CharacterController::SetHeight(const float& height) {
-		m_controller->resize(height);
+	void CharacterController::Resize(const float& resize)
+	{
+		m_controller->resize(resize);
+	}
+
+	void CharacterController::SetRadius(const float& radius)
+	{
+		px::PxCapsuleController* capController = reinterpret_cast<px::PxCapsuleController*>(m_controller);
+		capController->setRadius(radius);
+		capController = nullptr;
 	}
 
 	void CharacterController::SetSlopeLimit(const float& ang) {
@@ -33,13 +58,18 @@ namespace Aen {
 	}
 
 	void CharacterController::Move(const Vec3f& dir, const float& deltaTime) {
-		m_controller->move(px::PxVec3(dir.x, dir.y, dir.z), 0.f, deltaTime, px::PxControllerFilters());
+		m_controller->move(px::PxVec3(dir.x, dir.y, dir.z), 0.f, deltaTime, m_filter);
 	}
 
 	CharacterController::~CharacterController() {
+		m_physics = nullptr;
+		//m_controller = nullptr;
 		m_controller->release();
-		m_cManager->release();
-		m_pScene = nullptr;
+	}
+
+	const Mat4f CharacterController::GetTranslate() {
+		px::PxExtendedVec3 p = m_controller->getPosition();
+		return MatTranslate(Vec3f((float)p.x, (float)p.y, (float)p.z));
 	}
 
 	void CharacterController::SetPos(const Vec3f& pos) {
@@ -56,8 +86,14 @@ namespace Aen {
 
 	const Vec3f CharacterController::GetPos() {
 		px::PxExtendedVec3 p = m_controller->getPosition();
-		return Vec3f(p.x, p.y, p.z);
+		return Vec3f((float)p.x, (float)p.y, (float)p.z);
 	}
 
+	const bool CharacterController::IsGrounded() {
+		px::PxExtendedVec3 p = m_controller->getFootPosition();
+		m_ray.SetOrigin(Vec3f((float)p.x, (float)p.y, (float)p.z) + m_ray.GetDirection() * 0.08f);
+		m_ray.Update();
+		return m_ray.Hit();
+	}
 
 }
