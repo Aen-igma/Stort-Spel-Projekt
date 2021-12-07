@@ -84,7 +84,8 @@ namespace Aen {
 		VShader m_opaqueVS;
 #ifdef _DEBUG
 		PShader m_collisionPS;
-#endif // _DEBUG
+		CBuffer<CB_Collision> m_collisionBuffer;
+#endif 
 		PShader m_transparencyPS;
 		UAView m_UAVBackBuffer;
 		RWTexture2D m_UAVFinal;
@@ -121,10 +122,9 @@ namespace Aen {
 		GBuffer m_particleOut;
 		CShader m_PostPatricleCS;
 
-#ifdef _DEBUG
-		CBuffer<CB_Collision> m_collisionBuffer;
-
-		
-#endif // _DEBUG
+		//Directional shadow mapping
+		Entity* m_shadowCamera;
+		VShader m_shadowVS;
+		DepthMap m_shadowDepthMap;
 	};
 }

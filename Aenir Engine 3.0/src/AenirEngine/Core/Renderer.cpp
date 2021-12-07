@@ -33,7 +33,7 @@ namespace Aen {
 		if (!m_collisionPS.Create(AEN_OUTPUT_DIR_WSTR(L"CollisionPS.cso")))
 			if (!m_collisionPS.Create(L"CollisionPS.cso"))
 				throw;
-#endif // _DEBUG
+#endif
 
 		if(!m_postProcessCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessCS.cso")))
 			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
@@ -56,7 +56,7 @@ namespace Aen {
 			if (!m_PostPatricleCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostParticleCS.cso")))
 				throw;
 		m_PSLayout.Create(m_PSVShader);
-
+		//----------------------------------------------//
 
 
 		if(!m_transparencyPS.Create(AEN_OUTPUT_DIR_WSTR(L"TransparencyPS.cso")))
@@ -66,6 +66,18 @@ namespace Aen {
 		if(!m_frustumGridCS.Create(AEN_OUTPUT_DIR_WSTR(L"FrustumGridCS.cso")))
 			if(!m_frustumGridCS.Create(L"FrustumGridCS.cso"))
 				throw;
+
+		//------------- Shadow Mapping & Shadow Camera --------------//
+		if (!m_shadowVS.Create(AEN_OUTPUT_DIR_WSTR(L"ShadowVS.cso")))
+			if (!m_shadowVS.Create(L"ShadowVS.cso"))
+				throw;
+
+		m_shadowCamera = &Aen::EntityHandler::CreateEntity();
+		m_shadowCamera->AddComponent<Aen::Camera>();
+		m_shadowCamera->GetComponent<Aen::Camera>().SetCameraOrthographic(250.f, 250.f, 0.0001f, 250.f);
+		m_shadowCamera->SetPos(0.f, 30.f, 10.f);
+		m_shadowCamera->SetRot(-89.999f, 0.00f, 0.00f);
+		//-----------------------------------------------------------//
 
 		m_UAVFinal.Create(m_window.GetSize(), DXGI_FORMAT_R32G32B32A32_FLOAT);
 		m_opaqueLayout.Create(m_opaqueVS);
@@ -157,6 +169,11 @@ namespace Aen {
 		} else {
 			m_cbTransform.GetData().m_vMat = Mat4f::identity;
 			m_cbTransform.GetData().m_pMat = Mat4f::identity;
+		}
+
+		// Shadow Camera
+		if (m_shadowCamera) {
+
 		}
 
 		// Light
