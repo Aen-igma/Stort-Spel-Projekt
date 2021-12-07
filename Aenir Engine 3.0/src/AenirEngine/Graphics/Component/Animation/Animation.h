@@ -48,11 +48,14 @@ namespace Aen {
 
 	public:
 		Animation();
-		float GetDuration();
+		virtual~Animation();
+		const float GetDuration() const;
 		void LoadAnimation(const std::string& animationPath);
+		void CalculateBlendAnimation(Animation* pBase, Animation* pLayer,
+			const float& currentTimeBase, const float& currentTimeLayered,
+			const sm::Matrix& parentTransform, const float& blendFactor);
 
 	private:
-		~Animation();
 
 		friend class Resource;
 		friend class Renderer;

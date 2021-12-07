@@ -159,6 +159,12 @@ namespace Aen {
 		m_animationList.emplace_back(animation);
 	}
 
+	void Animator::AddAnimationmBlend(const std::string& animNameBase, const std::string& animNameLayer, const std::string& name)
+	{
+		if (!HasAnimation)
+			return;
+	}
+
 	void Animator::SetAnimation(const std::string& animName)
 	{
 		if (!HasAnimation(animName))
