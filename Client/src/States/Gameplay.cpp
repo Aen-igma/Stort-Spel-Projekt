@@ -167,15 +167,19 @@ void Gameplay::Initialize()
 	m_door.SetType(Type::Closed);
 
 	if (roomNormal == 1) { //north
+		m_grave.GetEntity()->SetRot(0, 180, 0);
 		m_door.GetEntity()->SetRot(0, 180, 0);
 	}
 	else if (roomNormal == 10) {//east
+		m_grave.GetEntity()->SetRot(0, 90, 0);
 		m_door.GetEntity()->SetRot(0, 90, 0);
 	}
 	else if (roomNormal == 100) {//south
+		m_grave.GetEntity()->SetRot(0, 0, 0);
 		m_door.GetEntity()->SetRot(0, 0, 0);
 	}
 	else if (roomNormal == 1000) {//west
+		m_grave.GetEntity()->SetRot(0, -90, 0);
 		m_door.GetEntity()->SetRot(0, -90, 0);
 	}
 
@@ -194,8 +198,10 @@ void Gameplay::Initialize()
 	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 	m_grave.GetEntity()->SetPos(doorPos);
-	m_grave.GetEntity()->SetRot(0, m_door.GetEntity()->GetRot().y, 0);
+	m_grave.GetEntity()->MoveRelative(0.f, 0, -19.f);
 	doorPos = m_door.GetEntity()->GetPos();
+
+	cout << roomNormal << endl;
 	//m_attack->SetParent(*m_player);
 	//printf("");
 	//---------ENEMIES----------//
@@ -374,28 +380,32 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_chest.Update(deltaTime, m_player.GetEntity());
 	m_door.Update(deltaTime, m_player.GetEntity());
-	if (m_chest.GetNear() || m_door.GetNear()) {
+	m_grave.Update(deltaTime, m_player.GetEntity());
+	if (m_chest.GetNear() || m_door.GetNear() || m_grave.GetNear()) {
 		mp_uiComp->SetTextPos((965.f / 1920.f) * screenSize.x, (800.f / 1024.f) * screenSize.y, 2);
 		mp_uiComp->SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
 
-		if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Open && m_chest.GetNear()) {
+		if (m_door.GetNear())
+			mp_uiComp->ChangeText(2, L"Interact(F)");
+	}
+	else {
+		mp_uiComp->SetTextPos(-100.f, -100.f, 2);
+	}
+
+	if (Aen::Input::KeyDown(Aen::Key::F)) {
+
+		if (m_chest.GetType() == Type::Open && m_chest.GetNear()) {
 			m_player.IncreaseHealthCap();
 			m_chest.SetType(Type::Locked);
 			mp_uiComp->ChangeText(2, L"Health Potions Restored");
 		}
-		else if (Aen::Input::KeyDown(Aen::Key::F) && m_chest.GetType() == Type::Locked && m_chest.GetNear()) {
+		else if (m_chest.GetType() == Type::Locked && m_chest.GetNear()) {
 			mp_uiComp->ChangeText(2, L"Can't Get More health potions");
 		}
 
-		if (m_door.GetNear())
-			mp_uiComp->ChangeText(2, L"Interact(F)");
-
-		if (Aen::Input::KeyDown(Aen::Key::F) && m_door.GetType() == Type::Closed && m_door.GetNear()) {
+		if (m_door.GetType() == Type::Closed && m_door.GetNear()) {
 			m_door.SetType(Type::Opening);
 		}
-	}
-	else {
-		mp_uiComp->SetTextPos(-100.f, -100.f, 2);
 	}
 
 	for (auto& i : m_enemyQueue) {
