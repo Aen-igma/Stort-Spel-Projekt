@@ -4,6 +4,7 @@ Gravestone::Gravestone()
 	:Interact(), m_graveStone(&Aen::EntityHandler::CreateEntity())
 {
 	m_near = false;
+	m_type = Type::Open;
 	Aen::Mesh& door = Aen::Resource::CreateMesh("GraveStone");
 	door.Load(AEN_MODEL_DIR("SkeletonGrave.fbx"));
 	m_graveStone->AddComponent<Aen::MeshInstance>();

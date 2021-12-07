@@ -55,7 +55,6 @@ void Gameplay::Initialize()
 	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
 	Aen::Mesh& skeleLight = Aen::Resource::CreateMesh("SkeletonLight");
 	skeleLight.Load(AEN_MODEL_DIR("Skel_Meshtest.fbx"));
-
 	// -------------------------- Setup Material -------------------------------- //
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
@@ -160,6 +159,21 @@ void Gameplay::Initialize()
 
 	m_chest.SetType(Type::Open);
 
+	Aen::Mesh& white = Aen::Resource::CreateMesh("PLANE");
+	white.Load(AEN_MODEL_DIR("plane.fbx"));
+
+	Aen::Material& whiteMat = Aen::Resource::CreateMaterial("White");
+	whiteMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("White.png"));
+	whiteMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));
+	whiteMat["InnerEdgeColor"] = Aen::Color::White;
+	whiteMat["OuterEdgeColor"] = Aen::Color::White;
+	whiteMat["GlowColor"] = Aen::Color::White;
+
+	m_exit = &Aen::EntityHandler::CreateEntity();
+	m_exit->AddComponent<Aen::MeshInstance>();
+	m_exit->GetComponent<Aen::MeshInstance>().SetMesh("PLANE");
+	m_exit->GetComponent<Aen::MeshInstance>().SetMaterial("White");
+
 	m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
 	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
@@ -169,18 +183,22 @@ void Gameplay::Initialize()
 	if (roomNormal == 1) { //north
 		m_grave.GetEntity()->SetRot(0, 180, 0);
 		m_door.GetEntity()->SetRot(0, 180, 0);
+		m_exit->SetRot(-90, -90, 90);
 	}
 	else if (roomNormal == 10) {//east
 		m_grave.GetEntity()->SetRot(0, 90, 0);
 		m_door.GetEntity()->SetRot(0, 90, 0);
+		m_exit->SetRot(90, 180, 90);
 	}
 	else if (roomNormal == 100) {//south
 		m_grave.GetEntity()->SetRot(0, 0, 0);
 		m_door.GetEntity()->SetRot(0, 0, 0);
+		m_exit->SetRot(-90, 90, 90);
 	}
 	else if (roomNormal == 1000) {//west
 		m_grave.GetEntity()->SetRot(0, -90, 0);
 		m_door.GetEntity()->SetRot(0, -90, 0);
+		m_exit->SetRot(-90, 0, 90);
 	}
 
 	if (itemNormal == 1) { //north
@@ -198,10 +216,13 @@ void Gameplay::Initialize()
 	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 	m_grave.GetEntity()->SetPos(doorPos);
-	m_grave.GetEntity()->MoveRelative(0.f, 0, -19.f);
-	doorPos = m_door.GetEntity()->GetPos();
+	m_grave.GetEntity()->MoveRelative(0.f, 0, -15.f);
 
-	cout << roomNormal << endl;
+	m_exit->SetScale(0, 1, 100);
+	m_exit->SetPos(doorPos.x, 3.f, doorPos.z);
+	m_exit->MoveRelative(0, -20.5, 0);
+
+	doorPos = m_door.GetEntity()->GetPos();
 	//m_attack->SetParent(*m_player);
 	//printf("");
 	//---------ENEMIES----------//
@@ -331,7 +352,7 @@ void Gameplay::Update(const float& deltaTime) {
 
 		}
 		//State::SetState(States::Loadscreen);
-		//m_Window.Exit();
+		//m_Window.m_exit();
 	}
 
 	if (m_paused) {
@@ -403,8 +424,21 @@ void Gameplay::Update(const float& deltaTime) {
 			mp_uiComp->ChangeText(2, L"Can't Get More health potions");
 		}
 
-		if (m_door.GetType() == Type::Closed && m_door.GetNear()) {
+		else if(m_door.GetType() == Type::Closed && m_door.GetNear()) {
 			m_door.SetType(Type::Opening);
+		}
+		else if (m_grave.GetNear() && m_grave.GetType() == Type::Open) {
+			dum = true;
+			m_grave.SetType(Type::Closed);
+		}
+	}
+
+	if (dum) {
+		scaleSize += deltaTime;
+		m_exit->SetScale(scaleSize, 1, 100);
+
+		if (scaleSize > 10.f) {
+			dum = false;
 		}
 	}
 
@@ -485,7 +519,7 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 	}
 
-	// ------------------------------ Quick Exit Button -------------------------------- //
+	// ------------------------------ Quick exit Button -------------------------------- //
 
 	// ------------------------------------- States -------------------------------------- //
 	//if (m_hp <= 0 && m_enemyQueue.size() == 0)
