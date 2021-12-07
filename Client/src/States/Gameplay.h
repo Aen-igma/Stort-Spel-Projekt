@@ -47,7 +47,7 @@ private:
     Door m_door;
     bool m_beatBoss;
     Aen::Vec3f m_bossPos;
-
+    vector<Aen::Entity*> m_particleList;
     std::queue<EventData> m_eventQueue;
 
     std::deque<Enemy*> m_enemyQueue;

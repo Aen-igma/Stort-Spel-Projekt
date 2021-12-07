@@ -89,13 +89,14 @@ void Gameplay::Initialize()
 	// -------------------------- Particle System -------------------------------- //
 
 	//Comment if you want the engine to work, big problem here
-	m_PS = &Aen::EntityHandler::CreateEntity();
-	m_PS->AddComponent<Aen::PSSystemcomponent>();
-	m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
-	/*m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(10);*/
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(0,0,0);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(5);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
+
+	//m_PS = &Aen::EntityHandler::CreateEntity();
+	//m_PS->AddComponent<Aen::PSSystemcomponent>();
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
+	///*m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(10);*/
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(0,0,0);
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(5);
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
 
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
@@ -156,16 +157,34 @@ void Gameplay::Initialize()
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
-	m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(ChestPos.y + 10.f);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetParticleList().size(); i++)
+	{
+		AenIF::Particle* particle = &m_levelGenerator.GetHandlerPtr()->GetParticleList()[i];
+
+		m_PS = &Aen::EntityHandler::CreateEntity();
+		m_PS->AddComponent<Aen::PSSystemcomponent>();
+		m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetHeightLimit(7.0f);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(particle->translation[0], particle->translation[1], particle->translation[2]);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(5);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
+	}
+	
+	
+
+	//PS system pos
+	//m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetHeightLimit(ChestPos.y + 10.f);
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x, ChestPos.y, ChestPos.z);
 
 	m_chest.SetType(Type::Open);
 
 	//m_door.SetType(Type::Open);
 	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
-	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+
+	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 
@@ -196,8 +215,10 @@ void Gameplay::Initialize()
 	}
 	m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
+
 	//m_attack->SetParent(*m_player);
 	//printf("");
+	// 
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
 

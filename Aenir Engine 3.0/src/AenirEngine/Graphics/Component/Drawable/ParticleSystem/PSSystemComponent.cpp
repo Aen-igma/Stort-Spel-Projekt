@@ -81,21 +81,21 @@ namespace Aen
 	void PSSystemcomponent::EmitRandom(float frameTime)
 	{
 		
-		this->runTimes += frameTime;
-		this->accumulatedTime += frameTime;
+		this->m_runTimes += frameTime;
+		this->m_accumulatedTime += frameTime;
 		bool emitPS, found;
 		emitPS = false;
 		int index, i, j;
 		Vec3f pos;
 		float velocity;
-		if (this->accumulatedTime > 1.0f/ this->particlesPerSecond)
+		if (this->m_accumulatedTime > 1.0f/ this->m_particlesPerSecond)
 		{
 			emitPS = true;
-			this->accumulatedTime = 0.0f;
+			this->m_accumulatedTime = 0.0f;
 		}
-		if (emitPS && this->currentNrPS < (this->maxParticles - 1))
+		if (emitPS && this->m_currentNrPS < (this->m_maxParticles - 1))
 		{
-			this->currentNrPS++;
+			this->m_currentNrPS++;
 			DirectX::XMFLOAT3 randPosPS
 			{
 				(((float)rand() - (float)rand()) / RAND_MAX) + 0.5f,
@@ -117,7 +117,7 @@ namespace Aen
 	void PSSystemcomponent::SetNrOfPS(UINT nr)
 	{
 		this->m_CSInputBuffer.emitCount = nr;
-		this->currentNrPS = this->m_CSInputBuffer.emitCount;
+		this->m_currentNrPS = this->m_CSInputBuffer.emitCount;
 
 	}
 
@@ -143,7 +143,6 @@ namespace Aen
 
 	}
 
-
 	void PSSystemcomponent::Initialize()
 	{
 		//Need to check this later if this is the right things
@@ -152,16 +151,14 @@ namespace Aen
 		this->m_CSInputBuffer.lifeTime = 0.0f;
 		this->m_CSInputBuffer.deltaTime = 0.0f;
 		this->m_CSInputBuffer.velocity = { 0.0f,0.0f,0.0f };
+	
 	}
-
-	void PSSystemcomponent::SetRespawnHeight(float height)
+	void PSSystemcomponent::SetHeightLimit(float height)
 	{
 		this->m_CSInputBuffer.lifeTime = height;
 	}
-
-
 	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer) {
-
+		
 		//First Pass
 		RenderSystem::ClearRenderTargetView(renderer.m_particleOut, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
@@ -207,7 +204,7 @@ namespace Aen
 		RenderSystem::BindShader(renderer.m_PSGShader);
 		RenderSystem::BindShader(renderer.m_PSPShader);
 
-		RenderSystem::Draw(this->currentNrPS,0);
+		RenderSystem::Draw(this->m_currentNrPS,0);
 
 
 		// Second Pass
@@ -229,7 +226,6 @@ namespace Aen
 		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
 		RenderSystem::UnBindShaderResources<CShader>(0u, renderer.m_particleOut.GetCount());
 	}
-
 
 	void PSSystemcomponent::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 
@@ -259,7 +255,7 @@ namespace Aen
 		RenderSystem::BindShader(renderer.m_PSGShader);
 		RenderSystem::BindShader(renderer.m_transparencyPS);
 
-		RenderSystem::Draw(this->currentNrPS, 0);
+		RenderSystem::Draw(this->m_currentNrPS, 0);
 
 		RenderSystem::UnBindShader<VShader>();
 		RenderSystem::UnBindShader<GShader>();

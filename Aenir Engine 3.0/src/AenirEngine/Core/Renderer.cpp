@@ -57,8 +57,6 @@ namespace Aen {
 				throw;
 		m_PSLayout.Create(m_PSVShader);
 
-
-
 		if(!m_transparencyPS.Create(AEN_OUTPUT_DIR_WSTR(L"TransparencyPS.cso")))
 			if(!m_transparencyPS.Create(L"TransparencyPS.cso"))
 				throw;
