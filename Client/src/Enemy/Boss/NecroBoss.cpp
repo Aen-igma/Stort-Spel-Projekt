@@ -15,7 +15,7 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	m_speed = BASESPEED;
 
 	Aen::Mesh& skeleBoss = Aen::Resource::CreateMesh("SkeleBoss");
-	skeleBoss.Load(AEN_MODEL_DIR("skBoss_test.fbx"));
+	skeleBoss.Load(AEN_MODEL_DIR("BossSkeletor_swipe.fbx"));
 	Aen::Material& skeleBossMat = Aen::Resource::CreateMaterial("SkeleBossMat");
 	skeleBossMat["GlowColor"] = Aen::Color::Cyan;
 	m_enemy->AddComponent<Aen::MeshInstance>();
@@ -24,6 +24,12 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	mp_meshInst = &m_enemy->GetComponent<Aen::MeshInstance>();
 	skeleBossMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SkeletonBoss_diffuse.png"));
 	skeleBossMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("SkeletonBoss_glow.png"));
+
+	m_enemy->AddComponent<Aen::Animator>();
+	m_enemy->GetComponent<Aen::Animator>().AddAnimation("Boss_Attack", "attack");
+	m_enemy->GetComponent<Aen::Animator>().SetAnimation("attack");
+	m_enemy->GetComponent<Aen::Animator>().SetFrameRate(24);
+	m_enemy->GetComponent<Aen::Animator>().SetAnimationScale(1);
 
 	mE_hurtBox->AddComponent<Aen::OBBox>();
 	mp_hurtBox = &mE_hurtBox->GetComponent<Aen::OBBox>();

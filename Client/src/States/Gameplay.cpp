@@ -46,7 +46,8 @@ void Gameplay::Initialize()
 	Aen::Animation& skelAttack = Aen::Resource::CreateAnimation("Skel_Attack");
 	skelAttack.LoadAnimation(AEN_MODEL_DIR("Attack_skelTest3.fbx"));
 
-
+	Aen::Animation& bossAttack = Aen::Resource::CreateAnimation("Boss_Attack");
+	bossAttack.LoadAnimation(AEN_MODEL_DIR("BossSkeletor_swipe.fbx"));
 	
 
 	// ----------------------------- Load Meshes -------------------------------- //
