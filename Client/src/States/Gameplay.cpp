@@ -160,9 +160,9 @@ void Gameplay::Initialize()
 
 	m_chest.SetType(Type::Open);
 
-	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
+	m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
 	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
-	m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 
@@ -193,6 +193,9 @@ void Gameplay::Initialize()
 	}
 	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
+	m_grave.GetEntity()->SetPos(doorPos);
+	m_grave.GetEntity()->SetRot(m_door.GetEntity()->GetRot());
+	m_grave.GetEntity()->MoveRelative(0, 0, -19.f);
 	doorPos = m_door.GetEntity()->GetPos();
 	//m_attack->SetParent(*m_player);
 	//printf("");
@@ -445,8 +448,7 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 	if (m_player.GetBossesAlive() <= 0.f)
 	{
-		SetWin(true);
-		State::SetState(States::Gameover);
+		mp_uiComp->SetPicPos(0, 0, 3);
 	}
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 

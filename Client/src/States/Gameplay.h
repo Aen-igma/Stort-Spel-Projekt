@@ -6,6 +6,7 @@
 #include"../Enemy/Enemies.h"
 #include "../Actors/Chest.h"
 #include "../Actors/Door.h"
+#include "../Actors/Gravestone.h"
 #include"AenirEngine\LevelEditor\ImGuiImporter.h"
 #include<functional>
 
@@ -46,6 +47,7 @@ private:
 
     Chest m_chest;
     Door m_door;
+    Gravestone m_grave;
     Aen::Vec3f doorPos;
     bool m_beatBoss;
     Aen::Vec3f m_bossPos;

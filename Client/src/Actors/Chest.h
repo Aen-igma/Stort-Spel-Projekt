@@ -14,4 +14,5 @@ public:
 	virtual Aen::Entity*& GetEntity() override;
 	virtual void SetType(const Type& type) override;
 private:
+	Aen::Entity* m_chest;
 };

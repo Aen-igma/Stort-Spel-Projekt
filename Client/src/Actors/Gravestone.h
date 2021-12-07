@@ -7,13 +7,13 @@ public:
 	Gravestone();
 	~Gravestone();
 
-	Aen::Entity*& GetEntity();
 	bool& GetNear();
 
 	// Inherited via Interact
 	virtual void Update(const float& deltaTime, Aen::Entity*& e) override;
 	virtual Type GetType() override;
+	virtual Aen::Entity*& GetEntity() override;
 	virtual void SetType(const Type& type) override;
 private:
-	Aen::Entity* m_door;
+	Aen::Entity* m_graveStone;
 };
