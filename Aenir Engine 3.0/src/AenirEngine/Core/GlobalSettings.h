@@ -26,11 +26,6 @@ namespace Aen {
 			return m_pMainCamera;
 		}
 
-		static Entity* GetMainCamera()
-		{
-			return m_pMainCamera;
-		}
-
 		static void SetBGColor(const Color& color) {
 			m_BGColor = color;
 		}
@@ -67,6 +62,7 @@ namespace Aen {
 		friend class GameLoop;
 		friend class Renderer;
 		friend class Camera;
+		friend class Quadtree;
 
 		private:
 

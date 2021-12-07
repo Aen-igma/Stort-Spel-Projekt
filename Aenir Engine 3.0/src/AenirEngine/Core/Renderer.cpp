@@ -5,7 +5,7 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
+		:m_window(window), m_quadtree(0, 5), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
@@ -87,6 +87,9 @@ namespace Aen {
 		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
 		m_lGrid.Create(m_dispatchInfo.GetData().numThreads, DXGI_FORMAT_R32G32_UINT);
 		m_frustumGrid.Create(128u, size);
+
+		m_quadtree.Initialize();
+
 	}
 
 	void Renderer::Culling()

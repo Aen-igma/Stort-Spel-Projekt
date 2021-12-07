@@ -1,24 +1,29 @@
 #include "PCH.h"
 #include "Quadtree.h"
+#include "Core\GlobalSettings.h"
+#include "Graphics/Component/ComponentHandler.h"
 
 namespace Aen
 {
-
 	Quadtree::Quadtree()
 	{
-		this->mp_root = nullptr;
+		mp_root = nullptr;
 	}
 
-	Quadtree::Quadtree(DirectX::BoundingBox &quad, const unsigned& level,
+	Quadtree::Quadtree(const unsigned& level,
 		const unsigned& maxLevel, const unsigned& capacity)
 	{
-		this->mp_root = new Node(quad, level, maxLevel, capacity);
-		std::cout << "I'm root: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
+		DirectX::BoundingBox quad;
+		quad.Center = DirectX::XMFLOAT3(460.f, 0.f, 460.f);
+		quad.Extents = DirectX::XMFLOAT3(460.f, 10.f, 460.f);
+		mp_root = new Node(quad, level, maxLevel, capacity);
+		//std::cout << "I'm root: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
+		
 	}
 
 	Quadtree::~Quadtree()
 	{
-		delete this->mp_root;
+		delete mp_root;
 		for (auto& b : m_boundingVolStructs)
 		{
 			delete b;
@@ -27,99 +32,70 @@ namespace Aen
 
 	Node* Quadtree::GetRoot()
 	{
-		return this->mp_root;
+		return mp_root;
 	}
 
 	void Quadtree::Initialize()
 	{
-		//// Setup First Quad in quadtree
-		//first = ID, second = component,
-		//for (std::pair<uint32_t, Aen::Entity*> element : mp_entityHandlerPtr->m_entities)
-		//{
-		//	if (Aen::ComponentHandler::MeshInstanceExist(element.first))
-		//	{
-		//		std::cout << "hello :)\n";
-		//		
-		//		ObjeStruct* tempObj = new ObjeStruct(element.first, element.second->GetComponent<MeshInstance>().GetDrawableAABB());
-		//		this->mp_root->Insert(tempObj);
-		//		this->m_boundingVolStructs.push_back(tempObj);
-		//	}
-		//}
-
 		bool valid = true;
 		uint32_t layer;
 		DirectX::BoundingBox box;
 		// Setup First Quad in quadtree
 		//first = ID, second = component,
-		for(auto & i: ComponentHandler::m_drawables)
+		for (uint32_t i = 0u; i < 7u; i++)
 		{
-			//valid = true;
-			if (ComponentHandler::RigidExist(i.first))
+			for(auto & j: ComponentHandler::m_meshLayer[i])
 			{
-				//ComponentHandler::GetRigid(i.first).GetType() == dynamic;
-				//ComponentHandler::GetRigid(i.first)
-				valid = false;
-			}
-			if (ComponentHandler::CharacterControllerExist(i.first))
-			{
-				valid = false;
-			}
-			
-			if (valid)
-			{
-				layer = i.second->GetLayer() + 3;
-				box = i.second->GetAABB();
+				if (ComponentHandler::StaticBodyExist(j.first)) // if object has a static body put it in the quadtree
+				{
+					layer = j.second->GetLayer() + 3;
+					box = j.second->GetAABB();
 
-				box.Extents = i.second->GetAABB().Extents * ComponentHandler::GetScale(i.first).GetScale().smVec;
-				box.Center = ComponentHandler::GetTranslation(i.first).GetPos().smVec;
+					box.Extents = j.second->GetAABB().Extents * ComponentHandler::GetScale(j.first).GetScale().smVec;
+					box.Center = ComponentHandler::GetTranslation(j.first).GetPos().smVec;
 
-				NodeStruct* tempObj = AEN_NEW NodeStruct(i.first, layer, box);
-				this->mp_root->Insert(tempObj);
-				this->m_boundingVolStructs.push_back(tempObj);
+					NodeStruct* tempObj = AEN_NEW NodeStruct(j.first, layer, box);
+					mp_root->Insert(tempObj);
+					m_boundingVolStructs.push_back(tempObj);
+				}
 			}
 		}
 
 	}
 
-	void Quadtree::Update()
+	std::vector<QuadOutput*>& Quadtree::Update()
 	{
 		if (GlobalSettings::GetMainCamera())
 		{
-
-			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetProjecton().smMat);
-			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetView().smMat);
-			//m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetVPMatrix().Transposed().smMat);
-			m_cameraFrustrum = DirectX::BoundingFrustum(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetVPMatrix().smMat);
-			for (auto& i : ComponentHandler::m_meshLayer)
-			{
-				i.clear();
-			}
-
-			m_QuadObjectsToRender.clear();
+			m_quadObjectsToRender.clear();
 			
-			DirectX::BoundingFrustum::CreateFromMatrix(m_cameraFrustrum, GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetVPMatrix().smMat);
-			this->mp_root->IntersectTest(m_cameraFrustrum, m_QuadObjectsToRender);
-
-			for(auto& i : m_QuadObjectsToRender){
-				ComponentHandler::m_meshLayer[i->m_RenderLayer].emplace(i->m_ID, ComponentHandler::m_mesheInstances.at(i->m_ID));
-			}
+			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
+			mp_root->IntersectTest(m_cameraFrustrum, m_quadObjectsToRender);
 
 
-
+			/*for (auto& i : m_quadObjectsToRender)
+			{
+				for (auto& j : ComponentHandler::m_meshLayer[i->m_renderLayer])
+				{
+					if (j.second->GetId() == i->m_ID)
+						drawTable[i->m_renderLayer].emplace_back(j.second);
+				}
+			}*/
 
 			//if (Input::KeyDown(Key::V))
 			//{
-			std::string tempString;
+			/*std::string tempString;
 			std::cout << "Objects to render: ";
 			for (auto& b : m_QuadObjectsToRender)
 			{
 				tempString = "(" + std::to_string(b->m_ID) + ", " + std::to_string(b->m_RenderLayer) + ")";
 				OutputDebugString(tempString.c_str());
 			}
-			OutputDebugString("\n");
+			OutputDebugString("\n");*/
 	
 			//}
 		}
+		return m_quadObjectsToRender;
 	}
 
 	

@@ -1,32 +1,24 @@
 #pragma once
 #include "Node.h"
-#include "Graphics\Component\Entity.h"
-#include "Graphics/Component/ComponentHandler.h"
-#include "Core\GlobalSettings.h"
 
 namespace Aen
 {
-
-	//MainClass for building quadtree
 	class Quadtree
 	{
 	public:
 		Quadtree();
-		Quadtree(DirectX::BoundingBox &quad, const unsigned& level = 0,
+		Quadtree(const unsigned& level = 0,
 			const unsigned& maxLevel = 1, const unsigned& capacity = 3);
 		~Quadtree();
 		Node* GetRoot();
 
-		void Initialize();
-		void Update();
-		//void Update(std::vector<int>& output);
 
+		void Initialize();
+		std::vector<QuadOutput*>& Update();
 	private:
 		Node* mp_root;
 		std::vector<NodeStruct*> m_boundingVolStructs;
-		Aen::EntityHandler* mp_entityHandlerPtr;
 		DirectX::BoundingFrustum m_cameraFrustrum;
-		std::vector<QuadOutput*> m_QuadObjectsToRender;
-
+		std::vector<QuadOutput*> m_quadObjectsToRender;
 	};
 }
