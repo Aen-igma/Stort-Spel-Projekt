@@ -486,10 +486,8 @@ namespace Aen
 		for (size_t i = 0; i < roomPtr->GetParticleVector().size(); i++)
 		{
 			AenIF::Particle* particle = &roomPtr->GetParticleVector()[i];
-
-			Aen::Entity* entity = &mp_entityHandlerPtr->CreateEntity();
-			entity->SetPos(particle->translation[0], particle->translation[1], particle->translation[2]);
-
+			particle->translation[0] += offset.x;
+			particle->translation[2] += offset.y;
 			if (particle->type == IGH::TORCH)
 			{
 				m_particleList.push_back(*particle);
