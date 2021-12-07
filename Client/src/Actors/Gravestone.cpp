@@ -12,6 +12,12 @@ Gravestone::Gravestone()
 
 	m_graveStone->AddComponent<Aen::StaticBody>();
 	m_graveStone->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+
+	Aen::Material& graveMat = Aen::Resource::CreateMaterial("graveMat");
+	graveMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Grave.png"));
+	graveMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	graveMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+	m_graveStone->GetComponent<Aen::MeshInstance>().SetMaterial("graveMat");
 }
 
 Gravestone::~Gravestone()

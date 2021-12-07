@@ -194,8 +194,7 @@ void Gameplay::Initialize()
 	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 	m_grave.GetEntity()->SetPos(doorPos);
-	m_grave.GetEntity()->SetRot(m_door.GetEntity()->GetRot());
-	m_grave.GetEntity()->MoveRelative(0, 0, -19.f);
+	m_grave.GetEntity()->SetRot(0, m_door.GetEntity()->GetRot().y, 0);
 	doorPos = m_door.GetEntity()->GetPos();
 	//m_attack->SetParent(*m_player);
 	//printf("");
