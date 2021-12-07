@@ -1,16 +1,17 @@
 #include "Door.h"
 
 Door::Door()
-	:Interact(), m_door(&Aen::EntityHandler::CreateEntity()), m_near(false)
+	:Interact()
 {
+	m_near = false;
 	Aen::Mesh& door = Aen::Resource::CreateMesh("Door");
 	door.Load(AEN_MODEL_DIR("door.fbx"));
-	m_door->AddComponent<Aen::MeshInstance>();
-	m_door->GetComponent<Aen::MeshInstance>().SetMesh("Door");
-	m_door->SetRot(0, 0, 0);
+	mp_object->AddComponent<Aen::MeshInstance>();
+	mp_object->GetComponent<Aen::MeshInstance>().SetMesh("Door");
+	mp_object->SetRot(0, 0, 0);
 
-	m_door->AddComponent<Aen::StaticBody>();
-	m_door->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+	mp_object->AddComponent<Aen::StaticBody>();
+	mp_object->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
 
 	//mp_object->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
 
@@ -49,21 +50,21 @@ Door::Door()
 	LightDoor["ShadowOffset"] = 1.f;
 	LightDoor["SpecularColor"] = Aen::Color::Red;
 
-	m_door->GetComponent<Aen::MeshInstance>().SetMaterial("Brown1", DoorBrown);
-	m_door->GetComponent<Aen::MeshInstance>().SetMaterial("DoorMat", LightDoor);
-	m_door->GetComponent<Aen::MeshInstance>().SetMaterial("Gold", Gold);
-	m_door->GetComponent<Aen::MeshInstance>().SetMaterial("Light", blinn);
+	mp_object->GetComponent<Aen::MeshInstance>().SetMaterial("Brown1", DoorBrown);
+	mp_object->GetComponent<Aen::MeshInstance>().SetMaterial("DoorMat", LightDoor);
+	mp_object->GetComponent<Aen::MeshInstance>().SetMaterial("Gold", Gold);
+	mp_object->GetComponent<Aen::MeshInstance>().SetMaterial("Light", blinn);
 }
 
 Door::~Door()
 {
-	m_door->RemoveParent();
-	Aen::EntityHandler::RemoveEntity(*m_door);
+	//m_door->RemoveParent();
+	Aen::EntityHandler::RemoveEntity(*mp_object);
 }
 
 void Door::Update(const float& deltaTime, Aen::Entity*& e)
 {
-	Aen::Vec3f eDir = e->GetPos() - m_door->GetPos();
+	Aen::Vec3f eDir = e->GetPos() - mp_object->GetPos();
 	float dist = eDir.Magnitude();
 	static float timer = 0;
 
@@ -78,14 +79,9 @@ void Door::Update(const float& deltaTime, Aen::Entity*& e)
 	}
 
 	if (m_type == Type::Opening) {
-		m_door->SetPos(0.f, -100, 0);
+		mp_object->SetPos(0.f, -100, 0);
 		m_type = Type::Open;
 	}
-}
-
-Aen::Entity*& Door::GetObjectEntity()
-{
-	return mp_object;
 }
 
 Type Door::GetType()
@@ -100,7 +96,7 @@ void Door::SetType(const Type& type)
 
 Aen::Entity*& Door::GetEntity()
 {
-	return m_door;
+	return mp_object;
 }
 
 bool& Door::GetNear()
