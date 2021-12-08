@@ -8,7 +8,7 @@ Player::Player()
 	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(80.f), m_potionCap(3), m_nrPotion(m_potionCap),m_timer(0),
 	m_sword(&Aen::EntityHandler::CreateEntity()), m_playerMeshHolder(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
-	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
+	m_LIGHTATTACKTIME(.4f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
 	m_LIGHTATTACKSPEED(6.0f), m_HEAVYATTACKSPEED(2.54f)
 {
@@ -20,7 +20,7 @@ Player::Player()
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
-	sword.Load(AEN_MODEL_DIR("simpSword.fbx"));
+	sword.Load(AEN_MODEL_DIR("ShortSword.fbx"));
 
 	Aen::Mesh* protag = &Aen::Resource::CreateMesh("Protag");
 	protag->Load(AEN_MODEL_DIR("Protagonist.fbx"));
@@ -111,10 +111,10 @@ Player::Player()
 	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagDash, "Dash");
 	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagAttack, "Attack");
 	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.85f);
+	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.28f);
 	m_playerMeshHolder->GetComponent<Aen::Animator>().SetFrameRate(24);
 	m_playerMeshHolder->SetParent(*m_player);
-	m_playerMeshHolder->SetPos(0.f, -2.6f, 0.f);
+	m_playerMeshHolder->SetPos(0.f, -3.1f, 0.f);
 
 	m_player->AddComponent<Aen::AABoundBox>();
 	mp_hitBox = &m_player->GetComponent<Aen::AABoundBox>();
@@ -125,9 +125,7 @@ Player::Player()
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
 	m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);
-	//m_sword->SetPos(0.7f, 1.7f, -1.f);
-	m_sword->SetPos(0.f, 1.7f, 0.f);
-	m_sword->SetParent(*m_playerMeshHolder);
+	m_sword->SetPos(-0.65f, 1.45f, 0.f);
 
 	m_hurtbox->AddComponent<Aen::OBBox>();
 	mp_hurtBox = &m_hurtbox->GetComponent<Aen::OBBox>();
@@ -200,7 +198,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 #endif // _DEBUG
 
 
-	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19));
+	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19) * Aen::MatRotate(0.f, -10.f, 0.f) * m_playerMeshHolder->GetTransformation());
 
 
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
@@ -236,6 +234,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	// Dash/Dodge
 
 	if (Aen::Input::KeyDown(Aen::Key::SPACE)) {
+		m_playerMeshHolder->GetComponent<Aen::Animator>().Reset();
 
 		if(m_eventQueue.empty())
 			if (axis.Magnitude() > 0.f) 
@@ -261,6 +260,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	// Attack
 
 	if (Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
+		m_playerMeshHolder->GetComponent<Aen::Animator>().Reset();
 
 		if(m_eventQueue.empty()) {
 			Aen::Vec2f dir(camDir.x, camDir.z);
@@ -410,20 +410,26 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	mp_hurtBox->SetOrientation(0.f, yaw, 0.f);
 	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
 	
-	if(axis.Magnitude() > 0.f)
+	if(axis.Magnitude() > 0.f) {
+		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.28f);
 		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
-	else
+	} else {
+		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.85f);
 		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
+	}
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
 			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration, m_eventQueue.front().nrOfAttacks);
 			m_eventQueue.front().duration -= deltaTime;
 
-			if(m_eventQueue.front().type == EventType::Dash)
+			if(m_eventQueue.front().type == EventType::Dash) {
+				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.35f);
 				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Dash");
-			else if(m_eventQueue.front().type == EventType::Attack)
+			} else if(m_eventQueue.front().type == EventType::Attack) {
+				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.35f);
 				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Attack");
+			}
 
 		}
 		else {
