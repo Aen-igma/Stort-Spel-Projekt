@@ -15,6 +15,7 @@ private:
     float m_sub;
     float m_timer;
     float m_deathTimer;
+    float m_bossHP;
 
     float m_iFrames;
     const float IFRAMEMAX;
@@ -33,6 +34,10 @@ private:
     Aen::Entity* m_plane;
     Aen::Entity* m_UI;
 
+
+    Aen::Entity* m_PS;
+    Aen::Entity* m_wall;
+ 
     Aen::UIComponent* mp_uiComp;
 
     Player m_player;
@@ -41,6 +46,7 @@ private:
 
     Chest m_chest;
     Door m_door;
+    Aen::Vec3f doorPos;
     bool m_beatBoss;
     Aen::Vec3f m_bossPos;
 

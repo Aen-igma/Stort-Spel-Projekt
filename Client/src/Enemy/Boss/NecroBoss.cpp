@@ -45,25 +45,13 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 
 	mp_hitbox->ToggleActive(true);
 
-	m_healthBar = &Aen::EntityHandler::CreateEntity();
-	m_healthBar->AddComponent<Aen::MeshInstance>();
-	m_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
-	m_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
-	m_healthBar->SetRot(180, 0, 0);
-	//m_healthBar->SetPos(0, -100, 0);
-	m_healthBar->SetScale(5.f, 0.f, 5.f);
-	m_healthBar->SetRenderLayer(1);
-	m_healthBar->SetParent(*m_enemy);
-
 	SetStationary(true);
 }
 
 Boss::~Boss()
 {
 	mE_hurtBox->RemoveParent();
-	m_healthBar->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*mE_hurtBox);
-	Aen::EntityHandler::RemoveEntity(*m_healthBar);
 	mE_sword->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*mE_sword);
 }
@@ -76,8 +64,6 @@ void Boss::Update(const float& deltaTime, Player& player)
 	if (!m_cantSummonSlimes)
 		m_waiting = false;
 
-	m_healthBar->SetScale(m_health / 20.f, 0.f, 5.f);
-
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float distance = eDir.Magnitude();
 	eDir.Normalized();
@@ -89,8 +75,6 @@ void Boss::Update(const float& deltaTime, Player& player)
 
 	if (distance <= 10.f && bs == BossState(0))
 	{
-		m_healthBar->SetRot(-45, 0, 0);
-		m_healthBar->SetPos(0, 3, 0);
 		bs = BossState(1);
 	}
 

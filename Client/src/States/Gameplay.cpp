@@ -9,6 +9,7 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	mp_uiComp = nullptr;
 	Aen::EntityHandler::RemoveEntity(*m_UI);
+	Aen::EntityHandler::RemoveEntity(*m_PS);
 	
 	for (auto& d : m_enemyQueue) {
 		delete d;
@@ -18,6 +19,7 @@ Gameplay::~Gameplay() {
 	Aen::Resource::RemoveAllMaterials();
 	Aen::Resource::RemoveAllMeshes();
 	Aen::Resource::RemoveAllTextures();
+	Aen::Resource::RemoveAllAnimations();
 }
 
 void Gameplay::Initialize()
@@ -44,6 +46,9 @@ void Gameplay::Initialize()
 	Aen::Animation& skelAttack = Aen::Resource::CreateAnimation("Skel_Attack");
 	skelAttack.LoadAnimation(AEN_MODEL_DIR("Attack_skelTest3.fbx"));
 
+
+	
+
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
@@ -57,6 +62,10 @@ void Gameplay::Initialize()
 	Aen::Material& slimeMat = Aen::Resource::CreateMaterial("SlimeMaterial");
 	Aen::Material& skeleLightMat = Aen::Resource::CreateMaterial("SkeleLightMaterial");
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
+
+	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
+	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Flames2.png"));
+	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FlamesOppacity.png"));
 
 	slimeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
 	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
@@ -76,6 +85,18 @@ void Gameplay::Initialize()
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	// -------------------------- Setup Entities -------------------------------- //
+	// 
+	// -------------------------- Particle System -------------------------------- //
+
+	//Comment if you want the engine to work, big problem here
+	m_PS = &Aen::EntityHandler::CreateEntity();
+	m_PS->AddComponent<Aen::PSSystemcomponent>();
+	m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
+	/*m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(10);*/
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(0,0,0);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(5);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
+
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();
@@ -97,7 +118,6 @@ void Gameplay::Initialize()
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
 	Aen::Vec3f ChestPos;
-	Aen::Vec3f DoorPos;
 	Aen::Vec3f EnemyPos;
 	int roomNormal = 0;
 	int itemNormal = 0;
@@ -115,7 +135,6 @@ void Gameplay::Initialize()
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
 			{
 				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
-				//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 			}
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
@@ -126,7 +145,7 @@ void Gameplay::Initialize()
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
 
-				m_levelGenerator.GetRoomPos(x, y, &DoorPos.x, &DoorPos.z);
+				m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
 				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 				for (int i = 0; i < 10; i++) {
 					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
@@ -135,6 +154,13 @@ void Gameplay::Initialize()
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
+	m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(ChestPos.y + 10.f);
+	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+
+	m_chest.SetType(Type::Open);
+
+	//m_door.SetType(Type::Open);
 	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
 	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
@@ -166,8 +192,9 @@ void Gameplay::Initialize()
 	else if (itemNormal == 1000) {//west
 		m_chest.GetEntity()->SetRot(0, 90, 0);
 	}
-	m_door.GetEntity()->SetPos(DoorPos.x, 3.2f, DoorPos.z);
+	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
+	doorPos = m_door.GetEntity()->GetPos();
 	//m_attack->SetParent(*m_player);
 	//printf("");
 	//---------ENEMIES----------//
@@ -223,9 +250,7 @@ void Gameplay::Initialize()
 	mp_uiComp->SetPicPos((125.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
 	mp_uiComp->SetPicSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 
-	//m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_RESOURCE_DIR_W(L"GoalText.png"), 1);
-	//m_UI->GetComponent<Aen::UIComponent>().SetPicPos(965.f, 100.f, 1);
-	//m_UI->GetComponent<Aen::UIComponent>().SetPicSize(600.f, 100.f, 1);
+	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"healthbar.png"));//3 - bosshealthbar
 
 	mp_uiComp->AddText(L"- Find the boss", 30.f); //0
 	mp_uiComp->SetTextPos((175.f / 1920) * wDesc.width, (300.f / 1024) * wDesc.height);
@@ -246,7 +271,7 @@ void Gameplay::Initialize()
 	mp_uiComp->SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
 
 	//Pause menu UI
-	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"PauseOverlay.png")); //3
+	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"PauseOverlay.png")); //4
 	mp_uiComp->SetPicPos((1.f / 2.f)* wDesc.width, (1.f / 2.f)* wDesc.height);
 	mp_uiComp->SetPicSize(wDesc.width, wDesc.height);
 
@@ -260,13 +285,15 @@ void Gameplay::Initialize()
 
 	mp_uiComp->SaveButtonData();
 
-	mp_uiComp->SetPicSize(0, 0, 3);
+	mp_uiComp->SetPicSize(0, 0, 4);
 	mp_uiComp->SetButtonSize(0, 0, 0);
 	mp_uiComp->SetButtonSize(0, 0, 1);
 
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
+	SetWin(false);
+	m_bossHP = m_pSkeleBoss->GetHealth();
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -275,15 +302,17 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
 		m_paused = !m_paused;
-		Aen::Input::SetMouseVisible(m_paused);
+
 		if (m_paused) {
-			mp_uiComp->SetPicSize(screenSize.x, screenSize.y, 3);
+			Aen::Input::SetMouseVisible(true);
+			mp_uiComp->SetPicSize(screenSize.x, screenSize.y, 4);
 			mp_uiComp->SetTextPos(-100, 0, 0);
 			mp_uiComp->SetTextPos(-100, 0, 1);
 			mp_uiComp->SetTextPos(-100, 0, 3);
 		}
 		else{
-			mp_uiComp->SetPicSize(0, 0, 3);
+			Aen::Input::SetMouseVisible(false);
+			mp_uiComp->SetPicSize(0, 0, 4);
 			mp_uiComp->SetButtonSize(0, 0, 0);
 			mp_uiComp->SetButtonSize(0, 0, 1);
 			mp_uiComp->SetTextPos((175.f / 1920) * screenSize.x, (300.f / 1024) * screenSize.y, 0);
@@ -304,7 +333,7 @@ void Gameplay::Update(const float& deltaTime) {
 		{
 			m_paused = false;
 			Aen::Input::SetMouseVisible(false);
-			mp_uiComp->SetPicSize(0, 0, 3);
+			mp_uiComp->SetPicSize(0, 0, 4);
 			mp_uiComp->SetButtonSize(0, 0, 0);
 			mp_uiComp->SetButtonSize(0, 0, 1);
 			mp_uiComp->SetTextPos((175.f / 1920) * screenSize.x, (300.f / 1024) * screenSize.y, 0);
@@ -330,7 +359,6 @@ void Gameplay::Update(const float& deltaTime) {
 		mp_uiComp->ChangeText(1, std::to_wstring(m_player.GetPotionNr()).c_str());
 		pots = m_player.GetPotionNr();
 	}
-	//cout << "hp: " << m_hp << "		player: " << m_player.GetHealth() << endl;
 
 	m_player.PotionUpdate();
 
@@ -380,7 +408,16 @@ void Gameplay::Update(const float& deltaTime) {
 	{
 		if (m_pSkeleBoss->GetBS() != BossState::STATIONARY && m_door.GetType() == Type::Open) {
 			mp_uiComp->ChangeText(0, L"- Kill the Boss");
-			m_door.SetType(Type::Locking);
+			mp_uiComp->SetPicPos((1000.f / 1920) * screenSize.x, (700.f / 1024) * screenSize.y, 3);
+			mp_uiComp->SetPicSize((1200.f / 1920) * screenSize.x, (150.f / 1024) * screenSize.y, 3);
+			m_door.GetEntity()->SetPos(doorPos);
+			m_door.SetType(Type::Locked);
+		}
+
+		if (m_bossHP != m_pSkeleBoss->GetHealth()) {
+
+			mp_uiComp->UpdatePicture((m_bossHP - m_pSkeleBoss->GetHealth()) * 6.f * (1.f / 1920.f)* screenSize.x, 3);
+			m_bossHP = m_pSkeleBoss->GetHealth();
 		}
 
 		Aen::Vec3f minionOffset(-8.f,0,8.f);

@@ -55,6 +55,7 @@ namespace Aen {
 		friend class OBBox;
 		friend class Animator;
 		friend class GlobalSettings;
+		friend class PSSystemcomponent;
 
 		private:
 		bool m_toggleView;
@@ -107,8 +108,23 @@ namespace Aen {
 		RWTexture2D m_lGrid;
 		Vec2i m_dispatchCall;
 		const uint32_t m_avarageLights;
+
+		//ParticleSystem Shaders
+		VShader m_PSVShader;
+		GShader m_PSGShader;
+		CShader m_PSCShader;
+		PShader m_PSPShader;
+		ILayout m_PSLayout;
+		ComDeviceContext m_PSDContext;
+		CBuffer<CSInputBuffer> m_PSInputBuffer;
+
+		GBuffer m_particleOut;
+		CShader m_PostPatricleCS;
+
 #ifdef _DEBUG
 		CBuffer<CB_Collision> m_collisionBuffer;
+
+		
 #endif // _DEBUG
 	};
 }

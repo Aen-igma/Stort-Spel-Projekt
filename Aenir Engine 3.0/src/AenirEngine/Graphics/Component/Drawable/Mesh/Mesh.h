@@ -55,5 +55,6 @@ namespace Aen {
 		friend class OBBox;
 		friend class StaticBody;
 		friend class DynamicBody;
+		friend class PSSystemcomponent;
 	};
 }

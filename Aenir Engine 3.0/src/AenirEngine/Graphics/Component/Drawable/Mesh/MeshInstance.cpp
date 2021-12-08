@@ -80,7 +80,7 @@ namespace Aen {
 		{
 
 			// Transform
-			RenderSystem::SetPrimitiveTopology(Aen::Topology::TRIANGLELIST);
+			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 			renderer.m_cbTransform.UpdateBuffer();
@@ -183,7 +183,7 @@ namespace Aen {
 	void MeshInstance::DepthDraw(Renderer& renderer, const uint32_t& layer) {
 
 		if(m_pMesh) {
-			RenderSystem::SetPrimitiveTopology(Aen::Topology::TRIANGLELIST);
+			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
 			if(ComponentHandler::AnimatorExists(m_id))
 				ComponentHandler::GetAnimator(m_id).BindBuffer();
