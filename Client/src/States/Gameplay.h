@@ -15,6 +15,7 @@ private:
     float m_sub;
     float m_timer;
     float m_deathTimer;
+    float m_bossHP;
 
     float m_iFrames;
     const float IFRAMEMAX;
@@ -45,6 +46,7 @@ private:
 
     Chest m_chest;
     Door m_door;
+    Aen::Vec3f doorPos;
     bool m_beatBoss;
     Aen::Vec3f m_bossPos;
 

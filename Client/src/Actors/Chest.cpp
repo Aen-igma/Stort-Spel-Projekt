@@ -15,7 +15,8 @@ Chest::Chest()
 	m_chest->GetComponent<Aen::MeshInstance>().SetMaterial(chestMat);
 	m_chest->AddComponent<Aen::Animator>();
 	m_chest->GetComponent<Aen::Animator>().AddAnimation(ChestOpen, "Open");
-	m_chest->GetComponent<Aen::Animator>().SetAnimation("Open");
+	m_chest->GetComponent<Aen::Animator>().SetLoopAnim(false);
+	m_chest->GetComponent<Aen::Animator>().SetPaused(true);
 	m_chest->SetScale(0.8f);
 
 
@@ -44,18 +45,9 @@ void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 {
 	Aen::Vec3f eDir = e->GetPos() - m_chest->GetPos();
 	float dist = eDir.Magnitude();
-
-	static float time = 0;
-	if (m_type == Type::Locked) {
-		time += deltaTime;
-		m_chest->GetComponent<Aen::Animator>().Pause();
-	}
-	else {
-		m_chest->GetComponent<Aen::Animator>().Run();
-	}
-
-	if (time > 0.5f)
-		m_chest->GetComponent<Aen::Animator>().Run();
+	
+	if (m_type == Type::Locked)
+		m_chest->GetComponent<Aen::Animator>().SetPaused(false);
 
 	//player
 	if (e->GetTag() == "Player") {
