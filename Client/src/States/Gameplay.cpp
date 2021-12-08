@@ -25,7 +25,6 @@ void Gameplay::Initialize()
 {
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
-
 	// ----------------------------- Setup Camera ------------------------------- //
 
 	// ------------------------ Setup Directional Light ------------------------- //
@@ -291,7 +290,6 @@ void Gameplay::Initialize()
 	mp_uiComp->SetPicSize(0, 0, 3);
 	mp_uiComp->SetButtonSize(0, 0, 0);
 	mp_uiComp->SetButtonSize(0, 0, 1);
-
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);

@@ -14,11 +14,11 @@ namespace Aen
 
 
 		void Initialize();
-		void Update();
+		std::vector<QuadOutput>& Update();
 	private:
 		Node* mp_root;
 		std::vector<NodeStruct*> m_boundingVolStructs;
 		DirectX::BoundingFrustum m_cameraFrustrum;
-		std::vector<QuadOutput*> m_quadObjectsToRender;
+		std::vector<QuadOutput> m_quadObjectsToRender;
 	};
 }

@@ -11,7 +11,7 @@ NodeStruct::NodeStruct(size_t ID, uint32_t RenderLayer, DirectX::BoundingBox bou
 {
 	this->m_ID = ID;
 	this->m_renderLayer = RenderLayer;
-	this->mp_boundBox = boundingBox;
+	this->m_boundBox = boundingBox;
 }
 
 NodeStruct::~NodeStruct()
@@ -87,7 +87,7 @@ void Node::Insert(NodeStruct* obj)
 	{
 		for (int i = 0; i < 4; i++)//Kollar igenom alla children
 		{
-			if (mp_children[i]->m_areaQuad.Intersects(obj->mp_boundBox))
+			if (mp_children[i]->m_areaQuad.Intersects(obj->m_boundBox))
 			{
 				mp_children[i]->Insert(obj);
 			}
@@ -126,16 +126,17 @@ void Node::Insert(NodeStruct* obj)
 //	return false;
 //}
 
-void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<QuadOutput*>& output) //View frustrum culling
+void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<QuadOutput>& output) //View frustrum culling
 {
 	if (!mp_children[0])
 	{
 		for (auto & obj : m_objs)
 		{
-				if(other.Intersects(obj->mp_boundBox))
+				if(other.Intersects(obj->m_boundBox))
 				{
-					this->m_tempQuadObj = QuadOutput(obj->m_ID, obj->m_renderLayer);
-					output.emplace_back(&m_tempQuadObj);
+					/*this->m_tempQuadObj = QuadOutput(obj->m_ID, obj->m_renderLayer);
+					output.emplace_back(&m_tempQuadObj);*/
+					output.emplace_back(QuadOutput(obj->m_ID, obj->m_renderLayer));
 				}
 		}
 	}
@@ -181,13 +182,13 @@ void Node::Subdivide()
 	//------------- Check which objects is in which quad ---------------//
 	for (auto&& box : m_objs)
 	{
-		if (mp_children[0]->m_areaQuad.Intersects(box->mp_boundBox))
+		if (mp_children[0]->m_areaQuad.Intersects(box->m_boundBox))
 			mp_children[0]->Insert(box);
-		if (mp_children[1]->m_areaQuad.Intersects(box->mp_boundBox))
+		if (mp_children[1]->m_areaQuad.Intersects(box->m_boundBox))
 			mp_children[1]->Insert(box);
-		if (mp_children[2]->m_areaQuad.Intersects(box->mp_boundBox))
+		if (mp_children[2]->m_areaQuad.Intersects(box->m_boundBox))
 			mp_children[2]->Insert(box);
-		if (mp_children[3]->m_areaQuad.Intersects(box->mp_boundBox))
+		if (mp_children[3]->m_areaQuad.Intersects(box->m_boundBox))
 			mp_children[3]->Insert(box);
 	}
 	

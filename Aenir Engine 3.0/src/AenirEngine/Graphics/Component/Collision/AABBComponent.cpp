@@ -215,7 +215,10 @@ namespace Aen {
 		Vec3f transformation = EntityHandler::GetEntity(m_id).GetTranslation();
 		m_aabb.Center = transformation.smVec;
 #ifdef _DEBUG
-		return true;
+		if (m_aabb.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum()))
+			return true;
+		else
+			return false;
 #endif
 		return false;
 	}

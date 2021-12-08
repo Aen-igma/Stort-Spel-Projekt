@@ -5,7 +5,7 @@
 namespace Aen {
 
 	Renderer::Renderer(Window& window)
-		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
+		:m_window(window), m_quadtree(0, 5, 6), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
@@ -87,11 +87,37 @@ namespace Aen {
 		m_lIndex.Create(sizeof(uint32_t), m_avarageLights * size);
 		m_lGrid.Create(m_dispatchInfo.GetData().numThreads, DXGI_FORMAT_R32G32_UINT);
 		m_frustumGrid.Create(128u, size);
+
+		m_quadtree.Initialize();
 	}
 
 	void Renderer::Culling()
 	{
+	
+		//--- Quadtree Culling ---//
+		m_quadtreeOutput = m_quadtree.Update();
+		for (auto& i : m_quadtreeOutput)
+		{
+			for (auto& k : ComponentHandler::m_meshLayer[i.m_renderLayer])
+			{
+				if (k.first == i.m_ID)
+					m_drawTable[i.m_renderLayer].emplace_back(k.second);
+			}
+		}
+
+		//--- View Frustum Culling ---//
 		for (uint32_t i = 0u; i < 7u; i++)
+		{
+			for (int k = 0; k < m_drawTable[i].size(); k++)
+			{
+				if (!m_drawTable[i].at(k)->FrustumCull(*this))
+				{
+					m_drawTable[i].erase(m_drawTable[i].begin() + k);
+				}
+			}
+		}
+		
+		/*for (uint32_t i = 0u; i < 7u; i++)
 		{
 			for (auto& k : ComponentHandler::m_meshLayer[i])
 			{
@@ -100,7 +126,8 @@ namespace Aen {
 					m_drawTable[i].push_back(k.second);
 				}
 			}
-		}
+		}*/
+		
 	}
 
 	void Renderer::Render() {

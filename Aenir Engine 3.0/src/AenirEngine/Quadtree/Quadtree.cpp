@@ -37,10 +37,9 @@ namespace Aen
 
 	void Quadtree::Initialize()
 	{
-		bool valid = true;
-		uint32_t layer;
 		DirectX::BoundingBox box;
-		// Setup First Quad in quadtree
+		uint32_t layer;
+		// Setup tree structure
 		//first = ID, second = component,
 		for (uint32_t i = 0u; i < 7u; i++)
 		{
@@ -48,11 +47,12 @@ namespace Aen
 			{
 				if (ComponentHandler::StaticBodyExist(j.first)) // if object has a static body put it in the quadtree
 				{
-					layer = j.second->GetLayer() + 3;
-					box = j.second->GetAABB();
+					
+					box = ComponentHandler::GetMeshInstance(j.first).GetBox();
+					layer = i;
 
-					box.Extents = j.second->GetAABB().Extents * ComponentHandler::GetScale(j.first).GetScale().smVec;
-					box.Center = ComponentHandler::GetTranslation(j.first).GetPos().smVec;
+					//box.Extents = j.second->GetAABB().Extents * ComponentHandler::GetScale(j.first).GetScale().smVec;
+					//box.Center = ComponentHandler::GetTranslation(j.first).GetPos().smVec;
 
 					NodeStruct* tempObj = AEN_NEW NodeStruct(j.first, layer, box);
 					mp_root->Insert(tempObj);
@@ -63,12 +63,12 @@ namespace Aen
 
 	}
 
-	void Quadtree::Update()
+	std::vector<QuadOutput>& Quadtree::Update()
 	{
 		if (GlobalSettings::GetMainCamera())
 		{
 			m_quadObjectsToRender.clear();
-			
+
 			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
 			mp_root->IntersectTest(m_cameraFrustrum, m_quadObjectsToRender);
 
@@ -95,7 +95,7 @@ namespace Aen
 	
 			//}
 		}
-		//return m_quadObjectsToRender;
+		return m_quadObjectsToRender;
 	}
 
 	

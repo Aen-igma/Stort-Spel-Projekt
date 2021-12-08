@@ -13,7 +13,7 @@ struct NodeStruct
 {
 	size_t m_ID;
 	uint32_t m_renderLayer;
-	DirectX::BoundingBox mp_boundBox;
+	DirectX::BoundingBox m_boundBox;
 
 
 	NodeStruct();
@@ -41,7 +41,7 @@ public:
 		const unsigned& max_level = 1, const unsigned& capacity = 3);
 	~Node();
 	void Insert(NodeStruct* obj);
-	void IntersectTest(const DirectX::BoundingFrustum &other, std::vector<QuadOutput*>& output); //Output = Id for objects
+	void IntersectTest(const DirectX::BoundingFrustum &other, std::vector<QuadOutput>& output); //Output = Id for objects
 	//bool Inside(DirectX::BoundingBox& playerBox); //not needed
 	//Problem kan vara att flera noder kan uppstå, behövs fixas senare.
 
