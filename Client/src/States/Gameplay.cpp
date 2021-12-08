@@ -89,7 +89,7 @@ void Gameplay::Initialize()
 	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
 
 	//Match this value to the size of the rooms we are using
-	m_levelGenerator.SetRoomDimension(43.f);
+	//m_levelGenerator.SetRoomDimension(80.f);
 	mptr_map = m_levelGenerator.GenerateLevel();
 	m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
