@@ -2,6 +2,7 @@
 #include"Renderer.h"
 #include "../ImGuiHandler.h"
 #include<string>
+#include "../Quadtree/Quadtree.h"
 //#include"../LevelGeneration/LevelGenerator.h"
 
 namespace Aen {
@@ -57,6 +58,22 @@ namespace Aen {
 
 		static const bool GetVSync() {
 			return m_vSync;
+		}
+
+		static void StartQuadtree(const unsigned& level,
+			const unsigned& maxLevel, const unsigned& capacity) {
+			if (m_pQuadtree)
+				delete m_pQuadtree;
+			else
+			{
+				m_pQuadtree = AEN_NEW Quadtree(level, maxLevel, capacity);
+				m_pQuadtree->Initialize();
+			}
+		}
+
+		static void StopQuadtree() {
+			if (m_pQuadtree)
+				delete m_pQuadtree;
 		}
 
 		friend class GameLoop;
@@ -180,7 +197,7 @@ namespace Aen {
 		static bool m_vSync;
 
 		static Renderer* m_pRenderer;
-
+		static Quadtree* m_pQuadtree;
 	};
 
 

@@ -2,7 +2,6 @@
 #include"../Graphics/RenderSystem.h"
 #include"../Graphics/Component/EntityHandler.h"
 #include"../Quadtree/Quadtree.h"
-#include"../../../Client/src/States/States.h"
 #include<thread>
 
 namespace Aen {
@@ -67,7 +66,6 @@ namespace Aen {
 		void Render();
 		
 		std::array<std::vector<Drawable*>, 7> m_drawTable;
-		Quadtree m_quadtree;
 		std::vector<QuadOutput> m_quadtreeOutput;
 
 		Window& m_window;

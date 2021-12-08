@@ -16,6 +16,8 @@ Gameplay::~Gameplay() {
 	}
 	m_pSkeleBoss, m_plane, m_UI = nullptr;
 
+	Aen::GlobalSettings::StopQuadtree();
+
 	Aen::Resource::RemoveAllMaterials();
 	Aen::Resource::RemoveAllMeshes();
 	Aen::Resource::RemoveAllTextures();
@@ -290,6 +292,8 @@ void Gameplay::Initialize()
 	mp_uiComp->SetPicSize(0, 0, 3);
 	mp_uiComp->SetButtonSize(0, 0, 0);
 	mp_uiComp->SetButtonSize(0, 0, 1);
+
+	Aen::GlobalSettings::StartQuadtree(0, 5, 2);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
