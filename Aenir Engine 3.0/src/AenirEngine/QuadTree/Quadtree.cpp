@@ -56,14 +56,14 @@ namespace Aen
 
 					NodeStruct* tempObj = AEN_NEW NodeStruct(j.first, layer, box);
 					mp_root->Insert(tempObj);
-					m_boundingVolStructs.push_back(tempObj);
+					m_boundingVolStructs.emplace_back(tempObj);
 				}
 			}
 		}
 
 	}
 
-	std::vector<QuadOutput*>& Quadtree::Update()
+	void Quadtree::Update()
 	{
 		if (GlobalSettings::GetMainCamera())
 		{
@@ -95,7 +95,7 @@ namespace Aen
 	
 			//}
 		}
-		return m_quadObjectsToRender;
+		//return m_quadObjectsToRender;
 	}
 
 	

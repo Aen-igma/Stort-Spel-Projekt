@@ -88,7 +88,7 @@ namespace Aen {
 		m_lGrid.Create(m_dispatchInfo.GetData().numThreads, DXGI_FORMAT_R32G32_UINT);
 		m_frustumGrid.Create(128u, size);
 
-		m_quadtree.Initialize();
+		//m_quadtree.Initialize();
 
 	}
 

@@ -14,7 +14,7 @@ namespace Aen
 
 
 		void Initialize();
-		std::vector<QuadOutput*>& Update();
+		void Update();
 	private:
 		Node* mp_root;
 		std::vector<NodeStruct*> m_boundingVolStructs;
