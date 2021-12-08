@@ -171,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Door.h" />
+    <ClInclude Include="src\Actors\Exit.h" />
     <ClInclude Include="src\Actors\Gravestone.h" />
     <ClInclude Include="src\States\Credits.h" />
     <ClInclude Include="src\Actors\Chest.h" />
@@ -191,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Actors\Door.cpp" />
+    <ClCompile Include="src\Actors\Exit.cpp" />
     <ClCompile Include="src\Actors\Gravestone.cpp" />
     <ClCompile Include="src\States\Credits.cpp" />
     <ClCompile Include="src\Actors\Chest.cpp" />

@@ -156,23 +156,7 @@ void Gameplay::Initialize()
 	m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(ChestPos.y + 10.f);
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
-
 	m_chest.SetType(Type::Open);
-
-	Aen::Mesh& white = Aen::Resource::CreateMesh("PLANE");
-	white.Load(AEN_MODEL_DIR("plane.fbx"));
-
-	Aen::Material& whiteMat = Aen::Resource::CreateMaterial("White");
-	whiteMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("White.png"));
-	whiteMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));
-	whiteMat["InnerEdgeColor"] = Aen::Color::White;
-	whiteMat["OuterEdgeColor"] = Aen::Color::White;
-	whiteMat["GlowColor"] = Aen::Color::White;
-
-	m_exit = &Aen::EntityHandler::CreateEntity();
-	m_exit->AddComponent<Aen::MeshInstance>();
-	m_exit->GetComponent<Aen::MeshInstance>().SetMesh("PLANE");
-	m_exit->GetComponent<Aen::MeshInstance>().SetMaterial("White");
 
 	m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
 	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
@@ -183,22 +167,22 @@ void Gameplay::Initialize()
 	if (roomNormal == 1) { //north
 		m_grave.GetEntity()->SetRot(0, 180, 0);
 		m_door.GetEntity()->SetRot(0, 180, 0);
-		m_exit->SetRot(-90, -90, 90);
+		m_exit.GetEntity()->SetRot(-90, -90, 90);
 	}
 	else if (roomNormal == 10) {//east
 		m_grave.GetEntity()->SetRot(0, 90, 0);
 		m_door.GetEntity()->SetRot(0, 90, 0);
-		m_exit->SetRot(90, 180, 90);
+		m_exit.GetEntity()->SetRot(90, 180, 90);
 	}
 	else if (roomNormal == 100) {//south
 		m_grave.GetEntity()->SetRot(0, 0, 0);
 		m_door.GetEntity()->SetRot(0, 0, 0);
-		m_exit->SetRot(-90, 90, 90);
+		m_exit.GetEntity()->SetRot(-90, 90, 90);
 	}
 	else if (roomNormal == 1000) {//west
 		m_grave.GetEntity()->SetRot(0, -90, 0);
 		m_door.GetEntity()->SetRot(0, -90, 0);
-		m_exit->SetRot(-90, 0, 90);
+		m_exit.GetEntity()->SetRot(-90, 0, 90);
 	}
 
 	if (itemNormal == 1) { //north
@@ -218,9 +202,8 @@ void Gameplay::Initialize()
 	m_grave.GetEntity()->SetPos(doorPos);
 	m_grave.GetEntity()->MoveRelative(0.f, 0, -15.f);
 
-	m_exit->SetScale(0, 1, 100);
-	m_exit->SetPos(doorPos.x, 3.f, doorPos.z);
-	m_exit->MoveRelative(0, -20.5, 0);
+	m_exit.GetEntity()->SetPos(doorPos.x, 3.f, doorPos.z);
+	m_exit.GetEntity()->MoveRelative(0, -20.5, 0);
 
 	doorPos = m_door.GetEntity()->GetPos();
 	//m_attack->SetParent(*m_player);
@@ -399,6 +382,7 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.Update(m_enemyQueue, deltaTime);
 
+	m_exit.Update(deltaTime);
 	m_chest.Update(deltaTime, m_player.GetEntity());
 	m_door.Update(deltaTime, m_player.GetEntity());
 	m_grave.Update(deltaTime, m_player.GetEntity());
@@ -428,17 +412,8 @@ void Gameplay::Update(const float& deltaTime) {
 			m_door.SetType(Type::Opening);
 		}
 		else if (m_grave.GetNear() && m_grave.GetType() == Type::Open) {
-			dum = true;
 			m_grave.SetType(Type::Closed);
-		}
-	}
-
-	if (dum) {
-		scaleSize += deltaTime;
-		m_exit->SetScale(scaleSize, 1, 100);
-
-		if (scaleSize > 10.f) {
-			dum = false;
+			m_exit.SetType(Type::Opening);
 		}
 	}
 
