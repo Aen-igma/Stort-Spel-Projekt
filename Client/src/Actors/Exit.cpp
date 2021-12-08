@@ -1,19 +1,19 @@
 #include "Exit.h"
 
-Portal::Portal()
+Portal::Portal():m_Mat(Aen::Resource::CreateMaterial("White"))
 {
 	m_scale = 0;
+	m_Opacity = 0.f;
 	m_near = false;
 	m_exit = &Aen::EntityHandler::CreateEntity();
 	Aen::Mesh& white = Aen::Resource::CreateMesh("PLANE");
 	white.Load(AEN_MODEL_DIR("plane.fbx"));
 
-	Aen::Material& whiteMat = Aen::Resource::CreateMaterial("White");
-	whiteMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("White.png"));
-	whiteMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));
-	whiteMat["InnerEdgeColor"] = Aen::Color::White;
-	whiteMat["OuterEdgeColor"] = Aen::Color::White;
-	whiteMat["GlowColor"] = Aen::Color::White;
+	m_Mat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("White.png"));
+	m_Mat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));
+	m_Mat["InnerEdgeColor"] = Aen::Color::White;
+	m_Mat["OuterEdgeColor"] = Aen::Color::White;
+	m_Mat["GlowColor"] = Aen::Color::White;
 
 	m_exit->AddComponent<Aen::MeshInstance>();
 	m_exit->GetComponent<Aen::MeshInstance>().SetMesh("PLANE");
@@ -32,7 +32,6 @@ void Portal::Update(const float& deltaTime)
 	if (m_type == Type::Opening) {
 
 		m_scale += deltaTime * 2.f;
-
 		m_exit->SetScale(m_scale, 1, 100);
 
 		if (m_scale > 10.f) {

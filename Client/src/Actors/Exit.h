@@ -17,5 +17,7 @@ public:
 	virtual void SetType(const Type& type) override;
 private:
 	Aen::Entity* m_exit;
+	Aen::Material& m_Mat;
 	float m_scale;
+	float m_Opacity;
 };

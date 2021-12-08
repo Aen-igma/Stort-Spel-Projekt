@@ -158,6 +158,12 @@ void Gameplay::Initialize()
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 
+	bill = &Aen::EntityHandler::CreateEntity();
+	bill->AddComponent<Aen::MeshInstance>();
+	bill->GetComponent<Aen::MeshInstance>().SetMesh("PLANE");
+	bill->GetComponent<Aen::MeshInstance>().SetMaterial("White");
+	bill->SetPos(doorPos.x, 3.f, doorPos.z);
+
 	m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
 	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
@@ -227,7 +233,6 @@ void Gameplay::Initialize()
 	{
 		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(tempLskels[i]));
 	}
-
 
 	//m_attack->SetParent(*m_player);
 
@@ -381,6 +386,7 @@ void Gameplay::Update(const float& deltaTime) {
 	// ---------------------------------- Enemies --------------------------------------- //
 
 	m_player.Update(m_enemyQueue, deltaTime);
+	bill->SetRot(- 90.f, m_player.GetCamera()->GetRot().y + 180.f, 0);
 
 	m_exit.Update(deltaTime);
 	m_chest.Update(deltaTime, m_player.GetEntity());

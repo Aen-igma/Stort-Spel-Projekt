@@ -52,6 +52,7 @@ private:
     Portal m_exit;
     Aen::Vec3f doorPos;
     bool m_beatBoss;
+    Aen::Entity* bill;
     Aen::Vec3f m_bossPos;
 
     std::queue<EventData> m_eventQueue;
