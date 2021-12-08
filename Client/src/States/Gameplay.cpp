@@ -60,8 +60,8 @@ void Gameplay::Initialize()
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 
 	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
-	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Flames2.png"));
-	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FlamesOppacity.png"));
+	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Flames.png"));
+	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FlamesOppacity1.png"));
 
 	/*enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
@@ -164,9 +164,10 @@ void Gameplay::Initialize()
 		m_PS = &Aen::EntityHandler::CreateEntity();
 		m_PS->AddComponent<Aen::PSSystemcomponent>();
 		m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
-		m_PS->GetComponent<Aen::PSSystemcomponent>().SetHeightLimit(7.0f);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetHeightLimit(6.0f);
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(particle->translation[0], particle->translation[1], particle->translation[2]);
-		m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(5);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetVelocity(0,0,0);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(1);
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
 	}
 	

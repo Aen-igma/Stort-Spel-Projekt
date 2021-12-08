@@ -128,6 +128,13 @@ namespace Aen
 		this->m_CSInputBuffer.velocity.z = z;
 	}
 
+	void PSSystemcomponent::SetAcceleration(float x, float y, float z)
+	{
+		this->m_CSInputBuffer.acceleration.x = x;
+		this->m_CSInputBuffer.acceleration.y = y;
+		this->m_CSInputBuffer.acceleration.z = z;
+	}
+
 
 
 	bool PSSystemcomponent::activate()
@@ -151,7 +158,7 @@ namespace Aen
 		this->m_CSInputBuffer.lifeTime = 0.0f;
 		this->m_CSInputBuffer.deltaTime = 0.0f;
 		this->m_CSInputBuffer.velocity = { 0.0f,0.0f,0.0f };
-	
+		
 	}
 	void PSSystemcomponent::SetHeightLimit(float height)
 	{

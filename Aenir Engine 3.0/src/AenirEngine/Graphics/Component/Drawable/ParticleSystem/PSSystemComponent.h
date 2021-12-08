@@ -40,11 +40,12 @@ namespace Aen
 		//Member vairables that we dont need yet
 		void SetNrOfPS(UINT nr);
 		void SetVelocity(float x,float y,float z);
+		void SetAcceleration(float x, float y, float z);
 		void EmitRandom(float frameTime);
-		bool activate();
 		void SetEmitPos(float x, float y, float z);
 		void Initialize();
 		void SetHeightLimit(float height);
+		bool activate();
 
 		//Texture
 		void LoadAndSetTexture(const std::string& dir);
@@ -63,7 +64,6 @@ namespace Aen
 		friend class Renderer;
 		friend class Entity;
 		friend class GCore;
-
 
 
 	private:
