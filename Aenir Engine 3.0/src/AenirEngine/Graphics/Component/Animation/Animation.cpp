@@ -23,7 +23,7 @@ namespace Aen {
 
 		std::vector<DWORD> indices;
 		std::vector<VertexAnimation> verts;
-		
+
 		for (int i = 0; i < m_boneArray.size(); i++) {
 			if (m_boneArray[i].parentID != -1) {
 				indices.emplace_back(m_boneArray[i].parentID);
@@ -38,52 +38,34 @@ namespace Aen {
 		}
 
 		m_indexBuffer.Create(indices.data(), indices.size());
-		if(!vBuff.Create(verts.data(), verts.size()))
+		if (!vBuff.Create(verts.data(), verts.size()))
 			throw;
 
 		m_finalMatrix.Create(m_boneArray.size());
 		m_finalMatrix.UpdateBuffer();
 	}
 
-	void Animation::CalculateBlendAnimation(Animation* pBase, Animation* pLayer, const float& currentTimeBase, const float& currentTimeLayered, const sm::Matrix& parentTransform, const float& blendFactor)
+	void Animation::AddAnimationLayer(Animation* pLayer)
 	{
-		// Blanda 2 matriser
-		UINT boneArraySize = m_boneArray.size();
-		for (int i = 0; i < boneArraySize; i++)
-		{
-			const sm::Quaternion rot0 = DirectX::XMQuaternionRotationMatrix(pBase->m_boneArray[i].localMatrix.smMat);
-			const sm::Quaternion rot1 = DirectX::XMQuaternionRotationMatrix(pLayer->m_boneArray[i].localMatrix.smMat);
-			const sm::Quaternion finalRot = DirectX::XMQuaternionSlerp(rot0, rot1, blendFactor);
-
-			const sm::Matrix blendMatrix = DirectX::XMMatrixRotationQuaternion(finalRot);
-			Mat4f ncm;
-			ncm.smMat = blendMatrix;
-			Mat4f blendM(ncm);
-			blendM[3].smVec = (1.f - blendFactor) * pBase->m_RootNode.transform[3].smVec + pLayer->m_RootNode.transform[3].smVec * blendFactor;
-
-			const sm::Matrix globalTransformation = parentTransform * blendMatrix;
-
-			//const auto& boneInfoMap = pBase->m_boneArray;
-			//if (boneInfoMap[i].boneID != boneInfoMap.back().boneID)
-			//{
-			//	const sm::Matrix& offset = boneInfoMap[i].offsetMatrix.smMat;
-			//	const sm::Matrix& offsetLayer = pLayer->m_boneArray[i].offsetMatrix.smMat;
-
-			//	// Blend again
-			//	const sm::Quaternion rot0 = DirectX::XMQuaternionRotationMatrix(offset);
-			//	const sm::Quaternion rot1 = DirectX::XMQuaternionRotationMatrix(offsetLayer);
-			//	const sm::Quaternion finalRot = DirectX::XMQuaternionSlerp(rot0, rot1, blendFactor);
-
-			//	const sm::Matrix blendMatrix = DirectX::XMMatrixRotationQuaternion(finalRot);
-			//	Mat4f blendM(ncm);
-			//	blendM[3].smVec = (1.f - blendFactor) * pBase->m_RootNode.transform[3].smVec + pLayer->m_RootNode.transform[3].smVec * blendFactor;
-
-			//	m_finalMatrix.GetData(boneInfoMap[i].boneID).smMat = globalTransformation * blendM.smMat;
-			//}
-		}
-		
+		mp_layer = pLayer;
+		m_isBlendAnimatrion = true;
+	}
+	void Animation::SetBlendFactor(const float& blendFactor)
+	{
+		m_blendFactor = blendFactor;
 	}
 
-	Animation::~Animation() {
-	}
+
+const bool Animation::GetIsBlendAnimation() const
+{
+	return m_isBlendAnimatrion;
+}
+const float Animation::GetBlendFactor() const
+{
+	if (m_isBlendAnimatrion)
+		return m_blendFactor;
+	else return 0.f;
+}
+Animation::~Animation() {
+}
 }

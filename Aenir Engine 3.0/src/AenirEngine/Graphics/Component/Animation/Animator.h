@@ -9,7 +9,6 @@ namespace Aen {
 	class AEN_DECLSPEC Animator : public Drawable{
 	private:
 		
-		using True = false;
 		using ResClock = std::chrono::high_resolution_clock;
 		using TimePoint = std::chrono::high_resolution_clock::time_point;
 		using DurationLD = std::chrono::duration<long double>;
@@ -34,7 +33,6 @@ namespace Aen {
 		Animator(const size_t& id);
 		void AddAnimation(Animation& anim, const std::string& name);
 		void AddAnimation(const std::string& animName, const std::string& name);
-		void AddAnimationmBlend(const std::string& animNameBase, const std::string& animNameLayer, const std::string& name);
 		void SetAnimation(const std::string& animName);
 		void SetFrameRate(const int& frameRate);
 		void SetAnimationScale(const float& newScale);

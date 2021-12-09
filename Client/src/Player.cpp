@@ -88,10 +88,11 @@ Player::Player()
 	mp_charCont = &m_player->GetComponent<Aen::CharacterController>();
 	mp_charCont->Resize(2.3f);
 
-	Aen::Animation& protagIdle = Aen::Resource::CreateAnimation("protagIdle");
-	protagIdle.LoadAnimation(AEN_MODEL_DIR("Protagonist_Idle.fbx"));
+	m_protagIdleToRun = &Aen::Resource::CreateAnimation("protagIdle");
+	m_protagIdleToRun->LoadAnimation(AEN_MODEL_DIR("Protagonist_Idle.fbx"));
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
 	protagRun.LoadAnimation(AEN_MODEL_DIR("Protagonist_Run.fbx"));
+	m_protagIdleToRun->AddAnimationLayer(&protagRun);
 	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
 	protagDash.LoadAnimation(AEN_MODEL_DIR("Protagonist_Dash.fbx"));
 	Aen::Animation& protagAttack = Aen::Resource::CreateAnimation("protagAttack");
@@ -106,7 +107,7 @@ Player::Player()
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Metal1", metal);
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
 	m_playerMeshHolder->AddComponent<Aen::Animator>();
-	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagIdle, "Idle");
+	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(*m_protagIdleToRun, "Idle");
 	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagRun, "Run");
 	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagDash, "Dash");
 	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagAttack, "Attack");
@@ -191,7 +192,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	else
 		side.x = Aen::Lerp(side.x, axis.x * 0.3f, 0.05f);
 	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
-
 
 #ifdef _DEBUG
 	if (Aen::Input::KeyPress(Aen::Key::SHIFT)) m_movementSpeed = 24.f;

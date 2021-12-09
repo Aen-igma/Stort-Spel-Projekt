@@ -45,6 +45,7 @@ namespace Aen {
 	void Animator::GetAnimation(std::vector<Mat4f>& mat)
 	{
 		Animation* animation = m_animationList[animationIndex].second;
+		Animation* aniLayer = animation->mp_layer;
 
 		int sizeBA = animation->m_boneArray.size();
 		int numFrames = animation->m_timeStamp.size();
@@ -54,7 +55,20 @@ namespace Aen {
 		if (duration.count() * m_scale > animation->m_duration) {
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[numFrames-1].rotation;
+				//Mat4f currentFrame = animation->m_keyFrames.at(bName)[numFrames-1].rotation;
+				Mat4f currentFrame;
+				if (animation->GetIsBlendAnimation())
+				{
+					Vec4f quat = animation->m_keyFrames.at(bName)[numFrames - 1].quatOrientation;
+					sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
+					quat = aniLayer->m_keyFrames.at(bName)[numFrames - 1].quatOrientation;
+					sm::Quaternion rot1 = { quat.x, quat.y, quat.z, quat.w };
+					sm::Quaternion blendRot = blendRot.Lerp(rot0, rot1, animation->GetBlendFactor());
+
+					currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(blendRot);
+				}
+				else
+					currentFrame = animation->m_keyFrames.at(bName)[numFrames - 1].rotation;
 
 				mat.emplace_back(currentFrame);
 			}
@@ -63,16 +77,22 @@ namespace Aen {
 			m_currentTime = ResClock::now();
 		} else {
 
-			/*float f = duration.count() * m_scale - (animation->m_timeStamp[m_currentFrame]);
-			float h = (animation->m_timeStamp[m_currentFrame + 1]) - (animation->m_timeStamp[m_currentFrame]);
-			float t = f / h;*/
-
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].rotation;
-				//Mat4f nextFrame = animation->m_keyFrames.at(bName)[m_currentFrame + 1].rotation;
+				Mat4f currentFrame;
+				if (animation->GetIsBlendAnimation())
+				{
+					Vec4f quat = animation->m_keyFrames.at(bName)[m_currentFrame].quatOrientation;
+					sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
+					quat = aniLayer->m_keyFrames.at(bName)[m_currentFrame].quatOrientation;
+					sm::Quaternion rot1 = { quat.x, quat.y, quat.z, quat.w };
+					sm::Quaternion blendRot = blendRot.Slerp(rot0, rot1, animation->GetBlendFactor());
 
-				//mat.emplace_back(Lerp(currentFrame, nextFrame, t));
+					currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(blendRot);
+				}
+				else
+					currentFrame = animation->m_keyFrames.at(bName)[m_currentFrame].rotation;
+
 				mat.emplace_back(currentFrame);
 			}
 
@@ -157,12 +177,6 @@ namespace Aen {
 		if (!Resource::AnimationExist(animName)) throw;
 		std::pair<std::string, Animation*> animation(name, &Resource::GetAnimation(animName));
 		m_animationList.emplace_back(animation);
-	}
-
-	void Animator::AddAnimationmBlend(const std::string& animNameBase, const std::string& animNameLayer, const std::string& name)
-	{
-		if (!HasAnimation)
-			return;
 	}
 
 	void Animator::SetAnimation(const std::string& animName)

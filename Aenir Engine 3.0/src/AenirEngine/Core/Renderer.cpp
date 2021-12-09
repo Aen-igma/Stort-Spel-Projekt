@@ -8,7 +8,7 @@ namespace Aen {
 		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
 		m_backBuffer(), m_viewPort(), m_depthMap(m_window), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
-		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
+		m_rasterizerState(FillMode::Wireframe, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
 		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP), m_toggleView(false) {}
 
 	void Renderer::Initialize() {

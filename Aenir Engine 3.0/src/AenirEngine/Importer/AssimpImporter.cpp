@@ -385,6 +385,7 @@ void Aen::AssimpImport::ProcAnimation(const aiScene* scene, std::unordered_map<s
 					aiQuaternion orient;
 					orient = scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mValue;
 					data[index].rotation = MatQuaternion(orient.x, orient.y, orient.z, orient.w);
+					data[index].quatOrientation = { orient.x, orient.y, orient.z, orient.w };
 					timeStamp[index] = keysPerSec * (float)index;
 				}
 			}
