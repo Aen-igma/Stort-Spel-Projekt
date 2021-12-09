@@ -61,7 +61,7 @@ namespace Aen {
 		/// 0.0f - 1.0f
 		/// </summary>
 		void SetBlendFactor(const float& blendFactor);
-		const bool GetIsBlendAnimation() const;
+		const bool IsBlendAnimation() const;
 		const float GetBlendFactor() const;
 	private:
 

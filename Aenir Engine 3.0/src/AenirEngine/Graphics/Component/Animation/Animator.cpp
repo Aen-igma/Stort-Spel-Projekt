@@ -82,22 +82,58 @@ namespace Aen {
 			float t = f / h;
 
 			for (int i = 0; i < sizeBA; i++) {
+				Vec3f translation = Vec3f::zero;
 				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[fFrame].rotation;
-				Mat4f nextFrame = animation->m_keyFrames.at(bName)[sFrame].rotation;
+				Mat4f currentFrame;
+				Mat4f nextFrame;
+				if (animation->IsBlendAnimation() && i != 0)
+				{
+					//if (i == 0);
+					//{
+					//	translation.smVec = animation->m_keyFrames.at(bName)[fFrame].rotation.smMat.Translation();
+					//}
+					Vec4f quat = animation->m_keyFrames.at(bName)[fFrame].quatOrientation;
+					sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
+					//quat = aniLayer->m_keyFrames.at(bName)[numFrames - 1].quatOrientation;
+					//sm::Quaternion rot1 = { quat.x, quat.y, quat.z, quat.w };
+					//sm::Quaternion blendRot = blendRot.Lerp(rot0, rot1, animation->GetBlendFactor());
 
-				mat.emplace_back(Lerp(currentFrame, nextFrame, t));
+					//currentFrame.smMat.Translation(translation.smVec);
+					currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(rot0);
+					//nextFrame.smMat = 
+				}
+				else
+				{
+					currentFrame = animation->m_keyFrames.at(bName)[fFrame].rotation;
+					//nextFrame = animation->m_keyFrames.at(bName)[sFrame].rotation;
+				}
+					//currentFrame = animation->m_keyFrames.at(bName)[fFrame].rotation;
+					nextFrame = animation->m_keyFrames.at(bName)[sFrame].rotation;
+
+				mat.emplace_back(currentFrame);
+				//mat.emplace_back(Lerp(currentFrame, nextFrame, t));
 			}
 
 			m_time += deltaTime;
 		} else {
-
+			Vec3f translation = Vec3f::zero;
 			if(m_loop)
 				m_time = 0.f;
 
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame = animation->m_keyFrames.at(bName)[numFrames - 1].rotation;
+				if (animation->IsBlendAnimation() && i != 0)
+				{
+					//if (i == 0)
+					//{
+					//	translation.smVec = animation->m_keyFrames.at(bName)[numFrames - 1].rotation.smMat.Translation();
+					//}
+					Vec4f quat = animation->m_keyFrames.at(bName)[numFrames - 1].quatOrientation;
+					sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
+					//currentFrame.smMat.Translation(translation.smVec);
+					currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(rot0);
+				}
 
 				mat.emplace_back(currentFrame);
 			}

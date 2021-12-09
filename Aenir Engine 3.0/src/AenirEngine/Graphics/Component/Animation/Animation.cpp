@@ -56,7 +56,7 @@ namespace Aen {
 	}
 
 
-const bool Animation::GetIsBlendAnimation() const
+const bool Animation::IsBlendAnimation() const
 {
 	return m_isBlendAnimatrion;
 }
