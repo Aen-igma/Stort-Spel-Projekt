@@ -13,10 +13,9 @@ namespace Aen
 		Node* GetRoot();
 
 		void Initialize();
-		std::vector<NodeStruct>& Update();
+		std::vector<NodeStruct>& Update(Renderer& renderer);
 	private:
 		Node* mp_root;
-		std::vector<NodeStruct*> m_treeStructure;
 		std::vector<NodeStruct> m_autoPass;
 		std::vector<NodeStruct> m_quadObjectsToRender;
 		DirectX::BoundingFrustum m_cameraFrustrum;

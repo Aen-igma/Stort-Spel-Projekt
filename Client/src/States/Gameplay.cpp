@@ -197,6 +197,7 @@ void Gameplay::Initialize()
 	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 	doorPos = m_door.GetEntity()->GetPos();
+
 	//m_attack->SetParent(*m_player);
 	//printf("");
 
@@ -294,12 +295,12 @@ void Gameplay::Initialize()
 	mp_uiComp->SetButtonSize(0, 0, 1);
 
 	//------QUADTREE------//
-	Aen::GlobalSettings::StartQuadtree(0, 5, 2);
+	Aen::GlobalSettings::StartQuadtree(0, 2, 4);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	SetWin(false);
-	m_bossHP = m_pSkeleBoss->GetHealth();
+	//m_bossHP = m_pSkeleBoss->GetHealth();
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -376,8 +377,6 @@ void Gameplay::Update(const float& deltaTime) {
 	// ---------------------------------- Enemies --------------------------------------- //
 
 	m_player.Update(m_enemyQueue, deltaTime);
-
-	Aen::GlobalSettings::SetPlayerPos(m_player.GetEntity()->GetPos());
 
 	m_chest.Update(deltaTime, m_player.GetEntity());
 	m_door.Update(deltaTime, m_player.GetEntity());
@@ -483,6 +482,8 @@ void Gameplay::Update(const float& deltaTime) {
 		}
 	}
 
+	//Aen::GlobalSettings::SetPlayerPos(m_player.GetEntity()->GetPos());
+	
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	// ------------------------------------- States -------------------------------------- //

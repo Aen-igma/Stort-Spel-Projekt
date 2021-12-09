@@ -94,12 +94,12 @@ namespace Aen {
 		if (GlobalSettings::m_pQuadtree)
 		{
 			//--- Quadtree Culling ---//
-			m_quadtreeOutput = GlobalSettings::m_pQuadtree->Update();
+			m_quadtreeOutput = GlobalSettings::m_pQuadtree->Update(*this);
 
-			/*for (auto& i : m_quadtreeOutput)
+			for (auto& i : m_quadtreeOutput)
 			{
 				m_drawTable[i.m_renderLayer].emplace_back(i.mp_drawable);
-			}*/
+			}
 
 			/*for (auto& i : m_quadtreeOutput)
 			{
@@ -114,13 +114,13 @@ namespace Aen {
 			//--- View Frustum Culling ---//
 			//for (uint32_t i = 0u; i < 7u; i++)
 			//{
-				for (auto & k : m_quadtreeOutput)
+				/*for (auto & k : m_quadtreeOutput)
 				{
 					if (k.mp_drawable->FrustumCull(*this))
 					{
 						m_drawTable[k.m_renderLayer].emplace_back(k.mp_drawable);
 					}
-				}
+				}*/
 			//}
 		}
 		else

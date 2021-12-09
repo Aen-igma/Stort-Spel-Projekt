@@ -43,7 +43,7 @@ public:
 	Node(DirectX::BoundingBox& quad, const unsigned& level = 0,
 		const unsigned& max_level = 1, const unsigned& capacity = 3);
 	~Node();
-	void Insert(NodeStruct*& obj);
+	void Insert(const NodeStruct& obj);
 	void FrustumTest(const DirectX::BoundingFrustum &other, std::vector<NodeStruct>& output);
 	void PositionTest(std::vector<NodeStruct>& output);
 	void SetPlayerPos(Aen::Vec3f playerPos);
@@ -54,7 +54,7 @@ public:
 private:
 	Node* mp_children[4] = { nullptr };
 	DirectX::BoundingBox m_areaQuad;
-	std::vector<NodeStruct*> m_objs;
+	std::vector<NodeStruct> m_objs;
 	Aen::Vec3f m_playerPosition;
 	unsigned m_level;
 	unsigned m_maxLevel;

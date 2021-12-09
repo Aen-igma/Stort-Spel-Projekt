@@ -518,6 +518,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 						
 					e[i] = nullptr;
 					e.erase(e.begin() + i);
+				
 				}
 			}
 		}

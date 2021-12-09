@@ -68,7 +68,7 @@ Node::~Node()
 	}
 }
 
-void Node::Insert(NodeStruct*& obj)
+void Node::Insert(const NodeStruct& obj)
 {
 	if(!mp_children[0]) //If nullptr then this is a leaf 
 	{
@@ -80,7 +80,7 @@ void Node::Insert(NodeStruct*& obj)
 		{
 			if(m_level < m_maxLevel)
 			{
-				Subdivide(); //
+				Subdivide(); 
 				Insert(obj); //Skickar obj tillbaka för att checka igen om det är ett leaf
 			}
 		}
@@ -89,7 +89,7 @@ void Node::Insert(NodeStruct*& obj)
 	{
 		for (int i = 0; i < 4; i++)//Kollar igenom alla children
 		{
-			if (mp_children[i]->m_areaQuad.Intersects(obj->m_boundBox))
+			if (mp_children[i]->m_areaQuad.Intersects(obj.m_boundBox))
 			{
 				mp_children[i]->Insert(obj);
 			}
@@ -132,14 +132,15 @@ void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeSt
 {
 	if (!mp_children[0])
 	{
-		for (auto & obj : m_objs)
+		if (this->m_areaQuad.Intersects(other))
 		{
-				if(other.Intersects(obj->m_boundBox))
+			for (auto & obj : m_objs)
+			{
+				if(other.Intersects(obj.m_boundBox))
 				{
-					/*this->m_tempQuadObj = QuadOutput(obj->m_ID, obj->m_renderLayer);
-					output.emplace_back(&m_tempQuadObj);*/
-					output.emplace_back(NodeStruct(obj->m_ID, obj->m_renderLayer, obj->m_boundBox, obj->m_centerPoint, obj->mp_drawable));
+					output.emplace_back(NodeStruct(obj.m_ID, obj.m_renderLayer, obj.m_boundBox, obj.m_centerPoint, obj.mp_drawable));
 				}
+			}
 		}
 	}
 	else
@@ -160,11 +161,11 @@ void Node::PositionTest(std::vector<NodeStruct>& output)
 	{
 		for (auto& obj : m_objs)
 		{
-			eDir = eDir - obj->m_centerPoint;
+			eDir = eDir - obj.m_centerPoint;
 			dist = eDir.Magnitude();
 			if (dist <= 10.f)
 			{
-				output.emplace_back(NodeStruct(obj->m_ID, obj->m_renderLayer, obj->m_boundBox, obj->m_centerPoint, obj->mp_drawable));
+				output.emplace_back(NodeStruct(obj.m_ID, obj.m_renderLayer, obj.m_boundBox, obj.m_centerPoint, obj.mp_drawable));
 			}
 		}
 	}
@@ -192,37 +193,36 @@ void Node::Subdivide()
 {
 	//------------- Make child quads -------------------//
 	this->m_level++;
-	DirectX::XMFLOAT3 tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x / 2, m_areaQuad.Center.y / 2, m_areaQuad.Center.z);
-	DirectX::XMFLOAT3 tempExtends = DirectX::XMFLOAT3(m_areaQuad.Extents.x / 2, m_areaQuad.Extents.y / 2, m_areaQuad.Extents.z);
+	DirectX::XMFLOAT3 tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x / 2.f, m_areaQuad.Center.y, m_areaQuad.Center.z / 2.f);
+	DirectX::XMFLOAT3 tempExtends = DirectX::XMFLOAT3(m_areaQuad.Extents.x / 2.f, m_areaQuad.Extents.y, m_areaQuad.Extents.z / 2.f);
 	DirectX::BoundingBox tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
 
 	mp_children[0] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
-
-	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x/2,
-		m_areaQuad.Center.y - m_areaQuad.Extents.y/2, m_areaQuad.Center.z);
+	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
+		m_areaQuad.Center.y, m_areaQuad.Center.z - m_areaQuad.Extents.z / 2.f);
 	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
 	mp_children[1] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
-	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x - m_areaQuad.Extents.x/2,
-		m_areaQuad.Center.y + m_areaQuad.Extents.y/2, m_areaQuad.Center.z);
+	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x - m_areaQuad.Extents.x / 2.f,
+		m_areaQuad.Center.y, m_areaQuad.Center.z + m_areaQuad.Extents.z / 2.f);
 	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
 	mp_children[2] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
-	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x/2,
-		m_areaQuad.Center.y + m_areaQuad.Extents.y/2, m_areaQuad.Center.z);
+	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
+		m_areaQuad.Center.y, m_areaQuad.Center.z + m_areaQuad.Extents.z / 2.f);
 	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
 	mp_children[3] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
 	//------------- Check which objects is in which quad ---------------//
-	for (auto&& box : m_objs)
+	for (auto& box : m_objs)
 	{
-		if (mp_children[0]->m_areaQuad.Intersects(box->m_boundBox))
+		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox))
 			mp_children[0]->Insert(box);
-		if (mp_children[1]->m_areaQuad.Intersects(box->m_boundBox))
+		if (mp_children[1]->m_areaQuad.Intersects(box.m_boundBox))
 			mp_children[1]->Insert(box);
-		if (mp_children[2]->m_areaQuad.Intersects(box->m_boundBox))
+		if (mp_children[2]->m_areaQuad.Intersects(box.m_boundBox))
 			mp_children[2]->Insert(box);
-		if (mp_children[3]->m_areaQuad.Intersects(box->m_boundBox))
+		if (mp_children[3]->m_areaQuad.Intersects(box.m_boundBox))
 			mp_children[3]->Insert(box);
 	}
 	

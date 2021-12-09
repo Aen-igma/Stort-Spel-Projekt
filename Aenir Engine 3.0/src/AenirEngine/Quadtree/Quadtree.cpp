@@ -24,10 +24,6 @@ namespace Aen
 	Quadtree::~Quadtree()
 	{
 		delete mp_root;
-		for (auto& b : m_treeStructure)
-		{
-			delete b;
-		}
 	}
 
 	Node* Quadtree::GetRoot()
@@ -49,9 +45,8 @@ namespace Aen
 				{
 					box = ComponentHandler::GetMeshInstance(j.first).GetBox();
 					centerPoint = Aen::Vec3f(box.Center.x, box.Center.y, box.Center.z);
-					NodeStruct* tempObj = AEN_NEW NodeStruct(j.first, i, box, centerPoint, j.second);
+					NodeStruct tempObj(j.first, i, box, centerPoint, j.second);
 					mp_root->Insert(tempObj);
-					m_treeStructure.emplace_back(tempObj);
 				}
 				else
 				{	
@@ -62,30 +57,37 @@ namespace Aen
 
 	}
 
-	std::vector<NodeStruct>& Quadtree::Update()
+	std::vector<NodeStruct>& Quadtree::Update(Renderer& renderer)
 	{
 		if (GlobalSettings::GetMainCamera())
 		{
 			m_quadObjectsToRender.clear();
-			for (auto& i : m_autoPass)
+
+			if (m_autoPass.size() > ComponentHandler::m_meshLayer[3].size())
 			{
-				m_quadObjectsToRender.emplace_back(i);
-			}
-			//m_quadObjectsToRender.swap(m_autoPass);
-
-			mp_root->PositionTest(m_quadObjectsToRender);
-
-			//m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
-			//mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
-
-			/*for (auto& i : m_quadObjectsToRender)
-			{
-				for (auto& j : ComponentHandler::m_meshLayer[i->m_renderLayer])
+				m_autoPass.clear();
+				DirectX::BoundingBox box;
+				Aen::Vec3f centerPoint;
+				for (uint32_t i = 3u; i < 7u; i++)
 				{
-					if (j.second->GetId() == i->m_ID)
-						drawTable[i->m_renderLayer].emplace_back(j.second);
+					for (auto& j : ComponentHandler::m_meshLayer[i])
+					{
+						m_autoPass.emplace_back(NodeStruct(j.first, i, box, centerPoint, j.second));
+					}
 				}
-			}*/
+			}
+
+			for (auto& i : m_autoPass)
+			{	
+				if(i.mp_drawable->FrustumCull(renderer))
+					m_quadObjectsToRender.emplace_back(i);
+			}
+
+			//mp_root->PositionTest(m_quadObjectsToRender);
+
+			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
+			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
+
 
 			//if (Input::KeyDown(Key::V))
 			//{
