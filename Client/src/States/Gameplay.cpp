@@ -159,8 +159,8 @@ void Gameplay::Initialize()
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 
-	m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
-	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
+	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
@@ -391,7 +391,7 @@ void Gameplay::Update(const float& deltaTime) {
 		mp_uiComp->SetDraw(false);
 		m_TransTimer += deltaTime * 0.5f;
 		m_Mat["OpacityStr"] = m_TransTimer;
-		m_bill->SetRenderLayer(3);
+		m_bill->SetRenderLayer(2);
 
 		if (m_TransTimer > 1.5f) {
 			SetWin(true);
