@@ -136,7 +136,7 @@ void Gameplay::Initialize()
 	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
 
 	//Match this value to the size of the rooms we are using
-	m_levelGenerator.SetRoomDimension(43.f);
+	m_levelGenerator.SetRoomDimension(80.f);
 	mptr_map = m_levelGenerator.GenerateLevel();
 	m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
@@ -187,17 +187,12 @@ void Gameplay::Initialize()
 	m_chest.SetType(Type::Open);
 
 	//m_door.SetType(Type::Open);
-	m_player.GetEntity()->SetPos(m_bossPos.x + 10.f, m_bossPos.y + 5.f, m_bossPos.z + 10.f);
-	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
+	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 
-	m_throne->SetPos(m_bossPos.x, m_bossPos.y, m_bossPos.z);
-	
-	
-
-	
 
 	if (itemNormal == 1) { //north
 		m_chest.GetEntity()->SetRot(0, 0, 0);
@@ -237,26 +232,31 @@ void Gameplay::Initialize()
 
 	// -- Door, Throne, Boss Rotations -- //
 	if (roomNormal == 1) { //north
+		m_throne->SetPos(m_bossPos.x, m_bossPos.y + 6.11f, m_bossPos.z + 33.35f);
 		m_door.GetEntity()->SetRot(0, 180, 0);
 		m_throne->SetRot(0.f, 180.f, 0.f);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 0.f, 0.f);
 	}
 	else if (roomNormal == 10) {//east
+		m_throne->SetPos(m_bossPos.x - 33.35f, m_bossPos.y + 6.11f, m_bossPos.z);
 		m_door.GetEntity()->SetRot(0, 90, 0);
 		m_throne->SetRot(0.f, 90.f, 0.f);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, -90.f, 0.f);
 	}
 	else if (roomNormal == 100) {//south
+		m_throne->SetPos(m_bossPos.x, m_bossPos.y + 6.11f, m_bossPos.z - 33.35f);
 		m_door.GetEntity()->SetRot(0, 0, 0);
 		m_throne->SetRot(0.f, 0.f, 0.f);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 180.f, 0.f);
 	}
 	else if (roomNormal == 1000) {//west
+		m_throne->SetPos(m_bossPos.x + 33.35f, m_bossPos.y + 6.11f, m_bossPos.z);
 		m_door.GetEntity()->SetRot(0, -90, 0);
 		m_throne->SetRot(0.f, -90.f, 0.f);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 90.f, 0.f);
 	}
 
+	m_pSkeleBoss->SetThronePosition(m_throne->GetPos());
 	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 	doorPos = m_door.GetEntity()->GetPos();

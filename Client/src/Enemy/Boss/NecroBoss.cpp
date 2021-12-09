@@ -7,7 +7,7 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	m_thronePosition(m_enemy->GetPos() + Aen::Vec3f(0.f, 4.f, 0.f)), bs(BossState::STATIONARY),
 
 	m_isHurting(false), m_cantSummonSlimes(false), m_waiting(false),
-	LIGHTDMG(20.f), HEAVYDMG(50.f), LIGHTFORCE(20.f), HEAVYFORCE(100.f), BASESPEED(3.f),
+	LIGHTDMG(20.f), HEAVYDMG(50.f), LIGHTFORCE(20.f), HEAVYFORCE(100.f), BASESPEED(7.f),
 	m_MAXHP(hp)
 {
 	m_health = hp;
@@ -46,7 +46,7 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 
 	m_thronePosition = position/* + Aen::Vec3f(0.f, 5.5f, 0.f)*/;
 
-	m_enemy->SetPos(position);
+	m_enemy->SetPos(position /*+ Aen::Vec3f(0.f, 50.f, 0.f)*/);
 	mE_hurtBox->SetParent(*m_enemy);
 	//mE_sword = &Aen::EntityHandler::CreateEntity();
 	//mE_sword->AddComponent<Aen::MeshInstance>();
@@ -87,7 +87,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 	else
 		mp_meshInst->SetMaterial("EnemyMaterialHurt");
 
-	if (distance <= 10.f && bs == BossState(0))
+	if (distance <= 40.f && bs == BossState(0))
 	{
 		bs = BossState(1);
 	}
@@ -109,6 +109,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 	{
 	case BossState::STATIONARY:
 	{
+		m_enemy->SetPos(m_thronePosition);
 		m_animator->SetAnimationScale(2.5);
 		m_animator->SetAnimation("throne");
 		m_v = Aen::Vec3f::zero;
@@ -177,6 +178,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 		bs = BossState::CASTING;
 		break;
 	case BossState::ONTHRONE:
+		m_enemy->SetPos(m_thronePosition);
 		m_animator->SetAnimationScale(2);
 		m_animator->SetAnimation("cast");
 		m_spawnTimer += deltaTime;
