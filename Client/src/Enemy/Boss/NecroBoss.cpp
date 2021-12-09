@@ -28,13 +28,13 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	// --- ANIMATION --- //
 
 	m_enemy->AddComponent<Aen::Animator>();
-	m_enemy->GetComponent<Aen::Animator>().AddAnimation("Boss_Throne", "throne");
-	m_enemy->GetComponent<Aen::Animator>().AddAnimation("Boss_Walk", "walk");
-	m_enemy->GetComponent<Aen::Animator>().AddAnimation("Boss_Attack", "attack");
-	m_enemy->GetComponent<Aen::Animator>().AddAnimation("Boss_Summon", "cast");
-	m_enemy->GetComponent<Aen::Animator>().SetAnimation("throne");
-	m_enemy->GetComponent<Aen::Animator>().SetFrameRate(24);
-	m_enemy->GetComponent<Aen::Animator>().SetAnimationScale(2.5);
+	m_animator = &m_enemy->GetComponent<Aen::Animator>();
+	m_animator->AddAnimation("Boss_Throne", "throne");
+	m_animator->AddAnimation("Boss_Walk", "walk");
+	m_animator->AddAnimation("Boss_Attack", "attack");
+	m_animator->AddAnimation("Boss_Summon", "cast");
+	m_animator->SetFrameRate(24);
+	
 
 
 	// ----------------- //
@@ -109,11 +109,16 @@ void Boss::Update(const float& deltaTime, Player& player)
 	{
 	case BossState::STATIONARY:
 	{
+		m_animator->SetAnimationScale(2.5);
+		m_animator->SetAnimation("throne");
 		m_v = Aen::Vec3f::zero;
 		break;
 	}
 	case BossState::PHASE1:
 	{
+		m_animator->SetAnimationScale(2);
+		m_animator->SetAnimation("walk");
+
 		m_deltatime = deltaTime;
 
 		if (distance < 10.f) m_attackTimer += deltaTime;
@@ -140,8 +145,8 @@ void Boss::Update(const float& deltaTime, Player& player)
 		m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 
 		if (distance > 10.f) {
-			m_enemy->GetComponent<Aen::Animator>().SetAnimationScale(2);
-			m_enemy->GetComponent<Aen::Animator>().SetAnimation("walk");
+			m_animator->SetAnimationScale(2);
+			m_animator->SetAnimation("walk");
 		}
 
 		if (m_waiting)
@@ -155,8 +160,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 		}
 
 #ifdef _DEBUG
-		if (Aen::Input::KeyDown(Aen::Key::G))
-			LightAttack(deltaTime);
+		
 		if (Aen::Input::KeyDown(Aen::Key::H))
 			BigAttack(deltaTime);
 		if (Aen::Input::KeyDown(Aen::Key::J))
@@ -173,6 +177,8 @@ void Boss::Update(const float& deltaTime, Player& player)
 		bs = BossState::CASTING;
 		break;
 	case BossState::ONTHRONE:
+		m_animator->SetAnimationScale(2);
+		m_animator->SetAnimation("cast");
 		m_spawnTimer += deltaTime;
 		if (m_pMinions.size() == 0 && m_spawnTimer > 2.f)
 			bs = BossState::PHASE1;
@@ -186,7 +192,8 @@ void Boss::Update(const float& deltaTime, Player& player)
 	}
 
 
-
+	if (Aen::Input::KeyDown(Aen::Key::G))
+		printf("Hello");
 	mp_charCont->Move(m_v * m_deltatime, m_deltatime);
 }
 
@@ -289,8 +296,7 @@ void Boss::BigAttack(const float& deltaTime)
 
 void Boss::GoToThrone()
 {
-	m_enemy->GetComponent<Aen::Animator>().SetAnimationScale(2);
-	m_enemy->GetComponent<Aen::Animator>().SetAnimation("cast");
+	
 	//EventData data;
 	//data.type = EventType::Wait;
 	//data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
@@ -384,8 +390,8 @@ void Boss::UpdateAttack()
 {
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack)
 	{
-		m_enemy->GetComponent<Aen::Animator>().SetAnimationScale(1);
-		m_enemy->GetComponent<Aen::Animator>().SetAnimation("attack");
+		m_animator->SetAnimationScale(1);
+		m_animator->SetAnimation("attack");
 
 		m_cantSummonSlimes = false;
 		if (mp_hurtBox->Intersects(mp_player->GetEntity()->GetComponent<Aen::AABoundBox>()))
