@@ -32,7 +32,7 @@ void Portal::Update(const float& deltaTime)
 
 void Portal::Update(const float& deltaTime, Aen::Entity*& e)
 {
-	if (m_type == Type::Opening) {
+	if (m_type == Type::Opening || m_type == Type::Closing) {
 
 		m_scale += deltaTime * 2.f;
 		m_exit->SetScale(m_scale, 1, 100);

@@ -312,6 +312,7 @@ void Gameplay::Initialize()
 	m_bill->GetComponent<Aen::MeshInstance>().SetMesh("PLANE");
 	m_bill->GetComponent<Aen::MeshInstance>().SetMaterial("Bill");
 	m_bill->SetScale((10 / 1920.f) * wDesc.width, 1, (5 / 1024.f) * wDesc.height);
+	m_bill->SetRenderLayer(-3);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
@@ -390,6 +391,7 @@ void Gameplay::Update(const float& deltaTime) {
 		mp_uiComp->SetDraw(false);
 		m_TransTimer += deltaTime * 0.5f;
 		m_Mat["OpacityStr"] = m_TransTimer;
+		m_bill->SetRenderLayer(3);
 
 		if (m_TransTimer > 1.5f) {
 			SetWin(true);
@@ -440,7 +442,7 @@ void Gameplay::Update(const float& deltaTime) {
 		else if(m_door.GetType() == Type::Closed && m_door.GetNear()) {
 			m_door.SetType(Type::Opening);
 		}
-		else if (m_grave.GetNear() && m_grave.GetType() == Type::Open) {
+		else if (m_grave.GetNear() && m_grave.GetType() == Type::Open && m_player.GetBossesAlive() <= 0.f) {
 			m_grave.SetType(Type::Closed);
 			m_exit.SetType(Type::Opening);
 		}
