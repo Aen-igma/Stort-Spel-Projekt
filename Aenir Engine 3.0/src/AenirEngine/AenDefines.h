@@ -14,6 +14,7 @@
 	#define AEN_NORMALTEXTURE_DIR(file) "../Resource/Texture/Normal_Map/" + std::string(file)
 	#define AEN_LEVEL_DIR(file) "../LevelFolder/" + std::string(file)
 	#define AEN_MODEL_DIR(file) "../Resource/FBX/" + std::string(file)
+	#define AEN_ANIMATION_DIR(file) "../Resource/FBX/Animation/" + std::string(file)
 
 	#ifdef _WIN64
 	#define AEN_OUTPUT_DIR_STR(file) "../bin/Debug-x64/" + std::string(file)
@@ -37,6 +38,7 @@
 	#define AEN_NORMALTEXTURE_DIR(file) ((IsDebuggerPresent()) ? "../Resource/Texture/Normal_Map/" + std::string(file) : "../../Resource/Texture/Normal_Map/" + std::string(file))
 	#define AEN_LEVEL_DIR(file) ((IsDebuggerPresent()) ? "../LevelFolder/" + std::string(file) : "../../LevelFolder/" + std::string(file))
 	#define AEN_MODEL_DIR(file) ((IsDebuggerPresent()) ? "../Resource/FBX/" + std::string(file) : "../../Resource/FBX/" + std::string(file))
+	#define AEN_ANIMATION_DIR(file) ((IsDebuggerPresent()) ? "../Resource/FBX/Animation/" + std::string(file) : "../../Resource/FBX/Animation/" + std::string(file))
 
 	#ifdef _WIN64
 	#define AEN_OUTPUT_DIR_STR(file) "../bin/Release-x64/" + std::string(file)

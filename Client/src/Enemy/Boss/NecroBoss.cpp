@@ -15,7 +15,7 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	m_speed = BASESPEED;
 
 	Aen::Mesh& skeleBoss = Aen::Resource::CreateMesh("SkeleBoss");
-	skeleBoss.Load(AEN_MODEL_DIR("skBoss_test.fbx"));
+	skeleBoss.Load(AEN_MODEL_DIR("Boss_Skeletor_Attack.fbx"));
 	Aen::Material& skeleBossMat = Aen::Resource::CreateMaterial("SkeleBossMat");
 	skeleBossMat["GlowColor"] = Aen::Color::Cyan;
 	m_enemy->AddComponent<Aen::MeshInstance>();
@@ -25,22 +25,36 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	skeleBossMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SkeletonBoss_diffuse.png"));
 	skeleBossMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("SkeletonBoss_glow.png"));
 
+	// --- ANIMATION --- //
+
+	m_enemy->AddComponent<Aen::Animator>();
+	m_enemy->GetComponent<Aen::Animator>().AddAnimation("Boss_Throne", "throne");
+	m_enemy->GetComponent<Aen::Animator>().AddAnimation("Boss_Walk", "walk");
+	m_enemy->GetComponent<Aen::Animator>().AddAnimation("Boss_Attack", "attack");
+	m_enemy->GetComponent<Aen::Animator>().AddAnimation("Boss_Summon", "cast");
+	m_enemy->GetComponent<Aen::Animator>().SetAnimation("throne");
+	m_enemy->GetComponent<Aen::Animator>().SetFrameRate(24);
+	m_enemy->GetComponent<Aen::Animator>().SetAnimationScale(2.5);
+
+
+	// ----------------- //
+
 	mE_hurtBox->AddComponent<Aen::OBBox>();
 	mp_hurtBox = &mE_hurtBox->GetComponent<Aen::OBBox>();
 
 	mp_hurtBox->SetBoundingBox(2.f, 3.f, 1.f);
 
-	m_thronePosition = position + Aen::Vec3f(0.f, 5.5f, 0.f);
+	m_thronePosition = position/* + Aen::Vec3f(0.f, 5.5f, 0.f)*/;
 
 	m_enemy->SetPos(position);
 	mE_hurtBox->SetParent(*m_enemy);
-	mE_sword = &Aen::EntityHandler::CreateEntity();
-	mE_sword->AddComponent<Aen::MeshInstance>();
-	Aen::Mesh& swordMesh = Aen::Resource::CreateMesh("DuckBringer");
-	swordMesh.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
-	mE_sword->GetComponent<Aen::MeshInstance>().SetMesh(swordMesh);
-	mE_sword->SetScale(3.f);
-	mE_sword->SetParent(*m_enemy);
+	//mE_sword = &Aen::EntityHandler::CreateEntity();
+	//mE_sword->AddComponent<Aen::MeshInstance>();
+	//Aen::Mesh& swordMesh = Aen::Resource::CreateMesh("DuckBringer");
+	//swordMesh.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
+	//mE_sword->GetComponent<Aen::MeshInstance>().SetMesh(swordMesh);
+	//mE_sword->SetScale(3.f);
+	//mE_sword->SetParent(*m_enemy);
 
 
 	mp_hitbox->ToggleActive(true);
@@ -52,8 +66,8 @@ Boss::~Boss()
 {
 	mE_hurtBox->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*mE_hurtBox);
-	mE_sword->RemoveParent();
-	Aen::EntityHandler::RemoveEntity(*mE_sword);
+	//mE_sword->RemoveParent();
+	//Aen::EntityHandler::RemoveEntity(*mE_sword);
 }
 
 void Boss::Update(const float& deltaTime, Player& player)
@@ -124,6 +138,12 @@ void Boss::Update(const float& deltaTime, Player& player)
 		m_v += Aen::Vec3f(-m_v.x * drag, -30.f, -m_v.z * drag) * deltaTime;
 		m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
 		m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
+
+		if (distance > 10.f) {
+			m_enemy->GetComponent<Aen::Animator>().SetAnimationScale(2);
+			m_enemy->GetComponent<Aen::Animator>().SetAnimation("walk");
+		}
+
 		if (m_waiting)
 			m_v = Aen::Vec3f::zero;
 
@@ -234,7 +254,7 @@ void Boss::LightAttack(const float& deltaTime)
 {
 	EventData data;
 	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-		SwordSwing(500.f, .3f, deltaTime);
+		//SwordSwing(500.f, .3f, deltaTime);
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * accell;
 	};
@@ -258,7 +278,7 @@ void Boss::BigAttack(const float& deltaTime)
 	data.knockbackForce = HEAVYFORCE;
 	data.accell = .1f;
 	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-		SwordSwing(250.f, .5f, deltaTime);
+		//SwordSwing(250.f, .5f, deltaTime);
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * 4.f * accell;
 
@@ -269,6 +289,8 @@ void Boss::BigAttack(const float& deltaTime)
 
 void Boss::GoToThrone()
 {
+	m_enemy->GetComponent<Aen::Animator>().SetAnimationScale(2);
+	m_enemy->GetComponent<Aen::Animator>().SetAnimation("cast");
 	//EventData data;
 	//data.type = EventType::Wait;
 	//data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
@@ -362,6 +384,9 @@ void Boss::UpdateAttack()
 {
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack)
 	{
+		m_enemy->GetComponent<Aen::Animator>().SetAnimationScale(1);
+		m_enemy->GetComponent<Aen::Animator>().SetAnimation("attack");
+
 		m_cantSummonSlimes = false;
 		if (mp_hurtBox->Intersects(mp_player->GetEntity()->GetComponent<Aen::AABoundBox>()))
 		{
@@ -377,6 +402,6 @@ void Boss::UpdateAttack()
 	else
 	{
 		mp_hurtBox->ToggleActive(false);
-		ResetSword();
+		//ResetSword();
 	}
 }

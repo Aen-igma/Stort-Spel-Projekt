@@ -37,6 +37,7 @@ private:
 
     Aen::Entity* m_PS;
     Aen::Entity* m_wall;
+    Aen::Entity* m_throne;
  
     Aen::UIComponent* mp_uiComp;
 

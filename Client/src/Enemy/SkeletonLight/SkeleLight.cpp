@@ -48,13 +48,13 @@ SkeleLight::SkeleLight(const Aen::Vec3f& pos)
 	mp_skeleton->GetComponent<Aen::MeshInstance>().SetMaterial("SkeleLightMaterial");
 	mp_skeleton->SetParent(*m_enemy);
 	mp_skeleton->SetPos(0.f, 0.7f, 0.f);
-	mp_skeleton->SetScale(0.5f, 0.5f, 0.5f);
+	mp_skeleton->SetScale(0.6f, 0.6f, 0.6f);
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.f, 2.f, 1.f);
 	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.8f);
 	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
 	m_enemy->SetRot(0, 90, 0);
-	m_enemy->SetPos(pos);
+	m_enemy->SetPos(pos.x, pos.y+1.4f, pos.z);
 	m_knockbackScalar = 0.5f;
 
 	// -------- Animation --------- //
@@ -65,7 +65,7 @@ SkeleLight::SkeleLight(const Aen::Vec3f& pos)
 	mp_skeleton->GetComponent<Aen::Animator>().AddAnimation("Skel_Attack", "attack");
 	mp_skeleton->GetComponent<Aen::Animator>().SetAnimation("idle");
 	mp_skeleton->GetComponent<Aen::Animator>().SetFrameRate(24);
-	mp_skeleton->GetComponent<Aen::Animator>().SetAnimationScale(0.85);
+	mp_skeleton->GetComponent<Aen::Animator>().SetAnimationScale(2.5);
 
 
 	// -----------------------------	Floating m_healthBar		------------------------------- //
@@ -126,6 +126,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	{
 		if (dist < 20.f)
 		{
+			mp_skeleton->GetComponent<Aen::Animator>().SetAnimationScale(1);
 			mp_skeleton->GetComponent<Aen::Animator>().SetAnimation("walk");
 			CombatEvent(deltaTime, dist);
 		}
@@ -161,6 +162,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	}
 	else
 	{
+		mp_skeleton->GetComponent<Aen::Animator>().SetAnimationScale(2.5);
 		mp_skeleton->GetComponent<Aen::Animator>().SetAnimation("idle");
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 	}
@@ -204,6 +206,7 @@ void SkeleLight::CombatEvent(const float& deltaTime, const float& distance)
 		data.duration = 1;
 		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks)
 		{
+			mp_skeleton->GetComponent<Aen::Animator>().SetAnimationScale(0.80);
 			mp_skeleton->GetComponent<Aen::Animator>().SetAnimation("attack");
 			mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 		};
