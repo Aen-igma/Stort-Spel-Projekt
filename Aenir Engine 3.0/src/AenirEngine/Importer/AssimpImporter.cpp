@@ -363,7 +363,7 @@ void Aen::AssimpImport::ProcBoneHeiarchy(aiNode* node, const aiScene* scene, std
 		ProcBoneHeiarchy(node->mChildren[i], scene, bones, boneArray, pId);
 }
 
-void Aen::AssimpImport::ProcAnimation(const aiScene* scene, std::unordered_map<std::string, std::vector<KeyFrameData>>& keyFrames, std::vector<float>& timeStamp, float& duration) {
+void Aen::AssimpImport::ProcAnimation(const aiScene* scene, std::unordered_map<std::string, std::vector<KeyFrameData>>& keyFrames, std::vector<float>& timeStamp, const std::string& rootBone, float& duration) {
 
 	duration = (scene->mAnimations[0]->mDuration + 1.f) / scene->mAnimations[0]->mTicksPerSecond;
 	UINT channels = scene->mAnimations[0]->mNumChannels;
@@ -372,21 +372,36 @@ void Aen::AssimpImport::ProcAnimation(const aiScene* scene, std::unordered_map<s
 		std::string nameOfChannel((scene->mAnimations[0]->mChannels[i]->mNodeName).C_Str());
 
 		UINT keys = scene->mAnimations[0]->mChannels[i]->mNumRotationKeys;
+		UINT tKeys = scene->mAnimations[0]->mChannels[i]->mNumPositionKeys;
+		bool isRoot = (nameOfChannel.find(rootBone) != std::string::npos) && (tKeys != 1);
+
+		if(isRoot)
+			keys = (keys > tKeys) ? keys : tKeys;
 
 		if(keys != 1) {
 			std::vector<KeyFrameData> data(keys);
 			timeStamp.resize(keys);
 			float keysPerSec = duration / keys;
 
+			//translation key data
+			for(int r = 0; r < keys && isRoot; r++) {
+				int index = scene->mAnimations[0]->mChannels[i]->mPositionKeys[r].mTime;
+				if(index >= 0) {
+					aiVector3D pos;
+					pos = scene->mAnimations[0]->mChannels[i]->mPositionKeys[r].mValue;
+					data[index].rotation = MatTranslate(pos.y, pos.z, pos.x);
+				}
+			}
+
 			//Rotation key data
-			for(int r = 0; r < keys; r++) {
+			for(int r = 0; r < keys && !isRoot; r++) {
 				int index = scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mTime;
 				if(index >= 0) {
 					aiQuaternion orient;
 					orient = scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mValue;
-					data[index].rotation = MatQuaternion(orient.x, orient.y, orient.z, orient.w);
+					data[index].rotation = data[index].rotation * MatQuaternion(orient.x, orient.y, orient.z, orient.w);
 					data[index].quatOrientation = { orient.x, orient.y, orient.z, orient.w };
-					timeStamp[index] = keysPerSec * (float)index;
+					timeStamp[index] = keysPerSec * (float)index / duration;
 				}
 			}
 
@@ -400,13 +415,21 @@ void Aen::AssimpImport::ProcAnimation(const aiScene* scene, std::unordered_map<s
 			} else
 				name = nameOfChannel;
 
-			keyFrames.emplace(name, data);
+			if(keyFrames.count(name) > 0) {
+				std::vector<KeyFrameData>& rootKey = keyFrames.at(name);
+				for(int i = 0; i < keys; i++) {
+					data[i].rotation.w = rootKey[i].rotation.w;
+					rootKey[i].rotation = data[i].rotation;
+				}
+			} else
+				keyFrames.emplace(name, data);
 		}
 	}
 }
 
 void Aen::AssimpImport::LoadFbxAnimation(const std::string path, std::vector<Bones>& boneArray, std::unordered_map<std::string, std::vector<KeyFrameData>>& keyFrames, std::vector<float>& m_timeStamp, float& duration) {
 	
+	boneArray.clear();
 	Assimp::Importer importer;
 	const aiScene* pScene = importer.ReadFile(path, aiProcess_MakeLeftHanded | aiProcess_LimitBoneWeights);
 
@@ -422,5 +445,5 @@ void Aen::AssimpImport::LoadFbxAnimation(const std::string path, std::vector<Bon
 	std::unordered_map<std::string, aiBone*> bones;
 	ProcNodeAnim(pScene->mRootNode, pScene, bones);
 	ProcBoneHeiarchy(pScene->mRootNode, pScene, bones, boneArray);
-	ProcAnimation(pScene, keyFrames, m_timeStamp, duration);
+	ProcAnimation(pScene, keyFrames, m_timeStamp, boneArray[0].boneName, duration);
 }

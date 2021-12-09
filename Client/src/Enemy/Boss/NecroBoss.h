@@ -56,7 +56,6 @@ private:
 
     Aen::Entity* mE_hurtBox;
     Aen::Entity* mE_sword;
-    Aen::Entity* m_healthBar;
     Aen::OBBox* mp_hurtBox;
     Player* mp_player;
     bool m_waiting;

@@ -8,7 +8,7 @@ Player::Player()
 	m_hurtbox(&Aen::EntityHandler::CreateEntity()), m_health(200.f), m_potion(80.f), m_potionCap(3), m_nrPotion(m_potionCap),m_timer(0),
 	m_sword(&Aen::EntityHandler::CreateEntity()), m_playerMeshHolder(&Aen::EntityHandler::CreateEntity()),
 	m_mouseSense(5.f), m_movementSpeed(8.f), m_finalDir(0.f, 0.f, -1.f),
-	m_LIGHTATTACKTIME(.3f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
+	m_LIGHTATTACKTIME(.4f), m_HEAVYATTACKTIME(1.f), m_attackTimer(0.f),
 	m_LIGHTCHARGETIME(0.f), m_HEAVYCHARGETIME(.5f),
 	m_LIGHTATTACKSPEED(6.0f), m_HEAVYATTACKSPEED(2.54f)
 {
@@ -20,7 +20,7 @@ Player::Player()
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
-	sword.Load(AEN_MODEL_DIR("simpSword.fbx"));
+	sword.Load(AEN_MODEL_DIR("ShortSword.fbx"));
 
 	Aen::Mesh* protag = &Aen::Resource::CreateMesh("Protag");
 	protag->Load(AEN_MODEL_DIR("Protagonist.fbx"));
@@ -112,9 +112,10 @@ Player::Player()
 	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagDash, "Dash");
 	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagAttack, "Attack");
 	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
+	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.28f);
+	m_playerMeshHolder->GetComponent<Aen::Animator>().SetFrameRate(24);
 	m_playerMeshHolder->SetParent(*m_player);
-	m_playerMeshHolder->SetPos(0.f, -1.7f, 0.f);
+	m_playerMeshHolder->SetPos(0.f, -3.1f, 0.f);
 
 	m_player->AddComponent<Aen::AABoundBox>();
 	mp_hitBox = &m_player->GetComponent<Aen::AABoundBox>();
@@ -125,9 +126,7 @@ Player::Player()
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
 	m_sword->GetComponent<Aen::MeshInstance>().SetMaterial(swordMat);
-	//m_sword->SetPos(0.7f, 1.7f, -1.f);
-	m_sword->SetPos(0.f, 1.7f, 0.f);
-	m_sword->SetParent(*m_playerMeshHolder);
+	m_sword->SetPos(-0.65f, 1.45f, 0.f);
 
 	m_hurtbox->AddComponent<Aen::OBBox>();
 	mp_hurtBox = &m_hurtbox->GetComponent<Aen::OBBox>();
@@ -198,7 +197,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	else m_movementSpeed = 8.f;
 #endif // _DEBUG
 
-	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19));
+
+	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19) * Aen::MatRotate(0.f, -10.f, 0.f) * m_playerMeshHolder->GetTransformation());
 
 
 	// --------------------------- Raw Mouse and scroll Input --------------------------- //
@@ -227,254 +227,143 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	// ------------------------------ Player Controler ---------------------------------- //
 
-	if (Aen::Input::GPGetActive(0u)) {
-		axis.x = Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).x;
-		axis.z = Aen::Input::GPGetAnalog(0u, Aen::Analog::LTHUMB).y;
+	
+	axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
+	axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S);
 
-		m_camera->Rotate(
-			Aen::Input::GPGetAnalog(0u, Aen::Analog::RTHUMB).y * m_mouseSense * 18.f * deltaTime,
-			Aen::Input::GPGetAnalog(0u, Aen::Analog::RTHUMB).x * m_mouseSense * 28.f * deltaTime, 0.f);
+	// Dash/Dodge
 
-		// Dash/Dodge
+	if (Aen::Input::KeyDown(Aen::Key::SPACE)) {
+		m_playerMeshHolder->GetComponent<Aen::Animator>().Reset();
 
-		static bool toggle = false;
-		static bool lTriggerPressed = false;
-
-		if (Aen::Input::GPGetAnalog(0u, Aen::Analog::TRIGGER).x > 0.f && !toggle) {
-			lTriggerPressed = true;
-			toggle = true;
-		}
-		else if (Aen::Input::GPGetAnalog(0u, Aen::Analog::TRIGGER).x <= 0.f)
-			toggle = false;
-
-		if (lTriggerPressed) {
-			lTriggerPressed = false;
-			EventData data;
-			data.accell = 20.f;
-			data.duration = 0.3f;
-			data.type = EventType::Dash;
-			data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-				mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
-				accell -= 25.f * deltaTime;
-			};
-
-			AddEvent(data);
-		}
-
-		// Attack
-
-		if (Aen::Input::GPKeyDown(0u, Aen::GP::A)) {
-			EventData data;
-			data.accell = 6.f;
-			data.duration = 0.2f;
-			data.type = EventType::Attack;
-			data.damage = 20.f;
-			data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-				if (lockedOn) {
-					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
-					Aen::Vec3f d(d2.x, 0.f, d2.y);
-					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
-				}
-
-				mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
-				accell -= 12.f * deltaTime;
-			};
-
-			AddEvent(data);
-		}
-
-		// Lock On Target
-
-		if (Aen::Input::GPKeyDown(0u, Aen::GP::DPAD_LEFT))
-			if (m_targets.size() > 1u && lockedOn) {
-				m_targets.front().target->SetISTargeted(false);
-				TargetData temp = m_targets.front();
-				m_targets.pop_front();
-				m_targets.front().target->SetISTargeted(true);
-				m_targets.emplace_back(temp);
-			}
-
-		if (Aen::Input::GPKeyDown(0u, Aen::GP::DPAD_RIGHT))
-			if (m_targets.size() > 1u && lockedOn) {
-				TargetData temp = m_targets.back();
-				m_targets.pop_back();
-				m_targets.front().target->SetISTargeted(false);
-				m_targets.emplace_front(temp);
-				m_targets.front().target->SetISTargeted(true);
-			}
-
-		if (Aen::Input::GPKeyDown(0u, Aen::GP::LSHOULDER)) {
-			lockedOn = !lockedOn;
-
-			if (lockedOn) {
-				for (auto i : e)
-					i->SetISTargeted(false);
-
-				m_targets.clear();
-				for (auto i : e) {
-					TargetData data;
-					data.target = i;
-					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
-					data.distance = eDir.Magnitude();
-
-					if (data.distance < 20.f)
-						m_targets.emplace_back(data);
-				}
-
-				for (uint32_t i = 0u; i < m_targets.size(); i++) {
-
-					uint32_t t(i);
-
-					for (uint32_t k = i + 1u; k < m_targets.size(); k++)
-						if (m_targets[t].distance > m_targets[k].distance)
-							t = k;
-
-					TargetData temp = m_targets[i];
-					m_targets[i] = m_targets[t];
-					m_targets[t] = temp;
-				}
-
-				if (!m_targets.empty())
-					m_targets.front().target->SetISTargeted(true);
-			}
-		}
-
-	}
-	else {
-		axis.x = (float)Aen::Input::KeyPress(Aen::Key::D) - (float)Aen::Input::KeyPress(Aen::Key::A);
-		axis.z = (float)Aen::Input::KeyPress(Aen::Key::W) - (float)Aen::Input::KeyPress(Aen::Key::S);
-
-		// Dash/Dodge
-
-		if (Aen::Input::KeyDown(Aen::Key::SPACE)) {
-
-			if(m_eventQueue.empty())
-				if (axis.Magnitude() > 0.f) 
-					m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-				else {
-					Aen::Vec2f dir(camDir.x, camDir.z);
-					m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-				}
-
-			EventData data;
-			data.accell = 20.f;
-			data.duration = 0.4f;
-			data.type = EventType::Dash;
-			data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-				mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
-				mp_hitBox->ToggleActive(false);
-				accell -= 25.f * deltaTime;
-			};
-
-			AddEvent(data);
-		}
-
-		// Attack
-
-		if (Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
-
-			if(m_eventQueue.empty()) {
+		if(m_eventQueue.empty())
+			if (axis.Magnitude() > 0.f) 
+				m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
+			else {
 				Aen::Vec2f dir(camDir.x, camDir.z);
 				m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 			}
 
-			EventData data;
-			data.accell = m_LIGHTATTACKSPEED;
-			data.duration = m_LIGHTATTACKTIME;
-			data.type = EventType::Attack;
-			data.damage = 20.f;
-			data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-				mp_hurtBox->ToggleActive(true);
-				SwordSwing(500.f, m_LIGHTATTACKTIME, deltaTime);
-				if (lockedOn) {
-					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
-					Aen::Vec3f d(d2.x, 0.f, d2.y);
-					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
-				}
-				mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
-				accell -= 12.f * deltaTime;
-			};
+		EventData data;
+		data.accell = 20.f;
+		data.duration = 0.4f;
+		data.type = EventType::Dash;
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
+			mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
+			mp_hitBox->ToggleActive(false);
+			accell -= 25.f * deltaTime;
+		};
 
-			AddEvent(data);
+		AddEvent(data);
+	}
+
+	// Attack
+
+	if (Aen::Input::KeyDown(Aen::Key::LMOUSE)) {
+		m_playerMeshHolder->GetComponent<Aen::Animator>().Reset();
+
+		if(m_eventQueue.empty()) {
+			Aen::Vec2f dir(camDir.x, camDir.z);
+			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
 		}
-		/*if (Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
-			EventData data;
-			data.accell = m_HEAVYATTACKSPEED;
-			data.duration = m_HEAVYATTACKTIME;
-			data.type = EventType::Attack;
-			data.damage = 40.f;
-			data.function = [&](float& accell, const float& attackDuration, const int& nrOf)
-			{
 
-				if (lockedOn) {
-					Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
-					Aen::Vec3f d(d2.x, 0.f, d2.y);
-					m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
-				}
-
-				mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
-				accell -= deltaTime * 2;
-				if (attackDuration < m_HEAVYCHARGETIME)
-				{
-					mp_hurtBox->ToggleActive(true);
-					SwordSwing(250.f, m_HEAVYATTACKTIME, deltaTime);
-				}
-				else
-					mp_hurtBox->ToggleActive(false);
-			};
-
-			AddEvent(data);
-		}*/
-
-		// Lock On Target
-
-		if (Aen::Input::KeyDown(Aen::Key::TAB))
-			if (m_targets.size() > 1u && lockedOn) {
-				m_targets.front().target->SetISTargeted(false);
-				TargetData temp = m_targets.front();
-				m_targets.pop_front();
-				m_targets.front().target->SetISTargeted(true);
-				m_targets.emplace_back(temp);
+		EventData data;
+		data.accell = m_LIGHTATTACKSPEED;
+		data.duration = m_LIGHTATTACKTIME;
+		data.type = EventType::Attack;
+		data.damage = 20.f;
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
+			mp_hurtBox->ToggleActive(true);
+			SwordSwing(500.f, m_LIGHTATTACKTIME, deltaTime);
+			if (lockedOn) {
+				Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
+				Aen::Vec3f d(d2.x, 0.f, d2.y);
+				m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
 			}
+			mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
+			accell -= 12.f * deltaTime;
+		};
 
-		if (Aen::Input::KeyDown(Aen::Key::E)) {
-			lockedOn = !lockedOn;
+		AddEvent(data);
+	}
+	/*if (Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
+		EventData data;
+		data.accell = m_HEAVYATTACKSPEED;
+		data.duration = m_HEAVYATTACKTIME;
+		data.type = EventType::Attack;
+		data.damage = 40.f;
+		data.function = [&](float& accell, const float& attackDuration, const int& nrOf)
+		{
 
 			if (lockedOn) {
-				for (auto i : e)
-					i->SetISTargeted(false);
-
-				m_targets.clear();
-				for (auto i : e) {
-					TargetData data;
-					data.target = i;
-					Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
-					data.distance = eDir.Magnitude();
-
-					if (data.distance < 20.f)
-						m_targets.emplace_back(data);
-				}
-
-				for (uint32_t i = 0u; i < m_targets.size(); i++) {
-
-					uint32_t t(i);
-
-					for (uint32_t k = i + 1u; k < m_targets.size(); k++)
-						if (m_targets[t].distance > m_targets[k].distance)
-							t = k;
-
-					TargetData temp = m_targets[i];
-					m_targets[i] = m_targets[t];
-					m_targets[t] = temp;
-				}
-
-
-
-				if (!m_targets.empty())
-					m_targets.front().target->SetISTargeted(true);
+				Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
+				Aen::Vec3f d(d2.x, 0.f, d2.y);
+				m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
 			}
+
+			mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
+			accell -= deltaTime * 2;
+			if (attackDuration < m_HEAVYCHARGETIME)
+			{
+				mp_hurtBox->ToggleActive(true);
+				SwordSwing(250.f, m_HEAVYATTACKTIME, deltaTime);
+			}
+			else
+				mp_hurtBox->ToggleActive(false);
+		};
+
+		AddEvent(data);
+	}*/
+
+	// Lock On Target
+
+	if (Aen::Input::KeyDown(Aen::Key::TAB))
+		if (m_targets.size() > 1u && lockedOn) {
+			m_targets.front().target->SetISTargeted(false);
+			TargetData temp = m_targets.front();
+			m_targets.pop_front();
+			m_targets.front().target->SetISTargeted(true);
+			m_targets.emplace_back(temp);
+		}
+	
+	if (Aen::Input::KeyDown(Aen::Key::E)) {
+		lockedOn = !lockedOn;
+
+		if (lockedOn) {
+			for (auto i : e)
+				i->SetISTargeted(false);
+
+			m_targets.clear();
+			for (auto i : e) {
+				TargetData data;
+				data.target = i;
+				Aen::Vec3f eDir = m_player->GetPos() - data.target->GetEntity()->GetPos();
+				data.distance = eDir.Magnitude();
+
+				if (data.distance < 20.f)
+					m_targets.emplace_back(data);
+			}
+
+			for (uint32_t i = 0u; i < m_targets.size(); i++) {
+
+				uint32_t t(i);
+
+				for (uint32_t k = i + 1u; k < m_targets.size(); k++)
+					if (m_targets[t].distance > m_targets[k].distance)
+						t = k;
+
+				TargetData temp = m_targets[i];
+				m_targets[i] = m_targets[t];
+				m_targets[t] = temp;
+			}
+
+
+
+			if (!m_targets.empty())
+				m_targets.front().target->SetISTargeted(true);
 		}
 	}
+	
 
 	if (!m_targets.empty() && lockedOn) {
 		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_targets.front().target->GetEntity()->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
@@ -521,20 +410,26 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	mp_hurtBox->SetOrientation(0.f, yaw, 0.f);
 	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
 	
-	//if(axis.Magnitude() > 0.f)
-	//	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
-	//else
+	//if(axis.Magnitude() > 0.f) {
+		//7m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.28f);
+		//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
+	//} else {
+		//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.85f);
 		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
+	//}
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
 			m_eventQueue.front().function(m_eventQueue.front().accell, m_eventQueue.front().duration, m_eventQueue.front().nrOfAttacks);
 			m_eventQueue.front().duration -= deltaTime;
 
-			if(m_eventQueue.front().type == EventType::Dash)
+			if(m_eventQueue.front().type == EventType::Dash) {
+				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.35f);
 				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Dash");
-			else if(m_eventQueue.front().type == EventType::Attack)
+			} else if(m_eventQueue.front().type == EventType::Attack) {
+				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.35f);
 				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Attack");
+			}
 
 		}
 		else {
@@ -655,7 +550,7 @@ void Player::Move(const Aen::Vec3f& dir) {
 void Player::PotionUpdate()
 {
 	// ------------------------------		Health potion		---------------------------------- //
-	if (Aen::Input::KeyDown(Aen::Key::NUM1) && m_nrPotion > 0 && m_health < 200.f && !m_healing) {
+	if (Aen::Input::KeyDown(Aen::Key::Q) && m_nrPotion > 0 && m_health < 200.f && !m_healing) {
 
 		m_healing = true;
 		m_nrPotion -= 1;

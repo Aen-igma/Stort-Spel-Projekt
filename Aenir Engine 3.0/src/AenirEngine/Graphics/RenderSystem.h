@@ -244,6 +244,11 @@ namespace Aen {
         static void Dispatch(const Vec3i& groups) {
             m_dContext->Dispatch(groups.x, groups.y, groups.z);
         }
+        static void Draw(const UINT& count, const UINT& offset)
+        {
+            m_dContext->Draw(count, offset);
+        }
+
 	};
 
     // ---------------------------- UnBindShaderResource ---------------------------------

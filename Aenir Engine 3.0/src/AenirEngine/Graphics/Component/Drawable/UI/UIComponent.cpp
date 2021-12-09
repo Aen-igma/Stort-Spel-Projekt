@@ -31,9 +31,19 @@ namespace Aen {
         m_button.SetButtonSize(width, height);
     }
 
+    void UIComponent::SetButtonSize(float width, float height, int indX)
+    {
+        m_button.SetButtonSize(width, height, indX);
+    }
+
     void UIComponent::SetButtonPos(float x, float y)
     {
         m_button.SetButtonPos(x, y);
+    }
+
+    void UIComponent::SetButtonPos(float x, float y, int indX)
+    {
+        m_button.SetButtonPos(x, y, indX);
     }
 
     bool UIComponent::Intersects(int index)
