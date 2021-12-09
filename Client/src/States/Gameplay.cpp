@@ -2,7 +2,7 @@
 
 Gameplay::Gameplay(Aen::Window& window)
 	:State(window), m_speed(10.f), m_fSpeed(0.15f), m_toggleFullScreen(true), m_hp(200.f), m_timer(0),m_deathTimer(0),
-	IFRAMEMAX(1.5f), m_iFrames(0.f) {}
+	IFRAMEMAX(1.5f), m_iFrames(0.f), m_Mat(Aen::Resource::CreateMaterial("Bill")), m_TransTimer(0.001f) {}
 
 Gameplay::~Gameplay() {
 	//Aen::EntityHandler::RemoveEntity(*m_dLight);
@@ -10,6 +10,7 @@ Gameplay::~Gameplay() {
 	mp_uiComp = nullptr;
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	Aen::EntityHandler::RemoveEntity(*m_PS);
+	Aen::EntityHandler::RemoveEntity(*m_bill);
 	
 	for (auto& d : m_enemyQueue) {
 		delete d;
@@ -158,12 +159,6 @@ void Gameplay::Initialize()
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 
-	bill = &Aen::EntityHandler::CreateEntity();
-	bill->AddComponent<Aen::MeshInstance>();
-	bill->GetComponent<Aen::MeshInstance>().SetMesh("PLANE");
-	bill->GetComponent<Aen::MeshInstance>().SetMaterial("White");
-	bill->SetPos(doorPos.x, 3.f, doorPos.z);
-
 	m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
 	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
@@ -305,6 +300,18 @@ void Gameplay::Initialize()
 	mp_uiComp->SetButtonSize(0, 0, 0);
 	mp_uiComp->SetButtonSize(0, 0, 1);
 
+	m_Mat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("White.png"));
+	m_Mat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));
+	m_Mat["InnerEdgeColor"] = Aen::Color::White;
+	m_Mat["OuterEdgeColor"] = Aen::Color::White;
+	m_Mat["GlowColor"] = Aen::Color::White;
+	m_Mat["OpacityStr"] = 0.001f;
+
+	m_bill = &Aen::EntityHandler::CreateEntity();
+	m_bill->AddComponent<Aen::MeshInstance>();
+	m_bill->GetComponent<Aen::MeshInstance>().SetMesh("PLANE");
+	m_bill->GetComponent<Aen::MeshInstance>().SetMaterial("Bill");
+	m_bill->SetScale((10 / 1920.f) * wDesc.width, 1, (5 / 1024.f) * wDesc.height);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
@@ -378,6 +385,20 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.PotionUpdate();
 
+	if (m_exit.GetType() == Type::Closed) {
+
+		mp_uiComp->SetDraw(false);
+		m_TransTimer += deltaTime * 0.5f;
+		m_Mat["OpacityStr"] = m_TransTimer;
+
+		if (m_TransTimer > 1.5f) {
+			SetWin(true);
+			m_exit.SetType(Type::Locked);
+			State::SetState(States::Gameover);
+		}
+		return;
+	}
+
 	if (m_toggleFullScreen)
 		Aen::Input::SetMousePos((Aen::Vec2i)Aen::Vec2f(GetSystemMetrics(SM_CXSCREEN) * 0.5f, GetSystemMetrics(SM_CYSCREEN) * 0.5f));
 	else
@@ -386,12 +407,14 @@ void Gameplay::Update(const float& deltaTime) {
 	// ---------------------------------- Enemies --------------------------------------- //
 
 	m_player.Update(m_enemyQueue, deltaTime);
-	bill->SetRot(- 90.f, m_player.GetCamera()->GetRot().y + 180.f, 0);
+	m_bill->SetPos(m_player.GetCamera()->GetPos());
+	m_bill->SetRot(-m_player.GetCamera()->GetRot().x -90.f, m_player.GetCamera()->GetRot().y + 180.f, 0);
+	m_bill->MoveRelative(0, -2, 0);
 
-	m_exit.Update(deltaTime);
 	m_chest.Update(deltaTime, m_player.GetEntity());
 	m_door.Update(deltaTime, m_player.GetEntity());
 	m_grave.Update(deltaTime, m_player.GetEntity());
+	m_exit.Update(deltaTime, m_player.GetCamera());
 	if (m_chest.GetNear() || m_door.GetNear() || m_grave.GetNear()) {
 		mp_uiComp->SetTextPos((965.f / 1920.f) * screenSize.x, (800.f / 1024.f) * screenSize.y, 2);
 		mp_uiComp->SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);

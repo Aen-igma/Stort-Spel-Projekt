@@ -9,6 +9,8 @@ namespace Aen {
 		m_button.Initialize();
         m_picture.Initialize();
         m_text.Initialize();
+
+        canDraw = true;
 	}
 
     Aen::UIComponent::~UIComponent()
@@ -143,22 +145,29 @@ namespace Aen {
 		}
 	}
 
+    void UIComponent::SetDraw(bool test)
+    {
+        canDraw = test;
+    }
+
 	void Aen::UIComponent::Draw(Renderer& renderer, const uint32_t& layer)
 	{
-        //Draw Picture
-        for (auto& b : m_picture.GetData()) {
+        if (canDraw) {
+            //Draw Picture
+            for (auto& b : m_picture.GetData()) {
 
-            m_picture.Draw(b);
-        }
-		//Draw button
-		for (auto& b : m_button.GetData()) {
+                m_picture.Draw(b);
+            }
+            //Draw button
+            for (auto& b : m_button.GetData()) {
 
-            m_button.Draw(b);
-        }
-        //Draw Text
-        for (auto& b :m_text.GetData()) {
+                m_button.Draw(b);
+            }
+            //Draw Text
+            for (auto& b : m_text.GetData()) {
 
-            m_text.Draw(b);
+                m_text.Draw(b);
+            }
         }
     }
 

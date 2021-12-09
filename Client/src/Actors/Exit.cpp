@@ -28,6 +28,9 @@ Portal::~Portal()
 }
 
 void Portal::Update(const float& deltaTime)
+{}
+
+void Portal::Update(const float& deltaTime, Aen::Entity*& e)
 {
 	if (m_type == Type::Opening) {
 
@@ -35,13 +38,10 @@ void Portal::Update(const float& deltaTime)
 		m_exit->SetScale(m_scale, 1, 100);
 
 		if (m_scale > 10.f) {
-			m_type = Type::Locked;
+			m_type = Type::Closed;
 		}
 	}
 }
-
-void Portal::Update(const float& deltaTime, Aen::Entity*& e)
-{}
 
 Type Portal::GetType()
 {

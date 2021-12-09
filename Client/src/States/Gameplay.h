@@ -18,6 +18,7 @@ private:
     float m_timer;
     float m_deathTimer;
     float m_bossHP;
+    float m_TransTimer;
 
     float m_iFrames;
     const float IFRAMEMAX;
@@ -39,7 +40,8 @@ private:
 
     Aen::Entity* m_PS;
     Aen::Entity* m_wall;
- 
+    Aen::Entity* m_bill;
+    Aen::Material& m_Mat;
     Aen::UIComponent* mp_uiComp;
 
     Player m_player;
@@ -52,7 +54,6 @@ private:
     Portal m_exit;
     Aen::Vec3f doorPos;
     bool m_beatBoss;
-    Aen::Entity* bill;
     Aen::Vec3f m_bossPos;
 
     std::queue<EventData> m_eventQueue;
