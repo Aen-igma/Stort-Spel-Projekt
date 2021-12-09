@@ -95,6 +95,12 @@ namespace Aen {
 		{
 			//--- Quadtree Culling ---//
 			m_quadtreeOutput = GlobalSettings::m_pQuadtree->Update();
+
+			for (auto& i : m_quadtreeOutput)
+			{
+				m_drawTable[i.m_renderLayer].emplace_back(i.mp_drawable);
+			}
+
 			/*for (auto& i : m_quadtreeOutput)
 			{
 				for (auto& k : ComponentHandler::m_meshLayer[i.m_renderLayer])
@@ -105,7 +111,7 @@ namespace Aen {
 				
 			}*/
 
-			for (uint32_t i = 0u; i < 7u; i++)
+			/*for (uint32_t i = 0u; i < 7u; i++)
 			{
 				for (auto& k : ComponentHandler::m_meshLayer[i])
 				{
@@ -117,7 +123,7 @@ namespace Aen {
 						}
 					}
 				}
-			}
+			}*/
 
 			//--- View Frustum Culling ---//
 			/*for (uint32_t i = 0u; i < 7u; i++)

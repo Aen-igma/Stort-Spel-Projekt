@@ -7,11 +7,12 @@ NodeStruct::NodeStruct()
 	this->m_renderLayer = 0;
 }
 
-NodeStruct::NodeStruct(size_t ID, uint32_t RenderLayer, DirectX::BoundingBox boundingBox)
+NodeStruct::NodeStruct(size_t ID, uint32_t RenderLayer, DirectX::BoundingBox box, Aen::Drawable* drawable)
 {
 	this->m_ID = ID;
 	this->m_renderLayer = RenderLayer;
-	this->m_boundBox = boundingBox;
+	this->m_boundBox = box;
+	this->mp_drawable = drawable;
 }
 
 NodeStruct::~NodeStruct()
@@ -19,22 +20,22 @@ NodeStruct::~NodeStruct()
 	//delete this->mp_boundBox;
 } 
 
-QuadOutput::QuadOutput()
-{
-	m_ID = 0;
-	m_renderLayer = 0;
-}
-
-QuadOutput::QuadOutput(size_t ID, uint32_t Layer)
-{
-	m_ID = ID;
-	m_renderLayer = Layer;
-}
-
-QuadOutput::~QuadOutput()
-{
-
-}
+//QuadOutput::QuadOutput()
+//{
+//	m_ID = 0;
+//	m_renderLayer = 0;
+//}
+//
+//QuadOutput::QuadOutput(size_t ID, uint32_t Layer)
+//{
+//	m_ID = ID;
+//	m_renderLayer = Layer;
+//}
+//
+//QuadOutput::~QuadOutput()
+//{
+//
+//}
 
 
 Node::Node()
@@ -126,7 +127,7 @@ void Node::Insert(NodeStruct* obj)
 //	return false;
 //}
 
-void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<QuadOutput>& output) //View frustrum culling
+void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeStruct>& output) //View frustrum culling
 {
 	if (!mp_children[0])
 	{
@@ -136,14 +137,27 @@ void Node::IntersectTest(const DirectX::BoundingFrustum& other, std::vector<Quad
 				{
 					/*this->m_tempQuadObj = QuadOutput(obj->m_ID, obj->m_renderLayer);
 					output.emplace_back(&m_tempQuadObj);*/
-					output.emplace_back(QuadOutput(obj->m_ID, obj->m_renderLayer));
+					output.emplace_back(NodeStruct(obj->m_ID, obj->m_renderLayer, obj->m_boundBox, obj->mp_drawable));
 				}
 		}
 	}
 	else
 	{
 		for (int i = 0; i < 4; i++)
-			mp_children[i]->IntersectTest(other, output);
+			mp_children[i]->FrustumTest(other, output);
+	}
+}
+
+void Node::PositionTest(std::vector<NodeStruct>& output)
+{
+	if (!mp_children[0])
+	{
+
+	}
+	else
+	{
+		for (int i = 0; i < 4; i++)
+			mp_children[i]->PositionTest(output);
 	}
 }
 
@@ -162,22 +176,23 @@ void Node::Subdivide()
 	DirectX::XMFLOAT3 tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x / 2, m_areaQuad.Center.y / 2, m_areaQuad.Center.z);
 	DirectX::XMFLOAT3 tempExtends = DirectX::XMFLOAT3(m_areaQuad.Extents.x / 2, m_areaQuad.Extents.y / 2, m_areaQuad.Extents.z);
 	DirectX::BoundingBox tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	mp_children[0] = new Node(tempQuad, m_level, m_maxLevel, m_capacity);
+
+	mp_children[0] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
 	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x/2,
 		m_areaQuad.Center.y - m_areaQuad.Extents.y/2, m_areaQuad.Center.z);
 	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	mp_children[1] = new Node(tempQuad, m_level, m_maxLevel, m_capacity);
+	mp_children[1] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
 	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x - m_areaQuad.Extents.x/2,
 		m_areaQuad.Center.y + m_areaQuad.Extents.y/2, m_areaQuad.Center.z);
 	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	mp_children[2] = new Node(tempQuad, m_level, m_maxLevel, m_capacity);
+	mp_children[2] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
 	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x/2,
 		m_areaQuad.Center.y + m_areaQuad.Extents.y/2, m_areaQuad.Center.z);
 	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	mp_children[3] = new Node(tempQuad, m_level, m_maxLevel, m_capacity);
+	mp_children[3] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
 	//------------- Check which objects is in which quad ---------------//
 	for (auto&& box : m_objs)

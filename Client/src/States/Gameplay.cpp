@@ -198,6 +198,10 @@ void Gameplay::Initialize()
 	doorPos = m_door.GetEntity()->GetPos();
 	//m_attack->SetParent(*m_player);
 	//printf("");
+
+	//------QUADTREE------//
+	Aen::GlobalSettings::StartQuadtree(0, 5, 5);
+	
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
 
@@ -290,8 +294,6 @@ void Gameplay::Initialize()
 	mp_uiComp->SetButtonSize(0, 0, 0);
 	mp_uiComp->SetButtonSize(0, 0, 1);
 
-	Aen::GlobalSettings::StartQuadtree(0, 5, 2);
-
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	SetWin(false);
@@ -372,6 +374,8 @@ void Gameplay::Update(const float& deltaTime) {
 	// ---------------------------------- Enemies --------------------------------------- //
 
 	m_player.Update(m_enemyQueue, deltaTime);
+
+	Aen::GlobalSettings::SetPlayerPos(m_player.GetEntity()->GetPos());
 
 	m_chest.Update(deltaTime, m_player.GetEntity());
 	m_door.Update(deltaTime, m_player.GetEntity());

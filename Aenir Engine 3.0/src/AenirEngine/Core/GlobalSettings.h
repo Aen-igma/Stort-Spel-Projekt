@@ -76,6 +76,11 @@ namespace Aen {
 				delete m_pQuadtree;
 		}
 
+		static void SetPlayerPos(Aen::Vec3f pos)
+		{
+			m_pQuadtree
+		}
+
 		friend class GameLoop;
 		friend class Renderer;
 		friend class Camera;

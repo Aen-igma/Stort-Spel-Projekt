@@ -24,7 +24,7 @@ namespace Aen
 	Quadtree::~Quadtree()
 	{
 		delete mp_root;
-		for (auto& b : m_boundingVolStructs)
+		for (auto& b : m_treeStructure)
 		{
 			delete b;
 		}
@@ -50,27 +50,25 @@ namespace Aen
 					
 					box = ComponentHandler::GetMeshInstance(j.first).GetBox();
 					layer = i;
-
-					//box.Extents = j.second->GetAABB().Extents * ComponentHandler::GetScale(j.first).GetScale().smVec;
-					//box.Center = ComponentHandler::GetTranslation(j.first).GetPos().smVec;
-
-					NodeStruct* tempObj = AEN_NEW NodeStruct(j.first, layer, box);
+	
+					NodeStruct* tempObj = AEN_NEW NodeStruct(j.first, layer, box, j.second);
 					mp_root->Insert(tempObj);
-					m_boundingVolStructs.emplace_back(tempObj);
+					m_treeStructure.emplace_back(tempObj);
 				}
 			}
 		}
 
 	}
 
-	std::vector<QuadOutput>& Quadtree::Update()
+	std::vector<NodeStruct>& Quadtree::Update()
 	{
 		if (GlobalSettings::GetMainCamera())
 		{
 			m_quadObjectsToRender.clear();
 
 			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
-			mp_root->IntersectTest(m_cameraFrustrum, m_quadObjectsToRender);
+			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
+
 
 
 			/*for (auto& i : m_quadObjectsToRender)
