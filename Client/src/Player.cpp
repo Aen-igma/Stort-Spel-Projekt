@@ -271,7 +271,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		data.accell = m_LIGHTATTACKSPEED;
 		data.duration = m_LIGHTATTACKTIME;
 		data.type = EventType::Attack;
-		data.damage = 200.f;
+		data.damage = 20.f;
 		data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
 			mp_hurtBox->ToggleActive(true);
 			SwordSwing(500.f, m_LIGHTATTACKTIME, deltaTime);
