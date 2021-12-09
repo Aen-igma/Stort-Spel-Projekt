@@ -78,7 +78,8 @@ namespace Aen {
 
 		static void SetPlayerPos(Aen::Vec3f pos)
 		{
-			m_pQuadtree
+			//m_pQuadtree->SetPlayerPos(pos);
+			m_pQuadtree->GetRoot()->SetPlayerPos(pos);
 		}
 
 		friend class GameLoop;

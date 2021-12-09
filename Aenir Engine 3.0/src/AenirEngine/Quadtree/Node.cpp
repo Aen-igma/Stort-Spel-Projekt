@@ -7,11 +7,12 @@ NodeStruct::NodeStruct()
 	this->m_renderLayer = 0;
 }
 
-NodeStruct::NodeStruct(size_t ID, uint32_t RenderLayer, DirectX::BoundingBox box, Aen::Drawable* drawable)
+NodeStruct::NodeStruct(size_t ID, uint32_t RenderLayer, DirectX::BoundingBox box, Aen::Vec3f centerPoint, Aen::Drawable* drawable)
 {
 	this->m_ID = ID;
 	this->m_renderLayer = RenderLayer;
 	this->m_boundBox = box;
+	this->m_centerPoint = centerPoint;
 	this->mp_drawable = drawable;
 }
 
@@ -67,13 +68,13 @@ Node::~Node()
 	}
 }
 
-void Node::Insert(NodeStruct* obj)
+void Node::Insert(NodeStruct*& obj)
 {
 	if(!mp_children[0]) //If nullptr then this is a leaf 
 	{
-		if (m_objs.size() <= m_capacity) //if there is space in this quad
+		if (m_objs.size() < m_capacity) //if there is space in this quad
 		{
-			this->m_objs.push_back(obj);
+			this->m_objs.emplace_back(obj);
 		}
 		else
 		{
@@ -137,7 +138,7 @@ void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeSt
 				{
 					/*this->m_tempQuadObj = QuadOutput(obj->m_ID, obj->m_renderLayer);
 					output.emplace_back(&m_tempQuadObj);*/
-					output.emplace_back(NodeStruct(obj->m_ID, obj->m_renderLayer, obj->m_boundBox, obj->mp_drawable));
+					output.emplace_back(NodeStruct(obj->m_ID, obj->m_renderLayer, obj->m_boundBox, obj->m_centerPoint, obj->mp_drawable));
 				}
 		}
 	}
@@ -150,15 +151,33 @@ void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeSt
 
 void Node::PositionTest(std::vector<NodeStruct>& output)
 {
+	Aen::Vec3f eDir = m_playerPosition;
+	float dist = 0;
+
+	/*eDir = eDir - m_enemy->GetPos();
+	float dist = eDir.Magnitude();*/
 	if (!mp_children[0])
 	{
-
+		for (auto& obj : m_objs)
+		{
+			eDir = eDir - obj->m_centerPoint;
+			dist = eDir.Magnitude();
+			if (dist <= 10.f)
+			{
+				output.emplace_back(NodeStruct(obj->m_ID, obj->m_renderLayer, obj->m_boundBox, obj->m_centerPoint, obj->mp_drawable));
+			}
+		}
 	}
 	else
 	{
 		for (int i = 0; i < 4; i++)
 			mp_children[i]->PositionTest(output);
 	}
+}
+
+void Node::SetPlayerPos(Aen::Vec3f playerPos)
+{
+	m_playerPosition = playerPos;
 }
 
 //void Node::SmartPointer(std::shared_ptr<NodeStruct> ptr)

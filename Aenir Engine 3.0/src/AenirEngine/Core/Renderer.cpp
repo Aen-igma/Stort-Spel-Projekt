@@ -111,28 +111,14 @@ namespace Aen {
 				
 			}*/
 
-			/*for (uint32_t i = 0u; i < 7u; i++)
-			{
-				for (auto& k : ComponentHandler::m_meshLayer[i])
-				{
-					for (auto& j : m_quadtreeOutput)
-					{
-						if (k.second->FrustumCull(*this) && k.second->GetId() == j.m_ID)
-						{
-							m_drawTable[i].push_back(k.second);
-						}
-					}
-				}
-			}*/
-
 			//--- View Frustum Culling ---//
 			/*for (uint32_t i = 0u; i < 7u; i++)
 			{
-				for (int k = 0; k < m_drawTable[i].size(); k++)
+				for (auto & k : m_drawTable[i])
 				{
-					if (!m_drawTable[i].at(k)->FrustumCull(*this))
+					if (k->FrustumCull(*this))
 					{
-						m_drawTable[i].erase(m_drawTable[i].begin() + k);
+						m_drawTable[i].push_back(k.second);
 					}
 				}
 			}*/

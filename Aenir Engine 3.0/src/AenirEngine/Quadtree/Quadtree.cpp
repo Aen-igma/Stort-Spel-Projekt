@@ -38,7 +38,7 @@ namespace Aen
 	void Quadtree::Initialize()
 	{
 		DirectX::BoundingBox box;
-		uint32_t layer;
+		Aen::Vec3f centerPoint;
 		// Setup tree structure
 		//first = ID, second = component,
 		for (uint32_t i = 0u; i < 7u; i++)
@@ -47,13 +47,15 @@ namespace Aen
 			{
 				if (ComponentHandler::StaticBodyExist(j.first)) // if object has a static body put it in the quadtree
 				{
-					
 					box = ComponentHandler::GetMeshInstance(j.first).GetBox();
-					layer = i;
-	
-					NodeStruct* tempObj = AEN_NEW NodeStruct(j.first, layer, box, j.second);
+					centerPoint = Aen::Vec3f(box.Center.x, box.Center.y, box.Center.z);
+					NodeStruct* tempObj = AEN_NEW NodeStruct(j.first, i, box, centerPoint, j.second);
 					mp_root->Insert(tempObj);
 					m_treeStructure.emplace_back(tempObj);
+				}
+				else
+				{	
+					m_autoPass.emplace_back(NodeStruct(j.first, i, box, centerPoint, j.second));
 				}
 			}
 		}
@@ -65,11 +67,16 @@ namespace Aen
 		if (GlobalSettings::GetMainCamera())
 		{
 			m_quadObjectsToRender.clear();
+			for (auto& i : m_autoPass)
+			{
+				m_quadObjectsToRender.emplace_back(i);
+			}
+			//m_quadObjectsToRender.swap(m_autoPass);
 
-			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
-			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
+			mp_root->PositionTest(m_quadObjectsToRender);
 
-
+			//m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
+			//mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
 
 			/*for (auto& i : m_quadObjectsToRender)
 			{

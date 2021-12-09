@@ -199,8 +199,6 @@ void Gameplay::Initialize()
 	//m_attack->SetParent(*m_player);
 	//printf("");
 
-	//------QUADTREE------//
-	Aen::GlobalSettings::StartQuadtree(0, 5, 5);
 	
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
@@ -293,6 +291,9 @@ void Gameplay::Initialize()
 	mp_uiComp->SetPicSize(0, 0, 4);
 	mp_uiComp->SetButtonSize(0, 0, 0);
 	mp_uiComp->SetButtonSize(0, 0, 1);
+
+	//------QUADTREE------//
+	Aen::GlobalSettings::StartQuadtree(0, 5, 2);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
