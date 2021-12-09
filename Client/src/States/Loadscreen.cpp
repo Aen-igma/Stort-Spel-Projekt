@@ -46,8 +46,8 @@ void Loadscreen::Initialize()
 
 	// continue
 	m_loading->GetComponent<Aen::UIComponent>().AddButton(AEN_TEXTURE_DIR_W(L"Continue.png"));
-	m_loading->GetComponent<Aen::UIComponent>().SetButtonPos((950.f / 1920.f) * wDesc.width, (900.f / 1024.f) * wDesc.height);
-	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize((200.f / 1920.f) * wDesc.width, (100.f / 1024.f) * wDesc.height);
+	m_loading->GetComponent<Aen::UIComponent>().SetButtonPos((950.f / 1920) * wDesc.width, (900.f / 1024) * wDesc.height);
+	m_loading->GetComponent<Aen::UIComponent>().SetButtonSize((250.f / 1920)* wDesc.width, (100.f / 1024) * wDesc.height);
 	m_loading->GetComponent<Aen::UIComponent>().SaveButtonData();
 
 	if (!State::GetLoaded())
