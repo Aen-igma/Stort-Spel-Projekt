@@ -15,6 +15,7 @@ namespace Aen
 		m_shader = 0;
 		m_pMesh = 0;
 		m_pMaterial = 0;
+		
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
@@ -147,7 +148,16 @@ namespace Aen
 		this->m_CSInputBuffer.initalPos.x = x;
 		this->m_CSInputBuffer.initalPos.y = y;
 		this->m_CSInputBuffer.initalPos.z = z;
+	}
 
+	void PSSystemcomponent::SetEmitInterval(float xyz)
+	{
+		this->m_CSInputBuffer.emitInterval = xyz;
+	}
+
+	void PSSystemcomponent::SetMaxParticles(int max)
+	{
+		this->m_maxParticles = max;
 	}
 
 	void PSSystemcomponent::Initialize()
@@ -158,6 +168,8 @@ namespace Aen
 		this->m_CSInputBuffer.lifeTime = 0.0f;
 		this->m_CSInputBuffer.deltaTime = 0.0f;
 		this->m_CSInputBuffer.velocity = { 0.0f,0.0f,0.0f };
+		this->m_vertexCount = 0;
+		this->m_particlesPerSecond = 1.0f;
 		
 	}
 	void PSSystemcomponent::SetHeightLimit(float height)

@@ -60,8 +60,9 @@ void Gameplay::Initialize()
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 
 	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
-	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Flames.png"));
+	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Flames1.png"));
 	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FlamesOppacity1.png"));
+	
 
 	/*enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
 	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;

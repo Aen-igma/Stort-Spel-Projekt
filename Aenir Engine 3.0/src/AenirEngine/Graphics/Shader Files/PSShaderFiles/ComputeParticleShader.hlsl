@@ -1,5 +1,4 @@
 #include "SimplexNoise.hlsl"
-
 cbuffer CBInput : register(b0)
 {
     float3 velocity;
@@ -24,27 +23,25 @@ struct Particle
 };
 
 
-float hash(float n)
-{
-    return frac(sin(n) * 43758.5453);
-}
+//float hash(float n)
+//{
+//    return frac(sin(n) * 43758.5453);
+//}
 
-float noise(float3 x)
-{
+//float noise(float3 x)
+//{
+//    // The noise function returns a value in the range -1.0f -> 1.0f
+//    float3 p = floor(x);
+//    float3 f = frac(x);
 
-    // The noise function returns a value in the range -1.0f -> 1.0f
+//    f = f * f * (3.0 - 2.0 * f);
+//    float n = p.x + p.y * 57.0 + 113.0 * p.z;
 
-    float3 p = floor(x);
-    float3 f = frac(x);
-
-    f = f * f * (3.0 - 2.0 * f);
-    float n = p.x + p.y * 57.0 + 113.0 * p.z;
-
-    return lerp(lerp(lerp(hash(n + 0.0), hash(n + 1.0), f.x),
-        lerp(hash(n + 57.0), hash(n + 58.0), f.x), f.y),
-        lerp(lerp(hash(n + 113.0), hash(n + 114.0), f.x),
-            lerp(hash(n + 170.0), hash(n + 171.0), f.x), f.y), f.z);
-}
+//    return lerp(lerp(lerp(hash(n + 0.0), hash(n + 1.0), f.x),
+//        lerp(hash(n + 57.0), hash(n + 58.0), f.x), f.y),
+//        lerp(lerp(hash(n + 113.0), hash(n + 114.0), f.x),
+//            lerp(hash(n + 170.0), hash(n + 171.0), f.x), f.y), f.z);
+//}
 
 //Test random number on GPU
 //uint rng_state;
@@ -56,6 +53,26 @@ float noise(float3 x)
 //    rng_state ^= (rng_state << 5);
 //    return rng_state;
 //}
+
+float hash(float n)
+{
+    return frac(sin(n) * 43758.5453);
+}
+
+float noise(float3 x)
+{
+    // The noise function returns a value in the range -1.0f -> 1.0f
+    float3 p = floor(x);
+    float3 f = frac(x);
+
+    f = f * f * (3.0 - 2.0 * f);
+    float n = p.x + p.y * 57.0 + 113.0 * p.z;
+
+    return lerp(lerp(lerp(hash(n + 0.0), hash(n + 1.0), f.x),
+        lerp(hash(n + 57.0), hash(n + 58.0), f.x), f.y),
+        lerp(lerp(hash(n + 113.0), hash(n + 114.0), f.x),
+            lerp(hash(n + 170.0), hash(n + 171.0), f.x), f.y), f.z);
+}
 
 RWStructuredBuffer<Particle> OutputParticle : register(u0);
 [numthreads(64, 1, 1)]
@@ -83,13 +100,13 @@ void main(uint3 DTid : SV_DispatchThreadID)
     random.x *= 0.5f;
     random.y *= 0.5f;
 
+
     //This is an attempt for random number on gpu
     //float3 delta = float3(initalPos.xy, 3) - OutputParticle[i].Pos;
     //float3 dir = normalize(delta);
     //OutputParticle[i.x].Velocity += dir;
     //OutputParticle[i.x].Pos += OutputParticle[i.x].Velocity * deltaTime;
-    //if (OutputParticle[i].Age < 0)
-    //{
+    //if (OutputParticle[i].Age < 0) {
     //    rng_state = DTid.x;
     //    float f0 = float(rand_xorshift()) * (1.0 / 4294967296.0) - 0.5;
     //    float f1 = float(rand_xorshift()) * (1.0 / 4294967296.0) - 0.5;
@@ -108,12 +125,13 @@ void main(uint3 DTid : SV_DispatchThreadID)
     float3 randomMove = noise(float3(DTid)) %50;
     float3 randDir = noise(float3(DTid));
 
-
-
-    //Moving on y - axis
+    float2 size = float2(3.0f, 3.0f);
+   
+    
+    //Moving on y - axis, need to fix so that they dont spawn on and move on a single position all of the time
     OutputParticle[i].Pos.xz = initalPos.xz + randDir.xz;
-    OutputParticle[i].Velocity.xyz = 4.0f * random;
-
+    OutputParticle[i].Velocity = 4.0f * random;
+    
     if (length(OutputParticle[i].Pos.y) <= lifeTime) {
         OutputParticle[i].Pos.x += (5 * deltaTime + noise(float3(DTid))) % 50;
         OutputParticle[i].Pos.y += (5 * deltaTime + noise(float3(DTid))) % 50;
@@ -125,6 +143,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
         OutputParticle[i].Pos.z = initalPos.z;
         OutputParticle[i].Velocity.xyz = 4.0f * random;
         OutputParticle[i].Color = 1;
+        OutputParticle[i].UV = 1.0f;
         OutputParticle[i].Age = 0.0f;
     }
 

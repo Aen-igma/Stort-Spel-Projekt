@@ -1,3 +1,4 @@
+#include "SimplexNoise.hlsl"
 cbuffer Aen_CB_Transform {
     float4x4 vMat;
     float4x4 pMat;
@@ -61,6 +62,19 @@ void main(
     output.uv = float2(1, 0);
     OutStream.Append(output);
     OutStream.RestartStrip();
+   
+    OutStream.Append(output);
+
+    float3 vRandom = noise(0.0f);
+    vRandom.x *= 0.5;
+    vRandom.y *= 0.5;
+    //float3 vRandom = RandUnitVec3(0.0f);
+    //vRandom.x *= 0.5;
+    //vRandom.z *= 0.5;
+    //ParticleVertex ps;
+    //ps.Pos = initalPos.xyz;
+    //ps.Velocity = 4.0f * vRandom;
+    //ps.Age = 0.0f;
 
 }
 

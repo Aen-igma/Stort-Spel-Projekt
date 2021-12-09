@@ -43,6 +43,8 @@ namespace Aen
 		void SetAcceleration(float x, float y, float z);
 		void EmitRandom(float frameTime);
 		void SetEmitPos(float x, float y, float z);
+		void SetEmitInterval(float xyz);
+		void SetMaxParticles(int max);
 		void Initialize();
 		void SetHeightLimit(float height);
 		bool activate();
