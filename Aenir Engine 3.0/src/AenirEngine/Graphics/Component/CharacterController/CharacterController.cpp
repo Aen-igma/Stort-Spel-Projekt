@@ -89,6 +89,12 @@ namespace Aen {
 		return Vec3f((float)p.x, (float)p.y, (float)p.z);
 	}
 
+	const float CharacterController::GetMagnitude() const
+	{
+		px::PxExtendedVec3 p = m_controller->getPosition();
+		return p.magnitude();
+	}
+
 	const bool CharacterController::IsGrounded() {
 		px::PxExtendedVec3 p = m_controller->getFootPosition();
 		m_ray.SetOrigin(Vec3f((float)p.x, (float)p.y, (float)p.z) + m_ray.GetDirection() * 0.08f);

@@ -198,7 +198,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	else m_movementSpeed = 8.f;
 #endif // _DEBUG
 
-
 	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19));
 
 
@@ -522,9 +521,9 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	mp_hurtBox->SetOrientation(0.f, yaw, 0.f);
 	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
 	
-	if(axis.Magnitude() > 0.f)
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
-	else
+	//if(axis.Magnitude() > 0.f)
+	//	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
+	//else
 		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
 
 	if (!m_eventQueue.empty())
@@ -570,6 +569,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
+	static float blendFactor = 0.f;
+	blendFactor = Aen::Lerp(blendFactor, axis.Magnitude(), 0.35f);
+	//blendSpeed *= deltaTime;
+	m_protagIdleToRun->SetBlendFactor(blendFactor);
 	mp_charCont->Move(m_v * deltaTime, deltaTime);
 }
 

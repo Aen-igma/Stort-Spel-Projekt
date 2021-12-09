@@ -52,6 +52,12 @@ namespace Aen {
 		m_frameTime = ResClock::now();
 		DurationLD duration = std::chrono::duration_cast<std::chrono::nanoseconds>(m_frameTime - m_currentTime);
 
+		//int nFrame;
+		//if (duration.count() * m_scale > animation->m_duration)
+		//	nFrame = numFrames - 1;
+		//else
+		//	numFrames = m_currentFrame;
+
 		if (duration.count() * m_scale > animation->m_duration) {
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
@@ -100,6 +106,7 @@ namespace Aen {
 				m_currentFrame++;
 			}
 		}
+
 	}
 
 	void Animator::BindBuffer()
