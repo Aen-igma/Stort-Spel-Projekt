@@ -22,6 +22,7 @@ Gameplay::~Gameplay() {
 	Aen::Resource::RemoveAllMeshes();
 	Aen::Resource::RemoveAllTextures();
 	Aen::Resource::RemoveAllAnimations();
+
 }
 
 void Gameplay::Initialize()

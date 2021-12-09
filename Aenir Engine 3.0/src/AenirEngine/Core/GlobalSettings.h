@@ -63,7 +63,10 @@ namespace Aen {
 		static void StartQuadtree(const unsigned& level,
 			const unsigned& maxLevel, const unsigned& capacity) {
 			if (m_pQuadtree)
+			{
 				delete m_pQuadtree;
+				m_pQuadtree = nullptr;
+			}
 			else
 			{
 				m_pQuadtree = AEN_NEW Quadtree(level, maxLevel, capacity);
@@ -73,7 +76,10 @@ namespace Aen {
 
 		static void StopQuadtree() {
 			if (m_pQuadtree)
+			{
 				delete m_pQuadtree;
+				m_pQuadtree = nullptr;
+			}
 		}
 
 		static void SetPlayerPos(Aen::Vec3f pos)
