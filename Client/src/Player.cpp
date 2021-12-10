@@ -15,7 +15,7 @@ Player::Player()
 	m_player->SetTag("Player");
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
-	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 60.f);
+	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 90.f);
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
@@ -89,13 +89,13 @@ Player::Player()
 	mp_charCont->Resize(2.3f);
 
 	Aen::Animation& protagIdle = Aen::Resource::CreateAnimation("protagIdle");
-	protagIdle.LoadAnimation(AEN_MODEL_DIR("Protagonist_Idle.fbx"));
+	protagIdle.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Idle.fbx"));
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
-	protagRun.LoadAnimation(AEN_MODEL_DIR("Protagonist_Run.fbx"));
+	protagRun.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Run.fbx"));
 	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
-	protagDash.LoadAnimation(AEN_MODEL_DIR("Protagonist_Dash.fbx"));
+	protagDash.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Dash.fbx"));
 	Aen::Animation& protagAttack = Aen::Resource::CreateAnimation("protagAttack");
-	protagAttack.LoadAnimation(AEN_MODEL_DIR("Protagonist_Attack.fbx"));
+	protagAttack.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Attack.fbx"));
 
 	m_playerMeshHolder->AddComponent<Aen::MeshInstance>();
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMesh(*protag);
@@ -105,14 +105,16 @@ Player::Player()
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Pants1", pants);
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Metal1", metal);
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
+
 	m_playerMeshHolder->AddComponent<Aen::Animator>();
-	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagIdle, "Idle");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagRun, "Run");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagDash, "Dash");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagAttack, "Attack");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.28f);
-	m_playerMeshHolder->GetComponent<Aen::Animator>().SetFrameRate(24);
+	m_animation = &m_playerMeshHolder->GetComponent<Aen::Animator>();
+	m_animation->AddAnimation(protagIdle, "Idle");
+	m_animation->AddAnimation(protagRun, "Run");
+	m_animation->AddAnimation(protagDash, "Dash");
+	m_animation->AddAnimation(protagAttack, "Attack");
+	m_animation->SetAnimation("Idle");
+	m_animation->SetAnimationScale(0.28f);
+	m_animation->SetFrameRate(24);
 	m_playerMeshHolder->SetParent(*m_player);
 	m_playerMeshHolder->SetPos(0.f, -3.1f, 0.f);
 
@@ -271,7 +273,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		data.accell = m_LIGHTATTACKSPEED;
 		data.duration = m_LIGHTATTACKTIME;
 		data.type = EventType::Attack;
-		data.damage = 200.f;
+		data.damage = 20.f;
 		data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
 			mp_hurtBox->ToggleActive(true);
 			SwordSwing(500.f, m_LIGHTATTACKTIME, deltaTime);
