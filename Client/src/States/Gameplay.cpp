@@ -230,33 +230,40 @@ void Gameplay::Initialize()
 		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(tempLskels[i]));
 	}
 
+	cout << "BOSS ROOM: " << roomNormal << endl;
+	m_throne->SetScale(2.f, 2.f, 2.f);
+
 	// -- Door, Throne, Boss Rotations -- //
 	if (roomNormal == 1) { //north
 		m_throne->SetPos(m_bossPos.x, m_bossPos.y + 6.11f, m_bossPos.z + 33.35f);
 		m_door.GetEntity()->SetRot(0, 180, 0);
 		m_throne->SetRot(0.f, 180.f, 0.f);
+		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x - 1.f, m_throne->GetPos().y, m_throne->GetPos().z);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 0.f, 0.f);
 	}
 	else if (roomNormal == 10) {//east
 		m_throne->SetPos(m_bossPos.x - 33.35f, m_bossPos.y + 6.11f, m_bossPos.z);
 		m_door.GetEntity()->SetRot(0, 90, 0);
 		m_throne->SetRot(0.f, 90.f, 0.f);
+		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x, m_throne->GetPos().y, m_throne->GetPos().z - 1.f);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, -90.f, 0.f);
 	}
 	else if (roomNormal == 100) {//south
 		m_throne->SetPos(m_bossPos.x, m_bossPos.y + 6.11f, m_bossPos.z - 33.35f);
 		m_door.GetEntity()->SetRot(0, 0, 0);
 		m_throne->SetRot(0.f, 0.f, 0.f);
+		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x +1.f, m_throne->GetPos().y, m_throne->GetPos().z);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 180.f, 0.f);
 	}
 	else if (roomNormal == 1000) {//west
 		m_throne->SetPos(m_bossPos.x + 33.35f, m_bossPos.y + 6.11f, m_bossPos.z);
 		m_door.GetEntity()->SetRot(0, -90, 0);
 		m_throne->SetRot(0.f, -90.f, 0.f);
+		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x, m_throne->GetPos().y, m_throne->GetPos().z +1.f);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 90.f, 0.f);
 	}
 
-	m_pSkeleBoss->SetThronePosition(m_throne->GetPos());
+	//m_pSkeleBoss->SetThronePosition(m_throne->GetPos());
 	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 	doorPos = m_door.GetEntity()->GetPos();
