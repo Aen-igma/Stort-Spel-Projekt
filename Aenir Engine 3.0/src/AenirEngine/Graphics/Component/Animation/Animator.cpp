@@ -49,7 +49,9 @@ namespace Aen {
 
 		uint32_t sizeBA = animation->m_boneArray.size();
 		uint32_t numFrames = animation->m_timeStamp.size();
-		float duration = animation->m_duration * m_scale;
+		float duration = animation->IsBlendAnimation() ? aniLayer->GetDuration() : animation->m_duration * m_scale;
+		//float duration = animation->m_duration * m_scale;
+		//float layerDuration = animation->IsBlendAnimation() ? aniLayer->m_duration : 0.f;
 
 		if(m_time < duration) {
 			uint32_t l = 0u;
@@ -82,7 +84,6 @@ namespace Aen {
 			float t = f / h;
 
 			for (int i = 0; i < sizeBA; i++) {
-				Vec3f translation = Vec3f::zero;
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame;
 				Mat4f nextFrame;
@@ -94,12 +95,13 @@ namespace Aen {
 					//}
 					Vec4f quat = animation->m_keyFrames.at(bName)[fFrame].quatOrientation;
 					sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
-					//quat = aniLayer->m_keyFrames.at(bName)[numFrames - 1].quatOrientation;
-					//sm::Quaternion rot1 = { quat.x, quat.y, quat.z, quat.w };
-					//sm::Quaternion blendRot = blendRot.Lerp(rot0, rot1, animation->GetBlendFactor());
+
+					quat = aniLayer->m_keyFrames.at(bName)[fFrame].quatOrientation;
+					sm::Quaternion rot1 = { quat.x, quat.y, quat.z, quat.w };
+					sm::Quaternion blendRot = blendRot.Lerp(rot0, rot1, .5f);
 
 					//currentFrame.smMat.Translation(translation.smVec);
-					currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(rot0);
+					currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(rot1);
 					//nextFrame.smMat = 
 				}
 				else
@@ -108,7 +110,7 @@ namespace Aen {
 					//nextFrame = animation->m_keyFrames.at(bName)[sFrame].rotation;
 				}
 					//currentFrame = animation->m_keyFrames.at(bName)[fFrame].rotation;
-					nextFrame = animation->m_keyFrames.at(bName)[sFrame].rotation;
+					//nextFrame = animation->m_keyFrames.at(bName)[sFrame].rotation;
 
 				mat.emplace_back(currentFrame);
 				//mat.emplace_back(Lerp(currentFrame, nextFrame, t));
@@ -131,8 +133,11 @@ namespace Aen {
 					//}
 					Vec4f quat = animation->m_keyFrames.at(bName)[numFrames - 1].quatOrientation;
 					sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
+					quat = aniLayer->m_keyFrames.at(bName)[numFrames - 1].quatOrientation;
+					sm::Quaternion rot1 = { quat.x, quat.y, quat.z, quat.w };
+					sm::Quaternion blendRot = blendRot.Lerp(rot0, rot1, .5f);
 					//currentFrame.smMat.Translation(translation.smVec);
-					currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(rot0);
+					currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(rot1);
 				}
 
 				mat.emplace_back(currentFrame);

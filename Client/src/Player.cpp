@@ -410,13 +410,13 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	mp_hurtBox->SetOrientation(0.f, yaw, 0.f);
 	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
 	
-	//if(axis.Magnitude() > 0.f) {
-		//7m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.28f);
-		//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
-	//} else {
-		//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.85f);
+	if(axis.Magnitude() > 0.f) {
+		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
+		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
+	} else {
+		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
 		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
-	//}
+	}
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
