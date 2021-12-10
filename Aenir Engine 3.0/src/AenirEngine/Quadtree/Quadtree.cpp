@@ -14,8 +14,12 @@ namespace Aen
 		const unsigned& maxLevel, const unsigned& capacity)
 	{
 		DirectX::BoundingBox quad;
-		quad.Center = DirectX::XMFLOAT3(460.f, 0.f, 460.f);
-		quad.Extents = DirectX::XMFLOAT3(460.f, 10.f, 460.f);
+		/*quad.Center = DirectX::XMFLOAT3(460.f, 0.f, 460.f);
+		quad.Extents = DirectX::XMFLOAT3(460.f, 10.f, 460.f);*/
+
+		quad.Center = DirectX::XMFLOAT3(0.f, 0.f, 0.f);
+		quad.Extents = DirectX::XMFLOAT3(50.f, 10.f, 50.f);
+
 		mp_root = new Node(quad, level, maxLevel, capacity);
 		//std::cout << "I'm root: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
 		

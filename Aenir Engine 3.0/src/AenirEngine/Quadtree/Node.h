@@ -3,9 +3,8 @@
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
 #include "Graphics\Component\Drawable\Drawable.h"
-//#include <algorithm>
-//#include <vector>
-//#include <functional>
+#include "Graphics\Component\Entity.h"
+#include "Graphics\Component\EntityHandler.h"
 
 struct NodeStruct
 {
@@ -36,6 +35,7 @@ public:
 private:
 	Node* mp_children[4] = { nullptr };
 	DirectX::BoundingBox m_areaQuad;
+	Aen::Entity* mp_aabbDraw;
 	std::vector<NodeStruct> m_objs;
 
 	unsigned m_level;

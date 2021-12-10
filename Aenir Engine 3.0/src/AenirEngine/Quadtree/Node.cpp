@@ -26,6 +26,7 @@ NodeStruct::~NodeStruct()
 Node::Node()
 {
 	this->m_areaQuad = DirectX::BoundingBox(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(10, 10, 10));
+	this->mp_aabbDraw = nullptr;
 	this->m_level = 0;
 	this->m_maxLevel = 1;
 	this->m_capacity = 3;
@@ -35,6 +36,11 @@ Node::Node(DirectX::BoundingBox& quad, const unsigned& level, const unsigned& ma
 {
 	//Create node and get quad that was calculated by parent
 	this->m_areaQuad = quad;
+	this->mp_aabbDraw = &Aen::EntityHandler::CreateEntity();
+	this->mp_aabbDraw->AddComponent<Aen::AABoundBox>();
+	this->mp_aabbDraw->GetComponent<Aen::AABoundBox>().SetBoundingBox(quad.Extents.x, quad.Extents.y, quad.Extents.z);
+	this->mp_aabbDraw->SetPos(quad.Center.x, quad.Center.y, quad.Center.z);
+
 	this->m_level = level;
 	this->m_maxLevel = max_level;
 	this->m_capacity = capacity;
@@ -50,6 +56,7 @@ Node::~Node()
 			delete mp_children[i];
 		}
 	}
+	Aen::EntityHandler::RemoveEntity(*mp_aabbDraw);
 }
 
 void Node::Insert(const NodeStruct& obj)
@@ -118,6 +125,7 @@ void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeSt
 	{
 		if (this->m_areaQuad.Intersects(other))
 		{
+			this->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 			for (auto & obj : m_objs)
 			{
 				if(other.Intersects(obj.m_boundBox))
@@ -126,6 +134,8 @@ void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeSt
 				}
 			}
 		}
+		else
+			this->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 	}
 	else
 	{
@@ -149,8 +159,8 @@ void Node::Subdivide()
 	DirectX::XMFLOAT3 tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x / 2.f, m_areaQuad.Center.y, m_areaQuad.Center.z / 2.f);
 	DirectX::XMFLOAT3 tempExtends = DirectX::XMFLOAT3(m_areaQuad.Extents.x / 2.f, m_areaQuad.Extents.y, m_areaQuad.Extents.z / 2.f);
 	DirectX::BoundingBox tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-
 	mp_children[0] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
+
 	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
 		m_areaQuad.Center.y, m_areaQuad.Center.z - m_areaQuad.Extents.z / 2.f);
 	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);

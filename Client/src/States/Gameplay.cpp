@@ -164,7 +164,7 @@ void Gameplay::Initialize()
 
 	//m_door.SetType(Type::Open);
 	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
-	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
@@ -211,7 +211,7 @@ void Gameplay::Initialize()
 	m_pSkeleBoss->GetEntity()->SetPos(m_bossPos);
 	m_player.SetBossP(m_pSkeleBoss);
 
-	std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
+	/*std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	std::vector<Aen::Vec3f> tempLskels = m_levelGenerator.GetHandlerPtr()->GetLskelPos();
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
 	{
@@ -220,7 +220,7 @@ void Gameplay::Initialize()
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetLskelPos().size(); i++)
 	{
 		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(tempLskels[i]));
-	}
+	}*/
 
 
 	//m_attack->SetParent(*m_player);
@@ -295,7 +295,7 @@ void Gameplay::Initialize()
 	mp_uiComp->SetButtonSize(0, 0, 1);
 
 	//------QUADTREE------//
-	Aen::GlobalSettings::StartQuadtree(0, 2, 4);
+	Aen::GlobalSettings::StartQuadtree(0, 4, 4);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
