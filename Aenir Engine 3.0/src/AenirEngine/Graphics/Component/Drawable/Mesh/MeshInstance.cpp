@@ -223,8 +223,8 @@ namespace Aen {
 
 			if(GlobalSettings::GetMainCamera())
 				if(box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum()))*/ 
-			if (GlobalSettings::GetMainCamera())
-				{
+			//if (GlobalSettings::GetMainCamera())
+				//{
 					Material* pMaterial = (m_pMesh && m_pMaterials[0]) ? m_pMaterials[0] : nullptr;
 					if(pMaterial) {
 						RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
@@ -237,7 +237,7 @@ namespace Aen {
 					m_pMesh->m_vertices.BindBuffer();
 					m_pMesh->m_vertices.Draw();
 					RenderSystem::UnBindShaderResources<VShader>(0u, 1u);
-				}
+				//}
 		}
 	}
 	bool MeshInstance::FrustumCull(Renderer& renderer)

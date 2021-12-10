@@ -164,7 +164,7 @@ void Gameplay::Initialize()
 
 	//m_door.SetType(Type::Open);
 	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
-	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
@@ -295,12 +295,12 @@ void Gameplay::Initialize()
 	mp_uiComp->SetButtonSize(0, 0, 1);
 
 	//------QUADTREE------//
-	Aen::GlobalSettings::StartQuadtree(0, 4, 4);
+	Aen::GlobalSettings::StartQuadtree(0, 5, 10);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	SetWin(false);
-	//m_bossHP = m_pSkeleBoss->GetHealth();
+	m_bossHP = m_pSkeleBoss->GetHealth();
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //

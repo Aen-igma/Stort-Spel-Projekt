@@ -44,7 +44,10 @@ Node::Node(DirectX::BoundingBox& quad, const unsigned& level, const unsigned& ma
 	this->m_level = level;
 	this->m_maxLevel = max_level;
 	this->m_capacity = capacity;
-	std::cout << "I'm child: \nLevel : " << level << std::endl << std::endl; 
+
+	string temp = "\nme baby Level: " + std::to_string(m_level) + "\nquadPos: " + std::to_string(quad.Center.x) + ", " + std::to_string(quad.Center.y) + ", " + std::to_string(quad.Center.z);
+	OutputDebugString(temp.c_str());
+	//std::cout << "I'm child: \nLevel : " << level << std::endl << std::endl; 
 }
 
 Node::~Node()
@@ -85,7 +88,6 @@ void Node::Insert(const NodeStruct& obj)
 				mp_children[i]->Insert(obj);
 			}
 		}
-
 	}
 }
 
@@ -176,17 +178,31 @@ void Node::Subdivide()
 	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
 	mp_children[3] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
+	static bool inserted;
 	//------------- Check which objects is in which quad ---------------//
 	for (auto& box : m_objs)
 	{
-		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox))
+		inserted = false;
+		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox) && inserted == false)
+		{
 			mp_children[0]->Insert(box);
-		if (mp_children[1]->m_areaQuad.Intersects(box.m_boundBox))
+			inserted = true;
+		}
+		if (mp_children[1]->m_areaQuad.Intersects(box.m_boundBox) && inserted == false)
+		{
 			mp_children[1]->Insert(box);
-		if (mp_children[2]->m_areaQuad.Intersects(box.m_boundBox))
+			inserted = true;
+		}
+		if (mp_children[2]->m_areaQuad.Intersects(box.m_boundBox) && inserted == false)
+		{
 			mp_children[2]->Insert(box);
-		if (mp_children[3]->m_areaQuad.Intersects(box.m_boundBox))
+			inserted = true;
+		}
+		if (mp_children[3]->m_areaQuad.Intersects(box.m_boundBox) && inserted == false)
+		{
 			mp_children[3]->Insert(box);
+			inserted = true;
+		}
 	}
 	
 
