@@ -118,6 +118,7 @@ void Gameplay::Initialize()
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
 	Aen::Vec3f ChestPos;
+	Aen::Vec3f doorPos;
 	Aen::Vec3f EnemyPos;
 	int roomNormal = 0;
 	int itemNormal = 0;
@@ -198,7 +199,7 @@ void Gameplay::Initialize()
 	else if (itemNormal == 1000) {//west
 		m_chest.GetEntity()->SetRot(0, 90, 0);
 	}
-	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
+	m_door.GetEntity()->SetPos(doorPos.x, 0.f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
 	m_grave.GetEntity()->SetPos(doorPos);
 	m_grave.GetEntity()->MoveRelative(0.f, 0, -15.f);
@@ -461,8 +462,7 @@ void Gameplay::Update(const float& deltaTime) {
 			mp_uiComp->ChangeText(0, L"- Kill the Boss");
 			mp_uiComp->SetPicPos((1000.f / 1920) * screenSize.x, (700.f / 1024) * screenSize.y, 3);
 			mp_uiComp->SetPicSize((1200.f / 1920) * screenSize.x, (150.f / 1024) * screenSize.y, 3);
-			m_door.GetEntity()->SetPos(doorPos);
-			m_door.SetType(Type::Locked);
+			m_door.SetType(Type::Locking);
 		}
 
 		if (m_bossHP != m_pSkeleBoss->GetHealth()) {
