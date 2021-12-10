@@ -18,6 +18,7 @@ cbuffer CB_CellShader {
 	float outerFalloff;
 	float rimLightIntensity;
 	float rimLightSize;
+    float OpacityStr;
 };
 
 cbuffer Aen_CB_Transform {

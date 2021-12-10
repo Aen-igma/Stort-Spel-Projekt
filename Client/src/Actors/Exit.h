@@ -1,11 +1,13 @@
 #pragma once
 #include "Interact.h"
 
-class Chest : public Interact
+class Portal : public Interact
 {
 public:
-	Chest();
-	~Chest();
+	Portal();
+	~Portal();
+	
+	void Update(const float& deltaTime);
 
 	// Inherited via Interact
 	virtual void Update(const float& deltaTime, Aen::Entity*& e) override;
@@ -14,5 +16,8 @@ public:
 	virtual Aen::Entity*& GetEntity() override;
 	virtual void SetType(const Type& type) override;
 private:
-	Aen::Entity* m_chest;
+	Aen::Entity* m_exit;
+	Aen::Material& m_Mat;
+	float m_scale;
+	float m_Opacity;
 };
