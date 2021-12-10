@@ -40,13 +40,23 @@ void Gameplay::Initialize()
 
 	// ----------------------------- Animations -------------------------------- //
 	
+	// Skel_Light
 	Aen::Animation& skelIdle = Aen::Resource::CreateAnimation("Skel_Idle");
-	skelIdle.LoadAnimation(AEN_MODEL_DIR("Idle_skelTest2.fbx"));
+	skelIdle.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_NewIdle.fbx"));
 	Aen::Animation& skelWalk = Aen::Resource::CreateAnimation("Skel_Walk");
-	skelWalk.LoadAnimation(AEN_MODEL_DIR("Walk_skelTest3.fbx"));
+	skelWalk.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_Walking_2.fbx"));
 	Aen::Animation& skelAttack = Aen::Resource::CreateAnimation("Skel_Attack");
-	skelAttack.LoadAnimation(AEN_MODEL_DIR("Attack_skelTest3.fbx"));
+	skelAttack.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_NewAttack.fbx"));
 
+	// Boss
+	Aen::Animation& bossThrone = Aen::Resource::CreateAnimation("Boss_Throne");
+	bossThrone.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Throne_Sit.fbx"));
+	Aen::Animation& bossWalk = Aen::Resource::CreateAnimation("Boss_Walk");
+	bossWalk.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Hover.fbx"));
+	Aen::Animation& bossAttack = Aen::Resource::CreateAnimation("Boss_Attack");
+	bossAttack.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Attack.fbx"));
+	Aen::Animation& bossSummon = Aen::Resource::CreateAnimation("Boss_Summon");
+	bossSummon.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Summon.fbx"));
 
 	
 
@@ -55,13 +65,17 @@ void Gameplay::Initialize()
 	Aen::Mesh& rimuru = Aen::Resource::CreateMesh("Rimuru");
 	rimuru.Load(AEN_MODEL_DIR("Slime.fbx"));
 	Aen::Mesh& skeleLight = Aen::Resource::CreateMesh("SkeletonLight");
-	skeleLight.Load(AEN_MODEL_DIR("Skel_Meshtest.fbx"));
+	skeleLight.Load(AEN_MODEL_DIR("Skel_Light_Walking_2.fbx"));
+	Aen::Mesh& throne = Aen::Resource::CreateMesh("Throne");
+	throne.Load(AEN_MODEL_DIR("Throne.fbx"));
+
 	// -------------------------- Setup Material -------------------------------- //
 
 	Aen::Material& planeMat = Aen::Resource::CreateMaterial("PlaneMaterial");
 	Aen::Material& slimeMat = Aen::Resource::CreateMaterial("SlimeMaterial");
 	Aen::Material& skeleLightMat = Aen::Resource::CreateMaterial("SkeleLightMaterial");
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
+	Aen::Material& throneMat = Aen::Resource::CreateMaterial("ThroneMaterial");
 
 	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
 	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Flames2.png"));
@@ -72,9 +86,9 @@ void Gameplay::Initialize()
 	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["BaseColor"] = Aen::Color::Cyan;
 
+	skeleLightMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Skel_Light_UV3_DONE.png"));
 	skeleLightMat["InnerEdgeColor"] = Aen::Color::Black;
 	skeleLightMat["OuterEdgeColor"] = Aen::Color::Black;
-	skeleLightMat["BaseColor"] = Aen::Color::White;
 
 	// Material to switch to when enemy is hurt
 	enemyMatHurt.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));
@@ -84,6 +98,11 @@ void Gameplay::Initialize()
 	planeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Floor_Diffuse.png"));
 	planeMat["InnerEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	planeMat["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
+
+	throneMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Throne.png"));
+	throneMat["InnerEdgeColor"] = Aen::Color::Black;
+	throneMat["OuterEdgeColor"] = Aen::Color::Black;
+
 	// -------------------------- Setup Entities -------------------------------- //
 	// 
 	// -------------------------- Particle System -------------------------------- //
@@ -102,6 +121,14 @@ void Gameplay::Initialize()
 	m_plane->AddComponent<Aen::StaticBody>();
 	m_plane->GetComponent<Aen::StaticBody>().SetGeometry(Aen::StaticGeometryType::PLANE);
 
+	m_throne = &Aen::EntityHandler::CreateEntity();
+	m_throne->AddComponent<Aen::MeshInstance>();
+	m_throne->GetComponent<Aen::MeshInstance>().SetMesh(throne);
+	m_throne->GetComponent<Aen::MeshInstance>().SetMaterial(throneMat);
+	//m_throne->AddComponent<Aen::StaticBody>();
+	//m_throne->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
+	
+
 	// ------------------- Procedural generation testing staging grounds ------- //
 	m_levelGenerator.LoadMutipleRoomFiles();
 
@@ -110,7 +137,7 @@ void Gameplay::Initialize()
 	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
 
 	//Match this value to the size of the rooms we are using
-	m_levelGenerator.SetRoomDimension(43.f);
+	m_levelGenerator.SetRoomDimension(80.f);
 	mptr_map = m_levelGenerator.GenerateLevel();
 	m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
@@ -166,26 +193,6 @@ void Gameplay::Initialize()
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 
-	if (roomNormal == 1) { //north
-		m_grave.GetEntity()->SetRot(0, 180, 0);
-		m_door.GetEntity()->SetRot(0, 180, 0);
-		m_exit.GetEntity()->SetRot(-90, -90, 90);
-	}
-	else if (roomNormal == 10) {//east
-		m_grave.GetEntity()->SetRot(0, 90, 0);
-		m_door.GetEntity()->SetRot(0, 90, 0);
-		m_exit.GetEntity()->SetRot(90, 180, 90);
-	}
-	else if (roomNormal == 100) {//south
-		m_grave.GetEntity()->SetRot(0, 0, 0);
-		m_door.GetEntity()->SetRot(0, 0, 0);
-		m_exit.GetEntity()->SetRot(-90, 90, 90);
-	}
-	else if (roomNormal == 1000) {//west
-		m_grave.GetEntity()->SetRot(0, -90, 0);
-		m_door.GetEntity()->SetRot(0, -90, 0);
-		m_exit.GetEntity()->SetRot(-90, 0, 90);
-	}
 
 	if (itemNormal == 1) { //north
 		m_chest.GetEntity()->SetRot(0, 0, 0);
@@ -229,6 +236,44 @@ void Gameplay::Initialize()
 	{
 		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(tempLskels[i]));
 	}
+
+	cout << "BOSS ROOM: " << roomNormal << endl;
+	m_throne->SetScale(2.f, 2.f, 2.f);
+
+	// -- Door, Throne, Boss Rotations -- //
+	if (roomNormal == 1) { //north
+		m_throne->SetPos(m_bossPos.x, m_bossPos.y + 6.11f, m_bossPos.z + 33.35f);
+		m_door.GetEntity()->SetRot(0, 180, 0);
+		m_throne->SetRot(0.f, 180.f, 0.f);
+		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x - 1.f, m_throne->GetPos().y, m_throne->GetPos().z);
+		m_pSkeleBoss->GetEntity()->SetRot(0.f, 0.f, 0.f);
+	}
+	else if (roomNormal == 10) {//east
+		m_throne->SetPos(m_bossPos.x - 33.35f, m_bossPos.y + 6.11f, m_bossPos.z);
+		m_door.GetEntity()->SetRot(0, 90, 0);
+		m_throne->SetRot(0.f, 90.f, 0.f);
+		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x, m_throne->GetPos().y, m_throne->GetPos().z - 1.f);
+		m_pSkeleBoss->GetEntity()->SetRot(0.f, -90.f, 0.f);
+	}
+	else if (roomNormal == 100) {//south
+		m_throne->SetPos(m_bossPos.x, m_bossPos.y + 6.11f, m_bossPos.z - 33.35f);
+		m_door.GetEntity()->SetRot(0, 0, 0);
+		m_throne->SetRot(0.f, 0.f, 0.f);
+		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x +1.f, m_throne->GetPos().y, m_throne->GetPos().z);
+		m_pSkeleBoss->GetEntity()->SetRot(0.f, 180.f, 0.f);
+	}
+	else if (roomNormal == 1000) {//west
+		m_throne->SetPos(m_bossPos.x + 33.35f, m_bossPos.y + 6.11f, m_bossPos.z);
+		m_door.GetEntity()->SetRot(0, -90, 0);
+		m_throne->SetRot(0.f, -90.f, 0.f);
+		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x, m_throne->GetPos().y, m_throne->GetPos().z +1.f);
+		m_pSkeleBoss->GetEntity()->SetRot(0.f, 90.f, 0.f);
+	}
+
+	//m_pSkeleBoss->SetThronePosition(m_throne->GetPos());
+	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
+	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
+	doorPos = m_door.GetEntity()->GetPos();
 
 	//m_attack->SetParent(*m_player);
 

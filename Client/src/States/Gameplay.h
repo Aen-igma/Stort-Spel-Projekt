@@ -40,6 +40,8 @@ private:
 
     Aen::Entity* m_PS;
     Aen::Entity* m_wall;
+    Aen::Entity* m_throne;
+ 
     Aen::Entity* m_bill;
     Aen::Material& m_Mat;
     Aen::UIComponent* mp_uiComp;

@@ -60,6 +60,8 @@ private:
     Player* mp_player;
     bool m_waiting;
 
+    Aen::Animator* m_animator;
+
     Aen::Vec3f m_direction;
     std::vector<Rimuru*> m_pMinions;
 
