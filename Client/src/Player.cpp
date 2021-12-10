@@ -503,6 +503,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 							break;
 						}
 
+
 					switch (e[i]->GetEnemyType())
 					{
 					case EnemyType::BASE:
@@ -521,10 +522,10 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 					default:
 						break;
 					}
-						
+					
 					e[i] = nullptr;
 					e.erase(e.begin() + i);
-				
+					Aen::GlobalSettings::RebuildAutoPass();
 				}
 			}
 		}

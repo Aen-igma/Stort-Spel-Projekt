@@ -82,10 +82,9 @@ namespace Aen {
 			}
 		}
 
-		static void SetPlayerPos(Aen::Vec3f pos)
+		static void RebuildAutoPass() 
 		{
-			//m_pQuadtree->SetPlayerPos(pos);
-			m_pQuadtree->GetRoot()->SetPlayerPos(pos);
+			m_pQuadtree->RebuildAutoPass();
 		}
 
 		friend class GameLoop;

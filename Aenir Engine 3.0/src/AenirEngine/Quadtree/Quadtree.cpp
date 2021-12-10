@@ -26,15 +26,27 @@ namespace Aen
 		delete mp_root;
 	}
 
-	Node* Quadtree::GetRoot()
+	Node* Quadtree::GetRoot() const
 	{
 		return mp_root;
+	}
+
+	void Quadtree::RebuildAutoPass()
+	{
+		m_autoPass.clear();
+		DirectX::BoundingBox box;
+		for (uint32_t i = 0u; i < 7u; i++)
+		{
+			for (auto& j : ComponentHandler::m_meshLayer[i])
+			{
+				m_autoPass.emplace_back(NodeStruct(j.first, i, box, j.second));
+			}
+		}
 	}
 
 	void Quadtree::Initialize()
 	{
 		DirectX::BoundingBox box;
-		Aen::Vec3f centerPoint;
 		// Setup tree structure
 		//first = ID, second = component,
 		for (uint32_t i = 0u; i < 7u; i++)
@@ -44,13 +56,12 @@ namespace Aen
 				if (ComponentHandler::StaticBodyExist(j.first)) // if object has a static body put it in the quadtree
 				{
 					box = ComponentHandler::GetMeshInstance(j.first).GetBox();
-					centerPoint = Aen::Vec3f(box.Center.x, box.Center.y, box.Center.z);
-					NodeStruct tempObj(j.first, i, box, centerPoint, j.second);
+					NodeStruct tempObj(j.first, i, box, j.second);
 					mp_root->Insert(tempObj);
 				}
 				else
 				{	
-					m_autoPass.emplace_back(NodeStruct(j.first, i, box, centerPoint, j.second));
+					m_autoPass.emplace_back(NodeStruct(j.first, i, box, j.second));
 				}
 			}
 		}
@@ -63,27 +74,11 @@ namespace Aen
 		{
 			m_quadObjectsToRender.clear();
 
-			if (m_autoPass.size() > ComponentHandler::m_meshLayer[3].size())
+			for (int i = 0; i < m_autoPass.size(); i++)
 			{
-				m_autoPass.clear();
-				DirectX::BoundingBox box;
-				Aen::Vec3f centerPoint;
-				for (uint32_t i = 3u; i < 7u; i++)
-				{
-					for (auto& j : ComponentHandler::m_meshLayer[i])
-					{
-						m_autoPass.emplace_back(NodeStruct(j.first, i, box, centerPoint, j.second));
-					}
-				}
+				if (m_autoPass[i].mp_drawable->FrustumCull(renderer))
+					m_quadObjectsToRender.emplace_back(m_autoPass[i]);
 			}
-
-			for (auto& i : m_autoPass)
-			{	
-				if(i.mp_drawable->FrustumCull(renderer))
-					m_quadObjectsToRender.emplace_back(i);
-			}
-
-			//mp_root->PositionTest(m_quadObjectsToRender);
 
 			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
 			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
