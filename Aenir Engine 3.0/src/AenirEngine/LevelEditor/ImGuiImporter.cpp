@@ -61,7 +61,16 @@ namespace Aen
 			m_materialList->push_back(IGH::MatTexName(materialIn.materialName, materialIn.materialTextureName));
 
 			materialTexture = &Aen::Resource::CreateTexture(textureName);
-			materialTexture->LoadTexture(AEN_TEXTURE_DIR(imageName));
+
+			if (textureName == "")
+			{
+				materialTexture->LoadTexture(AEN_TEXTURE_DIR("Missing_Textures.png"));
+
+			}
+			else
+			{
+				materialTexture->LoadTexture(AEN_TEXTURE_DIR(imageName));
+			}
 
 			material = &Aen::Resource::CreateMaterial(materialName, true);
 
@@ -116,6 +125,11 @@ namespace Aen
 		this->m_materialList = m_materialList;
 		this->m_parentList = m_parentList;
 		m_standAlone = false;
+	}
+
+	vector<AenIF::Particle>& ImGuiImporter::GetParticleList()
+	{
+		return m_particleList;
 	}
 
 	ImGuiImporter::~ImGuiImporter()
@@ -485,6 +499,17 @@ namespace Aen
 				AddPointLight(roomPtr->GetLightVector()[i], offset, angle);
 			}
 		}
+
+		for (size_t i = 0; i < roomPtr->GetParticleVector().size(); i++)
+		{
+			AenIF::Particle* particle = &roomPtr->GetParticleVector()[i];
+
+			if (particle->type == IGH::TORCH)
+			{
+				m_particleList.push_back(*particle);
+			}
+		}
+
 		return true;
 	}
 
@@ -504,7 +529,7 @@ namespace Aen
 
 		AddEnemy(entity, model);
 		AddModel(entity, model.name);
-		m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(materialIn, texture.texture, texture.normalTexture, model.name, model.mesh, model.type, model.rigidBody, model.rigidBodyType)));
+		m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(entity->GetID(),materialIn, texture.texture, texture.normalTexture, model.name, model.mesh, model.type, model.rigidBody, model.rigidBodyType)));
 		m_modelMap->at(id).m_model.m_castShadow = model.castShadow;
 
 		return id;
@@ -538,7 +563,7 @@ namespace Aen
 
 		AddEnemy(entity, model);
 		AddModel(entity, model.name);
-		m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(textureName, materialName, texture.texture, model.name, model.mesh, model.type, model.rigidBody, model.rigidBodyType)));
+		m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(id,textureName, materialName, texture.texture, model.name, model.mesh, model.type, model.rigidBody, model.rigidBodyType)));
 		m_modelMap->at(id).m_model.m_castShadow = model.castShadow;
 
 		return id;
@@ -558,10 +583,10 @@ namespace Aen
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
 
 		AddModel(entity, meshName);
-
-		m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(textureName, materialName, imageName, meshName, objName)));
-
 		size_t id = entity->GetID();
+
+		m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(id, textureName, materialName, imageName, meshName, objName)));
+
 
 		return id;
 	}
@@ -605,7 +630,7 @@ namespace Aen
 		AddModel(entity, meshName);
 		size_t id = entity->GetID();
 
-		m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer("", "", "", meshName, objName)));
+		m_modelMap->insert(std::make_pair(id, IGH::ModelContainer(id,"", "", "", meshName, objName)));
 		m_modelMap->at(id).m_type = type;
 
 		return id;
@@ -619,12 +644,12 @@ namespace Aen
 
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
+		size_t id = entity->GetID();
 
-		m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer("", "", "", "", "")));
+		m_modelMap->insert(std::make_pair(id, IGH::ModelContainer(id ,"", "", "", "", "")));
 
 		AddModel(entity, meshName);
 
-		size_t id = entity->GetID();
 
 		return id;
 	}
@@ -802,7 +827,7 @@ namespace Aen
 			Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(*material);
 
 			AddModel(entity, model.name);
-			m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(materialIn, texture.texture, texture.normalTexture, model.name, model.mesh, model.type, model.rigidBody, model.rigidBodyType)));
+			m_modelMap->insert(std::make_pair(id , IGH::ModelContainer(id ,materialIn, texture.texture, texture.normalTexture, model.name, model.mesh, model.type, model.rigidBody, model.rigidBodyType)));
 			m_modelMap->at(id).m_model.m_castShadow = model.castShadow;
 		}
 

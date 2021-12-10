@@ -52,7 +52,6 @@ namespace IGH
 
 	const string BOSS = "Boss Enemy";
 
-
 	const string TORCH = "Torch";
 
 	const string DEFAULTMATERIAL = "DefaultMaterial";
@@ -65,8 +64,7 @@ namespace IGH
 
 
 		const char* TAGS[5] = { "Light","Model","Enemy", "Weapon","Chest" };
-		const char* PARTICLETAG[2] = { "Torch", "None"};
-
+		const char* PARTICLETAG[2] = { "None", "Torch" };
 
 		const char* HITBOXTYPE[3] = { "None","Static", "Dynamic" };
 		const char* ENEMYTYPE[4] = { "Normal Enemy", "Slime Enemy","Light Skeleton","Boss Enemy" };
@@ -183,6 +181,7 @@ namespace IGH
 
 	struct ModelInfo
 	{
+		size_t id = -1;
 		string m_name = ""; // Editor name
 		string m_meshName = ""; // Obj name
 		bool rigidBody = false;
@@ -269,7 +268,7 @@ namespace IGH
 		}
 
 
-
+		size_t id = -1;
 		string m_materialTextureName;
 		string m_materialName;
 
@@ -384,6 +383,7 @@ namespace IGH
 
 	struct TextureInfo
 	{
+		size_t id = -1;
 		string m_textureName;
 		string m_normalTexture;
 	};
@@ -397,7 +397,8 @@ namespace IGH
 		AnimationInfo m_animation;
 		string m_sound = "Sound";
 
-		ModelContainer(string materialTextureName, string materialName, string textureName, string modelName, string meshName) {
+		ModelContainer(size_t id, string materialTextureName, string materialName, string textureName, string modelName, string meshName) {
+			setID(id);
 			this->m_material.m_materialTextureName = materialTextureName;
 			this->m_material.m_materialName = materialName;
 			this->m_texture.m_textureName = textureName;
@@ -405,7 +406,8 @@ namespace IGH
 			this->m_model.m_meshName = meshName;
 		}
 
-		ModelContainer(string materialTextureName, string materialName, string textureName, string modelName, string meshName, string type, bool rigidBody, string rigidBodyType) {
+		ModelContainer(size_t id, string materialTextureName, string materialName, string textureName, string modelName, string meshName, string type, bool rigidBody, string rigidBodyType) {
+			setID(id);
 			this->m_material.m_materialTextureName = materialTextureName;
 			this->m_material.m_materialName = materialName;
 			this->m_texture.m_textureName = textureName;
@@ -416,7 +418,8 @@ namespace IGH
 			this->m_model.rigidBodyType = rigidBodyType;
 		}
 
-		ModelContainer(AenIF::Material &mat, string textureName, string normalTextureName,string modelName, string meshName, string type, bool rigidBody, string rigidBodyType) {
+		ModelContainer(size_t id, AenIF::Material &mat, string textureName, string normalTextureName,string modelName, string meshName, string type, bool rigidBody, string rigidBodyType) {
+			setID(id);
 			this->m_material.set(mat);
 			this->m_texture.m_textureName = textureName;
 			this->m_texture.m_normalTexture = normalTextureName;
@@ -425,6 +428,13 @@ namespace IGH
 			this->m_type = type;
 			this->m_model.rigidBody = rigidBody;
 			this->m_model.rigidBodyType = rigidBodyType;
+		}
+
+		void setID(size_t& id) 
+		{
+			this->m_model.id = id;
+			this-> m_material.id = id;
+			this-> m_texture.id = id;
 		}
 
 		void update(string& materialTextureName, string& materialName, string& textureName, string& modelName, string &normalTexName)

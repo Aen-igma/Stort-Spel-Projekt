@@ -192,8 +192,7 @@ namespace Aen {
 		}
 
 		ImGui::BeginChild("List");
-
-		if (ImGui::BeginListBox(""))
+		if (ImGui::BeginListBox("", ImGui::GetContentRegionAvail()))
 		{
 			for (size_t i = 0; i < m_itemList.size(); i++)
 			{
@@ -512,7 +511,7 @@ namespace Aen {
 			ImGui::InputText("Name", name, MESH_NAME_MAX_LENGTH);
 			ImGui::Combo("Type", &selectedType, m_imguiTypes.PARTICLETAG, IM_ARRAYSIZE(m_imguiTypes.PARTICLETAG));
 
-			mesh = CustomComboString(m_objFileName, "Mesh", CurrentIndex);
+			CustomComboString(m_objFileName, "Mesh", mesh, CurrentIndex);
 
 			if (ImGui::Button("Create"))
 			{
@@ -772,6 +771,49 @@ namespace Aen {
 		}
 	}
 
+	void ImGuiHandler::Rotate(float angle, Aen::Vec3f pivot)
+	{
+		//float s = static_cast<float>(sin(angle * (C_PI / 180)));
+		//float c = static_cast<float>(cos(angle * (C_PI / 180)));
+		float s = static_cast<float>(sin(angle));
+		float c = static_cast<float>(cos(angle));
+
+		float posX = 0;
+		float posZ = 0;
+
+		Aen::Vec2f entityPos;
+
+		Vec3f rotation;
+		size_t id;
+
+		for (size_t i = 0; i < m_entityList.size(); i++)
+		{
+			id = m_entityList[i]->GetID();
+			if (Aen::ComponentHandler::TranslationExist(id))
+			{
+				entityPos.x = m_entityList[i]->GetPos().x;
+				entityPos.y = m_entityList[i]->GetPos().z;
+
+				entityPos.x -= pivot.x;
+				entityPos.y -= pivot.z;
+
+				if (Aen::ComponentHandler::RotationExist(id))
+				{
+					rotation = m_entityList[i]->GetRot();
+					m_entityList[i]->SetRot(rotation.x, rotation.y + angle, rotation.z);
+				}
+				posX = (entityPos.x * c) - (entityPos.y * s);
+				posZ = (entityPos.x * s) + (entityPos.y * c);
+
+				entityPos.x = posX + pivot.x;
+				entityPos.y = posZ + pivot.z;
+
+				m_entityList[i]->SetPos(entityPos.x, m_entityList[i]->GetPos().y, entityPos.y);
+
+			}
+		}
+	}
+
 	void ImGuiHandler::ChangeTexture(int& currentIndexTex, int& currentIndexNorm, string materialName, string materialTextureName, string materialNormalTextureName)
 	{
 		size_t id = m_entityList[m_selectedEntity]->GetID();
@@ -956,6 +998,7 @@ namespace Aen {
 		static int probability = 0;
 		static int roomSize = 0;
 		static float rotateRoom = 0;
+		static float rotateRoomPos[3] = {0,0,0};
 
 		
 
@@ -990,7 +1033,9 @@ namespace Aen {
 
 			if (AddButton("Rotate"))
 			{
+				//Rotate(rotateRoom, Aen::Vec3f(0,0,0));
 				Rotate(rotateRoom);
+
 			}
 
 			m_roomProperty[0] = m_imguiTypes.ROOMTYPE[selectedType];
@@ -1008,6 +1053,7 @@ namespace Aen {
 		static int selected = 0;
 		static int selectedTexture = 0;
 		static int selectedNormalTexture = 0;
+		static int oldIndex[2] = {-1,-1};
 
 		if (ImGui::BeginTabItem(IGH::MATERIAL.c_str()))
 		{
@@ -1028,12 +1074,18 @@ namespace Aen {
 				
 					SetMaterialValues(selected);
 
-					ExistInList(m_textureFileName, m_modelMap.at(id).m_texture.m_textureName, selectedTexture);
+					
+					if (oldIndex[0] != selectedTexture)
+					{
+						ExistInList(m_textureFileName, m_modelMap.at(id).m_texture.m_textureName, selectedTexture);
+					}
+					if (oldIndex[1] != selectedNormalTexture)
+					{
+						ExistInList(m_normalMapTextureFileName, m_modelMap.at(id).m_texture.m_normalTexture, selectedNormalTexture);
+					}
+
 					CustomCombo(m_textureFileName, IGH::TEXTURE.c_str(), selectedTexture);
-
-					ExistInList(m_normalMapTextureFileName, m_modelMap.at(id).m_texture.m_normalTexture, selectedNormalTexture);
 					CustomCombo(m_normalMapTextureFileName, IGH::NORMALTEXTURE.c_str(), selectedNormalTexture);
-
 
 					if (AddButton("Change Material"))
 					{
@@ -1049,8 +1101,12 @@ namespace Aen {
 						if (m_modelMap.find(id) != m_modelMap.end())
 						{
 							m_modelMap.at(id).m_material.set(Aen::Resource::GetMaterial(m_materialList[selected].matName));
+							Aen::ComponentHandler::GetMeshInstance(id).SetMaterial(Aen::Resource::GetMaterial(m_materialList[selected].matName));
 						}
 					}
+
+					oldIndex[0] = selectedTexture;
+					oldIndex[1] = selectedNormalTexture;
 				}
 			}
 			ImGui::EndTabItem();
@@ -1105,30 +1161,36 @@ namespace Aen {
 
 	void ImGuiHandler::ParticleTab()
 	{
-		/*static int selectedType = 0;
+		static int selectedType = 0;
 		static string mesh = "";
 		IGH::ImguiTypes types;
 
 		if (ImGui::BeginTabItem(IGH::PARTICLE.c_str()))
 		{
-			size_t id = m_entityList[m_selectedEntity]->GetID();
-			if (types.GetParticleTag(m_modelMap.at(id).m_type) == true)
+			if (m_modelMap.size() > 0)
 			{
-				selectedType = types.GetParticleTagIndex(m_modelMap.at(id).m_type);
-			}
+				size_t id = m_entityList[m_selectedEntity]->GetID();
 
-			ImGui::Combo("Type", &selectedType, m_imguiTypes.PARTICLETAG, IM_ARRAYSIZE(m_imguiTypes.PARTICLETAG));
+				if (types.GetParticleTag(m_modelMap.at(id).m_type) == true)
+				{
+					//selectedType = ExistInList(types.PARTICLETAG, 2, m_modelMap.at(id).m_type);
+					selectedType = types.GetParticleTagIndex(m_modelMap.at(id).m_type);
+				}
 
-			if (m_imguiTypes.PARTICLETAG[selectedType] != "NONE")
-			{
-				m_modelMap.at(id).m_type = m_imguiTypes.PARTICLETAG[selectedType];
-			}
-			else
-			{
-				m_modelMap.at(id).m_type = "";
+				ImGui::Combo("Type", &selectedType, m_imguiTypes.PARTICLETAG, IM_ARRAYSIZE(m_imguiTypes.PARTICLETAG));
+
+				if (m_imguiTypes.PARTICLETAG[selectedType] != "NONE")
+				{
+					m_modelMap.at(id).m_type = m_imguiTypes.PARTICLETAG[selectedType];
+				}
+				else
+				{
+					m_modelMap.at(id).m_type = "";
+				}
 			}
 			ImGui::EndTabItem();
-		}*/
+
+		}
 	}
 
 	void ImGuiHandler::UpdateMap(size_t key, string& texValue, string& matValue, string& meshName, string& texName, string &normalTexName)
@@ -1199,6 +1261,19 @@ namespace Aen {
 			}
 		}
 	}
+
+	void ImGuiHandler::ExistInList(const char* list[], int size, string& target, int& index)
+	{
+		for (size_t i = 0; i < size; i++)
+		{
+			if (std::strcmp(list[i], target.c_str()) == 0)
+			{
+				index = i;
+				break;
+			}
+		}
+	}
+
 
 	bool ImGuiHandler::AddButton(const string& name)
 	{
@@ -1297,8 +1372,10 @@ namespace Aen {
 	bool ImGuiHandler::CustomCombo(vector<string>& list, string name, int& index)
 	{
 		bool selected = false;
+
 		if (ImGui::BeginCombo(name.c_str(), list[index].c_str()))
 		{
+
 			for (size_t i = 0; i < list.size(); i++)
 			{
 				static bool isSelected = (index == i);
@@ -1316,12 +1393,14 @@ namespace Aen {
 			}
 			ImGui::EndCombo();
 		}
+
 		return selected;
 	}
 
 	bool ImGuiHandler::CustomCombo(vector<IGH::MatTexName>& list, string name, int& index)
 	{
 		bool selected = false;
+
 		if (ImGui::BeginCombo(name.c_str(), list[index].matName.c_str()))
 		{
 			for (size_t i = 0; i < list.size(); i++)
@@ -1348,7 +1427,6 @@ namespace Aen {
 	{
 		if (list.size() > 0)
 		{
-			//static string value = "";
 			if (ImGui::BeginCombo(name.c_str(), list[index].c_str()))
 			{
 				static bool isSelected = false;

@@ -544,7 +544,9 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\CellShader\CellShaderPS.hlsl">
       <Filter>Shader Files\CellShader</Filter>
     </FxCompile>
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\LightCullCS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\LightCullCS.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">

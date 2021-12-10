@@ -38,6 +38,9 @@ namespace Aen
 
 		Vec3f m_boss[3];
 		vector<Vec3f> m_enemyPos;
+		vector<AenIF::Particle> m_particleList;
+
+
 
 		unsigned int m_entityCount = 0;
 		unsigned int m_lightCount = 0;
@@ -48,6 +51,9 @@ namespace Aen
 		void addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, Aen::Texture*& normalTexture, AenIF::Model& model, AenIF::Texture& texture,AenIF::Material& materialIn);
 
 	public:
+
+		vector<AenIF::Particle>& GetParticleList();
+
 		void Convert(const Aen::Vec4f inputVec, float* inputArray);
 		void Convert(float* inputArray, Aen::Vec4f& inputVec);
 		Aen::Vec3f Convert(float input[3]);

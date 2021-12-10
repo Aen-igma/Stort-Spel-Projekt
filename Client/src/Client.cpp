@@ -21,6 +21,7 @@ void Client::Start() {
 	m_camera->AddComponent<Aen::Camera>();
 	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, m_window.GetAspectRatio(), 0.01f, 100.f);
 	m_camera->SetPos(0.f, 2.f, -2.f);
+	
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
@@ -161,61 +162,8 @@ void Client::Update(const float& deltaTime) {
 
 	// ---------------------------------------------------------------------------------- //
 
-	if(Aen::Input::KeyDown(Aen::Key::G)) {
-		Aen::Entity& e = Aen::EntityHandler::CreateEntity();
 
-		int r = rand() % 6;
-		Aen::Color clr;
-		switch(r) {
-			case 0: clr = Aen::Color::Red;
-			break;
-			case 1: clr = Aen::Color::Green;
-			break;
-			case 2: clr = Aen::Color::Blue;
-			break;
-			case 3: clr = Aen::Color::Magenta;
-			break;
-			case 4: clr = Aen::Color::Yellow;
-			break;
-			case 5: clr = Aen::Color::Cyan;
-			break;
-		}
+	
 
-		e.AddComponent<Aen::PointLight>();
-		e.GetComponent<Aen::PointLight>().SetColor(clr);
-		e.GetComponent<Aen::PointLight>().SetLightDist(1.f, 1.f, 1.f, 5.f);
-		e.GetComponent<Aen::PointLight>().SetStrength(100.f);
-		e.SetPos(rand() % 20 - 10, 1.f / (rand() % 100) + 0.5f, rand() % 20 - 20);
-		m_pLights.push(&e);
-	}
-
-	if(Aen::Input::KeyPress(Aen::Key::H)) {
-		if(!m_pLights.empty()) {
-			Aen::EntityHandler::RemoveEntity(*m_pLights.top());
-			m_pLights.pop();
-		}
-	}
-
-	// ------------------------------------- Reimubes -------------------------------------- //
-
-	/*if (Aen::Input::KeyPress(Aen::Key::J)) {
-		Aen::Entity& e = Aen::EntityHandler::CreateEntity();
-		e.AddComponent<Aen::RigidBody>();
-		e.AddComponent<Aen::MeshInstance>();
-
-		e.GetComponent<Aen::MeshInstance>().SetMesh(*m_reimubeMesh);
-		e.GetComponent<Aen::MeshInstance>().SetMaterial(*m_ReimuMat);
-		e.GetComponent<Aen::RigidBody>().CreateMaterial();
-		e.GetComponent<Aen::RigidBody>().CreateCube();
-		e.SetPos(0.f, 10.f, 0.f);
-
-		m_reimubes.push(&e);
-	}
-
-	if (Aen::Input::KeyPress(Aen::Key::K)) {
-		if(!m_reimubes.empty()) {
-			Aen::EntityHandler::RemoveEntity(*m_reimubes.top());
-			m_reimubes.pop();
-		}
-	}*/
+	
 }

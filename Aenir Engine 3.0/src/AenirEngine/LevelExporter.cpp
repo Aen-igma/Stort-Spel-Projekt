@@ -102,7 +102,7 @@ namespace Aen {
 		}
 	}
 
-	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index, ParticleStruct*& particleStruct, TextureStruct*& textureStruct)
+	void LevelExporter::modelFunc(ModelStruct*& modelStruct, vector<Aen::Entity*>& entityList, unordered_map<size_t, IGH::ModelContainer>& modelMap, size_t& index, ParticleStruct*& particleStruct, TextureStruct*& textureStruct, MaterialStruct *& materialStruct)
 	{
 		size_t id = entityList[index]->GetID();
 
@@ -136,6 +136,10 @@ namespace Aen {
 				modelStruct->castShadow = it->second.m_model.m_castShadow;
 
 				m_ModelVector.push_back(*modelStruct);
+
+				materialFunc(materialStruct, entityList, modelMap, index);
+				textureFunc(textureStruct, it->second.m_texture.m_textureName, it->second.m_texture.m_normalTexture);
+
 			}
 			else
 			{
@@ -145,7 +149,6 @@ namespace Aen {
 				strcpy(particleStruct->type, it->second.m_type.c_str());
 				m_ParticleVector.push_back(*particleStruct);
 			}
-			textureFunc(textureStruct, it->second.m_texture.m_textureName, it->second.m_texture.m_normalTexture);
 
 		}
 	}
@@ -271,18 +274,13 @@ namespace Aen {
 
 		unordered_map <size_t, IGH::ModelContainer>::iterator it;
 
-		m_ModelVector.reserve(modelMap.size());
-		m_TextureVector.reserve(modelMap.size());
-		m_LightVector.reserve(lightMap.size());
-
 		for (size_t i = 0; i < entityList.size(); i++)
 		{
 			size_t id = entityList[i]->GetID();
 
 			if (Aen::ComponentHandler::MeshInstanceExist(id))
 			{
-				modelFunc(modelStruct, entityList, modelMap, i, particleStruct,textureStruct);
-				materialFunc(materialStruct, entityList, modelMap, i);
+				modelFunc(modelStruct, entityList, modelMap, i, particleStruct,textureStruct, materialStruct);
 
 			}
 			else if ((Aen::ComponentHandler::DirectionalLightExist(id) || Aen::ComponentHandler::SpotLightExist(id) || Aen::ComponentHandler::PointLightExist(id)))

@@ -110,6 +110,7 @@ namespace Aen {
 		void print(string input);
 
 		void ExistInList(vector<string>& list, string &target, int& index);
+		void ExistInList(const char * list[], int size, string& target, int& index);
 
 	public:
 		// All Add func here
@@ -145,6 +146,8 @@ namespace Aen {
 		void SetDefaultValue();
 		void ZeroValue();
 		void Rotate(float angle);
+		void Rotate(float angle, Aen::Vec3f pos);
+
 
 	public: 
 		// All window func here
