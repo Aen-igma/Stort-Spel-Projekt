@@ -187,8 +187,8 @@ void Gameplay::Initialize()
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 
-	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
-	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+	m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
+	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
@@ -206,15 +206,7 @@ void Gameplay::Initialize()
 	else if (itemNormal == 1000) {//west
 		m_chest.GetEntity()->SetRot(0, 90, 0);
 	}
-	m_door.GetEntity()->SetPos(doorPos.x, 0.f, doorPos.z);
-	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
-	m_grave.GetEntity()->SetPos(doorPos);
-	m_grave.GetEntity()->MoveRelative(0.f, 0, -15.f);
 
-	m_exit.GetEntity()->SetPos(doorPos.x, 3.f, doorPos.z);
-	m_exit.GetEntity()->MoveRelative(0, -20.5, 0);
-
-	doorPos = m_door.GetEntity()->GetPos();
 	//m_attack->SetParent(*m_player);
 	//printf("");
 	//---------ENEMIES----------//
@@ -247,6 +239,8 @@ void Gameplay::Initialize()
 		m_throne->SetRot(0.f, 180.f, 0.f);
 		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x - 1.f, m_throne->GetPos().y, m_throne->GetPos().z);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 0.f, 0.f);
+		m_grave.GetEntity()->SetRot(0, 180, 0);
+		m_exit.GetEntity()->SetRot(-90, -90, 90);
 	}
 	else if (roomNormal == 10) {//east
 		m_throne->SetPos(m_bossPos.x - 33.35f, m_bossPos.y + 6.11f, m_bossPos.z);
@@ -254,6 +248,8 @@ void Gameplay::Initialize()
 		m_throne->SetRot(0.f, 90.f, 0.f);
 		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x, m_throne->GetPos().y, m_throne->GetPos().z - 1.f);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, -90.f, 0.f);
+		m_grave.GetEntity()->SetRot(0, 90, 0);
+		m_exit.GetEntity()->SetRot(90, 180, 90);
 	}
 	else if (roomNormal == 100) {//south
 		m_throne->SetPos(m_bossPos.x, m_bossPos.y + 6.11f, m_bossPos.z - 33.35f);
@@ -261,6 +257,8 @@ void Gameplay::Initialize()
 		m_throne->SetRot(0.f, 0.f, 0.f);
 		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x +1.f, m_throne->GetPos().y, m_throne->GetPos().z);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 180.f, 0.f);
+		m_grave.GetEntity()->SetRot(0, 0, 0);
+		m_exit.GetEntity()->SetRot(-90, 90, 90);
 	}
 	else if (roomNormal == 1000) {//west
 		m_throne->SetPos(m_bossPos.x + 33.35f, m_bossPos.y + 6.11f, m_bossPos.z);
@@ -268,12 +266,16 @@ void Gameplay::Initialize()
 		m_throne->SetRot(0.f, -90.f, 0.f);
 		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x, m_throne->GetPos().y, m_throne->GetPos().z +1.f);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 90.f, 0.f);
+		m_grave.GetEntity()->SetRot(0, -90, 0);
+		m_exit.GetEntity()->SetRot(-90, 0, 90);
 	}
-
 	//m_pSkeleBoss->SetThronePosition(m_throne->GetPos());
-	m_door.GetEntity()->SetPos(doorPos.x, 3.2f, doorPos.z);
-	m_door.GetEntity()->MoveRelative(0.f, 0, 21.5f);
-	doorPos = m_door.GetEntity()->GetPos();
+	m_door.GetEntity()->SetPos(doorPos.x, 0.f, doorPos.z);
+	m_door.GetEntity()->MoveRelative(0.f, 0, 39.5f);
+	m_grave.GetEntity()->SetPos(0, -5, 0);
+
+	m_exit.GetEntity()->SetPos(doorPos.x, 3.f, doorPos.z);
+	m_exit.GetEntity()->MoveRelative(0, -20.5, 0);
 
 	//m_attack->SetParent(*m_player);
 
@@ -489,9 +491,15 @@ void Gameplay::Update(const float& deltaTime) {
 			m_door.SetType(Type::Opening);
 		}
 		else if (m_grave.GetNear() && m_grave.GetType() == Type::Open && m_player.GetBossesAlive() <= 0.f) {
-			m_grave.SetType(Type::Closed);
 			m_exit.SetType(Type::Opening);
 		}
+	}
+
+	if (m_grave.GetType() == Type::Closing) {
+
+		m_grave.SetType(Type::Closed);
+		m_grave.GetEntity()->SetPos(m_door.GetEntity()->GetPos());
+		m_grave.GetEntity()->MoveRelative(0.f, 0, -15.f);
 	}
 
 	for (auto& i : m_enemyQueue) {
@@ -540,8 +548,9 @@ void Gameplay::Update(const float& deltaTime) {
 			State::SetState(States::Gameover);
 		}
 	}
-	if (m_player.GetBossesAlive() <= 0.f)
+	if (m_player.GetBossesAlive() <= 0.f && m_grave.GetType() == Type::Open)
 	{
+		m_grave.SetType(Type::Closing);
 		mp_uiComp->SetPicPos(0, 0, 3);
 	}
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
