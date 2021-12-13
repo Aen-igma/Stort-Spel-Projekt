@@ -111,7 +111,7 @@ namespace Aen {
 
 
 	static const int mapSize = 12;
-	static float roomDimension = 3;
+	static float roomDimension = 43.f;
 
 	static RoomTheme m_mapTheme = RoomTheme::PLACEHOLDER;
 

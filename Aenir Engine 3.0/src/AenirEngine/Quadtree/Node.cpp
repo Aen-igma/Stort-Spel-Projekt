@@ -128,11 +128,11 @@ void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeSt
 		if (this->m_areaQuad.Intersects(other))
 		{
 			this->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
-			for (auto & obj : m_objs)
+			for (int i = 0; i < m_objs.size(); i++)
 			{
-				if(other.Intersects(obj.m_boundBox))
+				if (other.Intersects(m_objs[i].m_boundBox))
 				{
-					output.emplace_back(NodeStruct(obj.m_ID, obj.m_renderLayer, obj.m_boundBox, obj.mp_drawable));
+					output.emplace_back(NodeStruct(m_objs[i].m_ID, m_objs[i].m_renderLayer, m_objs[i].m_boundBox, m_objs[i].mp_drawable));
 				}
 			}
 		}
@@ -145,14 +145,6 @@ void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeSt
 			mp_children[i]->FrustumTest(other, output);
 	}
 }
-
-//void Node::SmartPointer(std::shared_ptr<NodeStruct> ptr)
-//{
-//	std::shared_ptr<NodeStruct> localPtr = ptr;
-//	static std::mutex io_mutex; //used to protect shared data from being simultaneously accessed by multiple threads.
-//	std::cout << "localPtr in thread:" << "localPtr.get()" << localPtr.get() << std::endl;
-//	std::cout << "localPtr in thread:" << "localPtr.usecount()" << localPtr.use_count() << "\n" << std::endl;
-//}
 
 void Node::Subdivide()
 {
@@ -178,11 +170,27 @@ void Node::Subdivide()
 	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
 	mp_children[3] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
-	static bool inserted;
+	//static bool inserted;
 	//------------- Check which objects is in which quad ---------------//
 	for (auto& box : m_objs)
 	{
-		inserted = false;
+		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox))
+		{
+			mp_children[0]->Insert(box);
+		}
+		if (mp_children[1]->m_areaQuad.Intersects(box.m_boundBox))
+		{
+			mp_children[1]->Insert(box);
+		}
+		if (mp_children[2]->m_areaQuad.Intersects(box.m_boundBox))
+		{
+			mp_children[2]->Insert(box);
+		}
+		if (mp_children[3]->m_areaQuad.Intersects(box.m_boundBox))
+		{
+			mp_children[3]->Insert(box);
+		}
+		/*inserted = false;
 		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox) && inserted == false)
 		{
 			mp_children[0]->Insert(box);
@@ -202,9 +210,17 @@ void Node::Subdivide()
 		{
 			mp_children[3]->Insert(box);
 			inserted = true;
-		}
+		}*/
 	}
-	
 
+	/*string temp = "\nbaby: " + std::to_string(mp_children[0]->m_level) + "\nsize: " + std::to_string(mp_children[0]->m_objs.size());
+	OutputDebugString(temp.c_str());
+	temp = "\nbaby: " + std::to_string(mp_children[1]->m_level) + "\nsize: " + std::to_string(mp_children[1]->m_objs.size());
+	OutputDebugString(temp.c_str());
+	temp = "\nbaby: " + std::to_string(mp_children[2]->m_level) + "\nsize: " + std::to_string(mp_children[2]->m_objs.size());
+	OutputDebugString(temp.c_str());
+	temp = "\nbaby: " + std::to_string(mp_children[3]->m_level) + "\nsize: " + std::to_string(mp_children[3]->m_objs.size());
+	OutputDebugString(temp.c_str());*/
+		
 	m_objs.clear();
 }

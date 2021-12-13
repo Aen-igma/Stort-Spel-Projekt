@@ -28,10 +28,6 @@ public:
 	~Node();
 	void Insert(const NodeStruct& obj);
 	void FrustumTest(const DirectX::BoundingFrustum &other, std::vector<NodeStruct>& output);
-
-	//bool Inside(DirectX::BoundingBox& playerBox); //not needed
-	//Problem kan vara att flera noder kan uppstå, behövs fixas senare.
-	//void SmartPointer(std::shared_ptr<NodeStruct> ptr);
 private:
 	Node* mp_children[4] = { nullptr };
 	DirectX::BoundingBox m_areaQuad;

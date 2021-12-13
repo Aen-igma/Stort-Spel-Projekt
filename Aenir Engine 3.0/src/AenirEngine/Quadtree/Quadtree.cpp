@@ -15,7 +15,7 @@ namespace Aen
 	{
 		DirectX::BoundingBox quad;
 		quad.Center = DirectX::XMFLOAT3(460.f, 0.f, 460.f);
-		quad.Extents = DirectX::XMFLOAT3(460.f, 1.f, 460.f);
+		quad.Extents = DirectX::XMFLOAT3(460.f, 10.f, 460.f);
 
 		/*quad.Center = DirectX::XMFLOAT3(0.f, 0.f, 0.f);
 		quad.Extents = DirectX::XMFLOAT3(50.f, 10.f, 50.f);*/
@@ -78,14 +78,17 @@ namespace Aen
 		{
 			m_quadObjectsToRender.clear();
 
+			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
+			m_cameraFrustrum.Far = 20.f;
+			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
+
+
 			for (int i = 0; i < m_autoPass.size(); i++)
 			{
 				if (m_autoPass[i].mp_drawable->FrustumCull(renderer))
 					m_quadObjectsToRender.emplace_back(m_autoPass[i]);
 			}
 
-			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
-			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
 
 
 			//if (Input::KeyDown(Key::V))

@@ -91,40 +91,18 @@ namespace Aen {
 
 	void Renderer::Culling()
 	{
-		if (GlobalSettings::m_pQuadtree)
-		{
-			//--- Quadtree Culling ---//
-			m_quadtreeOutput = GlobalSettings::m_pQuadtree->Update(*this);
+		//if (GlobalSettings::m_pQuadtree)
+		//{
+		//	//--- Quadtree Culling ---//
+		//	m_quadtreeOutput = GlobalSettings::m_pQuadtree->Update(*this);
 
-			for (auto& i : m_quadtreeOutput)
-			{
-				m_drawTable[i.m_renderLayer].emplace_back(i.mp_drawable);
-			}
-
-			/*for (auto& i : m_quadtreeOutput)
-			{
-				for (auto& k : ComponentHandler::m_meshLayer[i.m_renderLayer])
-				{
-					if (k.first == i.m_ID)
-						m_drawTable[i.m_renderLayer].emplace_back(k.second);
-				}
-				
-			}*/
-
-			//--- View Frustum Culling ---//
-			//for (uint32_t i = 0u; i < 7u; i++)
-			//{
-				/*for (auto & k : m_quadtreeOutput)
-				{
-					if (k.mp_drawable->FrustumCull(*this))
-					{
-						m_drawTable[k.m_renderLayer].emplace_back(k.mp_drawable);
-					}
-				}*/
-			//}
-		}
-		else
-		{
+		//	for (int i = 0; i < m_quadtreeOutput.size(); i++)
+		//	{
+		//		m_drawTable[m_quadtreeOutput[i].m_renderLayer].emplace_back(m_quadtreeOutput[i].mp_drawable);
+		//	}
+		//}
+		//else
+		//{
 			for (uint32_t i = 0u; i < 7u; i++)
 			{
 				for (auto& k : ComponentHandler::m_meshLayer[i])
@@ -135,7 +113,7 @@ namespace Aen {
 					}
 				}
 			}
-		}
+		//}
 		
 	}
 

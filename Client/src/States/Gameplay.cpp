@@ -295,7 +295,7 @@ void Gameplay::Initialize()
 	mp_uiComp->SetButtonSize(0, 0, 1);
 
 	//------QUADTREE------//
-	Aen::GlobalSettings::StartQuadtree(0, 5, 10);
+	Aen::GlobalSettings::StartQuadtree(0, 8, 5);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
