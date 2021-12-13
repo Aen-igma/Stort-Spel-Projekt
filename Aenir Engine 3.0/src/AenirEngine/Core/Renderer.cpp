@@ -6,7 +6,7 @@ namespace Aen {
 
 	Renderer::Renderer(Window& window)
 		:m_window(window), m_screenQuad(), m_cbBGColor(), m_cbTransform(), m_cbLightCount(), m_cbCamera(), m_sbLight(1024), 
-		m_backBuffer(), m_viewPort(), m_depthMap(window), m_shadowMap(1024.f, 1024.f), m_writeStencil(true, StencilType::Write), 
+		m_backBuffer(), m_viewPort(), m_depthMap(window), m_shadowMap(2048.f, 2048.f), m_writeStencil(true, StencilType::Write), 
 		m_maskStencil(false, StencilType::Mask), m_offStencil(true, StencilType::Off),
 		m_rasterizerState(FillMode::Solid, CullMode::Front), m_wireFrameState(FillMode::Wireframe, CullMode::None), 
 		m_dispatchInfo(), m_lightCullCS(), m_lIndex(), m_lGrid(), m_avarageLights(200u), m_wrapSampler(SamplerType::WRAP), m_borderSampler(SamplerType::BORDER), 
@@ -27,8 +27,8 @@ namespace Aen {
 
 		m_viewPort2.TopLeftX = 0.f;
 		m_viewPort2.TopLeftY = 0.f;
-		m_viewPort2.Width = 1024.f;
-		m_viewPort2.Height = 1024.f;
+		m_viewPort2.Width = 2048.f;
+		m_viewPort2.Height = 2048.f;
 		m_viewPort2.MinDepth = 0.f;
 		m_viewPort2.MaxDepth = 1.f;
 

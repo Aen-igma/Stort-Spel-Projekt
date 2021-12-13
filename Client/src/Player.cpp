@@ -21,9 +21,8 @@ Player::Player()
 
 	m_lCamera = &Aen::EntityHandler::CreateEntity();
 	m_lCamera->AddComponent<Aen::Camera>();
-	m_lCamera->GetComponent<Aen::Camera>().SetCameraOrthographic(20.f, 20.f, 0.01f, 20.f);
-	//m_lCamera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 60.f);
-	m_lCamera->SetRot(-89.999f, 0.f, 0.f);
+	m_lCamera->GetComponent<Aen::Camera>().SetCameraOrthographic(60.f, 60.f, 0.01f, 20.f);
+	m_lCamera->SetRot(87.f, 0.f, 0.f);
 
 	Aen::GlobalSettings::SetLightCamera(*m_lCamera);
 
@@ -43,6 +42,7 @@ Player::Player()
 	skin["RimLightColor"] = Aen::Color(0.5f, 0.f, 0.f, 1.f);
 	skin["RimLightIntensity"] = 0.8f;
 	skin["RimLightSize"] = 0.4f;
+	skin["SpecularStrength"] = 0.f;
 
 	Aen::Material& shirt = Aen::Resource::CreateMaterial("Shirt");
 	shirt["InnerEdgeColor"] = Aen::Color(0.1f, 0.08f, 0.05f, 1.f);
@@ -53,6 +53,7 @@ Player::Player()
 	shirt["RimLightColor"] = Aen::Color(0.5f, 0.f, 0.f, 1.f);
 	shirt["RimLightIntensity"] = 0.8f;
 	shirt["RimLightSize"] = 0.3f;
+	shirt["SpecularStrength"] = 0.f;
 
 	Aen::Material& brown = Aen::Resource::CreateMaterial("Brown");
 	brown["InnerEdgeColor"] = Aen::Color(0.13f, 0.014f, 0.012f, 1.f);
@@ -63,6 +64,7 @@ Player::Player()
 	brown["RimLightColor"] = Aen::Color(0.8f, 0.2f, 0.1f, 1.f);
 	brown["RimLightIntensity"] = 1.f;
 	brown["RimLightSize"] = 0.6f;
+	brown["SpecularStrength"] = 0.f;
 
 	Aen::Material& pants = Aen::Resource::CreateMaterial("Pants");
 	pants["InnerEdgeColor"] = Aen::Color(0.06f, 0.07f, 0.07f, 1.f);
@@ -70,6 +72,7 @@ Player::Player()
 	pants["InnerEdgeThickness"] = 1;
 	pants["OuterEdgeThickness"] = 2;
 	pants["BaseColor"] = Aen::Color(0.44f, 0.41f, 0.34f, 1.f);
+	pants["SpecularStrength"] = 0.f;
 
 	Aen::Material& metal = Aen::Resource::CreateMaterial("Metal");
 	metal["InnerEdgeColor"] = Aen::Color(0.04f, 0.04f, 0.07f, 1.f);
@@ -88,6 +91,7 @@ Player::Player()
 	shadow["ShadowColor"] = Aen::Color(0.3f, 0.2f, 0.2f, 1.f);
 	shadow["ShadowOffset"] = 1.f;
 	shadow["SpecularColor"] = Aen::Color::Red;
+	shadow["SpecularStrength"] = 0.f;
 
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
@@ -201,7 +205,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		side.x = Aen::Lerp(side.x, axis.x * 0.3f, 0.05f);
 	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
 	
-	m_lCamera->SetPos(m_player->GetPos());
+	Aen::Vec3f lCamDir = m_camera->GetComponent<Aen::Camera>().GetForward();
+	lCamDir.y = 0.f;
+	Aen::Vec3f lCamPos = m_player->GetPos() + Aen::Vec3f(0.f, 10.f, 0.f) + lCamDir.Normalized() * 25.f;
+	m_lCamera->SetPos(lCamPos);
 
 	if (Aen::Input::KeyPress(Aen::Key::SHIFT)) m_movementSpeed = 24.f;
 	else m_movementSpeed = 8.f;

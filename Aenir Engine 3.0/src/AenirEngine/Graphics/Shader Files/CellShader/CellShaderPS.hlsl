@@ -107,7 +107,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 
 	float2 ndc = (input.clipSpace.xy / input.clipSpace.w) * 0.5f + 0.5f;
 	float depth = ShadowMap.Sample(borderSampler, float2(ndc.x, 1.f - ndc.y)).r;
-	float bias = max(0.006f * (1.f - dot(input.normal, float3(0.f, -1.f, 0.f))), 0.002f);
+	float bias = max(0.006f * (1.f - dot(input.normal, float3(0.f, -1.f, 0.f))), 0.001f);
 
 	float opacityM = 1.f;
 	if(useOpacity) {
@@ -129,6 +129,7 @@ PS_Output main(PS_Input input) : SV_Target0 {
 		uint i = Aen_LightIndexList[k];
 
 		if(depth > input.clipSpace.z / input.clipSpace.w - bias) {
+
 			float3 pLightDir = normalize(Aen_SB_Light[i].pos - input.worldPos);
 			float3 cLightDir = normalize(camPos - input.worldPos);
 			float dotND = dot(Aen_SB_Light[i].dir, normal);
