@@ -31,6 +31,7 @@ cbuffer CB_CellShader {
 	float outerFalloff;
 	float rimLightIntensity;
 	float rimLightSize;
+    float OpacityStr;
 };
 
 cbuffer Aen_CB_Camera {
@@ -86,7 +87,7 @@ void main(CS_Input input) {
 	float3 worldPos =	posMap[uv].rgb;
 	float4 depth =		depthMap[uv];
 	float4 glow =		glowMap[uv];
-	float opacity =		opacityMap[uv].r;
+    float opacity =		opacityMap[uv].r * OpacityStr;
 
 
 	if(length(diffuse) > 0.f && opacity > 0.f) {

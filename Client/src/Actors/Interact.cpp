@@ -10,8 +10,3 @@ Interact::~Interact()
 {
 	Aen::EntityHandler::RemoveEntity(*mp_object);
 }
-
-Aen::Entity*& Interact::GetEntity()
-{
-	return mp_object;
-}

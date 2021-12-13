@@ -89,7 +89,7 @@ private:
 	Aen::Raycast m_ray;
 
 	Boss* mp_boss;
-
+	Aen::Animator* m_animation;
 
 
 	float m_mouseSense;

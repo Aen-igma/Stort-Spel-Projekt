@@ -2,7 +2,6 @@
 #include"Renderer.h"
 #include "../ImGuiHandler.h"
 #include<string>
-//#include"../LevelGeneration/LevelGenerator.h"
 
 namespace Aen {
 
@@ -146,6 +145,7 @@ namespace Aen {
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"OuterFalloff"				);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"RimLightIntensity"			);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"RimLightSize"				);
+			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"OpacityStr"				);
 
 			m_pDefaultShader->m_dbLayout["BaseColor"]				= Color::White;
 			m_pDefaultShader->m_dbLayout["ShadowColor"]				= Color(0.3f, 0.3f, 0.5f, 1.f);
@@ -165,6 +165,7 @@ namespace Aen {
 			m_pDefaultShader->m_dbLayout["OuterFalloff"]			= 0.f;
 			m_pDefaultShader->m_dbLayout["RimLightIntensity"]		= 1.f;
 			m_pDefaultShader->m_dbLayout["RimLightSize"]			= 0.f;
+			m_pDefaultShader->m_dbLayout["OpacityStr"]				= 1.f;
 
 			// --------------------------------- Default Material --------------------------------- //
 
