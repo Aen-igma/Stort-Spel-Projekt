@@ -182,9 +182,9 @@ void Gameplay::Initialize()
 		}
 	}
 	m_chest.GetEntity()->SetPos(ChestPos);
-	m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(ChestPos.y + 10.f);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	//m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(ChestPos.y + 10.f);
+	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 
 	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
