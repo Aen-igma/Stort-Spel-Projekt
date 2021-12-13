@@ -19,6 +19,14 @@ Player::Player()
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
+	m_lCamera = &Aen::EntityHandler::CreateEntity();
+	m_lCamera->AddComponent<Aen::Camera>();
+	m_lCamera->GetComponent<Aen::Camera>().SetCameraOrthographic(20.f, 20.f, 0.01f, 20.f);
+	//m_lCamera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 60.f);
+	m_lCamera->SetRot(-89.999f, 0.f, 0.f);
+
+	Aen::GlobalSettings::SetLightCamera(*m_lCamera);
+
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
 	sword.Load(AEN_MODEL_DIR("ShortSword.fbx"));
 
@@ -120,7 +128,6 @@ Player::Player()
 	mp_hitBox = &m_player->GetComponent<Aen::AABoundBox>();
 	mp_hitBox->SetBoundingBox(0.45f,1.1f,0.45f);
 	//m_player->SetPos(0.f, -1.f, 0.f);
-	m_player->SetTag("Player");
 
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
@@ -166,6 +173,7 @@ Player::Player()
 
 Player::~Player() {
 	Aen::GlobalSettings::RemoveMainCamera();
+	Aen::GlobalSettings::RemoveLightCamera();
 	m_playerMeshHolder->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_playerMeshHolder);
 	Aen::EntityHandler::RemoveEntity(*m_player);
@@ -190,7 +198,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	else
 		side.x = Aen::Lerp(side.x, axis.x * 0.3f, 0.05f);
 	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
-
+	
+	m_lCamera->SetPos(m_player->GetPos());
 
 #ifdef _DEBUG
 	if (Aen::Input::KeyPress(Aen::Key::SHIFT)) m_movementSpeed = 24.f;

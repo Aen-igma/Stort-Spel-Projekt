@@ -7,12 +7,9 @@ cbuffer Aen_CB_UseTexture {
 }
 
 struct PS_Input {
-	float4 pos : SV_Position;
-	float3 normal : NORMAL;
-	float3 tangent : TANGENT;
-	float2 uv : TEXCOORD;
-	float3 worldPos : WORLD_POSITION;
-	float4 clipSpace : CLIPSPACE;
+	float4 position : SV_POSITION;
+	float2 uv : UV;
+	float4 color : COLOR;
 };
 
 Texture2D Aen_OpacityMap : OPACITYMAP;

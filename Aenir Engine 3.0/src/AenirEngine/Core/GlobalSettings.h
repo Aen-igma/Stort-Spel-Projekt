@@ -22,8 +22,16 @@ namespace Aen {
 			UpdateFrstumGrid();
 		}
 
+		static void SetLightCamera(Entity& camera) {
+			m_pLightCamera = &camera;
+		}
+
 		static Entity* GetMainCamera() {
 			return m_pMainCamera;
+		}
+
+		static Entity* GetLightCamera() {
+			return m_pLightCamera;
 		}
 
 		static void SetBGColor(const Color& color) {
@@ -46,9 +54,12 @@ namespace Aen {
 			m_vSync = set;
 		}
 
-		static void RemoveMainCamera()
-		{
+		static void RemoveMainCamera() {
 			m_pMainCamera = nullptr;
+		}
+
+		static void RemoveLightCamera() {
+			m_pLightCamera = nullptr;
 		}
 
 		static Window* GetWindow(){
@@ -171,6 +182,7 @@ namespace Aen {
 		static ShaderModel* m_pDefaultShader;
 		static Window* m_pWindow;
 		static Entity* m_pMainCamera;
+		static Entity* m_pLightCamera;
 		static Color m_BGColor;
 
 		static Material* m_defaultMaterial;
