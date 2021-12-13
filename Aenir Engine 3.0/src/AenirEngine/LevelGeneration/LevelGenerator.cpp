@@ -14,6 +14,10 @@ namespace Aen
 		return temp;
 	};
 
+	uint32_t weightS = 250;	//Straight
+	uint32_t weightB = 300;	//Bend
+	uint32_t weightT = 500;	//threeway
+	uint32_t weightF = 200; //fourway
 	Room LevelGenerator::RNGRoom(const uint16_t& connectionDir, const uint16_t& roomIndex) {
 
 		Room result = Room();
@@ -22,10 +26,6 @@ namespace Aen
 		}
 		static int rerolls;
 
-		uint32_t weightS = 150;	//Straight
-		uint32_t weightB = 500;	//Bend
-		uint32_t weightT = 300;	//threeway
-		uint32_t weightF = 200; //fourway
 
 		uint32_t weightSum = weightS + weightB + weightT + weightF;
 		static unsigned char type = 0;
@@ -50,6 +50,24 @@ namespace Aen
 				type = 4;
 			}
 			if (result.connectionDirections != levelRoom[roomIndex].connectionDirections && result.connectionDirections > 0) {
+				weightS += 50;
+				weightB += 50;
+				weightT += 50;
+				weightF += 50;
+				switch (type) {
+					case 1:
+						weightS = max(weightS -100, 0);
+						break;	
+					case 2:		
+						weightB = max(weightB -100, 0);
+						break;	
+					case 3:		
+						weightT = max(weightT -100, 0);
+						break;	
+					case 4:		
+						weightF = max(weightF -100, 0);
+						break;
+				}
 				break;
 			}
 			rerolls++;
@@ -626,7 +644,8 @@ namespace Aen
 	LevelGenerator::LevelGenerator()
 	{
 		srand(time(NULL));
-		SetLehmerConstSeed((uint64_t)rand() | ((uint64_t)rand() << 32));
+		//SetLehmerConstSeed((uint64_t)rand() | ((uint64_t)rand() << 32));
+		SetLehmerSeed(42);
 	}
 
 	const Room* LevelGenerator::GetMapPointer()

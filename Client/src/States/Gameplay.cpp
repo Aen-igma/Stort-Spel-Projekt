@@ -139,8 +139,8 @@ void Gameplay::Initialize()
 
 	//Match this value to the size of the rooms we are using
 	//m_levelGenerator.SetRoomDimension(80.f); //Deprecated, using the default value instead of setting it in run time
-	mptr_map = m_levelGenerator.GenerateLevel();
-	m_levelGenerator.GenerationTestingFunction();
+	//mptr_map = m_levelGenerator.GenerateLevel();
+	mptr_map = m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
