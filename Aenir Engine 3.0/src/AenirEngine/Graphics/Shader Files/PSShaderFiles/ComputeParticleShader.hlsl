@@ -122,7 +122,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
         OutputParticle[i].Pos.z = initalPos.z;
         OutputParticle[i].Velocity.xyz = 4.0f * random;
         OutputParticle[i].Color = 1;
-        //OutputParticle[i].UV = 0.0f;
+        OutputParticle[i].UV = 0.0f;
         OutputParticle[i].Age = 0.0f;
     }
 

@@ -62,8 +62,6 @@ void main(
     output.uv = float2(1, 0);
     OutStream.Append(output);
     OutStream.RestartStrip();
-   
-    OutStream.Append(output);
 
     float3 vRandom = noise(0.0f);
     vRandom.x *= 0.5;
