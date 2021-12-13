@@ -29,8 +29,9 @@ namespace Aen {
 		Mat4f m_ivMat;
 		Mat4f m_ipMat;
 		Mat4f m_mdlMat;
+		Mat4f m_lvpMat;
 
-		CB_Transform() :m_vMat(Mat4f::identity), m_pMat(Mat4f::identity), m_ivMat(Mat4f::identity), m_ipMat(Mat4f::identity), m_mdlMat(Mat4f::identity) {}
+		CB_Transform() :m_vMat(Mat4f::identity), m_pMat(Mat4f::identity), m_ivMat(Mat4f::identity), m_ipMat(Mat4f::identity), m_mdlMat(Mat4f::identity), m_lvpMat(Mat4f::identity) {}
 	};
 
 	struct CB_Camera {
@@ -63,6 +64,8 @@ namespace Aen {
 		void Initialize();
 		void Culling();
 		void Render();
+		void UpdateCamBuffer();
+		void UpdateLCamBuffer();
 		
 		std::array<std::vector<Drawable*>, 7> m_drawTable;
 
@@ -79,6 +82,7 @@ namespace Aen {
 		
 		CShader m_postProcessCS;
 		Sampler m_wrapSampler;
+		Sampler m_borderSampler;
 
 		Vec2i m_dispatchGroups;
 		VShader m_opaqueVS;
@@ -92,7 +96,9 @@ namespace Aen {
 		ILayout m_opaqueLayout;
 
 		D3D11_VIEWPORT m_viewPort;
+		D3D11_VIEWPORT m_viewPort2;
 		DepthMap m_depthMap;
+		DepthMap m_shadowMap;
 		Stencil m_writeStencil;
 		Stencil m_maskStencil;
 		Stencil m_offStencil;
@@ -114,6 +120,7 @@ namespace Aen {
 		GShader m_PSGShader;
 		CShader m_PSCShader;
 		PShader m_PSPShader;
+		PShader m_PTransparencyPS;
 		ILayout m_PSLayout;
 		ComDeviceContext m_PSDContext;
 		CBuffer<CSInputBuffer> m_PSInputBuffer;

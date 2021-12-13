@@ -9,12 +9,10 @@ namespace Aen {
 
     void Camera::SetCameraPerspective(const float& fov, const float& aRatio, const float& minZ, const float& maxZ) {
         m_projection = MatPerspective<float>(fov, aRatio, minZ, maxZ);
-        GlobalSettings::UpdateFrstumGrid();
     }
 
     void Camera::SetCameraOrthographic(const float& width, const float& height, const float& minZ, const float& maxZ) {
         m_projection = MatOrthographic<float>(-width * 0.5f, width * 0.5f, height * 0.5f, -height * 0.5f, minZ, maxZ);
-        GlobalSettings::UpdateFrstumGrid();
     }
 
     void Camera::LookTowards(const Vec3f& dir) {

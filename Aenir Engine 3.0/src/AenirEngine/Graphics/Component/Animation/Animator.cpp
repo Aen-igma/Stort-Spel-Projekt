@@ -194,6 +194,7 @@ namespace Aen {
 				renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
 				renderer.m_cbTransform.UpdateBuffer();
 
+				RenderSystem::SetInputLayout(renderer.m_opaqueLayout);
 				renderer.m_collisionBuffer.BindBuffer<PShader>(0);
 				renderer.m_collisionBuffer.GetData().color = { 1.0f, 0.f, 0.f };
 				renderer.m_collisionBuffer.UpdateBuffer();

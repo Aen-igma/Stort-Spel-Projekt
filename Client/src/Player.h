@@ -83,6 +83,7 @@ private:
 	Aen::Entity* m_hurtbox;
 	Aen::Entity* m_player;
 	Aen::Entity* m_camera;
+	Aen::Entity* m_lCamera;
 	Aen::Entity* m_sword;
 	Aen::Entity* m_targetUI;
 	Aen::Raycast m_ray;

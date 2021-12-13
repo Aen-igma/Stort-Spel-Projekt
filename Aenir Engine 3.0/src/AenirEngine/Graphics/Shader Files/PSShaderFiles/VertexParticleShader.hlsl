@@ -4,6 +4,7 @@ cbuffer Aen_CB_Transform {
     float4x4 ivMat;
     float4x4 ipMat;
     float4x4 mdlMat;
+    float4x4 lvpMat;
 }
 
 struct Particle
