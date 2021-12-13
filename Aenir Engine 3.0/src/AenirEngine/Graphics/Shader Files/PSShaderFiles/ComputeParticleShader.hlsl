@@ -124,6 +124,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
         OutputParticle[i].Color = 1;
         OutputParticle[i].UV = 0.0f;
         OutputParticle[i].Age = 0.0f;
+
     }
 
 }

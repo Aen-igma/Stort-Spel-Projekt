@@ -372,6 +372,9 @@ void Gameplay::Update(const float& deltaTime) {
 		return;
 	}
 
+
+	
+
 	if (m_hp != m_player.GetHealth()) { //ers�tt collision med enemy i if satsen
 		mp_uiComp->UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenSize.x, 0);
 		m_hp = m_player.GetHealth();
