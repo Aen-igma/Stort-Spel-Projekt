@@ -7,7 +7,7 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	m_thronePosition(m_enemy->GetPos() + Aen::Vec3f(0.f, 4.f, 0.f)), bs(BossState::STATIONARY),
 
 	m_isHurting(false), m_cantSummonSlimes(false), m_waiting(false),
-	LIGHTDMG(20.f), HEAVYDMG(50.f), LIGHTFORCE(20.f), HEAVYFORCE(100.f), BASESPEED(3.f),
+	LIGHTDMG(20.f), HEAVYDMG(50.f), LIGHTFORCE(20.f), HEAVYFORCE(100.f), BASESPEED(7.f),
 	m_MAXHP(hp)
 {
 	m_health = hp;
@@ -15,7 +15,7 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	m_speed = BASESPEED;
 
 	Aen::Mesh& skeleBoss = Aen::Resource::CreateMesh("SkeleBoss");
-	skeleBoss.Load(AEN_MODEL_DIR("skBoss_test.fbx"));
+	skeleBoss.Load(AEN_MODEL_DIR("Boss_Skeletor_Attack.fbx"));
 	Aen::Material& skeleBossMat = Aen::Resource::CreateMaterial("SkeleBossMat");
 	skeleBossMat["GlowColor"] = Aen::Color::Cyan;
 	m_enemy->AddComponent<Aen::MeshInstance>();
@@ -25,35 +25,39 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	skeleBossMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SkeletonBoss_diffuse.png"));
 	skeleBossMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("SkeletonBoss_glow.png"));
 
+	// --- ANIMATION --- //
+
+	m_enemy->AddComponent<Aen::Animator>();
+	m_animator = &m_enemy->GetComponent<Aen::Animator>();
+	m_animator->AddAnimation("Boss_Throne", "throne");
+	m_animator->AddAnimation("Boss_Walk", "walk");
+	m_animator->AddAnimation("Boss_Attack", "attack");
+	m_animator->AddAnimation("Boss_Summon", "cast");
+	m_animator->SetFrameRate(24);
+	
+
+
+	// ----------------- //
+
 	mE_hurtBox->AddComponent<Aen::OBBox>();
 	mp_hurtBox = &mE_hurtBox->GetComponent<Aen::OBBox>();
 
 	mp_hurtBox->SetBoundingBox(2.f, 3.f, 1.f);
 
-	m_thronePosition = position + Aen::Vec3f(0.f, 5.5f, 0.f);
+	m_thronePosition = position/* + Aen::Vec3f(0.f, 5.5f, 0.f)*/;
 
-	m_enemy->SetPos(position);
+	m_enemy->SetPos(position /*+ Aen::Vec3f(0.f, 50.f, 0.f)*/);
 	mE_hurtBox->SetParent(*m_enemy);
-	mE_sword = &Aen::EntityHandler::CreateEntity();
-	mE_sword->AddComponent<Aen::MeshInstance>();
-	Aen::Mesh& swordMesh = Aen::Resource::CreateMesh("DuckBringer");
-	swordMesh.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
-	mE_sword->GetComponent<Aen::MeshInstance>().SetMesh(swordMesh);
-	mE_sword->SetScale(3.f);
-	mE_sword->SetParent(*m_enemy);
+	//mE_sword = &Aen::EntityHandler::CreateEntity();
+	//mE_sword->AddComponent<Aen::MeshInstance>();
+	//Aen::Mesh& swordMesh = Aen::Resource::CreateMesh("DuckBringer");
+	//swordMesh.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
+	//mE_sword->GetComponent<Aen::MeshInstance>().SetMesh(swordMesh);
+	//mE_sword->SetScale(3.f);
+	//mE_sword->SetParent(*m_enemy);
 
 
 	mp_hitbox->ToggleActive(true);
-
-	m_healthBar = &Aen::EntityHandler::CreateEntity();
-	m_healthBar->AddComponent<Aen::MeshInstance>();
-	m_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
-	m_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
-	m_healthBar->SetRot(180, 0, 0);
-	//m_healthBar->SetPos(0, -100, 0);
-	m_healthBar->SetScale(5.f, 0.f, 5.f);
-	m_healthBar->SetRenderLayer(1);
-	m_healthBar->SetParent(*m_enemy);
 
 	SetStationary(true);
 }
@@ -61,11 +65,9 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 Boss::~Boss()
 {
 	mE_hurtBox->RemoveParent();
-	m_healthBar->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*mE_hurtBox);
-	Aen::EntityHandler::RemoveEntity(*m_healthBar);
-	mE_sword->RemoveParent();
-	Aen::EntityHandler::RemoveEntity(*mE_sword);
+	//mE_sword->RemoveParent();
+	//Aen::EntityHandler::RemoveEntity(*mE_sword);
 }
 
 void Boss::Update(const float& deltaTime, Player& player)
@@ -76,21 +78,19 @@ void Boss::Update(const float& deltaTime, Player& player)
 	if (!m_cantSummonSlimes)
 		m_waiting = false;
 
-	m_healthBar->SetScale(m_health / 20.f, 0.f, 5.f);
-
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
 	float distance = eDir.Magnitude();
 	eDir.Normalized();
+
+	float rot = 0.f;
 
 	if (!m_hurt)
 		mp_meshInst->SetMaterial("SkeleBossMat");
 	else
 		mp_meshInst->SetMaterial("EnemyMaterialHurt");
 
-	if (distance <= 10.f && bs == BossState(0))
+	if (distance <= 40.f && bs == BossState(0))
 	{
-		m_healthBar->SetRot(-45, 0, 0);
-		m_healthBar->SetPos(0, 3, 0);
 		bs = BossState(1);
 	}
 
@@ -111,11 +111,17 @@ void Boss::Update(const float& deltaTime, Player& player)
 	{
 	case BossState::STATIONARY:
 	{
+		m_enemy->SetPos(m_thronePosition);
+		m_animator->SetAnimationScale(2.5);
+		m_animator->SetAnimation("throne");
 		m_v = Aen::Vec3f::zero;
 		break;
 	}
 	case BossState::PHASE1:
 	{
+		m_animator->SetAnimationScale(2);
+		m_animator->SetAnimation("walk");
+
 		m_deltatime = deltaTime;
 
 		if (distance < 10.f) m_attackTimer += deltaTime;
@@ -140,6 +146,12 @@ void Boss::Update(const float& deltaTime, Player& player)
 		m_v += Aen::Vec3f(-m_v.x * drag, -30.f, -m_v.z * drag) * deltaTime;
 		m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
 		m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
+
+		if (distance > 10.f) {
+			m_animator->SetAnimationScale(2);
+			m_animator->SetAnimation("walk");
+		}
+
 		if (m_waiting)
 			m_v = Aen::Vec3f::zero;
 
@@ -151,8 +163,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 		}
 
 #ifdef _DEBUG
-		if (Aen::Input::KeyDown(Aen::Key::G))
-			LightAttack(deltaTime);
+		
 		if (Aen::Input::KeyDown(Aen::Key::H))
 			BigAttack(deltaTime);
 		if (Aen::Input::KeyDown(Aen::Key::J))
@@ -169,6 +180,15 @@ void Boss::Update(const float& deltaTime, Player& player)
 		bs = BossState::CASTING;
 		break;
 	case BossState::ONTHRONE:
+		m_enemy->SetPos(m_thronePosition.x, m_thronePosition.y + 1.8f, m_thronePosition.z);
+		m_animator->SetAnimationScale(3);
+		m_animator->SetAnimation("cast");
+
+		m_direction = Aen::Lerp(m_direction, eDir.Normalized(), 0.03f);
+		rot = std::atan2(m_direction.x, m_direction.z);
+		rot = Aen::RadToDeg(rot);
+		m_enemy->SetRot(0.f, rot + 180, 0.f);
+
 		m_spawnTimer += deltaTime;
 		if (m_pMinions.size() == 0 && m_spawnTimer > 2.f)
 			bs = BossState::PHASE1;
@@ -182,7 +202,8 @@ void Boss::Update(const float& deltaTime, Player& player)
 	}
 
 
-
+	if (Aen::Input::KeyDown(Aen::Key::G))
+		printf("Hello");
 	mp_charCont->Move(m_v * m_deltatime, m_deltatime);
 }
 
@@ -250,7 +271,7 @@ void Boss::LightAttack(const float& deltaTime)
 {
 	EventData data;
 	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-		SwordSwing(500.f, .3f, deltaTime);
+		//SwordSwing(500.f, .3f, deltaTime);
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * accell;
 	};
@@ -274,7 +295,7 @@ void Boss::BigAttack(const float& deltaTime)
 	data.knockbackForce = HEAVYFORCE;
 	data.accell = .1f;
 	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-		SwordSwing(250.f, .5f, deltaTime);
+		//SwordSwing(250.f, .5f, deltaTime);
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * 4.f * accell;
 
@@ -285,6 +306,7 @@ void Boss::BigAttack(const float& deltaTime)
 
 void Boss::GoToThrone()
 {
+	
 	//EventData data;
 	//data.type = EventType::Wait;
 	//data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
@@ -378,6 +400,9 @@ void Boss::UpdateAttack()
 {
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack)
 	{
+		m_animator->SetAnimationScale(1);
+		m_animator->SetAnimation("attack");
+
 		m_cantSummonSlimes = false;
 		if (mp_hurtBox->Intersects(mp_player->GetEntity()->GetComponent<Aen::AABoundBox>()))
 		{
@@ -393,6 +418,6 @@ void Boss::UpdateAttack()
 	else
 	{
 		mp_hurtBox->ToggleActive(false);
-		ResetSword();
+		//ResetSword();
 	}
 }

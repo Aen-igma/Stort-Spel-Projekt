@@ -6,6 +6,8 @@
 #include"../Enemy/Enemies.h"
 #include "../Actors/Chest.h"
 #include "../Actors/Door.h"
+#include "../Actors/Gravestone.h"
+#include "../Actors/Exit.h"
 #include"AenirEngine\LevelEditor\ImGuiImporter.h"
 #include<functional>
 
@@ -15,6 +17,8 @@ private:
     float m_sub;
     float m_timer;
     float m_deathTimer;
+    float m_bossHP;
+    float m_TransTimer;
 
     float m_iFrames;
     const float IFRAMEMAX;
@@ -36,7 +40,10 @@ private:
 
     Aen::Entity* m_PS;
     Aen::Entity* m_wall;
+    Aen::Entity* m_throne;
  
+    Aen::Entity* m_bill;
+    Aen::Material& m_Mat;
     Aen::UIComponent* mp_uiComp;
 
     Player m_player;
@@ -45,6 +52,8 @@ private:
 
     Chest m_chest;
     Door m_door;
+    Gravestone m_grave;
+    Portal m_exit;
     bool m_beatBoss;
     Aen::Vec3f m_bossPos;
     vector<Aen::Entity*> m_particleList;

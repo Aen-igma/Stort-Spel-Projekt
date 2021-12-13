@@ -1,7 +1,7 @@
 #include "Chest.h"
 
 Chest::Chest()
-	:Interact(), m_chest(&Aen::EntityHandler::CreateEntity()), m_near(false)
+	:Interact(), m_chest(&Aen::EntityHandler::CreateEntity())
 {
 	Aen::Animation& ChestOpen = Aen::Resource::CreateAnimation("ChestOpen");
 	ChestOpen.LoadAnimation(AEN_MODEL_DIR("ChestOpen.fbx"));
@@ -15,7 +15,8 @@ Chest::Chest()
 	m_chest->GetComponent<Aen::MeshInstance>().SetMaterial(chestMat);
 	m_chest->AddComponent<Aen::Animator>();
 	m_chest->GetComponent<Aen::Animator>().AddAnimation(ChestOpen, "Open");
-	m_chest->GetComponent<Aen::Animator>().SetAnimation("Open");
+	m_chest->GetComponent<Aen::Animator>().SetLoopAnim(false);
+	m_chest->GetComponent<Aen::Animator>().SetPaused(true);
 	m_chest->SetScale(0.8f);
 
 
@@ -29,14 +30,13 @@ Chest::Chest()
 	ChestMaterial["OuterEdgeColor"] = Aen::Color(0.2f, 0.26f, 0.37f, 1.f);
 	m_chest->GetComponent<Aen::MeshInstance>().SetMaterial("ChestMat");
 
-	//m_chest->SetParent(*mp_object);
-	//mp_object->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
-	//mp_object->SetPos(m_chest->GetPos().x, m_chest->GetPos().y, m_chest->GetPos().z);
+	//m_chest->SetParent(*m_chest);
+	//m_chest->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
+	//m_chest->SetPos(m_chest->GetPos().x, m_chest->GetPos().y, m_chest->GetPos().z);
 }
 
 Chest::~Chest()
 {
-	m_chest->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_chest);
 }
 
@@ -44,18 +44,9 @@ void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 {
 	Aen::Vec3f eDir = e->GetPos() - m_chest->GetPos();
 	float dist = eDir.Magnitude();
-
-	static float time = 0;
-	if (m_type == Type::Locked) {
-		time += deltaTime;
-		m_chest->GetComponent<Aen::Animator>().Pause();
-	}
-	else {
-		m_chest->GetComponent<Aen::Animator>().Run();
-	}
-
-	if (time > 0.5f)
-		m_chest->GetComponent<Aen::Animator>().Run();
+	
+	if (m_type == Type::Locked)
+		m_chest->GetComponent<Aen::Animator>().SetPaused(false);
 
 	//player
 	if (e->GetTag() == "Player") {
@@ -68,14 +59,14 @@ void Chest::Update(const float& deltaTime, Aen::Entity*& e)
 	}
 }
 
-Aen::Entity*& Chest::GetObjectEntity()
-{
-	return mp_object;
-}
-
 Type Chest::GetType()
 {
 	return m_type;
+}
+
+bool& Chest::GetNear()
+{
+	return m_near;
 }
 
 void Chest::SetType(const Type& type)
@@ -86,9 +77,4 @@ void Chest::SetType(const Type& type)
 Aen::Entity*& Chest::GetEntity()
 {
 	return m_chest;
-}
-
-bool& Chest::GetNear()
-{
-	return m_near;
 }

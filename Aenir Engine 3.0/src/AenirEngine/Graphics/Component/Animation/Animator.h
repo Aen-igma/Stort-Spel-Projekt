@@ -8,24 +8,20 @@ namespace Aen {
 
 	class AEN_DECLSPEC Animator : public Drawable{
 	private:
-		
-		using ResClock = std::chrono::high_resolution_clock;
-		using TimePoint = std::chrono::high_resolution_clock::time_point;
-		using DurationLD = std::chrono::duration<long double>;
 
-		TimePoint m_start;
-		TimePoint m_end;
-		TimePoint m_currentTime;
-		TimePoint m_frameTime;
+		double m_sStart;
+		double m_sEnd;
+		double m_frameRate;
 
-		DurationLD frameRate;
-		int m_currentFrame;
 		float m_scale;
-		bool pause;
+		bool m_pause;
+		bool m_loop;
 		UINT animationIndex;
+		float m_time;
+
 		std::vector<std::pair<std::string, Animation*>> m_animationList;
 		void Update();
-		void GetAnimation(std::vector<Mat4f>& mat);
+		void GetAnimation(std::vector<Mat4f>& mat, const float& deltaTime);
 		void BindBuffer();
 		bool HasAnimation(const std::string& anim);
 
@@ -38,8 +34,8 @@ namespace Aen {
 		void SetAnimationScale(const float& newScale);
 		void RemoveAnimation(const std::string& animName);
 
-		void Pause();
-		void Run();
+		void SetPaused(const bool& pause);
+		void SetLoopAnim(const bool& loop);
 		void Reset();
 
 		const Mat4f GetBoneMat(const uint32_t& index);
