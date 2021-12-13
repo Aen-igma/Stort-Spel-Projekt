@@ -82,6 +82,8 @@ void Boss::Update(const float& deltaTime, Player& player)
 	float distance = eDir.Magnitude();
 	eDir.Normalized();
 
+	float rot = 0.f;
+
 	if (!m_hurt)
 		mp_meshInst->SetMaterial("SkeleBossMat");
 	else
@@ -178,9 +180,15 @@ void Boss::Update(const float& deltaTime, Player& player)
 		bs = BossState::CASTING;
 		break;
 	case BossState::ONTHRONE:
-		m_enemy->SetPos(m_thronePosition);
-		m_animator->SetAnimationScale(2);
+		m_enemy->SetPos(m_thronePosition.x, m_thronePosition.y + 1.8f, m_thronePosition.z);
+		m_animator->SetAnimationScale(3);
 		m_animator->SetAnimation("cast");
+
+		m_direction = Aen::Lerp(m_direction, eDir.Normalized(), 0.03f);
+		rot = std::atan2(m_direction.x, m_direction.z);
+		rot = Aen::RadToDeg(rot);
+		m_enemy->SetRot(0.f, rot + 180, 0.f);
+
 		m_spawnTimer += deltaTime;
 		if (m_pMinions.size() == 0 && m_spawnTimer > 2.f)
 			bs = BossState::PHASE1;

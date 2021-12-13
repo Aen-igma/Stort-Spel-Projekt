@@ -39,44 +39,44 @@
     <ClInclude Include="src\States\States.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="src\States\GameEnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Enemy\Enemy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Enemy\Rimuru\Rimuru.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Enemy\Enemies.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\States\Options.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Actors\Interact.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Actors\Chest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\States\Credits.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="src\Client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Actors\Chest.h">
+      <Filter>Header Files\Level</Filter>
+    </ClInclude>
     <ClInclude Include="src\Actors\Door.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Enemy\Enemies.h">
+      <Filter>Header Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Enemy\Enemy.h">
+      <Filter>Header Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Actors\Interact.h">
+      <Filter>Header Files\Level</Filter>
     </ClInclude>
     <ClInclude Include="src\Enemy\Boss\NecroBoss.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player.h">
+      <Filter>Header Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Enemy\Rimuru\Rimuru.h">
+      <Filter>Header Files\Level</Filter>
     </ClInclude>
     <ClInclude Include="src\Enemy\SkeletonLight\SkeleLight.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\States\GameEnd.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\States\Options.h">
+      <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="src\Actors\Gravestone.h">
       <Filter>Header Files</Filter>
@@ -101,17 +101,17 @@
     <ClCompile Include="src\States\States.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
-    <ClCompile Include="src\States\GameEnd.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\States\Credits.cpp">
+      <Filter>Source Files\States</Filter>
     </ClCompile>
-    <ClCompile Include="src\Enemy\Enemy.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\States\Options.cpp">
+      <Filter>Source Files\States</Filter>
     </ClCompile>
-    <ClCompile Include="src\Enemy\Rimuru\Rimuru.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Actors\Chest.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Actors\Door.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="src\States\Options.cpp">
       <Filter>Source Files</Filter>
@@ -119,26 +119,26 @@
     <ClCompile Include="src\Actors\Interact.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Actors\Chest.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Actors\Interact.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
-    <ClCompile Include="src\States\Credits.cpp">
-      <Filter>Source Files\States</Filter>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
-    <ClCompile Include="src\Actors\Door.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Enemy\Rimuru\Rimuru.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="src\Enemy\SkeletonLight\SkeleLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Enemy\Boss\NecroBoss.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="src\Actors\Gravestone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Actors\Exit.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Enemy\Boss\NecroBoss.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
