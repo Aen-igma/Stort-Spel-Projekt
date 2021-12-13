@@ -11,6 +11,7 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	Aen::EntityHandler::RemoveEntity(*m_PS);
 	Aen::EntityHandler::RemoveEntity(*m_bill);
+	Aen::EntityHandler::RemoveEntity(*m_throne);
 	
 	for (auto& d : m_enemyQueue) {
 		delete d;
