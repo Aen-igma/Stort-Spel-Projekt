@@ -68,13 +68,7 @@ void main(
     float3 vRandom = noise(0.0f);
     vRandom.x *= 0.5;
     vRandom.y *= 0.5;
-    //float3 vRandom = RandUnitVec3(0.0f);
-    //vRandom.x *= 0.5;
-    //vRandom.z *= 0.5;
-    //ParticleVertex ps;
-    //ps.Pos = initalPos.xyz;
-    //ps.Velocity = 4.0f * vRandom;
-    //ps.Age = 0.0f;
+
 
 }
 

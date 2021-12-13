@@ -24,7 +24,6 @@ namespace Aen
 		delete m_shader;
 		delete m_pMesh;
 		delete m_pMaterial;
-
 	}
 
 	void PSSystemcomponent::LoadAndSetTexture(const std::string& dir)
@@ -113,13 +112,10 @@ namespace Aen
 		return;
 	}
 
-
-
 	void PSSystemcomponent::SetNrOfPS(UINT nr)
 	{
 		this->m_CSInputBuffer.emitCount = nr;
 		this->m_currentNrPS = this->m_CSInputBuffer.emitCount;
-
 	}
 
 	void PSSystemcomponent::SetVelocity(float x, float y, float z)
@@ -170,7 +166,6 @@ namespace Aen
 		this->m_CSInputBuffer.velocity = { 0.0f,0.0f,0.0f };
 		this->m_vertexCount = 0;
 		this->m_particlesPerSecond = 1.0f;
-		
 	}
 	void PSSystemcomponent::SetHeightLimit(float height)
 	{
@@ -216,6 +211,7 @@ namespace Aen
 
 		RenderSystem::BindRenderTargetView(renderer.m_particleOut, renderer.m_depthMap);
 		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
+		//Uncomment if you want wireframe state
 		//RenderSystem::SetRasteriserState(renderer.m_wireFrameState);
 
 

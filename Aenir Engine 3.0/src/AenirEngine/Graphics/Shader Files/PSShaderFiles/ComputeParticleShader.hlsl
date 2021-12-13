@@ -101,30 +101,9 @@ void main(uint3 DTid : SV_DispatchThreadID)
     random.y *= 0.5f;
 
 
-    //This is an attempt for random number on gpu
-    //float3 delta = float3(initalPos.xy, 3) - OutputParticle[i].Pos;
-    //float3 dir = normalize(delta);
-    //OutputParticle[i.x].Velocity += dir;
-    //OutputParticle[i.x].Pos += OutputParticle[i.x].Velocity * deltaTime;
-    //if (OutputParticle[i].Age < 0) {
-    //    rng_state = DTid.x;
-    //    float f0 = float(rand_xorshift()) * (1.0 / 4294967296.0) - 0.5;
-    //    float f1 = float(rand_xorshift()) * (1.0 / 4294967296.0) - 0.5;
-    //    float f2 = float(rand_xorshift()) * (1.0 / 4294967296.0) - 0.5;
-    //    float3 normalF3 = normalize(float3(f0, f1, f2)) * 0.8f;
-    //    normalF3 *= float(rand_xorshift()) * (1.0f / 4294967296.0);
-    //    OutputParticle[i].Pos = float3(normalF3.x + initalPos.x, normalF3.y + initalPos.y, normalF3.z + 3.0f);
-    //    OutputParticle[i].Velocity = float3(0, 0, 0);
-    //    OutputParticle[i].Age = 4.0f;
-    //}
-    //float3 dir = float3(velocity.x * acceleration.x, velocity.y * acceleration.y, velocity.z * acceleration.z);
-
-
-
     float3 testMove = float3(dir.x * speed.x, dir.y * speed.y, dir.z * speed.z);
     float3 randomMove = noise(float3(DTid)) %50;
     float3 randDir = noise(float3(DTid));
-
     float2 size = float2(3.0f, 3.0f);
    
     
@@ -133,9 +112,9 @@ void main(uint3 DTid : SV_DispatchThreadID)
     OutputParticle[i].Velocity = 4.0f * random;
     
     if (length(OutputParticle[i].Pos.y) <= lifeTime) {
-        OutputParticle[i].Pos.x += (5 * deltaTime + noise(float3(DTid))) % 50;
-        OutputParticle[i].Pos.y += (5 * deltaTime + noise(float3(DTid))) % 50;
-        OutputParticle[i].Pos.z += (5 * deltaTime + noise(float3(DTid))) % 50;
+        OutputParticle[i].Pos.x += (velocity * deltaTime + noise(float3(DTid))) % 50;
+        OutputParticle[i].Pos.y += (velocity * deltaTime + noise(float3(DTid))) % 50;
+        OutputParticle[i].Pos.z += (velocity * deltaTime + noise(float3(DTid))) % 50;
     }
     if (length(OutputParticle[i].Pos.y) >= lifeTime) {
         OutputParticle[i].Pos.x = initalPos.x;
@@ -143,7 +122,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
         OutputParticle[i].Pos.z = initalPos.z;
         OutputParticle[i].Velocity.xyz = 4.0f * random;
         OutputParticle[i].Color = 1;
-        OutputParticle[i].UV = 1.0f;
+        //OutputParticle[i].UV = 0.0f;
         OutputParticle[i].Age = 0.0f;
     }
 

@@ -60,8 +60,8 @@ void Gameplay::Initialize()
 	Aen::Material& enemyMatHurt = Aen::Resource::CreateMaterial("EnemyMaterialHurt");
 
 	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
-	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Flames1.png"));
-	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FlamesOppacity1.png"));
+	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("F1.png"));
+	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FO1.png"));
 	
 
 	/*enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
@@ -167,7 +167,7 @@ void Gameplay::Initialize()
 		m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetHeightLimit(6.0f);
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(particle->translation[0], particle->translation[1], particle->translation[2]);
-		m_PS->GetComponent<Aen::PSSystemcomponent>().SetVelocity(0,0,0);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetVelocity(rand() % 10 + 2, rand() % 10 + 2, rand() % 10 + 2);
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(1);
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
 	}
