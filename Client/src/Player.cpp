@@ -93,6 +93,7 @@ Player::Player()
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
 	protagRun.LoadAnimation(AEN_MODEL_DIR("Protagonist_Run.fbx"));
 	m_protagIdleToRun->AddAnimationLayer(&protagRun);
+	m_protagIdleToRun->SetBlendMode(Aen::BlendMode::LAYER_TIME);
 	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
 	protagDash.LoadAnimation(AEN_MODEL_DIR("Protagonist_Dash.fbx"));
 	Aen::Animation& protagAttack = Aen::Resource::CreateAnimation("protagAttack");
@@ -410,13 +411,13 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	mp_hurtBox->SetOrientation(0.f, yaw, 0.f);
 	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
 	
-	if(axis.Magnitude() > 0.f) {
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
-	} else {
+	//if(axis.Magnitude() > 0.f) {
+	//	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
+	//	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
+	//} else {
 		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
 		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
-	}
+	//}
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {

@@ -23,6 +23,7 @@ namespace Aen {
 	struct KeyFrameData {
 		Mat4f rotation;
 		Vec4f quatOrientation;
+		Vec3f translation;
 	};
 
 	struct Bones {
@@ -32,13 +33,16 @@ namespace Aen {
 		Mat4f offsetMatrix;
 	};
 
-	
+	enum class BlendMode
+	{
+		BASE_TIME, LAYER_TIME, SCALE
+	};
 
 	class AEN_DECLSPEC Animation {
 	private:
 		float m_duration;
 		float m_blendFactor = 0.f;
-		bool m_isBlendAnimatrion = false;
+		bool m_isBlendAnimation = false;
 		
 		AssimpData m_RootNode;
 		std::vector<Bones> m_boneArray;
@@ -50,6 +54,7 @@ namespace Aen {
 		SBuffer<Mat4f> m_finalMatrix;
 
 		Animation* mp_layer = nullptr;
+		BlendMode m_bm = BlendMode(0);
 
 	public:
 		Animation();
@@ -63,6 +68,8 @@ namespace Aen {
 		void SetBlendFactor(const float& blendFactor);
 		const bool IsBlendAnimation() const;
 		const float GetBlendFactor() const;
+		const BlendMode GetBlendMode() const;
+		void SetBlendMode(const BlendMode& bm);
 	private:
 
 		friend class Resource;

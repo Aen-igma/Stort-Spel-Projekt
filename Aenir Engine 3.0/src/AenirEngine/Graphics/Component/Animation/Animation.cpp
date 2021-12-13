@@ -48,7 +48,7 @@ namespace Aen {
 	void Animation::AddAnimationLayer(Animation* pLayer)
 	{
 		mp_layer = pLayer;
-		m_isBlendAnimatrion = true;
+		m_isBlendAnimation = true;
 	}
 	void Animation::SetBlendFactor(const float& blendFactor)
 	{
@@ -58,13 +58,21 @@ namespace Aen {
 
 const bool Animation::IsBlendAnimation() const
 {
-	return m_isBlendAnimatrion;
+	return m_isBlendAnimation;
 }
 const float Animation::GetBlendFactor() const
 {
-	if (m_isBlendAnimatrion)
+	if (m_isBlendAnimation)
 		return m_blendFactor;
 	else return 0.f;
+}
+const BlendMode Animation::GetBlendMode() const
+{
+	return m_bm;
+}
+void Animation::SetBlendMode(const BlendMode& bm)
+{
+	m_bm = bm;
 }
 Animation::~Animation() {
 }
