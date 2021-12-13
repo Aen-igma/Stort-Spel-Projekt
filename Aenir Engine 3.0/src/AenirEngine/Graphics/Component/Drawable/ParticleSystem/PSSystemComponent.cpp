@@ -257,7 +257,22 @@ namespace Aen
 
 		RenderSystem::BindShader(renderer.m_PSVShader);
 		RenderSystem::BindShader(renderer.m_PSGShader);
-		RenderSystem::BindShader(renderer.m_transparencyPS);
+		RenderSystem::BindShader(renderer.m_PTransparencyPS);
+
+		if(m_pMaterial) {
+			uint32_t* slots = m_pMaterial->m_pShaderModel->m_slots;
+
+			RenderSystem::BindSamplers<PShader>(m_pMaterial->m_pShaderModel->m_samplerData.first, m_pMaterial->m_pShaderModel->m_samplerData.second);
+
+			if(m_pMaterial->m_textures[3] && slots[3] != UINT_MAX) {
+				RenderSystem::BindShaderResourceView<PShader>(0u, m_pMaterial->m_textures[3]->m_shaderResource);
+				renderer.m_cbUseTexture.GetData()[3] = (int)true;
+			} else
+				renderer.m_cbUseTexture.GetData()[3] = (int)false;
+
+			renderer.m_cbUseTexture.UpdateBuffer();
+			renderer.m_cbUseTexture.BindBuffer<PShader>(0u);
+		}
 
 		RenderSystem::Draw(this->currentNrPS, 0);
 
