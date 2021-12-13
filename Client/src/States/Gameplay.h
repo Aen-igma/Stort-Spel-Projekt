@@ -28,6 +28,7 @@ private:
     float m_fSpeed;
     bool m_toggleFullScreen;
     bool m_paused = false;
+    bool m_debug = false;
 
     Aen::Vec2f screenSize;
 
@@ -36,7 +37,7 @@ private:
     //Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
     Aen::Entity* m_UI;
-
+    Aen::Entity* m_debugCam;
 
     Aen::Entity* m_PS;
     Aen::Entity* m_wall;

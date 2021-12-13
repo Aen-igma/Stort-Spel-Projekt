@@ -12,6 +12,7 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_PS);
 	Aen::EntityHandler::RemoveEntity(*m_bill);
 	Aen::EntityHandler::RemoveEntity(*m_throne);
+	Aen::EntityHandler::RemoveEntity(*m_debugCam);
 	
 	for (auto& d : m_enemyQueue) {
 		delete d;
@@ -38,6 +39,10 @@ void Gameplay::Initialize()
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
 	m_dLight->SetRot(45.f, -135.f, 0.f);*/
+
+	m_debugCam = &Aen::EntityHandler::CreateEntity();
+	m_debugCam->AddComponent<Aen::Camera>();
+	m_debugCam->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 90.f);
 
 	// ----------------------------- Animations -------------------------------- //
 	
@@ -189,7 +194,7 @@ void Gameplay::Initialize()
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
-
+	m_debugCam->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 
 	if (itemNormal == 1) { //north
 		m_chest.GetEntity()->SetRot(0, 0, 0);
@@ -452,7 +457,26 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// ---------------------------------- Enemies --------------------------------------- //
 
-	m_player.Update(m_enemyQueue, deltaTime);
+	if (m_debug)
+	{
+		while (!Aen::Input::MouseBufferIsEmbty())
+		{
+			Aen::MouseEvent me = Aen::Input::ReadEvent();
+
+			if (me.getInputType() == Aen::MouseEvent::MouseInput::RAW_MOVE)
+			{
+				if (!Aen::Input::GPGetActive(0u)) {
+					m_debugCam->Rotate(
+						-(float)me.GetPos().y * 5.f * deltaTime,
+						(float)me.GetPos().x * 5.f * deltaTime, 0.f);
+				}
+			}
+		}
+		//m_debugCam->MoveRelative()
+	}
+	else
+		m_player.Update(m_enemyQueue, deltaTime);
+
 	m_bill->SetPos(m_player.GetCamera()->GetPos());
 	m_bill->SetRot(m_player.GetCamera()->GetRot().x, m_player.GetCamera()->GetRot().y, 0);
 	m_bill->MoveRelative(0, 0, -2);
@@ -573,6 +597,18 @@ void Gameplay::Update(const float& deltaTime) {
 			wDesc.style = AEN_WS_OVERLAPPEDWINDOW | AEN_WS_VISIBLE;
 			m_Window.LoadSettings(wDesc);
 		}
+	}
+
+	if (Aen::Input::KeyDown(Aen::Key::I))
+	{
+		m_debug = true;
+		Aen::GlobalSettings::SetMainCamera(*m_debugCam);
+	}
+
+	if (Aen::Input::KeyDown(Aen::Key::O))
+	{
+		m_debug = false;
+		Aen::GlobalSettings::SetMainCamera(*m_player.GetCamera());
 	}
 
 	// ------------------------------ Quick exit Button -------------------------------- //
