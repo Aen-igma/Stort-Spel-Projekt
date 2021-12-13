@@ -269,8 +269,18 @@ namespace Aen
 
 	bool PSSystemcomponent::FrustumCull(Renderer& renderer) 
 	{		
-		//Ree momment
-		return true;
+		 
+		if (GlobalSettings::GetMainCamera())
+		{
+			DirectX::XMFLOAT3 tempFloat = DirectX::XMFLOAT3(m_CSInputBuffer.initalPos.x, m_CSInputBuffer.initalPos.y, m_CSInputBuffer.initalPos.z);
+			DirectX::XMVECTOR tempVec = DirectX::XMLoadFloat3(&tempFloat);
+			if (GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Contains(tempVec))
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 

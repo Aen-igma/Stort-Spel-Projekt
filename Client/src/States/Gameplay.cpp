@@ -166,9 +166,9 @@ void Gameplay::Initialize()
 				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
 				m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
 				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
-				for (int i = 0; i < 10; i++) {
+				/*for (int i = 0; i < 10; i++) {
 					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-				}
+				}*/
 			}
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
