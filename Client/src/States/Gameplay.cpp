@@ -5,7 +5,7 @@ Gameplay::Gameplay(Aen::Window& window)
 	IFRAMEMAX(1.5f), m_iFrames(0.f), m_Mat(Aen::Resource::CreateMaterial("Bill")), m_TransTimer(0.001f) {}
 
 Gameplay::~Gameplay() {
-	//Aen::EntityHandler::RemoveEntity(*m_dLight);
+	Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	mp_uiComp = nullptr;
 	Aen::EntityHandler::RemoveEntity(*m_UI);
@@ -37,7 +37,7 @@ void Gameplay::Initialize()
 	m_dLight->AddComponent<Aen::DirectionalLight>();
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color(0.3f, 0.3f, 0.5f, 1.f));
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(0.3f);
-	m_dLight->SetRot(3.f, 0.f, 0.f);
+	m_dLight->SetRot(3.f, 45.f, 0.f);
 
 	// ----------------------------- Animations -------------------------------- //
 	
@@ -574,7 +574,6 @@ void Gameplay::Update(const float& deltaTime) {
 			m_Window.LoadSettings(wDesc);
 		}
 	}
-
 	// ------------------------------ Quick exit Button -------------------------------- //
 
 	// ------------------------------------- States -------------------------------------- //

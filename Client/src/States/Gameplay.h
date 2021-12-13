@@ -32,8 +32,6 @@ private:
     Aen::Vec2f screenSize;
 
     Aen::Raycast m_ray;
-
-    //Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
     Aen::Entity* m_UI;
 
