@@ -48,10 +48,8 @@ namespace Aen {
 		Animation* aniLayer = animation->mp_layer;
 
 		uint32_t sizeBA = animation->m_boneArray.size();
-		uint32_t numFrames = animation->m_timeStamp.size();
+		uint32_t numFrames = animation->IsBlendAnimation() ? animation->m_timeStamp.size() : animation->m_timeStamp.size();
 		float duration = animation->IsBlendAnimation() ? aniLayer->GetDuration() : animation->m_duration * m_scale;
-		//float duration = animation->m_duration * m_scale;
-		//float layerDuration = animation->IsBlendAnimation() ? aniLayer->m_duration : 0.f;
 
 		if(m_time < duration) {
 			uint32_t l = 0u;
@@ -63,8 +61,8 @@ namespace Aen {
 
 			while(true) {
 				mid = (l + r) / 2u;
-				float ft = animation->m_timeStamp[mid] * duration;
-				float st = animation->m_timeStamp[Clamp(mid + 1u, 0u, numFrames - 1u)] * duration;
+				float ft = animation->IsBlendAnimation() ? aniLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
+				float st = animation->IsBlendAnimation() ? aniLayer->m_timeStamp[Clamp(mid + 1u, 0u, numFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, numFrames - 1u)] * duration;
 				if((m_time >= ft && m_time <= st) || ft == st) {
 					fFrame = mid;
 					sFrame = (mid + 1u) % numFrames;
@@ -79,8 +77,8 @@ namespace Aen {
 
 			}
 
-			float f = m_time - animation->m_timeStamp[fFrame] * duration;
-			float h = animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
+			float f = animation->IsBlendAnimation() ? m_time - aniLayer->m_timeStamp[fFrame] * duration : m_time - animation->m_timeStamp[fFrame] * duration;
+			float h = animation->IsBlendAnimation() ? aniLayer->m_timeStamp[sFrame] * duration - aniLayer->m_timeStamp[fFrame] * duration : animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
 			float t = f / h;
 
 			for (int i = 0; i < sizeBA; i++) {
@@ -89,10 +87,6 @@ namespace Aen {
 				Mat4f nextFrame;
 				if (animation->IsBlendAnimation() && i != 0)
 				{
-					//if (i == 0);
-					//{
-					//	translation.smVec = animation->m_keyFrames.at(bName)[fFrame].rotation.smMat.Translation();
-					//}
 					Vec4f quat = animation->m_keyFrames.at(bName)[fFrame].quatOrientation;
 					sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
 
@@ -127,10 +121,6 @@ namespace Aen {
 				Mat4f currentFrame = animation->m_keyFrames.at(bName)[numFrames - 1].rotation;
 				if (animation->IsBlendAnimation() && i != 0)
 				{
-					//if (i == 0)
-					//{
-					//	translation.smVec = animation->m_keyFrames.at(bName)[numFrames - 1].rotation.smMat.Translation();
-					//}
 					Vec4f quat = animation->m_keyFrames.at(bName)[numFrames - 1].quatOrientation;
 					sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
 					quat = aniLayer->m_keyFrames.at(bName)[numFrames - 1].quatOrientation;
