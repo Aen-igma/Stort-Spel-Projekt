@@ -33,11 +33,11 @@ void Gameplay::Initialize()
 
 	// ------------------------ Setup Directional Light ------------------------- //
 
-	/*m_dLight = &Aen::EntityHandler::CreateEntity();
+	m_dLight = &Aen::EntityHandler::CreateEntity();
 	m_dLight->AddComponent<Aen::DirectionalLight>();
-	m_dLight->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color::White);
-	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
-	m_dLight->SetRot(45.f, -135.f, 0.f);*/
+	m_dLight->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color(0.3f, 0.3f, 0.5f, 1.f));
+	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(0.3f);
+	m_dLight->SetRot(3.f, 0.f, 0.f);
 
 	// ----------------------------- Animations -------------------------------- //
 	
