@@ -68,8 +68,6 @@ void Gameplay::Initialize()
 	skeleLight.Load(AEN_MODEL_DIR("Skel_Light_Walking_2.fbx"));
 	Aen::Mesh& throne = Aen::Resource::CreateMesh("Throne");
 	throne.Load(AEN_MODEL_DIR("Throne.fbx"));
-	Aen::Mesh& plane = Aen::Resource::CreateMesh("Flat");
-	plane.Load(AEN_MODEL_DIR("flat.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -165,21 +163,17 @@ void Gameplay::Initialize()
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
 			{
 				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
+				m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
+				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+				for (int i = 0; i < 10; i++) {
+					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+				}
 			}
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
 				itemNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
-			}
-
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
-
-				m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
-				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
-				for (int i = 0; i < 10; i++) {
-					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-				}
 			}
 		}
 	}
@@ -189,8 +183,8 @@ void Gameplay::Initialize()
 	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 
-	m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
-	//m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
+	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
