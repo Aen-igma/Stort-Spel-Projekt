@@ -198,9 +198,6 @@ void Gameplay::Initialize()
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(1);
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
 	}
-	
-	
-
 	//PS system pos
 	//m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetHeightLimit(ChestPos.y + 10.f);
