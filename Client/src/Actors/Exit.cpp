@@ -18,7 +18,7 @@ Portal::Portal():m_Mat(Aen::Resource::CreateMaterial("White"))
 	m_exit->AddComponent<Aen::MeshInstance>();
 	m_exit->GetComponent<Aen::MeshInstance>().SetMesh("PLANE");
 	m_exit->GetComponent<Aen::MeshInstance>().SetMaterial("White");
-	m_exit->SetScale(0, 1, 100);
+	m_exit->SetScale(0, 0, 0);
 	m_type = Type::Open;
 }
 
@@ -35,11 +35,20 @@ void Portal::Update(const float& deltaTime, Aen::Entity*& e)
 	if (m_type == Type::Opening || m_type == Type::Closing) {
 
 		m_scale += deltaTime * 2.f;
-		m_exit->SetScale(m_scale, 1, 100);
+		m_exit->SetScale(m_scale, 30, 1);
 
 		if (m_scale > 10.f) {
 			m_type = Type::Closed;
 		}
+	}
+
+	if (Aen::Input::KeyDown(Aen::Key::LEFT)) {
+
+		m_exit->MoveRelative(0, 0, 1.f);
+	}
+	if (Aen::Input::KeyDown(Aen::Key::RIGHT)) {
+
+		m_exit->MoveRelative(0, 0, -1.f);
 	}
 }
 

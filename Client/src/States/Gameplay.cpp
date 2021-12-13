@@ -11,6 +11,7 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	Aen::EntityHandler::RemoveEntity(*m_PS);
 	Aen::EntityHandler::RemoveEntity(*m_bill);
+	Aen::EntityHandler::RemoveEntity(*m_throne);
 	
 	for (auto& d : m_enemyQueue) {
 		delete d;
@@ -163,21 +164,17 @@ void Gameplay::Initialize()
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
 			{
 				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
+				m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
+				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+				for (int i = 0; i < 10; i++) {
+					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+				}
 			}
 			mptr_map[x + y * Aen::mapSize].mptr_parent;
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
 				itemNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
 				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
-			}
-
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) {
-
-				m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
-				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
-				for (int i = 0; i < 10; i++) {
-					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-				}
 			}
 		}
 	}
@@ -240,7 +237,7 @@ void Gameplay::Initialize()
 		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x - 1.f, m_throne->GetPos().y, m_throne->GetPos().z);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 0.f, 0.f);
 		m_grave.GetEntity()->SetRot(0, 180, 0);
-		m_exit.GetEntity()->SetRot(-90, -90, 90);
+		m_exit.GetEntity()->SetRot(0, 180, 0);
 	}
 	else if (roomNormal == 10) {//east
 		m_throne->SetPos(m_bossPos.x - 33.35f, m_bossPos.y + 6.11f, m_bossPos.z);
@@ -249,7 +246,7 @@ void Gameplay::Initialize()
 		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x, m_throne->GetPos().y, m_throne->GetPos().z - 1.f);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, -90.f, 0.f);
 		m_grave.GetEntity()->SetRot(0, 90, 0);
-		m_exit.GetEntity()->SetRot(90, 180, 90);
+		m_exit.GetEntity()->SetRot(0, 90, 0);
 	}
 	else if (roomNormal == 100) {//south
 		m_throne->SetPos(m_bossPos.x, m_bossPos.y + 6.11f, m_bossPos.z - 33.35f);
@@ -258,7 +255,7 @@ void Gameplay::Initialize()
 		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x +1.f, m_throne->GetPos().y, m_throne->GetPos().z);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 180.f, 0.f);
 		m_grave.GetEntity()->SetRot(0, 0, 0);
-		m_exit.GetEntity()->SetRot(-90, 90, 90);
+		m_exit.GetEntity()->SetRot(0, 0, 0);
 	}
 	else if (roomNormal == 1000) {//west
 		m_throne->SetPos(m_bossPos.x + 33.35f, m_bossPos.y + 6.11f, m_bossPos.z);
@@ -267,16 +264,15 @@ void Gameplay::Initialize()
 		m_pSkeleBoss->SetThronePosition(m_throne->GetPos().x, m_throne->GetPos().y, m_throne->GetPos().z +1.f);
 		m_pSkeleBoss->GetEntity()->SetRot(0.f, 90.f, 0.f);
 		m_grave.GetEntity()->SetRot(0, -90, 0);
-		m_exit.GetEntity()->SetRot(-90, 0, 90);
+		m_exit.GetEntity()->SetRot(0, -90, 0);
 	}
 	//m_pSkeleBoss->SetThronePosition(m_throne->GetPos());
 	m_door.GetEntity()->SetPos(doorPos.x, 0.f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 39.5f);
 	m_grave.GetEntity()->SetPos(0, -5, 0);
 
-	m_exit.GetEntity()->SetPos(doorPos.x, 3.f, doorPos.z);
-	m_exit.GetEntity()->MoveRelative(0, -20.5, 0);
-
+	m_exit.GetEntity()->SetPos(doorPos.x, 10.f, doorPos.z);
+	m_exit.GetEntity()->MoveRelative(0, 0, -21.5f);
 	//m_attack->SetParent(*m_player);
 
 	//printf("");
@@ -353,13 +349,13 @@ void Gameplay::Initialize()
 	m_Mat["InnerEdgeColor"] = Aen::Color::White;
 	m_Mat["OuterEdgeColor"] = Aen::Color::White;
 	m_Mat["GlowColor"] = Aen::Color::White;
-	m_Mat["OpacityStr"] = 0.001f;
+	m_Mat["OpacityStr"] = 1.f;
 
 	m_bill = &Aen::EntityHandler::CreateEntity();
 	m_bill->AddComponent<Aen::MeshInstance>();
 	m_bill->GetComponent<Aen::MeshInstance>().SetMesh("PLANE");
 	m_bill->GetComponent<Aen::MeshInstance>().SetMaterial("Bill");
-	m_bill->SetScale(0, 1, 0);
+	m_bill->SetScale(0, 0, 0);
 	m_bill->SetRenderLayer(2);
 
 	Aen::Input::ToggleRawMouse(true);
@@ -439,7 +435,7 @@ void Gameplay::Update(const float& deltaTime) {
 		mp_uiComp->SetDraw(false);
 		m_TransTimer += deltaTime * 0.5f;
 		m_Mat["OpacityStr"] = m_TransTimer;
-		m_bill->SetScale((10 / 1920.f) * screenSize.x, 1, (5 / 1024.f) * screenSize.y);
+		m_bill->SetScale((10 / 1920.f) * screenSize.x, (5 / 1024.f) * screenSize.y, 0);
 
 		if (m_TransTimer > 1.5f) {
 			SetWin(true);
@@ -458,8 +454,8 @@ void Gameplay::Update(const float& deltaTime) {
 
 	m_player.Update(m_enemyQueue, deltaTime);
 	m_bill->SetPos(m_player.GetCamera()->GetPos());
-	m_bill->SetRot(-m_player.GetCamera()->GetRot().x -90.f, m_player.GetCamera()->GetRot().y + 180.f, 0);
-	m_bill->MoveRelative(0, -2, 0);
+	m_bill->SetRot(m_player.GetCamera()->GetRot().x, m_player.GetCamera()->GetRot().y, 0);
+	m_bill->MoveRelative(0, 0, -2);
 
 	m_chest.Update(deltaTime, m_player.GetEntity());
 	m_door.Update(deltaTime, m_player.GetEntity());
@@ -490,7 +486,7 @@ void Gameplay::Update(const float& deltaTime) {
 		else if(m_door.GetType() == Type::Closed && m_door.GetNear()) {
 			m_door.SetType(Type::Opening);
 		}
-		else if (m_grave.GetNear() && m_grave.GetType() == Type::Open && m_player.GetBossesAlive() <= 0.f) {
+		else if (m_grave.GetNear() && m_grave.GetType() == Type::Closed) {
 			m_exit.SetType(Type::Opening);
 		}
 	}
@@ -499,7 +495,7 @@ void Gameplay::Update(const float& deltaTime) {
 
 		m_grave.SetType(Type::Closed);
 		m_grave.GetEntity()->SetPos(m_door.GetEntity()->GetPos());
-		m_grave.GetEntity()->MoveRelative(0.f, 0, -15.f);
+		m_grave.GetEntity()->MoveRelative(0.f, 0, -55.f);
 	}
 
 	for (auto& i : m_enemyQueue) {

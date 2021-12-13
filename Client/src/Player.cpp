@@ -194,10 +194,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
 
 
-#ifdef _DEBUG
 	if (Aen::Input::KeyPress(Aen::Key::SHIFT)) m_movementSpeed = 24.f;
 	else m_movementSpeed = 8.f;
-#endif // _DEBUG
 
 
 	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19) * Aen::MatRotate(0.f, -10.f, 0.f) * m_playerMeshHolder->GetTransformation());
