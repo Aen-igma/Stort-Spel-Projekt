@@ -4,6 +4,15 @@
 #include "BuritoMath.h"
 #include "Sprite.h"
 
+//Idea
+//Can take in an entity and change its values to 2D, maybe change it in the VS or smth
+//The component structure may help in this
+//ex
+//Entity->AddComponent<Aen::UI>(); // Changes the entities values to 2D
+//Entity->GetComponent<Aen::UI>().Transform2D(); // If the above statement isn't possible, maybe a function that can do this?
+//And then maybe like
+//Entity->GetComponent<Aen::UI>().SetPos(0,0);
+
 namespace Aen {
 
 	struct Vertex2D {
