@@ -32,7 +32,7 @@ void Client::Start() {
 	// ----------------------------- Load Meshes -------------------------------- //
 
 	Aen::Mesh& plane = Aen::Resource::CreateMesh("Plane");
-	plane.Load(AEN_MODEL_DIR("Plane.obj"));
+	plane.Load(AEN_MODEL_DIR("Plane.fbx"));
 
 	// ----------------------------- Load Reimushes -------------------------------- //
 

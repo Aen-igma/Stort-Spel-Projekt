@@ -607,10 +607,10 @@ namespace Aen
 	size_t ImGuiImporter::AddBaseParticle(string type, float* pos)
 	{
 		string meshName = IGH::PARTICLE + "_" + type + std::to_string(m_entityCount);
-		string objName = "Cube.obj";
+		string objName = "Cube.fbx";
 		Aen::Entity* entity = &mp_entityHandlerPtr->CreateEntity();
 		Aen::Mesh& mesh = Aen::Resource::CreateMesh(meshName);
-		mesh.Load(AEN_MODEL_DIR("Cube.obj"));
+		mesh.Load(AEN_MODEL_DIR("Cube.fbx"));
 
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
