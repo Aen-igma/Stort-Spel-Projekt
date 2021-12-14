@@ -5,17 +5,21 @@ Gameplay::Gameplay(Aen::Window& window)
 	IFRAMEMAX(1.5f), m_iFrames(0.f), m_Mat(Aen::Resource::CreateMaterial("Bill")), m_TransTimer(0.001f) {}
 
 Gameplay::~Gameplay() {
-	//Aen::EntityHandler::RemoveEntity(*m_dLight);
+	Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	mp_uiComp = nullptr;
 	Aen::EntityHandler::RemoveEntity(*m_UI);
-	Aen::EntityHandler::RemoveEntity(*m_PS);
 	Aen::EntityHandler::RemoveEntity(*m_bill);
 	Aen::EntityHandler::RemoveEntity(*m_throne);
+
 	
 	for (auto& d : m_enemyQueue) {
 		delete d;
 	}
+	for (auto& a : m_PSList) {
+		Aen::EntityHandler::RemoveEntity(*a);
+	}
+
 	m_pSkeleBoss, m_plane, m_UI = nullptr;
 
 	Aen::Resource::RemoveAllMaterials();
@@ -194,8 +198,7 @@ void Gameplay::Initialize()
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetParticleList().size(); i++)
 	{
 		AenIF::Particle* particle = &m_levelGenerator.GetHandlerPtr()->GetParticleList()[i];
-
-		m_PS = &Aen::EntityHandler::CreateEntity();
+		Aen::Entity* m_PS = &Aen::EntityHandler::CreateEntity();
 		m_PS->AddComponent<Aen::PSSystemcomponent>();
 		m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetHeightLimit(6.0f);
@@ -203,6 +206,7 @@ void Gameplay::Initialize()
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetVelocity(rand() % 10 + 2, rand() % 10 + 2, rand() % 10 + 2);
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(1);
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
+		m_PSList.emplace_back(m_PS);
 	}
 
 	//PS system pos
@@ -506,10 +510,10 @@ void Gameplay::Update(const float& deltaTime) {
 		{
 			mp_uiComp->ChangeText(2, L"Interact(F)");
 			m_BossTorch = true;
-			Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
-			psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("BF1.png"));
-			//psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("BFO1.png"));
-			m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
+			//Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
+			//psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("BF1.png"));
+			////psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("BFO1.png"));
+			//m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
 		}
 			
 	}

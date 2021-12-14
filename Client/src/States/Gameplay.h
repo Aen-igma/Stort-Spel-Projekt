@@ -40,7 +40,7 @@ private:
     Aen::Entity* m_UI;
 
 
-    Aen::Entity* m_PS;
+    //Aen::Entity* m_PS;
     Aen::Entity* m_wall;
     Aen::Entity* m_throne;
     Aen::Entity* m_dLight;
@@ -59,7 +59,10 @@ private:
     Portal m_exit;
     bool m_beatBoss;
     Aen::Vec3f m_bossPos;
+
     vector<Aen::Entity*> m_particleList;
+    vector<Aen::Entity*> m_PSList;
+
     std::queue<EventData> m_eventQueue;
 
     std::deque<Enemy*> m_enemyQueue;
