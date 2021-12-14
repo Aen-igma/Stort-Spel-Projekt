@@ -79,7 +79,9 @@ namespace Aen {
 
 	void AABoundBox::ToggleActive(bool b) {
 		m_isOn = b;
+#ifdef _DEBUG
 		m_canDraw = b;
+#endif
 	}
 
 	void AABoundBox::ToggleActive() {

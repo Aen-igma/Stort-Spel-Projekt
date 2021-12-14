@@ -93,36 +93,6 @@ void Node::Insert(const NodeStruct& obj)
 	}
 }
 
-
-//bool Node::Inside(DirectX::BoundingBox& playerBox)
-//{
-//
-//	if (!mp_children[0]) // if player is inside a leaf quad
-//	{
-//		if (m_DirectXAABB.Intersects(playerBox))
-//		{
-//			std::string tempIds = "";
-//			for(auto &b : m_Objs)
-//			{
-//				tempIds = tempIds + std::to_string(b->m_ID) + " ";
-//			}
-//			std::cout << "I'm in a leaf quad on level: " << m_level << std::endl <<
-//				//"m_Objects is this big: " << m_Objects.size() << std::endl <<
-//
-//				"this quad has these objects: " << tempIds << std::endl <<
-//				"m_Objs is this big: " << m_Objs.size() << std::endl;
-//			return true;
-//		}
-//	}
-//	else
-//	{
-//		for(int i = 0; i < 4; i++)
-//			mp_children[i]->Inside(playerBox);
-//	}
-//
-//	return false;
-//}
-
 void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeStruct>& output) //View frustrum culling
 {
 	bool alreadyAdded = false;
@@ -168,27 +138,6 @@ void Node::Subdivide()
 {
 	//------------- Make child quads -------------------//
 	this->m_level++;
-	//DirectX::XMFLOAT3 tempCenter(m_areaQuad.Center.x - m_areaQuad.Extents.x / 2.f,
-	//	m_areaQuad.Center.y, m_areaQuad.Center.z - m_areaQuad.Extents.z / 2.f);
-	//DirectX::XMFLOAT3 tempExtends(m_areaQuad.Extents.x / 2.f, m_areaQuad.Extents.y, m_areaQuad.Extents.z / 2.f);
-	//DirectX::BoundingBox tempQuad(tempCenter, tempExtends);
-	//mp_children[0] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
-
-	//tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
-	//	m_areaQuad.Center.y, m_areaQuad.Center.z - m_areaQuad.Extents.z / 2.f);
-	//tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	//mp_children[1] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
-
-	//tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x - m_areaQuad.Extents.x / 2.f,
-	//	m_areaQuad.Center.y, m_areaQuad.Center.z + m_areaQuad.Extents.z / 2.f);
-	//tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	//mp_children[2] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
-
-	//tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
-	//	m_areaQuad.Center.y, m_areaQuad.Center.z + m_areaQuad.Extents.z / 2.f);
-	//tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	//mp_children[3] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
-
 	DirectX::XMFLOAT3 Center0(m_areaQuad.Center.x - m_areaQuad.Extents.x / 2.f,
 		m_areaQuad.Center.y, m_areaQuad.Center.z - m_areaQuad.Extents.z / 2.f);
 	DirectX::XMFLOAT3 Extends(m_areaQuad.Extents.x / 2.f, m_areaQuad.Extents.y, m_areaQuad.Extents.z / 2.f);
