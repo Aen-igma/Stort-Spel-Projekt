@@ -267,7 +267,7 @@ namespace Aen
 			for (int y = 0; y < mapSize; y++) {
 
 				for (int x = 0; x < mapSize; x++) {
-					//SetLehmerSeed(x + y * mapSize);
+					SetLehmerSeed(x + y * mapSize);
 					if (map[x][y].m_present) {
 
 						if (y - 1 >= 0 && x + 1 < mapSize && y + 1 < mapSize && x - 1 >= 0)
@@ -380,16 +380,16 @@ namespace Aen
 			OutputDebugStringA(LPCSTR("\n"));
 			OutputDebugStringA(LPCSTR("///////////////////////////////////"));
 			OutputDebugStringA(LPCSTR("\n"));
-			//for (int i = 0; i < 3 * mapSize; i++) {
-			//	//for (int j = 0; j < 3 * mapSize; j++) {
-			//	//	std::cout << cmap[i][j];
-			//	//}
-			//	LPCSTR out = cmap[i];
-			//	OutputDebugStringA(out);
-			//	OutputDebugStringA(LPCSTR("\n"));
-			//	//std::cout << std::endl;
-			//}
-			//std::cout << std::endl;
+			for (int i = 0; i < 3 * mapSize; i++) {
+				//for (int j = 0; j < 3 * mapSize; j++) {
+				//	std::cout << cmap[i][j];
+				//}
+				LPCSTR out = cmap[i];
+				OutputDebugStringA(out);
+				OutputDebugStringA(LPCSTR("\n"));
+				//std::cout << std::endl;
+			}
+			std::cout << std::endl;
 			OutputDebugStringA(LPCSTR("\n"));
 			OutputDebugStringA(LPCSTR("///////////////////////////////////"));
 			OutputDebugStringA(LPCSTR("\n"));
@@ -644,8 +644,7 @@ namespace Aen
 	LevelGenerator::LevelGenerator()
 	{
 		srand(time(NULL));
-		//SetLehmerConstSeed((uint64_t)rand() | ((uint64_t)rand() << 32));
-		SetLehmerSeed(42);
+		SetLehmerConstSeed((uint64_t)rand() | ((uint64_t)rand() << 32));
 	}
 
 	const Room* LevelGenerator::GetMapPointer()
