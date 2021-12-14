@@ -89,7 +89,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 	else
 		mp_meshInst->SetMaterial("EnemyMaterialHurt");
 
-	if (distance <= 40.f && bs == BossState(0))
+	if (distance <= 40.f && bs == BossState(0) && GetBossEngage(this->engage))
 	{
 		bs = BossState(1);
 	}
@@ -265,6 +265,12 @@ void Boss::RemoveMinion(uint16_t i)
 	delete m_pMinions[i];
 	m_pMinions[i] = m_pMinions.back();
 	m_pMinions.pop_back();
+}
+
+bool Boss::GetBossEngage(const bool& engage)
+{
+	this->engage = engage;
+	return this->engage;
 }
 
 void Boss::LightAttack(const float& deltaTime)
