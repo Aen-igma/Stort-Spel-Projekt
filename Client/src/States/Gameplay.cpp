@@ -5,7 +5,7 @@ Gameplay::Gameplay(Aen::Window& window)
 	IFRAMEMAX(1.5f), m_iFrames(0.f), m_Mat(Aen::Resource::CreateMaterial("Bill")), m_TransTimer(0.001f) {}
 
 Gameplay::~Gameplay() {
-	//Aen::EntityHandler::RemoveEntity(*m_dLight);
+	Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	mp_uiComp = nullptr;
 	Aen::EntityHandler::RemoveEntity(*m_UI);
@@ -154,8 +154,8 @@ void Gameplay::Initialize()
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
 	Aen::Vec3f ChestPos;
 	Aen::Vec3f doorPos;
-	Aen::Vec3f QuadMin(1000.f, 0.f, 1000.f);
-	Aen::Vec3f QuadMax(0.f, 0.f, 0.f);
+	//Aen::Vec3f QuadMin(1000.f, 10.f, 1000.f);
+	//Aen::Vec3f QuadMax(0.f, 10.f, 0.f);
 	int roomNormal = 0;
 	int itemNormal = 0;
 
@@ -165,10 +165,10 @@ void Gameplay::Initialize()
 
 			if (mptr_map[y * Aen::mapSize + x].m_present)
 			{
-				QuadMin.x = min(QuadMin.x, y * 80);
+				/*QuadMin.x = min(QuadMin.x, y * 80);
 				QuadMin.z = min(QuadMin.z, x * 80);
 				QuadMax.x = max(QuadMax.x, y * 80);
-				QuadMax.z = max(QuadMax.z, x * 80);
+				QuadMax.z = max(QuadMax.z, x * 80);*/
 
 				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 					m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
@@ -192,10 +192,10 @@ void Gameplay::Initialize()
 			}
 		}
 	}
-	QuadMax.x += 40.f;
+	/*QuadMax.x += 40.f;
 	QuadMax.z += 40.f;
 	QuadMin.x -= 40.f;
-	QuadMin.z -= 40.f;
+	QuadMin.z -= 40.f;*/
 
 	m_chest.GetEntity()->SetPos(ChestPos);
 	//m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
@@ -381,7 +381,8 @@ void Gameplay::Initialize()
 	m_bill->SetScale(0, 0, 0);
 	m_bill->SetRenderLayer(2);
 	//------QUADTREE------//
-	Aen::GlobalSettings::StartQuadtree(QuadMin, QuadMax, 0, 8, 10);
+	Aen::GlobalSettings::StartQuadtree(0, 4, 10);
+	/*Aen::GlobalSettings::StartQuadtree(QuadMin, QuadMax, 0, 4, 10);*/
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
@@ -395,55 +396,7 @@ void Gameplay::Initialize()
 
 void Gameplay::Update(const float& deltaTime) {
 
-	if (Aen::Input::KeyDown(Aen::Key::I)) {
-		m_debug = true;
-		Aen::GlobalSettings::SetMainCamera(*m_debugCam);
-	}
-	if (Aen::Input::KeyDown(Aen::Key::O)) {
-		m_debug = false;
-		Aen::GlobalSettings::SetMainCamera(*m_player.GetCamera());
-	}
-
-	if (m_debug) {
-		while (!Aen::Input::MouseBufferIsEmbty()) {
-			Aen::MouseEvent me = Aen::Input::ReadEvent();
-
-			if (me.getInputType() == Aen::MouseEvent::MouseInput::RAW_MOVE) {
-				if (!Aen::Input::GPGetActive(0u)) {
-					m_debugCam->Rotate(-(float)me.GetPos().y * 5.f * deltaTime, (float)me.GetPos().x * 5.f * deltaTime, 0.f);
-				}
-			}
-		}
-
-	/*	Aen::Vec3f lCamDir = m_debugCam->GetComponent<Aen::Camera>().GetForward();
-		lCamDir.y = 0.f;
-		Aen::Vec3f lCamPos = m_debugCam->GetPos() + Aen::Vec3f(0.f, 10.f, 0.f) + lCamDir.Normalized() * 25.f;
-		m_debugCam->SetPos(lCamPos);*/
-
-		
-		
-		Aen::Vec3f camDir;
-		Aen::Vec3f targetDir(0.f, 0.f, -1.f);
-		
-		float r = Aen::Clamp(m_debugCam->GetRot().x, -45.f, 45.f);
-		m_debugCam->SetRot(r, m_debugCam->GetRot().y, m_debugCam->GetRot().z);
-		camDir = Aen::Lerp(camDir, Aen::Transform(m_debugCam->GetComponent<Aen::Rotation>().GetTranform(), m_debugCam->GetComponent<Aen::Camera>().GetForward()).Normalized(), 0.6f).Normalized();
-
-		m_debugCam->GetComponent<Aen::Camera>().LookTowards(camDir);
-
-		if (Aen::Input::KeyPress(Aen::Key::NUMPAD8)) {
-			//m_debugCam->SetPos(m_debugCam->GetComponent<Aen::Camera>().GetForward() * 0.1f);
-			m_debugCam->MoveRelative(camDir * camSpeed);
-		}
-		if (Aen::Input::KeyPress(Aen::Key::NUMPAD5)) {
-			//m_debugCam->SetPos((m_debugCam->GetComponent<Aen::Camera>().GetForward()*-1.f) * 0.1f);
-			m_debugCam->MoveRelative((camDir*-1.f) * camSpeed);
-		}
-		
-	}
-	else {
-		m_player.Update(m_enemyQueue, deltaTime);
-	}
+	
 
 
 
@@ -529,9 +482,52 @@ void Gameplay::Update(const float& deltaTime) {
 	else
 		Aen::Input::SetMousePos(m_Window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_Window.GetSize() * 0.5f));
 
+	// ---------------------------------- Debug Camera --------------------------------------- //
+
+	if (Aen::Input::KeyDown(Aen::Key::I)) {
+		m_debug = true;
+		Aen::GlobalSettings::SetMainCamera(*m_debugCam);
+	}
+	if (Aen::Input::KeyDown(Aen::Key::O)) {
+		m_debug = false;
+		Aen::GlobalSettings::SetMainCamera(*m_player.GetCamera());
+	}
+
+	if (m_debug) {
+		static Aen::Vec2f mouse;
+		while (!Aen::Input::MouseBufferIsEmbty()) {
+			Aen::MouseEvent me = Aen::Input::ReadEvent();
+
+			if (me.getInputType() == Aen::MouseEvent::MouseInput::RAW_MOVE) {
+
+				mouse.x += (float)me.GetPos().y * 5.f * deltaTime;
+				mouse.y += (float)me.GetPos().x * 5.f * deltaTime;
+				m_debugCam->SetRot(mouse.x, mouse.y, 0.f);
+
+			}
+		}
+
+		Aen::Vec3f axis;
+		axis.x = Aen::Input::KeyPress(Aen::Key::A) - Aen::Input::KeyPress(Aen::Key::D);
+		axis.y = Aen::Input::KeyPress(Aen::Key::S) - Aen::Input::KeyPress(Aen::Key::W);
+		axis.z = Aen::Input::KeyPress(Aen::Key::SPACE) - Aen::Input::KeyPress(Aen::Key::SHIFT);
+		if (Aen::Input::KeyPress(Aen::Key::CONTROL))
+		{
+			m_debugCam->MoveRelative(Aen::Vec3f(axis.x, 0.f, axis.y) * deltaTime * 40.f);
+			m_debugCam->Move(Aen::Vec3f(0.f, axis.z, 0.f) * deltaTime * 40.f);
+		}
+		else
+		{
+			m_debugCam->MoveRelative(Aen::Vec3f(axis.x, 0.f, axis.y) * deltaTime * 10.f);
+			m_debugCam->Move(Aen::Vec3f(0.f, axis.z, 0.f) * deltaTime * 10.f);
+		}
+
+	}
+	else {
+		m_player.Update(m_enemyQueue, deltaTime);
+	}
 	// ---------------------------------- Enemies --------------------------------------- //
 
-	m_player.Update(m_enemyQueue, deltaTime);
 	m_bill->SetPos(m_player.GetCamera()->GetPos());
 	m_bill->SetRot(m_player.GetCamera()->GetRot().x, m_player.GetCamera()->GetRot().y, 0);
 	m_bill->MoveRelative(0, 0, -2);

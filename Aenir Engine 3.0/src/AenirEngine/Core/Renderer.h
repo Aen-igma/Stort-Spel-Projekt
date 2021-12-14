@@ -1,7 +1,6 @@
 #pragma once
 #include"../Graphics/RenderSystem.h"
 #include"../Graphics/Component/EntityHandler.h"
-#include"../Quadtree/Quadtree.h"
 #include<thread>
 
 namespace Aen {
@@ -69,7 +68,6 @@ namespace Aen {
 		void UpdateLCamBuffer();
 		
 		std::array<std::vector<Drawable*>, 7> m_drawTable;
-		std::vector<NodeStruct> m_quadtreeOutput;
 
 		Window& m_window;
 		

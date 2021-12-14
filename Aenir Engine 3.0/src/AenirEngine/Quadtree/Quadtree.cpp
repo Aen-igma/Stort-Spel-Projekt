@@ -10,25 +10,20 @@ namespace Aen
 		mp_root = nullptr;
 	}
 
-	Quadtree::Quadtree(const Aen::Vec3f& MinPos, const Aen::Vec3f& MaxPos,
+	Quadtree::Quadtree(/*const Aen::Vec3f& MinPos, const Aen::Vec3f& MaxPos,*/
 		const unsigned& level, const unsigned& maxLevel, const unsigned& capacity)
 	{
-		Aen::Vec3f center, extents;
 		DirectX::BoundingBox quad;
-		center = (MinPos + MaxPos) * 0.5f;
-		extents = (MaxPos - MinPos) * 0.5f;
-		quad.Center = DirectX::XMFLOAT3(center.x, center.y, center.z);
-		quad.Extents = DirectX::XMFLOAT3(extents.x, extents.y + 20.f, extents.z);
+		//Aen::Vec3f center, extents;
+		//center = (MinPos + MaxPos) * 0.5f;
+		//extents = (MaxPos - MinPos) * 0.5f;
+		//quad.Center = DirectX::XMFLOAT3(center.x, center.y, center.z);
+		//quad.Extents = DirectX::XMFLOAT3(extents.x, extents.y + 20.f, extents.z);
 
-		/*quad.Center = DirectX::XMFLOAT3(460.f, 5.f, 460.f);
-		quad.Extents = DirectX::XMFLOAT3(460.f, 20.f, 460.f);*/
-
-		/*quad.Center = DirectX::XMFLOAT3(0.f, 0.f, 0.f);
-		quad.Extents = DirectX::XMFLOAT3(50.f, 10.f, 50.f);*/
+		quad.Center = DirectX::XMFLOAT3(460.f, 10.f, 460.f);
+		quad.Extents = DirectX::XMFLOAT3(460.f, 20.f, 460.f);
 
 		mp_root = AEN_NEW Node(quad, level, maxLevel, capacity);
-		//std::cout << "I'm root: \nLevel : " << level << std::endl << std::endl; //Säger hur långt det gick i levels
-		
 	}
 
 	Quadtree::~Quadtree()
@@ -85,7 +80,7 @@ namespace Aen
 			m_quadObjectsToRender.clear();
 
 			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
-			m_cameraFrustrum.Far = 30.f;
+			m_cameraFrustrum.Far = 60.f;
 			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
 
 			for (int i = 0; i < m_quadObjectsToRender.size(); i++)
@@ -98,23 +93,7 @@ namespace Aen
 				if (m_autoPass[i].mp_drawable->FrustumCull(renderer))
 					drawtable[m_autoPass[i].m_renderLayer].emplace_back(m_autoPass[i].mp_drawable);
 			}
-
-
-
-			//if (Input::KeyDown(Key::V))
-			//{
-			/*std::string tempString;
-			std::cout << "Objects to render: ";
-			for (auto& b : m_QuadObjectsToRender)
-			{
-				tempString = "(" + std::to_string(b->m_ID) + ", " + std::to_string(b->m_RenderLayer) + ")";
-				OutputDebugString(tempString.c_str());
-			}
-			OutputDebugString("\n");*/
-	
-			//}
 		}
-		//return m_quadObjectsToRender;
 	}
 
 }

@@ -644,7 +644,9 @@ namespace Aen
 	LevelGenerator::LevelGenerator()
 	{
 		srand(time(NULL));
-		SetLehmerConstSeed((uint64_t)rand() | ((uint64_t)rand() << 32));
+		/*SetLehmerConstSeed((uint64_t)rand() | ((uint64_t)rand() << 32));*/
+		uint64_t seed = 420;
+		SetLehmerConstSeed(seed);
 	}
 
 	const Room* LevelGenerator::GetMapPointer()

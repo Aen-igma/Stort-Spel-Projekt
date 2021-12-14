@@ -44,10 +44,11 @@ Node::Node(DirectX::BoundingBox& quad, const unsigned& level, const unsigned& ma
 	this->m_level = level;
 	this->m_maxLevel = max_level;
 	this->m_capacity = capacity;
-
+#ifdef _DEBUG
 	string temp = "\nme baby Level: " + std::to_string(m_level) + "\nquadPos: " + std::to_string(quad.Center.x) + ", " + std::to_string(quad.Center.y) + ", " + std::to_string(quad.Center.z);
 	OutputDebugString(temp.c_str());
-	//std::cout << "I'm child: \nLevel : " << level << std::endl << std::endl; 
+#endif
+
 }
 
 Node::~Node()
@@ -59,7 +60,8 @@ Node::~Node()
 			delete mp_children[i];
 		}
 	}
-	Aen::EntityHandler::RemoveEntity(*mp_aabbDraw);
+	if(mp_aabbDraw)
+		Aen::EntityHandler::RemoveEntity(*mp_aabbDraw);
 }
 
 void Node::Insert(const NodeStruct& obj)
@@ -166,69 +168,88 @@ void Node::Subdivide()
 {
 	//------------- Make child quads -------------------//
 	this->m_level++;
-	DirectX::XMFLOAT3 tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x / 2.f, m_areaQuad.Center.y, m_areaQuad.Center.z / 2.f);
-	DirectX::XMFLOAT3 tempExtends = DirectX::XMFLOAT3(m_areaQuad.Extents.x / 2.f, m_areaQuad.Extents.y, m_areaQuad.Extents.z / 2.f);
-	DirectX::BoundingBox tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	mp_children[0] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
+	//DirectX::XMFLOAT3 tempCenter(m_areaQuad.Center.x - m_areaQuad.Extents.x / 2.f,
+	//	m_areaQuad.Center.y, m_areaQuad.Center.z - m_areaQuad.Extents.z / 2.f);
+	//DirectX::XMFLOAT3 tempExtends(m_areaQuad.Extents.x / 2.f, m_areaQuad.Extents.y, m_areaQuad.Extents.z / 2.f);
+	//DirectX::BoundingBox tempQuad(tempCenter, tempExtends);
+	//mp_children[0] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
 
-	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
+	//tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
+	//	m_areaQuad.Center.y, m_areaQuad.Center.z - m_areaQuad.Extents.z / 2.f);
+	//tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
+	//mp_children[1] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
+
+	//tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x - m_areaQuad.Extents.x / 2.f,
+	//	m_areaQuad.Center.y, m_areaQuad.Center.z + m_areaQuad.Extents.z / 2.f);
+	//tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
+	//mp_children[2] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
+
+	//tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
+	//	m_areaQuad.Center.y, m_areaQuad.Center.z + m_areaQuad.Extents.z / 2.f);
+	//tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
+	//mp_children[3] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
+
+	DirectX::XMFLOAT3 Center0(m_areaQuad.Center.x - m_areaQuad.Extents.x / 2.f,
 		m_areaQuad.Center.y, m_areaQuad.Center.z - m_areaQuad.Extents.z / 2.f);
-	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	mp_children[1] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
+	DirectX::XMFLOAT3 Extends(m_areaQuad.Extents.x / 2.f, m_areaQuad.Extents.y, m_areaQuad.Extents.z / 2.f);
+	DirectX::BoundingBox Quad0(Center0, Extends);
+	this->mp_children[0] = AEN_NEW Node(Quad0, m_level, m_maxLevel, m_capacity);
 
-	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x - m_areaQuad.Extents.x / 2.f,
+	DirectX::XMFLOAT3 Center1(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
+		m_areaQuad.Center.y, m_areaQuad.Center.z - m_areaQuad.Extents.z / 2.f);
+	DirectX::BoundingBox Quad1(Center1, Extends);
+	this->mp_children[1] = AEN_NEW Node(Quad1, m_level, m_maxLevel, m_capacity);
+
+	DirectX::XMFLOAT3 Center2(m_areaQuad.Center.x - m_areaQuad.Extents.x / 2.f,
 		m_areaQuad.Center.y, m_areaQuad.Center.z + m_areaQuad.Extents.z / 2.f);
-	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	mp_children[2] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
+	DirectX::BoundingBox Quad2(Center2, Extends);
+	this->mp_children[2] = AEN_NEW Node(Quad2, m_level, m_maxLevel, m_capacity);
 
-	tempCenter = DirectX::XMFLOAT3(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
+	DirectX::XMFLOAT3 Center3(m_areaQuad.Center.x + m_areaQuad.Extents.x / 2.f,
 		m_areaQuad.Center.y, m_areaQuad.Center.z + m_areaQuad.Extents.z / 2.f);
-	tempQuad = DirectX::BoundingBox(tempCenter, tempExtends);
-	mp_children[3] = AEN_NEW Node(tempQuad, m_level, m_maxLevel, m_capacity);
+	DirectX::BoundingBox Quad3(Center3, Extends);
+	this->mp_children[3] = AEN_NEW Node(Quad3, m_level, m_maxLevel, m_capacity);
 
-	//static bool inserted;
+	bool inserted;
+	int counter = 0;
 	//------------- Check which objects is in which quad ---------------//
 	for (auto& box : m_objs)
 	{
+		inserted = false;
 		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox))
 		{
 			mp_children[0]->Insert(box);
+			inserted = true;
 		}
 		if (mp_children[1]->m_areaQuad.Intersects(box.m_boundBox))
 		{
 			mp_children[1]->Insert(box);
+			inserted = true;
 		}
 		if (mp_children[2]->m_areaQuad.Intersects(box.m_boundBox))
 		{
 			mp_children[2]->Insert(box);
+			inserted = true;
 		}
 		if (mp_children[3]->m_areaQuad.Intersects(box.m_boundBox))
 		{
 			mp_children[3]->Insert(box);
-		}
-		/*inserted = false;
-		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox) && inserted == false)
-		{
-			mp_children[0]->Insert(box);
 			inserted = true;
 		}
-		if (mp_children[1]->m_areaQuad.Intersects(box.m_boundBox) && inserted == false)
+		if (inserted)
 		{
-			mp_children[1]->Insert(box);
-			inserted = true;
+			counter++;
 		}
-		if (mp_children[2]->m_areaQuad.Intersects(box.m_boundBox) && inserted == false)
+	/*	else
 		{
-			mp_children[2]->Insert(box);
-			inserted = true;
-		}
-		if (mp_children[3]->m_areaQuad.Intersects(box.m_boundBox) && inserted == false)
-		{
-			mp_children[3]->Insert(box);
-			inserted = true;
+			mp_children[0]->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+			mp_children[1]->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+			mp_children[2]->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+			mp_children[3]->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 		}*/
-	}
 
+	}
+	
 	/*string temp = "\nbaby: " + std::to_string(mp_children[0]->m_level) + "\nsize: " + std::to_string(mp_children[0]->m_objs.size());
 	OutputDebugString(temp.c_str());
 	temp = "\nbaby: " + std::to_string(mp_children[1]->m_level) + "\nsize: " + std::to_string(mp_children[1]->m_objs.size());
@@ -237,6 +258,7 @@ void Node::Subdivide()
 	OutputDebugString(temp.c_str());
 	temp = "\nbaby: " + std::to_string(mp_children[3]->m_level) + "\nsize: " + std::to_string(mp_children[3]->m_objs.size());
 	OutputDebugString(temp.c_str());*/
-		
+	assert(counter == m_objs.size());
 	m_objs.clear();
+	Aen::EntityHandler::RemoveEntity(*mp_aabbDraw);
 }

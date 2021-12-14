@@ -7,7 +7,7 @@ namespace Aen
 	{
 	public:
 		Quadtree();
-		Quadtree(const Aen::Vec3f& MinPos, const Aen::Vec3f& MaxPos, 
+		Quadtree(/*const Aen::Vec3f& MinPos, const Aen::Vec3f& MaxPos, */
 			const unsigned& level = 0, const unsigned& maxLevel = 1, const unsigned& capacity = 3);
 		~Quadtree();
 		Node* GetRoot() const;

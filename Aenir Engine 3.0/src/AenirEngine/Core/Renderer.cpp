@@ -109,10 +109,6 @@ namespace Aen {
 			//--- Quadtree Culling ---//
 			GlobalSettings::m_pQuadtree->Update(*this, m_drawTable);
 
-			/*for (int i = 0; i < m_quadtreeOutput.size(); i++)
-			{
-				m_drawTable[m_quadtreeOutput[i].m_renderLayer].emplace_back(m_quadtreeOutput[i].mp_drawable);
-			}*/
 		}
 		else
 		{
