@@ -150,7 +150,8 @@ void Gameplay::Initialize()
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
 	Aen::Vec3f ChestPos;
 	Aen::Vec3f doorPos;
-	Aen::Vec3f EnemyPos;
+	Aen::Vec3f QuadMin(1000.f, 0.f, 1000.f);
+	Aen::Vec3f QuadMax(0.f, 0.f, 0.f);
 	int roomNormal = 0;
 	int itemNormal = 0;
 
@@ -158,29 +159,40 @@ void Gameplay::Initialize()
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
-				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
-
-			}
-			mptr_map[x + y * Aen::mapSize].mptr_parent;
-
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
+			if (mptr_map[y * Aen::mapSize + x].m_present)
 			{
-				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
-				m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
-				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
-				/*for (int i = 0; i < 10; i++) {
-					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
-				}*/
-			}
-			mptr_map[x + y * Aen::mapSize].mptr_parent;
+				QuadMin.x = min(QuadMin.x, y * 80);
+				QuadMin.z = min(QuadMin.z, x * 80);
+				QuadMax.x = max(QuadMax.x, y * 80);
+				QuadMax.z = max(QuadMax.z, x * 80);
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
-				itemNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
-				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
+				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+					m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+
+				}
+				mptr_map[x + y * Aen::mapSize].mptr_parent;
+
+				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
+				{
+					m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
+					m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
+					roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+		
+				}
+				mptr_map[x + y * Aen::mapSize].mptr_parent;
+
+				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
+					itemNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+					m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
+				}
 			}
 		}
 	}
+	QuadMax.x += 40.f;
+	QuadMax.z += 40.f;
+	QuadMin.x -= 40.f;
+	QuadMin.z -= 40.f;
+
 	m_chest.GetEntity()->SetPos(ChestPos);
 	//m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(ChestPos.y + 10.f);
@@ -361,7 +373,7 @@ void Gameplay::Initialize()
 	m_bill->SetScale(0, 0, 0);
 	m_bill->SetRenderLayer(2);
 	//------QUADTREE------//
-	Aen::GlobalSettings::StartQuadtree(0, 8, 5);
+	Aen::GlobalSettings::StartQuadtree(QuadMin, QuadMax, 0, 8, 10);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);

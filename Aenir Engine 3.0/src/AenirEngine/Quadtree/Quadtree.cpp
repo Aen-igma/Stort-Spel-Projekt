@@ -10,12 +10,18 @@ namespace Aen
 		mp_root = nullptr;
 	}
 
-	Quadtree::Quadtree(const unsigned& level,
-		const unsigned& maxLevel, const unsigned& capacity)
+	Quadtree::Quadtree(const Aen::Vec3f& MinPos, const Aen::Vec3f& MaxPos,
+		const unsigned& level, const unsigned& maxLevel, const unsigned& capacity)
 	{
+		Aen::Vec3f center, extents;
 		DirectX::BoundingBox quad;
-		quad.Center = DirectX::XMFLOAT3(460.f, 0.f, 460.f);
-		quad.Extents = DirectX::XMFLOAT3(460.f, 10.f, 460.f);
+		center = (MinPos + MaxPos) * 0.5f;
+		extents = (MaxPos - MinPos) * 0.5f;
+		quad.Center = DirectX::XMFLOAT3(center.x, center.y, center.z);
+		quad.Extents = DirectX::XMFLOAT3(extents.x, extents.y + 20.f, extents.z);
+
+		/*quad.Center = DirectX::XMFLOAT3(460.f, 5.f, 460.f);
+		quad.Extents = DirectX::XMFLOAT3(460.f, 20.f, 460.f);*/
 
 		/*quad.Center = DirectX::XMFLOAT3(0.f, 0.f, 0.f);
 		quad.Extents = DirectX::XMFLOAT3(50.f, 10.f, 50.f);*/
@@ -57,7 +63,6 @@ namespace Aen
 		{
 			for(auto & j: ComponentHandler::m_meshLayer[i])
 			{
-
 				if (ComponentHandler::StaticBodyExist(j.first)) // if object has a static body put it in the quadtree
 				{
 					box = ComponentHandler::GetMeshInstance(j.first).GetBox();
