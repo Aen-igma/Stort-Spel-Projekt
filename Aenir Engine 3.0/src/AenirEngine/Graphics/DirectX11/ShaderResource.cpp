@@ -14,10 +14,6 @@ namespace Aen {
 
     void ShaderResource::LoadResource(const std::string& dir) {
 
-     /*   if (dir.find(".png") != std::string::npos || dir.find(".jpg") != std::string::npos)
-        {
-
-        }*/
         stbi_set_flip_vertically_on_load(true);
         int width = 2048, height = 2048, channels = 4;
         unsigned char* image = stbi_load(dir.c_str(), &width, &height, &channels, STBI_rgb_alpha);

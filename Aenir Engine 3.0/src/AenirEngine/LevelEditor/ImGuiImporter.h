@@ -40,8 +40,6 @@ namespace Aen
 		vector<Vec3f> m_enemyPos;
 		vector<AenIF::Particle> m_particleList;
 
-
-
 		unsigned int m_entityCount = 0;
 		unsigned int m_lightCount = 0;
 
@@ -61,8 +59,6 @@ namespace Aen
 		ImGuiImporter();
 		ImGuiImporter(vector<Aen::Entity*>* m_entityList, vector<string>* m_itemList, unordered_map< size_t, IGH::ModelContainer>* m_modelMap, unordered_map< size_t, Aen::Entity*>* m_lightMap, AenIMP::LevelImporter* m_levelImporter, vector<IGH::MatTexName> *m_materialList, unordered_map< size_t, size_t>* m_parentList);
 		~ImGuiImporter();
-
-
 
 		bool import(AenIMP::LevelImporter &m_levelImporter, string & levelPath, float* translation, float* rotation, float* scale);
 		bool import(AenIMP::LevelImporter& m_levelImporter, string& levelPath, float* translation, float* rotation, float* scale, string *roomProp);

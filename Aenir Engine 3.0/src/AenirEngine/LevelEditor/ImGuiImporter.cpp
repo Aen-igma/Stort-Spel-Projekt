@@ -62,15 +62,11 @@ namespace Aen
 
 			materialTexture = &Aen::Resource::CreateTexture(textureName);
 
-			if (textureName == "")
-			{
-				materialTexture->LoadTexture(AEN_TEXTURE_DIR("Missing_Textures.png"));
-
-			}
-			else
+			if (imageName.find(".png") != string::npos || imageName.find(".jpg") != string::npos)
 			{
 				materialTexture->LoadTexture(AEN_TEXTURE_DIR(imageName));
-			}
+			} 
+			
 
 			material = &Aen::Resource::CreateMaterial(materialName, true);
 
@@ -92,12 +88,6 @@ namespace Aen
 
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(*mesh);
-
-		//if (model.rigidBody && model.rigidBodyType != IGH::HITBOXTYPE[0]) // Check if should have rigidbody
-		//{
-		//	entity->AddComponent<Aen::StaticBody>();
-		//	entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
-		//}
 
 		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);
 		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);
@@ -525,7 +515,6 @@ namespace Aen
 		
 		size_t id = entity->GetID();
 		Aen::ComponentHandler::GetMeshInstance(static_cast<size_t>(id)).SetMaterial(*material);
-
 
 		AddEnemy(entity, model);
 		AddModel(entity, model.name);

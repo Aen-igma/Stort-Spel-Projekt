@@ -438,7 +438,7 @@ namespace Aen {
 			static float shadowOffset = 0.0f;
 			static float innerFalloff = 0.0f;
 			static float outerFalloff = 0.0f;
-			static float rimLightIntensity = 1.0f;
+			static float rimLightIntensity = 0.0f;
 			static float rimLightSize = 0.0f;
 
 			static char materialName[MATERIAL_NAME_MAX_LENGTH] = "";
