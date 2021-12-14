@@ -37,7 +37,7 @@ void Gameplay::Initialize()
 	m_dLight->AddComponent<Aen::DirectionalLight>();
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color(0.3f, 0.3f, 0.5f, 1.f));
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(0.3f);
-	m_dLight->SetRot(3.f, 0.f, 0.f);
+	m_dLight->SetRot(3.f, 45.f, 0.f);
 
 	// ----------------------------- Animations -------------------------------- //
 	
@@ -150,8 +150,8 @@ void Gameplay::Initialize()
 
 	//Match this value to the size of the rooms we are using
 	//m_levelGenerator.SetRoomDimension(80.f); //Deprecated, using the default value instead of setting it in run time
-	mptr_map = m_levelGenerator.GenerateLevel();
-	m_levelGenerator.GenerationTestingFunction();
+	//mptr_map = m_levelGenerator.GenerateLevel();
+	mptr_map = m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
@@ -247,6 +247,7 @@ void Gameplay::Initialize()
 	m_pSkeleBoss = dynamic_cast<Boss*>(m_enemyQueue[m_enemyQueue.size() - 1]);
 	m_player.AddBossesAlive(1);
 	m_pSkeleBoss->GetEntity()->SetPos(m_bossPos);
+	m_pSkeleBoss->GetBossEngage(false);
 	m_player.SetBossP(m_pSkeleBoss);
 
 	std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
@@ -344,6 +345,7 @@ void Gameplay::Initialize()
 	mp_uiComp->AddText(L"- Find the boss", 30.f); //0
 	mp_uiComp->SetTextPos((175.f / 1920) * wDesc.width, (300.f / 1024) * wDesc.height);
 	mp_uiComp->SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
+	mp_uiComp->SetColor(D2D1::ColorF::Gold);
 
 	mp_uiComp->AddText(L"3", 50.f); //1 - Amount of potion
 	mp_uiComp->SetTextPos((120.f / 1920) * wDesc.width, (110.f / 1024) * wDesc.height);
@@ -358,6 +360,7 @@ void Gameplay::Initialize()
 	mp_uiComp->AddText(L"- Find Item Room (Optional)", 30.f); //3
 	mp_uiComp->SetTextPos((200.f / 1920) * wDesc.width, (350.f / 1024) * wDesc.height);
 	mp_uiComp->SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
+	mp_uiComp->SetColor(D2D1::ColorF::Gold);
 
 	//Pause menu UI
 	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"PauseOverlay.png")); //4
@@ -530,6 +533,7 @@ void Gameplay::Update(const float& deltaTime) {
 
 		else if(m_door.GetType() == Type::Closed && m_door.GetNear()) {
 			m_door.SetType(Type::Opening);
+			m_pSkeleBoss->GetBossEngage(true);
 		}
 		else if (m_grave.GetNear() && m_grave.GetType() == Type::Closed) {
 			m_exit.SetType(Type::Opening);
