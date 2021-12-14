@@ -207,7 +207,7 @@ namespace Aen {
 
 		// PostProcess
 
-		/*m_dispatchInfo.BindBuffer<CShader>(0u);
+	/*	m_dispatchInfo.BindBuffer<CShader>(0u);
 		RenderSystem::BindShaderResourceView<CShader>(0u, m_lGrid);
 		RenderSystem::BindUnOrderedAccessView(0u, m_UAVBackBuffer);
 		RenderSystem::BindShader(m_postProcessCS);

@@ -173,6 +173,19 @@ namespace Aen
 	}
 	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer) {
 		
+
+		//Dispatch from depth
+		renderer.m_PSInputBuffer.GetData() = m_CSInputBuffer;
+		renderer.m_PSInputBuffer.UpdateBuffer();
+		renderer.m_PSInputBuffer.BindBuffer<CShader>(0);
+		RenderSystem::BindUnOrderedAccessView(0, m_UAView);
+		RenderSystem::BindShader(renderer.m_PSCShader);
+
+		RenderSystem::Dispatch(16, 1, 1);
+
+		RenderSystem::UnBindShader<CShader>();
+		RenderSystem::UnBindUnOrderedAccessViews(0, 1);
+
 		//First Pass
 		RenderSystem::ClearRenderTargetView(renderer.m_particleOut, Color(0.f, 0.f, 0.f, 0.f));
 		RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
@@ -243,59 +256,19 @@ namespace Aen
 	}
 
 	void PSSystemcomponent::DepthDraw(Renderer& renderer, const uint32_t& layer) {
-
-		renderer.m_PSInputBuffer.GetData() = m_CSInputBuffer;
-		renderer.m_PSInputBuffer.UpdateBuffer();
-		renderer.m_PSInputBuffer.BindBuffer<CShader>(0);
-		RenderSystem::BindUnOrderedAccessView(0,m_UAView);
-		RenderSystem::BindShader(renderer.m_PSCShader);
-
-		RenderSystem::Dispatch(16, 1, 1);
-
-		RenderSystem::UnBindShader<CShader>();
-		RenderSystem::UnBindUnOrderedAccessViews(0,1);
-
-		RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
-		RenderSystem::SetInputLayout(renderer.m_PSLayout);
-		renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation();
-		renderer.m_cbTransform.UpdateBuffer();
-		renderer.m_cbTransform.BindBuffer<VShader>(0);
-
-		RenderSystem::BindShaderResourceView<VShader>(0, m_UAView);
-		renderer.m_cbTransform.BindBuffer<GShader>(0);
-
-		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
-
-		RenderSystem::BindShader(renderer.m_PSVShader);
-		RenderSystem::BindShader(renderer.m_PSGShader);
-		RenderSystem::BindShader(renderer.m_PTransparencyPS);
-
-		if(m_pMaterial) {
-			uint32_t* slots = m_pMaterial->m_pShaderModel->m_slots;
-
-			RenderSystem::BindSamplers<PShader>(m_pMaterial->m_pShaderModel->m_samplerData.first, m_pMaterial->m_pShaderModel->m_samplerData.second);
-
-			if(m_pMaterial->m_textures[3] && slots[3] != UINT_MAX) {
-				RenderSystem::BindShaderResourceView<PShader>(0u, m_pMaterial->m_textures[3]->m_shaderResource);
-				renderer.m_cbUseTexture.GetData()[3] = (int)true;
-			} else
-				renderer.m_cbUseTexture.GetData()[3] = (int)false;
-
-			renderer.m_cbUseTexture.UpdateBuffer();
-			renderer.m_cbUseTexture.BindBuffer<PShader>(0u);
-		}
-
-		RenderSystem::Draw(this->m_currentNrPS, 0);
-
-		RenderSystem::UnBindShader<VShader>();
-		RenderSystem::UnBindShader<GShader>();
-		RenderSystem::UnBindShader<PShader>();
-		RenderSystem::UnBindShaderResources<VShader>(0,1);
 	}
 
 	bool PSSystemcomponent::FrustumCull(Renderer& renderer) 
 	{		
-		//Ree momment
-		return true;
+		if (GlobalSettings::GetMainCamera())
+		{
+			DirectX::XMFLOAT3 tempFloat = DirectX::XMFLOAT3(m_CSInputBuffer.initalPos.x, m_CSInputBuffer.initalPos.y, m_CSInputBuffer.initalPos.z);
+			DirectX::XMVECTOR tempVec = DirectX::XMLoadFloat3(&tempFloat);
+			if (GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Contains(tempVec))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }
