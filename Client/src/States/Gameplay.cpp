@@ -236,7 +236,7 @@ void Gameplay::Initialize()
 	m_pSkeleBoss->GetBossEngage(false);
 	m_player.SetBossP(m_pSkeleBoss);
 
-	/*std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
+	std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	std::vector<Aen::Vec3f> tempLskels = m_levelGenerator.GetHandlerPtr()->GetLskelPos();
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
 	{
@@ -245,7 +245,7 @@ void Gameplay::Initialize()
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetLskelPos().size(); i++)
 	{
 		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(tempLskels[i]));
-	}*/
+	}
 
 	cout << "BOSS ROOM: " << roomNormal << endl;
 	m_throne->SetScale(2.f, 2.f, 2.f);
@@ -650,9 +650,6 @@ void Gameplay::Update(const float& deltaTime) {
 			m_Window.LoadSettings(wDesc);
 		}
 	}
-
-	//Aen::GlobalSettings::SetPlayerPos(m_player.GetEntity()->GetPos());
-	
 	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	// ------------------------------------- States -------------------------------------- //
