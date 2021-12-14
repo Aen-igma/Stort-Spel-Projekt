@@ -57,6 +57,7 @@ namespace Aen
 		{
 			for(auto & j: ComponentHandler::m_meshLayer[i])
 			{
+
 				if (ComponentHandler::StaticBodyExist(j.first)) // if object has a static body put it in the quadtree
 				{
 					box = ComponentHandler::GetMeshInstance(j.first).GetBox();
@@ -72,21 +73,25 @@ namespace Aen
 
 	}
 
-	std::vector<NodeStruct>& Quadtree::Update(Renderer& renderer)
+	void Quadtree::Update(Renderer& renderer, std::array<std::vector<Drawable*>, 7>& drawtable)
 	{
 		if (GlobalSettings::GetMainCamera())
 		{
 			m_quadObjectsToRender.clear();
 
 			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
-			m_cameraFrustrum.Far = 20.f;
+			m_cameraFrustrum.Far = 30.f;
 			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
 
+			for (int i = 0; i < m_quadObjectsToRender.size(); i++)
+			{
+				drawtable[m_quadObjectsToRender[i].m_renderLayer].emplace_back(m_quadObjectsToRender[i].mp_drawable);
+			}
 
 			for (int i = 0; i < m_autoPass.size(); i++)
 			{
 				if (m_autoPass[i].mp_drawable->FrustumCull(renderer))
-					m_quadObjectsToRender.emplace_back(m_autoPass[i]);
+					drawtable[m_autoPass[i].m_renderLayer].emplace_back(m_autoPass[i].mp_drawable);
 			}
 
 
@@ -104,10 +109,8 @@ namespace Aen
 	
 			//}
 		}
-		return m_quadObjectsToRender;
+		//return m_quadObjectsToRender;
 	}
-
-	
 
 }
 

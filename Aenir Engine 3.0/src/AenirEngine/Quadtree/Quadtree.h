@@ -13,7 +13,7 @@ namespace Aen
 		void RebuildAutoPass();
 
 		void Initialize();
-		std::vector<NodeStruct>& Update(Renderer& renderer);
+		void Update(Renderer& renderer, std::array<std::vector<Drawable*>, 7>& drawtable);
 	private:
 		Node* mp_root;
 		std::vector<NodeStruct> m_autoPass;

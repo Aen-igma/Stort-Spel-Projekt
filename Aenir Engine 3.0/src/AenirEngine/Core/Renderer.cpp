@@ -104,18 +104,18 @@ namespace Aen {
 
 	void Renderer::Culling()
 	{
-		//if (GlobalSettings::m_pQuadtree)
-		//{
-		//	//--- Quadtree Culling ---//
-		//	m_quadtreeOutput = GlobalSettings::m_pQuadtree->Update(*this);
+		if (GlobalSettings::m_pQuadtree)
+		{
+			//--- Quadtree Culling ---//
+			GlobalSettings::m_pQuadtree->Update(*this, m_drawTable);
 
-		//	for (int i = 0; i < m_quadtreeOutput.size(); i++)
-		//	{
-		//		m_drawTable[m_quadtreeOutput[i].m_renderLayer].emplace_back(m_quadtreeOutput[i].mp_drawable);
-		//	}
-		//}
-		//else
-		//{
+			/*for (int i = 0; i < m_quadtreeOutput.size(); i++)
+			{
+				m_drawTable[m_quadtreeOutput[i].m_renderLayer].emplace_back(m_quadtreeOutput[i].mp_drawable);
+			}*/
+		}
+		else
+		{
 			for (uint32_t i = 0u; i < 7u; i++)
 			{
 				for (auto& k : ComponentHandler::m_meshLayer[i])
@@ -126,7 +126,7 @@ namespace Aen {
 					}
 				}
 			}
-		//}
+		}
 		
 	}
 

@@ -123,6 +123,7 @@ void Node::Insert(const NodeStruct& obj)
 
 void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeStruct>& output) //View frustrum culling
 {
+	bool alreadyAdded = false;
 	if (!mp_children[0])
 	{
 		if (this->m_areaQuad.Intersects(other))
@@ -132,7 +133,22 @@ void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeSt
 			{
 				if (other.Intersects(m_objs[i].m_boundBox))
 				{
-					output.emplace_back(NodeStruct(m_objs[i].m_ID, m_objs[i].m_renderLayer, m_objs[i].m_boundBox, m_objs[i].mp_drawable));
+					alreadyAdded = false;
+					if (output.size() > 0)
+					{
+						for (int j = 0; j < output.size() && alreadyAdded == false; j++)
+						{
+							if (m_objs[i].m_ID == output[j].m_ID)
+								alreadyAdded = true;
+						}
+					}
+					else
+					{
+						output.emplace_back(NodeStruct(m_objs[i].m_ID, m_objs[i].m_renderLayer, m_objs[i].m_boundBox, m_objs[i].mp_drawable));
+						alreadyAdded = true;
+					}
+					if(!alreadyAdded)
+						output.emplace_back(NodeStruct(m_objs[i].m_ID, m_objs[i].m_renderLayer, m_objs[i].m_boundBox, m_objs[i].mp_drawable));
 				}
 			}
 		}
