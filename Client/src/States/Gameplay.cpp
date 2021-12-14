@@ -370,7 +370,7 @@ void Gameplay::Initialize()
 	Aen::Input::SetMouseVisible(false);
 	SetWin(false);
 	m_bossHP = m_pSkeleBoss->GetHealth();
-
+	mp_uiComp->SetDraw(false);
 	
 }
 
@@ -388,41 +388,26 @@ void Gameplay::Update(const float& deltaTime) {
 	}
 
 	if (m_debug) {
+		static Aen::Vec2f mouse;
 		while (!Aen::Input::MouseBufferIsEmbty()) {
 			Aen::MouseEvent me = Aen::Input::ReadEvent();
 
 			if (me.getInputType() == Aen::MouseEvent::MouseInput::RAW_MOVE) {
-				if (!Aen::Input::GPGetActive(0u)) {
-					m_debugCam->Rotate(-(float)me.GetPos().y * 5.f * deltaTime, (float)me.GetPos().x * 5.f * deltaTime, 0.f);
-				}
+
+				mouse.x += (float)me.GetPos().y * 5.f * deltaTime;
+				mouse.y += (float)me.GetPos().x * 5.f * deltaTime;
+				m_debugCam->SetRot(-mouse.x, mouse.y, 0.f);
+
 			}
 		}
 
-	/*	Aen::Vec3f lCamDir = m_debugCam->GetComponent<Aen::Camera>().GetForward();
-		lCamDir.y = 0.f;
-		Aen::Vec3f lCamPos = m_debugCam->GetPos() + Aen::Vec3f(0.f, 10.f, 0.f) + lCamDir.Normalized() * 25.f;
-		m_debugCam->SetPos(lCamPos);*/
+		Aen::Vec3f axis;
+		axis.x = Aen::Input::KeyPress(Aen::Key::A) - Aen::Input::KeyPress(Aen::Key::D);
+		axis.y = Aen::Input::KeyPress(Aen::Key::S) - Aen::Input::KeyPress(Aen::Key::W);
+		axis.z = Aen::Input::KeyPress(Aen::Key::SPACE) - Aen::Input::KeyPress(Aen::Key::SHIFT);
+		m_debugCam->MoveRelative(Aen::Vec3f(axis.x, 0.f, axis.y) * deltaTime * 10.f);
+		m_debugCam->Move(Aen::Vec3f(0.f, axis.z, 0.f)* deltaTime * 10.f);
 
-		
-		
-		Aen::Vec3f camDir;
-		Aen::Vec3f targetDir(0.f, 0.f, -1.f);
-		
-		float r = Aen::Clamp(m_debugCam->GetRot().x, -45.f, 45.f);
-		m_debugCam->SetRot(r, m_debugCam->GetRot().y, m_debugCam->GetRot().z);
-		camDir = Aen::Lerp(camDir, Aen::Transform(m_debugCam->GetComponent<Aen::Rotation>().GetTranform(), m_debugCam->GetComponent<Aen::Camera>().GetForward()).Normalized(), 0.6f).Normalized();
-
-		m_debugCam->GetComponent<Aen::Camera>().LookTowards(camDir);
-
-		if (Aen::Input::KeyPress(Aen::Key::NUMPAD8)) {
-			//m_debugCam->SetPos(m_debugCam->GetComponent<Aen::Camera>().GetForward() * 0.1f);
-			m_debugCam->MoveRelative(camDir * camSpeed);
-		}
-		if (Aen::Input::KeyPress(Aen::Key::NUMPAD5)) {
-			//m_debugCam->SetPos((m_debugCam->GetComponent<Aen::Camera>().GetForward()*-1.f) * 0.1f);
-			m_debugCam->MoveRelative((camDir*-1.f) * camSpeed);
-		}
-		
 	}
 	else {
 		m_player.Update(m_enemyQueue, deltaTime);
@@ -514,7 +499,7 @@ void Gameplay::Update(const float& deltaTime) {
 
 	// ---------------------------------- Enemies --------------------------------------- //
 
-	m_player.Update(m_enemyQueue, deltaTime);
+	//m_player.Update(m_enemyQueue, deltaTime);
 	m_bill->SetPos(m_player.GetCamera()->GetPos());
 	m_bill->SetRot(m_player.GetCamera()->GetRot().x, m_player.GetCamera()->GetRot().y, 0);
 	m_bill->MoveRelative(0, 0, -2);

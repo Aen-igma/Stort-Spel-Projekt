@@ -28,7 +28,7 @@ private:
     float m_fSpeed;
     bool m_toggleFullScreen;
     bool m_paused = false;
-    bool m_debug;
+    bool m_debug = false;
 
     float camSpeed = 0.5;
 
