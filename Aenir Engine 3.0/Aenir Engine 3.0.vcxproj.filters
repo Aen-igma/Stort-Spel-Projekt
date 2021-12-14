@@ -639,6 +639,8 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PixelParticleShader.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PostParticleCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\VertexParticleShader.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\2DVShader.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\2DPShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">

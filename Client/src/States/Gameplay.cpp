@@ -68,8 +68,6 @@ void Gameplay::Initialize()
 	skeleLight.Load(AEN_MODEL_DIR("Skel_Light_Walking_2.fbx"));
 	Aen::Mesh& throne = Aen::Resource::CreateMesh("Throne");
 	throne.Load(AEN_MODEL_DIR("Throne.fbx"));
-	Aen::Mesh& plane = Aen::Resource::CreateMesh("Flat");
-	plane.Load(AEN_MODEL_DIR("flat.fbx"));
 
 	// -------------------------- Setup Material -------------------------------- //
 
@@ -362,6 +360,9 @@ void Gameplay::Initialize()
 	m_bill->GetComponent<Aen::MeshInstance>().SetMaterial("Bill");
 	m_bill->SetScale(0, 0, 0);
 	m_bill->SetRenderLayer(2);
+
+	m_test = &Aen::EntityHandler::CreateEntity();
+	m_test->AddComponent<Aen::UI>();
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);

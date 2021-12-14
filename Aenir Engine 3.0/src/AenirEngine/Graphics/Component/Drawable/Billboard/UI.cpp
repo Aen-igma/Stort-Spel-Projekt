@@ -33,7 +33,7 @@ namespace Aen {
 
     }
 
-    void Aen::UI::Draw(Renderer& renderer, const uint32_t& layer = 0)
+    void Aen::UI::Draw(Renderer& renderer, const uint32_t& layer)
     {
         renderer.m_2DTransform.GetData() = m_transform;
         renderer.m_2DTransform.UpdateBuffer();
@@ -42,12 +42,14 @@ namespace Aen {
         RenderSystem::BindShader(renderer.m_2DVShader);
         RenderSystem::BindShader(renderer.m_2DPShader);
         RenderSystem::BindRenderTargetView(renderer.m_backBuffer);
+        RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
+        RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
         m_vertices.BindBuffer();
         m_vertices.Draw();
     }
 
-    void Aen::UI::DepthDraw(Renderer& renderer, const uint32_t& layer = 0)
+    void Aen::UI::DepthDraw(Renderer& renderer, const uint32_t& layer)
     {
 
     }
