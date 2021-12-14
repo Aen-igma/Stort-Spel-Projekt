@@ -22,14 +22,14 @@ namespace Aen
 		}
 		static int rerolls;
 
-		uint32_t weightS = 50;	//Straight
+		uint32_t weightS = 150;	//Straight
 		uint32_t weightB = 500;	//Bend
 		uint32_t weightT = 300;	//threeway
 		uint32_t weightF = 200; //fourway
 
 		uint32_t weightSum = weightS + weightB + weightT + weightF;
 		static unsigned char type = 0;
-		uint32_t randNum = LehmerInt() % weightSum;
+		uint32_t randNum = (LehmerInt() >> 32) % weightSum;
 
 		while(rerolls < 2){
 			randNum = LehmerInt() % weightSum;
@@ -188,7 +188,7 @@ namespace Aen
 				map[x][y] = Room();
 			}
 		}
-		int r = LehmerInt() % 4;
+		int r = (LehmerInt() >> 32) % 4;
 
 		int low = std::floor((mapSize + 1) / 2);
 		int high = std::ceil((mapSize + 1) / 2);

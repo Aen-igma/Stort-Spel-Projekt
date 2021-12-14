@@ -15,6 +15,8 @@ namespace Aen {
 		UITextHolder m_text;
 		Picture m_picture;
 
+		bool canDraw;
+
 	public:
 		UIComponent(const size_t& id);
 		~UIComponent();
@@ -53,6 +55,7 @@ namespace Aen {
 		friend class Entity;
 		friend class GCore;
 		void Update();
+		void SetDraw(bool test);
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer = 0) override;
