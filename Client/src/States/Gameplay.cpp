@@ -39,7 +39,7 @@ void Gameplay::Initialize()
 	m_dLight->AddComponent<Aen::DirectionalLight>();
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color(0.3f, 0.3f, 0.5f, 1.f));
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(0.3f);
-	m_dLight->SetRot(3.f, 0.f, 0.f);
+	m_dLight->SetRot(3.f, 45.f, 0.f);
 
 	// ----------------------------- Animations -------------------------------- //
 	
@@ -141,9 +141,9 @@ void Gameplay::Initialize()
 	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
 
 	//Match this value to the size of the rooms we are using
-	//m_levelGenerator.SetRoomDimension(43.f);
-	mptr_map = m_levelGenerator.GenerateLevel();
-	m_levelGenerator.GenerationTestingFunction();
+	//m_levelGenerator.SetRoomDimension(80.f); //Deprecated, using the default value instead of setting it in run time
+	//mptr_map = m_levelGenerator.GenerateLevel();
+	mptr_map = m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
 
 	//Use this value to set the start of the player / origin of the map
