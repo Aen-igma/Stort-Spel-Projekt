@@ -11,6 +11,7 @@
 #include"Collision\OBBComponent.h"
 #include "Drawable\ParticleSystem\PSSystemComponent.h"
 #include"Animation/Animator.h"
+#include "Drawable\Billboard\UI.h"
 
 #include<unordered_map>
 #include<array>
@@ -92,6 +93,30 @@ namespace Aen {
 		static UIComponent& GetUI(const size_t& id) {
 			if (m_UI.count(id) <= 0) throw;
 			return *m_UI.at(id);
+		}
+
+		// ----------- UI Component ---------- //
+
+		static const bool UIExist(const size_t& id) {
+			return m_UI2.count(id) > 0;
+		}
+
+		static void CreateUI2(const size_t& id, const size_t& layer) {
+			m_UI2.emplace(id, AEN_NEW UI(id));
+			m_meshLayer[layer].emplace(id, m_UI2.at(id));
+		}
+
+		static void RemoveUI2(const size_t& id) {
+			if (m_UI2.count(id) > 0) {
+				delete m_UI2.at(id);
+				m_UI2.at(id) = nullptr;
+				m_UI2.erase(id);
+			}
+		}
+
+		static UI& GetUI2(const size_t& id) {
+			if (m_UI2.count(id) <= 0) throw;
+			return *m_UI2.at(id);
 		}
 
 		// ------------ Transform Component ------------- //
@@ -477,6 +502,7 @@ namespace Aen {
 		static std::unordered_map<size_t, AABoundBox*> m_AABBs;
 		static std::unordered_map<size_t, OBBox*> m_OBBs;
 		static std::unordered_map<size_t, UIComponent*> m_UI;
+		static std::unordered_map<size_t, UI*> m_UI2;
 		static std::unordered_map<size_t, PSSystemcomponent*> m_PS;
 		static std::multimap<size_t, Light*> m_lights;
 		static std::unordered_map<size_t, Animator*> m_animators;

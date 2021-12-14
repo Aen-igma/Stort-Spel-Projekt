@@ -15,6 +15,7 @@ namespace Aen {
 		ComponentHandler::RemoveDynamicBody(m_id);
 		ComponentHandler::RemoveCharacterController(m_id);
 		ComponentHandler::RemoveUI(m_id);
+		ComponentHandler::RemoveUI2(m_id);
 		ComponentHandler::RemoveAABB(m_id);
 		ComponentHandler::RemoveAnimators(m_id);
 

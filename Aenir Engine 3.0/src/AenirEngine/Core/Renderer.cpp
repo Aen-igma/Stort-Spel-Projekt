@@ -57,8 +57,18 @@ namespace Aen {
 				throw;
 		m_PSLayout.Create(m_PSVShader);
 
+		//-------------- 2D Renderer System ---------------//
+		if (!m_2DPShader.Create(AEN_OUTPUT_DIR_WSTR(L"2DPShader.cso")))
+			if (!m_2DPShader.Create(AEN_OUTPUT_DIR_WSTR(L"2DPShader.cso")))
+				throw;
 
+		if (!m_2DVShader.Create(AEN_OUTPUT_DIR_WSTR(L"2DVShader.cso")))
+			if (!m_2DVShader.Create(AEN_OUTPUT_DIR_WSTR(L"2DVShader.cso")))
+				throw;
 
+		m_2DLayout.Create(m_2DVShader);
+
+		//--------------	Transparency	---------------//
 		if(!m_transparencyPS.Create(AEN_OUTPUT_DIR_WSTR(L"TransparencyPS.cso")))
 			if(!m_transparencyPS.Create(L"TransparencyPS.cso"))
 				throw;

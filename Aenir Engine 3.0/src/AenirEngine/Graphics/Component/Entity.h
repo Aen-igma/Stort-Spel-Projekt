@@ -113,6 +113,13 @@ namespace Aen {
 	}
 
 	template<>
+	inline void Entity::AddComponent<UI>() {
+		m_layer = 3;
+		if (!ComponentHandler::UIExist(m_id))
+			ComponentHandler::CreateUI2(m_id, m_layer + 3);
+	}
+
+	template<>
 	inline void Entity::AddComponent<PSSystemcomponent>() {
 		if (!ComponentHandler::PSExist(m_id))
 			ComponentHandler::CreatePS(m_id, m_layer + 3);

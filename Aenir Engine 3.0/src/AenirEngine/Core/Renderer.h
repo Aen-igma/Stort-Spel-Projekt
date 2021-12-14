@@ -56,6 +56,7 @@ namespace Aen {
 		friend class Animator;
 		friend class GlobalSettings;
 		friend class PSSystemcomponent;
+		friend class UI;
 
 		private:
 		bool m_toggleView;
@@ -120,6 +121,12 @@ namespace Aen {
 
 		GBuffer m_particleOut;
 		CShader m_PostPatricleCS;
+
+		//Vertex2D Shaders
+		PShader m_2DPShader;
+		VShader m_2DVShader;
+		ILayout m_2DLayout;
+		CBuffer<Mat4f> m_2DTransform;
 
 #ifdef _DEBUG
 		CBuffer<CB_Collision> m_collisionBuffer;

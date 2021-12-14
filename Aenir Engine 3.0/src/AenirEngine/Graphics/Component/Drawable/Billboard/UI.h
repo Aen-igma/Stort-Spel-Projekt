@@ -24,9 +24,10 @@ namespace Aen {
 	{
 	private:
 		VBuffer<Vertex2D> m_vertices;
+		Mat4f m_transform;
 
 	public:
-		UI();
+		UI(const size_t& id);
 		~UI();
 
 		void Load(const std::string& dir);
