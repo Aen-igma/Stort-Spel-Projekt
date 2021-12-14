@@ -29,6 +29,8 @@ private:
     bool m_toggleFullScreen;
     bool m_paused = false;
 
+    bool m_BossTorch = false;
+
     Aen::Vec2f screenSize;
 
     Aen::Raycast m_ray;

@@ -81,6 +81,11 @@ void Gameplay::Initialize()
 	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
 	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("F1.png"));
 	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FO1.png"));
+	// 
+	//psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("BF1.png"));
+	//psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("BFO1.png"));
+
+
 	
 
 	/*enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
@@ -169,6 +174,7 @@ void Gameplay::Initialize()
 
 			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
 			{
+
 				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
 				m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
 				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
@@ -198,6 +204,7 @@ void Gameplay::Initialize()
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(1);
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
 	}
+
 	//PS system pos
 	//m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
 	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetHeightLimit(ChestPos.y + 10.f);
@@ -229,6 +236,9 @@ void Gameplay::Initialize()
 
 	//m_attack->SetParent(*m_player);
 	//printf("");
+
+
+
 	// 
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
@@ -442,9 +452,6 @@ void Gameplay::Update(const float& deltaTime) {
 		return;
 	}
 
-
-	
-
 	if (m_hp != m_player.GetHealth()) { //ers�tt collision med enemy i if satsen
 		mp_uiComp->UpdatePicture(((m_hp - m_player.GetHealth()) * 2.f) * (1.f/1920.f) * screenSize.x, 0);
 		m_hp = m_player.GetHealth();
@@ -493,11 +500,22 @@ void Gameplay::Update(const float& deltaTime) {
 		mp_uiComp->SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
 
 		if (m_door.GetNear())
+		{
 			mp_uiComp->ChangeText(2, L"Interact(F)");
+			m_BossTorch = true;
+			Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
+			psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("BF1.png"));
+			//psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("BFO1.png"));
+			m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
+		}
+			
 	}
 	else {
 		mp_uiComp->SetTextPos(-100.f, -100.f, 2);
 	}
+
+
+
 
 	if (Aen::Input::KeyDown(Aen::Key::F)) {
 
