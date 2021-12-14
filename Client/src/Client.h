@@ -28,13 +28,6 @@ class Client : public Aen::App {
 
 	Aen::Entity* rooms[mapSize * mapSize];
 
-	Aen::Mesh* m_reimubeMesh;
-	Aen::Material* m_ReimuMat;
-	Aen::Texture* m_ReimuTex;
-
-	Aen::Entity* m_emiCube;
-
-	std::stack<Aen::Entity*> m_reimubes;
 	std::stack<Aen::Entity*> m_pLights;
 };
 
@@ -53,9 +46,3 @@ Aen::App* Aen::CreateApp() {
 }
 
 
-class levelBuilder : public LevelGenerator {
-
-	static bool CreateRooms(std::vector<Aen::Entity>* storage, uint8_t x, uint8_t y);
-
-	public:
-};

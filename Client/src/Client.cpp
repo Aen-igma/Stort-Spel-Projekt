@@ -2,12 +2,7 @@
 #include"Client.h"
 
 Client::~Client() {
-	/*for (UINT i = 0; i < mapSize * mapSize; i++) {
-		if (rooms[i] != nullptr) {
-			delete rooms[i];
-			rooms[i] = nullptr;
-		}
-	}*/
+	
 }
 
 Client::Client(const Aen::WindowDesc& desc, const std::wstring& windowName, const std::wstring& className)
@@ -33,9 +28,6 @@ void Client::Start() {
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(1.f);
 	m_dLight->SetRot(45.f, -135.f, 0.f);
 
-	// --------------------------- Setup Spot Light ----------------------------- //
-
-
 
 	// ----------------------------- Load Meshes -------------------------------- //
 
@@ -43,22 +35,6 @@ void Client::Start() {
 	plane.Load(AEN_MODEL_DIR("Plane.obj"));
 
 	// ----------------------------- Load Reimushes -------------------------------- //
-
-	m_ReimuTex = &Aen::Resource::CreateTexture("ReimuTex");
-	m_ReimuMat = &Aen::Resource::CreateMaterial("ReimuMat");
-	m_reimubeMesh = &Aen::Resource::CreateMesh("Cube");
-	m_reimubeMesh->Load(AEN_MODEL_DIR("Cube.obj"));
-	m_ReimuTex->LoadTexture(AEN_TEXTURE_DIR("Reimu.png"));
-	m_ReimuMat->SetDiffuseMap(*m_ReimuTex);
-
-	(*m_ReimuMat)["OuterEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
-	(*m_ReimuMat)["InnerEdgeColor"] = Aen::Color(0.9f, 0.33f, 0.5f, 1.f);
-	(*m_ReimuMat)["OuterEdgeThickness"] = 0.003f;
-	(*m_ReimuMat)["InnerEdgeThickness"] = 0.003f;
-
-	// -------------------------- Setup Entities -------------------------------- //
-
-	
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::MeshInstance>();
