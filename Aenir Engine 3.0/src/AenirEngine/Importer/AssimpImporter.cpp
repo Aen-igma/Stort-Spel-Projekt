@@ -427,6 +427,17 @@ void Aen::AssimpImport::ProcAnimation(const aiScene* scene, std::unordered_map<s
 	}
 }
 
+void Aen::AssimpImport::FindChildren(std::vector<Bones>& boneArray)
+{
+	uint16_t nrOfBones = boneArray.size();
+	
+	for (int b = 1; b < nrOfBones; b++) // place pointer to children inside each bone
+	{
+		int pId = boneArray[b].parentID;
+		boneArray[pId].pChildren.emplace_back(&boneArray[b]);
+	}
+}
+
 void Aen::AssimpImport::LoadFbxAnimation(const std::string path, std::vector<Bones>& boneArray, std::unordered_map<std::string, std::vector<KeyFrameData>>& keyFrames, std::vector<float>& m_timeStamp, float& duration) {
 	
 	boneArray.clear();
@@ -445,5 +456,6 @@ void Aen::AssimpImport::LoadFbxAnimation(const std::string path, std::vector<Bon
 	std::unordered_map<std::string, aiBone*> bones;
 	ProcNodeAnim(pScene->mRootNode, pScene, bones);
 	ProcBoneHeiarchy(pScene->mRootNode, pScene, bones, boneArray);
+	FindChildren(boneArray);
 	ProcAnimation(pScene, keyFrames, m_timeStamp, boneArray[0].boneName, duration);
 }

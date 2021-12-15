@@ -52,9 +52,11 @@ namespace Aen {
 		uint32_t sizeBA = animation->m_boneArray.size();
 		uint32_t baseNumFrames = animation->m_timeStamp.size();
 		uint32_t layerNumFrames = doBl ? aniLayer->m_timeStamp.size() : 0.f;
+		const uint16_t baseOffset = doBl ? baseNumFrames / layerNumFrames : 1.f;
+		const uint16_t layerOffset = doBl ? layerNumFrames / baseNumFrames : 1.f;
+
 		
 		float duration = 0.f;
-		
 
 		switch (animation->GetBlendMode())
 		{
@@ -65,18 +67,18 @@ namespace Aen {
 			if (doBl)
 				duration = aniLayer->m_duration * m_scale;
 			else
-				throw printf("No layer attached");
+			{
+				throw; 
+				printf("No layer attached");
+			}
 			break;
 		case Aen::BlendMode::SCALE:
 		{
-			//float a = 1.f;
-			//float b = animation->GetDuration() / aniLayer->GetDuration();
-			//const float snimationSpeedMultiplier = (1.f - blendFactor) * a + b * blendFactor; // Lerp
 
 			break;
 		}
 		default:
-			//duration = animation->m_duration * m_scale;
+			duration = animation->m_duration * m_scale;
 			break;
 		}
 
@@ -84,13 +86,16 @@ namespace Aen {
 		if (m_time < duration) {
 			uint32_t l = 0u;
 			uint32_t r = doBl ? layerNumFrames : baseNumFrames;
+			uint32_t layerR = doBl ? layerNumFrames : 0.f;
 			uint32_t mid = 0u;
+			uint32_t layerMid = 0u;
 
 			uint32_t fFrame = 0u;
 			uint32_t sFrame = 0u;
 
 			while (true) {
 				mid = (l + r) / 2u;
+				layerMid = doBl ? (l + layerR) / 2u : 0u;
 				float ft = doBl ? aniLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
 				float st = doBl ? aniLayer->m_timeStamp[Clamp(mid + 1u, 0u, layerNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
 				if ((m_time >= ft && m_time <= st) || ft == st) {
@@ -115,32 +120,45 @@ namespace Aen {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame;
 				Mat4f nextFrame;
-				if (animation->IsBlendAnimation())
+				if (animation->IsBlendAnimation() && animation->m_doBlendBone[i])
 				{
-					Vec4f quat = animation->m_keyFrames.at(bName)[fFrame % baseNumFrames].quatOrientation;
-					sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
+					
+					uint16_t baseFrame = fFrame % baseNumFrames;
+					uint16_t layerFrame = fFrame % layerNumFrames;
 
-					quat = aniLayer->m_keyFrames.at(bName)[fFrame].quatOrientation;
-					sm::Quaternion rot1 = { quat.x, quat.y, quat.z, quat.w };
-					sm::Quaternion blendRot = blendRot.Slerp(rot0, rot1, blendFactor);
+
+					//Vec4f quat = animation->m_keyFrames.at(bName)[fFrame % baseNumFrames].quatOrientation;
+					//sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
+
+					//quat = aniLayer->m_keyFrames.at(bName)[fFrame].quatOrientation;
+					//sm::Quaternion rot1 = { quat.x, quat.y, quat.z, quat.w };
+					//sm::Quaternion blendRot = blendRot.Slerp(rot0, rot1, blendFactor);
 
 					//currentFrame.smMat.Translation(translation.smVec);
-					currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(rot1);
+					//currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(rot1);
+					sm::Matrix currentRot0 = animation->m_keyFrames.at(bName)[baseFrame].rotation.smMat;
+					sm::Matrix currentRot1 = aniLayer->m_keyFrames.at(bName)[layerFrame].rotation.smMat;
+					sm::Matrix currentBlendRot = currentBlendRot.Lerp(currentRot0, currentRot1, blendFactor);
+					currentFrame.smMat = currentBlendRot;
+
+					sm::Matrix nextRot0 = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation.smMat;
+					sm::Matrix nextRot1 = aniLayer->m_keyFrames.at(bName)[sFrame % layerNumFrames].rotation.smMat;
+					sm::Matrix nextBlendRot = currentBlendRot.Lerp(nextRot0, nextRot1, blendFactor);
+
+					nextFrame.smMat = nextBlendRot;
 				}
 				else
 				{
-
-					currentFrame = animation->m_keyFrames.at(bName)[fFrame].rotation;
-					//nextFrame = animation->m_keyFrames.at(bName)[sFrame].rotation;
+					currentFrame = animation->m_keyFrames.at(bName)[fFrame % baseNumFrames].rotation;
+					nextFrame = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation;
 				}
 				//nextFrame = animation->m_keyFrames.at(bName)[sFrame].rotation;
 
-				mat.emplace_back(currentFrame);
-				//mat.emplace_back(Lerp(currentFrame, nextFrame, t));
+				//mat.emplace_back(currentFrame);
+				mat.emplace_back(Lerp(currentFrame, nextFrame, t));
 			}
 
 			m_time += deltaTime;
-			m_layerTime += deltaTime;
 		}
 		else
 		{
@@ -150,15 +168,20 @@ namespace Aen {
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame;
-				if (animation->IsBlendAnimation())
+				if (animation->IsBlendAnimation() && animation->m_doBlendBone[i])
 				{
-					Vec4f quat = animation->m_keyFrames.at(bName)[baseNumFrames - 1].quatOrientation;
-					sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
-					quat = aniLayer->m_keyFrames.at(bName)[layerNumFrames - 1].quatOrientation;
-					sm::Quaternion rot1 = { quat.x, quat.y, quat.z, quat.w };
-					sm::Quaternion blendRot = blendRot.Lerp(rot0, rot1, blendFactor);
+					//Vec4f quat = animation->m_keyFrames.at(bName)[baseNumFrames - 1].quatOrientation;
+					//sm::Quaternion rot0 = { quat.x, quat.y, quat.z, quat.w };
+					//quat = aniLayer->m_keyFrames.at(bName)[layerNumFrames - 1].quatOrientation;
+					//sm::Quaternion rot1 = { quat.x, quat.y, quat.z, quat.w };
+					//sm::Quaternion blendRot = blendRot.Lerp(rot0, rot1, blendFactor);
 					//currentFrame.smMat.Translation(translation.smVec);
-					currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(rot1);
+					//currentFrame.smMat = currentFrame.smMat.CreateFromQuaternion(rot1);
+					sm::Matrix rot0 = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation.smMat;
+					sm::Matrix rot1 = aniLayer->m_keyFrames.at(bName)[layerNumFrames - 1].rotation.smMat;
+					sm::Matrix blendRot = blendRot.Lerp(rot0, rot1, blendFactor);
+					currentFrame.smMat = blendRot;
+					
 				}
 				else
 					currentFrame = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation;
@@ -216,7 +239,7 @@ namespace Aen {
 	}
 
 	Animator::Animator(const size_t& id)
-		:Drawable(id), m_scale(1), animationIndex(0), m_pause(false), m_loop(true), m_time(0.f), m_layerTime(0.f) {
+		:Drawable(id), m_scale(1), animationIndex(0), m_pause(false), m_loop(true), m_time(0.f) {
 		SetFrameRate(60);
 	}
 

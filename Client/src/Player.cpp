@@ -93,6 +93,7 @@ Player::Player()
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
 	protagRun.LoadAnimation(AEN_MODEL_DIR("Protagonist_Run.fbx"));
 	m_protagIdleToRun->AddAnimationLayer(&protagRun);
+	//m_protagIdleToRun->AddPartialAnimationLayer(&protagRun, "QuickRigCharacter1_Spine1");
 	m_protagIdleToRun->SetBlendMode(Aen::BlendMode::LAYER_TIME);
 	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
 	protagDash.LoadAnimation(AEN_MODEL_DIR("Protagonist_Dash.fbx"));

@@ -31,6 +31,7 @@ namespace Aen {
 		std::string boneName;
 		Mat4f localMatrix;
 		Mat4f offsetMatrix;
+		std::vector<Bones*> pChildren;
 	};
 
 	enum class BlendMode
@@ -44,7 +45,7 @@ namespace Aen {
 		float m_blendFactor = 0.f;
 		bool m_isBlendAnimation = false;
 		
-		AssimpData m_RootNode;
+		//AssimpData m_RootNode;
 		std::vector<Bones> m_boneArray;
 		std::unordered_map<std::string, std::vector<KeyFrameData>> m_keyFrames;
 		std::vector<float> m_timeStamp;
@@ -55,13 +56,15 @@ namespace Aen {
 
 		Animation* mp_layer = nullptr;
 		BlendMode m_bm = BlendMode(0);
-
+		std::vector<bool> m_doBlendBone;
+		void WhatToBlend(const int& boneIndex);
 	public:
 		Animation();
 		~Animation();
 		const float GetDuration() const;
 		void LoadAnimation(const std::string& animationPath);
 		void AddAnimationLayer(Animation* pLayer);
+		void AddPartialAnimationLayer(Animation* pLayer, const std::string& root);
 		/// <summary>
 		/// 0.0f - 1.0f
 		/// </summary>
