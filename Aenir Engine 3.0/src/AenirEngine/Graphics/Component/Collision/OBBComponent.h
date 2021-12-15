@@ -44,7 +44,8 @@ namespace Aen
 		void ToggleActive();
 
 		const bool GetIsOn() const;
-		
+		const void ToggleIsFrustum(bool b);
+		void UpdateCamVerts(const DirectX::BoundingFrustum& cam);
 	private:
 		DirectX::BoundingOrientedBox m_obb;
 
@@ -56,6 +57,7 @@ namespace Aen
 		Vertex m_verts[8];
 #endif 
 		bool m_canDraw;
+		bool m_isFrustum;
 
 		bool m_isColliding;
 		bool m_isOn;
