@@ -26,12 +26,20 @@ namespace Aen {
 			m_pLightCamera = &camera;
 		}
 
+		static void SetDebugCamera(Entity& camera) {
+			m_pDebugCamera = &camera;
+		}
+
 		static Entity* GetMainCamera() {
 			return m_pMainCamera;
 		}
 
 		static Entity* GetLightCamera() {
 			return m_pLightCamera;
+		}
+
+		static Entity* GetDebugCamera() {
+			return m_pDebugCamera;
 		}
 
 		static void SetBGColor(const Color& color) {
@@ -54,6 +62,10 @@ namespace Aen {
 			m_vSync = set;
 		}
 
+		static void SetDebug(const bool& set) {
+			m_debug = set;
+		}
+
 		static void RemoveMainCamera() {
 			m_pMainCamera = nullptr;
 		}
@@ -68,6 +80,10 @@ namespace Aen {
 
 		static const bool GetVSync() {
 			return m_vSync;
+		}
+
+		static const bool GetDebug() {
+			return m_debug;
 		}
 
 		static void StartQuadtree(/*const Aen::Vec3f& MinPos, const Aen::Vec3f& MaxPos,*/
@@ -213,6 +229,7 @@ namespace Aen {
 		static Window* m_pWindow;
 		static Entity* m_pMainCamera;
 		static Entity* m_pLightCamera;
+		static Entity* m_pDebugCamera;
 		static Color m_BGColor;
 
 		static Material* m_defaultMaterial;
@@ -220,6 +237,7 @@ namespace Aen {
 
 		//static ImGuiHandler* mp_guiHandler;
 		static bool m_vSync;
+		static bool m_debug;
 
 		static Renderer* m_pRenderer;
 		static Quadtree* m_pQuadtree;
