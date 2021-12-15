@@ -40,10 +40,12 @@ void Gameplay::Initialize()
 	m_debugCam = &Aen::EntityHandler::CreateEntity();
 	m_debugCam->AddComponent<Aen::Camera>();
 	m_debugCam->GetComponent<Aen::Camera>().SetCameraPerspective(90.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 300.f);
+	Aen::GlobalSettings::SetDebugCamera(*m_debugCam);
 
 	m_debugFrustum = &Aen::EntityHandler::CreateEntity();
 	m_debugFrustum->AddComponent<Aen::OBBox>();
 	m_debugFrustum->GetComponent<Aen::OBBox>().ToggleIsFrustum(true);
+	m_debugFrustum->GetComponent<Aen::OBBox>().ToggleActive(true);
 	// ------------------------ Setup Directional Light ------------------------- //
 
 	m_dLight = &Aen::EntityHandler::CreateEntity();
@@ -489,11 +491,13 @@ void Gameplay::Update(const float& deltaTime) {
 
 	if (Aen::Input::KeyDown(Aen::Key::I)) {
 		m_debug = true;
-		Aen::GlobalSettings::SetMainCamera(*m_debugCam);
+		Aen::GlobalSettings::SetDebug(m_debug);
+		//Aen::GlobalSettings::SetMainCamera(*m_debugCam);
 	}
 	if (Aen::Input::KeyDown(Aen::Key::O)) {
 		m_debug = false;
-		Aen::GlobalSettings::SetMainCamera(*m_player.GetCamera());
+		Aen::GlobalSettings::SetDebug(m_debug);
+		//Aen::GlobalSettings::SetMainCamera(*m_player.GetCamera());
 	}
 
 	if (m_debug) {
