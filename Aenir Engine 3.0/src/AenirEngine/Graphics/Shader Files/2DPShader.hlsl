@@ -9,6 +9,6 @@ SamplerState objSamplerState : SAMPLER : register(s0);
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-    //float4 sampleColor = objTexture.Sample(objSamplerState, input.inTexCoord);
-    return float4(0, 0, 1, 1);
+    float4 sampleColor = objTexture.Sample(objSamplerState, input.inTexCoord);
+    return sampleColor;
 }

@@ -26,11 +26,19 @@ namespace Aen {
 		VBuffer<Vertex2D> m_vertices;
 		Mat4f m_transform;
 
+		float width;
+		float height;
+
+
 	public:
 		UI(const size_t& id);
 		~UI();
 
-		void Load(const std::string& dir);
+		void SetPos(const Vec2f& pos);
+		void SetPos(const float& x, const float& y);
+
+		const Vec2f GetPos() const;
+		const Vec2f GetScale() const;
 
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer = 0) override;

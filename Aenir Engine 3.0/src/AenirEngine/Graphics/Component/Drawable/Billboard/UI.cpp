@@ -7,8 +7,8 @@ namespace Aen {
     UI::UI(const size_t& id)
         :Drawable(m_id)
     {
-        float width = 200.f / GlobalSettings::GetWindow()->GetSize().x * 2.f - 1.f;
-        float height = 200.f / GlobalSettings::GetWindow()->GetSize().y * 2.f - 1.f;
+        width = 700.f / GlobalSettings::GetWindow()->GetSize().x * 2.f - 1.f;
+        height = 300.f / GlobalSettings::GetWindow()->GetSize().y * 2.f - 1.f;
 
         Vertex2D DARR[6]
         { 
@@ -28,9 +28,24 @@ namespace Aen {
     UI::~UI()
     {}
 
-    void UI::Load(const std::string& dir)
+    void UI::SetPos(const Vec2f & pos)
     {
 
+    }
+
+    void UI::SetPos(const float& x, const float& y)
+    {
+
+    }
+
+    const Vec2f UI::GetPos() const
+    {
+        return Vec2f();
+    }
+
+    const Vec2f UI::GetScale() const
+    {
+        return Vec2f();
     }
 
     void Aen::UI::Draw(Renderer& renderer, const uint32_t& layer)
