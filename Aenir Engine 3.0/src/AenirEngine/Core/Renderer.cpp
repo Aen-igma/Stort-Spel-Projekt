@@ -236,12 +236,8 @@ namespace Aen {
 
 	void Renderer::UpdateCamBuffer() {
 		if(GlobalSettings::m_pMainCamera) {
-			Entity* pCam = nullptr;
 
-			if(Aen::GlobalSettings::GetDebug())
-				pCam = GlobalSettings::m_pDebugCamera;
-			else
-				pCam = GlobalSettings::m_pMainCamera;
+			Entity* pCam = GlobalSettings::m_pMainCamera;
 
 			Vec3f pos = pCam->GetPos();
 			Vec3f rot = pCam->GetRot();
