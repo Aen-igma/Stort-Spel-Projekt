@@ -1,9 +1,11 @@
+#include "SimplexNoise.hlsl"
 cbuffer Aen_CB_Transform {
     float4x4 vMat;
     float4x4 pMat;
     float4x4 ivMat;
     float4x4 ipMat;
     float4x4 mdlMat;
+    float4x4 lvpMat;
 }
 
 struct GeometryShaderInput
@@ -13,8 +15,7 @@ struct GeometryShaderInput
     float4 color : COLOR;
 };
 
-struct GeometryShaderOutput
-{
+struct GeometryShaderOutput {
     float4 position : SV_POSITION;
     float2 uv : UV;
     float4 color : COLOR;
@@ -61,6 +62,5 @@ void main(
     output.uv = float2(1, 0);
     OutStream.Append(output);
     OutStream.RestartStrip();
-
 }
 

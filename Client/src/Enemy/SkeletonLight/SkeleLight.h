@@ -20,6 +20,8 @@ private:
 	Aen::Entity* mp_healthBar;
 	Aen::Entity* mp_hurtbox;
 
+	Aen::Animator* m_animator;
+
 	Aen::Vec3f m_Dir;
 	Aen::Vec3f m_lDir;
 	Aen::Vec2f m_nDir;

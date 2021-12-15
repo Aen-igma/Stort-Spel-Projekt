@@ -2,7 +2,6 @@
 #include"Renderer.h"
 #include "../ImGuiHandler.h"
 #include<string>
-//#include"../LevelGeneration/LevelGenerator.h"
 
 namespace Aen {
 
@@ -22,8 +21,16 @@ namespace Aen {
 			UpdateFrstumGrid();
 		}
 
+		static void SetLightCamera(Entity& camera) {
+			m_pLightCamera = &camera;
+		}
+
 		static Entity* GetMainCamera() {
 			return m_pMainCamera;
+		}
+
+		static Entity* GetLightCamera() {
+			return m_pLightCamera;
 		}
 
 		static void SetBGColor(const Color& color) {
@@ -46,9 +53,12 @@ namespace Aen {
 			m_vSync = set;
 		}
 
-		static void RemoveMainCamera()
-		{
+		static void RemoveMainCamera() {
 			m_pMainCamera = nullptr;
+		}
+
+		static void RemoveLightCamera() {
+			m_pLightCamera = nullptr;
 		}
 
 		static Window* GetWindow(){
@@ -135,6 +145,7 @@ namespace Aen {
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"OuterFalloff"				);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"RimLightIntensity"			);
 			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"RimLightSize"				);
+			m_pDefaultShader->m_dbLayout.Add<DBType::Float>(		"OpacityStr"				);
 
 			m_pDefaultShader->m_dbLayout["BaseColor"]				= Color::White;
 			m_pDefaultShader->m_dbLayout["ShadowColor"]				= Color(0.3f, 0.3f, 0.5f, 1.f);
@@ -154,6 +165,7 @@ namespace Aen {
 			m_pDefaultShader->m_dbLayout["OuterFalloff"]			= 0.f;
 			m_pDefaultShader->m_dbLayout["RimLightIntensity"]		= 1.f;
 			m_pDefaultShader->m_dbLayout["RimLightSize"]			= 0.f;
+			m_pDefaultShader->m_dbLayout["OpacityStr"]				= 1.f;
 
 			// --------------------------------- Default Material --------------------------------- //
 
@@ -171,6 +183,7 @@ namespace Aen {
 		static ShaderModel* m_pDefaultShader;
 		static Window* m_pWindow;
 		static Entity* m_pMainCamera;
+		static Entity* m_pLightCamera;
 		static Color m_BGColor;
 
 		static Material* m_defaultMaterial;

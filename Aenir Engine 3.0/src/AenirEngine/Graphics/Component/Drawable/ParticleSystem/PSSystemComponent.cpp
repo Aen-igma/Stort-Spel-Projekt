@@ -15,6 +15,7 @@ namespace Aen
 		m_shader = 0;
 		m_pMesh = 0;
 		m_pMaterial = 0;
+		
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
@@ -23,7 +24,6 @@ namespace Aen
 		delete m_shader;
 		delete m_pMesh;
 		delete m_pMaterial;
-
 	}
 
 	void PSSystemcomponent::LoadAndSetTexture(const std::string& dir)
@@ -81,21 +81,21 @@ namespace Aen
 	void PSSystemcomponent::EmitRandom(float frameTime)
 	{
 		
-		this->runTimes += frameTime;
-		this->accumulatedTime += frameTime;
+		this->m_runTimes += frameTime;
+		this->m_accumulatedTime += frameTime;
 		bool emitPS, found;
 		emitPS = false;
 		int index, i, j;
 		Vec3f pos;
 		float velocity;
-		if (this->accumulatedTime > 1.0f/ this->particlesPerSecond)
+		if (this->m_accumulatedTime > 1.0f/ this->m_particlesPerSecond)
 		{
 			emitPS = true;
-			this->accumulatedTime = 0.0f;
+			this->m_accumulatedTime = 0.0f;
 		}
-		if (emitPS && this->currentNrPS < (this->maxParticles - 1))
+		if (emitPS && this->m_currentNrPS < (this->m_maxParticles - 1))
 		{
-			this->currentNrPS++;
+			this->m_currentNrPS++;
 			DirectX::XMFLOAT3 randPosPS
 			{
 				(((float)rand() - (float)rand()) / RAND_MAX) + 0.5f,
@@ -112,13 +112,10 @@ namespace Aen
 		return;
 	}
 
-
-
 	void PSSystemcomponent::SetNrOfPS(UINT nr)
 	{
 		this->m_CSInputBuffer.emitCount = nr;
-		this->currentNrPS = this->m_CSInputBuffer.emitCount;
-
+		this->m_currentNrPS = this->m_CSInputBuffer.emitCount;
 	}
 
 	void PSSystemcomponent::SetVelocity(float x, float y, float z)
@@ -126,6 +123,13 @@ namespace Aen
 		this->m_CSInputBuffer.velocity.x = x;
 		this->m_CSInputBuffer.velocity.y = y;
 		this->m_CSInputBuffer.velocity.z = z;
+	}
+
+	void PSSystemcomponent::SetAcceleration(float x, float y, float z)
+	{
+		this->m_CSInputBuffer.acceleration.x = x;
+		this->m_CSInputBuffer.acceleration.y = y;
+		this->m_CSInputBuffer.acceleration.z = z;
 	}
 
 
@@ -140,9 +144,17 @@ namespace Aen
 		this->m_CSInputBuffer.initalPos.x = x;
 		this->m_CSInputBuffer.initalPos.y = y;
 		this->m_CSInputBuffer.initalPos.z = z;
-
 	}
 
+	void PSSystemcomponent::SetEmitInterval(float xyz)
+	{
+		this->m_CSInputBuffer.emitInterval = xyz;
+	}
+
+	void PSSystemcomponent::SetMaxParticles(int max)
+	{
+		this->m_maxParticles = max;
+	}
 
 	void PSSystemcomponent::Initialize()
 	{
@@ -152,15 +164,27 @@ namespace Aen
 		this->m_CSInputBuffer.lifeTime = 0.0f;
 		this->m_CSInputBuffer.deltaTime = 0.0f;
 		this->m_CSInputBuffer.velocity = { 0.0f,0.0f,0.0f };
+		this->m_vertexCount = 0;
+		this->m_particlesPerSecond = 1.0f;
 	}
-
-	void PSSystemcomponent::SetRespawnHeight(float height)
+	void PSSystemcomponent::SetHeightLimit(float height)
 	{
 		this->m_CSInputBuffer.lifeTime = height;
 	}
-
-
 	void PSSystemcomponent::Draw(Renderer& renderer, const uint32_t& layer) {
+		
+
+		//Dispatch from depth
+		renderer.m_PSInputBuffer.GetData() = m_CSInputBuffer;
+		renderer.m_PSInputBuffer.UpdateBuffer();
+		renderer.m_PSInputBuffer.BindBuffer<CShader>(0);
+		RenderSystem::BindUnOrderedAccessView(0, m_UAView);
+		RenderSystem::BindShader(renderer.m_PSCShader);
+
+		RenderSystem::Dispatch(16, 1, 1);
+
+		RenderSystem::UnBindShader<CShader>();
+		RenderSystem::UnBindUnOrderedAccessViews(0, 1);
 
 		//First Pass
 		RenderSystem::ClearRenderTargetView(renderer.m_particleOut, Color(0.f, 0.f, 0.f, 0.f));
@@ -200,6 +224,7 @@ namespace Aen
 
 		RenderSystem::BindRenderTargetView(renderer.m_particleOut, renderer.m_depthMap);
 		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
+		//Uncomment if you want wireframe state
 		//RenderSystem::SetRasteriserState(renderer.m_wireFrameState);
 
 
@@ -207,7 +232,7 @@ namespace Aen
 		RenderSystem::BindShader(renderer.m_PSGShader);
 		RenderSystem::BindShader(renderer.m_PSPShader);
 
-		RenderSystem::Draw(this->currentNrPS,0);
+		RenderSystem::Draw(this->m_currentNrPS,0);
 
 
 		// Second Pass
@@ -230,48 +255,20 @@ namespace Aen
 		RenderSystem::UnBindShaderResources<CShader>(0u, renderer.m_particleOut.GetCount());
 	}
 
-
 	void PSSystemcomponent::DepthDraw(Renderer& renderer, const uint32_t& layer) {
-
-		renderer.m_PSInputBuffer.GetData() = m_CSInputBuffer;
-		renderer.m_PSInputBuffer.UpdateBuffer();
-		renderer.m_PSInputBuffer.BindBuffer<CShader>(0);
-		RenderSystem::BindUnOrderedAccessView(0,m_UAView);
-		RenderSystem::BindShader(renderer.m_PSCShader);
-
-		RenderSystem::Dispatch(16, 1, 1);
-
-		RenderSystem::UnBindShader<CShader>();
-		RenderSystem::UnBindUnOrderedAccessViews(0,1);
-
-		RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
-		RenderSystem::SetInputLayout(renderer.m_PSLayout);
-		renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation();
-		renderer.m_cbTransform.UpdateBuffer();
-		renderer.m_cbTransform.BindBuffer<VShader>(0);
-
-		RenderSystem::BindShaderResourceView<VShader>(0, m_UAView);
-		renderer.m_cbTransform.BindBuffer<GShader>(0);
-
-		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
-
-		RenderSystem::BindShader(renderer.m_PSVShader);
-		RenderSystem::BindShader(renderer.m_PSGShader);
-		RenderSystem::BindShader(renderer.m_transparencyPS);
-
-		RenderSystem::Draw(this->currentNrPS, 0);
-
-		RenderSystem::UnBindShader<VShader>();
-		RenderSystem::UnBindShader<GShader>();
-		RenderSystem::UnBindShader<PShader>();
-		RenderSystem::UnBindShaderResources<VShader>(0,1);
 	}
 
 	bool PSSystemcomponent::FrustumCull(Renderer& renderer) 
 	{		
-		//Ree momment
-		return true;
+		if (GlobalSettings::GetMainCamera())
+		{
+			DirectX::XMFLOAT3 tempFloat = DirectX::XMFLOAT3(m_CSInputBuffer.initalPos.x, m_CSInputBuffer.initalPos.y, m_CSInputBuffer.initalPos.z);
+			DirectX::XMVECTOR tempVec = DirectX::XMLoadFloat3(&tempFloat);
+			if (GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum().Contains(tempVec))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
-
-
 }

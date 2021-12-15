@@ -428,6 +428,11 @@ namespace Aen
 		return m_entityList;
 	}
 
+	vector<AenIF::Particle>& ImGuiImporter::GetParticleList()
+	{
+		return this->m_particleList;
+	}
+
 	bool ImGuiImporter::LoadLevel(int index)
 	{
 		if (index >= m_levelImporter->GetRoomVector().size())
@@ -476,6 +481,16 @@ namespace Aen
 			else if (roomPtr->GetLightVector()[i].type == IGH::POINTLIGHT)
 			{
 				AddPointLight(roomPtr->GetLightVector()[i], offset, angle);
+			}
+		}
+		for (size_t i = 0; i < roomPtr->GetParticleVector().size(); i++)
+		{
+			AenIF::Particle* particle = &roomPtr->GetParticleVector()[i];
+			particle->translation[0] += offset.x;
+			particle->translation[2] += offset.y;
+			if (particle->type == IGH::TORCH)
+			{
+				m_particleList.push_back(*particle);
 			}
 		}
 		return true;

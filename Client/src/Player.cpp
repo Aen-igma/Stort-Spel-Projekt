@@ -15,9 +15,16 @@ Player::Player()
 	m_player->SetTag("Player");
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
-	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 60.f);
+	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 90.f);
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
+
+	m_lCamera = &Aen::EntityHandler::CreateEntity();
+	m_lCamera->AddComponent<Aen::Camera>();
+	m_lCamera->GetComponent<Aen::Camera>().SetCameraOrthographic(60.f, 60.f, 0.01f, 20.f);
+	m_lCamera->SetRot(87.f, 45.f, 0.f);
+
+	Aen::GlobalSettings::SetLightCamera(*m_lCamera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
 	sword.Load(AEN_MODEL_DIR("ShortSword.fbx"));
@@ -35,6 +42,7 @@ Player::Player()
 	skin["RimLightColor"] = Aen::Color(0.5f, 0.f, 0.f, 1.f);
 	skin["RimLightIntensity"] = 0.8f;
 	skin["RimLightSize"] = 0.4f;
+	skin["SpecularStrength"] = 0.f;
 
 	Aen::Material& shirt = Aen::Resource::CreateMaterial("Shirt");
 	shirt["InnerEdgeColor"] = Aen::Color(0.1f, 0.08f, 0.05f, 1.f);
@@ -45,6 +53,7 @@ Player::Player()
 	shirt["RimLightColor"] = Aen::Color(0.5f, 0.f, 0.f, 1.f);
 	shirt["RimLightIntensity"] = 0.8f;
 	shirt["RimLightSize"] = 0.3f;
+	shirt["SpecularStrength"] = 0.f;
 
 	Aen::Material& brown = Aen::Resource::CreateMaterial("Brown");
 	brown["InnerEdgeColor"] = Aen::Color(0.13f, 0.014f, 0.012f, 1.f);
@@ -55,6 +64,7 @@ Player::Player()
 	brown["RimLightColor"] = Aen::Color(0.8f, 0.2f, 0.1f, 1.f);
 	brown["RimLightIntensity"] = 1.f;
 	brown["RimLightSize"] = 0.6f;
+	brown["SpecularStrength"] = 0.f;
 
 	Aen::Material& pants = Aen::Resource::CreateMaterial("Pants");
 	pants["InnerEdgeColor"] = Aen::Color(0.06f, 0.07f, 0.07f, 1.f);
@@ -62,6 +72,7 @@ Player::Player()
 	pants["InnerEdgeThickness"] = 1;
 	pants["OuterEdgeThickness"] = 2;
 	pants["BaseColor"] = Aen::Color(0.44f, 0.41f, 0.34f, 1.f);
+	pants["SpecularStrength"] = 0.f;
 
 	Aen::Material& metal = Aen::Resource::CreateMaterial("Metal");
 	metal["InnerEdgeColor"] = Aen::Color(0.04f, 0.04f, 0.07f, 1.f);
@@ -80,6 +91,7 @@ Player::Player()
 	shadow["ShadowColor"] = Aen::Color(0.3f, 0.2f, 0.2f, 1.f);
 	shadow["ShadowOffset"] = 1.f;
 	shadow["SpecularColor"] = Aen::Color::Red;
+	shadow["SpecularStrength"] = 0.f;
 
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
@@ -96,9 +108,9 @@ Player::Player()
 	m_protagIdleToRun->AddPartialAnimationLayer(&protagRun, "QuickRigCharacter1_Spine1");
 	m_protagIdleToRun->SetBlendMode(Aen::BlendMode::LAYER_TIME);
 	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
-	protagDash.LoadAnimation(AEN_MODEL_DIR("Protagonist_Dash.fbx"));
+	protagDash.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Dash.fbx"));
 	Aen::Animation& protagAttack = Aen::Resource::CreateAnimation("protagAttack");
-	protagAttack.LoadAnimation(AEN_MODEL_DIR("Protagonist_Attack.fbx"));
+	protagAttack.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Attack.fbx"));
 
 	m_playerMeshHolder->AddComponent<Aen::MeshInstance>();
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMesh(*protag);
@@ -108,14 +120,16 @@ Player::Player()
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Pants1", pants);
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Metal1", metal);
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMaterial("Shadow1", shadow);
+
 	m_playerMeshHolder->AddComponent<Aen::Animator>();
-	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(*m_protagIdleToRun, "Idle");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagRun, "Run");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagDash, "Dash");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().AddAnimation(protagAttack, "Attack");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
-	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.28f);
-	m_playerMeshHolder->GetComponent<Aen::Animator>().SetFrameRate(24);
+	m_animation = &m_playerMeshHolder->GetComponent<Aen::Animator>();
+	m_animation->AddAnimation(protagIdle, "Idle");
+	m_animation->AddAnimation(protagRun, "Run");
+	m_animation->AddAnimation(protagDash, "Dash");
+	m_animation->AddAnimation(protagAttack, "Attack");
+	m_animation->SetAnimation("Idle");
+	m_animation->SetAnimationScale(0.28f);
+	m_animation->SetFrameRate(24);
 	m_playerMeshHolder->SetParent(*m_player);
 	m_playerMeshHolder->SetPos(0.f, -3.1f, 0.f);
 
@@ -123,7 +137,6 @@ Player::Player()
 	mp_hitBox = &m_player->GetComponent<Aen::AABoundBox>();
 	mp_hitBox->SetBoundingBox(0.45f,1.1f,0.45f);
 	//m_player->SetPos(0.f, -1.f, 0.f);
-	m_player->SetTag("Player");
 
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
@@ -169,6 +182,7 @@ Player::Player()
 
 Player::~Player() {
 	Aen::GlobalSettings::RemoveMainCamera();
+	Aen::GlobalSettings::RemoveLightCamera();
 	m_playerMeshHolder->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_playerMeshHolder);
 	Aen::EntityHandler::RemoveEntity(*m_player);
@@ -193,11 +207,14 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	else
 		side.x = Aen::Lerp(side.x, axis.x * 0.3f, 0.05f);
 	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
+	
+	Aen::Vec3f lCamDir = m_camera->GetComponent<Aen::Camera>().GetForward();
+	lCamDir.y = 0.f;
+	Aen::Vec3f lCamPos = m_player->GetPos() + Aen::Vec3f(0.f, 10.f, 0.f) + lCamDir.Normalized() * 25.f;
+	m_lCamera->SetPos(lCamPos);
 
-#ifdef _DEBUG
 	if (Aen::Input::KeyPress(Aen::Key::SHIFT)) m_movementSpeed = 24.f;
 	else m_movementSpeed = 8.f;
-#endif // _DEBUG
 
 
 	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19) * Aen::MatRotate(0.f, -10.f, 0.f) * m_playerMeshHolder->GetTransformation());

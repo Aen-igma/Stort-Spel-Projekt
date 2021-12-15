@@ -16,14 +16,7 @@ namespace Aen
 		Vec2f m_UV;
 		Vec2f padding;
 	};
-	//struct CSInputBuffer
-	//{
-	//	float m_runtime;
-	//	UINT m_particleCount;
-	//	double padding;
-	//	Vec3f m_vel;
-	//	float padding2;
-	//};
+
 
 	struct CSInputBuffer
 	{
@@ -47,11 +40,14 @@ namespace Aen
 		//Member vairables that we dont need yet
 		void SetNrOfPS(UINT nr);
 		void SetVelocity(float x,float y,float z);
+		void SetAcceleration(float x, float y, float z);
 		void EmitRandom(float frameTime);
-		bool activate();
 		void SetEmitPos(float x, float y, float z);
+		void SetEmitInterval(float xyz);
+		void SetMaxParticles(int max);
 		void Initialize();
-		void SetRespawnHeight(float height);
+		void SetHeightLimit(float height);
+		bool activate();
 
 		//Texture
 		void LoadAndSetTexture(const std::string& dir);
@@ -72,7 +68,6 @@ namespace Aen
 		friend class GCore;
 
 
-
 	private:
 
 
@@ -81,6 +76,7 @@ namespace Aen
 		friend class Entity;
 		friend class GCore;
 
+		//Things we need, used for render an handeling constant buffern
 		CSInputBuffer m_CSInputBuffer;
 		VertexParticle m_VertexPS;
 		Texture* m_texture;
@@ -89,15 +85,11 @@ namespace Aen
 		Mesh* m_pMesh;
 		Material* m_pMaterial;
 
-		//Viewfrustrum
-		Vec3f m_offset;
-		DirectX::BoundingOrientedBox m_obb;
-
 		void updatePS(const float& framerate);
 
-		int maxParticles, currentNrPS;
-		float accumulatedTime, runTimes;
-		float particleSize, particlesPerSecond;
+		int m_maxParticles, m_currentNrPS;
+		float m_accumulatedTime, m_runTimes;
+		float m_particleSize, m_particlesPerSecond;
 		Vec3f m_emitPos;
 		Vec3f m_emitDir;
 		int m_vertexCount;
