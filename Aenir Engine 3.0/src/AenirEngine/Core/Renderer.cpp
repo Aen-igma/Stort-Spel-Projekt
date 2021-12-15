@@ -154,7 +154,6 @@ namespace Aen {
 
 		for(uint32_t i = 0u; i < 7u; i++)
 			if (m_drawTable[i].size() > 0) {
-
 				// Light Camera
 
 				UpdateLCamBuffer();
@@ -174,8 +173,12 @@ namespace Aen {
 
 				UpdateCamBuffer();
 
-				// Pre Depth Pass
+				if (GlobalSettings::GetUseDebugCam())
+				{
+					UpdateDebugCamBuffer();
+				}
 
+				// Pre Depth Pass
 				RenderSystem::SetViewPort(m_viewPort);
 				RenderSystem::UnBindRenderTargets(1u);
 				RenderSystem::BindRenderTargetView(m_depthMap);
@@ -236,12 +239,7 @@ namespace Aen {
 
 	void Renderer::UpdateCamBuffer() {
 		if(GlobalSettings::m_pMainCamera) {
-			Entity* pCam = nullptr;
-
-			if(Aen::GlobalSettings::GetDebug())
-				pCam = GlobalSettings::m_pDebugCamera;
-			else
-				pCam = GlobalSettings::m_pMainCamera;
+			Entity* pCam = GlobalSettings::m_pMainCamera;
 
 			Vec3f pos = pCam->GetPos();
 			Vec3f rot = pCam->GetRot();
@@ -305,6 +303,36 @@ namespace Aen {
 			m_cbTransform.GetData().m_ipMat = m_cbTransform.GetData().m_pMat.Inverse();
 			m_cbTransform.GetData().m_lvpMat = pCam->GetComponent<Camera>().GetVPMatrix().Transposed();
 		} else {
+			m_cbTransform.GetData().m_vMat = Mat4f::identity;
+			m_cbTransform.GetData().m_pMat = Mat4f::identity;
+			m_cbTransform.GetData().m_ivMat = Mat4f::identity;
+			m_cbTransform.GetData().m_ipMat = Mat4f::identity;
+			m_cbTransform.GetData().m_lvpMat = Mat4f::identity;
+		}
+	}
+
+	void Renderer::UpdateDebugCamBuffer()
+	{
+		if (GlobalSettings::m_pDebugCamera) {
+			Entity* pCam = GlobalSettings::m_pDebugCamera;
+
+			Vec3f pos = pCam->GetPos();
+			Vec3f rot = pCam->GetRot();
+
+			pCam->GetComponent<Camera>().UpdateView(pos, rot);
+
+			m_cbCamera.GetData().pos = pos;
+			m_cbCamera.GetData().fDir = pCam->GetComponent<Camera>().GetForward();
+			m_cbCamera.GetData().uDir = pCam->GetComponent<Camera>().GetUp();
+			m_cbCamera.UpdateBuffer();
+
+			m_cbTransform.GetData().m_vMat = pCam->GetComponent<Camera>().GetView().Transposed();
+			m_cbTransform.GetData().m_pMat = pCam->GetComponent<Camera>().GetProjecton().Transposed();
+			m_cbTransform.GetData().m_ivMat = m_cbTransform.GetData().m_vMat.Inverse();
+			m_cbTransform.GetData().m_ipMat = m_cbTransform.GetData().m_pMat.Inverse();
+			m_cbTransform.GetData().m_lvpMat = pCam->GetComponent<Camera>().GetVPMatrix().Transposed();
+		}
+		else {
 			m_cbTransform.GetData().m_vMat = Mat4f::identity;
 			m_cbTransform.GetData().m_pMat = Mat4f::identity;
 			m_cbTransform.GetData().m_ivMat = Mat4f::identity;
