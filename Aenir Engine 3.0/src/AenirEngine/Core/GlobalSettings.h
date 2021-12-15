@@ -90,7 +90,8 @@ namespace Aen {
 			return m_useDebugCam;
 		}
 
-		static void StartQuadtree(const unsigned& level, const unsigned& maxLevel, const unsigned& capacity) {
+		static void StartQuadtree(/*const Aen::Vec3f& MinPos, const Aen::Vec3f& MaxPos,*/
+			const unsigned& level, const unsigned& maxLevel, const unsigned& capacity) {
 			if (m_pQuadtree)
 			{
 				delete m_pQuadtree;
@@ -98,6 +99,7 @@ namespace Aen {
 			}
 			else
 			{
+				/*m_pQuadtree = AEN_NEW Quadtree(MinPos, MaxPos, level, maxLevel, capacity);*/
 				m_pQuadtree = AEN_NEW Quadtree(level, maxLevel, capacity);
 				m_pQuadtree->Initialize();
 			}

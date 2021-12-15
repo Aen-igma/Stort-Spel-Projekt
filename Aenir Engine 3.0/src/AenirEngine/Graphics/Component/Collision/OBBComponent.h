@@ -28,8 +28,8 @@ namespace Aen
 		void SetBoundingBox(const Vec3f& extents);
 		void SetBoundingBox(const float& x, const float& y, const float& z);
 
-		/*void Transform(Aen::Mat4f transform);
-		void Transform(sm::Matrix transform);*/
+		void Transform(Aen::Mat4f transform);
+		void Transform(sm::Matrix transform);
 		void SetOrientation(Aen::Vec3f v);
 		void SetOrientation(const float& x, const float& y, const float& z);
 

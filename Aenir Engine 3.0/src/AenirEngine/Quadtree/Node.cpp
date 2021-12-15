@@ -159,12 +159,12 @@ void Node::Subdivide()
 	DirectX::BoundingBox Quad3(Center3, Extends);
 	this->mp_children[3] = AEN_NEW Node(Quad3, m_level, m_maxLevel, m_capacity);
 
-	/*bool inserted;
-	int counter = 0;*/
+	bool inserted;
+	int counter = 0;
 	//------------- Check which objects is in which quad ---------------//
 	for (auto& box : m_objs)
 	{
-		/*inserted = false;
+		inserted = false;
 		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox))
 		{
 			mp_children[0]->Insert(box);
@@ -188,26 +188,26 @@ void Node::Subdivide()
 		if (inserted)
 		{
 			counter++;
+		}
+	/*	else
+		{
+			mp_children[0]->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+			mp_children[1]->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+			mp_children[2]->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+			mp_children[3]->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 		}*/
-		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[0]->Insert(box);
-		}
-		if (mp_children[1]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[1]->Insert(box);
-		}
-		if (mp_children[2]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[2]->Insert(box);
-		}
-		if (mp_children[3]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[3]->Insert(box);
-		}
+
 	}
 	
-	//assert(counter == m_objs.size());
+	/*string temp = "\nbaby: " + std::to_string(mp_children[0]->m_level) + "\nsize: " + std::to_string(mp_children[0]->m_objs.size());
+	OutputDebugString(temp.c_str());
+	temp = "\nbaby: " + std::to_string(mp_children[1]->m_level) + "\nsize: " + std::to_string(mp_children[1]->m_objs.size());
+	OutputDebugString(temp.c_str());
+	temp = "\nbaby: " + std::to_string(mp_children[2]->m_level) + "\nsize: " + std::to_string(mp_children[2]->m_objs.size());
+	OutputDebugString(temp.c_str());
+	temp = "\nbaby: " + std::to_string(mp_children[3]->m_level) + "\nsize: " + std::to_string(mp_children[3]->m_objs.size());
+	OutputDebugString(temp.c_str());*/
+	assert(counter == m_objs.size());
 	m_objs.clear();
 	Aen::EntityHandler::RemoveEntity(*mp_aabbDraw);
 }
