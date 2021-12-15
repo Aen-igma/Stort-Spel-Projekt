@@ -200,16 +200,11 @@ void Gameplay::Initialize()
 		m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
 		m_PSList.emplace_back(m_PS);
 	}
-
-	//PS system pos
-	//m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetHeightLimit(ChestPos.y + 10.f);
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x, ChestPos.y, ChestPos.z);
+	
 
 	m_chest.SetType(Type::Open);
 
-	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
-	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+	
 
 	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 
