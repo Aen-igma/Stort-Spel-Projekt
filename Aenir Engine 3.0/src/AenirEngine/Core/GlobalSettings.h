@@ -62,8 +62,8 @@ namespace Aen {
 			m_vSync = set;
 		}
 
-		static void SetUseDebugCam(const bool& set) {
-			m_useDebugCam = set;
+		static void SetDebug(const bool& set) {
+			m_debug = set;
 		}
 
 		static void RemoveMainCamera() {
@@ -74,10 +74,6 @@ namespace Aen {
 			m_pLightCamera = nullptr;
 		}
 
-		static void RemoveDebugCamera() {
-			m_pDebugCamera = nullptr;
-		}
-
 		static Window* GetWindow(){
 			return m_pWindow;
 		}
@@ -86,8 +82,8 @@ namespace Aen {
 			return m_vSync;
 		}
 
-		static const bool GetUseDebugCam() {
-			return m_useDebugCam;
+		static const bool GetDebug() {
+			return m_debug;
 		}
 
 		static void StartQuadtree(/*const Aen::Vec3f& MinPos, const Aen::Vec3f& MaxPos,*/
@@ -241,7 +237,7 @@ namespace Aen {
 
 		//static ImGuiHandler* mp_guiHandler;
 		static bool m_vSync;
-		static bool m_useDebugCam;
+		static bool m_debug;
 
 		static Renderer* m_pRenderer;
 		static Quadtree* m_pQuadtree;
