@@ -496,17 +496,15 @@ void Gameplay::Update(const float& deltaTime) {
 	else
 		Aen::Input::SetMousePos(m_Window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_Window.GetSize() * 0.5f));
 
+#ifdef _DEBUG
 	// ---------------------------------- Debug Camera --------------------------------------- //
-
 	if (Aen::Input::KeyDown(Aen::Key::I)) {
 		m_debug = true;
 		Aen::GlobalSettings::SetUseDebugCam(m_debug);
-		//Aen::GlobalSettings::SetMainCamera(*m_debugCam);
 	}
 	if (Aen::Input::KeyDown(Aen::Key::O)) {
 		m_debug = false;
 		Aen::GlobalSettings::SetUseDebugCam(m_debug);
-		//Aen::GlobalSettings::SetMainCamera(*m_player.GetCamera());
 	}
 
 	if (m_debug) {
@@ -545,9 +543,9 @@ void Gameplay::Update(const float& deltaTime) {
 
 		m_player.GetCamera()->SetRot(player.x, player.y, 0.f);
 	}
+#endif
 
 	// ---------------------------------- Enemies --------------------------------------- //
-
 	m_player.Update(m_enemyQueue, deltaTime);
 	m_bill->SetPos(m_player.GetCamera()->GetPos());
 	m_bill->SetRot(m_player.GetCamera()->GetRot().x, m_player.GetCamera()->GetRot().y, 0);
@@ -657,8 +655,10 @@ void Gameplay::Update(const float& deltaTime) {
 		mp_uiComp->SetPicPos(0, 0, 3);
 	}
 
+#ifdef _DEBUG
 	//---- Update debug frustum ----//
 	m_debugFrustum->GetComponent<Aen::OBBox>().UpdateCamVerts(m_player.GetCamera()->GetComponent<Aen::Camera>().GetFrustum());
+#endif
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
