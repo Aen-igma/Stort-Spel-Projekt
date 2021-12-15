@@ -32,8 +32,6 @@ VertexShaderOutput main(uint vertexID : SV_VertexID)
     VertexShaderOutput output;
     output.position.w = 1.0f;
 
-
-    //Acceleration form, cant make it work tho
     float a = Particles[vertexID].Age;
     float opacity = 1.0f - smoothstep(0.0f, 0.0f, a / 1.0f);
     float3 AccelOnW = float3(0.0f, 7.8f, 0.0f);
@@ -46,7 +44,7 @@ VertexShaderOutput main(uint vertexID : SV_VertexID)
     output.position = mul(output.position, pMat);
 
     output.uv = Particles[vertexID].UV;
-    output.color = float4(1.0f, 1.0f, 1.0f, opacity);
+    output.color = float4(1.0f,1.0f,1.0f,opacity);
     //output.color = Particles[vertexID].Color;
 
     return output;
