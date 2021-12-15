@@ -21,7 +21,7 @@ namespace Aen
 		//quad.Extents = DirectX::XMFLOAT3(extents.x, extents.y + 20.f, extents.z);
 
 		quad.Center = DirectX::XMFLOAT3(460.f, 10.f, 460.f);
-		quad.Extents = DirectX::XMFLOAT3(460.f, 20.f, 460.f);
+		quad.Extents = DirectX::XMFLOAT3(480.f, 20.f, 480.f);
 
 		mp_root = AEN_NEW Node(quad, level, maxLevel, capacity);
 	}

@@ -185,7 +185,6 @@ namespace Aen {
 				}
 
 				// Light Cull Pass
-				
 				//UpdateLCamBuffer();
 
 				RenderSystem::UnBindRenderTargets(1u);
