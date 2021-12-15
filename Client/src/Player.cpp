@@ -92,8 +92,8 @@ Player::Player()
 	m_protagIdleToRun->LoadAnimation(AEN_MODEL_DIR("Protagonist_Idle.fbx"));
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
 	protagRun.LoadAnimation(AEN_MODEL_DIR("Protagonist_Run.fbx"));
-	m_protagIdleToRun->AddAnimationLayer(&protagRun);
-	//m_protagIdleToRun->AddPartialAnimationLayer(&protagRun, "QuickRigCharacter1_Spine1");
+	//m_protagIdleToRun->AddAnimationLayer(&protagRun);
+	m_protagIdleToRun->AddPartialAnimationLayer(&protagRun, "QuickRigCharacter1_Spine1");
 	m_protagIdleToRun->SetBlendMode(Aen::BlendMode::LAYER_TIME);
 	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
 	protagDash.LoadAnimation(AEN_MODEL_DIR("Protagonist_Dash.fbx"));
@@ -467,7 +467,34 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
 	static float blendFactor = 0.f;
-	blendFactor = Aen::Lerp(blendFactor, axis.Magnitude(), 0.35f);
+	static float f = 0.1f;
+	static int n = 0;
+	
+	if (Aen::Input::KeyDown(Aen::Key::NUM1))
+		n = 0;
+	if (Aen::Input::KeyDown(Aen::Key::NUM2))
+		n = 1;
+	if (Aen::Input::KeyDown(Aen::Key::NUM3))
+		n = 2;
+	if (Aen::Input::KeyDown(Aen::Key::NUM4))
+		n = 2;
+	
+	switch (n)
+	{
+	case 0:
+		blendFactor = Aen::Lerp(blendFactor, 0.f, f);
+		break;
+	case 1:
+		blendFactor = Aen::Lerp(blendFactor, .3f, f);
+		break;
+	case 2:
+		blendFactor = Aen::Lerp(blendFactor, .7f, f);
+		break;
+	case 3:
+		blendFactor = Aen::Lerp(blendFactor, 1.f, f);
+		break;
+	}
+	//blendFactor = Aen::Lerp(blendFactor, axis.Magnitude(), 0.35f);
 	//blendSpeed *= deltaTime;
 	m_protagIdleToRun->SetBlendFactor(blendFactor);
 	mp_charCont->Move(m_v * deltaTime, deltaTime);
