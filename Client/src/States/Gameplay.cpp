@@ -12,10 +12,6 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_PS);
 	Aen::EntityHandler::RemoveEntity(*m_bill);
 	Aen::EntityHandler::RemoveEntity(*m_throne);
-	if (m_debugCam)
-		Aen::EntityHandler::RemoveEntity(*m_debugCam);
-	if (m_debugFrustum)
-		Aen::EntityHandler::RemoveEntity(*m_debugFrustum);
 	
 	for (auto& d : m_enemyQueue) {
 		delete d;
@@ -41,9 +37,6 @@ void Gameplay::Initialize()
 	m_debugCam->AddComponent<Aen::Camera>();
 	m_debugCam->GetComponent<Aen::Camera>().SetCameraPerspective(90.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 300.f);
 
-	m_debugFrustum = &Aen::EntityHandler::CreateEntity();
-	m_debugFrustum->AddComponent<Aen::OBBox>();
-	m_debugFrustum->GetComponent<Aen::OBBox>().ToggleIsFrustum(true);
 	// ------------------------ Setup Directional Light ------------------------- //
 
 	m_dLight = &Aen::EntityHandler::CreateEntity();
@@ -216,7 +209,7 @@ void Gameplay::Initialize()
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 	m_debugCam->SetPos(playerStartPos.x, playerStartPos.y, playerStartPos.z);
-	m_debugFrustum->SetPos(playerStartPos.x, playerStartPos.y, playerStartPos.z);
+
 
 	if (itemNormal == 1) { //north
 		m_chest.GetEntity()->SetRot(0, 0, 0);
@@ -388,7 +381,7 @@ void Gameplay::Initialize()
 	m_bill->SetScale(0, 0, 0);
 	m_bill->SetRenderLayer(2);
 	//------QUADTREE------//
-	Aen::GlobalSettings::StartQuadtree(0, 5, 10);
+	Aen::GlobalSettings::StartQuadtree(0, 4, 10);
 	/*Aen::GlobalSettings::StartQuadtree(QuadMin, QuadMax, 0, 4, 10);*/
 
 	Aen::Input::ToggleRawMouse(true);
@@ -402,6 +395,10 @@ void Gameplay::Initialize()
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
 
 void Gameplay::Update(const float& deltaTime) {
+
+	
+
+
 
 	if (Aen::Input::KeyDown(Aen::Key::ESCAPE)) {
 		m_paused = !m_paused;
@@ -628,10 +625,6 @@ void Gameplay::Update(const float& deltaTime) {
 		m_grave.SetType(Type::Closing);
 		mp_uiComp->SetPicPos(0, 0, 3);
 	}
-
-	//---- Update debug frustum ----//
-	m_debugFrustum->GetComponent<Aen::OBBox>().UpdateCamVerts(m_player.GetCamera()->GetComponent<Aen::Camera>().GetFrustum());
-
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::F1)) {

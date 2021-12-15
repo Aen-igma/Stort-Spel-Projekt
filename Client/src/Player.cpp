@@ -21,7 +21,7 @@ Player::Player()
 
 	m_lCamera = &Aen::EntityHandler::CreateEntity();
 	m_lCamera->AddComponent<Aen::Camera>();
-	m_lCamera->GetComponent<Aen::Camera>().SetCameraOrthographic(60.f, 60.f, 0.01f, 30.f);
+	m_lCamera->GetComponent<Aen::Camera>().SetCameraOrthographic(60.f, 60.f, 0.01f, 20.f);
 	m_lCamera->SetRot(87.f, 45.f, 0.f);
 
 	Aen::GlobalSettings::SetLightCamera(*m_lCamera);

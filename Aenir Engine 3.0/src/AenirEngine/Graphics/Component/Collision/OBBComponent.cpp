@@ -6,7 +6,7 @@
 Aen::OBBox::OBBox(const size_t& id)
 	:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false), m_isOn(false)
 #ifdef _DEBUG
-	,m_canDraw(false), m_isFrustum(false)
+	,m_canDraw(false)
 #endif
 {
 	SetBoundsToMesh();
@@ -159,11 +159,6 @@ const bool Aen::OBBox::GetIsOn() const
 	return m_isOn;
 }
 
-const void Aen::OBBox::ToggleIsFrustum(bool b)
-{
-	m_isFrustum = b;
-}
-
 void Aen::OBBox::UpdateVerts()
 {
 #ifdef _DEBUG
@@ -180,14 +175,6 @@ void Aen::OBBox::UpdateVerts()
 	//for (uint32_t i = 0; i < size; i++)
 	//	m_verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
 #endif
-}
-
-void Aen::OBBox::UpdateCamVerts(const DirectX::BoundingFrustum& cam)
-{
-	DirectX::XMFLOAT3 corners[8];
-	cam.GetCorners(corners);
-	for (int i = 0; i < 8; i++)
-		m_verts[i].pos = Vec3f(corners[i].x, corners[i].y, corners[i].z);
 }
 
 void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
@@ -255,8 +242,7 @@ void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	//m_obb.Orientation = quatRot;
 
 #ifdef _DEBUG
-	if(!m_isFrustum)
-		UpdateVerts();
+	UpdateVerts();
 	if (m_canDraw) {
 		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 		m_vBuffer.UpdateBuffer(m_verts, 8);

@@ -37,7 +37,7 @@ private:
     Aen::Raycast m_ray;
 
     Aen::Entity* m_debugCam;
-    Aen::Entity* m_debugFrustum;
+
     Aen::Entity* m_plane;
     Aen::Entity* m_UI;
 
