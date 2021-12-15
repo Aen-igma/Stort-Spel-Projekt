@@ -9,7 +9,6 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_plane);
 	mp_uiComp = nullptr;
 	Aen::EntityHandler::RemoveEntity(*m_UI);
-	Aen::EntityHandler::RemoveEntity(*m_PS);
 	Aen::EntityHandler::RemoveEntity(*m_bill);
 	Aen::EntityHandler::RemoveEntity(*m_throne);
 	if (m_debugCam)
@@ -23,6 +22,10 @@ Gameplay::~Gameplay() {
 	for (auto& d : m_enemyQueue) {
 		delete d;
 	}
+	for (auto& a : m_PSList) {
+		Aen::EntityHandler::RemoveEntity(*a);
+	}
+
 	m_pSkeleBoss, m_plane, m_UI = nullptr;
 
 	Aen::GlobalSettings::StopQuadtree();
@@ -48,8 +51,7 @@ void Gameplay::Initialize()
 	m_debugFrustum = &Aen::EntityHandler::CreateEntity();
 	m_debugFrustum->AddComponent<Aen::OBBox>();
 	m_debugFrustum->GetComponent<Aen::OBBox>().ToggleIsFrustum(true);
-	//
-	// m_debugFrustum->GetComponent<Aen::OBBox>().ToggleActive(true);
+	
 	// ------------------------ Setup Directional Light ------------------------- //
 
 	m_dLight = &Aen::EntityHandler::CreateEntity();
@@ -98,9 +100,14 @@ void Gameplay::Initialize()
 	Aen::Material& throneMat = Aen::Resource::CreateMaterial("ThroneMaterial");
 
 	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
-	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Flames2.png"));
-	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FlamesOppacity.png"));
+	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("F1.png"));
+	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FO1.png"));
+	
 
+
+	
+
+	
 	slimeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
 	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
@@ -126,16 +133,7 @@ void Gameplay::Initialize()
 
 	// -------------------------- Setup Entities -------------------------------- //
 	// 
-	// -------------------------- Particle System -------------------------------- //
 
-	//Comment if you want the engine to work, big problem here
-	m_PS = &Aen::EntityHandler::CreateEntity();
-	m_PS->AddComponent<Aen::PSSystemcomponent>();
-	m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
-	/*m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(10);*/
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(0,0,0);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(5);
-	m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
 
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
@@ -167,8 +165,7 @@ void Gameplay::Initialize()
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
 	Aen::Vec3f ChestPos;
 	Aen::Vec3f doorPos;
-	//Aen::Vec3f QuadMin(1000.f, 10.f, 1000.f);
-	//Aen::Vec3f QuadMax(0.f, 10.f, 0.f);
+	Aen::Vec3f EnemyPos;
 	int roomNormal = 0;
 	int itemNormal = 0;
 
@@ -178,10 +175,7 @@ void Gameplay::Initialize()
 
 			if (mptr_map[y * Aen::mapSize + x].m_present)
 			{
-				/*QuadMin.x = min(QuadMin.x, y * 80);
-				QuadMin.z = min(QuadMin.z, x * 80);
-				QuadMax.x = max(QuadMax.x, y * 80);
-				QuadMax.z = max(QuadMax.z, x * 80);*/
+				
 
 				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 					m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
@@ -205,20 +199,32 @@ void Gameplay::Initialize()
 			}
 		}
 	}
-	/*QuadMax.x += 40.f;
-	QuadMax.z += 40.f;
-	QuadMin.x -= 40.f;
-	QuadMin.z -= 40.f;*/
+
 
 	m_chest.GetEntity()->SetPos(ChestPos);
-	//m_PS->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetRespawnHeight(ChestPos.y + 10.f);
-	//m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+
+	// -------------------------- Particle System -------------------------------- //
+	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetParticleList().size(); i++)
+	{
+		AenIF::Particle* particle = &m_levelGenerator.GetHandlerPtr()->GetParticleList()[i];
+		Aen::Entity* m_PS = &Aen::EntityHandler::CreateEntity();
+		m_PS->AddComponent<Aen::PSSystemcomponent>();
+		m_PS->GetComponent<Aen::PSSystemcomponent>().Initialize();
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetHeightLimit(6.0f);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetEmitPos(particle->translation[0], particle->translation[1], particle->translation[2]);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetVelocity(rand() % 10 + 2, rand() % 10 + 2, rand() % 10 + 2);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetNrOfPS(1);
+		m_PS->GetComponent<Aen::PSSystemcomponent>().SetMaterial(psMat);
+		m_PSList.emplace_back(m_PS);
+	}
+	
+
 	m_chest.SetType(Type::Open);
 
-	//m_player.GetEntity()->SetPos(m_bossPos.x, m_bossPos.y + 5.f, m_bossPos.z);
+	
+
 	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
-	//m_player.GetEntity()->SetPos(ChestPos.x + 10.f, ChestPos.y + 5.f, ChestPos.z);
+
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 	m_debugCam->SetPos(playerStartPos.x, playerStartPos.y, playerStartPos.z);
@@ -395,7 +401,6 @@ void Gameplay::Initialize()
 	m_bill->SetRenderLayer(2);
 	//------QUADTREE------//
 	Aen::GlobalSettings::StartQuadtree(0, 5, 10);
-	/*Aen::GlobalSettings::StartQuadtree(QuadMin, QuadMax, 0, 4, 10);*/
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
@@ -557,11 +562,21 @@ void Gameplay::Update(const float& deltaTime) {
 		mp_uiComp->SetTextSize((900.f / 1920.f) * screenSize.x, (300.f / 1024.f) * screenSize.y, 2);
 
 		if (m_door.GetNear())
+		{
 			mp_uiComp->ChangeText(2, L"Interact(F)");
+			m_BossTorch = true;
+			Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
+			psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("BF1.png"));
+
+		}
+			
 	}
 	else {
 		mp_uiComp->SetTextPos(-100.f, -100.f, 2);
 	}
+
+
+
 
 	if (Aen::Input::KeyDown(Aen::Key::F)) {
 
