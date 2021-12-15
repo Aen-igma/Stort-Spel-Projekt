@@ -1,3 +1,4 @@
+#include "SimplexNoise.hlsl"
 cbuffer Aen_CB_Transform {
     float4x4 vMat;
     float4x4 pMat;
@@ -61,6 +62,5 @@ void main(
     output.uv = float2(1, 0);
     OutStream.Append(output);
     OutStream.RestartStrip();
-
 }
 
