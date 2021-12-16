@@ -635,7 +635,8 @@ void Gameplay::Update(const float& deltaTime) {
 			m_pSkeleBoss->EmplaceMinion(bossMinion);
 			m_enemyQueue.emplace_back(bossMinion);
 		}
-
+		
+		Aen::GlobalSettings::RebuildAutoPass();
 	}
 	else enemiesToSummon = 0;
 
