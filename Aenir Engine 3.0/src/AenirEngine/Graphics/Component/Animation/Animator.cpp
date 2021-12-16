@@ -45,62 +45,126 @@ namespace Aen {
 	void Animator::GetAnimation(std::vector<Mat4f>& mat, const float& deltaTime) {
 
 		Animation* animation = m_animationList[animationIndex].second;
+		Animation* aniLayer = animation->mp_layer;
+		float blendFactor = animation->GetBlendFactor();
+		const bool& doBl = animation->IsBlendAnimation();
 
 		uint32_t sizeBA = animation->m_boneArray.size();
-		uint32_t numFrames = animation->m_timeStamp.size();
-		float duration = animation->m_duration * m_scale;
+		uint32_t baseNumFrames = animation->m_timeStamp.size();
+		uint32_t layerNumFrames = doBl ? aniLayer->m_timeStamp.size() : 0.f;
+		const uint16_t baseOffset = doBl ? baseNumFrames / layerNumFrames : 1.f;
+		const uint16_t layerOffset = doBl ? layerNumFrames / baseNumFrames : 1.f;
 
-		if(m_time < duration) {
+		
+		float duration = doBl ? duration = aniLayer->m_duration * m_scale : duration = animation->m_duration * m_scale;
+
+
+
+		if (m_time < duration) 
+		{
 			uint32_t l = 0u;
-			uint32_t r = numFrames;
+			uint32_t r = doBl ? layerNumFrames : baseNumFrames;
+			uint32_t baseR = layerNumFrames;
 			uint32_t mid = 0u;
+			uint32_t layerMid = 0u;
 
 			uint32_t fFrame = 0u;
 			uint32_t sFrame = 0u;
 
-			while(true) {
+			while (true) {
 				mid = (l + r) / 2u;
-				float ft = animation->m_timeStamp[mid] * duration;
-				float st = animation->m_timeStamp[Clamp(mid + 1u, 0u, numFrames - 1u)] * duration;
-				if((m_time >= ft && m_time <= st) || ft == st) {
+				float ft = doBl ? aniLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
+				float st = doBl ? aniLayer->m_timeStamp[Clamp(mid + 1u, 0u, layerNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
+				if ((m_time >= ft && m_time <= st) || ft == st) {
 					fFrame = mid;
-					sFrame = (mid + 1u) % numFrames;
+					sFrame = doBl ? (mid + 1u) % baseNumFrames : (mid + 1u) % baseNumFrames;
 					break;
-				} 
+				}
 
-				if(m_time < ft)
+				if (m_time < ft)
 					r = mid;
 
-				if(m_time > ft)
+				if (m_time > ft)
 					l = mid;
+			}
+			while (doBl)
+			{
+				mid = (l + r) / 2u;
+				layerMid = doBl ? (l + baseR) / 2u : 0u;
+				float ft = doBl ? aniLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
+				float st = doBl ? aniLayer->m_timeStamp[Clamp(mid + 1u, 0u, layerNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
+				if ((m_time >= ft && m_time <= st) || ft == st) {
+					fFrame = mid;
+					sFrame = doBl ? (mid + 1u) % baseNumFrames : (mid + 1u) % baseNumFrames;
+					break;
+				}
 
+				if (m_baseTime < ft)
+					r = mid;
+
+				if (m_baseTime > ft)
+					l = mid;
 			}
 
-			float f = m_time - animation->m_timeStamp[fFrame] * duration;
-			float h = animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
+			float f = animation->IsBlendAnimation() ? m_time - aniLayer->m_timeStamp[fFrame] * duration : m_time - animation->m_timeStamp[fFrame] * duration;
+			float h = animation->IsBlendAnimation() ? aniLayer->m_timeStamp[sFrame] * duration - aniLayer->m_timeStamp[fFrame] * duration : animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
 			float t = f / h;
 
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[fFrame].rotation;
-				Mat4f nextFrame = animation->m_keyFrames.at(bName)[sFrame].rotation;
+				Mat4f currentFrame;
+				Mat4f nextFrame;
+				if (animation->IsBlendAnimation() && animation->m_doBlendBone[i])
+				{
+					
+					uint16_t baseFrame = fFrame % baseNumFrames;
+					uint16_t layerFrame = fFrame % layerNumFrames;
 
+					sm::Matrix currentRot0 = animation->m_keyFrames.at(bName)[baseFrame].rotation.smMat;
+					sm::Matrix currentRot1 = aniLayer->m_keyFrames.at(bName)[layerFrame].rotation.smMat;
+					sm::Matrix currentBlendRot = currentBlendRot.Lerp(currentRot0, currentRot1, blendFactor);
+					currentFrame.smMat = currentBlendRot;
+
+					sm::Matrix nextRot0 = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation.smMat;
+					sm::Matrix nextRot1 = aniLayer->m_keyFrames.at(bName)[sFrame % layerNumFrames].rotation.smMat;
+					sm::Matrix nextBlendRot = currentBlendRot.Lerp(nextRot0, nextRot1, blendFactor);
+
+					nextFrame.smMat = nextBlendRot;
+				}
+				else
+				{
+					currentFrame = animation->m_keyFrames.at(bName)[fFrame % baseNumFrames].rotation;
+					nextFrame = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation;
+				}
 				mat.emplace_back(Lerp(currentFrame, nextFrame, t));
 			}
 
 			m_time += deltaTime;
-		} else {
-
+		}
+		else
+		{
 			if(m_loop)
 				m_time = 0.f;
 
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
-				Mat4f currentFrame = animation->m_keyFrames.at(bName)[numFrames - 1].rotation;
+				Mat4f currentFrame;
+				if (animation->IsBlendAnimation() && animation->m_doBlendBone[i])
+				{
+					sm::Matrix rot0 = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation.smMat;
+					sm::Matrix rot1 = aniLayer->m_keyFrames.at(bName)[layerNumFrames - 1].rotation.smMat;
+					sm::Matrix blendRot = blendRot.Lerp(rot0, rot1, blendFactor);
+					currentFrame.smMat = blendRot;
+					
+				}
+				else
+					currentFrame = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation;
+
 
 				mat.emplace_back(currentFrame);
 			}
 		}
+
 	}
 
 	void Animator::BindBuffer() {

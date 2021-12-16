@@ -28,6 +28,7 @@ namespace Aen
 		static void ProcNodeAnim(aiNode* node, const aiScene* scene, std::unordered_map<std::string, aiBone*>& bones);
 		static void ProcBoneHeiarchy(aiNode* node, const aiScene* scene, std::unordered_map<std::string, aiBone*>& bones, std::vector<Bones>& boneArray, const int& parentId = -1);
 		static void ProcAnimation(const aiScene* scene, std::unordered_map<std::string, std::vector<KeyFrameData>>& keyFrames, std::vector<float>& m_timeStamp, const std::string& rootBone, float& duration);
+		static void FindChildren(std::vector<Bones>& boneArray);
 	};
 
 	

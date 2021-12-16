@@ -15,7 +15,7 @@ Player::Player()
 	m_player->SetTag("Player");
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
-	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 90.f);
+	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 150.f);
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
 
@@ -100,10 +100,16 @@ Player::Player()
 	mp_charCont = &m_player->GetComponent<Aen::CharacterController>();
 	mp_charCont->Resize(2.3f);
 
-	Aen::Animation& protagIdle = Aen::Resource::CreateAnimation("protagIdle");
-	protagIdle.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Idle.fbx"));
+	m_protagIdleToRun = &Aen::Resource::CreateAnimation("protagIdle");
+	m_protagIdleToRun->LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Idle.fbx"));
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
 	protagRun.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Run.fbx"));
+	m_protagIdleToRun->AddAnimationLayer(&protagRun);
+
+	//Aen::Animation& clusterfuck = 
+
+	//m_protagIdleToRun->AddPartialAnimationLayer(&protagRun, "QuickRigCharacter1_Spine1");
+	m_protagIdleToRun->SetBlendMode(Aen::BlendMode::LAYER_TIME);
 	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
 	protagDash.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Dash.fbx"));
 	Aen::Animation& protagAttack = Aen::Resource::CreateAnimation("protagAttack");
@@ -120,7 +126,7 @@ Player::Player()
 
 	m_playerMeshHolder->AddComponent<Aen::Animator>();
 	m_animation = &m_playerMeshHolder->GetComponent<Aen::Animator>();
-	m_animation->AddAnimation(protagIdle, "Idle");
+	m_animation->AddAnimation(*m_protagIdleToRun, "Idle");
 	m_animation->AddAnimation(protagRun, "Run");
 	m_animation->AddAnimation(protagDash, "Dash");
 	m_animation->AddAnimation(protagAttack, "Attack");
@@ -209,10 +215,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	lCamDir.y = 0.f;
 	Aen::Vec3f lCamPos = m_player->GetPos() + Aen::Vec3f(0.f, 10.f, 0.f) + lCamDir.Normalized() * 25.f;
 	m_lCamera->SetPos(lCamPos);
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	if (Aen::Input::KeyPress(Aen::Key::SHIFT)) m_movementSpeed = 24.f;
 	else m_movementSpeed = 8.f;
-#endif
+//#endif
 
 	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19) * Aen::MatRotate(0.f, -10.f, 0.f) * m_playerMeshHolder->GetTransformation());
 
@@ -231,14 +237,14 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
 			}
 		}
-		if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_UP) {
-			printf("scroll up\n");
+		//if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_UP) {
+		//	printf("scroll up\n");
 
-		}
-		else if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_DOWN) {
-			printf("scroll down\n");
+		//}
+		//else if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_DOWN) {
+		//	printf("scroll down\n");
 
-		}
+		//}
 	}
 
 	// ------------------------------ Player Controler ---------------------------------- //
@@ -426,13 +432,13 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	mp_hurtBox->SetOrientation(0.f, yaw, 0.f);
 	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
 	
-	if(axis.Magnitude() > 0.f) {
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.28f);
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
-	} else {
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.85f);
+	//if(axis.Magnitude() > 0.f) {
+	//	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
+	//	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
+	//} else {
+		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
 		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
-	}
+	//}
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
@@ -480,6 +486,11 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
+	static float blendFactor = 0.f;
+
+	blendFactor = Aen::Lerp(blendFactor, axis.Magnitude(), 0.35f);
+	//blendSpeed *= deltaTime;
+	m_protagIdleToRun->SetBlendFactor(blendFactor);
 	mp_charCont->Move(m_v * deltaTime, deltaTime);
 }
 

@@ -75,13 +75,14 @@ void Gameplay::Initialize()
 	// Boss
 	Aen::Animation& bossThrone = Aen::Resource::CreateAnimation("Boss_Throne");
 	bossThrone.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Throne_Sit.fbx"));
-	Aen::Animation& bossWalk = Aen::Resource::CreateAnimation("Boss_Walk");
-	bossWalk.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Hover.fbx"));
+	Aen::Animation& bossWalkToAttack = Aen::Resource::CreateAnimation("Boss_Walk");
+	bossWalkToAttack.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Hover.fbx"));
 	Aen::Animation& bossAttack = Aen::Resource::CreateAnimation("Boss_Attack");
 	bossAttack.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Attack.fbx"));
 	Aen::Animation& bossSummon = Aen::Resource::CreateAnimation("Boss_Summon");
 	bossSummon.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Summon.fbx"));
 
+	bossWalkToAttack.AddAnimationLayer(&bossAttack);
 	
 
 	// ----------------------------- Load Meshes -------------------------------- //
@@ -114,6 +115,7 @@ void Gameplay::Initialize()
 	skeleLightMat["InnerEdgeColor"] = Aen::Color::Black;
 	skeleLightMat["OuterEdgeColor"] = Aen::Color::Black;
 	skeleLightMat["BaseColor"] = Aen::Color::White;
+	skeleLightMat["SpecularStrength"] = 0.f;
 
 	// Material to switch to when enemy is hurt
 	enemyMatHurt.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));

@@ -67,7 +67,8 @@ public:
 	void AddBossesAlive(int n);
 
 private:
-
+	Aen::Animation* m_protagIdleToRun = nullptr;
+	Aen::Animation* m_protagRunToAttack = nullptr;
 	void SwordSwing(float speed, float time, const float& deltaTime);
 	void ResetSword();
 	void AddEvent(EventData& event);

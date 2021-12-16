@@ -18,6 +18,7 @@ namespace Aen {
 		bool m_loop;
 		UINT animationIndex;
 		float m_time;
+		float m_baseTime;
 
 		std::vector<std::pair<std::string, Animation*>> m_animationList;
 		void Update();
