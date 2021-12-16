@@ -112,11 +112,13 @@ void Gameplay::Initialize()
 	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["BaseColor"] = Aen::Color::Cyan;
+	slimeMat["RimLightSize"] = 0.2f;
 
 	skeleLightMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Skel_Light_UV3_DONE.png"));
 	skeleLightMat["InnerEdgeColor"] = Aen::Color::Black;
 	skeleLightMat["OuterEdgeColor"] = Aen::Color::Black;
 	skeleLightMat["BaseColor"] = Aen::Color::White;
+	skeleLightMat["SpecularStrength"] = 0.f;
 
 	// Material to switch to when enemy is hurt
 	enemyMatHurt.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));
