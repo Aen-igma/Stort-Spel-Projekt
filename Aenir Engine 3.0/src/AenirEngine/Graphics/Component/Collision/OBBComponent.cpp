@@ -6,7 +6,7 @@
 Aen::OBBox::OBBox(const size_t& id)
 	:Drawable(id), m_offset(Vec3f::zero), m_isColliding(false), m_isOn(false)
 #ifdef _DEBUG
-	,m_canDraw(false)
+	,m_canDraw(false), m_isFrustum(false)
 #endif
 {
 	SetBoundsToMesh();
@@ -103,8 +103,6 @@ void Aen::OBBox::SetBoundsToMesh()
 void Aen::OBBox::SetBoundingBox(const Vec3f& extents)
 {
 	m_obb.Extents = extents.smVec + m_offset.smVec;
-	//static sm::Matrix m = DirectX::XMMatrixRotationRollPitchYaw(1.f, 2.f, 1.f);
-	//m_obb.Transform(m_obb,DirectX::XMMatrixRotationRollPitchYaw(1.f, 2.f, 1.f));
 	UpdateVerts();
 }
 
@@ -121,27 +119,22 @@ void Aen::OBBox::SetBoundingBox(const float& x, const float& y, const float& z)
 #endif
 }
 
-void Aen::OBBox::Transform(Aen::Mat4f transform)
-{
-	//m_obb.Transform(m_obb, transform.smMat);
-}
-
-void Aen::OBBox::Transform(sm::Matrix transform)
-{
-	//m_obb.Transform(m_obb, transform);
-	//UpdateVerts();
-}
+//void Aen::OBBox::Transform(Aen::Mat4f transform)
+//{
+//}
+//
+//void Aen::OBBox::Transform(sm::Matrix transform)
+//{
+//}
 
 void Aen::OBBox::SetOrientation(Aen::Vec3f v)
 {
 	m_obb.Orientation = sm::Vector4(DirectX::XMQuaternionRotationRollPitchYaw(v.x, v.y, v.z));
-	//UpdateVerts();
 }
 
 void Aen::OBBox::SetOrientation(const float& x, const float& y, const float& z)
 {
 	m_obb.Orientation = sm::Vector4(DirectX::XMQuaternionRotationRollPitchYaw(x, y, z));
-	//UpdateVerts();
 }
 
 void Aen::OBBox::ToggleActive(bool b)
@@ -159,6 +152,11 @@ const bool Aen::OBBox::GetIsOn() const
 	return m_isOn;
 }
 
+const void Aen::OBBox::ToggleIsFrustum(bool b)
+{
+	m_isFrustum = b;
+}
+
 void Aen::OBBox::UpdateVerts()
 {
 #ifdef _DEBUG
@@ -166,14 +164,16 @@ void Aen::OBBox::UpdateVerts()
 	m_obb.GetCorners(corners);
 	for (int i = 0; i < 8; i++)
 		m_verts[i].pos = Vec3f(corners[i].x, corners[i].y, corners[i].z);
-	//DirectX::BoundingBox tBox;
-	//tBox.Extents = m_obb.Extents;
+#endif
+}
 
-	//const size_t size = tBox.CORNER_COUNT;
-	//DirectX::XMFLOAT3 points[size];
-	//tBox.GetCorners(points);
-	//for (uint32_t i = 0; i < size; i++)
-	//	m_verts[i].pos = Vec3f(points[i].x, points[i].y, points[i].z);
+void Aen::OBBox::UpdateCamVerts(const DirectX::BoundingFrustum& cam)
+{
+#ifdef _DEBUG
+	DirectX::XMFLOAT3 corners[8];
+	cam.GetCorners(corners);
+	for (int i = 0; i < 8; i++)
+		m_verts[i].pos = Vec3f(corners[i].x, corners[i].y, corners[i].z);
 #endif
 }
 
@@ -190,6 +190,7 @@ void Aen::OBBox::Draw(Renderer& renderer, const uint32_t& layer)
 		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
 		renderer.m_collisionBuffer.BindBuffer<PShader>(0);
+		if (m_isFrustum) renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
 		if (!m_isOn) renderer.m_collisionBuffer.GetData().color = { .2f,.2f,.2f };
 		else if (m_isColliding) renderer.m_collisionBuffer.GetData().color = { 0.f,1.f,0.f };
 		else renderer.m_collisionBuffer.GetData().color = { 1.f,0.f,0.f };
@@ -242,7 +243,8 @@ void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	//m_obb.Orientation = quatRot;
 
 #ifdef _DEBUG
-	UpdateVerts();
+	if(!m_isFrustum)
+		UpdateVerts();
 	if (m_canDraw) {
 		RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 		m_vBuffer.UpdateBuffer(m_verts, 8);

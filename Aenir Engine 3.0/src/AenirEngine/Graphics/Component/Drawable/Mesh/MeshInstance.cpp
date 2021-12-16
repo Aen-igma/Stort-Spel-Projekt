@@ -63,6 +63,8 @@ namespace Aen {
 		m_pMaterials[index] = &material;
 	}
 
+
+
 	void MeshInstance::SetMaterial(const std::string& materialSlotName, Material& material) {
 		if(m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
 		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &material;
@@ -72,6 +74,28 @@ namespace Aen {
 		if(m_pMesh->m_meshMaterialName.count(materialSlotName) == 0) throw;
 		if(!Resource::MaterialExist(materialName)) throw;
 		m_pMaterials[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
+	}
+
+	DirectX::BoundingBox MeshInstance::GetBox()
+	{
+		Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
+
+		DirectX::BoundingBox box;
+		box.Extents = m_pMesh->m_aabb.Extents;
+		box.Center = m_pMesh->m_aabb.Center;
+		box.Transform(box, m.smMat);
+		return box;
+	}
+
+	DirectX::BoundingOrientedBox MeshInstance::GetOrientedBox()
+	{
+		Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
+
+		DirectX::BoundingOrientedBox box;
+		box.Extents = m_pMesh->m_aabb.Extents;
+		box.Center = m_pMesh->m_aabb.Center;
+		box.Transform(box, m.smMat);
+		return box;
 	}
 
 	void MeshInstance::Draw(Renderer& renderer, const uint32_t& layer) {
@@ -213,13 +237,14 @@ namespace Aen {
 	{
 		if (m_pMesh)
 		{
-			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
-			/*renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
-			renderer.m_cbTransform.UpdateBuffer();*/
+			//Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
+			///*renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();
+			//renderer.m_cbTransform.UpdateBuffer();*/
 
-			DirectX::BoundingOrientedBox box;
-			box.Extents = m_pMesh->m_aabb.Extents;
-			box.Transform(box, m.smMat);
+			//DirectX::BoundingOrientedBox box;
+			//box.Extents = m_pMesh->m_aabb.Extents;
+			//box.Transform(box, m.smMat);
+			DirectX::BoundingOrientedBox box = GetOrientedBox();
 			
 			if(GlobalSettings::GetMainCamera())
 				if (box.Intersects(GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum()))

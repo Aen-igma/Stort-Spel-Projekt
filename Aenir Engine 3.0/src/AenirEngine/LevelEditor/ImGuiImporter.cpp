@@ -86,6 +86,8 @@ namespace Aen
 
 		if (model.rigidBody && model.rigidBodyType != m_imguiTypes.HITBOXTYPE[0]) // Check if should have rigidbody
 		{
+
+
 			entity->AddComponent<Aen::StaticBody>();
 			entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh	(true);
 		}

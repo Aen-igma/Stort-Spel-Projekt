@@ -496,6 +496,7 @@ namespace Aen {
 		friend class StaticBody;
 		friend class DynamicBody;
 		friend class PSSystemcomponent;
+		friend class Quadtree;
 	};
 
 }

@@ -12,7 +12,7 @@ namespace Aen {
 
 		CB_Collision() :color(Vec3f::zero), switcher(0) {}
 	};
-#endif // _DEBUG
+#endif
 	struct CB_DispatchInfo {
 		Vec2i threadGroups;
 		Vec2i numThreads;
@@ -66,6 +66,7 @@ namespace Aen {
 		void Render();
 		void UpdateCamBuffer();
 		void UpdateLCamBuffer();
+		void UpdateDebugCamBuffer();
 		
 		std::array<std::vector<Drawable*>, 7> m_drawTable;
 
@@ -88,7 +89,8 @@ namespace Aen {
 		VShader m_opaqueVS;
 #ifdef _DEBUG
 		PShader m_collisionPS;
-#endif // _DEBUG
+		CBuffer<CB_Collision> m_collisionBuffer;
+#endif 
 		PShader m_transparencyPS;
 		UAView m_UAVBackBuffer;
 		RWTexture2D m_UAVFinal;
@@ -127,11 +129,5 @@ namespace Aen {
 
 		GBuffer m_particleOut;
 		CShader m_PostPatricleCS;
-
-#ifdef _DEBUG
-		CBuffer<CB_Collision> m_collisionBuffer;
-
-		
-#endif // _DEBUG
 	};
 }

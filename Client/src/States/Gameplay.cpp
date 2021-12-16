@@ -11,7 +11,13 @@ Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	Aen::EntityHandler::RemoveEntity(*m_bill);
 	Aen::EntityHandler::RemoveEntity(*m_throne);
-
+	if (m_debugCam)
+	{
+		Aen::EntityHandler::RemoveEntity(*m_debugCam);
+		Aen::GlobalSettings::RemoveDebugCamera();
+	}
+	if (m_debugFrustum)
+		Aen::EntityHandler::RemoveEntity(*m_debugFrustum);
 	
 	for (auto& d : m_enemyQueue) {
 		delete d;
@@ -22,19 +28,30 @@ Gameplay::~Gameplay() {
 
 	m_pSkeleBoss, m_plane, m_UI = nullptr;
 
+	Aen::GlobalSettings::StopQuadtree();
+
 	Aen::Resource::RemoveAllMaterials();
 	Aen::Resource::RemoveAllMeshes();
 	Aen::Resource::RemoveAllTextures();
 	Aen::Resource::RemoveAllAnimations();
+
 }
 
 void Gameplay::Initialize()
 {
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
-
 	// ----------------------------- Setup Camera ------------------------------- //
 
+	m_debugCam = &Aen::EntityHandler::CreateEntity();
+	m_debugCam->AddComponent<Aen::Camera>();
+	m_debugCam->GetComponent<Aen::Camera>().SetCameraPerspective(90.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 300.f);
+	Aen::GlobalSettings::SetDebugCamera(*m_debugCam);
+
+	m_debugFrustum = &Aen::EntityHandler::CreateEntity();
+	m_debugFrustum->AddComponent<Aen::OBBox>();
+	m_debugFrustum->GetComponent<Aen::OBBox>().ToggleIsFrustum(true);
+	
 	// ------------------------ Setup Directional Light ------------------------- //
 
 	m_dLight = &Aen::EntityHandler::CreateEntity();
@@ -86,17 +103,12 @@ void Gameplay::Initialize()
 	Aen::Material& psMat = Aen::Resource::CreateMaterial("PSMaterial");
 	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("F1.png"));
 	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FO1.png"));
-	// 
-	//psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("BF1.png"));
-	//psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("BFO1.png"));
+	
 
 
 	
 
-	/*enemyMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
-	enemyMat["InnerEdgeColor"] = Aen::Color::Cyan;
-	enemyMat["OuterEdgeColor"] = Aen::Color::Cyan;
-	enemyMat["BaseColor"] = Aen::Color::Cyan;*/
+	
 	slimeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
 	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
@@ -105,6 +117,7 @@ void Gameplay::Initialize()
 	skeleLightMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Skel_Light_UV3_DONE.png"));
 	skeleLightMat["InnerEdgeColor"] = Aen::Color::Black;
 	skeleLightMat["OuterEdgeColor"] = Aen::Color::Black;
+	skeleLightMat["BaseColor"] = Aen::Color::White;
 
 	// Material to switch to when enemy is hurt
 	enemyMatHurt.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("White.png"));
@@ -161,30 +174,34 @@ void Gameplay::Initialize()
 		for (UINT x = 0; x < Aen::mapSize; x++) {
 			m_levelGenerator.SpawnRoom(Aen::Vec2i(x, y));
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
-				m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
-
-			}
-			mptr_map[x + y * Aen::mapSize].mptr_parent;
-
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
+			if (mptr_map[y * Aen::mapSize + x].m_present)
 			{
+				
 
-				m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
-				m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
-				roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
-				for (int i = 0; i < 10; i++) {
-					m_enemyQueue.emplace_back(AEN_NEW Rimuru(EnemyPos));
+				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
+					m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+
 				}
-			}
-			mptr_map[x + y * Aen::mapSize].mptr_parent;
+				mptr_map[x + y * Aen::mapSize].mptr_parent;
 
-			if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
-				itemNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
-				m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
+				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::BOSS) 
+				{
+					m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
+					m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
+					roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+		
+				}
+				mptr_map[x + y * Aen::mapSize].mptr_parent;
+
+				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ITEM) {
+					itemNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+					m_levelGenerator.GetRoomPos(x, y, &ChestPos.x, &ChestPos.z);
+				}
 			}
 		}
 	}
+
+
 	m_chest.GetEntity()->SetPos(ChestPos);
 
 	// -------------------------- Particle System -------------------------------- //
@@ -211,9 +228,8 @@ void Gameplay::Initialize()
 
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
-
-	
-
+	m_debugCam->SetPos(playerStartPos.x, playerStartPos.y, playerStartPos.z);
+	m_debugFrustum->SetPos(playerStartPos.x, playerStartPos.y, playerStartPos.z);
 
 	if (itemNormal == 1) { //north
 		m_chest.GetEntity()->SetRot(0, 0, 0);
@@ -230,10 +246,6 @@ void Gameplay::Initialize()
 
 	//m_attack->SetParent(*m_player);
 	//printf("");
-
-
-
-	// 
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
 
@@ -388,11 +400,15 @@ void Gameplay::Initialize()
 	m_bill->GetComponent<Aen::MeshInstance>().SetMaterial("Bill");
 	m_bill->SetScale(0, 0, 0);
 	m_bill->SetRenderLayer(2);
+	//------QUADTREE------//
+	Aen::GlobalSettings::StartQuadtree(0, 5, 10);
 
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	SetWin(false);
 	m_bossHP = m_pSkeleBoss->GetHealth();
+
+	
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -481,8 +497,56 @@ void Gameplay::Update(const float& deltaTime) {
 	else
 		Aen::Input::SetMousePos(m_Window.GetWindowPos() + (Aen::Vec2i)((Aen::Vec2f)m_Window.GetSize() * 0.5f));
 
-	// ---------------------------------- Enemies --------------------------------------- //
+#ifdef _DEBUG
+	// ---------------------------------- Debug Camera --------------------------------------- //
+	if (Aen::Input::KeyDown(Aen::Key::I)) {
+		m_debug = true;
+		Aen::GlobalSettings::SetUseDebugCam(m_debug);
+	}
+	if (Aen::Input::KeyDown(Aen::Key::O)) {
+		m_debug = false;
+		Aen::GlobalSettings::SetUseDebugCam(m_debug);
+	}
 
+	if (m_debug) {
+		static Aen::Vec2f mouse, player;
+		while (!Aen::Input::MouseBufferIsEmbty()) {
+			Aen::MouseEvent me = Aen::Input::ReadEvent();
+
+			if (me.getInputType() == Aen::MouseEvent::MouseInput::RAW_MOVE) {
+
+				mouse.x += (float)me.GetPos().y * 5.f * deltaTime;
+				mouse.y += (float)me.GetPos().x * 5.f * deltaTime;
+				m_debugCam->SetRot(mouse.x, mouse.y, 0.f);
+			}
+		}
+
+		Aen::Vec3f axis;
+		axis.x = Aen::Input::KeyPress(Aen::Key::LEFT) - Aen::Input::KeyPress(Aen::Key::RIGHT);
+		axis.y = Aen::Input::KeyPress(Aen::Key::DOWN) - Aen::Input::KeyPress(Aen::Key::UP);
+		axis.z = Aen::Input::KeyPress(Aen::Key::NUMPAD1) - Aen::Input::KeyPress(Aen::Key::NUMPAD3);
+		if (Aen::Input::KeyPress(Aen::Key::NUMPAD5))
+		{
+			m_debugCam->MoveRelative(Aen::Vec3f(axis.x, 0.f, axis.y) * deltaTime * 40.f);
+			m_debugCam->Move(Aen::Vec3f(0.f, axis.z, 0.f) * deltaTime * 40.f);
+		}
+		else
+		{
+			m_debugCam->MoveRelative(Aen::Vec3f(axis.x, 0.f, axis.y) * deltaTime * 10.f);
+			m_debugCam->Move(Aen::Vec3f(0.f, axis.z, 0.f) * deltaTime * 10.f);
+		}
+
+		Aen::Vec2f inputs; 
+		inputs.x = Aen::Input::KeyPress(Aen::Key::NUMPAD8) - Aen::Input::KeyPress(Aen::Key::NUMPAD2);
+		inputs.y = Aen::Input::KeyPress(Aen::Key::NUMPAD6) - Aen::Input::KeyPress(Aen::Key::NUMPAD4);
+		player.x += inputs.x * 20.f * deltaTime;
+		player.y += inputs.y * 20.f * deltaTime;
+
+		m_player.GetCamera()->SetRot(player.x, player.y, 0.f);
+	}
+#endif
+
+	// ---------------------------------- Enemies --------------------------------------- //
 	m_player.Update(m_enemyQueue, deltaTime);
 	m_bill->SetPos(m_player.GetCamera()->GetPos());
 	m_bill->SetRot(m_player.GetCamera()->GetRot().x, m_player.GetCamera()->GetRot().y, 0);
@@ -572,7 +636,8 @@ void Gameplay::Update(const float& deltaTime) {
 			m_pSkeleBoss->EmplaceMinion(bossMinion);
 			m_enemyQueue.emplace_back(bossMinion);
 		}
-
+		
+		Aen::GlobalSettings::RebuildAutoPass();
 	}
 	else enemiesToSummon = 0;
 
@@ -591,6 +656,12 @@ void Gameplay::Update(const float& deltaTime) {
 		m_grave.SetType(Type::Closing);
 		mp_uiComp->SetPicPos(0, 0, 3);
 	}
+
+#ifdef _DEBUG
+	//---- Update debug frustum ----//
+	m_debugFrustum->GetComponent<Aen::OBBox>().UpdateCamVerts(m_player.GetCamera()->GetComponent<Aen::Camera>().GetFrustum());
+#endif
+
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 
 	if (Aen::Input::KeyDown(Aen::Key::F1)) {
@@ -616,8 +687,7 @@ void Gameplay::Update(const float& deltaTime) {
 			m_Window.LoadSettings(wDesc);
 		}
 	}
-
-	// ------------------------------ Quick exit Button -------------------------------- //
+	// ------------------------------ Quick Exit Button -------------------------------- //
 
 	// ------------------------------------- States -------------------------------------- //
 	//if (m_hp <= 0 && m_enemyQueue.size() == 0)

@@ -21,7 +21,7 @@ Player::Player()
 
 	m_lCamera = &Aen::EntityHandler::CreateEntity();
 	m_lCamera->AddComponent<Aen::Camera>();
-	m_lCamera->GetComponent<Aen::Camera>().SetCameraOrthographic(60.f, 60.f, 0.01f, 20.f);
+	m_lCamera->GetComponent<Aen::Camera>().SetCameraOrthographic(60.f, 60.f, 0.01f, 30.f);
 	m_lCamera->SetRot(87.f, 45.f, 0.f);
 
 	Aen::GlobalSettings::SetLightCamera(*m_lCamera);
@@ -215,10 +215,10 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	lCamDir.y = 0.f;
 	Aen::Vec3f lCamPos = m_player->GetPos() + Aen::Vec3f(0.f, 10.f, 0.f) + lCamDir.Normalized() * 25.f;
 	m_lCamera->SetPos(lCamPos);
-
+#ifdef _DEBUG
 	if (Aen::Input::KeyPress(Aen::Key::SHIFT)) m_movementSpeed = 24.f;
 	else m_movementSpeed = 8.f;
-
+#endif
 
 	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19) * Aen::MatRotate(0.f, -10.f, 0.f) * m_playerMeshHolder->GetTransformation());
 
@@ -556,6 +556,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 							break;
 						}
 
+
 					switch (e[i]->GetEnemyType())
 					{
 					case EnemyType::BASE:
@@ -574,9 +575,10 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 					default:
 						break;
 					}
-						
+					
 					e[i] = nullptr;
 					e.erase(e.begin() + i);
+					Aen::GlobalSettings::RebuildAutoPass();
 				}
 			}
 		}

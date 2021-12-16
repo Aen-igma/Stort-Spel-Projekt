@@ -65,7 +65,7 @@ namespace Aen {
 				ComponentHandler::UpdatePS(deltaTime);
 			}
 			PhysicsHandler::Update(static_cast<float>(deltaTime));
-			
+	
 			m_renderer->Culling();
 			m_renderer->Render();
 
