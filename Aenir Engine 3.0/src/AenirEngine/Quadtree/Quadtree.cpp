@@ -68,8 +68,8 @@ namespace Aen
 
 	void Quadtree::Update(Renderer& renderer, std::array<std::vector<Drawable*>, 7>& drawtable)
 	{
-		//if (GlobalSettings::GetMainCamera())
-		//{
+		if (GlobalSettings::GetMainCamera())
+		{
 			m_quadObjectsToRender.clear();
 			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
 			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
@@ -84,7 +84,7 @@ namespace Aen
 				if (m_autoPass[i].mp_drawable->FrustumCull(renderer))
 					drawtable[m_autoPass[i].m_renderLayer].emplace_back(m_autoPass[i].mp_drawable);
 			}
-		//}
+		}
 	}
 
 }

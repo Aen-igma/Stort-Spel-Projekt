@@ -38,10 +38,6 @@ namespace Aen {
 			return m_pLightCamera;
 		}
 
-		static Entity* GetDebugCamera() {
-			return m_pDebugCamera;
-		}
-
 		static void SetBGColor(const Color& color) {
 			m_BGColor = color;
 		}

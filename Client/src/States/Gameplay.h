@@ -26,20 +26,19 @@ private:
 
     float m_speed;
     float m_fSpeed;
+    float camSpeed = 0.5;
     bool m_toggleFullScreen;
     bool m_paused = false;
-    bool m_debug = false;
-
-    float camSpeed = 0.5;
-
     bool m_BossTorch = false;
-
+#ifdef _DEBUG
+    bool m_debug = false;
+    Aen::Entity* m_debugCam;
+    Aen::Entity* m_debugFrustum;
+#endif
     Aen::Vec2f screenSize;
 
     Aen::Raycast m_ray;
 
-    Aen::Entity* m_debugCam;
-    Aen::Entity* m_debugFrustum;
     Aen::Entity* m_plane;
     Aen::Entity* m_UI;
 

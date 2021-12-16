@@ -97,8 +97,9 @@ void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeSt
 	{
 		if (this->m_areaQuad.Intersects(other) && m_objs.size() > 0)
 		{
+#ifdef _DEBUG
 			this->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
-
+#endif
 			for (int i = 0; i < m_objs.size(); i++)
 			{
 				if (other.Intersects(m_objs[i].m_boundBox))
@@ -122,8 +123,10 @@ void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeSt
 				}
 			}
 		}
+#ifdef _DEBUG
 		else
 			this->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(false);
+#endif
 	}
 	else
 	{
