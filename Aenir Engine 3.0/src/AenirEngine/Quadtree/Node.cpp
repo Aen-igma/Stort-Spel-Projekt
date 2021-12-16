@@ -1,14 +1,6 @@
 #include"PCH.h"
 #include"Node.h"
 
-NodeStruct::NodeStruct()
-{
-	this->m_ID = 0;
-	this->m_renderLayer = 0;
-	this->m_boundBox = DirectX::BoundingBox();
-	this->mp_drawable = nullptr;
-}
-
 NodeStruct::NodeStruct(size_t ID, uint32_t RenderLayer, DirectX::BoundingBox box, Aen::Drawable* drawable)
 {
 	this->m_ID = ID;
@@ -30,6 +22,7 @@ Node::Node()
 	this->m_level = 0;
 	this->m_maxLevel = 1;
 	this->m_capacity = 3;
+	this->m_alreadyAdded = false;
 }
 
 Node::Node(DirectX::BoundingBox& quad, const unsigned& level, const unsigned& max_level, const unsigned& capacity)
@@ -40,10 +33,13 @@ Node::Node(DirectX::BoundingBox& quad, const unsigned& level, const unsigned& ma
 	this->mp_aabbDraw->AddComponent<Aen::AABoundBox>();
 	this->mp_aabbDraw->GetComponent<Aen::AABoundBox>().SetBoundingBox(quad.Extents.x, quad.Extents.y, quad.Extents.z);
 	this->mp_aabbDraw->SetPos(quad.Center.x, quad.Center.y, quad.Center.z);
+	this->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 
 	this->m_level = level;
 	this->m_maxLevel = max_level;
 	this->m_capacity = capacity;
+	this->m_alreadyAdded = false;
+
 #ifdef _DEBUG
 	string temp = "\nme baby Level: " + std::to_string(m_level) + "\nquadPos: " + std::to_string(quad.Center.x) + ", " + std::to_string(quad.Center.y) + ", " + std::to_string(quad.Center.z);
 	OutputDebugString(temp.c_str());
@@ -60,6 +56,8 @@ Node::~Node()
 			delete mp_children[i];
 		}
 	}
+	if (m_objs.size() > 0)
+		m_objs.clear();
 	if(mp_aabbDraw)
 		Aen::EntityHandler::RemoveEntity(*mp_aabbDraw);
 }
@@ -95,31 +93,31 @@ void Node::Insert(const NodeStruct& obj)
 
 void Node::FrustumTest(const DirectX::BoundingFrustum& other, std::vector<NodeStruct>& output) //View frustrum culling
 {
-	bool alreadyAdded = false;
 	if (!mp_children[0])
 	{
 		if (this->m_areaQuad.Intersects(other) && m_objs.size() > 0)
 		{
 			this->mp_aabbDraw->GetComponent<Aen::AABoundBox>().ToggleActive(true);
+
 			for (int i = 0; i < m_objs.size(); i++)
 			{
 				if (other.Intersects(m_objs[i].m_boundBox))
 				{
-					alreadyAdded = false;
+					this->m_alreadyAdded = false;
 					if (output.size() > 0)
 					{
-						for (int j = 0; j < output.size() && alreadyAdded == false; j++)
+						for (int j = 0; j < output.size() && this->m_alreadyAdded == false; j++)
 						{
 							if (m_objs[i].m_ID == output[j].m_ID)
-								alreadyAdded = true;
+								this->m_alreadyAdded = true;
 						}
 					}
 					else
 					{
 						output.emplace_back(NodeStruct(m_objs[i].m_ID, m_objs[i].m_renderLayer, m_objs[i].m_boundBox, m_objs[i].mp_drawable));
-						alreadyAdded = true;
+						this->m_alreadyAdded = true;
 					}
-					if(!alreadyAdded)
+					if(!this->m_alreadyAdded)
 						output.emplace_back(NodeStruct(m_objs[i].m_ID, m_objs[i].m_renderLayer, m_objs[i].m_boundBox, m_objs[i].mp_drawable));
 				}
 			}
@@ -159,12 +157,34 @@ void Node::Subdivide()
 	DirectX::BoundingBox Quad3(Center3, Extends);
 	this->mp_children[3] = AEN_NEW Node(Quad3, m_level, m_maxLevel, m_capacity);
 
-	/*bool inserted;
-	int counter = 0;*/
+	
 	//------------- Check which objects is in which quad ---------------//
 	for (auto& box : m_objs)
 	{
-		/*inserted = false;
+		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox))
+		{
+			mp_children[0]->Insert(box);
+		}
+		if (mp_children[1]->m_areaQuad.Intersects(box.m_boundBox))
+		{
+			mp_children[1]->Insert(box);
+		}
+		if (mp_children[2]->m_areaQuad.Intersects(box.m_boundBox))
+		{
+			mp_children[2]->Insert(box);
+		}
+		if (mp_children[3]->m_areaQuad.Intersects(box.m_boundBox))
+		{
+			mp_children[3]->Insert(box);
+		}
+	}
+	
+	/*
+	bool inserted;
+	int counter = 0;
+	for (auto& box : m_objs)
+	{
+		inserted = false;
 		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox))
 		{
 			mp_children[0]->Insert(box);
@@ -188,26 +208,10 @@ void Node::Subdivide()
 		if (inserted)
 		{
 			counter++;
-		}*/
-		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[0]->Insert(box);
-		}
-		if (mp_children[1]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[1]->Insert(box);
-		}
-		if (mp_children[2]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[2]->Insert(box);
-		}
-		if (mp_children[3]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[3]->Insert(box);
 		}
 	}
-	
-	//assert(counter == m_objs.size());
+	assert(counter == m_objs.size()); 
+	*/
 	m_objs.clear();
 	Aen::EntityHandler::RemoveEntity(*mp_aabbDraw);
 }
