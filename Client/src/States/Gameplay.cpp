@@ -56,13 +56,14 @@ void Gameplay::Initialize()
 	// Boss
 	Aen::Animation& bossThrone = Aen::Resource::CreateAnimation("Boss_Throne");
 	bossThrone.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Throne_Sit.fbx"));
-	Aen::Animation& bossWalk = Aen::Resource::CreateAnimation("Boss_Walk");
-	bossWalk.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Hover.fbx"));
+	Aen::Animation& bossWalkToAttack = Aen::Resource::CreateAnimation("Boss_Walk");
+	bossWalkToAttack.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Hover.fbx"));
 	Aen::Animation& bossAttack = Aen::Resource::CreateAnimation("Boss_Attack");
 	bossAttack.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Attack.fbx"));
 	Aen::Animation& bossSummon = Aen::Resource::CreateAnimation("Boss_Summon");
 	bossSummon.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Summon.fbx"));
 
+	bossWalkToAttack.AddAnimationLayer(&bossAttack);
 	
 
 	// ----------------------------- Load Meshes -------------------------------- //
@@ -210,6 +211,8 @@ void Gameplay::Initialize()
 
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
+
+	
 
 
 	if (itemNormal == 1) { //north
