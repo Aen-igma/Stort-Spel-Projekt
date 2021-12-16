@@ -112,7 +112,6 @@ void Gameplay::Initialize()
 	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["BaseColor"] = Aen::Color::Cyan;
-	slimeMat["RimLightSize"] = 0.2f;
 
 	skeleLightMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("Skel_Light_UV3_DONE.png"));
 	skeleLightMat["InnerEdgeColor"] = Aen::Color::Black;
