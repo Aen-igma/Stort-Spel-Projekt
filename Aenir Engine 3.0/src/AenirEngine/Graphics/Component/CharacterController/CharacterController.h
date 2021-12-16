@@ -17,6 +17,7 @@ namespace Aen {
 		void Move(const Vec3f& dir, const float& deltaTime);
 		void SetUpDirection(const Vec3f& up);
 		const Vec3f GetPos();
+		const float GetMagnitude() const;
 
 		const bool IsGrounded();
 
