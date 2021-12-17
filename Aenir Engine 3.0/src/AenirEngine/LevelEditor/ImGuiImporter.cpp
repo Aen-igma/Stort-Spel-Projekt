@@ -97,6 +97,36 @@ namespace Aen
 		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
 	}
 
+	void ImGuiImporter::rotate(AenIF::Particle& particle, float angle, Aen::Vec2f offset)
+	{
+		Vec3f point = Vec3f(0, 0, 0);
+		Vec3f center;
+		Vec3f scale;
+		Vec3f rotation;
+
+		float x1 = 0;
+		float x2 = 0;
+
+		float y1 = 0;
+		float y2 = 0;
+
+		center = Vec3f(particle.translation[0], particle.translation[1], particle.translation[2]);
+
+		x1 = point.x - center.x;
+		y1 = point.z - center.z;
+
+		rotation = Vec3f(0, 0, 0);
+		x2 = x1 * cos(angle) - y1 * sin(angle);
+		y2 = x1 * sin(angle) + y1 * cos(angle);
+
+		center.x = x2 + point.x;
+
+		center.z = y2 + point.z;
+
+		particle.translation[0] = center.x + offset.x;
+		particle.translation[2] = center.z + offset.y;
+	}
+
 	ImGuiImporter::ImGuiImporter()
 	{
 		this->m_entityList = new vector<Aen::Entity*>;
@@ -488,10 +518,9 @@ namespace Aen
 		for (size_t i = 0; i < roomPtr->GetParticleVector().size(); i++)
 		{
 			AenIF::Particle* particle = &roomPtr->GetParticleVector()[i];
-			particle->translation[0] += offset.x;
-			particle->translation[2] += offset.y;
 			if (particle->type == IGH::TORCH)
 			{
+				rotate(*particle, angle, offset);
 				m_particleList.push_back(*particle);
 			}
 		}
@@ -795,16 +824,38 @@ namespace Aen
 		Aen::Texture* materialTexture;
 		Aen::Texture* normalTexture;
 
-		float s = sin(angle);
-		float c = cos(angle);
+		//* (C_PI / 180);
+		float angleDegree = angle;
+		float andleRadians = angle;
 
-		float posX = ((model.translation[0]) * c) - ((model.translation[2]) * s);
-		float posZ = ((model.translation[0]) * s) + ((model.translation[2]) * c);
+		Vec3f point = Vec3f(0, 0, 0);
+		Vec3f center;
+		Vec3f scale;
+		Vec3f rotation;
+
+		float x1 = 0;
+		float x2 = 0;
+
+		float y1 = 0;
+		float y2 = 0;
 
 		AenIF::Model temp = model;
 
-		temp.translation[0] = posX + offset.x;
-		temp.translation[2] = posZ + offset.y;
+		center = Vec3f(model.translation[0], model.translation[1], model.translation[2]);
+
+		x1 = point.x - center.x;
+		y1 = point.z - center.z;
+
+		rotation = Vec3f(model.rotation[0], model.rotation[1], model.rotation[2]);
+		x2 = x1 * cos(andleRadians) - y1 * sin(andleRadians);
+		y2 = x1 * sin(andleRadians) + y1 * cos(andleRadians);
+
+		center.x = x2 + point.x;
+
+		center.z = y2 + point.z;
+
+		temp.translation[0] = center.x + offset.x;
+		temp.translation[2] = center.z + offset.y;
 		temp.rotation[1] = model.rotation[1] + (angle * 57.2957795f);
 
 		if (model.type != IGH::NORMALENEMY && model.type != IGH::LIGHTSKELETON)
@@ -824,7 +875,7 @@ namespace Aen
 
 	void ImGuiImporter::AddPointLight(AenIF::Light& input, Aen::Vec2f offset, float angle)
 	{
-		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
+		/*Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
 		light->AddComponent<Aen::PointLight>();
 		light->GetComponent<Aen::PointLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
@@ -838,6 +889,40 @@ namespace Aen
 		float posY = (input.translation[0] * s) + (input.translation[2] * c);
 
 		light->SetPos(posX + offset.x, input.translation[1], posY + offset.y);
+		light->SetRot(input.rotation[0], input.rotation[1] + (angle * 57.2957795f), input.rotation[2]);
+
+		AddLight(light);*/
+
+		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
+
+		light->AddComponent<Aen::PointLight>();
+		light->GetComponent<Aen::PointLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
+		light->GetComponent<Aen::PointLight>().SetLightDist(input.attenuation[0], input.attenuation[1], input.attenuation[2], input.range);
+		light->GetComponent<Aen::PointLight>().SetStrength(input.intensity);
+
+		Vec3f point = Vec3f(0, 0, 0);
+		Vec3f center;
+		Vec3f scale;
+		Vec3f rotation;
+
+		float x1 = 0;
+		float x2 = 0;
+
+		float y1 = 0;
+		float y2 = 0;
+
+		center = Vec3f(input.translation[0], input.translation[1], input.translation[2]);
+
+		x1 = point.x - center.x;
+		y1 = point.z - center.z;
+
+		x2 = x1 * cos(angle) - y1 * sin(angle);
+		y2 = x1 * sin(angle) + y1 * cos(angle);
+
+		center.x = x2 + point.x;
+		center.z = y2 + point.z;
+
+		light->SetPos(center.x + offset.x, input.translation[1], center.z + offset.y);
 		light->SetRot(input.rotation[0], input.rotation[1] + (angle * 57.2957795f), input.rotation[2]);
 
 		AddLight(light);

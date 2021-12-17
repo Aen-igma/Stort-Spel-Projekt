@@ -49,7 +49,7 @@ namespace Aen
 
 		void setMaterial(Aen::Material& materialOut,AenIF::Material materialIn);
 		void addBaseCommon(Aen::Entity*& entity, Aen::Mesh*& mesh, Aen::Material*& material, Aen::Texture*& materialTexture, Aen::Texture*& normalTexture, AenIF::Model& model, AenIF::Texture& texture,AenIF::Material& materialIn);
-
+		void rotate(AenIF::Particle& particle, float angle, Aen::Vec2f offset);
 	public:
 		void Convert(const Aen::Vec4f inputVec, float* inputArray);
 		void Convert(float* inputArray, Aen::Vec4f& inputVec);
