@@ -13,7 +13,6 @@ namespace Aen {
 	bool GlobalSettings::m_useDebugCam(false);
 	Renderer* GlobalSettings::m_pRenderer(nullptr);
 	Quadtree* GlobalSettings::m_pQuadtree(nullptr);
-	//ImGuiHandler* GlobalSettings::mp_guiHandler = AEN_NEW ImGuiHandler();
 
 	Material* GlobalSettings::m_defaultMaterial(nullptr);
 	Texture* GlobalSettings::m_defaultTexture(nullptr);

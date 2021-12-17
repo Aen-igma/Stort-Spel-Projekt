@@ -1,9 +1,5 @@
 #pragma once
 #include "BuritoMath.h"
-#include <DirectXMath.h>
-#include <DirectXCollision.h>
-#include "Graphics\Component\Drawable\Drawable.h"
-#include "Graphics\Component\Entity.h"
 #include "Graphics\Component\EntityHandler.h"
 
 struct NodeStruct
@@ -13,10 +9,9 @@ struct NodeStruct
 	DirectX::BoundingBox m_boundBox;
 	Aen::Drawable* mp_drawable;
 
-	NodeStruct();
-	NodeStruct(size_t ID, uint32_t RenderLayer, DirectX::BoundingBox box, Aen::Drawable* drawable);
+	NodeStruct(size_t ID = 0, uint32_t RenderLayer = 0, 
+		DirectX::BoundingBox box = DirectX::BoundingBox(), Aen::Drawable* drawable = nullptr);
 	~NodeStruct();
-
 };
 
 class Node
@@ -37,6 +32,7 @@ private:
 	unsigned m_level;
 	unsigned m_maxLevel;
 	unsigned m_capacity;
+	bool m_alreadyAdded;
 
 	void Subdivide();
 };

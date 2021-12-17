@@ -1,7 +1,6 @@
 #include "PCH.h"
 #include "Quadtree.h"
 #include "Core\GlobalSettings.h"
-#include "Graphics/Component/ComponentHandler.h"
 
 namespace Aen
 {
@@ -10,15 +9,9 @@ namespace Aen
 		mp_root = nullptr;
 	}
 
-	Quadtree::Quadtree(/*const Aen::Vec3f& MinPos, const Aen::Vec3f& MaxPos,*/
-		const unsigned& level, const unsigned& maxLevel, const unsigned& capacity)
+	Quadtree::Quadtree(const unsigned& level, const unsigned& maxLevel, const unsigned& capacity)
 	{
 		DirectX::BoundingBox quad;
-		//Aen::Vec3f center, extents;
-		//center = (MinPos + MaxPos) * 0.5f;
-		//extents = (MaxPos - MinPos) * 0.5f;
-		//quad.Center = DirectX::XMFLOAT3(center.x, center.y, center.z);
-		//quad.Extents = DirectX::XMFLOAT3(extents.x, extents.y + 20.f, extents.z);
 
 		quad.Center = DirectX::XMFLOAT3(460.f, 10.f, 460.f);
 		quad.Extents = DirectX::XMFLOAT3(480.f, 20.f, 480.f);
@@ -78,9 +71,7 @@ namespace Aen
 		if (GlobalSettings::GetMainCamera())
 		{
 			m_quadObjectsToRender.clear();
-
 			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
-			//m_cameraFrustrum.Far = 60.f;
 			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
 
 			for (int i = 0; i < m_quadObjectsToRender.size(); i++)

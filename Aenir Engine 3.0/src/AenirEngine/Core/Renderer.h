@@ -66,8 +66,9 @@ namespace Aen {
 		void Render();
 		void UpdateCamBuffer();
 		void UpdateLCamBuffer();
+#ifdef _DEBUG
 		void UpdateDebugCamBuffer();
-		
+#endif
 		std::array<std::vector<Drawable*>, 7> m_drawTable;
 
 		Window& m_window;

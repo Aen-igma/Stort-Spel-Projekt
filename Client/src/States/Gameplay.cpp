@@ -7,18 +7,10 @@ Gameplay::Gameplay(Aen::Window& window)
 Gameplay::~Gameplay() {
 	Aen::EntityHandler::RemoveEntity(*m_dLight);
 	Aen::EntityHandler::RemoveEntity(*m_plane);
-	mp_uiComp = nullptr;
 	Aen::EntityHandler::RemoveEntity(*m_UI);
 	Aen::EntityHandler::RemoveEntity(*m_bill);
 	Aen::EntityHandler::RemoveEntity(*m_throne);
-	if (m_debugCam)
-	{
-		Aen::EntityHandler::RemoveEntity(*m_debugCam);
-		Aen::GlobalSettings::RemoveDebugCamera();
-	}
-	if (m_debugFrustum)
-		Aen::EntityHandler::RemoveEntity(*m_debugFrustum);
-	
+
 	for (auto& d : m_enemyQueue) {
 		delete d;
 	}
@@ -26,7 +18,17 @@ Gameplay::~Gameplay() {
 		Aen::EntityHandler::RemoveEntity(*a);
 	}
 
-	m_pSkeleBoss, m_plane, m_UI = nullptr;
+#ifdef _DEBUG
+	if (m_debugCam)
+	{
+		Aen::EntityHandler::RemoveEntity(*m_debugCam);
+		Aen::GlobalSettings::RemoveDebugCamera();
+	}
+	if (m_debugFrustum)
+		Aen::EntityHandler::RemoveEntity(*m_debugFrustum);
+#endif	
+
+	mp_uiComp, m_pSkeleBoss, m_plane, m_UI = nullptr;
 
 	Aen::GlobalSettings::StopQuadtree();
 
@@ -41,7 +43,8 @@ void Gameplay::Initialize()
 {
 	srand((UINT)time(NULL));
 	State::SetLoad(false);
-	// ----------------------------- Setup Camera ------------------------------- //
+#ifdef _DEBUG
+	// ----------------------------- Setup Debug Camera ------------------------------- //
 
 	m_debugCam = &Aen::EntityHandler::CreateEntity();
 	m_debugCam->AddComponent<Aen::Camera>();
@@ -51,7 +54,7 @@ void Gameplay::Initialize()
 	m_debugFrustum = &Aen::EntityHandler::CreateEntity();
 	m_debugFrustum->AddComponent<Aen::OBBox>();
 	m_debugFrustum->GetComponent<Aen::OBBox>().ToggleIsFrustum(true);
-	
+#endif	
 	// ------------------------ Setup Directional Light ------------------------- //
 
 	m_dLight = &Aen::EntityHandler::CreateEntity();
@@ -59,7 +62,6 @@ void Gameplay::Initialize()
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color(0.3f, 0.3f, 0.5f, 1.f));
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(0.3f);
 	m_dLight->SetRot(3.f, 45.f, 0.f);
-
 	// ----------------------------- Animations -------------------------------- //
 	
 	// Skel_Light
@@ -104,11 +106,6 @@ void Gameplay::Initialize()
 	psMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("F1.png"));
 	psMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("FO1.png"));
 	
-
-
-	
-
-	
 	slimeMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("SlimeRimuruFace.png"));
 	slimeMat["InnerEdgeColor"] = Aen::Color::Cyan;
 	slimeMat["OuterEdgeColor"] = Aen::Color::Cyan;
@@ -134,9 +131,6 @@ void Gameplay::Initialize()
 	throneMat["OuterEdgeColor"] = Aen::Color::Black;
 
 	// -------------------------- Setup Entities -------------------------------- //
-	// 
-
-
 
 	m_plane = &Aen::EntityHandler::CreateEntity();
 	m_plane->AddComponent<Aen::StaticBody>();
@@ -146,9 +140,6 @@ void Gameplay::Initialize()
 	m_throne->AddComponent<Aen::MeshInstance>();
 	m_throne->GetComponent<Aen::MeshInstance>().SetMesh(throne);
 	m_throne->GetComponent<Aen::MeshInstance>().SetMaterial(throneMat);
-	//m_throne->AddComponent<Aen::StaticBody>();
-	//m_throne->GetComponent<Aen::StaticBody>().SetBoundsToMesh(true);
-	
 
 	// ------------------- Procedural generation testing staging grounds ------- //
 	m_levelGenerator.LoadMutipleRoomFiles();
@@ -158,8 +149,6 @@ void Gameplay::Initialize()
 	m_levelGenerator.SetMapTheme(Aen::RoomTheme::GENERIC);
 
 	//Match this value to the size of the rooms we are using
-	//m_levelGenerator.SetRoomDimension(80.f); //Deprecated, using the default value instead of setting it in run time
-	//mptr_map = m_levelGenerator.GenerateLevel();
 	mptr_map = m_levelGenerator.GenerationTestingFunction();
 	m_levelGenerator.CleanMap();
 
@@ -202,7 +191,6 @@ void Gameplay::Initialize()
 		}
 	}
 
-
 	m_chest.GetEntity()->SetPos(ChestPos);
 
 	// -------------------------- Particle System -------------------------------- //
@@ -220,18 +208,14 @@ void Gameplay::Initialize()
 		m_PSList.emplace_back(m_PS);
 	}
 	
-
 	m_chest.SetType(Type::Open);
-
-	
-
 	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
-
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
+#ifdef _DEBUG
 	m_debugCam->SetPos(playerStartPos.x, playerStartPos.y, playerStartPos.z);
 	m_debugFrustum->SetPos(playerStartPos.x, playerStartPos.y, playerStartPos.z);
-
+#endif
 	if (itemNormal == 1) { //north
 		m_chest.GetEntity()->SetRot(0, 0, 0);
 	}
@@ -401,6 +385,7 @@ void Gameplay::Initialize()
 	m_bill->GetComponent<Aen::MeshInstance>().SetMaterial("Bill");
 	m_bill->SetScale(0, 0, 0);
 	m_bill->SetRenderLayer(2);
+
 	//------QUADTREE------//
 	Aen::GlobalSettings::StartQuadtree(0, 5, 10);
 
@@ -408,8 +393,6 @@ void Gameplay::Initialize()
 	Aen::Input::SetMouseVisible(false);
 	SetWin(false);
 	m_bossHP = m_pSkeleBoss->GetHealth();
-
-	
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -439,8 +422,6 @@ void Gameplay::Update(const float& deltaTime) {
 			mp_uiComp->SetTextSize((900.f / 1920) * screenSize.x, (300 / 1024) * screenSize.y, 3);
 
 		}
-		//State::SetState(States::Loadscreen);
-		//m_Window.m_exit();
 	}
 
 	if (m_paused) {
@@ -545,6 +526,10 @@ void Gameplay::Update(const float& deltaTime) {
 
 		m_player.GetCamera()->SetRot(player.x, player.y, 0.f);
 	}
+
+	// Update debug frustum
+	m_debugFrustum->GetComponent<Aen::OBBox>().UpdateCamVerts(m_player.GetCamera()->GetComponent<Aen::Camera>().GetFrustum());
+
 #endif
 
 	// ---------------------------------- Enemies --------------------------------------- //
@@ -657,11 +642,6 @@ void Gameplay::Update(const float& deltaTime) {
 		m_grave.SetType(Type::Closing);
 		mp_uiComp->SetPicPos(0, 0, 3);
 	}
-
-#ifdef _DEBUG
-	//---- Update debug frustum ----//
-	m_debugFrustum->GetComponent<Aen::OBBox>().UpdateCamVerts(m_player.GetCamera()->GetComponent<Aen::Camera>().GetFrustum());
-#endif
 
 	// ------------------------------ Toggle Fullscreen --------------------------------- //
 

@@ -32,27 +32,6 @@ namespace Aen {
 	
 	void GameLoop::Run() {
 		bool useVsync = GlobalSettings::GetVSync();
-		
-		/*m_start = m_end = ResClock::now();
-		while(Aen::WindowHandle::HandleMsg()) {
-
-			m_end = ResClock::now();
-			while(std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start) > m_frameTime) {
-				m_deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end - m_start);
-				m_start = ResClock::now();
-
-				if(m_app->m_window.IsActive()) {
-					Input::Update();
-					m_app->Update(static_cast<float>(m_deltaTime.count()));
-				}
-
-				PhysicsHandler::Update(m_deltaTime.count());
-			}
-
-			ComponentHandler::UpdateAnimation();
-			m_renderer->Culling();
-			m_renderer->Render();
-		}*/
 
 		double sStart = 0, deltaTime = 0;
 		while (Aen::WindowHandle::HandleMsg()) {
@@ -74,9 +53,6 @@ namespace Aen {
 			ComponentHandler::UpdateAnimation();
 		}
 
-		// Destroy imGui
-
-		//delete Aen::GlobalSettings::GetImGuiHandler();
 		
 		delete m_app;
 		Resource::Destroy();
@@ -85,7 +61,6 @@ namespace Aen {
 		GlobalSettings::Destroy();
 		PhysicsHandler::Destroy();
 		delete m_renderer;
-		
 	}
 
 	void GameLoop::InitApp(Aen::App* app)

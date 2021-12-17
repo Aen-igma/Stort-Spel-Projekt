@@ -106,7 +106,6 @@ namespace Aen {
 		{
 			//--- Quadtree Culling ---//
 			GlobalSettings::m_pQuadtree->Update(*this, m_drawTable);
-
 		}
 		else
 		{
@@ -171,10 +170,10 @@ namespace Aen {
 
 				UpdateCamBuffer();
 
+#ifdef _DEBUG
 				if (GlobalSettings::GetUseDebugCam())
-				{
 					UpdateDebugCamBuffer();
-				}
+#endif
 
 				// Pre Depth Pass
 				RenderSystem::SetViewPort(m_viewPort);
@@ -308,7 +307,7 @@ namespace Aen {
 			m_cbTransform.GetData().m_lvpMat = Mat4f::identity;
 		}
 	}
-
+#ifdef _DEBUG
 	void Renderer::UpdateDebugCamBuffer()
 	{
 		if (GlobalSettings::m_pDebugCamera) {
@@ -338,5 +337,5 @@ namespace Aen {
 			m_cbTransform.GetData().m_lvpMat = Mat4f::identity;
 		}
 	}
-
+#endif
 }
