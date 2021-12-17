@@ -186,6 +186,8 @@ namespace Aen {
 					RenderSystem::Dispatch(renderer.m_dispatchGroups, 1u);
 
 					RenderSystem::UnBindShader<CShader>();
+					/*RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
+					RenderSystem::UnBindUnOrderedAccessViews(1u, 1u);*/
 					RenderSystem::UnBindUnOrderedAccessViews(0u, 2u);
 					RenderSystem::UnBindShaderResources<CShader>(0u, pMaterial->m_pShaderModel->m_gBuffer.GetCount());
 				}

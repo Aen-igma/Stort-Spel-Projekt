@@ -63,24 +63,10 @@ void Gameplay::Initialize()
 	// ----------------------------- Animations -------------------------------- //
 	
 	// Skel_Light
-	Aen::Animation& skelIdle = Aen::Resource::CreateAnimation("Skel_Idle");
-	skelIdle.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_NewIdle.fbx"));
-	Aen::Animation& skelWalk = Aen::Resource::CreateAnimation("Skel_Walk");
-	skelWalk.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_Walking_2.fbx"));
-	Aen::Animation& skelAttack = Aen::Resource::CreateAnimation("Skel_Attack");
-	skelAttack.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_NewAttack.fbx"));
+	
 
 	// Boss
-	Aen::Animation& bossThrone = Aen::Resource::CreateAnimation("Boss_Throne");
-	bossThrone.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Throne_Sit.fbx"));
-	Aen::Animation& bossWalkToAttack = Aen::Resource::CreateAnimation("Boss_Walk");
-	bossWalkToAttack.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Hover.fbx"));
-	Aen::Animation& bossAttack = Aen::Resource::CreateAnimation("Boss_Attack");
-	bossAttack.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Attack.fbx"));
-	Aen::Animation& bossSummon = Aen::Resource::CreateAnimation("Boss_Summon");
-	bossSummon.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Summon.fbx"));
-
-	bossWalkToAttack.AddAnimationLayer(&bossAttack);
+	
 	
 
 	// ----------------------------- Load Meshes -------------------------------- //

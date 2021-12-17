@@ -4,20 +4,10 @@
 namespace Aen {
 
 	struct VertexAnimation {
-		Vec3f pos;
-		Vec3f norm;
-		Vec3f tan;
-		Vec3f bi;
+		Vec3f pos, norm, tan, bi;
 		Vec2f uv;
 		Vec4i boneId;
 		Vec4f boneWeights;
-	};
-
-	struct AssimpData {
-		Mat4f transform;
-		std::string name;
-		int childCount = 0;
-		std::vector<AssimpData> children;
 	};
 
 	struct KeyFrameData {
@@ -29,8 +19,7 @@ namespace Aen {
 	struct Bones {
 		int boneID, parentID;
 		std::string boneName;
-		Mat4f localMatrix;
-		Mat4f offsetMatrix;
+		Mat4f localMatrix, offsetMatrix;
 		std::vector<Bones*> pChildren;
 	};
 
@@ -65,9 +54,8 @@ namespace Aen {
 		void LoadAnimation(const std::string& animationPath);
 		void AddAnimationLayer(Animation* pLayer);
 		void AddPartialAnimationLayer(Animation* pLayer, const std::string& root);
-		/// <summary>
-		/// 0.0f - 1.0f
-		/// </summary>
+		
+		// ------ Blend ------ //
 		void SetBlendFactor(const float& blendFactor);
 		const bool IsBlendAnimation() const;
 		const float GetBlendFactor() const;

@@ -1,7 +1,6 @@
 #include "NecroBoss.h"
 
 Boss::Boss(const Aen::Vec3f position, float hp) :
-	//m_hurtbox(&Aen::EntityHandler::CreateEntity()),
 	mE_hurtBox(&Aen::EntityHandler::CreateEntity()),
 	Enemy(EnemyType::BOSS), m_direction(0.f, 0.f, 1.f),
 	m_thronePosition(m_enemy->GetPos() + Aen::Vec3f(0.f, 4.f, 0.f)), bs(BossState::STATIONARY),
@@ -26,6 +25,17 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	skeleBossMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("SkeletonBoss_glow.png"));
 
 	// --- ANIMATION --- //
+	Aen::Animation& bossThrone = Aen::Resource::CreateAnimation("Boss_Throne");
+	bossThrone.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Throne_Sit.fbx"));
+	Aen::Animation& bossWalkToAttack = Aen::Resource::CreateAnimation("Boss_Walk");
+	bossWalkToAttack.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Hover.fbx"));
+	Aen::Animation& bossAttack = Aen::Resource::CreateAnimation("Boss_Attack");
+	bossAttack.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Attack.fbx"));
+	Aen::Animation& bossSummon = Aen::Resource::CreateAnimation("Boss_Summon");
+	bossSummon.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Summon.fbx"));
+
+	bossWalkToAttack.AddAnimationLayer(&bossAttack);
+
 
 	m_enemy->AddComponent<Aen::Animator>();
 	m_animator = &m_enemy->GetComponent<Aen::Animator>();
@@ -34,8 +44,6 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	m_animator->AddAnimation("Boss_Attack", "attack");
 	m_animator->AddAnimation("Boss_Summon", "cast");
 	m_animator->SetFrameRate(24);
-	
-
 
 	// ----------------- //
 
@@ -44,18 +52,10 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 
 	mp_hurtBox->SetBoundingBox(2.f, 3.f, 1.f);
 
-	m_thronePosition = position/* + Aen::Vec3f(0.f, 5.5f, 0.f)*/;
+	m_thronePosition = position;
 
-	m_enemy->SetPos(position /*+ Aen::Vec3f(0.f, 50.f, 0.f)*/);
+	m_enemy->SetPos(position);
 	mE_hurtBox->SetParent(*m_enemy);
-	//mE_sword = &Aen::EntityHandler::CreateEntity();
-	//mE_sword->AddComponent<Aen::MeshInstance>();
-	//Aen::Mesh& swordMesh = Aen::Resource::CreateMesh("DuckBringer");
-	//swordMesh.Load(AEN_MODEL_DIR("SwordOffset.fbx"));
-	//mE_sword->GetComponent<Aen::MeshInstance>().SetMesh(swordMesh);
-	//mE_sword->SetScale(3.f);
-	//mE_sword->SetParent(*m_enemy);
-
 
 	mp_hitbox->ToggleActive(true);
 
@@ -66,13 +66,15 @@ Boss::~Boss()
 {
 	mE_hurtBox->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*mE_hurtBox);
-	//mE_sword->RemoveParent();
-	//Aen::EntityHandler::RemoveEntity(*mE_sword);
+	Aen::EntityHandler::RemoveEntity(*m_enemy);
+	m_animator->RemoveAnimation("throne");
+	m_animator->RemoveAnimation("walk");
+	m_animator->RemoveAnimation("attack");
+	m_animator->RemoveAnimation("cast");
 }
 
 void Boss::Update(const float& deltaTime, Player& player)
 {
-	//m_areMinionsSummoned = m_pMinions.size() > 0;
 	mp_player = &player;
 	m_cantSummonSlimes = m_pMinions.size() > 0;
 	if (!m_cantSummonSlimes)
@@ -159,7 +161,6 @@ void Boss::Update(const float& deltaTime, Player& player)
 		{
 			m_slimesWereCasted = true;
 			SummonSlimes(3);
-			GoToThrone();
 		}
 
 #ifdef _DEBUG
@@ -168,8 +169,6 @@ void Boss::Update(const float& deltaTime, Player& player)
 			BigAttack(deltaTime);
 		if (Aen::Input::KeyDown(Aen::Key::J))
 			SummonSlimes(6);
-		if (Aen::Input::KeyDown(Aen::Key::L))
-			GoToThrone();
 		if (Aen::Input::KeyDown(Aen::Key::P))
 			Wait(2);
 #endif
@@ -201,9 +200,6 @@ void Boss::Update(const float& deltaTime, Player& player)
 		break;
 	}
 
-
-	if (Aen::Input::KeyDown(Aen::Key::G))
-		printf("Hello");
 	mp_charCont->Move(m_v * m_deltatime, m_deltatime);
 }
 
@@ -277,7 +273,6 @@ void Boss::LightAttack(const float& deltaTime)
 {
 	EventData data;
 	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-		//SwordSwing(500.f, .3f, deltaTime);
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * accell;
 	};
@@ -301,7 +296,6 @@ void Boss::BigAttack(const float& deltaTime)
 	data.knockbackForce = HEAVYFORCE;
 	data.accell = .1f;
 	data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-		//SwordSwing(250.f, .5f, deltaTime);
 		mp_hurtBox->ToggleActive(true);
 		m_v = m_direction * 4.f * accell;
 
@@ -310,21 +304,8 @@ void Boss::BigAttack(const float& deltaTime)
 	m_eventQueue.emplace_back(data);
 }
 
-void Boss::GoToThrone()
-{
-	
-	//EventData data;
-	//data.type = EventType::Wait;
-	//data.function = [&](float& accell, const float& attackDuration, const int& nrOf) {
-
-	//};
-
-	//m_eventQueue.emplace_back(data);
-}
-
 void Boss::SummonSlimes(int amountOfSLimes)
 {
-	//m_areMinionsSummoned = true;
 	float minionPos = 0.f;
 	EventData data;
 
@@ -339,12 +320,7 @@ void Boss::SummonSlimes(int amountOfSLimes)
 		if (!m_cantSummonSlimes)
 		{
 			m_minionsToSummon = nrOf;
-			//for (int i = 0; i < 1; i++)
-			//{
-				//if (m_areMinionsSummoned)
-				//m_pMinions.emplace_back(new Rimuru({ -11.f + minionPos, 3, minionPos }));
-				//minionPos += 3.f;
-			//}
+			
 			m_enemy->SetPos(m_enemy->GetPos() + Aen::Vec3f(0.f, 6.f, 0.f));
 			bs = BossState::ONTHRONE;
 		}
@@ -385,23 +361,6 @@ void Boss::RandomCombatEvent()
 	}
 }
 
-void Boss::SwordSwing(const float& speed, const float& time, const float& deltaTime)
-{
-	static float timer = 0.f;
-	timer += deltaTime;
-	if (timer > time)
-	{
-		mE_sword->SetRot(0, 0 + 180.f, 0);
-		timer = 0.f;
-	}
-	mE_sword->Rotate(-speed * deltaTime, -speed * deltaTime, 0.f);
-}
-
-void Boss::ResetSword()
-{
-	mE_sword->SetRot(0, 180.f, 0);
-}
-
 void Boss::UpdateAttack()
 {
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack)
@@ -424,6 +383,5 @@ void Boss::UpdateAttack()
 	else
 	{
 		mp_hurtBox->ToggleActive(false);
-		//ResetSword();
 	}
 }

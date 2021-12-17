@@ -11,22 +11,22 @@ namespace Aen
 	Aen::PSSystemcomponent::PSSystemcomponent(const size_t& id)
 		:Drawable(id),m_UAView(sizeof(VertexParticle),1024)
 	{
-		m_texture = 0;
+		/*m_texture = 0;
 		m_shader = 0;
-		m_pMesh = 0;
+		m_pMesh = 0;*/
 		m_pMaterial = 0;
 		
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
 	{
-		delete m_texture;
+		/*delete m_texture;
 		delete m_shader;
 		delete m_pMesh;
-		delete m_pMaterial;
+		delete m_pMaterial;*/
 	}
 
-	void PSSystemcomponent::LoadAndSetTexture(const std::string& dir)
+	/*void PSSystemcomponent::LoadAndSetTexture(const std::string& dir)
 	{
 		m_texture = &Aen::Resource::CreateTexture(GetNameFromPath(dir));
 		m_texture->LoadTexture(dir);
@@ -41,7 +41,7 @@ namespace Aen
 	{
 		if (!Aen::Resource::TextureExist(name)) throw;
 		m_texture = &Aen::Resource::GetTexture(name);
-	}
+	}*/
 
 	void PSSystemcomponent::SetMaterial(Material& material)
 	{
@@ -55,7 +55,7 @@ namespace Aen
 	}
 
 
-	void PSSystemcomponent::SetMaterial(const std::string& materialSlotName, Material& material)
+	/*void PSSystemcomponent::SetMaterial(const std::string& materialSlotName, Material& material)
 	{
 		if (m_pMesh->m_meshMaterialName.count(materialSlotName) == 0)throw;
 		m_pMaterial[m_pMesh->m_meshMaterialName.at(materialSlotName) == 0] = &material;
@@ -66,12 +66,12 @@ namespace Aen
 		if (m_pMesh->m_meshMaterialName.count(materialSlotName) == 0)throw;
 		if (!Resource::MaterialExist(materialName))throw;
 		m_pMaterial[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
-	}
+	}*/
 
-	void PSSystemcomponent::SetMaterial(const UINT& index, Material& material)
+	/*void PSSystemcomponent::SetMaterial(const UINT& index, Material& material)
 	{
 		m_pMaterial[index] = &material;
-	}
+	}*/
 
 	void PSSystemcomponent::updatePS(const float& framerate)
 	{
@@ -223,7 +223,7 @@ namespace Aen
 		renderer.m_cbUseTexture.BindBuffer<PShader>(0u);
 
 		RenderSystem::BindRenderTargetView(renderer.m_particleOut, renderer.m_depthMap);
-		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
+		//RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
 		//Uncomment if you want wireframe state
 		//RenderSystem::SetRasteriserState(renderer.m_wireFrameState);
 

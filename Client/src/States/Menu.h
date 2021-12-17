@@ -7,7 +7,6 @@ class MainMenu : public State
 {
 private:
 	Aen::Entity* m_UI;
-	//Aen::Entity* m_cube;
 
 public:
 	MainMenu(Aen::Window& window);

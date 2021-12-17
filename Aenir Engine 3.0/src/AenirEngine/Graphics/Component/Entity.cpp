@@ -16,7 +16,9 @@ namespace Aen {
 		ComponentHandler::RemoveCharacterController(m_id);
 		ComponentHandler::RemoveUI(m_id);
 		ComponentHandler::RemoveAABB(m_id);
+		ComponentHandler::RemoveOBB(m_id);
 		ComponentHandler::RemoveAnimators(m_id);
+		ComponentHandler::RemovePS(m_id);
 
 		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
 		ComponentHandler::RemoveMeshFromLayer(m_id, 6);

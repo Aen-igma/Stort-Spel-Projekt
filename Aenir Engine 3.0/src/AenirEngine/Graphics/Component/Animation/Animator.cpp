@@ -47,6 +47,9 @@ namespace Aen {
 		Animation* animation = m_animationList[animationIndex].second;
 		Animation* aniLayer = animation->mp_layer;
 		float blendFactor = animation->GetBlendFactor();
+		if (blendFactor > 1.f)
+			blendFactor = 1.f;
+
 		const bool& doBl = animation->IsBlendAnimation();
 
 		uint32_t sizeBA = animation->m_boneArray.size();
@@ -273,6 +276,9 @@ namespace Aen {
 				m_animationList[animationIndex].second->vBuff.BindBuffer();
 				m_animationList[animationIndex].second->m_indexBuffer.BindBuffer();
 				m_animationList[animationIndex].second->m_indexBuffer.DrawIndexed();
+				
+				RenderSystem::UnBindShader<VShader>();
+				RenderSystem::UnBindShader<PShader>();
 				RenderSystem::UnBindShaderResources<VShader>(0, 1);
 			}
 		#endif

@@ -65,9 +65,6 @@ namespace Aen {
 		}
 		m_buttonData.clear();
 
-		if (mp_WFactory)
-			mp_WFactory->Release();
-
 		if (mp_BCoder)
 			mp_BCoder->Release();
 
@@ -76,6 +73,9 @@ namespace Aen {
 
 		if (mp_FrameDecode)
 			mp_FrameDecode->Release();
+
+		if (mp_WFactory)
+			mp_WFactory->Release();
 	}
 
 	void Aen::ButtonUI::Initialize()

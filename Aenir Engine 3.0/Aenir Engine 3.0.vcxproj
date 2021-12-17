@@ -266,13 +266,13 @@
     <ClCompile Include="src\AenirEngine\LevelImporter.cpp" />
     <ClCompile Include="src\AenirEngine\Quadtree\Node.cpp" />
     <ClCompile Include="src\AenirEngine\Quadtree\Quadtree.cpp" />
+    <ClCompile Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp" />
     <ClCompile Include="src\PCH\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

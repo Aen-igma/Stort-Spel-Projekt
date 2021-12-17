@@ -80,7 +80,6 @@ namespace Aen
 			material = &Aen::Resource::GetMaterial(materialName);
 			setMaterial(*material, materialIn);
 		}
-
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(*mesh);
 
@@ -91,7 +90,7 @@ namespace Aen
 			entity->AddComponent<Aen::StaticBody>();
 			entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh	(true);
 		}
-
+		
 		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);
 		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);
 		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
@@ -487,13 +486,13 @@ namespace Aen
 		}
 		for (size_t i = 0; i < roomPtr->GetParticleVector().size(); i++)
 		{
-			AenIF::Particle* particle = &roomPtr->GetParticleVector()[i];
+			/*AenIF::Particle* particle = &roomPtr->GetParticleVector()[i];
 			particle->translation[0] += offset.x;
 			particle->translation[2] += offset.y;
 			if (particle->type == IGH::TORCH)
 			{
 				m_particleList.push_back(*particle);
-			}
+			}*/
 		}
 		return true;
 	}

@@ -51,7 +51,8 @@ namespace Aen {
 	
 
 	DBuffer::~DBuffer() {
-		m_buffer.Reset();
+		if(m_buffer)
+			m_buffer.Reset();
 	}
 
 	DBuffer::DBuffer()
