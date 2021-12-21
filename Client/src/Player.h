@@ -58,6 +58,7 @@ public:
 	void Hurt(float dmg, float force, Aen::Vec3f dir);
 
 	const bool IsAttacking();
+	bool IsDashing() const;
 
 	Aen::AABoundBox* GetHitBoxP() const;
 
@@ -67,8 +68,9 @@ public:
 	void AddBossesAlive(int n);
 
 private:
-	Aen::Animation* m_protagIdleToRun = nullptr;
+	Aen::Animation* m_animationTree = nullptr;
 	Aen::Animation* m_protagRunToAttack = nullptr;
+	Aen::Vec3f m_movementVector;
 	void SwordSwing(float speed, float time, const float& deltaTime);
 	void ResetSword();
 	void AddEvent(EventData& event);

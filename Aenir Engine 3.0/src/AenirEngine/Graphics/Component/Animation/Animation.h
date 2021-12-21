@@ -42,10 +42,11 @@ namespace Aen {
 	class AEN_DECLSPEC Animation {
 	private:
 		float m_duration;
-		float m_blendFactor = 0.f;
-		bool m_isBlendAnimation = false;
+		float m_runFactor = 0.f;
+		float m_actionFactor = 0.f;
+		bool m_hasRunLayer = false;
+		bool m_hasActionLayer = false;
 		
-		//AssimpData m_RootNode;
 		std::vector<Bones> m_boneArray;
 		std::unordered_map<std::string, std::vector<KeyFrameData>> m_keyFrames;
 		std::vector<float> m_timeStamp;
@@ -54,23 +55,25 @@ namespace Aen {
 		IBuffer m_indexBuffer;
 		SBuffer<Mat4f> m_finalMatrix;
 
-		Animation* mp_layer = nullptr;
+		Animation* mp_runLayer = nullptr;
+		Animation* mp_actionLayer = nullptr;
 		BlendMode m_bm = BlendMode(0);
 		std::vector<bool> m_doBlendBone;
-		void WhatToBlend(const int& boneIndex);
+		void WhatToBlend(const int& boneIndex, Animation& pLayer);
+		void ReversePartialBlend(Animation* layer);
 	public:
 		Animation();
 		~Animation();
 		const float GetDuration() const;
 		void LoadAnimation(const std::string& animationPath);
-		void AddAnimationLayer(Animation* pLayer);
-		void AddPartialAnimationLayer(Animation* pLayer, const std::string& root);
-		/// <summary>
-		/// 0.0f - 1.0f
-		/// </summary>
-		void SetBlendFactor(const float& blendFactor);
+		void AddRunLayer(Animation& pLayer);
+		void AddActionLayer(Animation& pLayer);
+		void AddPartialActionLayer(Animation& pLayer, const std::string& root, const bool& reverse = false);
+		void SetRunFactor(const float& blendFactor);
+		void SetActionFactor(const float& blendFactor);
 		const bool IsBlendAnimation() const;
-		const float GetBlendFactor() const;
+		const float GetRunningFactor() const;
+		const float GetActionFactor() const;
 		const BlendMode GetBlendMode() const;
 		void SetBlendMode(const BlendMode& bm);
 	private:

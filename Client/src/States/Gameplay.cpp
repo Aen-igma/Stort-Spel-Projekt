@@ -80,7 +80,7 @@ void Gameplay::Initialize()
 	Aen::Animation& bossSummon = Aen::Resource::CreateAnimation("Boss_Summon");
 	bossSummon.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Summon.fbx"));
 
-	bossWalkToAttack.AddAnimationLayer(&bossAttack);
+	//bossWalkToAttack.AddRunLayer(bossAttack);
 	
 
 	// ----------------------------- Load Meshes -------------------------------- //

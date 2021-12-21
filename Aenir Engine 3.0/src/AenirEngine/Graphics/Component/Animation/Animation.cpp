@@ -1,4 +1,4 @@
-#include "PCH.h"
+#include <PCH.h>
 #include "Animation.h"
 
 #undef min
@@ -10,18 +10,26 @@
 #include"Importer/AssimpImporter.h"
 
 namespace Aen {
-	void Animation::WhatToBlend(const int& boneIndex)
+	void Animation::WhatToBlend(const int& boneIndex, Animation& layer)
 	{
 		//uint16_t bonearrSize = m_boneArray.size();
-		m_doBlendBone[boneIndex] = true;
+		layer.m_doBlendBone[boneIndex] = true;
 		uint16_t nrof = m_boneArray[boneIndex].pChildren.size();
 		for (int i = 0; i < nrof; i++)
 		{
 			int childIndex = m_boneArray[boneIndex].pChildren[i]->boneID;
-			m_doBlendBone[childIndex] = true;
-			WhatToBlend(childIndex);
+			layer.m_doBlendBone[childIndex] = true;
+			WhatToBlend(childIndex, layer);
 		}
 
+	}
+	void Animation::ReversePartialBlend(Animation* layer)
+	{
+		int nrof = m_doBlendBone.size();
+		for (int i = 0; i < nrof; i++)
+		{
+			layer->m_doBlendBone[i] = !layer->m_doBlendBone[i];
+		}
 	}
 	Animation::Animation() {
 	}
@@ -57,46 +65,60 @@ namespace Aen {
 		m_finalMatrix.UpdateBuffer();
 	}
 
-	void Animation::AddAnimationLayer(Animation* pLayer)
+	void Animation::AddRunLayer(Animation& pLayer)
+	{
+		mp_runLayer = &pLayer;
+		m_hasRunLayer = true;
+	}
+	void Animation::AddActionLayer(Animation& pLayer)
 	{
 		m_doBlendBone.resize(m_boneArray.size(), true);
-		mp_layer = pLayer;
-		m_isBlendAnimation = true;
+		mp_actionLayer = &pLayer;
+		m_hasActionLayer = true;
 	}
-	void Animation::AddPartialAnimationLayer(Animation* pLayer, const std::string& root)
+	void Animation::AddPartialActionLayer(Animation& layer, const std::string& root, const bool& reverse)
 	{
-		mp_layer = pLayer;
-		m_isBlendAnimation = true;
-		uint16_t boneArrSize = mp_layer->m_boneArray.size();
-		m_doBlendBone.resize(boneArrSize, false);
-		bool found = false;
+		mp_actionLayer = &layer;
+		m_hasActionLayer = true;
+		uint16_t boneArrSize = mp_actionLayer->m_boneArray.size();
+		layer.m_doBlendBone.resize(boneArrSize, false);
 		int rootIndex = -1;
 		
 		for (int i = 0; i < boneArrSize && rootIndex == -1; i++)
 		{
-			if (mp_layer->m_boneArray[i].boneName == root)
+			if (m_boneArray[i].boneName == root)
 			{
 				rootIndex = i;
 			}
 		}
 		assert(rootIndex != -1); // Joint does not exist
 
-		WhatToBlend(rootIndex);
+		WhatToBlend(rootIndex, layer);
 
+		if (reverse)
+			ReversePartialBlend(&layer);
 	}
-	void Animation::SetBlendFactor(const float& blendFactor)
+	void Animation::SetRunFactor(const float& blendFactor)
 	{
-		m_blendFactor = blendFactor;
+		m_runFactor = blendFactor;
+	}
+	void Animation::SetActionFactor(const float& blendFactor)
+	{
+		m_actionFactor = blendFactor;
 	}
 	const bool Animation::IsBlendAnimation() const
 	{
-		return m_isBlendAnimation;
+		return m_hasRunLayer;
 	}
-	const float Animation::GetBlendFactor() const
+	const float Animation::GetRunningFactor() const
 	{
-		if (m_isBlendAnimation)
-			return m_blendFactor;
+		if (m_hasRunLayer)
+			return m_runFactor;
 		else return 0.f;
+	}
+	const float Animation::GetActionFactor() const
+	{
+		return m_actionFactor;
 	}
 	const BlendMode Animation::GetBlendMode() const
 	{

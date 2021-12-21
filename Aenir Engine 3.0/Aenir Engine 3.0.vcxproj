@@ -92,7 +92,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\intermediate\$(Configuration)-$(PlatformShortName)\</IntDir>
-    <LibraryPath>E:\Github\Stort-Spel-Projekt\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

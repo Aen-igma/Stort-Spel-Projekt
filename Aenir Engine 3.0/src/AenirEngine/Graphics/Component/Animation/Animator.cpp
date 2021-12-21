@@ -45,39 +45,46 @@ namespace Aen {
 	void Animator::GetAnimation(std::vector<Mat4f>& mat, const float& deltaTime) {
 
 		Animation* animation = m_animationList[animationIndex].second;
-		Animation* aniLayer = animation->mp_layer;
-		float blendFactor = animation->GetBlendFactor();
-		const bool& doBl = animation->IsBlendAnimation();
+		Animation* runLayer = animation->mp_runLayer;
+		Animation* actionLayer = animation->mp_actionLayer;
+		const bool& doRunBl = runLayer != nullptr;
+		const bool& doActionBl = actionLayer != nullptr;
 
-		uint32_t sizeBA = animation->m_boneArray.size();
-		uint32_t baseNumFrames = animation->m_timeStamp.size();
-		uint32_t layerNumFrames = doBl ? aniLayer->m_timeStamp.size() : 0.f;
-		const uint16_t baseOffset = doBl ? baseNumFrames / layerNumFrames : 1.f;
-		const uint16_t layerOffset = doBl ? layerNumFrames / baseNumFrames : 1.f;
+		float blendFactor = animation->GetRunningFactor();
+		float actionFactor = animation->GetActionFactor();
+
+		uint16_t sizeBA = animation->m_boneArray.size();
+
+		uint16_t baseNumFrames = animation->m_timeStamp.size();
+		uint16_t layerNumFrames = doRunBl ? runLayer->m_timeStamp.size() : 0.f;
+		uint16_t actionNumFrames = doActionBl ? actionLayer->m_timeStamp.size() : 0.f;
+
+		//const uint16_t baseOffset = doRunBl ? baseNumFrames / layerNumFrames : 1.f;
+		//const uint16_t layerOffset = doRunBl ? layerNumFrames / baseNumFrames : 1.f;
 
 		
-		float duration = doBl ? duration = aniLayer->m_duration * m_scale : duration = animation->m_duration * m_scale;
+		float duration = doRunBl ? duration = runLayer->m_duration * m_scale : duration = animation->m_duration * m_scale;
 
 
 
 		if (m_time < duration) 
 		{
-			uint32_t l = 0u;
-			uint32_t r = doBl ? layerNumFrames : baseNumFrames;
-			uint32_t baseR = layerNumFrames;
-			uint32_t mid = 0u;
-			uint32_t layerMid = 0u;
+			uint16_t l = 0u;
+			uint16_t r = doRunBl ? layerNumFrames : baseNumFrames;
+			uint16_t baseR = layerNumFrames;
+			uint16_t mid = 0u;
+			uint16_t layerMid = 0u;
 
-			uint32_t fFrame = 0u;
-			uint32_t sFrame = 0u;
+			uint16_t fFrame = 0u;
+			uint16_t sFrame = 0u;
 
 			while (true) {
 				mid = (l + r) / 2u;
-				float ft = doBl ? aniLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
-				float st = doBl ? aniLayer->m_timeStamp[Clamp(mid + 1u, 0u, layerNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
+				float ft = doRunBl ? runLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
+				float st = doRunBl ? runLayer->m_timeStamp[Clamp(mid + 1u, 0u, layerNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
 				if ((m_time >= ft && m_time <= st) || ft == st) {
 					fFrame = mid;
-					sFrame = doBl ? (mid + 1u) % baseNumFrames : (mid + 1u) % baseNumFrames;
+					sFrame = doRunBl ? (mid + 1u) % baseNumFrames : (mid + 1u) % baseNumFrames;
 					break;
 				}
 
@@ -87,46 +94,47 @@ namespace Aen {
 				if (m_time > ft)
 					l = mid;
 			}
-			while (doBl)
-			{
-				mid = (l + r) / 2u;
-				layerMid = doBl ? (l + baseR) / 2u : 0u;
-				float ft = doBl ? aniLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
-				float st = doBl ? aniLayer->m_timeStamp[Clamp(mid + 1u, 0u, layerNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
-				if ((m_time >= ft && m_time <= st) || ft == st) {
-					fFrame = mid;
-					sFrame = doBl ? (mid + 1u) % baseNumFrames : (mid + 1u) % baseNumFrames;
-					break;
-				}
+			//while (doBl)
+			//{
+			//	mid = (l + r) / 2u;
+			//	layerMid = doBl ? (l + baseR) / 2u : 0u;
+			//	float ft = doBl ? aniLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
+			//	float st = doBl ? aniLayer->m_timeStamp[Clamp(mid + 1u, 0u, layerNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
+			//	if ((m_time >= ft && m_time <= st) || ft == st) {
+			//		fFrame = mid;
+			//		sFrame = doBl ? (mid + 1u) % baseNumFrames : (mid + 1u) % baseNumFrames;
+			//		break;
+			//	}
 
-				if (m_baseTime < ft)
-					r = mid;
+			//	if (m_baseTime < ft)
+			//		r = mid;
 
-				if (m_baseTime > ft)
-					l = mid;
-			}
+			//	if (m_baseTime > ft)
+			//		l = mid;
+			//}
 
-			float f = animation->IsBlendAnimation() ? m_time - aniLayer->m_timeStamp[fFrame] * duration : m_time - animation->m_timeStamp[fFrame] * duration;
-			float h = animation->IsBlendAnimation() ? aniLayer->m_timeStamp[sFrame] * duration - aniLayer->m_timeStamp[fFrame] * duration : animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
+			float f = animation->IsBlendAnimation() ? m_time - runLayer->m_timeStamp[fFrame] * duration : m_time - animation->m_timeStamp[fFrame] * duration;
+			float h = animation->IsBlendAnimation() ? runLayer->m_timeStamp[sFrame] * duration - runLayer->m_timeStamp[fFrame] * duration : animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
 			float t = f / h;
+
+			uint16_t baseFrame = fFrame % baseNumFrames;
+			uint16_t layerFrame = doRunBl ? fFrame % layerNumFrames : 0.f;
+			uint16_t actionFrame = doActionBl ? fFrame % layerNumFrames : 0.f;
 
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame;
 				Mat4f nextFrame;
-				if (animation->IsBlendAnimation() && animation->m_doBlendBone[i])
+				if (animation->IsBlendAnimation())
 				{
-					
-					uint16_t baseFrame = fFrame % baseNumFrames;
-					uint16_t layerFrame = fFrame % layerNumFrames;
 
 					sm::Matrix currentRot0 = animation->m_keyFrames.at(bName)[baseFrame].rotation.smMat;
-					sm::Matrix currentRot1 = aniLayer->m_keyFrames.at(bName)[layerFrame].rotation.smMat;
+					sm::Matrix currentRot1 = runLayer->m_keyFrames.at(bName)[layerFrame].rotation.smMat;
 					sm::Matrix currentBlendRot = currentBlendRot.Lerp(currentRot0, currentRot1, blendFactor);
 					currentFrame.smMat = currentBlendRot;
 
 					sm::Matrix nextRot0 = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation.smMat;
-					sm::Matrix nextRot1 = aniLayer->m_keyFrames.at(bName)[sFrame % layerNumFrames].rotation.smMat;
+					sm::Matrix nextRot1 = runLayer->m_keyFrames.at(bName)[sFrame % layerNumFrames].rotation.smMat;
 					sm::Matrix nextBlendRot = currentBlendRot.Lerp(nextRot0, nextRot1, blendFactor);
 
 					nextFrame.smMat = nextBlendRot;
@@ -135,6 +143,15 @@ namespace Aen {
 				{
 					currentFrame = animation->m_keyFrames.at(bName)[fFrame % baseNumFrames].rotation;
 					nextFrame = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation;
+				}
+
+				if (doActionBl && actionLayer->m_doBlendBone[i])
+				{
+					sm::Matrix current = actionLayer->m_keyFrames.at(bName)[actionFrame].rotation.smMat;
+					sm::Matrix next = actionLayer->m_keyFrames.at(bName)[sFrame % actionNumFrames].rotation.smMat;
+
+					currentFrame.smMat = current.Lerp(currentFrame.smMat, current, actionFactor);
+					nextFrame.smMat = next.Lerp(nextFrame.smMat, next, actionFactor);
 				}
 				mat.emplace_back(Lerp(currentFrame, nextFrame, t));
 			}
@@ -149,17 +166,21 @@ namespace Aen {
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame;
-				if (animation->IsBlendAnimation() && animation->m_doBlendBone[i])
+				if (animation->IsBlendAnimation())
 				{
 					sm::Matrix rot0 = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation.smMat;
-					sm::Matrix rot1 = aniLayer->m_keyFrames.at(bName)[layerNumFrames - 1].rotation.smMat;
+					sm::Matrix rot1 = runLayer->m_keyFrames.at(bName)[layerNumFrames - 1].rotation.smMat;
 					sm::Matrix blendRot = blendRot.Lerp(rot0, rot1, blendFactor);
 					currentFrame.smMat = blendRot;
-					
 				}
 				else
 					currentFrame = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation;
 
+				if (doActionBl && actionLayer->m_doBlendBone[i])
+				{
+					sm::Matrix actionRot = actionLayer->m_keyFrames.at(bName)[baseNumFrames - 1].rotation.smMat;
+					currentFrame.smMat = actionRot.Lerp(currentFrame.smMat, actionRot, actionFactor);
+				}
 
 				mat.emplace_back(currentFrame);
 			}
