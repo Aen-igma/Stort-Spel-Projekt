@@ -13,12 +13,12 @@ namespace Aen {
 	void Animation::WhatToBlend(const int& boneIndex, Animation& layer)
 	{
 		//uint16_t bonearrSize = m_boneArray.size();
-		layer.m_doBlendBone[boneIndex] = true;
+		layer.m_doBlendBone[boneIndex] = !layer.m_doBlendBone[boneIndex];
 		uint16_t nrof = m_boneArray[boneIndex].pChildren.size();
 		for (int i = 0; i < nrof; i++)
 		{
 			int childIndex = m_boneArray[boneIndex].pChildren[i]->boneID;
-			layer.m_doBlendBone[childIndex] = true;
+			//mp_actionLayer->m_doBlendBone[childIndex] = !layer.m_doBlendBone[childIndex];
 			WhatToBlend(childIndex, layer);
 		}
 
@@ -72,16 +72,18 @@ namespace Aen {
 	}
 	void Animation::AddActionLayer(Animation& pLayer)
 	{
-		m_doBlendBone.resize(m_boneArray.size(), true);
-		mp_actionLayer = &pLayer;
+		pLayer.m_doBlendBone.resize(m_boneArray.size(), true);
+		mp_actionLayer.emplace_back(&pLayer);
+		//mp_actionLayer = &pLayer;
 		m_hasActionLayer = true;
 	}
 	void Animation::AddPartialActionLayer(Animation& layer, const std::string& root, const bool& reverse)
 	{
-		mp_actionLayer = &layer;
+		//mp_actionLayer = &layer;
 		m_hasActionLayer = true;
-		uint16_t boneArrSize = mp_actionLayer->m_boneArray.size();
-		layer.m_doBlendBone.resize(boneArrSize, false);
+		mp_actionLayer.emplace_back(&layer);
+		int boneArrSize = layer.m_boneArray.size();
+		layer.m_doBlendBone.resize(boneArrSize, reverse);
 		int rootIndex = -1;
 		
 		for (int i = 0; i < boneArrSize && rootIndex == -1; i++)
@@ -94,9 +96,10 @@ namespace Aen {
 		assert(rootIndex != -1); // Joint does not exist
 
 		WhatToBlend(rootIndex, layer);
+		layer.m_doBlendBone[rootIndex] = true;
 
-		if (reverse)
-			ReversePartialBlend(&layer);
+		//if (reverse)
+			//ReversePartialBlend(&layer);
 	}
 	void Animation::SetRunFactor(const float& blendFactor)
 	{
@@ -127,6 +130,14 @@ namespace Aen {
 	void Animation::SetBlendMode(const BlendMode& bm)
 	{
 		m_bm = bm;
+	}
+	const int Animation::GetBlendIndex() const
+	{
+		return m_blendIndex;
+	}
+	void Animation::SetBlendAnimation(const Action& ac)
+	{
+		m_blendIndex = (int)ac;
 	}
 	Animation::~Animation() {
 	}

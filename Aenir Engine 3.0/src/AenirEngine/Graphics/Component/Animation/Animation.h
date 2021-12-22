@@ -38,12 +38,17 @@ namespace Aen {
 	{
 		BASE_TIME, LAYER_TIME, SCALE
 	};
+	enum class Action
+	{
+		Attack, Dash
+	};
 
 	class AEN_DECLSPEC Animation {
 	private:
 		float m_duration;
 		float m_runFactor = 0.f;
 		float m_actionFactor = 0.f;
+		int m_blendIndex = 0;
 		bool m_hasRunLayer = false;
 		bool m_hasActionLayer = false;
 		
@@ -56,7 +61,8 @@ namespace Aen {
 		SBuffer<Mat4f> m_finalMatrix;
 
 		Animation* mp_runLayer = nullptr;
-		Animation* mp_actionLayer = nullptr;
+		//Animation* mp_actionLayer = nullptr;
+		std::vector<Animation*> mp_actionLayer;
 		BlendMode m_bm = BlendMode(0);
 		std::vector<bool> m_doBlendBone;
 		void WhatToBlend(const int& boneIndex, Animation& pLayer);
@@ -76,6 +82,8 @@ namespace Aen {
 		const float GetActionFactor() const;
 		const BlendMode GetBlendMode() const;
 		void SetBlendMode(const BlendMode& bm);
+		const int GetBlendIndex() const;
+		void SetBlendAnimation(const Action &ac);
 	private:
 
 		friend class Resource;

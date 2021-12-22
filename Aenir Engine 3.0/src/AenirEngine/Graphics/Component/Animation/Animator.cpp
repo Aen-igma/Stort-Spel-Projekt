@@ -45,8 +45,9 @@ namespace Aen {
 	void Animator::GetAnimation(std::vector<Mat4f>& mat, const float& deltaTime) {
 
 		Animation* animation = m_animationList[animationIndex].second;
+		int blendIndex = animation->m_hasActionLayer ? animation->GetBlendIndex() : 0;
 		Animation* runLayer = animation->mp_runLayer;
-		Animation* actionLayer = animation->mp_actionLayer;
+		Animation* actionLayer = animation->m_hasActionLayer ? animation->mp_actionLayer[blendIndex] : nullptr;
 		const bool& doRunBl = runLayer != nullptr;
 		const bool& doActionBl = actionLayer != nullptr;
 
@@ -119,7 +120,7 @@ namespace Aen {
 
 			uint16_t baseFrame = fFrame % baseNumFrames;
 			uint16_t layerFrame = doRunBl ? fFrame % layerNumFrames : 0.f;
-			uint16_t actionFrame = doActionBl ? fFrame % layerNumFrames : 0.f;
+			uint16_t actionFrame = doActionBl ? fFrame % actionNumFrames : 0.f;
 
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
@@ -178,7 +179,7 @@ namespace Aen {
 
 				if (doActionBl && actionLayer->m_doBlendBone[i])
 				{
-					sm::Matrix actionRot = actionLayer->m_keyFrames.at(bName)[baseNumFrames - 1].rotation.smMat;
+					sm::Matrix actionRot = actionLayer->m_keyFrames.at(bName)[actionNumFrames - 1].rotation.smMat;
 					currentFrame.smMat = actionRot.Lerp(currentFrame.smMat, actionRot, actionFactor);
 				}
 

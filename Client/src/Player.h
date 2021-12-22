@@ -71,6 +71,9 @@ private:
 	Aen::Animation* m_animationTree = nullptr;
 	Aen::Animation* m_protagRunToAttack = nullptr;
 	Aen::Vec3f m_movementVector;
+
+	Aen::Action m_anAc = Aen::Action(0);
+
 	void SwordSwing(float speed, float time, const float& deltaTime);
 	void ResetSword();
 	void AddEvent(EventData& event);
