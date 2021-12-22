@@ -496,6 +496,8 @@ namespace Aen
 
 			if (particle->type == IGH::TORCH)
 			{
+				rotate(*particle, angle, offset);
+
 				m_particleList.push_back(*particle);
 			}
 		}
@@ -796,38 +798,8 @@ namespace Aen
 		Aen::Texture* materialTexture;
 		Aen::Texture* normalTexture;
 
-		float angleDegree = angle;
-		float andleRadians = angle * (C_PI / 180);
-
-		Vec3f point = Vec3f(0, 0, 0);
-		Vec3f center;
-		Vec3f scale;
-		Vec3f rotation;
-
-		float x1 = 0;
-		float x2 = 0;
-
-		float y1 = 0;
-		float y2 = 0;
-
 		AenIF::Model temp = model;
-
-		center = Vec3f(model.translation[0], model.translation[1], model.translation[2]);
-
-		x1 = point.x - center.x;
-		y1 = point.z - center.z;
-
-		rotation = Vec3f(model.rotation[0], model.rotation[1], model.rotation[2]);
-		x2 = x1 * cos(andleRadians) - y1 * sin(andleRadians);
-		y2 = x1 * sin(andleRadians) + y1 * cos(andleRadians);
-
-		center.x = x2 + point.x;
-
-		center.z = y2 + point.z;
-
-		temp.translation[0] = center.x + offset.x;
-		temp.translation[2] = center.z + offset.y;
-		temp.rotation[1] = model.rotation[1] + angle;
+		rotate(temp, angle, offset);
 
 		if (model.type.size() != IGH::NORMALENEMY.size())
 		{
@@ -853,13 +825,29 @@ namespace Aen
 		light->GetComponent<Aen::PointLight>().SetLightDist(input.attenuation[0], input.attenuation[1], input.attenuation[2], input.range);
 		light->GetComponent<Aen::PointLight>().SetStrength(input.intensity);
 
-		float s = sin(angle);
-		float c = cos(angle);
+		Vec3f point = Vec3f(0, 0, 0);
+		Vec3f center;
+		Vec3f scale;
+		Vec3f rotation;
 
-		float posX = (input.translation[0] * c) - (input.translation[2] * s);
-		float posY = (input.translation[0] * s) + (input.translation[2] * c);
+		float x1 = 0;
+		float x2 = 0;
 
-		light->SetPos(posX + offset.x, input.translation[1], posY + offset.y);
+		float y1 = 0;
+		float y2 = 0;
+
+		center = Vec3f(input.translation[0], input.translation[1], input.translation[2]);
+
+		x1 = point.x - center.x;
+		y1 = point.z - center.z;
+
+		x2 = x1 * cos(angle) - y1 * sin(angle);
+		y2 = x1 * sin(angle) + y1 * cos(angle);
+
+		center.x = x2 + point.x;
+		center.z = y2 + point.z;
+
+		light->SetPos(center.x + offset.x, input.translation[1], center.z + offset.y);
 		light->SetRot(input.rotation[0], input.rotation[1] + (angle * 57.2957795f), input.rotation[2]);
 
 		AddLight(light);
@@ -903,6 +891,70 @@ namespace Aen
 		mp_entityHandlerPtr->GetEntity(id).SetParent(*light);
 
 		AddLight(light, IGH::POINTLIGHT);
+
+	}
+
+
+
+	void ImGuiImporter::rotate(AenIF::Model& model, float angle, Aen::Vec2f offset)
+	{
+		Vec3f point = Vec3f(0, 0, 0);
+		Vec3f center;
+		Vec3f scale;
+		Vec3f rotation;
+
+		float x1 = 0;
+		float x2 = 0;
+
+		float y1 = 0;
+		float y2 = 0;
+
+		center = Vec3f(model.translation[0], model.translation[1], model.translation[2]);
+
+		x1 = point.x - center.x;
+		y1 = point.z - center.z;
+
+		rotation = Vec3f(model.rotation[0], model.rotation[1], model.rotation[2]);
+		x2 = x1 * cos(angle) - y1 * sin(angle);
+		y2 = x1 * sin(angle) + y1 * cos(angle);
+
+		center.x = x2 + point.x;
+
+		center.z = y2 + point.z;
+
+		model.translation[0] = center.x + offset.x;
+		model.translation[2] = center.z + offset.y;
+		model.rotation[1] = model.rotation[1] + (angle * 57.2957795f);
+	}
+
+	void ImGuiImporter::rotate(AenIF::Particle& particle, float angle, Aen::Vec2f offset)
+	{
+		Vec3f point = Vec3f(0, 0, 0);
+		Vec3f center;
+		Vec3f scale;
+		Vec3f rotation;
+
+		float x1 = 0;
+		float x2 = 0;
+
+		float y1 = 0;
+		float y2 = 0;
+
+		center = Vec3f(particle.translation[0], particle.translation[1], particle.translation[2]);
+
+		x1 = point.x - center.x;
+		y1 = point.z - center.z;
+
+		rotation = Vec3f(0,0,0);
+		x2 = x1 * cos(angle) - y1 * sin(angle);
+		y2 = x1 * sin(angle) + y1 * cos(angle);
+
+		center.x = x2 + point.x;
+
+		center.z = y2 + point.z;
+
+		particle.translation[0] = center.x + offset.x;
+		particle.translation[2] = center.z + offset.y;
 
 	}
 
