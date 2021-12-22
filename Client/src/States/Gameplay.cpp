@@ -65,12 +65,16 @@ void Gameplay::Initialize()
 	// ----------------------------- Animations -------------------------------- //
 	
 	// Skel_Light
-	Aen::Animation& skelIdle = Aen::Resource::CreateAnimation("Skel_Idle");
-	skelIdle.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_NewIdle.fbx"));
+	Aen::Animation& skelAniTree = Aen::Resource::CreateAnimation("Skel_Idle");
+	skelAniTree.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_NewIdle.fbx"));
 	Aen::Animation& skelWalk = Aen::Resource::CreateAnimation("Skel_Walk");
 	skelWalk.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_Walking_2.fbx"));
 	Aen::Animation& skelAttack = Aen::Resource::CreateAnimation("Skel_Attack");
 	skelAttack.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_NewAttack.fbx"));
+
+	skelAniTree.AddRunLayer(skelWalk);
+	skelAniTree.AddActionLayer(skelAttack);
+	skelAniTree.SetBlendAnimation(Aen::Action(0));
 
 	// Boss
 	Aen::Animation& bossThrone = Aen::Resource::CreateAnimation("Boss_Throne");
@@ -210,6 +214,11 @@ void Gameplay::Initialize()
 	
 	m_chest.SetType(Type::Open);
 	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+
+	SkeleLight* s = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, 6.f));
+	s->SetBlendTree(skelAniTree);
+	m_enemyQueue.emplace_back(s);
+
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 #ifdef _DEBUG
@@ -243,13 +252,16 @@ void Gameplay::Initialize()
 
 	std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	std::vector<Aen::Vec3f> tempLskels = m_levelGenerator.GetHandlerPtr()->GetLskelPos();
+	// Mob Spawning
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
 	{
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempSlimes[i]));
 	}
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetLskelPos().size(); i++)
 	{
-		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(tempLskels[i]));
+		//SkeleLight* s = AEN_NEW SkeleLight(tempLskels[i]);
+		//s->SetBlendTree(skelAniTree);
+		//m_enemyQueue.emplace_back(s);
 	}
 
 	cout << "BOSS ROOM: " << roomNormal << endl;

@@ -504,9 +504,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	static float runFactor = 0.f;
 	static float actionFactor = 0.f;
 
-	if (Aen::Input::KeyDown(Aen::Key::U))
-		printf("debugPause");
-
 	runFactor = Aen::Lerp(runFactor, m_movementVector.Magnitude() / m_movementSpeed, 0.35f);
 
 	switch (m_anAc)

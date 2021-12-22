@@ -3,11 +3,12 @@
 
 class SkeleLight : public Enemy {
 public:
-	SkeleLight();
-	SkeleLight(const Aen::Vec3f& pos);
+	//SkeleLight();
+	SkeleLight(const Aen::Vec3f& pos = Aen::Vec3f(0.f,0.f,0.f));
 	~SkeleLight() override;
 
 	Aen::Entity*& GetEntity();
+	void SetBlendTree(Aen::Animation& tree);
 
 	virtual void Update(const float& deltaTime, Player& player);
 private:
@@ -21,12 +22,18 @@ private:
 	Aen::Entity* mp_hurtbox;
 
 	Aen::Animator* m_animator;
+	Aen::Animation* mp_blendTree;
 
 	Aen::Vec3f m_Dir;
 	Aen::Vec3f m_lDir;
 	Aen::Vec2f m_nDir;
 	Aen::Vec2f m_rDir;
 
+	Aen::Vec3f m_movementVector;
+
 	bool m_hurting;
 	bool m_wait;
+	float m_actionFactor = 0.f;
+	float m_walkFactor = 0.f;
+	const float m_speed = 3.f;
 };

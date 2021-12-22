@@ -22,6 +22,7 @@ class Enemy {
 
 	void Hurt(const bool& hurt);
 	const bool IsHurt() const;
+	const bool IsAttacking() const;
 	const EnemyType GetEnemyType() const;
 protected:
 	Aen::AABoundBox* mp_hitbox;
