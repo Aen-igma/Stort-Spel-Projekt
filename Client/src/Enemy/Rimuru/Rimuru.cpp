@@ -9,6 +9,7 @@ Rimuru::Rimuru(EnemyType isMinion)
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("SlimeMaterial");
 	m_rimuru->SetScale(0.8f, 0.8f, 0.8f);
+	m_rimuru->SetPos(0.f, -0.4f, 0.f);
 	m_rimuru->SetParent(*m_enemy);
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
@@ -37,6 +38,7 @@ Rimuru::Rimuru(const Aen::Vec3f& pos, EnemyType isMinion)
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("SlimeMaterial");
 	m_rimuru->SetScale(0.8f, 0.8f, 0.8f);
+	m_rimuru->SetPos(0.f, -0.4f, 0.f);
 	m_rimuru->SetParent(*m_enemy);
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);

@@ -61,9 +61,15 @@ namespace Aen {
 	{
 		for (int i = 0; i < m_buttonData.size(); i++)
 		{
-			m_buttonData.at(i).bmp->Release();
+			m_buttonData[i].bmp->Release();
 		}
 		m_buttonData.clear();
+
+		for (int i = 0; i < m_tempData.size(); i++)
+		{
+			m_tempData[i].bmp = nullptr;
+		}
+		m_tempData.clear();
 
 		if (mp_WFactory)
 			mp_WFactory->Release();
@@ -76,6 +82,7 @@ namespace Aen {
 
 		if (mp_FrameDecode)
 			mp_FrameDecode->Release();
+
 	}
 
 	void Aen::ButtonUI::Initialize()

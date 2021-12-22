@@ -38,10 +38,6 @@ namespace Aen {
 			return m_pLightCamera;
 		}
 
-		static Entity* GetDebugCamera() {
-			return m_pDebugCamera;
-		}
-
 		static void SetBGColor(const Color& color) {
 			m_BGColor = color;
 		}
@@ -237,7 +233,6 @@ namespace Aen {
 		static Material* m_defaultMaterial;
 		static Texture* m_defaultTexture;
 
-		//static ImGuiHandler* mp_guiHandler;
 		static bool m_vSync;
 		static bool m_useDebugCam;
 
