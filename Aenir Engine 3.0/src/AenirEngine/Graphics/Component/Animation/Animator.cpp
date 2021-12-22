@@ -45,33 +45,25 @@ namespace Aen {
 	void Animator::GetAnimation(std::vector<Mat4f>& mat, const float& deltaTime) {
 
 		Animation* animation = m_animationList[animationIndex].second;
-		int blendIndex = animation->m_hasActionLayer ? animation->GetBlendIndex() : 0;
-		Animation* runLayer = animation->mp_runLayer;
-		Animation* actionLayer = animation->m_hasActionLayer ? animation->mp_actionLayer[blendIndex] : nullptr;
-		const bool& doRunBl = runLayer != nullptr;
-		const bool& doActionBl = actionLayer != nullptr;
-
-		float blendFactor = animation->GetRunningFactor();
-		float actionFactor = animation->GetActionFactor();
+		Animation* runLayer = m_hasRunLayer ? m_animationList[m_runIndex].second : nullptr;
+		Animation* actionLayer = m_hasActionLayer ? m_animationList[m_actionIndex].second : nullptr;
 
 		uint16_t sizeBA = animation->m_boneArray.size();
 
 		uint16_t baseNumFrames = animation->m_timeStamp.size();
-		uint16_t runNumFrames = doRunBl ? runLayer->m_timeStamp.size() : 0.f;
-		uint16_t actionNumFrames = doActionBl ? actionLayer->m_timeStamp.size() : 0.f;
+		uint16_t runNumFrames = m_hasRunLayer ? runLayer->m_timeStamp.size() : 0.f;
+		uint16_t actionNumFrames = m_hasActionLayer ? actionLayer->m_timeStamp.size() : 0.f;
 
 		//const uint16_t baseOffset = doRunBl ? baseNumFrames / layerNumFrames : 1.f;
 		//const uint16_t layerOffset = doRunBl ? layerNumFrames / baseNumFrames : 1.f;
 
 		
-		float duration = doRunBl ? duration = runLayer->m_duration * m_scale : duration = animation->m_duration * m_scale;
-
-
+		float duration = m_hasRunLayer ? duration = runLayer->m_duration * m_scale : duration = animation->m_duration * m_scale;
 
 		if (m_time < duration) 
 		{
 			uint16_t l = 0u;
-			uint16_t r = doRunBl ? runNumFrames : baseNumFrames;
+			uint16_t r = m_hasRunLayer ? runNumFrames : baseNumFrames;
 			uint16_t baseR = runNumFrames;
 			uint16_t mid = 0u;
 			uint16_t layerMid = 0u;
@@ -81,11 +73,11 @@ namespace Aen {
 
 			while (true) {
 				mid = (l + r) / 2u;
-				float ft = doRunBl ? runLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
-				float st = doRunBl ? runLayer->m_timeStamp[Clamp(mid + 1u, 0u, runNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
+				float ft = m_hasRunLayer ? runLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
+				float st = m_hasRunLayer ? runLayer->m_timeStamp[Clamp(mid + 1u, 0u, runNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
 				if ((m_time >= ft && m_time <= st) || ft == st) {
 					fFrame = mid;
-					sFrame = doRunBl ? (mid + 1u) % runNumFrames : (mid + 1u) % baseNumFrames;
+					sFrame = m_hasRunLayer ? (mid + 1u) % runNumFrames : (mid + 1u) % baseNumFrames;
 					break;
 				}
 
@@ -95,48 +87,29 @@ namespace Aen {
 				if (m_time > ft)
 					l = mid;
 			}
-			//while (doBl)
-			//{
-			//	mid = (l + r) / 2u;
-			//	layerMid = doBl ? (l + baseR) / 2u : 0u;
-			//	float ft = doBl ? aniLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
-			//	float st = doBl ? aniLayer->m_timeStamp[Clamp(mid + 1u, 0u, layerNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
-			//	if ((m_time >= ft && m_time <= st) || ft == st) {
-			//		fFrame = mid;
-			//		sFrame = doBl ? (mid + 1u) % baseNumFrames : (mid + 1u) % baseNumFrames;
-			//		break;
-			//	}
 
-			//	if (m_baseTime < ft)
-			//		r = mid;
-
-			//	if (m_baseTime > ft)
-			//		l = mid;
-			//}
-
-			float f = animation->IsBlendAnimation() ? m_time - runLayer->m_timeStamp[fFrame] * duration : m_time - animation->m_timeStamp[fFrame] * duration;
-			float h = animation->IsBlendAnimation() ? runLayer->m_timeStamp[sFrame] * duration - runLayer->m_timeStamp[fFrame] * duration : animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
+			float f = m_hasRunLayer ? m_time - runLayer->m_timeStamp[fFrame] * duration : m_time - animation->m_timeStamp[fFrame] * duration;
+			float h = m_hasRunLayer ? runLayer->m_timeStamp[sFrame] * duration - runLayer->m_timeStamp[fFrame] * duration : animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
 			float t = f / h;
 
 			uint16_t baseFrame = fFrame % baseNumFrames;
-			uint16_t layerFrame = doRunBl ? fFrame % runNumFrames : 0.f;
-			uint16_t actionFrame = doActionBl ? fFrame % actionNumFrames : 0.f;
+			uint16_t layerFrame = m_hasRunLayer ? fFrame % runNumFrames : 0.f;
+			uint16_t actionFrame = m_hasActionLayer ? fFrame % actionNumFrames : 0.f;
 
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame;
 				Mat4f nextFrame;
-				if (animation->IsBlendAnimation())
+				if (m_hasRunLayer)
 				{
-
 					sm::Matrix currentRot0 = animation->m_keyFrames.at(bName)[baseFrame].rotation.smMat;
 					sm::Matrix currentRot1 = runLayer->m_keyFrames.at(bName)[layerFrame].rotation.smMat;
-					sm::Matrix currentBlendRot = currentBlendRot.Lerp(currentRot0, currentRot1, blendFactor);
+					sm::Matrix currentBlendRot = currentBlendRot.Lerp(currentRot0, currentRot1, m_runFactor);
 					currentFrame.smMat = currentBlendRot;
 
 					sm::Matrix nextRot0 = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation.smMat;
 					sm::Matrix nextRot1 = runLayer->m_keyFrames.at(bName)[sFrame % runNumFrames].rotation.smMat;
-					sm::Matrix nextBlendRot = currentBlendRot.Lerp(nextRot0, nextRot1, blendFactor);
+					sm::Matrix nextBlendRot = currentBlendRot.Lerp(nextRot0, nextRot1, m_runFactor);
 
 					nextFrame.smMat = nextBlendRot;
 				}
@@ -146,13 +119,13 @@ namespace Aen {
 					nextFrame = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation;
 				}
 
-				if (doActionBl && actionLayer->m_doBlendBone[i])
+				if (m_hasActionLayer/* && actionLayer->m_doBlendBone[i]*/)
 				{
 					sm::Matrix current = actionLayer->m_keyFrames.at(bName)[actionFrame].rotation.smMat;
 					sm::Matrix next = actionLayer->m_keyFrames.at(bName)[sFrame % actionNumFrames].rotation.smMat;
 
-					currentFrame.smMat = current.Lerp(currentFrame.smMat, current, actionFactor);
-					nextFrame.smMat = next.Lerp(nextFrame.smMat, next, actionFactor);
+					currentFrame.smMat = current.Lerp(currentFrame.smMat, current, m_actionFactor);
+					nextFrame.smMat = next.Lerp(nextFrame.smMat, next, m_actionFactor);
 				}
 				mat.emplace_back(Lerp(currentFrame, nextFrame, t));
 			}
@@ -167,20 +140,20 @@ namespace Aen {
 			for (int i = 0; i < sizeBA; i++) {
 				std::string bName = animation->m_boneArray[i].boneName;
 				Mat4f currentFrame;
-				if (animation->IsBlendAnimation())
+				if (m_hasRunLayer)
 				{
 					sm::Matrix rot0 = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation.smMat;
 					sm::Matrix rot1 = runLayer->m_keyFrames.at(bName)[runNumFrames - 1].rotation.smMat;
-					sm::Matrix blendRot = blendRot.Lerp(rot0, rot1, blendFactor);
+					sm::Matrix blendRot = blendRot.Lerp(rot0, rot1, m_runFactor);
 					currentFrame.smMat = blendRot;
 				}
 				else
 					currentFrame = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation;
 
-				if (doActionBl && actionLayer->m_doBlendBone[i])
+				if (m_hasActionLayer/* && actionLayer->m_doBlendBone[i]*/)
 				{
 					sm::Matrix actionRot = actionLayer->m_keyFrames.at(bName)[actionNumFrames - 1].rotation.smMat;
-					currentFrame.smMat = actionRot.Lerp(currentFrame.smMat, actionRot, actionFactor);
+					currentFrame.smMat = actionRot.Lerp(currentFrame.smMat, actionRot, m_actionFactor);
 				}
 
 				mat.emplace_back(currentFrame);
@@ -234,6 +207,16 @@ namespace Aen {
 		m_time = 0.f;
 	}
 
+	void Animator::SetActionFactor(const float& f)
+	{
+		m_actionFactor = f;
+	}
+
+	void Animator::SetRunFactor(const float& f)
+	{
+		m_runFactor = f;
+	}
+
 	Animator::Animator(const size_t& id)
 		:Drawable(id), m_scale(1), animationIndex(0), m_pause(false), m_loop(true), m_time(0.f) {
 		SetFrameRate(60);
@@ -264,6 +247,36 @@ namespace Aen {
 		for (int i = 0; i < m_animationList.size();i++) {
 			if (m_animationList[i].first == animName) {
 				animationIndex = i;
+				break;
+			}
+		}
+	}
+
+	void Animator::SetActionLayer(const std::string& animName)
+	{
+		if (!HasAnimation(animName))
+			return;
+
+		m_hasActionLayer = true;
+
+		for (int i = 0; i < m_animationList.size(); i++) {
+			if (m_animationList[i].first == animName) {
+				m_actionIndex = i;
+				break;
+			}
+		}
+	}
+
+	void Animator::SetRunLayer(const std::string& animName)
+	{
+		if (!HasAnimation(animName))
+			throw;
+
+		m_hasRunLayer = true;
+
+		for (int i = 0; i < m_animationList.size(); i++) {
+			if (m_animationList[i].first == animName) {
+				m_runIndex = i;
 				break;
 			}
 		}

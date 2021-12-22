@@ -16,9 +16,18 @@ namespace Aen {
 		float m_scale;
 		bool m_pause;
 		bool m_loop;
+
+		bool m_hasRunLayer = false;
+		bool m_hasActionLayer = false;
+
 		UINT animationIndex;
+		UINT m_runIndex;
+		UINT m_actionIndex;
 		float m_time;
 		float m_baseTime;
+
+		float m_runFactor = 0.f;
+		float m_actionFactor = 0.f;
 
 		std::vector<std::pair<std::string, Animation*>> m_animationList;
 		void Update();
@@ -31,6 +40,8 @@ namespace Aen {
 		void AddAnimation(Animation& anim, const std::string& name);
 		void AddAnimation(const std::string& animName, const std::string& name);
 		void SetAnimation(const std::string& animName);
+		void SetActionLayer(const std::string& animName);
+		void SetRunLayer(const std::string& animName);
 		void SetFrameRate(const int& frameRate);
 		void SetAnimationScale(const float& newScale);
 		void RemoveAnimation(const std::string& animName);
@@ -38,6 +49,9 @@ namespace Aen {
 		void SetPaused(const bool& pause);
 		void SetLoopAnim(const bool& loop);
 		void Reset();
+
+		void SetActionFactor(const float& f);
+		void SetRunFactor(const float& f);
 
 		const Mat4f GetBoneMat(const uint32_t& index);
 

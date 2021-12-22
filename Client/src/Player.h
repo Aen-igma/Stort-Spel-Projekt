@@ -68,7 +68,7 @@ public:
 	void AddBossesAlive(int n);
 
 private:
-	Aen::Animation* m_animationTree = nullptr;
+	Aen::Animation* m_protagIdle = nullptr;
 	Aen::Animation* m_protagRunToAttack = nullptr;
 	Aen::Vec3f m_movementVector;
 

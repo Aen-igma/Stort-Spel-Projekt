@@ -8,11 +8,9 @@ public:
 	~SkeleLight() override;
 
 	Aen::Entity*& GetEntity();
-	void SetBlendTree(Aen::Animation& tree);
 
 	virtual void Update(const float& deltaTime, Player& player);
 private:
-
 	void CombatEvent(const float& deltaTime, const float& distance);
 	void RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir);
 	void WaitEvent();
@@ -22,7 +20,6 @@ private:
 	Aen::Entity* mp_hurtbox;
 
 	Aen::Animator* m_animator;
-	Aen::Animation* mp_blendTree;
 
 	Aen::Vec3f m_Dir;
 	Aen::Vec3f m_lDir;

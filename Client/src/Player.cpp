@@ -100,11 +100,11 @@ Player::Player()
 	mp_charCont = &m_player->GetComponent<Aen::CharacterController>();
 	mp_charCont->Resize(2.3f);
 
-	m_animationTree = &Aen::Resource::CreateAnimation("protagIdle");
-	m_animationTree->LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Idle.fbx"));
+	m_protagIdle = &Aen::Resource::CreateAnimation("protagIdle");
+	m_protagIdle->LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Idle.fbx"));
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
 	protagRun.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Run.fbx"));
-	m_animationTree->AddRunLayer(protagRun);
+	//m_protagIdle->AddRunLayer(protagRun);
 
 
 
@@ -115,8 +115,10 @@ Player::Player()
 	Aen::Animation& protagAttack = Aen::Resource::CreateAnimation("protagAttack");
 	protagAttack.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Attack.fbx"));
 
-	m_animationTree->AddActionLayer(protagAttack);
-	m_animationTree->AddActionLayer(protagDash);
+	
+
+	//m_animationTree->AddActionLayer(protagAttack);
+	//m_animationTree->AddActionLayer(protagDash);
 	//m_animationTree->AddPartialActionLayer(protagAttack, "QuickRigCharacter1_Spine1", true);
 
 	m_playerMeshHolder->AddComponent<Aen::MeshInstance>();
@@ -130,15 +132,17 @@ Player::Player()
 
 	m_playerMeshHolder->AddComponent<Aen::Animator>();
 	m_animation = &m_playerMeshHolder->GetComponent<Aen::Animator>();
-	m_animation->AddAnimation(*m_animationTree, "Idle");
+	m_animation->AddAnimation(*m_protagIdle, "Idle");
 	m_animation->AddAnimation(protagRun, "Run");
-	//m_animation->AddAnimation(protagDash, "Dash");
-	//m_animation->AddAnimation(protagAttack, "Attack");
+	m_animation->AddAnimation(protagDash, "Dash");
+	m_animation->AddAnimation(protagAttack, "Attack");
 	m_animation->SetAnimation("Idle");
 	m_animation->SetAnimationScale(0.28f);
 	m_animation->SetFrameRate(24);
 	m_playerMeshHolder->SetParent(*m_player);
 	m_playerMeshHolder->SetPos(0.f, -3.1f, 0.f);
+
+	m_animation->SetRunLayer("Run");
 
 	m_player->AddComponent<Aen::AABoundBox>();
 	mp_hitBox = &m_player->GetComponent<Aen::AABoundBox>();
@@ -457,12 +461,14 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.35f);
 				//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Dash");
 				m_anAc = Aen::Action::Dash;
-				m_animationTree->SetBlendAnimation(m_anAc);
+				m_animation->SetActionLayer("Dash");
+				//m_protagIdle->SetBlendAnimation(m_anAc);
 			} 
 		else if(m_eventQueue.front().type == EventType::Attack) {
 				m_animation->SetAnimationScale(0.35f);
 				m_anAc = Aen::Action::Attack;
-				m_animationTree->SetBlendAnimation(m_anAc);
+				m_animation->SetActionLayer("Attack");
+				//m_protagIdle->SetBlendAnimation(m_anAc);
 				//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Attack");
 			}
 
@@ -520,8 +526,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	//actionFactor = Aen::Lerp(actionFactor, (float)IsAttacking(), 0.35f);
 	//blendSpeed *= deltaTime;
-	m_animationTree->SetRunFactor(runFactor);
-	m_animationTree->SetActionFactor(actionFactor);
+	m_animation->SetRunFactor(runFactor);
+	m_animation->SetActionFactor(actionFactor);
 	mp_charCont->Move(m_v * deltaTime, deltaTime);
 }
 

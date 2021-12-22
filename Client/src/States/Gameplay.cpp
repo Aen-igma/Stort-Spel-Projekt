@@ -72,10 +72,6 @@ void Gameplay::Initialize()
 	Aen::Animation& skelAttack = Aen::Resource::CreateAnimation("Skel_Attack");
 	skelAttack.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_NewAttack.fbx"));
 
-	skelAniTree.AddRunLayer(skelWalk);
-	skelAniTree.AddActionLayer(skelAttack);
-	skelAniTree.SetBlendAnimation(Aen::Action(0));
-
 	// Boss
 	Aen::Animation& bossThrone = Aen::Resource::CreateAnimation("Boss_Throne");
 	bossThrone.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Throne_Sit.fbx"));
@@ -215,10 +211,6 @@ void Gameplay::Initialize()
 	m_chest.SetType(Type::Open);
 	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
 
-	SkeleLight* s = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, 6.f));
-	s->SetBlendTree(skelAniTree);
-	m_enemyQueue.emplace_back(s);
-
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 #ifdef _DEBUG
@@ -259,10 +251,11 @@ void Gameplay::Initialize()
 	}
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetLskelPos().size(); i++)
 	{
-		//SkeleLight* s = AEN_NEW SkeleLight(tempLskels[i]);
-		//s->SetBlendTree(skelAniTree);
-		//m_enemyQueue.emplace_back(s);
+		SkeleLight* s = AEN_NEW SkeleLight(tempLskels[i]);
+		m_enemyQueue.emplace_back(s);
 	}
+	//SkeleLight* s = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, -6.f));
+	//m_enemyQueue.emplace_back(s);
 
 	cout << "BOSS ROOM: " << roomNormal << endl;
 	m_throne->SetScale(2.f, 2.f, 2.f);

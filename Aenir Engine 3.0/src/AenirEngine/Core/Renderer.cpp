@@ -51,22 +51,22 @@ namespace Aen {
 
 		//-------------- Particle System ---------------//
 		if (!m_PSVShader.Create(AEN_OUTPUT_DIR_WSTR(L"VertexParticleShader.cso")))
-			if (!m_PSVShader.Create(AEN_OUTPUT_DIR_WSTR(L"VertexParticleShader.cso")))
+			if (!m_PSVShader.Create(L"VertexParticleShader.cso"))
 				throw;
 		if (!m_PTransparencyPS.Create(AEN_OUTPUT_DIR_WSTR(L"PTransparencyPS.cso")))
-			if (!m_PTransparencyPS.Create(AEN_OUTPUT_DIR_WSTR(L"PTransparencyPS.cso")))
+			if (!m_PTransparencyPS.Create(L"PTransparencyPS.cso"))
 				throw;
 		if (!m_PSGShader.Create(AEN_OUTPUT_DIR_WSTR(L"GeometryParticleShader.cso")))
-			if (!m_PSGShader.Create(AEN_OUTPUT_DIR_WSTR(L"GeometryParticleShader.cso")))
+			if (!m_PSGShader.Create(L"GeometryParticleShader.cso"))
 				throw;
 		if (!m_PSCShader.Create(AEN_OUTPUT_DIR_WSTR(L"ComputeParticleShader.cso")))
-			if (!m_PSCShader.Create(AEN_OUTPUT_DIR_WSTR(L"ComputeParticleShader.cso")))
+			if (!m_PSCShader.Create(L"ComputeParticleShader.cso"))
 				throw;
 		if (!m_PSPShader.Create(AEN_OUTPUT_DIR_WSTR(L"PixelParticleShader.cso")))
-			if (!m_PSPShader.Create(AEN_OUTPUT_DIR_WSTR(L"PixelParticleShader.cso")))
+			if (!m_PSPShader.Create(L"PixelParticleShader.cso"))
 				throw;
 		if (!m_PostPatricleCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostParticleCS.cso")))
-			if (!m_PostPatricleCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostParticleCS.cso")))
+			if (!m_PostPatricleCS.Create(L"PostParticleCS.cso"))
 				throw;
 		m_PSLayout.Create(m_PSVShader);
 

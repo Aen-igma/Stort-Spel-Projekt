@@ -68,6 +68,9 @@ SkeleLight::SkeleLight(const Aen::Vec3f& pos)
 	m_animator->SetFrameRate(24);
 	m_animator->SetAnimationScale(2.5);
 
+	m_animator->SetRunLayer("walk");
+	m_animator->SetActionLayer("attack");
+
 
 	// -----------------------------	Floating m_healthBar		------------------------------- //
 	mp_healthBar = &Aen::EntityHandler::CreateEntity();
@@ -105,11 +108,6 @@ Aen::Entity*& SkeleLight::GetEntity()
 	return mp_skeleton;
 }
 
-void SkeleLight::SetBlendTree(Aen::Animation& tree)
-{
-	mp_blendTree = &tree;
-}
-
 void SkeleLight::Update(const float& deltaTime, Player& player)
 {
 	Aen::Vec3f eDir = player.GetEntity()->GetPos() - m_enemy->GetPos();
@@ -135,7 +133,6 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 		if (dist < 20.f)
 		{
 			m_animator->SetAnimationScale(1);
-			m_walkFactor = Aen::Lerp(m_walkFactor, 1.f, 0.2f);
 			CombatEvent(deltaTime, dist);
 		}
 		else 
@@ -166,6 +163,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 		m_nDir = m_nDir.Normalized();
 
 		m_movementVector += Aen::Vec3f(m_nDir.x, 0.f, m_nDir.y) * m_speed;
+		m_walkFactor = Aen::Lerp(m_walkFactor, 1.f, 0.33f);
 		mp_charCont->Move(m_movementVector * deltaTime, deltaTime);
 		//m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(m_nDir.x, 0.f, m_nDir.y) * 3.f * deltaTime, deltaTime);
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
@@ -175,8 +173,9 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	}
 	else
 	{
+		m_walkFactor = Aen::Lerp(m_walkFactor, 0.f, 0.2f);
 		m_animator->SetAnimationScale(2.5);
-		m_animator->SetAnimation("idle");
+		//m_animator->SetAnimation("idle");
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 	}
 	
@@ -209,8 +208,8 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	
 	m_actionFactor = Aen::Lerp(m_actionFactor, (float)IsAttacking(), .35f);
 
-	mp_blendTree->SetActionFactor(m_actionFactor);
-	mp_blendTree->SetRunFactor(m_walkFactor);
+	//m_animator->SetActionFactor(m_actionFactor);
+	m_animator->SetRunFactor(m_walkFactor);
 
 	mp_charCont->Move(m_v * deltaTime, deltaTime);
 }
@@ -260,7 +259,7 @@ void SkeleLight::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randD
 		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks) {
 			m_movementVector += Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized() * m_speed;
 			mp_charCont->Move(m_movementVector * deltaTime, deltaTime);
-			m_walkFactor = Aen::Lerp(m_walkFactor, m_movementVector.Magnitude() / m_speed, .2f);
+			m_walkFactor = Aen::Lerp(m_walkFactor, 1.f, .2f);
 
 			m_lDir = Aen::Lerp(m_lDir, Aen::Vec3f(randDir.x, 0.f, randDir.y).Normalized(), 0.03f);
 			float yaw = Aen::RadToDeg(std::atan2(m_lDir.x, m_lDir.z));
