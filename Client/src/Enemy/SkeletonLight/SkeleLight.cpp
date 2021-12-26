@@ -40,8 +40,8 @@
 	//m_hurting, m_wait = false;
 //}
 
-SkeleLight::SkeleLight(const Aen::Vec3f& pos)
-	:Enemy(), mp_skeleton(&Aen::EntityHandler::CreateEntity())
+SkeleLight::SkeleLight(const Aen::Vec3f& pos, float e)
+	:Enemy(), mp_skeleton(&Aen::EntityHandler::CreateEntity()), NUM(e)
 {
 	mp_skeleton->AddComponent<Aen::MeshInstance>();
 	mp_skeleton->GetComponent<Aen::MeshInstance>().SetMesh("SkeletonLight");
@@ -68,8 +68,8 @@ SkeleLight::SkeleLight(const Aen::Vec3f& pos)
 	m_animator->SetFrameRate(24);
 	m_animator->SetAnimationScale(2.5);
 
-	m_animator->SetRunLayer("walk");
-	m_animator->SetActionLayer("attack");
+	//m_animator->SetRunLayer("walk");
+	//m_animator->SetActionLayer("attack");
 
 
 	// -----------------------------	Floating m_healthBar		------------------------------- //
@@ -175,7 +175,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	{
 		m_walkFactor = Aen::Lerp(m_walkFactor, 0.f, 0.2f);
 		m_animator->SetAnimationScale(2.5);
-		//m_animator->SetAnimation("idle");
+		m_animator->SetAnimation("idle");
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 	}
 	
@@ -189,6 +189,16 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	}
 	else
 		m_hurting = false;
+
+	if (Aen::Input::KeyDown(Aen::Key::L))
+	{
+		NUM *= -1;
+	}
+
+	if (NUM == -1)
+		m_animator->SetRunFactor(0.f);
+	else
+		m_animator->SetRunFactor(1.0f);
 
 	if (IsHurt() && !m_wait)
 	{
@@ -209,7 +219,8 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	m_actionFactor = Aen::Lerp(m_actionFactor, (float)IsAttacking(), .35f);
 
 	//m_animator->SetActionFactor(m_actionFactor);
-	m_animator->SetRunFactor(m_walkFactor);
+	//m_animator->SetRunFactor(NUM);
+	//m_animator->SetRunFactor(m_walkFactor);
 
 	mp_charCont->Move(m_v * deltaTime, deltaTime);
 }
@@ -225,7 +236,7 @@ void SkeleLight::CombatEvent(const float& deltaTime, const float& distance)
 		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks)
 		{
 			m_animator->SetAnimationScale(0.80);
-			//m_animator->SetAnimation("attack");
+			m_animator->SetAnimation("attack");
 			mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 		};
 		m_eventQueue.emplace_back(data);

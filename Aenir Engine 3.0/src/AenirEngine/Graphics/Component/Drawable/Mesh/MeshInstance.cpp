@@ -112,8 +112,11 @@ namespace Aen {
 			for(uint32_t i = 0; i < m_pMesh->m_partitions.size(); i++)  {
 
 				m_pMesh->m_vertices.BindBuffer();
-				if(ComponentHandler::AnimatorExists(m_id))
+				if (ComponentHandler::AnimatorExists(m_id))
+				{
 					ComponentHandler::GetAnimator(m_id).BindBuffer();
+					//ComponentHandler::GetAnimator(m_id).Update();
+				}
 
 				// Opaque pass
 
@@ -198,8 +201,11 @@ namespace Aen {
 		if(m_pMesh) {
 			RenderSystem::SetPrimitiveTopology(Topology::TRIANGLELIST);
 
-			if(ComponentHandler::AnimatorExists(m_id))
+			if (ComponentHandler::AnimatorExists(m_id))
+			{
 				ComponentHandler::GetAnimator(m_id).BindBuffer();
+				//ComponentHandler::GetAnimator(m_id).Update();
+			}
 
 			Mat4f m = EntityHandler::GetEntity(m_id).GetTransformation();
 			renderer.m_cbTransform.GetData().m_mdlMat = m.Transposed();

@@ -7,7 +7,8 @@ namespace Aen {
 
 	void Animator::Update() {
 		if (animationIndex < m_animationList.size()) {
-			Animation* animation = m_animationList[animationIndex].second;
+			//Animation* animation(m_animationList[animationIndex].second);
+			Animation* animation (m_animationList[animationIndex].second);
 
 			m_sEnd = omp_get_wtime();
 			while(m_sEnd - m_sStart > m_frameRate) {
@@ -39,6 +40,7 @@ namespace Aen {
 
 				animation->m_finalMatrix.UpdateBuffer();
 			}
+			//delete animation;
 		}
 	}
 
@@ -47,6 +49,8 @@ namespace Aen {
 		Animation* animation = m_animationList[animationIndex].second;
 		Animation* runLayer = m_hasRunLayer ? m_animationList[m_runIndex].second : nullptr;
 		Animation* actionLayer = m_hasActionLayer ? m_animationList[m_actionIndex].second : nullptr;
+
+		const float runFac = m_runFactor;
 
 		uint16_t sizeBA = animation->m_boneArray.size();
 
@@ -104,12 +108,12 @@ namespace Aen {
 				{
 					sm::Matrix currentRot0 = animation->m_keyFrames.at(bName)[baseFrame].rotation.smMat;
 					sm::Matrix currentRot1 = runLayer->m_keyFrames.at(bName)[layerFrame].rotation.smMat;
-					sm::Matrix currentBlendRot = currentBlendRot.Lerp(currentRot0, currentRot1, m_runFactor);
+					sm::Matrix currentBlendRot = currentBlendRot.Lerp(currentRot0, currentRot1, runFac);
 					currentFrame.smMat = currentBlendRot;
 
 					sm::Matrix nextRot0 = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation.smMat;
 					sm::Matrix nextRot1 = runLayer->m_keyFrames.at(bName)[sFrame % runNumFrames].rotation.smMat;
-					sm::Matrix nextBlendRot = currentBlendRot.Lerp(nextRot0, nextRot1, m_runFactor);
+					sm::Matrix nextBlendRot = currentBlendRot.Lerp(nextRot0, nextRot1, runFac);
 
 					nextFrame.smMat = nextBlendRot;
 				}
@@ -144,7 +148,7 @@ namespace Aen {
 				{
 					sm::Matrix rot0 = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation.smMat;
 					sm::Matrix rot1 = runLayer->m_keyFrames.at(bName)[runNumFrames - 1].rotation.smMat;
-					sm::Matrix blendRot = blendRot.Lerp(rot0, rot1, m_runFactor);
+					sm::Matrix blendRot = blendRot.Lerp(rot0, rot1, runFac);
 					currentFrame.smMat = blendRot;
 				}
 				else
@@ -207,12 +211,12 @@ namespace Aen {
 		m_time = 0.f;
 	}
 
-	void Animator::SetActionFactor(const float& f)
+	void Animator::SetActionFactor(float f)
 	{
 		m_actionFactor = f;
 	}
 
-	void Animator::SetRunFactor(const float& f)
+	void Animator::SetRunFactor(float f)
 	{
 		m_runFactor = f;
 	}

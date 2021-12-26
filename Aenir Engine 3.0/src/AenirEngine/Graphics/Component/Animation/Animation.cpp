@@ -34,6 +34,11 @@ namespace Aen {
 	Animation::Animation() {
 	}
 
+	//Animation::Animation(const Animation& s)
+	//	:m_duration(s.m_duration), m_boneArray(s.m_boneArray), m_timeStamp(s.m_timeStamp)
+	//{
+	//}
+
 	const float Animation::GetDuration() const {
 		return m_duration;
 	}

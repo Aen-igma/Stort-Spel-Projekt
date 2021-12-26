@@ -154,9 +154,9 @@ void Gameplay::Initialize()
 
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
-	Aen::Vec3f ChestPos;
-	Aen::Vec3f doorPos;
-	Aen::Vec3f EnemyPos;
+	Aen::Vec3f ChestPos(-10.f, 0.f, 0.f);
+	Aen::Vec3f doorPos(10.f, 0.f, 10.f);
+	Aen::Vec3f EnemyPos(10.f, 0.f, 0.f);
 	int roomNormal = 0;
 	int itemNormal = 0;
 
@@ -254,10 +254,13 @@ void Gameplay::Initialize()
 		SkeleLight* s = AEN_NEW SkeleLight(tempLskels[i]);
 		m_enemyQueue.emplace_back(s);
 	}
-	//SkeleLight* s = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, -6.f));
+	//SkeleLight* s = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, -6.f), -1.f);
 	//m_enemyQueue.emplace_back(s);
+	//
+	//SkeleLight* ss = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, 6.f), 1.f);
+	//m_enemyQueue.emplace_back(ss);
 
-	cout << "BOSS ROOM: " << roomNormal << endl;
+	//cout << "BOSS ROOM: " << roomNormal << endl;
 	m_throne->SetScale(2.f, 2.f, 2.f);
 
 	// -- Door, Throne, Boss Rotations -- //
@@ -397,7 +400,7 @@ void Gameplay::Initialize()
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	SetWin(false);
-	m_bossHP = m_pSkeleBoss->GetHealth();
+	//m_bossHP = m_pSkeleBoss->GetHealth();
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //

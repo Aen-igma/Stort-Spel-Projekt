@@ -458,7 +458,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			m_eventQueue.front().duration -= deltaTime;
 
 			if(m_eventQueue.front().type == EventType::Dash) {
-				//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.35f);
+				m_animation->SetAnimationScale(1.f);
 				//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Dash");
 				m_anAc = Aen::Action::Dash;
 				m_animation->SetActionLayer("Dash");
@@ -518,7 +518,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		actionFactor = Aen::Lerp(actionFactor, (float)IsAttacking(), 0.35f);
 		break;
 	case Aen::Action::Dash:
-		actionFactor = Aen::Lerp(actionFactor, (float)IsDashing(), 0.35f);
+		actionFactor = Aen::Lerp(actionFactor, (float)IsDashing(), .35f);
+		//actionFactor = 1.f;
 		break;
 	default:
 		break;

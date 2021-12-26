@@ -65,6 +65,7 @@ namespace Aen {
 		//void ReversePartialBlend(Animation* layer);
 	public:
 		Animation();
+		//Animation(const Animation& s);
 		~Animation();
 		const float GetDuration() const;
 		void LoadAnimation(const std::string& animationPath);

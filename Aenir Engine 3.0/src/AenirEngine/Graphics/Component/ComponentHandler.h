@@ -463,6 +463,12 @@ namespace Aen {
 			for (auto& ani : m_animators) {
 				ani.second->Update();
 			}
+			if (Aen::Input::KeyDown(Aen::Key::O))
+				printf("2");
+		}
+		static void UpdateAnimator(const uint32_t& id) {
+			if(ComponentHandler::AnimatorExists(id))
+				m_animators[id]->Update();
 		}
 		// --------------------------------------------------//
 

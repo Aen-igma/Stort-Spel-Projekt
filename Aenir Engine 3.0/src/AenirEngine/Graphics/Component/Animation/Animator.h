@@ -26,8 +26,6 @@ namespace Aen {
 		float m_time;
 		float m_baseTime;
 
-		float m_runFactor = 0.f;
-		float m_actionFactor = 0.f;
 
 		std::vector<std::pair<std::string, Animation*>> m_animationList;
 		void Update();
@@ -35,6 +33,8 @@ namespace Aen {
 		void BindBuffer();
 		bool HasAnimation(const std::string& anim);
 
+		float m_runFactor = 0.f;
+		float m_actionFactor = 0.f;
 	public:
 		Animator(const size_t& id);
 		void AddAnimation(Animation& anim, const std::string& name);
@@ -50,8 +50,8 @@ namespace Aen {
 		void SetLoopAnim(const bool& loop);
 		void Reset();
 
-		void SetActionFactor(const float& f);
-		void SetRunFactor(const float& f);
+		void SetActionFactor(float f);
+		void SetRunFactor(float f);
 
 		const Mat4f GetBoneMat(const uint32_t& index);
 

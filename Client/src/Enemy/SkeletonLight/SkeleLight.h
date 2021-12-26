@@ -4,7 +4,7 @@
 class SkeleLight : public Enemy {
 public:
 	//SkeleLight();
-	SkeleLight(const Aen::Vec3f& pos = Aen::Vec3f(0.f,0.f,0.f));
+	SkeleLight(const Aen::Vec3f& pos = Aen::Vec3f(0.f,0.f,0.f), float e = 0.f);
 	~SkeleLight() override;
 
 	Aen::Entity*& GetEntity();
@@ -33,4 +33,5 @@ private:
 	float m_actionFactor = 0.f;
 	float m_walkFactor = 0.f;
 	const float m_speed = 3.f;
+	float NUM;
 };
