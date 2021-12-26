@@ -257,7 +257,6 @@
     <ClCompile Include="src\AenirEngine\Graphics\DirectX11\UAView.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Physics\Physics.cpp" />
     <ClCompile Include="src\AenirEngine\Graphics\Physics\Raycast.cpp" />
-    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp" />
     <ClCompile Include="src\AenirEngine\Importer\AssimpImporter.cpp" />
     <ClCompile Include="src\AenirEngine\LevelEditor\ImGuiImporter.cpp" />
     <ClCompile Include="src\AenirEngine\LevelExporter.cpp" />
@@ -266,12 +265,24 @@
     <ClCompile Include="src\AenirEngine\LevelImporter.cpp" />
     <ClCompile Include="src\AenirEngine\Quadtree\Node.cpp" />
     <ClCompile Include="src\AenirEngine\Quadtree\Quadtree.cpp" />
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp" />
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp" />
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp" />
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.cpp" />
     <ClCompile Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.cpp" />
     <ClCompile Include="src\PCH\PCH.cpp">
@@ -347,7 +358,6 @@
     <ClInclude Include="src\AenirEngine\Graphics\Physics\Raycast.h" />
     <ClInclude Include="src\AenirEngine\Graphics\RenderSystem.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Component\Drawable\Mesh\Texture.h" />
-    <ClInclude Include="src\AenirEngine\ImGuiHandler.h" />
     <ClInclude Include="src\AenirEngine\Importer\AssimpImporter.h" />
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h" />
     <ClInclude Include="src\AenirEngine\LevelEditor\ImGuiImporter.h" />
@@ -365,14 +375,30 @@
     <ClInclude Include="src\AenirEngine\Quadtree\Node.h" />
     <ClInclude Include="src\AenirEngine\Quadtree\Quadtree.h" />
     <ClInclude Include="src\AenirEngine\RoomFormat.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_internal.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h" />
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h" />
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_internal.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\PhysX\PhysX.h" />
     <ClInclude Include="src\AenirEngine\Graphics\Physics\PhysicsHandler.h" />
     <ClInclude Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.h" />

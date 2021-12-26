@@ -50,8 +50,6 @@ namespace Aen {
 		Animation* runLayer = m_hasRunLayer ? m_animationList[m_runIndex].second : nullptr;
 		Animation* actionLayer = m_hasActionLayer ? m_animationList[m_actionIndex].second : nullptr;
 
-		const float runFac = m_runFactor;
-
 		uint16_t sizeBA = animation->m_boneArray.size();
 
 		uint16_t baseNumFrames = animation->m_timeStamp.size();
@@ -62,26 +60,35 @@ namespace Aen {
 		//const uint16_t layerOffset = doRunBl ? layerNumFrames / baseNumFrames : 1.f;
 
 		
-		float duration = m_hasRunLayer ? duration = runLayer->m_duration * m_scale : duration = animation->m_duration * m_scale;
+		float duration = animation->m_duration;
+
+		if (m_hasRunLayer)
+			duration = Aen::Max(duration, runLayer->GetDuration());
+		if (m_hasActionLayer)
+			duration = Aen::Max(duration, actionLayer->GetDuration());
+			
+
+		duration *= m_scale;
+
+		float runDuration = m_hasRunLayer ? duration = runLayer->m_duration * m_scale : -1.f;
+		float actionDuration = m_hasActionLayer ? duration = actionLayer->m_duration * m_scale : -1.f;
 
 		if (m_time < duration) 
 		{
 			uint16_t l = 0u;
-			uint16_t r = m_hasRunLayer ? runNumFrames : baseNumFrames;
-			uint16_t baseR = runNumFrames;
+			uint16_t r = baseNumFrames;
 			uint16_t mid = 0u;
-			uint16_t layerMid = 0u;
 
 			uint16_t fFrame = 0u;
 			uint16_t sFrame = 0u;
 
 			while (true) {
 				mid = (l + r) / 2u;
-				float ft = m_hasRunLayer ? runLayer->m_timeStamp[mid] * duration : animation->m_timeStamp[mid] * duration;
-				float st = m_hasRunLayer ? runLayer->m_timeStamp[Clamp(mid + 1u, 0u, runNumFrames - 1u)] * duration : animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
+				float ft = animation->m_timeStamp[mid] * duration;
+				float st = animation->m_timeStamp[Clamp(mid + 1u, 0u, baseNumFrames - 1u)] * duration;
 				if ((m_time >= ft && m_time <= st) || ft == st) {
 					fFrame = mid;
-					sFrame = m_hasRunLayer ? (mid + 1u) % runNumFrames : (mid + 1u) % baseNumFrames;
+					sFrame = (mid + 1u) % baseNumFrames;
 					break;
 				}
 
@@ -92,8 +99,8 @@ namespace Aen {
 					l = mid;
 			}
 
-			float f = m_hasRunLayer ? m_time - runLayer->m_timeStamp[fFrame] * duration : m_time - animation->m_timeStamp[fFrame] * duration;
-			float h = m_hasRunLayer ? runLayer->m_timeStamp[sFrame] * duration - runLayer->m_timeStamp[fFrame] * duration : animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
+			float f = m_time - animation->m_timeStamp[fFrame] * duration;
+			float h = animation->m_timeStamp[sFrame] * duration - animation->m_timeStamp[fFrame] * duration;
 			float t = f / h;
 
 			uint16_t baseFrame = fFrame % baseNumFrames;
@@ -108,12 +115,12 @@ namespace Aen {
 				{
 					sm::Matrix currentRot0 = animation->m_keyFrames.at(bName)[baseFrame].rotation.smMat;
 					sm::Matrix currentRot1 = runLayer->m_keyFrames.at(bName)[layerFrame].rotation.smMat;
-					sm::Matrix currentBlendRot = currentBlendRot.Lerp(currentRot0, currentRot1, runFac);
+					sm::Matrix currentBlendRot = currentBlendRot.Lerp(currentRot0, currentRot1, m_runFactor);
 					currentFrame.smMat = currentBlendRot;
 
 					sm::Matrix nextRot0 = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation.smMat;
 					sm::Matrix nextRot1 = runLayer->m_keyFrames.at(bName)[sFrame % runNumFrames].rotation.smMat;
-					sm::Matrix nextBlendRot = currentBlendRot.Lerp(nextRot0, nextRot1, runFac);
+					sm::Matrix nextBlendRot = currentBlendRot.Lerp(nextRot0, nextRot1, m_runFactor);
 
 					nextFrame.smMat = nextBlendRot;
 				}
@@ -148,7 +155,7 @@ namespace Aen {
 				{
 					sm::Matrix rot0 = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation.smMat;
 					sm::Matrix rot1 = runLayer->m_keyFrames.at(bName)[runNumFrames - 1].rotation.smMat;
-					sm::Matrix blendRot = blendRot.Lerp(rot0, rot1, runFac);
+					sm::Matrix blendRot = blendRot.Lerp(rot0, rot1, m_runFactor);
 					currentFrame.smMat = blendRot;
 				}
 				else

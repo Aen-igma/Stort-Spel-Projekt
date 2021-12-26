@@ -525,7 +525,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		break;
 	}
 
-	//actionFactor = Aen::Lerp(actionFactor, (float)IsAttacking(), 0.35f);
 	//blendSpeed *= deltaTime;
 	m_animation->SetRunFactor(runFactor);
 	m_animation->SetActionFactor(actionFactor);

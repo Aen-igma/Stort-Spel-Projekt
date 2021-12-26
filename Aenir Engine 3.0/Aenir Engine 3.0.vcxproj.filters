@@ -240,9 +240,6 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp">
       <Filter>Source Files\ThirdParty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
-      <Filter>Source Files\LevelEditor</Filter>
-    </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -493,9 +490,6 @@
     </ClInclude>
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h">
       <Filter>Header Files\ThirdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
-      <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Header Files\LevelEditor</Filter>
