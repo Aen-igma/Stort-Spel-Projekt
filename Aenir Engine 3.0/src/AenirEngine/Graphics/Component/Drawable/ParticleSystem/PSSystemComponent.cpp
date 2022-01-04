@@ -11,37 +11,14 @@ namespace Aen
 	Aen::PSSystemcomponent::PSSystemcomponent(const size_t& id)
 		:Drawable(id),m_UAView(sizeof(VertexParticle),1024)
 	{
-		/*m_texture = 0;
-		m_shader = 0;
-		m_pMesh = 0;*/
 		m_pMaterial = 0;
 		
 	}
 
 	Aen::PSSystemcomponent::~PSSystemcomponent()
 	{
-		/*delete m_texture;
-		delete m_shader;
-		delete m_pMesh;
-		delete m_pMaterial;*/
 	}
 
-	/*void PSSystemcomponent::LoadAndSetTexture(const std::string& dir)
-	{
-		m_texture = &Aen::Resource::CreateTexture(GetNameFromPath(dir));
-		m_texture->LoadTexture(dir);
-	}
-
-	void PSSystemcomponent::SetTexture(Texture& texture)
-	{
-		m_texture = &texture;
-	}
-
-	void PSSystemcomponent::SetTexture(const std::string& name)
-	{
-		if (!Aen::Resource::TextureExist(name)) throw;
-		m_texture = &Aen::Resource::GetTexture(name);
-	}*/
 
 	void PSSystemcomponent::SetMaterial(Material& material)
 	{
@@ -53,25 +30,6 @@ namespace Aen
 		if (!Resource::MaterialExist(materialName))throw;
 		m_pMaterial = &Resource::GetMaterial(materialName);
 	}
-
-
-	/*void PSSystemcomponent::SetMaterial(const std::string& materialSlotName, Material& material)
-	{
-		if (m_pMesh->m_meshMaterialName.count(materialSlotName) == 0)throw;
-		m_pMaterial[m_pMesh->m_meshMaterialName.at(materialSlotName) == 0] = &material;
-	}
-
-	void PSSystemcomponent::SetMaterial(const std::string& materialSlotName, const std::string& materialName)
-	{
-		if (m_pMesh->m_meshMaterialName.count(materialSlotName) == 0)throw;
-		if (!Resource::MaterialExist(materialName))throw;
-		m_pMaterial[m_pMesh->m_meshMaterialName.at(materialSlotName)] = &Resource::GetMaterial(materialName);
-	}*/
-
-	/*void PSSystemcomponent::SetMaterial(const UINT& index, Material& material)
-	{
-		m_pMaterial[index] = &material;
-	}*/
 
 	void PSSystemcomponent::updatePS(const float& framerate)
 	{

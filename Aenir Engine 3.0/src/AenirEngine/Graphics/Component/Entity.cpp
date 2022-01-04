@@ -18,6 +18,7 @@ namespace Aen {
 		ComponentHandler::RemoveAABB(m_id);
 		ComponentHandler::RemoveAnimators(m_id);
 
+
 		ComponentHandler::RemoveMeshFromLayer(m_id, m_layer + 3);
 		ComponentHandler::RemoveMeshFromLayer(m_id, 6);
 		ComponentHandler::RemoveMeshFromLayer(m_id, 5);
