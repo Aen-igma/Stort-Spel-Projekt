@@ -50,22 +50,22 @@ namespace Aen
 		bool activate();
 
 		//Texture
-		void LoadAndSetTexture(const std::string& dir);
+		/*void LoadAndSetTexture(const std::string& dir);
 		void SetTexture(Texture& texture);
-		void SetTexture(const std::string& name);
+		void SetTexture(const std::string& name);*/
 
 		//Material
 		void SetMaterial(Material& material);
 		void SetMaterial(const std::string& materialName);
-		void SetMaterial(const std::string& materialSlotName, Material& material);
-		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
-		void SetMaterial(const UINT& index, Material& material);
+		/*void SetMaterial(const std::string& materialSlotName, Material& material);
+		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);*/
+		/*void SetMaterial(const UINT& index, Material& material);*/
 
 		//Friend class 
-		friend class ComponentHandler;
+		/*friend class ComponentHandler;
 		friend class Renderer;
 		friend class Entity;
-		friend class GCore;
+		friend class GCore;*/
 
 
 	private:
@@ -79,10 +79,10 @@ namespace Aen
 		//Things we need, used for render an handeling constant buffern
 		CSInputBuffer m_CSInputBuffer;
 		VertexParticle m_VertexPS;
-		Texture* m_texture;
-		ShaderModel* m_shader;
+		/*Texture* m_texture;
+		ShaderModel* m_shader;*/
 		UAView m_UAView;
-		Mesh* m_pMesh;
+		//Mesh* m_pMesh;
 		Material* m_pMaterial;
 
 		void updatePS(const float& framerate);

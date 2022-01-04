@@ -222,27 +222,6 @@
     <ClCompile Include="src\AenirEngine\Graphics\Component\Tranform\Tranform.cpp">
       <Filter>Source Files\Graphics\Component\Tranform</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp">
-      <Filter>Source Files\ThirdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp">
-      <Filter>Source Files\ThirdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp">
-      <Filter>Source Files\ThirdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp">
-      <Filter>Source Files\ThirdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp">
-      <Filter>Source Files\ThirdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp">
-      <Filter>Source Files\ThirdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
-      <Filter>Source Files\LevelEditor</Filter>
-    </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -334,6 +313,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Quadtree\Quadtree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -469,33 +469,6 @@
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Importer\ObjImporter.h">
       <Filter>Header Files\Importer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h">
-      <Filter>Header Files\ThirdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h">
-      <Filter>Header Files\ThirdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h">
-      <Filter>Header Files\ThirdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h">
-      <Filter>Header Files\ThirdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.h">
-      <Filter>Header Files\ThirdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_internal.h">
-      <Filter>Header Files\ThirdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h">
-      <Filter>Header Files\ThirdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h">
-      <Filter>Header Files\ThirdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
-      <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Header Files\LevelEditor</Filter>
@@ -639,6 +612,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AenirEngine\Quadtree\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_dx11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_impl_win32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imgui_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_rectpack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

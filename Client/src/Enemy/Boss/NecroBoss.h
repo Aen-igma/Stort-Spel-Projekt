@@ -40,24 +40,19 @@ public:
     bool GetBossEngage(const bool& engage);
 
 protected:
-    //Aen::Entity* m_hurtbox;
 
 private:
 
     void LightAttack(const float& deltatime);
     void BigAttack(const float& deltaTime);
-    void GoToThrone();
     void SummonSlimes(int amountOfSLimes);
     void Wait(const float duration);
     void RandomCombatEvent();
-    void SwordSwing(const float& speed, const float& time, const float& deltaTime);
-    void ResetSword();
 
     void UpdateAttack();
 
 
     Aen::Entity* mE_hurtBox;
-    Aen::Entity* mE_sword;
     Aen::OBBox* mp_hurtBox;
     Player* mp_player;
     bool m_waiting;

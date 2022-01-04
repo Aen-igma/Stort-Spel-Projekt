@@ -363,7 +363,7 @@ namespace Aen {
 
 		// -------------------------------------------- //
 
-		// ----------- Axis Aligned Bounding Box ------------ //
+		// ----------- Oriented Bounding Box ------------ //
 
 		static const bool OBBExist(const size_t& id) {
 			return m_OBBs.count(id) > 0;

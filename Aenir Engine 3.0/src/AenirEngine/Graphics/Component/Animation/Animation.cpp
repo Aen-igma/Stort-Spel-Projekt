@@ -107,5 +107,6 @@ namespace Aen {
 		m_bm = bm;
 	}
 	Animation::~Animation() {
+		//m_boneArray.clear();
 	}
 }
