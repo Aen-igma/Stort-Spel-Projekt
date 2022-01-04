@@ -486,13 +486,13 @@ namespace Aen
 		}
 		for (size_t i = 0; i < roomPtr->GetParticleVector().size(); i++)
 		{
-			/*AenIF::Particle* particle = &roomPtr->GetParticleVector()[i];
+			AenIF::Particle* particle = &roomPtr->GetParticleVector()[i];
 			particle->translation[0] += offset.x;
 			particle->translation[2] += offset.y;
 			if (particle->type == IGH::TORCH)
 			{
 				m_particleList.push_back(*particle);
-			}*/
+			}
 		}
 		return true;
 	}

@@ -60,9 +60,9 @@ namespace Aen {
 
         
         UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-        #ifdef _DEBUG
+       /* #ifdef _DEBUG
         flags |= D3D11_CREATE_DEVICE_DEBUG;
-        #endif
+        #endif*/
         
         HRESULT hr = D3D11CreateDeviceAndSwapChain(
             pAdapter.Get(),

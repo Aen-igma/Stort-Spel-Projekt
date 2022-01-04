@@ -72,6 +72,7 @@ namespace Aen {
 	}
 
 	Mesh::~Mesh() {
+
 		//delete[] mp_posV;
 	}
 }
