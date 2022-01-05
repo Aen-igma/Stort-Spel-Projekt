@@ -100,20 +100,26 @@ Player::Player()
 	mp_charCont = &m_player->GetComponent<Aen::CharacterController>();
 	mp_charCont->Resize(2.3f);
 
-	m_protagIdleToRun = &Aen::Resource::CreateAnimation("protagIdle");
-	m_protagIdleToRun->LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Idle.fbx"));
+	m_protagIdle = &Aen::Resource::CreateAnimation("protagIdle");
+	m_protagIdle->LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Idle.fbx"));
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
 	protagRun.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Run.fbx"));
-	m_protagIdleToRun->AddAnimationLayer(&protagRun);
+	//m_protagIdle->AddRunLayer(protagRun);
 
-	//Aen::Animation& clusterfuck = 
+
 
 	//m_protagIdleToRun->AddPartialAnimationLayer(&protagRun, "QuickRigCharacter1_Spine1");
-	m_protagIdleToRun->SetBlendMode(Aen::BlendMode::LAYER_TIME);
+	//m_animationTree->SetBlendMode(Aen::BlendMode::LAYER_TIME);
 	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
 	protagDash.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Dash.fbx"));
 	Aen::Animation& protagAttack = Aen::Resource::CreateAnimation("protagAttack");
 	protagAttack.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Attack.fbx"));
+
+	
+
+	//m_animationTree->AddActionLayer(protagAttack);
+	//m_animationTree->AddActionLayer(protagDash);
+	//m_animationTree->AddPartialActionLayer(protagAttack, "QuickRigCharacter1_Spine1", true);
 
 	m_playerMeshHolder->AddComponent<Aen::MeshInstance>();
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMesh(*protag);
@@ -126,7 +132,7 @@ Player::Player()
 
 	m_playerMeshHolder->AddComponent<Aen::Animator>();
 	m_animation = &m_playerMeshHolder->GetComponent<Aen::Animator>();
-	m_animation->AddAnimation(*m_protagIdleToRun, "Idle");
+	m_animation->AddAnimation(*m_protagIdle, "Idle");
 	m_animation->AddAnimation(protagRun, "Run");
 	m_animation->AddAnimation(protagDash, "Dash");
 	m_animation->AddAnimation(protagAttack, "Attack");
@@ -135,6 +141,8 @@ Player::Player()
 	m_animation->SetFrameRate(24);
 	m_playerMeshHolder->SetParent(*m_player);
 	m_playerMeshHolder->SetPos(0.f, -3.1f, 0.f);
+
+	m_animation->SetRunLayer("Run");
 
 	m_player->AddComponent<Aen::AABoundBox>();
 	mp_hitBox = &m_player->GetComponent<Aen::AABoundBox>();
@@ -205,6 +213,8 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	static Aen::Vec2f dir;
 	static Aen::Vec3f camDir;
 	static Aen::Vec2f side;
+	m_movementVector = Aen::Vec3f::zero;
+
 	if (lockedOn)
 		side.x = Aen::Lerp(side.x, axis.x, 0.05f);
 	else
@@ -302,7 +312,9 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				Aen::Vec3f d(d2.x, 0.f, d2.y);
 				m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
 			}
-			mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
+			Aen::Vec3f v = m_finalDir * accell * deltaTime;
+			mp_charCont->Move(v, deltaTime);
+			m_movementVector += v;
 			accell -= 12.f * deltaTime;
 		};
 
@@ -446,11 +458,16 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			m_eventQueue.front().duration -= deltaTime;
 
 			if(m_eventQueue.front().type == EventType::Dash) {
-				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.35f);
-				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Dash");
-			} else if(m_eventQueue.front().type == EventType::Attack) {
-				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.35f);
-				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Attack");
+				m_animation->SetAnimationScale(1.f);
+				m_anAc = Aen::Action::Dash;
+				m_animation->SetActionLayer("Dash");
+				//m_protagIdle->SetBlendAnimation(m_anAc);
+			} 
+		else if(m_eventQueue.front().type == EventType::Attack) {
+				m_animation->SetAnimationScale(.5f);
+				m_anAc = Aen::Action::Attack;
+				m_animation->SetActionLayer("Attack");
+				//m_protagIdle->SetBlendAnimation(m_anAc);
 			}
 
 		}
@@ -475,7 +492,9 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	if (m_eventQueue.empty()) {
 		if (axis.Magnitude() > 0.f) {
 			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-			mp_charCont->Move(m_finalDir * m_movementSpeed * deltaTime, deltaTime);
+			Aen::Vec3f v = m_finalDir * m_movementSpeed;
+			mp_charCont->Move(v * deltaTime, deltaTime);
+			m_movementVector += v;
 		}
 	}
 
@@ -486,11 +505,33 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
-	static float blendFactor = 0.f;
+	static float runFactor = 0.f;
+	static float actionFactor = 0.f;
 
-	blendFactor = Aen::Lerp(blendFactor, axis.Magnitude(), 0.35f);
+	runFactor = Aen::Lerp(runFactor, m_movementVector.Magnitude() / m_movementSpeed, 0.35f);
+
+	switch (m_anAc)
+	{
+	case Aen::Action::Attack:
+		actionFactor = Aen::Lerp(actionFactor, (float)IsAttacking(), 0.35f);
+		break;
+	case Aen::Action::Dash:
+		actionFactor = Aen::Lerp(actionFactor, (float)IsDashing(), .35f);
+		//actionFactor = 1.f;
+		break;
+	default:
+		break;
+	}
+	bool _ = false;
+	if (!IsAttacking() && !IsDashing())
+	{
+		m_animation->SetActionLayer("Dash");
+		m_animation->SetAnimationScale(0.35f);
+	}
+
 	//blendSpeed *= deltaTime;
-	m_protagIdleToRun->SetBlendFactor(blendFactor);
+	m_animation->SetRunFactor(runFactor);
+	m_animation->SetActionFactor(actionFactor);
 	mp_charCont->Move(m_v * deltaTime, deltaTime);
 }
 
@@ -632,6 +673,13 @@ const bool Player::IsAttacking() {
 	if (!m_eventQueue.empty())
 		return (m_eventQueue.front().type == EventType::Attack);
 	return false;
+}
+
+bool Player::IsDashing() const
+{
+	if (m_eventQueue.empty())
+		return false;
+	return (m_eventQueue.front().type == EventType::Dash);
 }
 
 Aen::AABoundBox* Player::GetHitBoxP() const

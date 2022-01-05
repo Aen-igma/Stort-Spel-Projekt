@@ -49,6 +49,13 @@ const bool Enemy::IsHurt() const {
 	return m_hurt;
 }
 
+const bool Enemy::IsAttacking() const
+{
+	if (!m_eventQueue.empty())
+		return (m_eventQueue.front().type == EventType::Attack);
+	return false;
+}
+
 void Enemy::SetStationary()
 {
 	m_stationary = !m_stationary;

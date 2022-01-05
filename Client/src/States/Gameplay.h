@@ -71,7 +71,6 @@ private:
 
     Aen::LevelGenerator m_levelGenerator;
     Aen::Room* mptr_map;
-    //Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
 
 
     public:

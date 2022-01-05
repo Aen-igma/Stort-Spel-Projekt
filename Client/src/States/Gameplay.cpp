@@ -65,8 +65,8 @@ void Gameplay::Initialize()
 	// ----------------------------- Animations -------------------------------- //
 	
 	// Skel_Light
-	Aen::Animation& skelIdle = Aen::Resource::CreateAnimation("Skel_Idle");
-	skelIdle.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_NewIdle.fbx"));
+	Aen::Animation& skelAniTree = Aen::Resource::CreateAnimation("Skel_Idle");
+	skelAniTree.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_NewIdle.fbx"));
 	Aen::Animation& skelWalk = Aen::Resource::CreateAnimation("Skel_Walk");
 	skelWalk.LoadAnimation(AEN_ANIMATION_DIR("Skel_Light_Walking_2.fbx"));
 	Aen::Animation& skelAttack = Aen::Resource::CreateAnimation("Skel_Attack");
@@ -82,7 +82,7 @@ void Gameplay::Initialize()
 	Aen::Animation& bossSummon = Aen::Resource::CreateAnimation("Boss_Summon");
 	bossSummon.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Summon.fbx"));
 
-	bossWalkToAttack.AddAnimationLayer(&bossAttack);
+	//bossWalkToAttack.AddRunLayer(bossAttack);
 	
 
 	// ----------------------------- Load Meshes -------------------------------- //
@@ -154,9 +154,9 @@ void Gameplay::Initialize()
 
 	//Use this value to set the start of the player / origin of the map
 	Aen::Vec3f playerStartPos(0.f, 0.f, 0.f);
-	Aen::Vec3f ChestPos;
-	Aen::Vec3f doorPos;
-	Aen::Vec3f EnemyPos;
+	Aen::Vec3f ChestPos(-10.f, 0.f, 0.f);
+	Aen::Vec3f doorPos(10.f, 0.f, 10.f);
+	Aen::Vec3f EnemyPos(10.f, 0.f, 0.f);
 	int roomNormal = 0;
 	int itemNormal = 0;
 
@@ -179,6 +179,7 @@ void Gameplay::Initialize()
 					m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
 					m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
 					roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+					//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 		
 				}
 				mptr_map[x + y * Aen::mapSize].mptr_parent;
@@ -210,6 +211,7 @@ void Gameplay::Initialize()
 	
 	m_chest.SetType(Type::Open);
 	m_player.GetEntity()->SetPos(playerStartPos.x, playerStartPos.y + 5.f, playerStartPos.z);
+
 	m_chest.SetType(Type::Open);
 	m_door.SetType(Type::Closed);
 #ifdef _DEBUG
@@ -229,8 +231,6 @@ void Gameplay::Initialize()
 		m_chest.GetEntity()->SetRot(0, 90, 0);
 	}
 
-	//m_attack->SetParent(*m_player);
-	//printf("");
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
 
@@ -243,16 +243,18 @@ void Gameplay::Initialize()
 
 	std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	std::vector<Aen::Vec3f> tempLskels = m_levelGenerator.GetHandlerPtr()->GetLskelPos();
+	// Mob Spawning
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
 	{
 		m_enemyQueue.emplace_back(AEN_NEW Rimuru(tempSlimes[i]));
 	}
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetLskelPos().size(); i++)
 	{
-		m_enemyQueue.emplace_back(AEN_NEW SkeleLight(tempLskels[i]));
+		SkeleLight* s = AEN_NEW SkeleLight(tempLskels[i]);
+		m_enemyQueue.emplace_back(s);
 	}
 
-	cout << "BOSS ROOM: " << roomNormal << endl;
+	//cout << "BOSS ROOM: " << roomNormal << endl;
 	m_throne->SetScale(2.f, 2.f, 2.f);
 
 	// -- Door, Throne, Boss Rotations -- //
@@ -292,16 +294,13 @@ void Gameplay::Initialize()
 		m_grave.GetEntity()->SetRot(0, -90, 0);
 		m_exit.GetEntity()->SetRot(0, -90, 0);
 	}
-	//m_pSkeleBoss->SetThronePosition(m_throne->GetPos());
+
 	m_door.GetEntity()->SetPos(doorPos.x, 0.f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 39.5f);
 	m_grave.GetEntity()->SetPos(0, -5, 0);
 
 	m_exit.GetEntity()->SetPos(doorPos.x, 10.f, doorPos.z);
 	m_exit.GetEntity()->MoveRelative(0, 0, -21.5f);
-	//m_attack->SetParent(*m_player);
-
-	//printf("");
 
 	// --------------------------- Setup Window --------------------------------- //
 
@@ -392,7 +391,7 @@ void Gameplay::Initialize()
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	SetWin(false);
-	m_bossHP = m_pSkeleBoss->GetHealth();
+	//m_bossHP = m_pSkeleBoss->GetHealth();
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //

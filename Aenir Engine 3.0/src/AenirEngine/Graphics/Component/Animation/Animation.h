@@ -4,10 +4,20 @@
 namespace Aen {
 
 	struct VertexAnimation {
-		Vec3f pos, norm, tan, bi;
+		Vec3f pos;
+		Vec3f norm;
+		Vec3f tan;
+		Vec3f bi;
 		Vec2f uv;
 		Vec4i boneId;
 		Vec4f boneWeights;
+	};
+
+	struct AssimpData {
+		Mat4f transform;
+		std::string name;
+		int childCount = 0;
+		std::vector<AssimpData> children;
 	};
 
 	struct KeyFrameData {
@@ -27,14 +37,16 @@ namespace Aen {
 	{
 		BASE_TIME, LAYER_TIME, SCALE
 	};
+	enum class Action
+	{
+		Attack, Dash
+	};
 
 	class AEN_DECLSPEC Animation {
 	private:
 		float m_duration;
-		float m_blendFactor = 0.f;
-		bool m_isBlendAnimation = false;
+		int m_blendIndex = 0;
 		
-		//AssimpData m_RootNode;
 		std::vector<Bones> m_boneArray;
 		std::unordered_map<std::string, std::vector<KeyFrameData>> m_keyFrames;
 		std::vector<float> m_timeStamp;
@@ -43,24 +55,29 @@ namespace Aen {
 		IBuffer m_indexBuffer;
 		SBuffer<Mat4f> m_finalMatrix;
 
-		Animation* mp_layer = nullptr;
-		BlendMode m_bm = BlendMode(0);
+		//Animation* mp_runLayer = nullptr;
+		//Animation* mp_actionLayer = nullptr;
+		//std::vector<Animation*> mp_actionLayer;
+		//BlendMode m_bm = BlendMode(0);
 		std::vector<bool> m_doBlendBone;
-		void WhatToBlend(const int& boneIndex);
+		//void WhatToBlend(const int& boneIndex, Animation& pLayer);
+		//void ReversePartialBlend(Animation* layer);
 	public:
 		Animation();
+		//Animation(const Animation& s);
 		~Animation();
 		const float GetDuration() const;
 		void LoadAnimation(const std::string& animationPath);
-		void AddAnimationLayer(Animation* pLayer);
-		void AddPartialAnimationLayer(Animation* pLayer, const std::string& root);
-		
-		// ------ Blend ------ //
-		void SetBlendFactor(const float& blendFactor);
-		const bool IsBlendAnimation() const;
-		const float GetBlendFactor() const;
-		const BlendMode GetBlendMode() const;
-		void SetBlendMode(const BlendMode& bm);
+		//void AddRunLayer(Animation& pLayer);
+		//void AddActionLayer(Animation& pLayer);
+		//void AddPartialActionLayer(Animation& pLayer, const std::string& root, const bool& reverse = false);
+		//void SetRunFactor(const float& blendFactor);
+		//void SetActionFactor(const float& blendFactor);
+		//const bool IsBlendAnimation() const;
+		//const BlendMode GetBlendMode() const;
+		//void SetBlendMode(const BlendMode& bm);
+		//const int GetBlendIndex() const;
+		//void SetBlendAnimation(const Action &ac);
 	private:
 
 		friend class Resource;
