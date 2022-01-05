@@ -8,7 +8,7 @@ namespace Aen {
 	void Animator::Update() {
 		if (animationIndex < m_animationList.size()) {
 			//Animation* animation(m_animationList[animationIndex].second);
-			Animation* animation (m_animationList[animationIndex].second);
+			Animation* animation = m_animationList[animationIndex].second;
 
 			m_sEnd = omp_get_wtime();
 			while(m_sEnd - m_sStart > m_frameRate) {
@@ -60,7 +60,7 @@ namespace Aen {
 		//const uint16_t layerOffset = doRunBl ? layerNumFrames / baseNumFrames : 1.f;
 
 		
-		float duration = animation->m_duration;
+		float duration = animation->GetDuration();
 
 		if (m_hasRunLayer)
 			duration = Aen::Max(duration, runLayer->GetDuration());
@@ -70,8 +70,8 @@ namespace Aen {
 
 		duration *= m_scale;
 
-		float runDuration = m_hasRunLayer ? duration = runLayer->m_duration * m_scale : -1.f;
-		float actionDuration = m_hasActionLayer ? duration = actionLayer->m_duration * m_scale : -1.f;
+		//float runDuration = m_hasRunLayer ? duration = runLayer->m_duration * m_scale : -1.f;
+		//float actionDuration = m_hasActionLayer ? duration = actionLayer->m_duration * m_scale : -1.f;
 
 		if (m_time < duration) 
 		{

@@ -169,7 +169,7 @@ void Gameplay::Initialize()
 				
 
 				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
-					m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+					//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 
 				}
 				mptr_map[x + y * Aen::mapSize].mptr_parent;
@@ -179,6 +179,7 @@ void Gameplay::Initialize()
 					m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
 					m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
 					roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
+					m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 		
 				}
 				mptr_map[x + y * Aen::mapSize].mptr_parent;
@@ -254,10 +255,10 @@ void Gameplay::Initialize()
 		SkeleLight* s = AEN_NEW SkeleLight(tempLskels[i]);
 		m_enemyQueue.emplace_back(s);
 	}
-	//SkeleLight* s = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, -6.f), -1.f);
+	//SkeleLight* s = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, -6.f));
 	//m_enemyQueue.emplace_back(s);
-	//
-	//SkeleLight* ss = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, 6.f), 1.f);
+	////
+	//SkeleLight* ss = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, 6.f));
 	//m_enemyQueue.emplace_back(ss);
 
 	//cout << "BOSS ROOM: " << roomNormal << endl;

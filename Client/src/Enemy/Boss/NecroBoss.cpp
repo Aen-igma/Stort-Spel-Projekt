@@ -35,6 +35,9 @@ Boss::Boss(const Aen::Vec3f position, float hp) :
 	m_animator->AddAnimation("Boss_Summon", "cast");
 	m_animator->SetFrameRate(24);
 	
+	m_animator->SetRunLayer("walk");
+	m_animator->SetActionLayer("attack");
+	m_animator->SetAnimation("throne");
 
 
 	// ----------------- //
@@ -72,6 +75,8 @@ Boss::~Boss()
 
 void Boss::Update(const float& deltaTime, Player& player)
 {
+	static float attackFactor = 0.f;
+	static float runFactor = 0.f;
 	//m_areMinionsSummoned = m_pMinions.size() > 0;
 	mp_player = &player;
 	m_cantSummonSlimes = m_pMinions.size() > 0;
@@ -113,14 +118,16 @@ void Boss::Update(const float& deltaTime, Player& player)
 	{
 		m_enemy->SetPos(m_thronePosition);
 		m_animator->SetAnimationScale(2.5);
-		m_animator->SetAnimation("throne");
+		
+		// m_animator->SetAnimation("throne");
 		m_v = Aen::Vec3f::zero;
 		break;
 	}
 	case BossState::PHASE1:
 	{
 		m_animator->SetAnimationScale(2);
-		m_animator->SetAnimation("walk");
+		//m_animator->SetAnimation("walk");
+		runFactor = Aen::Lerp(runFactor, 1.f, 0.35f);
 
 		m_deltatime = deltaTime;
 
@@ -149,7 +156,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 
 		if (distance > 10.f) {
 			m_animator->SetAnimationScale(2);
-			m_animator->SetAnimation("walk");
+			//m_animator->SetAnimation("walk");
 		}
 
 		if (m_waiting)
@@ -183,6 +190,7 @@ void Boss::Update(const float& deltaTime, Player& player)
 		m_enemy->SetPos(m_thronePosition.x, m_thronePosition.y + 1.8f, m_thronePosition.z);
 		m_animator->SetAnimationScale(3);
 		m_animator->SetAnimation("cast");
+		runFactor = Aen::Lerp(runFactor, 0.f, 0.35f);
 
 		m_direction = Aen::Lerp(m_direction, eDir.Normalized(), 0.03f);
 		rot = std::atan2(m_direction.x, m_direction.z);
@@ -201,7 +209,10 @@ void Boss::Update(const float& deltaTime, Player& player)
 		break;
 	}
 
+	attackFactor = Aen::Lerp(attackFactor, (float)IsAttacking(), .35f);
 
+	m_animator->SetActionFactor(attackFactor);
+	m_animator->SetRunFactor(runFactor);
 	if (Aen::Input::KeyDown(Aen::Key::G))
 		printf("Hello");
 	mp_charCont->Move(m_v * m_deltatime, m_deltatime);
@@ -407,7 +418,7 @@ void Boss::UpdateAttack()
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack)
 	{
 		m_animator->SetAnimationScale(1);
-		m_animator->SetAnimation("attack");
+		//m_animator->SetAnimation("attack");
 
 		m_cantSummonSlimes = false;
 		if (mp_hurtBox->Intersects(mp_player->GetEntity()->GetComponent<Aen::AABoundBox>()))

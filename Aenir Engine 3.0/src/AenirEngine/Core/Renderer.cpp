@@ -230,7 +230,7 @@ namespace Aen {
 		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);*/
 
 		// Present
-		RenderSystem::Present((UINT)Aen::GlobalSettings::GetVSync());
+		RenderSystem::Present(/*(UINT)Aen::GlobalSettings::GetVSync()*/0);
 		RenderSystem::ClearState();
 	}
 

@@ -459,17 +459,15 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 			if(m_eventQueue.front().type == EventType::Dash) {
 				m_animation->SetAnimationScale(1.f);
-				//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Dash");
 				m_anAc = Aen::Action::Dash;
 				m_animation->SetActionLayer("Dash");
 				//m_protagIdle->SetBlendAnimation(m_anAc);
 			} 
 		else if(m_eventQueue.front().type == EventType::Attack) {
-				m_animation->SetAnimationScale(0.35f);
+				m_animation->SetAnimationScale(.5f);
 				m_anAc = Aen::Action::Attack;
 				m_animation->SetActionLayer("Attack");
 				//m_protagIdle->SetBlendAnimation(m_anAc);
-				//m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Attack");
 			}
 
 		}
@@ -523,6 +521,12 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		break;
 	default:
 		break;
+	}
+	bool _ = false;
+	if (!IsAttacking() && !IsDashing())
+	{
+		m_animation->SetActionLayer("Dash");
+		m_animation->SetAnimationScale(0.35f);
 	}
 
 	//blendSpeed *= deltaTime;

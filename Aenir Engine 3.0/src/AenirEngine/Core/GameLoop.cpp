@@ -50,7 +50,7 @@ namespace Aen {
 
 			deltaTime = (omp_get_wtime() - sStart);
 
-			ComponentHandler::UpdateAnimation();
+			//ComponentHandler::UpdateAnimation();
 		}
 
 		
