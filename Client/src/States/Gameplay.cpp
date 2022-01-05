@@ -169,7 +169,7 @@ void Gameplay::Initialize()
 				
 
 				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
-					//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+					m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 
 				}
 				mptr_map[x + y * Aen::mapSize].mptr_parent;
@@ -179,7 +179,7 @@ void Gameplay::Initialize()
 					m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
 					m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
 					roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
-					m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
+					//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
 		
 				}
 				mptr_map[x + y * Aen::mapSize].mptr_parent;
