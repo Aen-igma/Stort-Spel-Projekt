@@ -231,8 +231,6 @@ void Gameplay::Initialize()
 		m_chest.GetEntity()->SetRot(0, 90, 0);
 	}
 
-	//m_attack->SetParent(*m_player);
-	//printf("");
 	//---------ENEMIES----------//
 	// ALWAYS SPAWN BOSS BEFORE OTHER ENEMIES!!!!!
 
@@ -255,11 +253,6 @@ void Gameplay::Initialize()
 		SkeleLight* s = AEN_NEW SkeleLight(tempLskels[i]);
 		m_enemyQueue.emplace_back(s);
 	}
-	//SkeleLight* s = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, -6.f));
-	//m_enemyQueue.emplace_back(s);
-	////
-	//SkeleLight* ss = AEN_NEW SkeleLight(playerStartPos + Aen::Vec3f(0.f,0.f, 6.f));
-	//m_enemyQueue.emplace_back(ss);
 
 	//cout << "BOSS ROOM: " << roomNormal << endl;
 	m_throne->SetScale(2.f, 2.f, 2.f);
@@ -301,16 +294,13 @@ void Gameplay::Initialize()
 		m_grave.GetEntity()->SetRot(0, -90, 0);
 		m_exit.GetEntity()->SetRot(0, -90, 0);
 	}
-	//m_pSkeleBoss->SetThronePosition(m_throne->GetPos());
+
 	m_door.GetEntity()->SetPos(doorPos.x, 0.f, doorPos.z);
 	m_door.GetEntity()->MoveRelative(0.f, 0, 39.5f);
 	m_grave.GetEntity()->SetPos(0, -5, 0);
 
 	m_exit.GetEntity()->SetPos(doorPos.x, 10.f, doorPos.z);
 	m_exit.GetEntity()->MoveRelative(0, 0, -21.5f);
-	//m_attack->SetParent(*m_player);
-
-	//printf("");
 
 	// --------------------------- Setup Window --------------------------------- //
 

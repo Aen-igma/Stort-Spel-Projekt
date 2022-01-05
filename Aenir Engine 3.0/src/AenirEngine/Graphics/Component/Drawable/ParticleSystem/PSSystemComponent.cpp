@@ -175,84 +175,84 @@ namespace Aen
 		
 
 		//Dispatch from depth
-		//renderer.m_PSInputBuffer.GetData() = m_CSInputBuffer;
-		//renderer.m_PSInputBuffer.UpdateBuffer();
-		//renderer.m_PSInputBuffer.BindBuffer<CShader>(0);
-		//RenderSystem::BindUnOrderedAccessView(0, m_UAView);
-		//RenderSystem::BindShader(renderer.m_PSCShader);
+		renderer.m_PSInputBuffer.GetData() = m_CSInputBuffer;
+		renderer.m_PSInputBuffer.UpdateBuffer();
+		renderer.m_PSInputBuffer.BindBuffer<CShader>(0);
+		RenderSystem::BindUnOrderedAccessView(0, m_UAView);
+		RenderSystem::BindShader(renderer.m_PSCShader);
 
-		//RenderSystem::Dispatch(16, 1, 1);
+		RenderSystem::Dispatch(16, 1, 1);
 
-		//RenderSystem::UnBindShader<CShader>();
-		//RenderSystem::UnBindUnOrderedAccessViews(0, 1);
+		RenderSystem::UnBindShader<CShader>();
+		RenderSystem::UnBindUnOrderedAccessViews(0, 1);
 
-		////First Pass
-		//RenderSystem::ClearRenderTargetView(renderer.m_particleOut, Color(0.f, 0.f, 0.f, 0.f));
-		//RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
-		//RenderSystem::SetInputLayout(renderer.m_PSLayout);
-		//renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation();
-		//renderer.m_cbTransform.UpdateBuffer();
-		//renderer.m_cbTransform.BindBuffer<VShader>(0);
+		//First Pass
+		RenderSystem::ClearRenderTargetView(renderer.m_particleOut, Color(0.f, 0.f, 0.f, 0.f));
+		RenderSystem::SetPrimitiveTopology(Topology::POINTLIST);
+		RenderSystem::SetInputLayout(renderer.m_PSLayout);
+		renderer.m_cbTransform.GetData().m_mdlMat = EntityHandler::GetEntity(m_id).GetTransformation();
+		renderer.m_cbTransform.UpdateBuffer();
+		renderer.m_cbTransform.BindBuffer<VShader>(0);
 
-		//RenderSystem::BindShaderResourceView<VShader>(0, m_UAView);
+		RenderSystem::BindShaderResourceView<VShader>(0, m_UAView);
 
-		//renderer.m_cbTransform.BindBuffer<GShader>(0);
-		//RenderSystem::BindSamplers<PShader>(0,renderer.m_wrapSampler);
+		renderer.m_cbTransform.BindBuffer<GShader>(0);
+		RenderSystem::BindSamplers<PShader>(0,renderer.m_wrapSampler);
 
-		//if(m_pMaterial) {
+		if(m_pMaterial) {
 
-		//	RenderSystem::UnBindShaderResources<PShader>(0u, 3u);
-		//	if(m_pMaterial->m_textures[0]) {
-		//		RenderSystem::BindShaderResourceView<PShader>(0, m_pMaterial->m_textures[0]->m_shaderResource);
-		//		renderer.m_cbUseTexture.GetData()[0] = (int)true;
-		//	}
+			RenderSystem::UnBindShaderResources<PShader>(0u, 3u);
+			if(m_pMaterial->m_textures[0]) {
+				RenderSystem::BindShaderResourceView<PShader>(0, m_pMaterial->m_textures[0]->m_shaderResource);
+				renderer.m_cbUseTexture.GetData()[0] = (int)true;
+			}
 
-		//	if(m_pMaterial->m_textures[2]) {
-		//		RenderSystem::BindShaderResourceView<PShader>(1, m_pMaterial->m_textures[2]->m_shaderResource);
-		//		renderer.m_cbUseTexture.GetData()[2] = (int)true;
-		//	}
+			if(m_pMaterial->m_textures[2]) {
+				RenderSystem::BindShaderResourceView<PShader>(1, m_pMaterial->m_textures[2]->m_shaderResource);
+				renderer.m_cbUseTexture.GetData()[2] = (int)true;
+			}
 
-		//	if(m_pMaterial->m_textures[3]) {
-		//		RenderSystem::BindShaderResourceView<PShader>(2, m_pMaterial->m_textures[3]->m_shaderResource);
-		//		renderer.m_cbUseTexture.GetData()[3] = (int)true;
-		//	}
+			if(m_pMaterial->m_textures[3]) {
+				RenderSystem::BindShaderResourceView<PShader>(2, m_pMaterial->m_textures[3]->m_shaderResource);
+				renderer.m_cbUseTexture.GetData()[3] = (int)true;
+			}
 
-		//	renderer.m_cbUseTexture.UpdateBuffer();
-		//}
+			renderer.m_cbUseTexture.UpdateBuffer();
+		}
 
-		//renderer.m_cbUseTexture.BindBuffer<PShader>(0u);
+		renderer.m_cbUseTexture.BindBuffer<PShader>(0u);
 
-		//RenderSystem::BindRenderTargetView(renderer.m_particleOut, renderer.m_depthMap);
-		//RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
-		////Uncomment if you want wireframe state
-		////RenderSystem::SetRasteriserState(renderer.m_wireFrameState);
-
-
-		//RenderSystem::BindShader(renderer.m_PSVShader);
-		//RenderSystem::BindShader(renderer.m_PSGShader);
-		//RenderSystem::BindShader(renderer.m_PSPShader);
-
-		//RenderSystem::Draw(this->m_currentNrPS,0);
+		RenderSystem::BindRenderTargetView(renderer.m_particleOut, renderer.m_depthMap);
+		RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
+		//Uncomment if you want wireframe state
+		//RenderSystem::SetRasteriserState(renderer.m_wireFrameState);
 
 
-		//// Second Pass
-		//RenderSystem::UnBindShader<VShader>();
-		//RenderSystem::UnBindShader<GShader>();
-		//RenderSystem::UnBindShader<PShader>();
-		//RenderSystem::UnBindShaderResources<VShader>(0,1);
-		//RenderSystem::UnBindShaderResources<PShader>(0,3);
-		//RenderSystem::UnBindRenderTargets(renderer.m_particleOut.GetCount());
+		RenderSystem::BindShader(renderer.m_PSVShader);
+		RenderSystem::BindShader(renderer.m_PSGShader);
+		RenderSystem::BindShader(renderer.m_PSPShader);
 
-		//renderer.m_cbBGColor.BindBuffer<CShader>(0);
-		//RenderSystem::BindShader<CShader>(renderer.m_PostPatricleCS);
-		//RenderSystem::BindUnOrderedAccessView(0u, renderer.m_UAVBackBuffer);
-		//RenderSystem::BindShaderResourceView<CShader>(0u, renderer.m_particleOut);
+		RenderSystem::Draw(this->m_currentNrPS,0);
 
-		//RenderSystem::Dispatch(renderer.m_dispatchGroups, 1u);
 
-		//RenderSystem::UnBindShader<CShader>();
-		//RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
-		//RenderSystem::UnBindShaderResources<CShader>(0u, renderer.m_particleOut.GetCount());
+		// Second Pass
+		RenderSystem::UnBindShader<VShader>();
+		RenderSystem::UnBindShader<GShader>();
+		RenderSystem::UnBindShader<PShader>();
+		RenderSystem::UnBindShaderResources<VShader>(0,1);
+		RenderSystem::UnBindShaderResources<PShader>(0,3);
+		RenderSystem::UnBindRenderTargets(renderer.m_particleOut.GetCount());
+
+		renderer.m_cbBGColor.BindBuffer<CShader>(0);
+		RenderSystem::BindShader<CShader>(renderer.m_PostPatricleCS);
+		RenderSystem::BindUnOrderedAccessView(0u, renderer.m_UAVBackBuffer);
+		RenderSystem::BindShaderResourceView<CShader>(0u, renderer.m_particleOut);
+
+		RenderSystem::Dispatch(renderer.m_dispatchGroups, 1u);
+
+		RenderSystem::UnBindShader<CShader>();
+		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
+		RenderSystem::UnBindShaderResources<CShader>(0u, renderer.m_particleOut.GetCount());
 	}
 
 	void PSSystemcomponent::DepthDraw(Renderer& renderer, const uint32_t& layer) {
