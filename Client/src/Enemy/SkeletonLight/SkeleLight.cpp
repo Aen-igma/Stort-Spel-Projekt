@@ -68,8 +68,6 @@ SkeleLight::SkeleLight(const Aen::Vec3f& pos, float e)
 	m_animator->SetFrameRate(24);
 	m_animator->SetAnimationScale(2.5);
 
-	m_animator->SetRunLayer("walk");
-
 	
 
 
@@ -168,15 +166,12 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 		mp_charCont->Move(m_movementVector * deltaTime, deltaTime);
 		
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
-
-		if (Aen::Input::KeyDown(Aen::Key::U))
-			printf("deb");
 	}
 	else
 	{
 		m_walkFactor = Aen::Lerp(m_walkFactor, 0.f, 0.2f);
 		m_animator->SetAnimationScale(2.5);
-		
+		m_animator->SetAnimation("idle");
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(false);
 	}
 	
@@ -235,7 +230,7 @@ void SkeleLight::CombatEvent(const float& deltaTime, const float& distance)
 		data.function = [&](float& accell, const float& attackDuration, const int& nrOfAttacks)
 		{
 			m_animator->SetAnimationScale(0.80);
-			
+			m_animator->SetAnimation("attack");
 			mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 		};
 		m_eventQueue.emplace_back(data);
@@ -249,7 +244,11 @@ void SkeleLight::CombatEvent(const float& deltaTime, const float& distance)
 		};
 		m_eventQueue.emplace_back(data);
 	}
-
+	else
+	{
+		m_animator->SetAnimationScale(1);
+		m_animator->SetAnimation("walk");
+	}
 }
 
 void SkeleLight::RandomIdleEvent(const float& deltaTime, const Aen::Vec2f& randDir)
