@@ -4,13 +4,9 @@
 namespace Aen {
 
 	GameLoop::GameLoop()
-		:m_app(nullptr), /*m_start(), m_end(), m_frameTime(), m_deltaTime(),*/ m_renderer(nullptr) {}
+		:m_app(nullptr), m_renderer(nullptr) {}
 
 	void GameLoop::Initialize() {
-		//m_app = CreateApp();                       fix this
-		//int ft = (int)(((double)1 / (double)60) * (double)pow(10, 9));
-		/*m_frameTime = std::chrono::nanoseconds{ft};
-		m_frametime = ft / pow(10, 9);*/
 
 		if(!Input::Initialize())
 			exit(-1);
@@ -49,10 +45,7 @@ namespace Aen {
 			m_renderer->Render();
 
 			deltaTime = (omp_get_wtime() - sStart);
-
-			//ComponentHandler::UpdateAnimation();
 		}
-
 		
 		delete m_app;
 		Resource::Destroy();

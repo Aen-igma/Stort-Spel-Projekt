@@ -62,6 +62,7 @@ void Gameplay::Initialize()
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetColor(Aen::Color(0.3f, 0.3f, 0.5f, 1.f));
 	m_dLight->GetComponent<Aen::DirectionalLight>().SetStrength(0.3f);
 	m_dLight->SetRot(3.f, 45.f, 0.f);
+
 	// ----------------------------- Animations -------------------------------- //
 	
 	// Skel_Light
@@ -81,9 +82,6 @@ void Gameplay::Initialize()
 	bossAttack.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Attack.fbx"));
 	Aen::Animation& bossSummon = Aen::Resource::CreateAnimation("Boss_Summon");
 	bossSummon.LoadAnimation(AEN_ANIMATION_DIR("Boss_Skeletor_Summon.fbx"));
-
-	//bossWalkToAttack.AddRunLayer(bossAttack);
-	
 
 	// ----------------------------- Load Meshes -------------------------------- //
 
@@ -170,7 +168,6 @@ void Gameplay::Initialize()
 
 				if (mptr_map[y * Aen::mapSize + x].m_roomSpecial == Aen::SpecialRoom::ENTRANCE) {
 					m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
-
 				}
 				mptr_map[x + y * Aen::mapSize].mptr_parent;
 
@@ -179,8 +176,6 @@ void Gameplay::Initialize()
 					m_levelGenerator.GetRoomPos(x, y, &m_bossPos.x, &m_bossPos.z);
 					m_levelGenerator.GetRoomPos(x, y, &doorPos.x, &doorPos.z);
 					roomNormal = mptr_map[y * Aen::mapSize + x].connectionDirections;
-					//m_levelGenerator.GetRoomPos(x, y, &playerStartPos.x, &playerStartPos.z);
-		
 				}
 				mptr_map[x + y * Aen::mapSize].mptr_parent;
 
@@ -391,7 +386,6 @@ void Gameplay::Initialize()
 	Aen::Input::ToggleRawMouse(true);
 	Aen::Input::SetMouseVisible(false);
 	SetWin(false);
-	//m_bossHP = m_pSkeleBoss->GetHealth();
 }
 
 // ---------------------------------------------------------		Update		--------------------------------------------------------------- //
@@ -667,11 +661,4 @@ void Gameplay::Update(const float& deltaTime) {
 			m_Window.LoadSettings(wDesc);
 		}
 	}
-	// ------------------------------ Quick Exit Button -------------------------------- //
-
-	// ------------------------------------- States -------------------------------------- //
-	//if (m_hp <= 0 && m_enemyQueue.size() == 0)
-	//{
-	//	State::SetState(States::Gameover);
-	//}
 }
