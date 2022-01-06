@@ -126,7 +126,6 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 		m_movementVector += Aen::Vec3f(m_nDir.x, 0.f, m_nDir.y) * m_speed;
 		m_walkFactor = Aen::Lerp(m_walkFactor, 1.f, 0.33f);
 		mp_charCont->Move(m_movementVector * deltaTime, deltaTime);
-		//m_enemy->GetComponent<Aen::CharacterController>().Move(Aen::Vec3f(m_nDir.x, 0.f, m_nDir.y) * 3.f * deltaTime, deltaTime);
 		m_enemy->GetComponent<Aen::AABoundBox>().ToggleActive(true);
 	}
 	else
@@ -140,7 +139,7 @@ void SkeleLight::Update(const float& deltaTime, Player& player)
 	if (player.GetHitBoxP()->Intersects(mp_hurtbox->GetComponent<Aen::OBBox>())) {
 		if (!m_hurting) {
 			m_hurting = true;
-			player.SubtractHealth(10.f);
+			player.SubtractHealth(30.f);
 			Aen::Vec3f dir = Aen::Vec3f(0.f, 0.3f, 0.f) + m_lDir.Normalized();
 			player.Move(dir.Normalized() * 20.f);
 		}
@@ -179,7 +178,6 @@ void SkeleLight::CombatEvent(const float& deltaTime, const float& distance)
 		{
 			m_animator->SetAnimationScale(0.80);
 			m_animator->SetAnimation("attack");
-			//m_animator->S
 			mp_hurtbox->GetComponent<Aen::OBBox>().ToggleActive(true);
 		};
 		m_eventQueue.emplace_back(data);
