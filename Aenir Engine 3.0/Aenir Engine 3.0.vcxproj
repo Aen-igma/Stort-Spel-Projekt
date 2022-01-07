@@ -509,10 +509,6 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
     </FxCompile>
-    <None Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\SimplexNoise.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <FileType>Document</FileType>
-    </None>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PTransparencyPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -541,7 +537,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PSCore.hlsli" />
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

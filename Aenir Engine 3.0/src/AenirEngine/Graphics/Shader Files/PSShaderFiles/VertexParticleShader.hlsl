@@ -37,7 +37,6 @@ VertexShaderOutput main(uint vertexID : SV_VertexID)
     float a = Particles[vertexID].Age;
     float opacity = 1.0f - smoothstep(0.0f, 0.0f, a / 1.0f);
     float3 AccelOnW = float3(0.0f, 7.8f, 0.0f);
-    //float3 posA = 0.5f * a * a * AccelOnW + a + Particles[vertexID].Velocity + Particles[vertexID].Pos;
 
 
     float4 VSInputPos = float4(Particles[vertexID].Pos, 1.0f);
@@ -47,7 +46,6 @@ VertexShaderOutput main(uint vertexID : SV_VertexID)
 
     output.uv = Particles[vertexID].UV;
     output.color = float4(1.0f, 1.0f, 1.0f, opacity);
-    //output.color = Particles[vertexID].Color;
 
     return output;
 }
