@@ -104,22 +104,12 @@ Player::Player()
 	m_protagIdle->LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Idle.fbx"));
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
 	protagRun.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Run.fbx"));
-	//m_protagIdle->AddRunLayer(protagRun);
 
 
-
-	//m_protagIdleToRun->AddPartialAnimationLayer(&protagRun, "QuickRigCharacter1_Spine1");
-	//m_animationTree->SetBlendMode(Aen::BlendMode::LAYER_TIME);
 	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
 	protagDash.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Dash.fbx"));
 	Aen::Animation& protagAttack = Aen::Resource::CreateAnimation("protagAttack");
 	protagAttack.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Attack.fbx"));
-
-	
-
-	//m_animationTree->AddActionLayer(protagAttack);
-	//m_animationTree->AddActionLayer(protagDash);
-	//m_animationTree->AddPartialActionLayer(protagAttack, "QuickRigCharacter1_Spine1", true);
 
 	m_playerMeshHolder->AddComponent<Aen::MeshInstance>();
 	m_playerMeshHolder->GetComponent<Aen::MeshInstance>().SetMesh(*protag);
@@ -147,7 +137,6 @@ Player::Player()
 	m_player->AddComponent<Aen::AABoundBox>();
 	mp_hitBox = &m_player->GetComponent<Aen::AABoundBox>();
 	mp_hitBox->SetBoundingBox(0.45f,1.1f,0.45f);
-	//m_player->SetPos(0.f, -1.f, 0.f);
 
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
@@ -178,7 +167,6 @@ Player::Player()
 	barMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("enemybar.png"));
 	barMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("opacBar.png"));
 	barMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("enemybar.png"));
-	//barMat["InnerEdgeThickness"] = 0;
 	barMat["GlowColor"] = Aen::Color::Red;
 	barMat["InnerEdgeColor"] = Aen::Color::Red;
 	barMat["OuterEdgeColor"] = Aen::Color::Yellow;
@@ -247,14 +235,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
 			}
 		}
-		//if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_UP) {
-		//	printf("scroll up\n");
-
-		//}
-		//else if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_DOWN) {
-		//	printf("scroll down\n");
-
-		//}
 	}
 
 	// ------------------------------ Player Controler ---------------------------------- //
@@ -320,34 +300,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 		AddEvent(data);
 	}
-	/*if (Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
-		EventData data;
-		data.accell = m_HEAVYATTACKSPEED;
-		data.duration = m_HEAVYATTACKTIME;
-		data.type = EventType::Attack;
-		data.damage = 40.f;
-		data.function = [&](float& accell, const float& attackDuration, const int& nrOf)
-		{
-
-			if (lockedOn) {
-				Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
-				Aen::Vec3f d(d2.x, 0.f, d2.y);
-				m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
-			}
-
-			mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
-			accell -= deltaTime * 2;
-			if (attackDuration < m_HEAVYCHARGETIME)
-			{
-				mp_hurtBox->ToggleActive(true);
-				SwordSwing(250.f, m_HEAVYATTACKTIME, deltaTime);
-			}
-			else
-				mp_hurtBox->ToggleActive(false);
-		};
-
-		AddEvent(data);
-	}*/
 
 	// Lock On Target
 
@@ -403,6 +355,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_targets.front().target->GetEntity()->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
+
 		//Create UI
 		m_targetUI->SetPos(m_targets.front().target->GetEntity()->GetPos());
 		m_targetUI->SetScale(5.f, 1.f, 15.f);
@@ -434,7 +387,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	Aen::Vec3f playerDir = m_camera->GetComponent<Aen::Camera>().GetForward() * axis.Normalized().z + m_camera->GetComponent<Aen::Camera>().GetRight() * axis.Normalized().x;
 	dir = Aen::Vec2f(playerDir.x, playerDir.z);
 
-	Aen::Vec3f attackPos =/* m_player->GetPos() +*/ m_finalDir * 2.f;
+	Aen::Vec3f attackPos = m_finalDir * 2.f;
 
 	m_hurtbox->SetPos(attackPos);
 
@@ -444,13 +397,9 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	mp_hurtBox->SetOrientation(0.f, yaw, 0.f);
 	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
 	
-	//if(axis.Magnitude() > 0.f) {
-	//	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
-	//	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
-	//} else {
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
-	//}
+	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
+	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
+
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
@@ -461,13 +410,11 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				m_animation->SetAnimationScale(1.f);
 				m_anAc = Aen::Action::Dash;
 				m_animation->SetActionLayer("Dash");
-				//m_protagIdle->SetBlendAnimation(m_anAc);
 			} 
 		else if(m_eventQueue.front().type == EventType::Attack) {
 				m_animation->SetAnimationScale(.5f);
 				m_anAc = Aen::Action::Attack;
 				m_animation->SetActionLayer("Attack");
-				//m_protagIdle->SetBlendAnimation(m_anAc);
 			}
 
 		}
@@ -517,7 +464,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		break;
 	case Aen::Action::Dash:
 		actionFactor = Aen::Lerp(actionFactor, (float)IsDashing(), .35f);
-		//actionFactor = 1.f;
 		break;
 	default:
 		break;
@@ -529,7 +475,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		m_animation->SetAnimationScale(0.35f);
 	}
 
-	//blendSpeed *= deltaTime;
 	m_animation->SetRunFactor(runFactor);
 	m_animation->SetActionFactor(actionFactor);
 	mp_charCont->Move(m_v * deltaTime, deltaTime);
@@ -549,7 +494,7 @@ Aen::Entity*& Player::GetCamera()
 }
 
 void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
-	// Attacking -------------------------------------------------------------------------------------
+	// ------------------------------		Attacking		---------------------------------- //
 
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack) {
 		m_attackTimer += deltaTime;
@@ -634,7 +579,7 @@ void Player::PotionUpdate()
 		m_timer = 0;
 	}
 
-	if (m_health > 200.f) // cap
+	if (m_health > 200.f) 
 		m_health = 200.f;
 }
 

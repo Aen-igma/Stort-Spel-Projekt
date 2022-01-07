@@ -182,39 +182,6 @@ void Node::Subdivide()
 		}
 	}
 	
-	/*
-	bool inserted;
-	int counter = 0;
-	for (auto& box : m_objs)
-	{
-		inserted = false;
-		if (mp_children[0]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[0]->Insert(box);
-			inserted = true;
-		}
-		if (mp_children[1]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[1]->Insert(box);
-			inserted = true;
-		}
-		if (mp_children[2]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[2]->Insert(box);
-			inserted = true;
-		}
-		if (mp_children[3]->m_areaQuad.Intersects(box.m_boundBox))
-		{
-			mp_children[3]->Insert(box);
-			inserted = true;
-		}
-		if (inserted)
-		{
-			counter++;
-		}
-	}
-	assert(counter == m_objs.size()); 
-	*/
 	m_objs.clear();
 	Aen::EntityHandler::RemoveEntity(*mp_aabbDraw);
 }

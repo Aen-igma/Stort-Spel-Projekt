@@ -120,7 +120,7 @@ namespace Aen {
 					nextFrame = animation->m_keyFrames.at(bName)[sFrame % baseNumFrames].rotation;
 				}
 
-				if (m_hasActionLayer/* && actionLayer->m_doBlendBone[i]*/)
+				if (m_hasActionLayer)
 				{
 					sm::Matrix current = actionLayer->m_keyFrames.at(bName)[actionFrame].rotation.smMat;
 					sm::Matrix next = actionLayer->m_keyFrames.at(bName)[sFrame % actionNumFrames].rotation.smMat;

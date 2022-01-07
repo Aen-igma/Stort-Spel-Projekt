@@ -165,20 +165,10 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 			for (int j = 1; j <= face.mNumIndices; j++)
 				invertIndices.push_back(face.mIndices[face.mNumIndices - j]);
 		}
-		/*for (int i = 0; i < mesh->mNumFaces; i++)
-		{
-			aiFace face = mesh->mFaces[i];
-			for (int j = 0; j < face.mNumIndices; j++)
-				invertIndices.push_back(face.mIndices[j]);
-		}*/
-		offset = numVerts;
-		printf("\n");
-
-		/*std::vector<UINT> boneCount;
-		boneCount.resize(verts.size(), 0);*/
 		
-	}
-	
+		offset = numVerts;
+		printf("\n");	
+	}	
 }
 
 void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBuffer<Aen::Vertex>& vBuffer,

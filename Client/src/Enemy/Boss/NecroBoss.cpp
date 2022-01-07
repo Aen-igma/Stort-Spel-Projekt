@@ -60,15 +60,13 @@ Boss::~Boss()
 {
 	mE_hurtBox->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*mE_hurtBox);
-	//mE_sword->RemoveParent();
-	//Aen::EntityHandler::RemoveEntity(*mE_sword);
 }
 
 void Boss::Update(const float& deltaTime, Player& player)
 {
 	static float attackFactor = 0.f;
 	static float runFactor = 0.f;
-	//m_areMinionsSummoned = m_pMinions.size() > 0;
+
 	mp_player = &player;
 	m_cantSummonSlimes = m_pMinions.size() > 0;
 	if (!m_cantSummonSlimes)
@@ -368,7 +366,6 @@ void Boss::UpdateAttack()
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack)
 	{
 		m_animator->SetAnimationScale(1);
-		//m_animator->SetAnimation("attack");
 
 		m_cantSummonSlimes = false;
 		if (mp_hurtBox->Intersects(mp_player->GetEntity()->GetComponent<Aen::AABoundBox>()))
