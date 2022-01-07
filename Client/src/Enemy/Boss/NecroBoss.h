@@ -38,9 +38,6 @@ public:
     void RemoveMinion(Enemy* e);
     void RemoveMinion(uint16_t i);
     bool GetBossEngage(const bool& engage);
-
-protected:
-
 private:
 
     void LightAttack(const float& deltatime);

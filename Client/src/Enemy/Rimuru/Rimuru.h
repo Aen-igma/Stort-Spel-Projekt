@@ -3,12 +3,10 @@
 
 class Rimuru : public Enemy {
 	public:
-	Rimuru(EnemyType isMinion = EnemyType(0));
-	Rimuru(const Aen::Vec3f &pos, EnemyType isMinion = EnemyType(0));
+	Rimuru(const Aen::Vec3f& pos = Aen::Vec3f( -11.f, 1.5f, 0.f ), EnemyType isMinion = EnemyType(0));
 	~Rimuru() override;
 
 	Aen::Entity*& GetEntity();
-
 
 	// Inherited via Enemy
 	virtual void Update(const float& deltaTime, Player& player) override;

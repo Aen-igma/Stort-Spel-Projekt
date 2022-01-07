@@ -7,7 +7,6 @@ namespace Aen {
 
 	void Animator::Update() {
 		if (animationIndex < m_animationList.size()) {
-			//Animation* animation(m_animationList[animationIndex].second);
 			Animation* animation = m_animationList[animationIndex].second;
 
 			m_sEnd = omp_get_wtime();
@@ -40,7 +39,6 @@ namespace Aen {
 
 				animation->m_finalMatrix.UpdateBuffer();
 			}
-			//delete animation;
 		}
 	}
 
@@ -56,10 +54,6 @@ namespace Aen {
 		uint16_t runNumFrames = m_hasRunLayer ? runLayer->m_timeStamp.size() : 0.f;
 		uint16_t actionNumFrames = m_hasActionLayer ? actionLayer->m_timeStamp.size() : 0.f;
 
-		//const uint16_t baseOffset = doRunBl ? baseNumFrames / layerNumFrames : 1.f;
-		//const uint16_t layerOffset = doRunBl ? layerNumFrames / baseNumFrames : 1.f;
-
-		
 		float duration = animation->GetDuration();
 
 		if (m_hasRunLayer)
@@ -67,11 +61,7 @@ namespace Aen {
 		if (m_hasActionLayer)
 			duration = Aen::Max(duration, actionLayer->GetDuration());
 			
-
 		duration *= m_scale;
-
-		//float runDuration = m_hasRunLayer ? duration = runLayer->m_duration * m_scale : -1.f;
-		//float actionDuration = m_hasActionLayer ? duration = actionLayer->m_duration * m_scale : -1.f;
 
 		if (m_time < duration) 
 		{
@@ -161,7 +151,7 @@ namespace Aen {
 				else
 					currentFrame = animation->m_keyFrames.at(bName)[baseNumFrames - 1].rotation;
 
-				if (m_hasActionLayer/* && actionLayer->m_doBlendBone[i]*/)
+				if (m_hasActionLayer && actionLayer->m_doBlendBone[i])
 				{
 					sm::Matrix actionRot = actionLayer->m_keyFrames.at(bName)[actionNumFrames - 1].rotation.smMat;
 					currentFrame.smMat = actionRot.Lerp(currentFrame.smMat, actionRot, m_actionFactor);
@@ -268,14 +258,21 @@ namespace Aen {
 		if (!HasAnimation(animName))
 			return;
 
-		m_hasActionLayer = true;
-
 		for (int i = 0; i < m_animationList.size(); i++) {
 			if (m_animationList[i].first == animName) {
 				m_actionIndex = i;
 				break;
 			}
 		}
+
+		if (!m_hasActionLayer)
+		{
+			uint16_t size = m_animationList[m_actionIndex].second->m_boneArray.size();
+			m_animationList[m_actionIndex].second->m_doBlendBone.resize(size, true);
+		}
+
+		m_hasActionLayer = true;
+
 	}
 
 	void Animator::SetRunLayer(const std::string& animName)
