@@ -238,6 +238,7 @@ void Gameplay::Initialize()
 
 	std::vector<Aen::Vec3f> tempSlimes = m_levelGenerator.GetHandlerPtr()->GetEnemyPos();
 	std::vector<Aen::Vec3f> tempLskels = m_levelGenerator.GetHandlerPtr()->GetLskelPos();
+
 	// Mob Spawning
 	for (size_t i = 0; i < m_levelGenerator.GetHandlerPtr()->GetEnemyPos().size(); i++)
 	{
@@ -249,7 +250,6 @@ void Gameplay::Initialize()
 		m_enemyQueue.emplace_back(s);
 	}
 
-	//cout << "BOSS ROOM: " << roomNormal << endl;
 	m_throne->SetScale(2.f, 2.f, 2.f);
 
 	// -- Door, Throne, Boss Rotations -- //
@@ -552,8 +552,6 @@ void Gameplay::Update(const float& deltaTime) {
 	else {
 		mp_uiComp->SetTextPos(-100.f, -100.f, 2);
 	}
-
-
 
 
 	if (Aen::Input::KeyDown(Aen::Key::F)) {

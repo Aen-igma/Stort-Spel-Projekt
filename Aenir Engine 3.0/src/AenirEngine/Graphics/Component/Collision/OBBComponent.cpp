@@ -240,7 +240,6 @@ void Aen::OBBox::DepthDraw(Renderer& renderer, const uint32_t& layer)
 	}
 	sm::Vector4 quatRot = DirectX::XMQuaternionRotationRollPitchYaw(DegToRad(rot.x), DegToRad(rot.y), DegToRad(rot.z));
 
-	//m_obb.Orientation = quatRot;
 
 #ifdef _DEBUG
 	if(!m_isFrustum)

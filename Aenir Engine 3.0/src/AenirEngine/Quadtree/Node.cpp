@@ -75,13 +75,13 @@ void Node::Insert(const NodeStruct& obj)
 			if(m_level < m_maxLevel)
 			{
 				Subdivide(); 
-				Insert(obj); //Skickar obj tillbaka för att checka igen om det är ett leaf
+				Insert(obj); //Check again if in a leaf
 			}
 		}
 	}
 	else //If not nullptr then it is not a leaf
 	{
-		for (int i = 0; i < 4; i++)//Kollar igenom alla children
+		for (int i = 0; i < 4; i++)
 		{
 			if (mp_children[i]->m_areaQuad.Intersects(obj.m_boundBox))
 			{
