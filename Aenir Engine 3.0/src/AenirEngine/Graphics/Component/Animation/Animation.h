@@ -55,31 +55,15 @@ namespace Aen {
 		IBuffer m_indexBuffer;
 		SBuffer<Mat4f> m_finalMatrix;
 
-		//Animation* mp_runLayer = nullptr;
-		//Animation* mp_actionLayer = nullptr;
-		//std::vector<Animation*> mp_actionLayer;
-		//BlendMode m_bm = BlendMode(0);
 		std::vector<bool> m_doBlendBone;
-		//void WhatToBlend(const int& boneIndex, Animation& pLayer);
-		//void ReversePartialBlend(Animation* layer);
+		void WhatToBlend(const int& boneIndex);
 	public:
 		Animation();
-		//Animation(const Animation& s);
 		~Animation();
 		const float GetDuration() const;
 		void LoadAnimation(const std::string& animationPath);
-		//void AddRunLayer(Animation& pLayer);
-		//void AddActionLayer(Animation& pLayer);
-		//void AddPartialActionLayer(Animation& pLayer, const std::string& root, const bool& reverse = false);
-		//void SetRunFactor(const float& blendFactor);
-		//void SetActionFactor(const float& blendFactor);
-		//const bool IsBlendAnimation() const;
-		//const BlendMode GetBlendMode() const;
-		//void SetBlendMode(const BlendMode& bm);
-		//const int GetBlendIndex() const;
-		//void SetBlendAnimation(const Action &ac);
+		void SetDoBlendBone(const std::string& root, const bool& reverse = false);
 	private:
-
 		friend class Resource;
 		friend class Renderer;
 		friend class Animator;

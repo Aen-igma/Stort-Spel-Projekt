@@ -258,14 +258,21 @@ namespace Aen {
 		if (!HasAnimation(animName))
 			return;
 
-		m_hasActionLayer = true;
-
 		for (int i = 0; i < m_animationList.size(); i++) {
 			if (m_animationList[i].first == animName) {
 				m_actionIndex = i;
 				break;
 			}
 		}
+
+		if (!m_hasActionLayer)
+		{
+			uint16_t size = m_animationList[m_actionIndex].second->m_boneArray.size();
+			m_animationList[m_actionIndex].second->m_doBlendBone.resize(size, true);
+		}
+
+		m_hasActionLayer = true;
+
 	}
 
 	void Animator::SetRunLayer(const std::string& animName)
