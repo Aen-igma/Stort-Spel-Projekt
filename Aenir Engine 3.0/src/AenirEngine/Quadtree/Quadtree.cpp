@@ -4,11 +4,6 @@
 
 namespace Aen
 {
-	Quadtree::Quadtree()
-	{
-		mp_root = nullptr;
-	}
-
 	Quadtree::Quadtree(const unsigned& level, const unsigned& maxLevel, const unsigned& capacity)
 	{
 		DirectX::BoundingBox quad;

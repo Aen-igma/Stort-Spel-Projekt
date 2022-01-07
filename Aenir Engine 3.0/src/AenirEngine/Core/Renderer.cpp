@@ -43,7 +43,7 @@ namespace Aen {
 		if (!m_collisionPS.Create(AEN_OUTPUT_DIR_WSTR(L"CollisionPS.cso")))
 			if (!m_collisionPS.Create(L"CollisionPS.cso"))
 				throw;
-#endif // _DEBUG
+#endif
 
 		if(!m_postProcessCS.Create(AEN_OUTPUT_DIR_WSTR(L"PostProcessCS.cso")))
 			if(!m_postProcessCS.Create(L"PostProcessCS.cso"))
@@ -102,9 +102,9 @@ namespace Aen {
 
 	void Renderer::Culling()
 	{
+		//--- Quadtree Culling ---//
 		if (GlobalSettings::m_pQuadtree)
 		{
-			//--- Quadtree Culling ---//
 			GlobalSettings::m_pQuadtree->Update(*this, m_drawTable);
 		}
 		else
@@ -185,7 +185,6 @@ namespace Aen {
 				}
 
 				// Light Cull Pass
-				//UpdateLCamBuffer();
 
 				RenderSystem::UnBindRenderTargets(1u);
 				
@@ -216,21 +215,9 @@ namespace Aen {
 				RenderSystem::ClearDepthStencilView(m_shadowMap, true, false);
 			}
 
-		// PostProcess
-
-	/*	m_dispatchInfo.BindBuffer<CShader>(0u);
-		RenderSystem::BindShaderResourceView<CShader>(0u, m_lGrid);
-		RenderSystem::BindUnOrderedAccessView(0u, m_UAVBackBuffer);
-		RenderSystem::BindShader(m_postProcessCS);
-
-		RenderSystem::Dispatch(m_dispatchGroups, 1u);
-
-		RenderSystem::UnBindShader<CShader>();
-		RenderSystem::UnBindUnOrderedAccessViews(0u, 1u);
-		RenderSystem::UnBindShaderResources<CShader>(0u, 1u);*/
 
 		// Present
-		RenderSystem::Present(/*(UINT)Aen::GlobalSettings::GetVSync()*/0);
+		RenderSystem::Present((UINT)Aen::GlobalSettings::GetVSync());
 		RenderSystem::ClearState();
 	}
 

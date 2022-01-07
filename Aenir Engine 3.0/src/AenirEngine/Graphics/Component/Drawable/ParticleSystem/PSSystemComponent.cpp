@@ -9,14 +9,11 @@
 namespace Aen 
 {
 	Aen::PSSystemcomponent::PSSystemcomponent(const size_t& id)
-		:Drawable(id),m_UAView(sizeof(VertexParticle),1024)
-	{
-		m_pMaterial = 0;
-		
+		:Drawable(id),m_UAView(sizeof(VertexParticle),1024) {
+		m_pMaterial = 0;	
 	}
 
-	Aen::PSSystemcomponent::~PSSystemcomponent()
-	{
+	Aen::PSSystemcomponent::~PSSystemcomponent() {
 	}
 
 
@@ -34,40 +31,6 @@ namespace Aen
 	void PSSystemcomponent::updatePS(const float& framerate)
 	{
 		m_CSInputBuffer.deltaTime = framerate;
-	}
-
-	void PSSystemcomponent::EmitRandom(float frameTime)
-	{
-		
-		this->m_runTimes += frameTime;
-		this->m_accumulatedTime += frameTime;
-		bool emitPS, found;
-		emitPS = false;
-		int index, i, j;
-		Vec3f pos;
-		float velocity;
-		if (this->m_accumulatedTime > 1.0f/ this->m_particlesPerSecond)
-		{
-			emitPS = true;
-			this->m_accumulatedTime = 0.0f;
-		}
-		if (emitPS && this->m_currentNrPS < (this->m_maxParticles - 1))
-		{
-			this->m_currentNrPS++;
-			DirectX::XMFLOAT3 randPosPS
-			{
-				(((float)rand() - (float)rand()) / RAND_MAX) + 0.5f,
-				(((float)rand() - (float)rand()) / RAND_MAX) + 0.5f,
-				(((float)rand() - (float)rand()) / RAND_MAX) + 0.5f
-			};
-			//float randVelocity = this->particleVelocity + (((float)rand() 
-			//	- (float)rand())/ RAND_MAX) * this->particleVelocityVariation;
-			//m_VertexPS.m_Pos.x = randPosPS.x;
-			//m_VertexPS.m_Pos.y = randPosPS.y;
-			//m_VertexPS.m_Pos.z = randPosPS.z;
-			found = false;
-		}
-		return;
 	}
 
 	void PSSystemcomponent::SetNrOfPS(UINT nr)
@@ -89,8 +52,6 @@ namespace Aen
 		this->m_CSInputBuffer.acceleration.y = y;
 		this->m_CSInputBuffer.acceleration.z = z;
 	}
-
-
 
 	bool PSSystemcomponent::activate()
 	{
@@ -116,7 +77,6 @@ namespace Aen
 
 	void PSSystemcomponent::Initialize()
 	{
-		//Need to check this later if this is the right things
 		this->m_CSInputBuffer.maxParticles = 1024;
 		this->m_CSInputBuffer.acceleration = {0.0f, 7.8f, 0.0f};
 		this->m_CSInputBuffer.lifeTime = 0.0f;
@@ -182,6 +142,7 @@ namespace Aen
 
 		RenderSystem::BindRenderTargetView(renderer.m_particleOut, renderer.m_depthMap);
 		//RenderSystem::SetRasteriserState(renderer.m_rasterizerState);
+		
 		//Uncomment if you want wireframe state
 		//RenderSystem::SetRasteriserState(renderer.m_wireFrameState);
 

@@ -1,4 +1,3 @@
-#include "SimplexNoise.hlsl"
 cbuffer Aen_CB_Transform {
     float4x4 vMat;
     float4x4 pMat;

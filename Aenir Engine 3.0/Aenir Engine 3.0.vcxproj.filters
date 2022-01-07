@@ -491,9 +491,6 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h">
       <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
-      <Filter>Header Files\LevelEditor</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
@@ -638,6 +635,9 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\Quadtree\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\OpaqueVS.hlsl">
@@ -663,7 +663,5 @@
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">
       <Filter>Header Files\Math</Filter>
     </None>
-    <None Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PSCore.hlsli" />
-    <None Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\SimplexNoise.hlsl" />
   </ItemGroup>
 </Project>
