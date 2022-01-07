@@ -743,8 +743,9 @@ namespace Aen {
 
 	void ImGuiHandler::Rotate(float angle)
 	{
-		float angleDegree = angle;
-		float andleRadians = angle * (C_PI / 180);
+		int nrOfTime = angle / 90;
+		float angleDegree = angle / nrOfTime;
+		float andleRadians = (angle / nrOfTime) * (C_PI / 180);
 
 		Vec3f point = Vec3f(0,0,0);
 		Vec3f center;
@@ -761,57 +762,54 @@ namespace Aen {
 
 		for (size_t i = 0; i < m_entityList.size(); i++)
 		{
-			//id = m_entityList[i]->GetID();
-		//int i = m_selectedEntity;
-		id = m_entityList[i]->GetID();
-
+			id = m_entityList[i]->GetID();
 			if (Aen::ComponentHandler::CameraExist(id) != true)
 			{
 				if (Aen::ComponentHandler::TranslationExist(id))
 				{
-
-					center = m_entityList[i]->GetPos();
-
-					print("Center " + to_string(center.x) + " " + to_string(center.y) + " " + to_string(center.z));
-					print("Point " + to_string(point.x) + " " + to_string(point.y) + " " + to_string(point.z));
-
-					x1 = point.x - center.x;
-					y1 = point.z - center.z;
-
-					print("x1 " + to_string(x1));
-					print("y1 " + to_string(y1));
-
-					if (Aen::ComponentHandler::ScaleExist(id))
+					for (int x = 0; x < nrOfTime; x++)
 					{
-						scale = m_entityList[i]->GetScale();
+						center = m_entityList[i]->GetPos();
+
+						print("Center " + to_string(center.x) + " " + to_string(center.y) + " " + to_string(center.z));
+						print("Point " + to_string(point.x) + " " + to_string(point.y) + " " + to_string(point.z));
+
+						x1 = point.x - center.x;
+						y1 = point.z - center.z;
+
+						print("x1 " + to_string(x1));
+						print("y1 " + to_string(y1));
+
+						if (Aen::ComponentHandler::ScaleExist(id))
+						{
+							scale = m_entityList[i]->GetScale();
+						}
+
+						if (Aen::ComponentHandler::RotationExist(id))
+						{
+							rotation = m_entityList[i]->GetRot();
+							x2 = x1 * cos(andleRadians) - y1 * sin(andleRadians);
+							print("x2 " + to_string(x2));
+
+							y2 = x1 * sin(andleRadians) + y1 * cos(andleRadians);
+							print("y2 " + to_string(y2));
+
+							m_entityList[i]->SetRot(rotation.x, rotation.y + angle, rotation.z);
+						}
+						else
+						{
+							rotation = Vec3f(0, 0, 0);
+							x2 = x1 * cos(andleRadians) - y1 * sin(andleRadians);
+							y2 = x1 * sin(andleRadians) + y1 * cos(andleRadians);
+						}
+
+						center.x = x2 + point.x;
+						print("pointX " + to_string(point.x));
+						center.z = y2 + point.z;
+						print("pointY " + to_string(point.x));
+
+						m_entityList[i]->SetPos(center.x, center.y, center.z);
 					}
-
-					if (Aen::ComponentHandler::RotationExist(id))
-					{
-						rotation = m_entityList[i]->GetRot();
-						x2 = x1 * cos(andleRadians) - y1 * sin(andleRadians);
-						print("x2 " + to_string(x2));
-
-						y2 = x1 * sin(andleRadians) + y1 * cos(andleRadians);
-						print("y2 " + to_string(y2));
-
-						m_entityList[i]->SetRot(rotation.x, rotation.y + angle, rotation.z);
-					}
-					else
-					{
-						rotation = Vec3f(0,0,0);
-						x2 = x1 * cos(andleRadians) - y1 * sin(andleRadians);
-						y2 = x1 * sin(andleRadians) + y1 * cos(andleRadians);
-					}
-
-					center.x = x2 + point.x;
-					print("pointX " + to_string(point.x));
-					center.z = y2 + point.z;
-					print("pointY " + to_string(point.x));
-
-					m_entityList[i]->SetPos(center.x, center.y, center.z);
-
-
 				}
 			}
 		}

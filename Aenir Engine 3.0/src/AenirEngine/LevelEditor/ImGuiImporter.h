@@ -117,6 +117,8 @@ namespace Aen
 		void AddSpotLight(AenIF::Light& input, Aen::Vec2f offset, float angle);
 
 		void AddTorchWithLight();
+		void rotate(AenIF::Model &model, float angle, Aen::Vec2f offset);
+		void rotate(AenIF::Particle& particle, float angle, Aen::Vec2f offset);
 
 		
 
