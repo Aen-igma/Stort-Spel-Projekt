@@ -85,8 +85,6 @@ namespace Aen
 
 		if (model.rigidBody && model.rigidBodyType != m_imguiTypes.HITBOXTYPE[0]) // Check if should have rigidbody
 		{
-
-
 			entity->AddComponent<Aen::StaticBody>();
 			entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh	(true);
 		}
@@ -487,10 +485,10 @@ namespace Aen
 		for (size_t i = 0; i < roomPtr->GetParticleVector().size(); i++)
 		{
 			AenIF::Particle* particle = &roomPtr->GetParticleVector()[i];
-			particle->translation[0] += offset.x;
-			particle->translation[2] += offset.y;
+
 			if (particle->type == IGH::TORCH)
 			{
+				rotate(*particle, angle, offset);
 				m_particleList.push_back(*particle);
 			}
 		}
@@ -594,8 +592,6 @@ namespace Aen
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(mesh);
 		entity->GetComponent<Aen::MeshInstance>().SetMaterial(material);
 
-		
-
 		return entity->GetID();
 	}
 
@@ -649,8 +645,6 @@ namespace Aen
 	{
 		m_entityList->push_back(entity);
 		m_itemList->push_back(IGH::MODEL + std::to_string(m_entityCount));
-		//m_selected.push_back(false);
-		//m_selectedEntities.push_back(-1);
 		m_entityCount++;
 	}
 
@@ -660,12 +654,6 @@ namespace Aen
 		{
 			m_enemyPos.push_back(entity->GetPos());
 		}
-		/*else if (model.type == IGH::BOSS)
-		{
-			m_boss[0] = entity->GetPos();
-			m_boss[1] = entity->GetRot();
-			m_boss[2] = entity->GetScale();
-		}*/
 		else if (model.type == IGH::LIGHTSKELETON)
 		{
 			m_lSkelPos.push_back(entity->GetPos());
@@ -724,11 +712,11 @@ namespace Aen
 		light->GetComponent<Aen::PointLight>().SetLightDist(1, 1, 1, 1);
 		light->GetComponent<Aen::PointLight>().SetStrength(100);
 		light->SetPos(0.0f, 0.0f, 0.0f);
-		//size_t id = AddBaseLight("Light", "PointLight.fbx", "PointLightTexture.png");
-
-		//mp_entityHandlerPtr->GetEntity(id).SetParent(*light);
 
 		AddLight(light, IGH::POINTLIGHT);
+
+
+
 	}
 
 	size_t ImGuiImporter::AddSpotLight(AenIF::Light& input)
@@ -788,34 +776,30 @@ namespace Aen
 
 	void ImGuiImporter::AddBase(AenIF::Model& model, AenIF::Texture& texture, Aen::Vec2f offset, float angle, AenIF::Material& materialIn)
 	{
+
 		Aen::Entity* entity;
 		Aen::Mesh* mesh;
 		Aen::Material* material;
 		Aen::Texture* materialTexture;
 		Aen::Texture* normalTexture;
 
-		float s = sin(angle);
-		float c = cos(angle);
 
-		float posX = ((model.translation[0]) * c) - ((model.translation[2]) * s);
-		float posZ = ((model.translation[0]) * s) + ((model.translation[2]) * c);
 
 		AenIF::Model temp = model;
+		rotate(temp,angle,offset);
+		OutputDebugStringA((to_string(temp.translation[0]) + " " + to_string(temp.translation[1]) + " " + to_string(temp.translation[2])).c_str());
 
-		temp.translation[0] = posX + offset.x;
-		temp.translation[2] = posZ + offset.y;
-		temp.rotation[1] = model.rotation[1] + (angle * 57.2957795f);
 
-		if (model.type != IGH::NORMALENEMY && model.type != IGH::LIGHTSKELETON)
+		if (temp.type != IGH::NORMALENEMY && temp.type != IGH::LIGHTSKELETON)
 		{
 			addBaseCommon(entity, mesh, material, materialTexture, normalTexture, temp, texture, materialIn);
 
 			size_t id = entity->GetID();
 			Aen::ComponentHandler::GetMeshInstance(static_cast<uint32_t>(id)).SetMaterial(*material);
 
-			AddModel(entity, model.name);
-			m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(materialIn, texture.texture, model.name, model.mesh, model.type, model.rigidBody, model.rigidBodyType)));
-			m_modelMap->at(id).m_model.m_castShadow = model.castShadow;
+			AddModel(entity, temp.name);
+			m_modelMap->insert(std::make_pair(entity->GetID(), IGH::ModelContainer(materialIn, texture.texture, temp.name, temp.mesh, temp.type, temp.rigidBody, temp.rigidBodyType)));
+			m_modelMap->at(id).m_model.m_castShadow = temp.castShadow;
 		}
 
 		AddEnemy(temp);
@@ -830,14 +814,32 @@ namespace Aen
 		light->GetComponent<Aen::PointLight>().SetLightDist(input.attenuation[0], input.attenuation[1], input.attenuation[2], input.range);
 		light->GetComponent<Aen::PointLight>().SetStrength(input.intensity);
 
-		float s = sin(angle);
-		float c = cos(angle);
+		Vec3f point = Vec3f(0, 0, 0);
+		Vec3f center;
+		Vec3f scale;
+		Vec3f rotation;
 
-		float posX = (input.translation[0] * c) - (input.translation[2] * s);
-		float posY = (input.translation[0] * s) + (input.translation[2] * c);
+		float angleRadians = angle * (180 / C_PI);
 
-		light->SetPos(posX + offset.x, input.translation[1], posY + offset.y);
-		light->SetRot(input.rotation[0], input.rotation[1] + (angle * 57.2957795f), input.rotation[2]);
+		float x1 = 0;
+		float x2 = 0;
+
+		float y1 = 0;
+		float y2 = 0;
+
+		center = Vec3f(input.translation[0], input.translation[1], input.translation[2]);
+
+		x1 = point.x - center.x;
+		y1 = point.z - center.z;
+
+		x2 = x1 * cos(angleRadians) - y1 * sin(angleRadians);
+		y2 = x1 * sin(angleRadians) + y1 * cos(angleRadians);
+
+		center.x = x2 + point.x;
+		center.z = y2 + point.z;
+
+		light->SetPos(center.x + offset.x, input.translation[1], center.z + offset.y);
+		light->SetRot(input.rotation[0], input.rotation[1] + (angleRadians), input.rotation[2]);
 
 		AddLight(light);
 	}
@@ -881,6 +883,79 @@ namespace Aen
 
 		AddLight(light, IGH::POINTLIGHT);
 
+	}
+
+	void ImGuiImporter::rotate(AenIF::Model& model, float angle, Aen::Vec2f offset)
+	{
+		int nrOfTime = std::abs(angle / 90);
+		float angleDegree = angle / nrOfTime;
+		float angleRadians = (angle / nrOfTime) * (C_PI / 180);
+
+		Vec3f point = Vec3f(0, 0, 0);
+		Vec3f center;
+		Vec3f scale;
+		Vec3f rotation;
+
+		float x1 = 0;
+		float x2 = 0;
+
+		float y1 = 0;
+		float y2 = 0;
+
+		for (int x = 0; x < nrOfTime; x++)
+		{
+			center = Vec3f(model.translation[0], model.translation[1], model.translation[2]);
+
+			x1 = point.x - center.x;
+			y1 = point.z - center.z;
+
+			rotation = Vec3f(model.rotation[0], model.rotation[1], model.rotation[2]);
+
+			x2 = x1 * cos(angleRadians) - y1 * sin(angleRadians);
+			y2 = x1 * sin(angleRadians) + y1 * cos(angleRadians);
+
+			center.x = x2 + point.x;
+			center.z = y2 + point.z;
+
+			model.translation[0] = center.x;
+			model.translation[2] = center.z;
+		}
+
+		model.translation[0] += offset.x;
+		model.translation[2] += offset.y;
+		model.rotation[1] = model.rotation[1] + (angle * nrOfTime);
+
+	}
+
+	void ImGuiImporter::rotate(AenIF::Particle& particle, float angle, Aen::Vec2f offset)
+	{
+		float angleRadians = (angle * (C_PI / 180));
+
+		Vec3f point = Vec3f(0, 0, 0);
+		Vec3f center;
+		Vec3f scale;
+		Vec3f rotation;
+
+		float x1 = 0;
+		float x2 = 0;
+
+		float y1 = 0;
+		float y2 = 0;
+
+		center = Vec3f(particle.translation[0], particle.translation[1], particle.translation[2]);
+
+		x1 = point.x - center.x;
+		y1 = point.z - center.z;
+
+		rotation = Vec3f(0, 0, 0);
+		x2 = x1 * cos(angleRadians) - y1 * sin(angleRadians);
+		y2 = x1 * sin(angleRadians) + y1 * cos(angleRadians);
+
+		center.x = x2 + point.x;
+		center.z = y2 + point.z;
+
+		particle.translation[0] = center.x + offset.x;
+		particle.translation[2] = center.z + offset.y;
 	}
 
 	vector<Vec3f>& ImGuiImporter::GetEnemyPos()

@@ -717,9 +717,9 @@ namespace Aen
 			temp.m_CRIndex		=	i;
 			temp.m_present		= true;
 
-			temp.rotation = 3.14159265;
+			temp.rotation = 180;
 			if (temp.connectionDirections == 11) {
-				temp.rotation += 1.57079633;
+				temp.rotation += 90;
 			}
 			this->AddRoomToGeneration(temp);
 		}

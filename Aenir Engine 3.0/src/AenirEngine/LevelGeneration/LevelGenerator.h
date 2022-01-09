@@ -84,7 +84,7 @@ namespace Aen {
 			//TODO rotate associated model
 		}
 		void rotateCCW() { //count clockwise rotation
-			rotation += 1.57079633;
+			rotation += 90;
 			int temp = connectionDirections % 10;
 			connectionDirections /= 10;
 			connectionDirections += 1000 * temp;

@@ -120,17 +120,13 @@ namespace Aen
 		void AddSpotLight(AenIF::Light& input, Aen::Vec2f offset, float angle);
 
 		void AddTorchWithLight();
-
-		
+		void rotate(AenIF::Model& model, float angle, Aen::Vec2f offset);
+		void rotate(AenIF::Particle& particle, float angle, Aen::Vec2f offset);
 
 		vector<Vec3f>& GetEnemyPos();
 		vector<Vec3f>& GetLskelPos();
-		/*Vec3f GetBossPosition();
-		Vec3f GetBossRotation();
-		Vec3f GetBossScale();*/
-
 	};
 
-}
+};
 
 
