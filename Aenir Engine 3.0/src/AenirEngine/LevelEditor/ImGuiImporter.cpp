@@ -809,6 +809,8 @@ namespace Aen
 	{
 		Aen::Entity* light = &mp_entityHandlerPtr->CreateEntity();
 
+
+
 		light->AddComponent<Aen::PointLight>();
 		light->GetComponent<Aen::PointLight>().SetColor(input.color[0], input.color[1], input.color[2], 1);
 		light->GetComponent<Aen::PointLight>().SetLightDist(input.attenuation[0], input.attenuation[1], input.attenuation[2], input.range);
@@ -840,7 +842,7 @@ namespace Aen
 
 		light->SetPos(center.x + offset.x, input.translation[1], center.z + offset.y);
 		light->SetRot(input.rotation[0], input.rotation[1] + (angleRadians), input.rotation[2]);
-
+		
 		AddLight(light);
 	}
 
@@ -887,9 +889,9 @@ namespace Aen
 
 	void ImGuiImporter::rotate(AenIF::Model& model, float angle, Aen::Vec2f offset)
 	{
-		int nrOfTime = std::abs(angle / 90);
-		float angleDegree = angle / nrOfTime;
-		float angleRadians = (angle / nrOfTime) * (C_PI / 180);
+		int nrOfTime = 1.0f;
+		float angleRadians = (angle*(C_PI/180));
+	
 
 		Vec3f point = Vec3f(0, 0, 0);
 		Vec3f center;
@@ -902,7 +904,7 @@ namespace Aen
 		float y1 = 0;
 		float y2 = 0;
 
-		for (int x = 0; x < nrOfTime; x++)
+		for (int i = 0; i < nrOfTime; i++)
 		{
 			center = Vec3f(model.translation[0], model.translation[1], model.translation[2]);
 
@@ -910,20 +912,16 @@ namespace Aen
 			y1 = point.z - center.z;
 
 			rotation = Vec3f(model.rotation[0], model.rotation[1], model.rotation[2]);
-
 			x2 = x1 * cos(angleRadians) - y1 * sin(angleRadians);
 			y2 = x1 * sin(angleRadians) + y1 * cos(angleRadians);
 
 			center.x = x2 + point.x;
 			center.z = y2 + point.z;
 
-			model.translation[0] = center.x;
-			model.translation[2] = center.z;
+			model.translation[0] = center.x + offset.x;
+			model.translation[2] = center.z + offset.y;
+			model.rotation[1] = model.rotation[1] + (angleRadians * 57.2957795f);
 		}
-
-		model.translation[0] += offset.x;
-		model.translation[2] += offset.y;
-		model.rotation[1] = model.rotation[1] + (angle * nrOfTime);
 
 	}
 
