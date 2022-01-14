@@ -16,5 +16,6 @@ namespace Aen {
 		virtual bool FrustumCull(Renderer& renderer) = 0;
 
 		friend class Renderer;
+		friend class Quadtree;
 	};
 }

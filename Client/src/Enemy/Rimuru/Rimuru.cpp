@@ -3,40 +3,13 @@
 
 #define rand LehmerInt
 
-Rimuru::Rimuru(EnemyType isMinion)
-	:Enemy(isMinion), m_rimuru(&Aen::EntityHandler::CreateEntity()), m_lDir(0.f, 0.f, -1.f) {
-	m_rimuru->AddComponent<Aen::MeshInstance>();
-	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
-	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("SlimeMaterial");
-	m_rimuru->SetScale(0.8f, 0.8f, 0.8f);
-	m_rimuru->SetParent(*m_enemy);
-
-	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);
-	m_enemy->GetComponent<Aen::CharacterController>().Resize(0.2f);
-	m_enemy->GetComponent<Aen::CharacterController>().SetRadius(1.f);
-	
-	m_enemy->SetPos(-11.f, 1.5f, 0.f);
-
-	// -----------------------------	Floating m_healthBar		------------------------------- //
-	m_healthBar = &Aen::EntityHandler::CreateEntity();
-	m_healthBar->AddComponent<Aen::MeshInstance>();
-	m_healthBar->GetComponent<Aen::MeshInstance>().SetMesh("eBar");
-	m_healthBar->GetComponent<Aen::MeshInstance>().SetMaterial("barMat");
-	m_healthBar->SetRot(180, 0, 0);
-	m_healthBar->SetPos(0, -100, 0);
-	m_healthBar->SetScale(5.f, 0.f, 5.f);
-	m_healthBar->SetRenderLayer(1);
-
-	m_health = 50.f;
-	m_wait, m_dodge, m_hurting, m_toggleAttacked = false;
-}
-
 Rimuru::Rimuru(const Aen::Vec3f& pos, EnemyType isMinion)
 	:Enemy(isMinion), m_rimuru(&Aen::EntityHandler::CreateEntity()) {
 	m_rimuru->AddComponent<Aen::MeshInstance>();
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMesh("Rimuru");
 	m_rimuru->GetComponent<Aen::MeshInstance>().SetMaterial("SlimeMaterial");
 	m_rimuru->SetScale(0.8f, 0.8f, 0.8f);
+	m_rimuru->SetPos(0.f, -0.4f, 0.f);
 	m_rimuru->SetParent(*m_enemy);
 
 	m_enemy->GetComponent<Aen::AABoundBox>().SetBoundingBox(1.2f, 0.8f, 1.2f);

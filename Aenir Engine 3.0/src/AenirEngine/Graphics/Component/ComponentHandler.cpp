@@ -19,5 +19,4 @@ namespace Aen {
 	std::unordered_map<size_t, Animator*> ComponentHandler::m_animators;
 
 	std::array<std::unordered_map<size_t, Drawable*>, 7> ComponentHandler::m_meshLayer;
-	
 }

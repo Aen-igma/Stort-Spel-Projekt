@@ -26,22 +26,26 @@ private:
 
     float m_speed;
     float m_fSpeed;
+    float camSpeed = 0.5;
     bool m_toggleFullScreen;
     bool m_paused = false;
+    bool m_BossTorch = false;
+#ifdef _DEBUG
     bool m_debug = false;
-
+    Aen::Entity* m_debugCam;
+    Aen::Entity* m_debugFrustum;
+#endif
     Aen::Vec2f screenSize;
 
     Aen::Raycast m_ray;
 
-    //Aen::Entity* m_dLight;
     Aen::Entity* m_plane;
     Aen::Entity* m_UI;
-    Aen::Entity* m_debugCam;
 
-    Aen::Entity* m_PS;
+
     Aen::Entity* m_wall;
     Aen::Entity* m_throne;
+    Aen::Entity* m_dLight;
  
     Aen::Entity* m_bill;
     Aen::Material& m_Mat;
@@ -58,13 +62,15 @@ private:
     bool m_beatBoss;
     Aen::Vec3f m_bossPos;
 
+
+    vector<Aen::Entity*> m_PSList;
+
     std::queue<EventData> m_eventQueue;
 
     std::deque<Enemy*> m_enemyQueue;
 
     Aen::LevelGenerator m_levelGenerator;
     Aen::Room* mptr_map;
-    //Aen::Entity* rooms[Aen::mapSize * Aen::mapSize];
 
 
     public:

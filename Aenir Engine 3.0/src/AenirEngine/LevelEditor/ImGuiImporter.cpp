@@ -80,16 +80,17 @@ namespace Aen
 			material = &Aen::Resource::GetMaterial(materialName);
 			setMaterial(*material, materialIn);
 		}
-
 		entity->AddComponent<Aen::MeshInstance>();
 		entity->GetComponent<Aen::MeshInstance>().SetMesh(*mesh);
 
 		if (model.rigidBody && model.rigidBodyType != m_imguiTypes.HITBOXTYPE[0]) // Check if should have rigidbody
 		{
+
+
 			entity->AddComponent<Aen::StaticBody>();
 			entity->GetComponent<Aen::StaticBody>().SetBoundsToMesh	(true);
 		}
-
+		
 		entity->SetPos(model.translation[0], model.translation[1], model.translation[2]);
 		entity->SetRot(model.rotation[0], model.rotation[1], model.rotation[2]);
 		entity->SetScale(model.scale[0], model.scale[1], model.scale[2]);
@@ -428,6 +429,11 @@ namespace Aen
 		return m_entityList;
 	}
 
+	vector<AenIF::Particle>& ImGuiImporter::GetParticleList()
+	{
+		return this->m_particleList;
+	}
+
 	bool ImGuiImporter::LoadLevel(int index)
 	{
 		if (index >= m_levelImporter->GetRoomVector().size())
@@ -476,6 +482,16 @@ namespace Aen
 			else if (roomPtr->GetLightVector()[i].type == IGH::POINTLIGHT)
 			{
 				AddPointLight(roomPtr->GetLightVector()[i], offset, angle);
+			}
+		}
+		for (size_t i = 0; i < roomPtr->GetParticleVector().size(); i++)
+		{
+			AenIF::Particle* particle = &roomPtr->GetParticleVector()[i];
+			particle->translation[0] += offset.x;
+			particle->translation[2] += offset.y;
+			if (particle->type == IGH::TORCH)
+			{
+				m_particleList.push_back(*particle);
 			}
 		}
 		return true;

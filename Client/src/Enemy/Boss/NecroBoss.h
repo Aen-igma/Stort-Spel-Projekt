@@ -1,5 +1,6 @@
 #pragma once
 #include"../Rimuru/Rimuru.h"
+#include"../SkeletonLight/SkeleLight.h"
 
 enum class BossState
 {
@@ -36,29 +37,24 @@ public:
     void EmplaceMinion(Rimuru* e);
     void RemoveMinion(Enemy* e);
     void RemoveMinion(uint16_t i);
-
-protected:
-    //Aen::Entity* m_hurtbox;
+    bool GetBossEngage(const bool& engage);
 
 private:
 
     void LightAttack(const float& deltatime);
     void BigAttack(const float& deltaTime);
-    void GoToThrone();
     void SummonSlimes(int amountOfSLimes);
     void Wait(const float duration);
     void RandomCombatEvent();
-    void SwordSwing(const float& speed, const float& time, const float& deltaTime);
-    void ResetSword();
 
     void UpdateAttack();
 
 
     Aen::Entity* mE_hurtBox;
-    Aen::Entity* mE_sword;
     Aen::OBBox* mp_hurtBox;
     Player* mp_player;
     bool m_waiting;
+    bool engage = false;
 
     Aen::Animator* m_animator;
 

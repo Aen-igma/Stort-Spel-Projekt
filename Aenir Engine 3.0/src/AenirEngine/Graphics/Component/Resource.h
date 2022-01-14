@@ -56,6 +56,7 @@ namespace Aen {
 		}
 
 		static Material& CreateMaterial(const std::string& name, const bool& useDefaultShader = true) {
+			if (MaterialExist(name)) return *m_materials.at(name);
 			m_materials.emplace(name, AEN_NEW Material(useDefaultShader));
 			return *m_materials.at(name);
 		}
@@ -120,7 +121,6 @@ namespace Aen {
 					t.second = nullptr;
 				}
 			}
-
 			m_textures.clear();
 		}
 
@@ -143,9 +143,9 @@ namespace Aen {
 			return *m_meshes.at(name);
 		}
 
-		static void CreateMesh(const std::string& name, const std::string& dir) {
+		/*static void CreateMesh(const std::string& name, const std::string& dir) {
 			m_meshes.emplace(name, AEN_NEW Mesh(dir));
-		}
+		}*/
 
 		static void RemoveMesh(const std::string& name) {
 			if(m_meshes.count(name) > 0) {
@@ -181,6 +181,7 @@ namespace Aen {
 		}
 
 		static Animation& CreateAnimation(const std::string& name) {
+			if (AnimationExist(name)) return *m_animations.at(name);
 			m_animations.emplace(name, AEN_NEW Animation());
 			return *m_animations.at(name);
 		}

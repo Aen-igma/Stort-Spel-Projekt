@@ -21,8 +21,8 @@ namespace Aen {
 			const bool Create(const std::wstring& dir);
 
 			//private:
-			Microsoft::WRL::ComPtr<T> m_shader;
-			ComBlob m_byteCode;
+			Microsoft::WRL::ComPtr<T> m_shader = nullptr;
+			ComBlob m_byteCode = nullptr;
 
 			//friend class ILayout; // this not working
 			friend class Reflection;

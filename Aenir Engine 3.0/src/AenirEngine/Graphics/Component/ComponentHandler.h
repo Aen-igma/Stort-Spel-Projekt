@@ -363,7 +363,7 @@ namespace Aen {
 
 		// -------------------------------------------- //
 
-		// ----------- Axis Aligned Bounding Box ------------ //
+		// ----------- Oriented Bounding Box ------------ //
 
 		static const bool OBBExist(const size_t& id) {
 			return m_OBBs.count(id) > 0;
@@ -463,6 +463,12 @@ namespace Aen {
 			for (auto& ani : m_animators) {
 				ani.second->Update();
 			}
+			if (Aen::Input::KeyDown(Aen::Key::O))
+				printf("2");
+		}
+		static void UpdateAnimator(const uint32_t& id) {
+			if(ComponentHandler::AnimatorExists(id))
+				m_animators[id]->Update();
 		}
 		// --------------------------------------------------//
 
@@ -496,6 +502,7 @@ namespace Aen {
 		friend class StaticBody;
 		friend class DynamicBody;
 		friend class PSSystemcomponent;
+		friend class Quadtree;
 	};
 
 }

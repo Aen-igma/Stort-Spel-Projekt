@@ -22,6 +22,8 @@ namespace Aen {
 		void SetMaterial(const std::string& materialSlotName, Material& material);
 		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
 		void SetMaterial(const UINT& index, Material& material);
+		//Get AABB based on mesh
+		DirectX::BoundingBox GetBox();
 
 		private:
 		~MeshInstance();
@@ -41,6 +43,7 @@ namespace Aen {
 		friend class DynamicBody;
 		friend class PSSystemcomponent;
 
+		DirectX::BoundingOrientedBox GetOrientedBox();
 		virtual void Draw(Renderer& renderer, const uint32_t& layer = 0) override;
 		virtual void DepthDraw(Renderer& renderer, const uint32_t& layer = 0) override;
 		virtual bool FrustumCull(Renderer& renderer) override;

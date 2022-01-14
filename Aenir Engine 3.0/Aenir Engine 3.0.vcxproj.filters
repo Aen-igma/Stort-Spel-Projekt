@@ -240,9 +240,6 @@
     <ClCompile Include="src\AenirEngine\ThirdParty\ImGui\imgui_tables.cpp">
       <Filter>Source Files\ThirdParty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\AenirEngine\ImGuiHandler.cpp">
-      <Filter>Source Files\LevelEditor</Filter>
-    </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Drawable\UI\UIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -328,6 +325,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AenirEngine\Graphics\Component\Animation\Animator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Quadtree\Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AenirEngine\Quadtree\Quadtree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -488,9 +491,6 @@
     <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_textedit.h">
       <Filter>Header Files\ThirdParty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\AenirEngine\ImGuiHandler.h">
-      <Filter>Header Files\LevelEditor</Filter>
-    </ClInclude>
     <ClInclude Include="src\AenirEngine\LevelHeader.h">
       <Filter>Header Files\LevelEditor</Filter>
     </ClInclude>
@@ -629,6 +629,15 @@
     <ClInclude Include="src\AenirEngine\Graphics\Component\Animation\Animator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AenirEngine\Quadtree\Quadtree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\ThirdParty\ImGui\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AenirEngine\Quadtree\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\OpaqueVS.hlsl">
@@ -648,13 +657,11 @@
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PixelParticleShader.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PostParticleCS.hlsl" />
     <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\VertexParticleShader.hlsl" />
-    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\ShadowVS.hlsl" />
+    <FxCompile Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PTransparencyPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\AenirEngine\ThirdParty\SimpleMath\SimpleMath.inl">
       <Filter>Header Files\Math</Filter>
     </None>
-    <None Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\PSCore.hlsli" />
-    <None Include="src\AenirEngine\Graphics\Shader Files\PSShaderFiles\SimplexNoise.hlsl" />
   </ItemGroup>
 </Project>

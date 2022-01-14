@@ -1,4 +1,4 @@
-#include "PCH.h"
+#include <PCH.h>
 #include "Animation.h"
 
 #undef min
@@ -10,11 +10,26 @@
 #include"Importer/AssimpImporter.h"
 
 namespace Aen {
+	
+	void Animation::WhatToBlend(const int& boneIndex)
+	{
+		if (boneIndex == -1) return;
+
+		m_doBlendBone[boneIndex] = !m_doBlendBone[boneIndex];
+		uint16_t nrof = m_boneArray[boneIndex].pChildren.size();
+		for (int i = 0; i < nrof; i++)
+		{
+			int childIndex = m_boneArray[boneIndex].pChildren[i]->boneID;
+			WhatToBlend(childIndex);
+		}
+
+	}
 
 	Animation::Animation() {
 	}
 
-	float Animation::GetDuration() {
+
+	const float Animation::GetDuration() const {
 		return m_duration;
 	}
 
@@ -23,7 +38,7 @@ namespace Aen {
 
 		std::vector<DWORD> indices;
 		std::vector<VertexAnimation> verts;
-		
+
 		for (int i = 0; i < m_boneArray.size(); i++) {
 			if (m_boneArray[i].parentID != -1) {
 				indices.emplace_back(m_boneArray[i].parentID);
@@ -38,13 +53,34 @@ namespace Aen {
 		}
 
 		m_indexBuffer.Create(indices.data(), indices.size());
-		if(!vBuff.Create(verts.data(), verts.size()))
+		if (!vBuff.Create(verts.data(), verts.size()))
 			throw;
 
 		m_finalMatrix.Create(m_boneArray.size());
 		m_finalMatrix.UpdateBuffer();
 	}
 
+	void Animation::SetDoBlendBone(const std::string& root, const bool& reverse)
+	{
+		int index = -1;
+		int nrof = m_boneArray.size();
+		for (int i = 0; i < nrof; i++)
+		{
+			if (m_boneArray[i].boneName == root)
+				index = i;
+		}
+		WhatToBlend(index);
+
+		if (reverse)
+		{
+			for (int i = 0; i < nrof; i++)
+			{
+				m_doBlendBone[i] = !m_doBlendBone[i];
+			}
+		}
+	}
+
 	Animation::~Animation() {
+		
 	}
 }

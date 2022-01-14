@@ -16,14 +16,6 @@ namespace Aen
 		Vec2f m_UV;
 		Vec2f padding;
 	};
-	//struct CSInputBuffer
-	//{
-	//	float m_runtime;
-	//	UINT m_particleCount;
-	//	double padding;
-	//	Vec3f m_vel;
-	//	float padding2;
-	//};
 
 	struct CSInputBuffer
 	{
@@ -44,34 +36,19 @@ namespace Aen
 		PSSystemcomponent(const size_t& id);
 		virtual ~PSSystemcomponent();
 
-		//Member vairables that we dont need yet
 		void SetNrOfPS(UINT nr);
 		void SetVelocity(float x,float y,float z);
-		void EmitRandom(float frameTime);
-		bool activate();
+		void SetAcceleration(float x, float y, float z);
 		void SetEmitPos(float x, float y, float z);
+		void SetEmitInterval(float xyz);
+		void SetMaxParticles(int max);
 		void Initialize();
-		void SetRespawnHeight(float height);
-
-		//Texture
-		void LoadAndSetTexture(const std::string& dir);
-		void SetTexture(Texture& texture);
-		void SetTexture(const std::string& name);
+		void SetHeightLimit(float height);
+		bool activate();
 
 		//Material
 		void SetMaterial(Material& material);
 		void SetMaterial(const std::string& materialName);
-		void SetMaterial(const std::string& materialSlotName, Material& material);
-		void SetMaterial(const std::string& materialSlotName, const std::string& materialName);
-		void SetMaterial(const UINT& index, Material& material);
-
-		//Friend class 
-		friend class ComponentHandler;
-		friend class Renderer;
-		friend class Entity;
-		friend class GCore;
-
-
 
 	private:
 
@@ -83,24 +60,18 @@ namespace Aen
 
 		CSInputBuffer m_CSInputBuffer;
 		VertexParticle m_VertexPS;
-		Texture* m_texture;
-		ShaderModel* m_shader;
 		UAView m_UAView;
-		Mesh* m_pMesh;
 		Material* m_pMaterial;
-
-		//Viewfrustrum
-		Vec3f m_offset;
-		DirectX::BoundingOrientedBox m_obb;
 
 		void updatePS(const float& framerate);
 
-		int maxParticles, currentNrPS;
-		float accumulatedTime, runTimes;
-		float particleSize, particlesPerSecond;
+		int m_maxParticles, m_currentNrPS;
+		int m_vertexCount;
+		float m_accumulatedTime, m_runTimes;
+		float m_particleSize, m_particlesPerSecond;
 		Vec3f m_emitPos;
 		Vec3f m_emitDir;
-		int m_vertexCount;
+
 		
 		// Inherited via Drawable
 		virtual void Draw(Renderer& renderer, const uint32_t& layer) override;

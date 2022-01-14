@@ -5,6 +5,7 @@ cbuffer Aen_CB_Transform {
 	float4x4 ivMat;
 	float4x4 ipMat;
 	float4x4 mdlMat;
+	float4x4 lvpMat;
 }
 
 struct VS_Input {
@@ -21,9 +22,9 @@ struct VS_Output {
 	float4 pos : SV_Position;
 	float3 normal : NORMAL;
 	float3 tangent : TANGENT;
-	//float3x3 tbn : TBN;
 	float2 uv : TEXCOORD;
 	float3 worldPos : WORLD_POSITION;
+	float4 clipSpace : CLIPSPACE;
 };
 
 StructuredBuffer<float4x4> sBuffer : register(t0);
@@ -53,15 +54,12 @@ VS_Output main(VS_Input input) {
 
 	skin(input.pos, input.normal, input.boneId, input.boneWeights);
 
-	output.pos = mul(float4(input.pos, 1.f), mul(mul(mdlMat, vMat), pMat));
+	output.pos = mul(float4(input.pos, 1.f), mul(mdlMat, mul(vMat, pMat)));
 	output.normal = normalize(mul(input.normal, mdlMat));
 	output.tangent = normalize(mul(input.tangent, mdlMat));
-	//output.tbn._m00_m01_m02 = normalize(mul(float4(input.tangent, 0.f), mdlMat)).xyz;
-	//output.tbn._m10_m11_m12 = normalize(mul(float4(input.biTangent, 0.f), mdlMat)).xyz;
-	//output.tbn._m20_m21_m22 = normalize(mul(float4(input.normal, 0.f), mdlMat)).xyz;
-
 	output.uv = input.uv;
 	output.worldPos = mul(float4(input.pos, 1.f), mdlMat);
+	output.clipSpace = mul(float4(input.pos, 1.f), mul(mdlMat, lvpMat));
 	
 	return output;
 }

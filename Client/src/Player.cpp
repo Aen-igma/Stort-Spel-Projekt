@@ -15,9 +15,16 @@ Player::Player()
 	m_player->SetTag("Player");
 	m_camera = &Aen::EntityHandler::CreateEntity();
 	m_camera->AddComponent<Aen::Camera>();
-	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 90.f);
+	m_camera->GetComponent<Aen::Camera>().SetCameraPerspective(70.f, Aen::GlobalSettings::GetWindow()->GetAspectRatio(), 0.01f, 100.f);
 
 	Aen::GlobalSettings::SetMainCamera(*m_camera);
+
+	m_lCamera = &Aen::EntityHandler::CreateEntity();
+	m_lCamera->AddComponent<Aen::Camera>();
+	m_lCamera->GetComponent<Aen::Camera>().SetCameraOrthographic(60.f, 60.f, 0.01f, 30.f);
+	m_lCamera->SetRot(87.f, 45.f, 0.f);
+
+	Aen::GlobalSettings::SetLightCamera(*m_lCamera);
 
 	Aen::Mesh& sword = Aen::Resource::CreateMesh("Sword");
 	sword.Load(AEN_MODEL_DIR("ShortSword.fbx"));
@@ -35,6 +42,7 @@ Player::Player()
 	skin["RimLightColor"] = Aen::Color(0.5f, 0.f, 0.f, 1.f);
 	skin["RimLightIntensity"] = 0.8f;
 	skin["RimLightSize"] = 0.4f;
+	skin["SpecularStrength"] = 0.f;
 
 	Aen::Material& shirt = Aen::Resource::CreateMaterial("Shirt");
 	shirt["InnerEdgeColor"] = Aen::Color(0.1f, 0.08f, 0.05f, 1.f);
@@ -45,6 +53,7 @@ Player::Player()
 	shirt["RimLightColor"] = Aen::Color(0.5f, 0.f, 0.f, 1.f);
 	shirt["RimLightIntensity"] = 0.8f;
 	shirt["RimLightSize"] = 0.3f;
+	shirt["SpecularStrength"] = 0.f;
 
 	Aen::Material& brown = Aen::Resource::CreateMaterial("Brown");
 	brown["InnerEdgeColor"] = Aen::Color(0.13f, 0.014f, 0.012f, 1.f);
@@ -55,6 +64,7 @@ Player::Player()
 	brown["RimLightColor"] = Aen::Color(0.8f, 0.2f, 0.1f, 1.f);
 	brown["RimLightIntensity"] = 1.f;
 	brown["RimLightSize"] = 0.6f;
+	brown["SpecularStrength"] = 0.f;
 
 	Aen::Material& pants = Aen::Resource::CreateMaterial("Pants");
 	pants["InnerEdgeColor"] = Aen::Color(0.06f, 0.07f, 0.07f, 1.f);
@@ -62,6 +72,7 @@ Player::Player()
 	pants["InnerEdgeThickness"] = 1;
 	pants["OuterEdgeThickness"] = 2;
 	pants["BaseColor"] = Aen::Color(0.44f, 0.41f, 0.34f, 1.f);
+	pants["SpecularStrength"] = 0.f;
 
 	Aen::Material& metal = Aen::Resource::CreateMaterial("Metal");
 	metal["InnerEdgeColor"] = Aen::Color(0.04f, 0.04f, 0.07f, 1.f);
@@ -80,6 +91,7 @@ Player::Player()
 	shadow["ShadowColor"] = Aen::Color(0.3f, 0.2f, 0.2f, 1.f);
 	shadow["ShadowOffset"] = 1.f;
 	shadow["SpecularColor"] = Aen::Color::Red;
+	shadow["SpecularStrength"] = 0.f;
 
 	Aen::Material& playerMat = Aen::Resource::CreateMaterial("PlayerMaterial");
 	Aen::Material& swordMat = Aen::Resource::CreateMaterial("SwordMaterial");
@@ -88,10 +100,12 @@ Player::Player()
 	mp_charCont = &m_player->GetComponent<Aen::CharacterController>();
 	mp_charCont->Resize(2.3f);
 
-	Aen::Animation& protagIdle = Aen::Resource::CreateAnimation("protagIdle");
-	protagIdle.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Idle.fbx"));
+	m_protagIdle = &Aen::Resource::CreateAnimation("protagIdle");
+	m_protagIdle->LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Idle.fbx"));
 	Aen::Animation& protagRun = Aen::Resource::CreateAnimation("protagRun");
 	protagRun.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Run.fbx"));
+
+
 	Aen::Animation& protagDash = Aen::Resource::CreateAnimation("protagDash");
 	protagDash.LoadAnimation(AEN_ANIMATION_DIR("Protagonist_Dash.fbx"));
 	Aen::Animation& protagAttack = Aen::Resource::CreateAnimation("protagAttack");
@@ -108,7 +122,7 @@ Player::Player()
 
 	m_playerMeshHolder->AddComponent<Aen::Animator>();
 	m_animation = &m_playerMeshHolder->GetComponent<Aen::Animator>();
-	m_animation->AddAnimation(protagIdle, "Idle");
+	m_animation->AddAnimation(*m_protagIdle, "Idle");
 	m_animation->AddAnimation(protagRun, "Run");
 	m_animation->AddAnimation(protagDash, "Dash");
 	m_animation->AddAnimation(protagAttack, "Attack");
@@ -118,11 +132,11 @@ Player::Player()
 	m_playerMeshHolder->SetParent(*m_player);
 	m_playerMeshHolder->SetPos(0.f, -3.1f, 0.f);
 
+	m_animation->SetRunLayer("Run");
+
 	m_player->AddComponent<Aen::AABoundBox>();
 	mp_hitBox = &m_player->GetComponent<Aen::AABoundBox>();
 	mp_hitBox->SetBoundingBox(0.45f,1.1f,0.45f);
-	//m_player->SetPos(0.f, -1.f, 0.f);
-	m_player->SetTag("Player");
 
 	m_sword->AddComponent<Aen::MeshInstance>();
 	m_sword->GetComponent<Aen::MeshInstance>().SetMesh(sword);
@@ -153,7 +167,6 @@ Player::Player()
 	barMat.LoadeAndSetDiffuseMap(AEN_TEXTURE_DIR("enemybar.png"));
 	barMat.LoadeAndSetOpacityMap(AEN_TEXTURE_DIR("opacBar.png"));
 	barMat.LoadeAndSetEmissionMap(AEN_TEXTURE_DIR("enemybar.png"));
-	//barMat["InnerEdgeThickness"] = 0;
 	barMat["GlowColor"] = Aen::Color::Red;
 	barMat["InnerEdgeColor"] = Aen::Color::Red;
 	barMat["OuterEdgeColor"] = Aen::Color::Yellow;
@@ -168,6 +181,7 @@ Player::Player()
 
 Player::~Player() {
 	Aen::GlobalSettings::RemoveMainCamera();
+	Aen::GlobalSettings::RemoveLightCamera();
 	m_playerMeshHolder->RemoveParent();
 	Aen::EntityHandler::RemoveEntity(*m_playerMeshHolder);
 	Aen::EntityHandler::RemoveEntity(*m_player);
@@ -187,16 +201,22 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	static Aen::Vec2f dir;
 	static Aen::Vec3f camDir;
 	static Aen::Vec2f side;
+	m_movementVector = Aen::Vec3f::zero;
+
 	if (lockedOn)
 		side.x = Aen::Lerp(side.x, axis.x, 0.05f);
 	else
 		side.x = Aen::Lerp(side.x, axis.x * 0.3f, 0.05f);
 	side.y = Aen::Lerp(side.y, axis.z, 0.15f);
-
-
+	
+	Aen::Vec3f lCamDir = m_camera->GetComponent<Aen::Camera>().GetForward();
+	lCamDir.y = 0.f;
+	Aen::Vec3f lCamPos = m_player->GetPos() + Aen::Vec3f(0.f, 10.f, 0.f) + lCamDir.Normalized() * 25.f;
+	m_lCamera->SetPos(lCamPos);
+#ifdef _DEBUG
 	if (Aen::Input::KeyPress(Aen::Key::SHIFT)) m_movementSpeed = 24.f;
 	else m_movementSpeed = 8.f;
-
+#endif
 
 	m_sword->SetTransformation(m_playerMeshHolder->GetComponent<Aen::Animator>().GetBoneMat(19) * Aen::MatRotate(0.f, -10.f, 0.f) * m_playerMeshHolder->GetTransformation());
 
@@ -214,14 +234,6 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 					-(float)me.GetPos().y * m_mouseSense * deltaTime,
 					(float)me.GetPos().x * m_mouseSense * deltaTime, 0.f);
 			}
-		}
-		if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_UP) {
-			printf("scroll up\n");
-
-		}
-		else if (me.getInputType() == Aen::MouseEvent::MouseInput::SCROLL_DOWN) {
-			printf("scroll down\n");
-
 		}
 	}
 
@@ -280,40 +292,14 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 				Aen::Vec3f d(d2.x, 0.f, d2.y);
 				m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
 			}
-			mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
+			Aen::Vec3f v = m_finalDir * accell * deltaTime;
+			mp_charCont->Move(v, deltaTime);
+			m_movementVector += v;
 			accell -= 12.f * deltaTime;
 		};
 
 		AddEvent(data);
 	}
-	/*if (Aen::Input::KeyDown(Aen::Key::RMOUSE)) {
-		EventData data;
-		data.accell = m_HEAVYATTACKSPEED;
-		data.duration = m_HEAVYATTACKTIME;
-		data.type = EventType::Attack;
-		data.damage = 40.f;
-		data.function = [&](float& accell, const float& attackDuration, const int& nrOf)
-		{
-
-			if (lockedOn) {
-				Aen::Vec2f d2(Aen::Vec2f(camDir.x, camDir.z).Normalized());
-				Aen::Vec3f d(d2.x, 0.f, d2.y);
-				m_finalDir = Aen::Lerp(m_finalDir, d, 0.6f);
-			}
-
-			mp_charCont->Move(m_finalDir * accell * deltaTime, deltaTime);
-			accell -= deltaTime * 2;
-			if (attackDuration < m_HEAVYCHARGETIME)
-			{
-				mp_hurtBox->ToggleActive(true);
-				SwordSwing(250.f, m_HEAVYATTACKTIME, deltaTime);
-			}
-			else
-				mp_hurtBox->ToggleActive(false);
-		};
-
-		AddEvent(data);
-	}*/
 
 	// Lock On Target
 
@@ -369,6 +355,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 		Aen::Vec3f tDir = ((m_player->GetPos() + Aen::Vec3f(0.f, 1.f, 0.f)) - m_targets.front().target->GetEntity()->GetPos() + (camDir % Aen::Vec3f(0.f, 1.f, 0.f)).Normalized() * side.x).Normalized();
 		float yaw = Aen::RadToDeg(std::atan2(tDir.x, tDir.z));
 		float pitch = Aen::RadToDeg(std::acos(tDir * Aen::Vec3f(0.f, 1.f, 0.f))) - 90.f;
+
 		//Create UI
 		m_targetUI->SetPos(m_targets.front().target->GetEntity()->GetPos());
 		m_targetUI->SetScale(5.f, 1.f, 15.f);
@@ -400,7 +387,7 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	Aen::Vec3f playerDir = m_camera->GetComponent<Aen::Camera>().GetForward() * axis.Normalized().z + m_camera->GetComponent<Aen::Camera>().GetRight() * axis.Normalized().x;
 	dir = Aen::Vec2f(playerDir.x, playerDir.z);
 
-	Aen::Vec3f attackPos =/* m_player->GetPos() +*/ m_finalDir * 2.f;
+	Aen::Vec3f attackPos = m_finalDir * 2.f;
 
 	m_hurtbox->SetPos(attackPos);
 
@@ -410,13 +397,9 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	mp_hurtBox->SetOrientation(0.f, yaw, 0.f);
 	m_player->SetRot(0.f, Aen::RadToDeg(yaw) + 180.f, 0.f);
 	
-	if(axis.Magnitude() > 0.f) {
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.28f);
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Run");
-	} else {
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.85f);
-		m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
-	}
+	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(1.f);
+	m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Idle");
+
 
 	if (!m_eventQueue.empty())
 		if (m_eventQueue.front().duration > 0.f) {
@@ -424,11 +407,14 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 			m_eventQueue.front().duration -= deltaTime;
 
 			if(m_eventQueue.front().type == EventType::Dash) {
-				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.35f);
-				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Dash");
-			} else if(m_eventQueue.front().type == EventType::Attack) {
-				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimationScale(0.35f);
-				m_playerMeshHolder->GetComponent<Aen::Animator>().SetAnimation("Attack");
+				m_animation->SetAnimationScale(1.f);
+				m_anAc = Aen::Action::Dash;
+				m_animation->SetActionLayer("Dash");
+			} 
+		else if(m_eventQueue.front().type == EventType::Attack) {
+				m_animation->SetAnimationScale(.5f);
+				m_anAc = Aen::Action::Attack;
+				m_animation->SetActionLayer("Attack");
 			}
 
 		}
@@ -453,7 +439,9 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 	if (m_eventQueue.empty()) {
 		if (axis.Magnitude() > 0.f) {
 			m_finalDir = Aen::Vec3f(dir.Normalized().x, 0.f, dir.Normalized().y);
-			mp_charCont->Move(m_finalDir * m_movementSpeed * deltaTime, deltaTime);
+			Aen::Vec3f v = m_finalDir * m_movementSpeed;
+			mp_charCont->Move(v * deltaTime, deltaTime);
+			m_movementVector += v;
 		}
 	}
 
@@ -464,6 +452,31 @@ void Player::Update(std::deque<Enemy*>& e, const float& deltaTime) {
 
 	m_v += Aen::Vec3f(-m_v.x * 1.8f, -30.f, -m_v.z * 1.8f) * deltaTime;
 	m_v = Aen::Clamp(m_v, -Aen::Vec3f(20.f, 20.f, 20.f), Aen::Vec3f(20.f, 20.f, 20.f));
+	static float runFactor = 0.f;
+	static float actionFactor = 0.f;
+
+	runFactor = Aen::Lerp(runFactor, m_movementVector.Magnitude() / m_movementSpeed, 0.35f);
+
+	switch (m_anAc)
+	{
+	case Aen::Action::Attack:
+		actionFactor = Aen::Lerp(actionFactor, (float)IsAttacking(), 0.35f);
+		break;
+	case Aen::Action::Dash:
+		actionFactor = Aen::Lerp(actionFactor, (float)IsDashing(), .35f);
+		break;
+	default:
+		break;
+	}
+	bool _ = false;
+	if (!IsAttacking() && !IsDashing())
+	{
+		m_animation->SetActionLayer("Dash");
+		m_animation->SetAnimationScale(0.35f);
+	}
+
+	m_animation->SetRunFactor(runFactor);
+	m_animation->SetActionFactor(actionFactor);
 	mp_charCont->Move(m_v * deltaTime, deltaTime);
 }
 
@@ -481,7 +494,7 @@ Aen::Entity*& Player::GetCamera()
 }
 
 void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
-	// Attacking -------------------------------------------------------------------------------------
+	// ------------------------------		Attacking		---------------------------------- //
 
 	if (!m_eventQueue.empty() && m_eventQueue.front().type == EventType::Attack) {
 		m_attackTimer += deltaTime;
@@ -503,6 +516,7 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 							break;
 						}
 
+
 					switch (e[i]->GetEnemyType())
 					{
 					case EnemyType::BASE:
@@ -521,9 +535,10 @@ void Player::UpdateAttack(std::deque<Enemy*>& e, const float& deltaTime) {
 					default:
 						break;
 					}
-						
+					
 					e[i] = nullptr;
 					e.erase(e.begin() + i);
+					Aen::GlobalSettings::RebuildAutoPass();
 				}
 			}
 		}
@@ -564,7 +579,7 @@ void Player::PotionUpdate()
 		m_timer = 0;
 	}
 
-	if (m_health > 200.f) // cap
+	if (m_health > 200.f) 
 		m_health = 200.f;
 }
 
@@ -603,6 +618,13 @@ const bool Player::IsAttacking() {
 	if (!m_eventQueue.empty())
 		return (m_eventQueue.front().type == EventType::Attack);
 	return false;
+}
+
+bool Player::IsDashing() const
+{
+	if (m_eventQueue.empty())
+		return false;
+	return (m_eventQueue.front().type == EventType::Dash);
 }
 
 Aen::AABoundBox* Player::GetHitBoxP() const

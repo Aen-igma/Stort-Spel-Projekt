@@ -165,20 +165,10 @@ void Aen::AssimpImport::ProcessMesh(UINT& offset, aiMesh* mesh, const aiScene* s
 			for (int j = 1; j <= face.mNumIndices; j++)
 				invertIndices.push_back(face.mIndices[face.mNumIndices - j]);
 		}
-		/*for (int i = 0; i < mesh->mNumFaces; i++)
-		{
-			aiFace face = mesh->mFaces[i];
-			for (int j = 0; j < face.mNumIndices; j++)
-				invertIndices.push_back(face.mIndices[j]);
-		}*/
-		offset = numVerts;
-		printf("\n");
-
-		/*std::vector<UINT> boneCount;
-		boneCount.resize(verts.size(), 0);*/
 		
-	}
-	
+		offset = numVerts;
+		printf("\n");	
+	}	
 }
 
 void Aen::AssimpImport::ProcessNode(aiNode* node, const aiScene* scene, Aen::VBuffer<Aen::Vertex>& vBuffer,
@@ -400,6 +390,7 @@ void Aen::AssimpImport::ProcAnimation(const aiScene* scene, std::unordered_map<s
 					aiQuaternion orient;
 					orient = scene->mAnimations[0]->mChannels[i]->mRotationKeys[r].mValue;
 					data[index].rotation = data[index].rotation * MatQuaternion(orient.x, orient.y, orient.z, orient.w);
+					data[index].quatOrientation = { orient.x, orient.y, orient.z, orient.w };
 					timeStamp[index] = keysPerSec * (float)index / duration;
 				}
 			}
@@ -426,6 +417,17 @@ void Aen::AssimpImport::ProcAnimation(const aiScene* scene, std::unordered_map<s
 	}
 }
 
+void Aen::AssimpImport::FindChildren(std::vector<Bones>& boneArray)
+{
+	uint16_t nrOfBones = boneArray.size();
+	
+	for (int b = 1; b < nrOfBones; b++) // place pointer to children inside each bone
+	{
+		int pId = boneArray[b].parentID;
+		boneArray[pId].pChildren.emplace_back(&boneArray[b]);
+	}
+}
+
 void Aen::AssimpImport::LoadFbxAnimation(const std::string path, std::vector<Bones>& boneArray, std::unordered_map<std::string, std::vector<KeyFrameData>>& keyFrames, std::vector<float>& m_timeStamp, float& duration) {
 	
 	boneArray.clear();
@@ -444,5 +446,6 @@ void Aen::AssimpImport::LoadFbxAnimation(const std::string path, std::vector<Bon
 	std::unordered_map<std::string, aiBone*> bones;
 	ProcNodeAnim(pScene->mRootNode, pScene, bones);
 	ProcBoneHeiarchy(pScene->mRootNode, pScene, bones, boneArray);
+	FindChildren(boneArray);
 	ProcAnimation(pScene, keyFrames, m_timeStamp, boneArray[0].boneName, duration);
 }

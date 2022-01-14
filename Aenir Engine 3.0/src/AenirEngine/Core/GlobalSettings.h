@@ -2,6 +2,7 @@
 #include"Renderer.h"
 #include "../ImGuiHandler.h"
 #include<string>
+#include "../Quadtree/Quadtree.h"
 
 namespace Aen {
 
@@ -21,8 +22,20 @@ namespace Aen {
 			UpdateFrstumGrid();
 		}
 
+		static void SetLightCamera(Entity& camera) {
+			m_pLightCamera = &camera;
+		}
+
+		static void SetDebugCamera(Entity& camera) {
+			m_pDebugCamera = &camera;
+		}
+
 		static Entity* GetMainCamera() {
 			return m_pMainCamera;
+		}
+
+		static Entity* GetLightCamera() {
+			return m_pLightCamera;
 		}
 
 		static void SetBGColor(const Color& color) {
@@ -45,9 +58,20 @@ namespace Aen {
 			m_vSync = set;
 		}
 
-		static void RemoveMainCamera()
-		{
+		static void SetUseDebugCam(const bool& set) {
+			m_useDebugCam = set;
+		}
+
+		static void RemoveMainCamera() {
 			m_pMainCamera = nullptr;
+		}
+
+		static void RemoveLightCamera() {
+			m_pLightCamera = nullptr;
+		}
+
+		static void RemoveDebugCamera() {
+			m_pDebugCamera = nullptr;
 		}
 
 		static Window* GetWindow(){
@@ -56,6 +80,36 @@ namespace Aen {
 
 		static const bool GetVSync() {
 			return m_vSync;
+		}
+
+		static const bool GetUseDebugCam() {
+			return m_useDebugCam;
+		}
+
+		static void StartQuadtree(const unsigned& level, const unsigned& maxLevel, const unsigned& capacity) {
+			if (m_pQuadtree)
+			{
+				delete m_pQuadtree;
+				m_pQuadtree = nullptr;
+			}
+			else
+			{
+				m_pQuadtree = AEN_NEW Quadtree(level, maxLevel, capacity);
+				m_pQuadtree->Initialize();
+			}
+		}
+
+		static void StopQuadtree() {
+			if (m_pQuadtree)
+			{
+				delete m_pQuadtree;
+				m_pQuadtree = nullptr;
+			}
+		}
+
+		static void RebuildAutoPass() 
+		{
+			m_pQuadtree->RebuildAutoPass();
 		}
 
 		friend class GameLoop;
@@ -172,16 +226,18 @@ namespace Aen {
 		static ShaderModel* m_pDefaultShader;
 		static Window* m_pWindow;
 		static Entity* m_pMainCamera;
+		static Entity* m_pLightCamera;
+		static Entity* m_pDebugCamera;
 		static Color m_BGColor;
 
 		static Material* m_defaultMaterial;
 		static Texture* m_defaultTexture;
 
-		//static ImGuiHandler* mp_guiHandler;
 		static bool m_vSync;
+		static bool m_useDebugCam;
 
 		static Renderer* m_pRenderer;
-
+		static Quadtree* m_pQuadtree;
 	};
 
 

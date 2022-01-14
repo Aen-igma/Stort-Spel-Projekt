@@ -33,11 +33,14 @@ namespace Aen
 		unordered_map< size_t, Aen::Entity*> *m_lightMap;
 		vector<IGH::MatTexName> *m_materialList;
 
+
+
 		IGH::ImguiTypes m_imguiTypes;
 
 		//Vec3f m_boss[3];
 		vector<Vec3f> m_enemyPos;
 		vector<Vec3f> m_lSkelPos;
+		vector<AenIF::Particle> m_particleList;
 
 		unsigned int m_entityCount = 0;
 		unsigned int m_lightCount = 0;
@@ -50,6 +53,7 @@ namespace Aen
 	public:
 		void Convert(const Aen::Vec4f inputVec, float* inputArray);
 		void Convert(float* inputArray, Aen::Vec4f& inputVec);
+
 		Aen::Vec3f Convert(float input[3]);
 
 		ImGuiImporter();
@@ -75,6 +79,7 @@ namespace Aen
 		void GetRoomProperties(string* propertiesArray, size_t index);
 
 		vector<Aen::Entity*>* GetEntityList();
+		vector<AenIF::Particle>& GetParticleList();
 		bool LoadLevel(int index);
 		bool LoadLevel(AenIMP::CompleteRoom* roomPtr, Aen::Vec2f offset, float angle);
 
