@@ -252,9 +252,10 @@ void Gameplay::Initialize()
 		m_enemyQueue.emplace_back(s);
 	}
 
-	m_throne->SetScale(2.f, 2.f, 2.f);
 
 	// -- Door, Throne, Boss Rotations -- //
+	m_throne->SetScale(2.f, 2.f, 2.f);
+
 	if (roomNormal == 1) { //north
 		m_throne->SetPos(m_bossPos.x, m_bossPos.y + 6.11f, m_bossPos.z + 33.35f);
 		m_door.GetEntity()->SetRot(0, 180, 0);

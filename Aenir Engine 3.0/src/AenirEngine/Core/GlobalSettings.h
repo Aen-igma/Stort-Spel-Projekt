@@ -124,7 +124,7 @@ namespace Aen {
 				RenderSystem::BindUnOrderedAccessView(0u, m_pRenderer->m_frustumGrid);
 				m_pRenderer->m_dispatchInfo.BindBuffer<CShader>(0u);
 				m_pRenderer->m_cbTransform.BindBuffer<CShader>(1u);
-
+		
 				m_pRenderer->m_cbTransform.GetData().m_vMat = m_pMainCamera->GetComponent<Camera>().GetView().Transposed();
 				m_pRenderer->m_cbTransform.GetData().m_pMat = m_pMainCamera->GetComponent<Camera>().GetProjecton().Transposed();
 				m_pRenderer->m_cbTransform.GetData().m_ivMat = m_pRenderer->m_cbTransform.GetData().m_vMat.Inverse();
