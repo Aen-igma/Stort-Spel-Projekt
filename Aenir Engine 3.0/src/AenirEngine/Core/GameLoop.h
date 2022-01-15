@@ -27,6 +27,10 @@ namespace Aen {
 		DurationLD m_deltaTime;
 			double m_frametime;
 
+			TimePoint t1;
+			TimePoint t2;
+			chrono::duration<double, std::milli> ms_double;
+
 		App* m_app;
 		Renderer* m_renderer;
 	};

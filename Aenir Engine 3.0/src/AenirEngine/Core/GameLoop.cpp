@@ -14,6 +14,10 @@ namespace Aen {
 		if(!GCore::Concealed::Initialize(m_app->m_window))
 			exit(-1);
 
+		t1 = chrono::high_resolution_clock::now();
+		t2 = chrono::high_resolution_clock::now();
+		ms_double = t2 - t1;
+
 		// Initialize physX
 		PhysicsHandler::Initialize(100, 981);
 		
@@ -42,7 +46,18 @@ namespace Aen {
 			PhysicsHandler::Update(static_cast<float>(deltaTime));
 	
 			m_renderer->Culling();
+
+			t1 = chrono::high_resolution_clock::now();
+
 			m_renderer->Render();
+
+			if (Aen::Input::KeyDown(Aen::Key::T))
+			{
+				t2 = chrono::high_resolution_clock::now();
+				ms_double = t2 - t1;
+				std::string test = std::to_string(ms_double.count() / 1.f) + "\n";
+				OutputDebugStringA(test.c_str());
+			}
 
 			deltaTime = (omp_get_wtime() - sStart);
 		}

@@ -67,6 +67,7 @@ namespace Aen
 		{
 			m_quadObjectsToRender.clear();
 			m_cameraFrustrum = GlobalSettings::GetMainCamera()->GetComponent<Camera>().GetFrustum();
+			m_cameraFrustrum.Far = 80.f;
 			mp_root->FrustumTest(m_cameraFrustrum, m_quadObjectsToRender);
 
 			for (int i = 0; i < m_quadObjectsToRender.size(); i++)

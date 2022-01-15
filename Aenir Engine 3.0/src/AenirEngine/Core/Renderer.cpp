@@ -159,7 +159,7 @@ namespace Aen {
 
 				RenderSystem::SetViewPort(m_viewPort2);
 				RenderSystem::UnBindRenderTargets(1u);
-				RenderSystem::BindRenderTargetView(m_shadowMap);
+				//RenderSystem::BindRenderTargetView(m_shadowMap);
 				RenderSystem::SetDepthStencilState(m_offStencil, 0xFF);
 
 				for (auto& k : m_drawTable[i]) {

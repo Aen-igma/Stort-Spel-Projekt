@@ -617,7 +617,8 @@ void Gameplay::Update(const float& deltaTime) {
 			m_enemyQueue.emplace_back(bossMinion);
 		}
 		
-		Aen::GlobalSettings::RebuildAutoPass();
+		if(enemiesToSummon > 0)
+			Aen::GlobalSettings::RebuildAutoPass();
 	}
 	else enemiesToSummon = 0;
 
