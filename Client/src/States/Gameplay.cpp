@@ -317,38 +317,38 @@ void Gameplay::Initialize()
 	m_UI->AddComponent<Aen::UIComponent>();
 	mp_uiComp = &m_UI->GetComponent<Aen::UIComponent>();
 	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"healthbar.png")); //0
-	mp_uiComp->SetPicPos((350.f / 1920)* wDesc.width, (100.f / 1024) * wDesc.height);
-	mp_uiComp->SetPicSize(((m_hp * 2.f) / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+	//mp_uiComp->SetPicPos((350.f / 1920)* wDesc.width, (100.f / 1024) * wDesc.height);
+	//mp_uiComp->SetPicSize(((m_hp * 2.f) / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 
 	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"bar.png")); //1
-	mp_uiComp->SetPicPos((350.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
-	mp_uiComp->SetPicSize(((m_hp * 2.f) / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+	//mp_uiComp->SetPicPos((350.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
+	//mp_uiComp->SetPicSize(((m_hp * 2.f) / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 
 	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"potion.png")); //2
-	mp_uiComp->SetPicPos((125.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
-	mp_uiComp->SetPicSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
+	//mp_uiComp->SetPicPos((125.f / 1920) * wDesc.width, (100.f / 1024) * wDesc.height);
+	//mp_uiComp->SetPicSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
 
 	m_UI->GetComponent<Aen::UIComponent>().AddPicture(AEN_TEXTURE_DIR_W(L"healthbar.png"));//3 - bosshealthbar
 
 	mp_uiComp->AddText(L"- Find the boss", 30.f); //0
-	mp_uiComp->SetTextPos((175.f / 1920) * wDesc.width, (300.f / 1024) * wDesc.height);
-	mp_uiComp->SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
-	mp_uiComp->SetColor(D2D1::ColorF::Gold);
+	//mp_uiComp->SetTextPos((175.f / 1920) * wDesc.width, (300.f / 1024) * wDesc.height);
+	//mp_uiComp->SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
+	//mp_uiComp->SetColor(D2D1::ColorF::Gold);
 
 	mp_uiComp->AddText(L"3", 50.f); //1 - Amount of potion
-	mp_uiComp->SetTextPos((120.f / 1920) * wDesc.width, (110.f / 1024) * wDesc.height);
+	/*mp_uiComp->SetTextPos((120.f / 1920) * wDesc.width, (110.f / 1024) * wDesc.height);
 	mp_uiComp->SetTextSize((150.f / 1920) * wDesc.width, (150.f / 1024) * wDesc.height);
-	mp_uiComp->SetColor(D2D1::ColorF::Black);
+	mp_uiComp->SetColor(D2D1::ColorF::Black);*/
 
 	mp_uiComp->AddText(L"Interact (F)", 60.f); //2
-	mp_uiComp->SetTextPos((965.f / 1920.f) * wDesc.width, (800.f / 1024.f) * wDesc.height);
-	mp_uiComp->SetTextSize((900.f / 1920.f) * wDesc.width, (300.f / 1024.f) * wDesc.height);
-	mp_uiComp->SetColor(D2D1::ColorF::Aqua);
+	//mp_uiComp->SetTextPos((965.f / 1920.f) * wDesc.width, (800.f / 1024.f) * wDesc.height);
+	//mp_uiComp->SetTextSize((900.f / 1920.f) * wDesc.width, (300.f / 1024.f) * wDesc.height);
+	//mp_uiComp->SetColor(D2D1::ColorF::Aqua);
 
 	mp_uiComp->AddText(L"- Find Item Room (Optional)", 30.f); //3
-	mp_uiComp->SetTextPos((200.f / 1920) * wDesc.width, (350.f / 1024) * wDesc.height);
-	mp_uiComp->SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
-	mp_uiComp->SetColor(D2D1::ColorF::Gold);
+	//mp_uiComp->SetTextPos((200.f / 1920) * wDesc.width, (350.f / 1024) * wDesc.height);
+	//mp_uiComp->SetTextSize((900.f / 1920) * wDesc.width, (300 / 1024) * wDesc.height);
+	//mp_uiComp->SetColor(D2D1::ColorF::Gold);
 
 	//Pause menu UI
 	mp_uiComp->AddPicture(AEN_TEXTURE_DIR_W(L"PauseOverlay.png")); //4
